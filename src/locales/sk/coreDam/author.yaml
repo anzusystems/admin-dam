@@ -1,0 +1,23 @@
+model:
+  id: ID
+  name: Meno
+  identifier: Identifikátor
+  type: Typ
+  flags:
+    reviewed: Overené
+filter:
+  id: ID
+  text: Text
+  identifier: Identifikátor
+  type: Typ
+  reviewed: Overené
+authorType:
+  none: Žiadny
+  internal: Interný
+  external: Externý
+  agency: Agentúrny
+meta:
+  create: Vytvoriť autora
+  edit: Upraviť autora
+  detail: Detail autora
+  list: Zoznam autorov

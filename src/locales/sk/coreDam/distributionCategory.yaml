@@ -1,0 +1,12 @@
+model:
+  id: ID
+  name: Názov
+  type: Type
+filter:
+  id: ID
+  name: Názov
+  type: Typ assetu
+meta:
+  edit: Upraviť distribučnú kategóriu
+  detail: Detail distribučnej kategórie
+  list: Zoznam distribučných kategórií

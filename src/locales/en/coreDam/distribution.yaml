@@ -1,0 +1,6 @@
+distributionStatus:
+  waiting: Waiting
+  distributing: Distributing
+  remoteProcessing: Remote processing
+  distributed: Distributed
+  failed: Failed

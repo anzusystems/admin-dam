@@ -1,0 +1,40 @@
+button:
+  create: Create
+  save: Save
+  saveAndClose: Save and close
+  close: Close
+  edit: Edit
+  submitFilter: Apply filter
+  cancel: Cancel
+  delete: Delete
+  id: ID
+tracking:
+  createdAt: Created
+  modifiedAt: Modified
+  created: Created
+  modified: Modified
+boolean:
+  true: yes
+  false: no
+datatable:
+  displayCols: Display columns
+  itemsPerPage: Records per page
+  from: from
+  noDataText: No data to display
+modal:
+  confirmDelete: Remove?
+alerts:
+  unknownError: System error, try again later or contact administrator
+  fixValidationErrors: Please fill all required fields and fix problems
+  fixApiValidationErrors: Please, fix these errors
+  apiValidationErrors:
+    error_field_length_min: error_field_length_min
+    error_field_length_max: error_field_length_max
+    error_field_not_unique: error_field_not_unique
+    error_compromised_password: error_compromised_password
+  recordWas:
+    created: Record was created
+    updated: Record was updated
+    deleted: Record was removed
+  idWasCopied: ID was copied to clipboard
+  textWasCopied: Text was copied to clipboard

@@ -1,0 +1,13 @@
+model:
+  id: ID
+  name: Názov
+  slug: Slug
+  adminUsers: Administrátori
+filter:
+  id: ID
+  name: Názov
+  slug: Slug
+meta:
+  edit: Upraviť externý systém
+  detail: Detail externého systému
+  list: Zoznam externých systémov

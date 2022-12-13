@@ -1,0 +1,17 @@
+version: verzia
+#systemBar:
+#  newVersionText: Existuje nová verzia adminu, pre správne fungovanie systému je navyhnutná vaša akcia.
+#  newVersionReload: Načítať novú verziu
+theme:
+  light: Svetlá
+  dark: Tmavá
+  auto: Automaticky
+#settings:
+#  meta:
+#    edit: Nastavenia
+#  user:
+#    title: Používateľ
+#  application:
+#    title: Aplikácia
+#    language: Jazyk
+#    theme: Téma

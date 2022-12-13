@@ -1,0 +1,38 @@
+services:
+  admin-dam:
+    build:
+      args:
+        - DOCKER_USER=${DOCKER_USER:-node}
+        - DOCKER_USER_ID=${DOCKER_USER_ID:-1000}
+        - DOCKER_GROUP_ID=${DOCKER_GROUP_ID:-1000}
+      context: .
+      dockerfile: ./docker/app/local/Dockerfile
+    environment:
+      - VIRTUAL_HOST=admin-dam.sme.localhost
+      - VIRTUAL_PORT=${NGINX_PORT:-8151}
+      - NGINX_PORT=${NGINX_PORT:-8151}
+    external_links:
+      - local-proxy:core-dam.sme.localhost
+    env_file:
+      - .env.docker.dist
+      - .env.docker.local
+    volumes:
+      - .:/var/www/html:cached
+    secrets:
+      - ssh_private_key
+    ports:
+      - ${DOCKER_CYPRESS_PORT:-8152}:${DOCKER_CYPRESS_PORT:-8152}
+      - ${DOCKER_VUE_DEV_PORT:-8150}:${DOCKER_VUE_DEV_PORT:-8150}
+      - ${NGINX_PORT:-8151}:${NGINX_PORT:-8151}
+    hostname: admin-dam.sme.localhost
+    privileged: true
+    networks:
+      - ${DOCKER_NETWORK_NAME:-petitpress_network}
+
+secrets:
+  ssh_private_key:
+    file: ${DOCKER_SSH_PRV_KEY_FILE:-~/.ssh/id_rsa}
+
+networks:
+  petitpress_network:
+    external: true

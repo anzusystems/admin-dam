@@ -1,0 +1,7 @@
+model:
+  distributionService: Distribution service name
+  texts:
+    title: Title
+    description: Description
+    author: Author
+    keywords: Keywords

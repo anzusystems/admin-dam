@@ -1,0 +1,13 @@
+model:
+  id: ID
+  name: Name
+  slug: Slug
+  adminUsers: Administrators
+filter:
+  id: ID
+  name: Name
+  slug: Slug
+meta:
+  edit: Edit External System
+  detail: External System Detail
+  list: List of External Systems

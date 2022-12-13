@@ -1,0 +1,97 @@
+model:
+  id: ID
+filter:
+  text: Text
+  type: Type
+  inPodcast: In podcast
+  visible: Visible
+  described: Described
+  status: Status
+  orientation: Orientation
+  closestMostDominantColor: Closest color
+  pixelSizeFrom: pixelSizeFrom
+  pixelSizeUntil: pixelSizeUntil
+  widthFrom: widthFrom
+  widthUntil: widthUntil
+  heightFrom: heightFrom
+  heightUntil: heightUntil
+  ratioWidthFrom: ratioWidthFrom
+  ratioWidthUntil: ratioWidthUntil
+  ratioHeightFrom: ratioHeightFrom
+  ratioHeightUntil: ratioHeightUntil
+  rotationFrom: rotationFrom
+  rotationUntil: rotationUntil
+  durationFrom: durationFrom
+  durationUntil: durationUntil
+  bitrateFrom: bitrateFrom
+  bitrateUntil: bitrateUntil
+filterTitle: Filter
+noItemsFound: No matching assets found
+assetType:
+  image: Image
+  audio: Audio
+  video: Video
+  document: Document
+assetStatus:
+  draft: Draft
+  withFile: With File
+  deleting: Deleting
+imageOrientation:
+  landscape: landscape
+  portrait: portrait
+  square: square
+detail:
+  tabs:
+    info: Meta
+    roi: Focus
+    distribution: Distribution
+  info:
+    status:
+      draft: Asset is without file
+      deleting: Asset will be removed soon
+    metadata: Metadata
+    file: File info
+    podcast: Podcast
+    edit: Edit more
+    field:
+      id: Asset ID
+      mainFileId: Main file ID
+      type: Type
+      mimeType: Format
+      size: Size
+      dominantColor: Color
+      width: Width
+      height: Height
+      ratio: Ratio
+  roi:
+    title: Previews
+    description: Preview of image on mobile, desktop or app.
+    refresh: Refresh previews
+upload:
+  title: Upload
+  titleDone: Upload done
+  edit: Add description
+  saveAndClose: Save and finish
+  uploading: Uploading
+  stopOverlay:
+    title: Are you sure you want to stop upload?
+    confirm: Stop upload
+selected:
+  selectedFiles: Selected files
+  edit: Edit
+  clear: Clear
+  clearOverlay:
+    title: Are you sure you want to clear selection?
+    description: Any unsaved work will be lost
+    confirm: Clear selected
+  cancel: Cancel
+  saveAndClose: Save and finish
+massOperations:
+  title: Mass operations
+  description: Bulk edit of all content data or selected fields.
+  fillAllEmpty: Fill all empty
+  replaceAll: Replace all
+  clearForm: Clear form
+queueItem:
+  edit: Edit more
+  uploadNew: Upload new file

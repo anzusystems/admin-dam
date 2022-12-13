@@ -1,0 +1,49 @@
+$overlay-width: 300px;
+$overlay-height: 300px;
+$overlay-height-spacer: 10px;
+$overlay-toolbar-top-height: 32px;
+$overlay-toolbar-bottom-height: 32px;
+$overlay-content-height: $overlay-height - $overlay-toolbar-top-height - $overlay-toolbar-bottom-height;
+$overlay-height-total: $overlay-height + $overlay-height-spacer;
+$bg-color-light: #fff;
+$bg-color-dark: #1a1a1a;
+
+.asset-upload-overlay {
+  width: $overlay-width;
+  height: $overlay-height-total;
+  bottom: 0;
+  right: 20px;
+  position: absolute;
+  display: block;
+  box-shadow: 0 0 50px 0 rgb(0 0 0 / 50%);
+  transform: translateY(0%);
+  transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &--hidden {
+    transform: translateY(150%);
+  }
+
+  .asset-upload-overlay__content {
+    min-height: $overlay-content-height;
+  }
+
+  &--minimal {
+    transform: translateY($overlay-content-height);
+
+    .asset-upload-overlay__content {
+      opacity: 0;
+    }
+  }
+}
+
+.v-theme--light {
+  .asset-upload-overlay {
+    background-color: $bg-color-light;
+  }
+}
+
+.v-theme--dark {
+  .asset-upload-overlay {
+    background-color: $bg-color-dark;
+  }
+}

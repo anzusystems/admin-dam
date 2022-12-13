@@ -1,0 +1,10 @@
+simpleLogin:
+  description: Prosím, prihláste sa
+  form:
+    username: Prihlasovacie meno
+    password: Heslo
+  buttons:
+    login: Prihlásiť sa
+  alerts:
+    success: Prihlásenie bolo úspešné!
+    failure: Zadaliste nesprávne prihlasovacie údaje!

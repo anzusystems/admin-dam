@@ -1,0 +1,27 @@
+version: version
+systemBar:
+  newVersionText: New version of ADAM admin is available. For proper functioning, latest version is required.
+  newVersionReload: Reload new version
+theme:
+  light: Light
+  dark: Dark
+  auto: Auto
+mainBar:
+  upload: Upload
+  search: Search
+  backToAssets: Back to assets
+settings:
+  locale: Locale
+  theme: Theme
+currentUser:
+  settings: Settings
+  backToAssets: Back to assets
+  logout: Logout
+uploadErrors:
+  unknownError: System error, try again later or contact administrator
+  systemError: Error
+  size: Incorrect size
+  offset: Incorrect offset
+  mimeType: Incorrect mime type
+closePage:
+  title: This page/tab can be safely closed.

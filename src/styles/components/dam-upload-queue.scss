@@ -1,0 +1,96 @@
+$class-name-root: "dam-upload-queue";
+$bg-color-light: #fff;
+$bg-color-dark: #1e1e1e;
+$border-color-light: #e8e9ea;
+$border-color-dark: #2c2c2c;
+$duplicate-bg-color-light: rgb(255 255 255 / 70%);
+$duplicate-bg-color-dark: rgb(0 0 0 / 70%);
+
+.#{$class-name-root} {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-top: 1px;
+
+  &--simple {
+    .#{$class-name-root}__item {
+      min-width: 170px;
+      min-height: 110px;
+      max-width: 170px;
+      max-height: 110px;
+      padding: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .#{$class-name-root}__item-card {
+      padding: 2px;
+      height: 108px;
+    }
+  }
+
+  &--list {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .#{$class-name-root}__item {
+      min-width: auto;
+      max-width: 100%;
+      width: 100%;
+      min-height: auto;
+      max-height: none;
+
+      .#{$class-name-root}__item-card {
+        border: none;
+      }
+    }
+  }
+
+  &--editable {
+    .#{$class-name-root}__item {
+
+      .#{$class-name-root}__item-card {
+        .asset-image {
+          aspect-ratio: 16 / 9;
+        }
+      }
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.v-theme--light {
+  .#{$class-name-root} {
+    &--simple {
+      .#{$class-name-root}__item-card {
+        background-color: $bg-color-light;
+        border: 1px solid $border-color-light;
+      }
+    }
+
+    &__overlay {
+      background-color: $duplicate-bg-color-light;
+    }
+  }
+}
+
+.v-theme--dark {
+  .#{$class-name-root} {
+    &--simple {
+      .#{$class-name-root}__item-card {
+        background-color: $bg-color-dark;
+        border: 1px solid $border-color-dark;
+      }
+    }
+
+    &__overlay {
+      background-color: $duplicate-bg-color-dark;
+    }
+  }
+}
