@@ -1,0 +1,41 @@
+<script lang="ts" setup>
+import ACard from '@/components/common/ACard.vue'
+import { useI18n } from 'vue-i18n'
+import ARow from '@/components/common/ARow.vue'
+import ACopyText from '@/components/common/ACopyText.vue'
+import { storeToRefs } from 'pinia'
+import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
+import { usePodcastOneStore } from '@/stores/dam/podcastStore'
+import PodcastModeChip from '@/views/dam/podcast/components/PodcastModeChip.vue'
+import PodcastLastImportStatusChip from '@/views/dam/podcast/components/PodcastLastImportStatusChip.vue'
+
+const { podcast } = storeToRefs(usePodcastOneStore())
+
+const { t } = useI18n({ useScope: 'global' })
+</script>
+
+<template>
+  <VRow>
+    <VCol cols="8">
+      <ACard loader="detail">
+        <ARow :title="t('coreDam.podcast.model.texts.title')" :value="podcast.texts.title"></ARow>
+        <ARow :title="t('coreDam.podcast.model.texts.description')" :value="podcast.texts.description"></ARow>
+        <ARow :title="t('coreDam.podcast.model.attributes.mode')">
+          <PodcastModeChip :mode="podcast.attributes.mode" />
+        </ARow>
+        <ARow :title="t('coreDam.podcast.model.attributes.rssUrl')" :value="podcast.attributes.rssUrl"></ARow>
+        <ARow :title="t('coreDam.podcast.model.attributes.lastImportStatus')">
+          <PodcastLastImportStatusChip :status="podcast.attributes.lastImportStatus" />
+        </ARow>
+      </ACard>
+    </VCol>
+    <VCol cols="4">
+      <ACard loader="detail">
+        <ARow :title="t('coreDam.podcast.model.id')">
+          <ACopyText :value="podcast.id" data-cy="podcast-id"></ACopyText>
+        </ARow>
+        <AUserAndTimeTrackingFields :data="podcast"></AUserAndTimeTrackingFields>
+      </ACard>
+    </VCol>
+  </VRow>
+</template>

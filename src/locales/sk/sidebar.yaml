@@ -1,0 +1,11 @@
+settings:
+  settings: Osobné
+  users: Používatelia
+  permissionGroups: Skupiny oprávnení
+  extSystems: Externé systémy
+  assetLicences: Licencie assetov
+  keywords: Kľúčové slová
+  authors: Autori
+  distributionCategory: Distribučné kategórie
+  distributionCategorySelect: Čiselníky distribučných kategórií
+  log: Logy

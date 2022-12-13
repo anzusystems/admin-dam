@@ -1,0 +1,13 @@
+model:
+  id: ID
+  name: Názov
+  extSystem: Externý systém
+  extId: Externé ID
+filter:
+  id: ID
+  extId: Externé ID
+meta:
+  create: Vytvoriť licenciu
+  edit: Upraviť licenciu
+  detail: Detail licencie
+  list: Zoznam licencií

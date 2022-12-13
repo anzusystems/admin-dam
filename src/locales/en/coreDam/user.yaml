@@ -1,0 +1,25 @@
+role:
+  admin: Admin
+  user: User
+model:
+  id: ID
+  firstName: Firstname
+  lastName: Lastname
+  email: Email
+  roles: Role
+  enabled: Enabled
+  plainPassword: New password
+  assetLicences: Licences
+  adminToExtSystems: External Systems Admin
+  superAdmin: Super admin
+  permissionGroups: Permission Group
+  allowedAssetExternalProviders: Allowed External asset providers
+  allowedDistributionServices: Allowed Distribution services
+filter:
+  id: ID
+  email: Email
+meta:
+  create: Create User
+  edit: Edit User
+  detail: User detail
+  list: List of Users

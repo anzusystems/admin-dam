@@ -1,0 +1,12 @@
+model:
+  id: ID
+  title: Title
+  description: Description
+  users: Users
+filter:
+  id: ID
+  title: Title
+meta:
+  edit: Edit Permission Group
+  detail: Permission Group detail
+  list: List of Permission Groups

@@ -1,0 +1,11 @@
+simpleLogin:
+  description: Please, log in
+  form:
+    username: Username
+    password: Password
+  buttons:
+    login: Log in
+  alerts:
+    success: Login Successful!
+    failure: Bad Credentials!
+

@@ -1,0 +1,14 @@
+settings:
+  settings: Personal
+  users: Users
+  podcasts: Podcasts
+  podcastEpisodes: Podcast episodes
+  permissionGroups: Permission Groups
+  extSystems: External Systems
+  assetLicences: Asset Licences
+  keywords: Keywords
+  authors: Authors
+  distributionCategory: Distribution Categories
+  distributionCategorySelect: Distribution Categories Selects
+  log: Logs
+  beta: Beta

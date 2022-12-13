@@ -1,0 +1,14 @@
+model:
+  id: ID
+  name: Názov
+  flags:
+    reviewed: Overené
+filter:
+  id: ID
+  text: Text
+  reviewed: Overené
+meta:
+  create: Vytvoriť kľúčové slovo
+  edit: Upraviť kľúčové slovo
+  detail: Detail kľúčového slova
+  list: Zoznam kľúčových slov

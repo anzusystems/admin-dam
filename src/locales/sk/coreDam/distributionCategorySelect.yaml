@@ -1,0 +1,14 @@
+model:
+  id: ID
+  name: Názov
+  serviceSlug: Distribučný systém
+  value: Hodnota
+  options: Možnosti
+filter:
+  id: ID
+  name: Názov
+  type: Typ Assetu
+meta:
+  edit: Upraviť čiselník distribučnej kategórie
+  detail: Detail čiselníku distribučnej kategórie
+  list: Zoznam čiselníkov distribučných kategórií

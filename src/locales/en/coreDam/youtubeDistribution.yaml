@@ -1,0 +1,11 @@
+model:
+  distributionService: Distribution service name
+  texts:
+    title: Title
+    description: Description
+    keywords: Keywords
+privacy:
+  private: Private
+  public: Public
+  unlisted: Unlisted
+  dynamic: Dynamic

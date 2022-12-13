@@ -1,0 +1,13 @@
+model:
+  id: ID
+  name: Name
+  extSystem: External System
+  extId: External ID
+filter:
+  id: ID
+  extId: External ID
+meta:
+  create: Create license
+  edit: Edit license
+  detail: License detail
+  list: List of Licenses
