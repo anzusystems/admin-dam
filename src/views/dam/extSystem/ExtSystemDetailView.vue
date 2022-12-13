@@ -36,9 +36,9 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT"></AEditButton>
+      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
   </ActionbarButtonsWrapper>
-  <ExtSystemDetail></ExtSystemDetail>
+  <ExtSystemDetail />
 </template>

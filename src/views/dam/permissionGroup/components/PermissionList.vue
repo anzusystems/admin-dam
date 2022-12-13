@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { DescribedPermission, PermissionFilter, Permissions } from '@/types/Permission'
+import type { DescribedPermission, Permissions } from '@/types/Permission'
 import { Grant, PermissionCategory } from '@/types/Permission'
 import { useI18n } from 'vue-i18n'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { usePermissionGrant } from '@/model/dam/valueObject/PermissionGrant'
 import { usePermissionListActions } from '@/views/dam/permissionGroup/composables/permissionGroupActions'
@@ -50,30 +50,28 @@ const setActionForUndefined = (defaultValue: number) => {
   modelValue.value = modifiedPermissions
 }
 
-const filter = reactive<PermissionFilter>({
-  text: '',
-  category: PermissionCategory.All,
-})
+const filterText = ref('')
+const filterCategory = ref(PermissionCategory.All)
 
-const filterCategoryOnly = (item: DescribedPermission, filter: PermissionFilter) => {
-  return item.category === filter.category
+const filterCategoryOnly = (item: DescribedPermission, filterCategory: PermissionCategory) => {
+  return item.category === filterCategory
 }
-const filterTextOnly = (item: DescribedPermission, filter: PermissionFilter) => {
-  return item.searchIndex.includes(filter.text.toLowerCase())
+const filterTextOnly = (item: DescribedPermission, filterText: string) => {
+  return item.searchIndex.includes(filterText.toLowerCase())
 }
-const filterCategoryAndText = (item: DescribedPermission, filter: PermissionFilter) => {
-  return filterCategoryOnly(item, filter) && filterTextOnly(item, filter)
+const filterCategoryAndText = (item: DescribedPermission, filterText: string, filterCategory: PermissionCategory) => {
+  return filterCategoryOnly(item, filterCategory) && filterTextOnly(item, filterText)
 }
 
 const permissionsDetailComputed = computed(() => {
   return permissionsDetail.value.filter((item) => {
-    const filterText = filter.text.length === 0 ? '' : filter.text
-    if (filter.category !== PermissionCategory.All && filterText.length === 0) {
-      return filterCategoryOnly(item, filter)
-    } else if (filter.category !== PermissionCategory.All && filterText.length > 0) {
-      return filterCategoryAndText(item, filter)
-    } else if (filter.category === PermissionCategory.All && filterText.length > 0) {
-      return filterTextOnly(item, filter)
+    const text = filterText.value.length === 0 ? '' : filterText.value
+    if (filterCategory.value !== PermissionCategory.All && text.length === 0) {
+      return filterCategoryOnly(item, filterCategory.value)
+    } else if (filterCategory.value !== PermissionCategory.All && text.length > 0) {
+      return filterCategoryAndText(item, filterText.value, filterCategory.value)
+    } else if (filterCategory.value === PermissionCategory.All && text.length > 0) {
+      return filterTextOnly(item, filterText.value)
     }
     return true
   })
@@ -159,7 +157,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 <template>
   <div v-if="loadedComputed">
-    <PermissionListFilter v-model="filter"></PermissionListFilter>
+    <PermissionListFilter v-model:text="filterText" v-model:category="filterCategory" />
     <div v-if="permissionsDetailComputed?.length === 0" class="full-width">
       {{ t('coreDam.permission.filter.noPermissionFound') }}
     </div>
