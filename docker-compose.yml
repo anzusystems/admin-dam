@@ -12,6 +12,7 @@ services:
       - VIRTUAL_PORT=8080
     external_links:
       - local-proxy:core-dam.anzusystems.localhost
+      - local-proxy:admin-dam.anzusystems.localhost
     env_file:
       - .env.docker.dist
       - .env.docker.local

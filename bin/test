@@ -7,7 +7,6 @@
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
 DATE_EPOCH_TIME="$(date +%s)"
-DOCKER_CONTAINER="admin-dam"
 BROWSER_OPTIONS=""
 BROWSER="electron"
 BROWSER_GROUP_CHROME=""
@@ -46,11 +45,6 @@ function help() {
 # Go through all command line arguments and setup variables accordingly
 while [ "$#" -gt 0 ]; do
     case $1 in
-    admin-forum)
-        DOCKER_CONTAINER=$1
-        shift 1
-        continue
-        ;;
     -b)
         BROWSER="$2"
         BROWSER_OPTIONS="--browser ${BROWSER}"
@@ -142,6 +136,7 @@ if [ -f /.dockerenv ]; then
             BROWSER_GROUP_CHROME="--ci-build-id ${DATE_EPOCH_TIME} --group Chrome"
             BROWSER_GROUP_FIREFOX="--ci-build-id ${DATE_EPOCH_TIME} --group Firefox"
         fi
+        # shellcheck disable=SC2086
         TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
             --headless \
             --env env=${ENV},grepTags=${TAGS} \
@@ -149,6 +144,7 @@ if [ -f /.dockerenv ]; then
             ${DASHBOARD_OPTIONS} \
             ${BROWSER_GROUP_CHROME} \
             --browser chrome &
+        # shellcheck disable=SC2086
         TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
             --headless \
             --env env=${ENV},grepTags=${TAGS} \
@@ -157,6 +153,7 @@ if [ -f /.dockerenv ]; then
             ${BROWSER_GROUP_FIREFOX} \
             --browser firefox
     else
+        # shellcheck disable=SC2086
         TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
             --headless \
             --env env=${ENV},grepTags=${TAGS} \
@@ -166,4 +163,5 @@ if [ -f /.dockerenv ]; then
     fi
     exit
 fi
-bin/docker-compose exec --user node "${DOCKER_CONTAINER}" bash -c \'bin/test ${ARGS}\'
+
+bin/docker-compose exec --user node app bash -c \'bin/test "${ARGS}"\'
