@@ -94,3 +94,10 @@ Script used to run the security check inside the application docker container:
 [core-dam-dev-docu]: https://github.com/anzusystems/core-dam/blob/main/README-DEV.md
 [docker-compose-overview]: https://docs.docker.com/compose/reference/overview
 [notification-server-dev-docu]: https://github.com/anzusystems/notification-server/blob/main/README-DEV.md
+
+
+## Test
+
+Script used to run tests inside the application docker container:
+
+    bin/test
