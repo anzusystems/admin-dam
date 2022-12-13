@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress'
-declare function require(name: string): any
+
+declare function require(name: string): any // todo
 
 export default defineConfig({
   projectId: '',
@@ -30,22 +31,10 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
-      config.env.port = ''
-      const env = config.env.env || 'local'
-      if (env === 'staging' || env === 'devel') {
-        config.env.proto = 'https'
-        config.env.domain = `${env}.sk`
-      } else if (env === 'local') {
-        config.env.proto = 'http'
-        config.env.domain = 'anzusystems.localhost'
-        config.env.port = ':8150'
-      } else if (env === 'prod') {
-        config.env.proto = 'https'
-        config.env.domain = ''
-      }
-      config.baseUrl = `${config.env.proto}://admin-dam.${config.env.domain}${config.env.port}/`
-      config.reporterOptions.reportDir = `report/${env}/html`
-      config.videosFolder = `report/${env}/video`
+      console.log(config)
+      config.baseUrl = 'http://admin-dam.anzusystems.localhost:8150/'
+      config.reporterOptions.reportDir = 'report/html'
+      config.videosFolder = 'report/video'
       return config
     },
     specPattern: 'cypress/e2e/*.cy.ts',
