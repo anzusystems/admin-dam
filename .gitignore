@@ -21,9 +21,9 @@ node_modules
 # Tests
 coverage
 .scannerwork
-/cypress/videos/
-/cypress/screenshots/
+/cypress/assets/
 /cypress/fixtures/credentials.json
+/report
 
 # Managed by yarn
 .yarn/*
