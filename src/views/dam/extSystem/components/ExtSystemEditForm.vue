@@ -24,9 +24,6 @@ const { t } = useI18n({ useScope: 'global' })
           <ATextField v-model="extSystem.name" :v="v$.extSystem.name" data-cy="ext-system-name"></ATextField>
         </ARow>
         <ARow>
-          <ATextField v-model="extSystem.slug" :v="v$.extSystem.slug" data-cy="ext-system-slug"></ATextField>
-        </ARow>
-        <ARow>
           <UserSelect
             :label="t('coreDam.extSystem.model.adminUsers')"
             multiple
