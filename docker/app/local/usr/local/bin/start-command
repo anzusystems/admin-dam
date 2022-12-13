@@ -1,0 +1,16 @@
+#!/bin/bash
+# Script to run setup inside the container
+set -e
+
+cd /var/www/html || exit 1
+
+echo "[INFO] Start Xvfb"
+mkdir -p /run/dbus
+if [ ! -f "/run/dbus/pid" ]; then
+    dbus-daemon --system
+fi
+Xvfb -ac "${DISPLAY}" -screen 0 1920x1080x24+32 -nolisten tcp &
+
+echo "[INFO] Start nginx"
+sed -i '1 i user node;' /etc/nginx/nginx.conf
+nginx -g 'daemon off;'

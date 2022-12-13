@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# Library with default variables for docker script wrappers
+#
+
+#######################################################################################################################
+# Default variables
+#######################################################################################################################
+
+# Dist/Example environment file for application run
+export ENV_APPLICATION_FILE_DIST=".env"
+# Environment file used for application run
+export ENV_APPLICATION_FILE=".env.local"
+# Environment file used for test run
+export ENV_TEST_FILE=".env.test"
+# Dist/Example environment file used for docker setup
+export ENV_DOCKER_FILE_DIST=".env.docker.dist"
+# Environment file used for docker setup
+export ENV_DOCKER_FILE=".env.docker.local"
+# Your user name
+export USER="node"
+# Your user id
+export USER_ID="1000"
+# Your group id
+export GROUP_ID="1000"
+# Whether to enable docker compose script wrapper debug log output
+export DOCKER_COMPOSE_DEBUG=false
+# Docker network subnet
+export DOCKER_NETWORK_SUBNET=172.30.40.0/24
+# Whether the script should try to delete docker network
+export DOCKER_NETWORK_DELETE=false
+# Whether the docker scan suggestion info message should be displayed
+export DOCKER_SCAN_SUGGEST=false

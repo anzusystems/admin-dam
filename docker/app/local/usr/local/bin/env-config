@@ -1,0 +1,176 @@
+#!/bin/bash
+# Script to run the setup of config.json file using .env files and exported variables:
+# - if the variable is exported in system, then it is left untouched and not exported from any env file
+# - all missing variables are exported from main env file if exists
+# - all missing variables (the same as from main env file) are exported from local env file if exists
+set -eo pipefail
+
+CONFIG_DIST_PATH="public/config.json.dist"
+CONFIG_PATH="public/config.json"
+DEBUG=false
+END_FLOW=false
+ENV_APPLICATION_FILE_DIST=".env"
+ENV_APPLICATION_FILE=".env.local"
+PROJECT_ROOT="/var/www/html"
+
+function echo_debug() {
+    if ${DEBUG}; then
+        echo -e "[DEBUG] $*"
+    fi
+}
+
+function help() {
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    \nBash script to run env config.json setup inside the container.
+
+    Options:
+    --config-dist-path (Optional) Path to existing config.json.dist file
+                       Default: public/config.json.dist
+    --config-path      (Optional) Path to config.json file to be created
+                       Default: public/config.json
+    --debug            (Optional) Whether to enable debug output
+    --env-dist-file    (Optional) Path to existing .env file
+                       Default: .env
+    --env-file         (Optional) Path to .env.local file to be created
+                       Default: .env.local
+    --project-root     (Optional) Path project home where to find config and env files
+                       Default: /var/www/html
+
+    Examples:
+        $(printf %q "${BASH_SOURCE[0]}") --config-dist-path dist/config.json.dist --config-path dist/config.json
+    \n"
+}
+
+function set_vars_from_file() {
+    while IFS= read -r variable; do
+        variable_name=$(echo "${variable?}" | cut -d "=" -f 1)
+        variable_value=$(echo "${variable?}" | cut -d "=" -f 2)
+        # Export only missing variables
+        if echo "${MISSING_VARIABLE_NAMES}" | grep -q -w "$variable_name"; then
+            ENV_VARS+=("export ${variable?}")
+            echo_debug "Preparing variable for export: ${variable?}"
+        fi
+    done < <(grep -v "^#" "$1" | sed '/^$/d')
+    echo_debug "Prepared variables for export:" "${ENV_VARS[@]}"
+    for var in "${ENV_VARS[@]}"; do eval "$var"; done
+}
+
+while [ "$#" -gt 0 ]; do
+    case $1 in
+    --config-path)
+        CONFIG_PATH=$2
+        shift 2
+        continue
+        ;;
+    --config-path=*)
+        CONFIG_PATH=${1#*=}
+        shift 1
+        continue
+        ;;
+    --config-dist-path)
+        CONFIG_DIST_PATH=$2
+        shift 2
+        continue
+        ;;
+    --config-dist-path=*)
+        CONFIG_DIST_PATH=${1#*=}
+        shift 1
+        continue
+        ;;
+    --debug)
+        DEBUG=true
+        shift 1
+        continue
+        ;;
+    --env-file)
+        ENV_APPLICATION_FILE=$2
+        shift 2
+        continue
+        ;;
+    --env-file=*)
+        ENV_APPLICATION_FILE=${1#*=}
+        shift 1
+        continue
+        ;;
+    --env-dist-file)
+        ENV_APPLICATION_FILE_DIST=$2
+        shift 2
+        continue
+        ;;
+    --env-dist-file=*)
+        ENV_APPLICATION_FILE_DIST=${1#*=}
+        shift 1
+        continue
+        ;;
+    --project-root)
+        PROJECT_ROOT=$2
+        shift 2
+        continue
+        ;;
+    --project-root=*)
+        PROJECT_ROOT=${1#*=}
+        shift 1
+        continue
+        ;;
+    -h | --help)
+        help
+        exit
+        ;;
+    *)
+        echo "[WARN] Unknown command line switch: $1" >&2
+        help
+        exit
+        ;;
+    esac
+done
+
+if [ ! -f "${CONFIG_DIST_PATH}" ]; then
+    echo "[INFO] Project root: ${PROJECT_ROOT}"
+    echo "[ERROR] File ${CONFIG_DIST_PATH} does not exist, provide correct path using --config-dist-path option"
+    END_FLOW=true
+fi
+
+if [ ! -f "${ENV_APPLICATION_FILE_DIST}" ]; then
+    echo "[INFO] Project root: ${PROJECT_ROOT}"
+    echo "[ERROR] File ${ENV_APPLICATION_FILE_DIST} does not exist, provide correct path using --env-dist-path option"
+    END_FLOW=true
+fi
+
+if ${END_FLOW}; then
+    echo -e "\n"
+    help
+    exit 1
+fi
+
+cd "${PROJECT_ROOT}" || exit 1
+
+# Get all variables from main env file
+ALL_VARIABLE_NAMES=$(grep -v "^#" "${ENV_APPLICATION_FILE_DIST}" | sed -e '/^$/d' | cut -d "=" -f 1)
+# Set missing variables to all variables, we will filter them later in the script
+MISSING_VARIABLE_NAMES=${ALL_VARIABLE_NAMES}
+
+# Remove already exported (existing) variables from missing variables to make the list clear
+for variable_name in ${ALL_VARIABLE_NAMES}; do
+    variable_temp="echo \${$variable_name}"
+    variable_value=$(eval "$variable_temp")
+    if [ -n "${variable_value?}" ]; then
+        MISSING_VARIABLE_NAMES=${MISSING_VARIABLE_NAMES/$variable_name//}
+        echo_debug "Variable already exported: ${variable_value?}"
+    fi
+done
+echo_debug "Variables to read from env files: ${MISSING_VARIABLE_NAMES}"
+
+# Export missing variables from main env file if exists
+if [ -f "${ENV_APPLICATION_FILE_DIST}" ]; then
+    echo_debug "Reading variables from ${ENV_APPLICATION_FILE_DIST} file"
+    set_vars_from_file "${ENV_APPLICATION_FILE_DIST}"
+fi
+
+# Export missing variables from local env file if exists
+if [ -f "${ENV_APPLICATION_FILE}" ]; then
+    echo_debug "Reading variables from ${ENV_APPLICATION_FILE} file"
+    set_vars_from_file "${ENV_APPLICATION_FILE}"
+fi
+
+mkdir -p "$(dirname "${CONFIG_PATH}")"
+envsubst <"${CONFIG_DIST_PATH}" >"${CONFIG_PATH}"

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Script used to run the linter check inside the application docker container
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+cd "${PROJECT_ROOT}" || exit 1
+
+if [ -f /.dockerenv ]; then
+    env-config
+    echo "[INFO] Running Yarn lint"
+    yarn lint:tsc
+    yarn lint:eslint
+    yarn lint:stylelint
+    exit
+fi
+
+bin/docker-compose exec --user node app bash -c \'bin/lint\'

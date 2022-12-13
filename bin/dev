@@ -1,0 +1,52 @@
+#!/bin/bash
+# Script used to run node dev server in the application docker container
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+ARGS="$*"
+RUN_YARN_INSTALL=true
+
+cd "${PROJECT_ROOT}" || exit 1
+
+function help() {
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    \nScript used to run node dev server in the application docker container.
+
+    Options:
+        -ni | --no-install (Optional) Run dev server without 'yarn install'
+
+    Examples:
+        $(printf %q "${BASH_SOURCE[0]}") --no-install
+    \n"
+}
+
+# Go through all command line arguments and setup variables accordingly
+while [ "$#" -gt 0 ]; do
+    case $1 in
+    -ni | --no-install)
+        RUN_YARN_INSTALL=false
+        shift 1
+        continue
+        ;;
+    -h | --help)
+        help
+        exit
+        ;;
+    *)
+        echo "[WARN] Unknown command line switch: $1"
+        shift 1
+        ;;
+    esac
+done
+
+if [ -f /.dockerenv ]; then
+    env-config
+
+    if ${RUN_YARN_INSTALL}; then
+        yarn install
+    fi
+
+    yarn dev --host "$(hostname)" --port "${DOCKER_VUE_DEV_PORT}"
+    exit
+fi
+
+bin/docker-compose exec --user node app bash -c \'bin/dev "${ARGS}"\'

@@ -1,5 +1,5 @@
 services:
-  admin-dam:
+  app:
     build:
       args:
         - DOCKER_USER=${DOCKER_USER:-node}
@@ -8,31 +8,26 @@ services:
       context: .
       dockerfile: ./docker/app/local/Dockerfile
     environment:
-      - VIRTUAL_HOST=admin-dam.sme.localhost
-      - VIRTUAL_PORT=${NGINX_PORT:-8151}
-      - NGINX_PORT=${NGINX_PORT:-8151}
+      - VIRTUAL_HOST=admin-dam.anzusystems.localhost
+      - VIRTUAL_PORT=8080
     external_links:
-      - local-proxy:core-dam.sme.localhost
+      - local-proxy:core-dam.anzusystems.localhost
     env_file:
       - .env.docker.dist
       - .env.docker.local
     volumes:
       - .:/var/www/html:cached
-    secrets:
-      - ssh_private_key
     ports:
       - ${DOCKER_CYPRESS_PORT:-8152}:${DOCKER_CYPRESS_PORT:-8152}
       - ${DOCKER_VUE_DEV_PORT:-8150}:${DOCKER_VUE_DEV_PORT:-8150}
-      - ${NGINX_PORT:-8151}:${NGINX_PORT:-8151}
-    hostname: admin-dam.sme.localhost
+      - ${NGINX_PORT:-8151}:8080
+    hostname: admin-dam.anzusystems.localhost
     privileged: true
     networks:
-      - ${DOCKER_NETWORK_NAME:-petitpress_network}
-
-secrets:
-  ssh_private_key:
-    file: ${DOCKER_SSH_PRV_KEY_FILE:-~/.ssh/id_rsa}
+      anzusystems_network:
+        aliases:
+          - admin-dam
 
 networks:
-  petitpress_network:
+  anzusystems_network:
     external: true
