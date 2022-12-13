@@ -38,6 +38,10 @@ Arguments:
 
     bin/build
 
+## 5. Open your application
+
+Open http://admin-dam.anzusystems.localhost in your browser.
+
 # Scripts
 
 Scripts available in the project.
