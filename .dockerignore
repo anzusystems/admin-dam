@@ -1,0 +1,10 @@
+# IDE files
+.idea
+.vscode
+
+# GIT files
+.git
+
+# Ignore copy of prebuilt files and folders in to the docker container
+dist
+node_modules

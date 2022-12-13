@@ -1,0 +1,15 @@
+#!/bin/bash
+# Script used to run build in the application docker container
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+cd "${PROJECT_ROOT}" || exit 1
+
+if [ -f /.dockerenv ]; then
+    env-config
+    echo "[INFO] Starting yarn install and build"
+    yarn install
+    yarn build
+    exit
+fi
+
+bin/docker-compose exec --user node app bash -c \'bin/build\'

@@ -1,0 +1,13 @@
+#!/bin/bash
+# Script used to run the security check inside the application docker container
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+cd "$PROJECT_ROOT" || exit 1
+
+if [ -f /.dockerenv ]; then
+    echo "[INFO] Running Yarn audit"
+    yarn npm audit
+    exit
+fi
+
+bin/docker-compose exec --user node app bash -c \'bin/security\'

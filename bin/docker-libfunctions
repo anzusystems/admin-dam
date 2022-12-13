@@ -1,0 +1,141 @@
+#!/bin/bash
+#
+# Library for managing docker script wrappers
+#
+
+#######################################################################################################################
+# Functions
+#######################################################################################################################
+
+########################
+# Create external docker network if not exists yet
+# Arguments:
+#   $1 - docker network name
+#   $2 - docker network subnet
+# Returns:
+#   None
+#########################
+function create_docker_network() {
+    docker_network_name=$1
+    docker_network_subnet=$2
+
+    if docker network ls | grep -q "$docker_network_name"; then
+        echo_debug "Docker network '$docker_network_name' already exists, skipping creation"
+        return
+    fi
+
+    echo_debug "Creating docker network: '$docker_network_name'"
+    docker network create --driver=bridge --subnet="$docker_network_subnet" "$docker_network_name" >/dev/null 2>&1
+}
+
+########################
+# Delete external docker network if there is no container attached to it
+# Arguments:
+#   $1 - docker network name
+# Returns:
+#   None
+#########################
+function delete_docker_network() {
+    docker_network_name=$1
+
+    if ! docker network ls | grep -q "$docker_network_name"; then
+        echo_debug "Docker network '$docker_network_name' not exists, not removing"
+        return
+    fi
+
+    docker_endpoints=$(docker network inspect "$docker_network_name" --format='{{.Containers}}')
+    if [ ! "$docker_endpoints" == "map[]" ]; then
+        echo_debug "Docker network '$docker_network_name' has active endpoints, not removing"
+        return
+    fi
+
+    echo_debug "Removing docker network: '$docker_network_name'"
+    docker network rm "$docker_network_name" >/dev/null 2>&1
+}
+
+########################
+# Export docker environment variables to the host system for docker-compose configuration
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
+function docker_env_vars() {
+    # Create local application environment file from example/dist application environment file if not yet created
+    if [ ! -f "${ENV_APPLICATION_FILE}" ]; then
+        cp "${ENV_APPLICATION_FILE_DIST}" "${ENV_APPLICATION_FILE}"
+    fi
+
+    # Create local docker environment file from example/dist docker environment file if not yet created
+    if [ ! -f "${ENV_DOCKER_FILE}" ]; then
+        cp "${ENV_DOCKER_FILE_DIST}" "${ENV_DOCKER_FILE}"
+    fi
+
+    # Export all environment variables from dist and local docker environment files if exists
+    for env_file in ${ENV_DOCKER_FILE_DIST} ${ENV_DOCKER_FILE}; do
+        ENV_DOCKER_VARS=()
+        while read -r line; do [[ ! ${line?} =~ ^($|#) ]] && ENV_DOCKER_VARS+=("export ${line?}"); done 2>/dev/null <"$env_file"
+        for var in "${ENV_DOCKER_VARS[@]}"; do eval "$var"; done
+    done
+}
+
+########################
+# Check if the project has different UID, GID or SSH key from defaults
+# Arguments:
+#   $1 - relative path to some project folder to check permissions (default: ./docker)
+# Returns:
+#   None
+#########################
+function docker_project_setup() {
+    project_folder=${1:-./bin}
+    uname_s="$(uname -s)"
+
+    # Setup docker environment variables for docker-compose configuration
+    docker_env_vars
+
+    case "$uname_s" in
+    Linux)
+        # Get and set project environment data on Linux
+        read -r USER_CHECK USER_ID_CHECK GROUP_ID_CHECK < <(stat -c '%U %u %g' "$project_folder")
+        if [ "${USER_ID_CHECK}" -ne "${USER_ID}" ] || [ "${GROUP_ID_CHECK}" -ne "${GROUP_ID}" ]; then
+            sed -i 's|^[#]DOCKER_USER=.*|DOCKER_USER='"${USER_CHECK}"'|' "${ENV_DOCKER_FILE}"
+            sed -i 's|^[#]DOCKER_USER_ID=.*|DOCKER_USER_ID='"${USER_ID_CHECK}"'|' "${ENV_DOCKER_FILE}"
+            sed -i 's|^[#]DOCKER_GROUP_ID=.*|DOCKER_GROUP_ID='"${GROUP_ID_CHECK}"'|' "${ENV_DOCKER_FILE}"
+        fi
+        if [ ! "${DOCKER_SSH_PRV_KEY_FILE}" == "${DEFAULT_DOCKER_SSH_PRV_KEY_FILE}" ]; then
+            sed -i 's|^[#]DOCKER_SSH_PRV_KEY_FILE=.*|DOCKER_SSH_PRV_KEY_FILE='"${DOCKER_SSH_PRV_KEY_FILE}"'|' "${ENV_DOCKER_FILE}"
+        fi
+        ;;
+    Darwin)
+        # Get and set project environment data on Mac
+        read -r USER_CHECK USER_ID_CHECK GROUP_ID_CHECK < <(stat -f "%Su %u %g" "$project_folder")
+        if [ "${USER_ID_CHECK}" -ne "${USER_ID}" ] || [ "${GROUP_ID_CHECK}" -ne "${GROUP_ID}" ]; then
+            sed -i"bak" 's|^[#]DOCKER_USER=.*|DOCKER_USER='"${USER_CHECK}"'|' "${ENV_DOCKER_FILE}"
+            sed -i"bak" 's|^[#]DOCKER_USER_ID=.*|DOCKER_USER_ID='"${USER_ID_CHECK}"'|' "${ENV_DOCKER_FILE}"
+            sed -i"bak" 's|^[#]DOCKER_GROUP_ID=.*|DOCKER_GROUP_ID='"${GROUP_ID_CHECK}"'|' "${ENV_DOCKER_FILE}"
+            rm -f "${ENV_DOCKER_FILE}bak"
+        fi
+        if [ ! "${DOCKER_SSH_PRV_KEY_FILE}" == "${DEFAULT_DOCKER_SSH_PRV_KEY_FILE}" ]; then
+            sed -i"bak" 's|^[#]DOCKER_SSH_PRV_KEY_FILE=.*|DOCKER_SSH_PRV_KEY_FILE='"${DOCKER_SSH_PRV_KEY_FILE}"'|' "${ENV_DOCKER_FILE}"
+            rm -f "${ENV_DOCKER_FILE}bak"
+        fi
+        ;;
+    *)
+        echo "[ERROR] Unknown host system: '$uname_s'" >&2
+        exit 1
+        ;;
+    esac
+}
+
+########################
+# Echo line if docker debug is turned on
+# Arguments:
+#   $@ - strings separated by space
+# Returns:
+#   None
+#########################
+function echo_debug() {
+    if ${DOCKER_COMPOSE_DEBUG}; then
+        echo -e "[DEBUG] $*"
+    fi
+}

@@ -1,0 +1,40 @@
+#!/bin/bash
+# Script used to run bash in the application docker container
+
+PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
+USER_SWITCH="--user node"
+
+cd "${PROJECT_ROOT}" || exit 1
+
+function help() {
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    \nScript used to run bash in the application docker container
+
+    Options:
+        --root    (Optional) Run bash as root in the docker container
+
+    Examples:
+        $(printf %q "${BASH_SOURCE[0]}") --root
+    \n"
+}
+
+# Go through all command line arguments and setup variables accordingly
+while [ "$#" -gt 0 ]; do
+    case $1 in
+    --root)
+        USER_SWITCH="--user root"
+        shift 1
+        continue
+        ;;
+    -h|--help)
+        help
+        exit
+        ;;
+    *)
+        echo "[WARN] Unknown command line switch: $1"
+        shift 1
+        ;;
+    esac
+done
+
+bin/docker-compose exec "${USER_SWITCH}" app bash
