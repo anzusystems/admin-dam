@@ -19,29 +19,6 @@ RUNNER="yarn run"
 DASHBOARD_OPTIONS=""
 
 cd "${PROJECT_ROOT}" || exit 1
-
-function help() {
-    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nBash script used to run bash in the application docker container
-
-    Container:
-    admin-forum Run bash in the admin-forum docker container (default)
-
-    Options:
-    -b, --browser (Optional) Run tests in selected browser (Allowed values: electron|chrome|firefox|all, Default: electron)
-    -e, --env     (Required) Environment of the project (Allowed values: staging|devel|local, Default: devel)
-    -t, --tags    (Optional) Comma separated list of test suite tags. See docs for all tags. (Default: n/a)
-    -s, --spec    (Optional) Relative dir to the test suite, wildcard can be used (Default: n/a - all tests)
-    --dashboard   (Optional) Whether to push test results to cypress dashboard or create only local test results
-                  You need to set CYPRESS_DASHBOARD_KEY in .env.docker.local
-
-    Examples:
-        $(printf %q "${BASH_SOURCE[0]}") --env=local --browser=chrome
-        $(printf %q "${BASH_SOURCE[0]}") --env=stg --tags=@DAM --dashboard --spec=cypress/integration/features/ADMIN/**
-        $(printf %q "${BASH_SOURCE[0]}") --env=stg --browser=chrome --dashboard --spec=cypress/integration/features/ADMIN/openAllComponents.feature
-    \n"
-}
-
 # Go through all command line arguments and setup variables accordingly
 while [ "$#" -gt 0 ]; do
     case $1 in
@@ -101,10 +78,6 @@ while [ "$#" -gt 0 ]; do
         DASHBOARD_OPTIONS="--record --key ${CYPRESS_DASHBOARD_KEY} --tag ${ENV},${TAGS},${TAG}"
         shift 1
         continue
-        ;;
-    -h | --help)
-        help
-        exit
         ;;
     *)
         echo "[WARN] Unknown command line switch: $1"
