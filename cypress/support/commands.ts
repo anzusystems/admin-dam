@@ -120,7 +120,7 @@ Cypress.Commands.add('login', (user) => {
     cy.getCy('username').find('input').clear().type(credentials[user].username)
     cy.getCy('password').find('input').clear().type(credentials[user].password)
     cy.getCyVisibleClick('button-login')
-    cy.urlContains('asset/list', 10000)
+    cy.urlContains('asset/list', 20000)
   })
 })
 
