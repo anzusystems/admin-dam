@@ -1,31 +1,38 @@
 <script lang="ts" setup>
-import { PermissionCategory, type PermissionFilter } from '@/types/Permission'
+import { PermissionCategory } from '@/types/Permission'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useVModels } from '@vueuse/core'
 
 const props = defineProps<{
-  modelValue: PermissionFilter
+  text: string
+  category: PermissionCategory
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: PermissionFilter): void
+  (e: 'update:text', data: string): void
+  (e: 'update:category', data: PermissionCategory): void
 }>()
-
-const { modelValue } = useVModels(props, emit)
 
 const categories = [PermissionCategory.Dam, PermissionCategory.AdminDam]
 const timeout = ref()
 
-const input = computed({
+const category = computed({
   get() {
-    return modelValue.value.text
+    return props.category
   },
-  set(newValue) {
+  set(newValue: PermissionCategory) {
+    emit('update:category', newValue)
+  },
+})
+
+const textDebounced = computed({
+  get() {
+    return props.text
+  },
+  set(newValue: string) {
     if (timeout.value) clearTimeout(timeout.value)
     timeout.value = setTimeout(() => {
-      modelValue.value.text = newValue
-      emit('update:modelValue', modelValue.value)
+      emit('update:text', newValue)
     }, 300)
   },
 })
@@ -36,7 +43,7 @@ const { t } = useI18n({ useScope: 'global' })
 <template>
   <div>
     <div class="full-width py-2">
-      <VBtnToggle v-model="modelValue.category" mandatory>
+      <VBtnToggle v-model="category" mandatory>
         <VBtn :value="PermissionCategory.All" small>{{ t('coreDam.permission.category.all') }}</VBtn>
         <VBtn v-for="category in categories" :key="category" :value="category">
           {{ t('coreDam.permission.category.' + category) }}
@@ -46,7 +53,7 @@ const { t } = useI18n({ useScope: 'global' })
     <div class="full-width py-2">
       <VTextField
         :label="t('coreDam.permission.filter.searchAction')"
-        v-model="input"
+        v-model="textDebounced"
         dense
         hide-details
         outlined

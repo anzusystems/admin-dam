@@ -119,9 +119,4 @@ export enum PermissionCategory {
   AdminDam = 'adminDam',
 }
 
-export interface PermissionFilter {
-  text: string
-  category: PermissionCategory
-}
-
 export const ALL_ADMIN_PERMISSION_CATEGORIES = [PermissionCategory.AdminDam]
