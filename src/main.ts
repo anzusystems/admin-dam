@@ -15,8 +15,8 @@ import Notification from '@kyvg/vue3-notification'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 // @ts-ignore
-import VirtualScroller from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+// import VirtualScroller from 'vue-virtual-scroller'
+// import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 loadFonts()
 
@@ -27,7 +27,7 @@ loadEnvConfig(() => {
     .use(vuetify)
     .use(router)
     .use(Notification, { componentName: 'Notifications' })
-    .use(VirtualScroller)
+    // .use(VirtualScroller)
     .component('Acl', Acl)
     .component('AppLayoutLoader', AppLayoutLoader)
     .component('AppLayoutMain', AppLayoutMain)

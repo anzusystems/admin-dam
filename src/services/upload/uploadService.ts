@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-// @ts-ignore
-import sha1 from 'js-sha1'
+import sha1 from 'crypto-js/sha1'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/dam/fileApi'
 import axios, { type CancelTokenSource } from 'axios'
@@ -72,7 +71,6 @@ const { isValidationError } = useErrorHandler()
 export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = undefined) {
   const chunkTotalCount = ref(0)
   const fileSize = ref(0)
-  const itemSha = sha1.create()
 
   const progress = ref(0)
   let speedStack: any[] = []
@@ -99,7 +97,6 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   const processChunk = async (index: number) => {
     queueItem.currentChunkIndex = index
     const arrayBuffer = await readFile(index, queueItem.file!, queueItem.chunkSize)
-    itemSha.update(arrayBuffer.data)
     const chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
     const cancelToken = axios.CancelToken
     queueItem.chunks[index] = { cancelTokenSource: cancelToken.source() }
@@ -200,7 +197,9 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
     }
     endTimestamp = Date.now() / 1000
     if (chunkTotalCount.value === 0) return Promise.reject()
-    return await finishUpload(queueItem, itemSha.hex())
+    const fileContent = await queueItem.file?.text()
+    const fileSha = sha1(fileContent ? fileContent : '')
+    return await finishUpload(queueItem, fileSha.toString())
   }
 
   return {

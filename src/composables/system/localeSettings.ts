@@ -14,12 +14,12 @@ let i18nGlobal = null as null | any
 
 const allLocales = [
   {
-    code: 'sk',
-    title: 'Slovensky',
-  },
-  {
     code: 'en',
     title: 'English',
+  },
+  {
+    code: 'sk',
+    title: 'Slovensky',
   },
   // {
   //   code: 'cz',
