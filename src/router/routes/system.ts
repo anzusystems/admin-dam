@@ -32,16 +32,16 @@ export const systemRoutes = [
       layout: 'AppLayoutSidebar',
     },
   },
-  {
-    path: '/test-grid2',
-    component: () => import('@/views/system/beta/grid2/Test2View.vue'),
-    name: 'grid2',
-    meta: {
-      requiresAuth: false,
-      requiredPermissions: [],
-      layout: 'AppLayoutBlank',
-    },
-  },
+  // {
+  //   path: '/test-grid2',
+  //   component: () => import('@/views/system/beta/grid2/Test2View.vue'),
+  //   name: 'grid2',
+  //   meta: {
+  //     requiresAuth: false,
+  //     requiredPermissions: [],
+  //     layout: 'AppLayoutBlank',
+  //   },
+  // },
   {
     path: '/login',
     component: () => import('@/views/system/LoginView.vue'),

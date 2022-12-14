@@ -23,9 +23,9 @@ const { maxUploadItems, maxAssetListItems, maxSelectedItems } = useBetaTestFeatu
           <VCol cols="4">Max selected items count</VCol>
           <VCol><VTextField v-model="maxSelectedItems" type="number" /></VCol>
         </VRow>
-        <VRow align="center" class="pb-2">
-          <VCol><RouterLink :to="{ name: 'grid2' }">Recycle scroller grid</RouterLink></VCol>
-        </VRow>
+        <!--        <VRow align="center" class="pb-2">-->
+        <!--          <VCol><RouterLink :to="{ name: 'grid2' }">Recycle scroller grid</RouterLink></VCol>-->
+        <!--        </VRow>-->
       </ACard>
     </VCol>
   </VRow>

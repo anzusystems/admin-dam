@@ -4,17 +4,13 @@ import { defineConfig, type UserConfigExport } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import { splitVendorChunkPlugin } from 'vite'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
-    {
-      name: 'vitest-plugin-beforeall',
-      config: () => ({
-        test: { setupFiles: ['./vitest/beforeall.ts'] },
-      }),
-    },
+    splitVendorChunkPlugin(),
     vue(),
     vuetify({
       autoImport: true,
@@ -37,17 +33,5 @@ export default defineConfig({
   },
   preview: {
     port: 8172,
-  },
-  test: {
-    globals: true,
-    globalSetup: ['./vitest/setup.ts'],
-    environment: 'jsdom',
-    deps: {
-      inline: ['vuetify'],
-    },
-    coverage: {
-      all: true,
-      extension: ['.vue'], // todo update c8 when merged https://github.com/bcoe/c8/pull/357
-    },
   },
 } as UserConfigExport)
