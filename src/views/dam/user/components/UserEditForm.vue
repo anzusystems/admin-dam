@@ -15,10 +15,12 @@ import DistributionServiceSelect from '@/views/dam/distribution/components/Distr
 import ExternalProviderAssetSelect from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
 import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicenceSelect.vue'
 import { computed } from 'vue'
+import { damPubConfig } from '@/services/DamConfigService'
+import { UserAuthType } from '@/types/dam/DamConfig'
 
 const { loaded, userUpdate } = useUserEditActions()
 
-const { v$ } = useUpdateUserValidation(userUpdate)
+const { v$ } = useUpdateUserValidation(userUpdate, damPubConfig.userAuthType)
 
 const notSuperAdmin = computed(() => !userUpdate.value.superAdmin)
 
@@ -35,7 +37,7 @@ const { t } = useI18n({ useScope: 'global' })
         <ARow>
           <ATextField v-model="userUpdate.lastName" :v="v$.userUpdate.lastName"></ATextField>
         </ARow>
-        <ARow>
+        <ARow v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials">
           <ATextField
             v-model="userUpdate.plainPassword"
             :v="v$.userUpdate.plainPassword"
