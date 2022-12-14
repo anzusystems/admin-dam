@@ -1,8 +1,10 @@
-import type { DamConfig } from '@/types/dam/DamConfig'
-import { fetchConfiguration } from '@/services/api/dam/configurationApi'
+import type { DamConfig, DamPubConfig } from '@/types/dam/DamConfig'
+import { fetchConfiguration, fetchPubConfiguration } from '@/services/api/dam/configurationApi'
 import { ref } from 'vue'
+import { UserAuthType } from '@/types/dam/DamConfig'
 
 export const damConfigInitialized = ref(false)
+export const damPubConfigInitialized = ref(false)
 
 export const damConfig: DamConfig = {
   colorSet: {},
@@ -21,6 +23,20 @@ export const damConfig: DamConfig = {
     },
     maxBulkItemCount: 0,
   },
+}
+
+export const damPubConfig: DamPubConfig = {
+  userAuthType: UserAuthType.JsonCredentials,
+}
+
+const setDamPubConfig = (data: DamPubConfig) => {
+  try {
+    damPubConfig.userAuthType = data.userAuthType
+
+    damPubConfigInitialized.value = true
+  } catch (err) {
+    throw new Error('Unable to load dam pub config. Incorrect fields in json.')
+  }
 }
 
 const setDamConfig = (data: DamConfig) => {
@@ -46,9 +62,26 @@ export const loadDamConfig = () => {
     fetchConfiguration()
       .then((config) => {
         if (Object.keys(config).length < 1) {
-          throw new Error('Unable to load env config. Incorrect response body.')
+          throw new Error('Unable to load config. Incorrect response body.')
         }
         setDamConfig(config)
+        resolve(true)
+      })
+      .catch((err) => {
+        onConfigError(err)
+        reject(false)
+      })
+  })
+}
+
+export const loadDamPubConfig = () => {
+  return new Promise((resolve, reject) => {
+    fetchPubConfiguration()
+      .then((config) => {
+        if (Object.keys(config).length < 1) {
+          throw new Error('Unable to load pub config. Incorrect response body.')
+        }
+        setDamPubConfig(config)
         resolve(true)
       })
       .catch((err) => {

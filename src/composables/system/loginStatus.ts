@@ -2,33 +2,32 @@ import { readonly, ref } from 'vue'
 import type { RouteLocationNormalized } from 'vue-router'
 import { isNull, isUndefined } from '@/utils/common'
 
-const LOGOUT_STATUS = 0
-const LOGGED_STATUS = 1
-const CSRF_FAILED_STATUS = 2
-const UNAUTHORIZED_STATUS = 3
-const SSO_COMMUNICATION_FAILED_STATUS = 4
+enum LoginState {
+  Success = 'success',
+  FailureSsoCommunicationFailed = 'failure-sso-communication',
+  FailureInternalError = 'failure-internal-error',
+  FailureUnauthorized = 'failure-unauthorized',
+}
 
-const status = ref<number | null>(null)
+const status = ref<string | null>(null)
 
 export function useLoginStatus(to: RouteLocationNormalized) {
-  if (isUndefined(to.query.logged)) {
-    status.value = parseInt(to.query.logged + '', 10)
+  if (isUndefined(to.query.loginState)) {
+    status.value = to.query.loginState.toString()
   }
 
   const isStatusNotDefined = () => isNull(status.value)
-  const isStatusLogout = () => status.value === LOGOUT_STATUS
-  const isStatusLogged = () => status.value === LOGGED_STATUS
-  const isStatusCsrfFailed = () => status.value === CSRF_FAILED_STATUS
-  const isStatusUnauthorized = () => status.value === UNAUTHORIZED_STATUS
-  const isStatusSsoCommunicationFailed = () => status.value === SSO_COMMUNICATION_FAILED_STATUS
+  const isStatusLoginSuccess = () => status.value === LoginState.Success
+  const isStatusSsoCommunicationFailure = () => status.value === LoginState.FailureSsoCommunicationFailed
+  const isStatusInternalErrorFailure = () => status.value === LoginState.FailureInternalError
+  const isStatusUnauthorized = () => status.value === LoginState.FailureUnauthorized
 
   return {
     status: readonly(status),
     isStatusNotDefined,
-    isStatusLogout,
-    isStatusLogged,
-    isStatusCsrfFailed,
+    isStatusLoginSuccess,
+    isStatusSsoCommunicationFailure,
+    isStatusInternalErrorFailure,
     isStatusUnauthorized,
-    isStatusSsoCommunicationFailed,
   }
 }

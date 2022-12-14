@@ -21,6 +21,7 @@ export function useUserFactory() {
       adminToExtSystems: [],
       allowedAssetExternalProviders: [],
       allowedDistributionServices: [],
+      ssoId: '',
       modifiedAt: dateTimeNow(),
       createdBy: 0,
       modifiedBy: 0,
@@ -42,6 +43,7 @@ export function useUserFactory() {
       assetLicences: [],
       allowedAssetExternalProviders: [],
       allowedDistributionServices: [],
+      ssoId: '',
     }
   }
 

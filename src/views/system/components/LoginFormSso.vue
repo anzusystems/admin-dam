@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-const LOGIN_URL_TEMP = 'http://core.sme.localhost/login'
+import { envConfig } from '@/services/EnvConfigService'
+import { AUTH_LOGIN_PATH } from '@/services/api/dam/authApi'
+
+const url = envConfig.dam.apiUrl + AUTH_LOGIN_PATH
 </script>
 
 <template>
   <div class="py-5">
-    <VBtn :href="LOGIN_URL_TEMP" color="primary" size="large">Log in</VBtn>
+    <VBtn :href="url" color="primary" size="large">Log in</VBtn>
   </div>
 </template>

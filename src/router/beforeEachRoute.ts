@@ -2,12 +2,14 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { createAppInitialize, useAppInitialize } from '@/composables/system/appInitialize'
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
+import { damPubConfigInitialized, loadDamPubConfig } from '@/services/DamConfigService'
 
 export const beforeEachRoute = async (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
+  if (!damPubConfigInitialized.value) await loadDamPubConfig()
   if (to.meta.requiresAuth) {
     await checkGuard(to, from, next)
   } else {
