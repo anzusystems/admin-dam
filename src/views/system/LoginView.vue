@@ -2,6 +2,12 @@
 import { envConfig } from '@/services/EnvConfigService'
 import { useI18n } from 'vue-i18n'
 import LoginFormSimple from '@/views/system/components/LoginFormSimple.vue'
+import { damPubConfig } from '@/services/DamConfigService'
+import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
+import { UserAuthType } from '@/types/dam/DamConfig'
+
+const userAuthType = damPubConfig.userAuthType
+console.log(userAuthType)
 
 const { t } = useI18n({ useScope: 'global' })
 </script>
@@ -9,7 +15,8 @@ const { t } = useI18n({ useScope: 'global' })
 <template>
   <div class="d-flex justify-center align-center h-100">
     <div class="flex-grow-1 text-center login-wrapper">
-      <LoginFormSimple></LoginFormSimple>
+      <LoginFormSimple v-if="userAuthType === UserAuthType.JsonCredentials"></LoginFormSimple>
+      <LoginFormSso v-else></LoginFormSso>
     </div>
   </div>
   <div class="full-screen-page-footer px-10">

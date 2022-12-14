@@ -58,6 +58,14 @@ const acls = {
   DAM_DISTRIBUTION_CATEGORY_DELETE: 'dam_distributionCategory_delete',
   DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW: 'dam_distributionCategorySelect_view',
   DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE: 'dam_distributionCategorySelect_update',
+  DAM_PODCAST_CREATE: 'dam_podcast_create',
+  DAM_PODCAST_UPDATE: 'dam_podcast_update',
+  DAM_PODCAST_VIEW: 'dam_podcast_view',
+  DAM_PODCAST_DELETE: 'dam_podcast_delete',
+  DAM_PODCAST_EPISODE_CREATE: 'dam_podcastEpisode_create',
+  DAM_PODCAST_EPISODE_UPDATE: 'dam_podcastEpisode_update',
+  DAM_PODCAST_EPISODE_VIEW: 'dam_podcastEpisode_view',
+  DAM_PODCAST_EPISODE_DELETE: 'dam_podcastEpisode_delete',
   DAM_ASSET_EXTERNAL_PROVIDER_ACCESS: 'dam_assetExternalProvider_access',
   DAM_DISTRIBUTION_ACCESS: 'dam_distribution_access',
   DAM_USER_UI: 'dam_user_ui',
@@ -68,6 +76,8 @@ const acls = {
   DAM_KEYWORD_UI: 'dam_keyword_ui',
   DAM_DISTRIBUTION_CATEGORY_UI: 'dam_distributionCategory_ui',
   DAM_DISTRIBUTION_CATEGORY_SELECT_UI: 'dam_distributionCategorySelect_ui',
+  DAM_PODCAST_UI: 'dam_podcast_ui',
+  DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
   ADMIN_LOG_UI: 'admin_log_ui',
 } as const
 

@@ -5,7 +5,7 @@ import ARow from '@/components/common/ARow.vue'
 import ACopyText from '@/components/common/ACopyText.vue'
 import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/dam/userStore'
-import { useUserRole } from '@/model/dam/valueObject/UserRole'
+import { UserRole, useUserRole } from '@/model/dam/valueObject/UserRole'
 import ABooleanValue from '@/components/common/ABooleanValue.vue'
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
@@ -14,12 +14,15 @@ import ExternalProviderAssetChip from '@/views/dam/externalProviderAsset/compone
 import DistributionServiceChip from '@/views/dam/distribution/components/DistributionServiceChip.vue'
 import LazyAssetLicenceChip from '@/views/dam/assetLicence/components/LazyAssetLicenceChip.vue'
 import { computed } from 'vue'
+import { damPubConfig } from '@/services/DamConfigService'
+import { UserAuthType } from '@/types/dam/DamConfig'
 
 const { loaded, user } = storeToRefs(useUserOneStore())
 
 const { t } = useI18n({ useScope: 'global' })
 
-const notSuperAdmin = computed(() => !user.value.superAdmin)
+const notSuperAdmin = computed(() => !user.value.roles.includes(UserRole.Admin))
+const userAuthType = damPubConfig.userAuthType
 
 const { getUserRoleOption } = useUserRole()
 </script>
@@ -74,6 +77,7 @@ const { getUserRoleOption } = useUserRole()
         <ARow :title="t('coreDam.user.model.id')">
           <ACopyText :value="user.id"></ACopyText>
         </ARow>
+        <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.ssoId')" :value="user.ssoId"></ARow>
         <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
       </ACard>
     </VCol>

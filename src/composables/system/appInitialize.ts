@@ -12,6 +12,7 @@ import { initCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { loadDamConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { loadDamConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
+import { useLoginStatus } from '@/composables/system/loginStatus'
 
 const initialized = ref<boolean>(false)
 
@@ -20,13 +21,39 @@ export async function createAppInitialize(
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
+  const {
+    isStatusNotDefined,
+    isStatusSsoCommunicationFailure,
+    isStatusInternalErrorFailure,
+    isStatusUnauthorized
+  } = useLoginStatus(to)
+
   try {
-    await updateCurrentUser()
-    await loadDamConfig()
-    await loadDamConfigExtSystem()
-    await initCurrentAssetLicence()
-    await initCurrentExtSystem()
-    await loadDamConfigAssetCustomFormElements()
+    const updateCurrentUserPromise = updateCurrentUser()
+    const loadDamConfigPromise = loadDamConfig()
+    await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
+  } catch (error) {
+    next({ name: ROUTE.SYSTEM.LOGIN })
+    return
+  }
+
+  try {
+    const loadDamConfigExtSystemPromise = loadDamConfigExtSystem()
+    await Promise.all([loadDamConfigExtSystemPromise])
+  } catch (error) {
+    next({ name: ROUTE.SYSTEM.LOGIN })
+    return
+  }
+
+  try {
+    const initCurrentAssetLicencePromise = initCurrentAssetLicence()
+    const initCurrentExtSystemPromise = initCurrentExtSystem()
+    const loadDamConfigAssetCustomFormElementsPromise = loadDamConfigAssetCustomFormElements()
+    await Promise.all([
+      initCurrentAssetLicencePromise,
+      initCurrentExtSystemPromise,
+      loadDamConfigAssetCustomFormElementsPromise,
+    ])
     initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
@@ -35,10 +62,11 @@ export async function createAppInitialize(
 
   const { hasCurrentUser } = useCurrentUser()
 
-  if (!hasCurrentUser()) {
+  if ((isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) && !hasCurrentUser()) {
     next({ name: ROUTE.SYSTEM.LOGIN })
+  } else if (isStatusUnauthorized()) {
+    next({ name: ROUTE.SYSTEM.UNAUTHORIZED })
   } else if (to.path === '/') {
-    // todo load homepage config set by user
     initialized.value = true
     next({ name: ROUTE.DEFAULT })
   } else {

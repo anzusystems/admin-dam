@@ -23,12 +23,14 @@ const { showDevFeature } = useCurrentUser()
       :title="t('sidebar.settings.settings')"
       data-cy="personal-settings"
     ></VListItem>
-    <VListItem
-      :to="{ name: ROUTE.DAM.PODCAST.LIST }"
-      prepend-icon="mdi-podcast"
-      :title="t('sidebar.settings.podcasts')"
-      data-cy="podcast-settings"
-    ></VListItem>
+    <Acl :permission="ACL.DAM_PODCAST_UI">
+      <VListItem
+        :to="{ name: ROUTE.DAM.PODCAST.LIST }"
+        prepend-icon="mdi-podcast"
+        :title="t('sidebar.settings.podcasts')"
+        data-cy="podcast-settings"
+      ></VListItem>
+    </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
         :to="{ name: ROUTE.DAM.USER.LIST }"

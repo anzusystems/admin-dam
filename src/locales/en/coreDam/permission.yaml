@@ -31,6 +31,8 @@ subject:
   dam_distributionCategory: Distribution Categories
   dam_distributionCategorySelect: Distribution Category Selects
   dam_assetExternalProvider: Asset External Providers
+  dam_podcast: Podcasts
+  dam_podcastEpisode: Podcasts Episodes
   admin_log: Logs
 adminSubject:
   dam_assetLicence: Licenses
@@ -45,6 +47,8 @@ adminSubject:
   dam_distributionCategory: Distribution Categories
   dam_distributionCategorySelect: Distribution Category Selects
   dam_assetExternalProvider: Asset External Providers
+  dam_podcast: Podcasts
+  dam_podcastEpisode: Podcasts Episodes
   admin_log: Logs
 action:
   view: View
@@ -73,6 +77,7 @@ group:
   distributionCategory: Distribution Categories
   distributionCategorySelect: Distribution Category Selects
   assetExternalProvider: Asset External Providers
+  podcast: Podcasts
 category:
   dam: DAM
   all: All
