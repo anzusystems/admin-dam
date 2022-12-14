@@ -25,6 +25,16 @@ export interface DamConfig {
   }
 }
 
+export interface DamPubConfig {
+  userAuthType: UserAuthType
+}
+
+export enum UserAuthType {
+  JsonCredentials = 'json_credentials',
+  OAuth2 = 'oauth2',
+  Default = JsonCredentials
+}
+
 export type DistributionServiceName = string
 
 export enum DistributionServiceResourceName {

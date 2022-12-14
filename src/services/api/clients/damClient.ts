@@ -6,6 +6,7 @@ import { SYSTEM_ADMIN_DAM } from '@/model/systems'
 import { userRefreshRequestInterceptor } from '@/services/api/clients/interceptors/requestRefreshToken'
 import { logoutUserResponseInterceptor } from '@/services/api/clients/interceptors/responseLogoutUser'
 import { AUTH_PATH_PREFIX } from '@/services/api/dam/authApi'
+import { PUB_END_POINT_PREFIX } from '@/services/api/dam/configurationApi'
 
 let mainInstance: AxiosInstance | null = null
 
@@ -28,8 +29,9 @@ const damClient = function (
 
   // refresh token interceptor should run on all request except current user api which performs token refresh action
   mainInstance.interceptors.request.use(userRefreshRequestInterceptor, undefined, {
-    runWhen: (requestConfig: AxiosRequestConfig): boolean =>
-      !(requestConfig.url?.startsWith(AUTH_PATH_PREFIX) ?? false),
+    runWhen: (requestConfig: AxiosRequestConfig): boolean => {
+      return !requestConfig.url?.startsWith(AUTH_PATH_PREFIX) && !requestConfig.url?.startsWith(PUB_END_POINT_PREFIX);
+    }
   })
   mainInstance.interceptors.response.use((response) => response, logoutUserResponseInterceptor)
 

@@ -21,6 +21,8 @@ import ABooleanToggle from '@/components/form/ABooleanToggle.vue'
 import ExternalProviderAssetSelect from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
 import DistributionServiceSelect from '@/views/dam/distribution/components/DistributionServiceSelect.vue'
 import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicenceSelect.vue'
+import { damPubConfig } from '@/services/DamConfigService'
+import { UserAuthType } from '@/types/dam/DamConfig'
 
 withDefaults(
   defineProps<{
@@ -49,7 +51,7 @@ const onCancel = () => {
 }
 
 const router = useRouter()
-const { v$ } = useCreateUserValidation(userCreate)
+const { v$ } = useCreateUserValidation(userCreate, damPubConfig.userAuthType)
 const { t } = useI18n({ useScope: 'global' })
 const { btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
@@ -97,6 +99,9 @@ const onConfirm = async () => {
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
+          <ARow v-if="damPubConfig.userAuthType === UserAuthType.OAuth2">
+            <ATextField v-model="userCreate.ssoId" :v="v$.userCreate.ssoId" required data-cy="user-ssoId"></ATextField>
+          </ARow>
           <ARow>
             <ATextField v-model="userCreate.email" :v="v$.userCreate.email" required data-cy="user-email"></ATextField>
           </ARow>
@@ -106,7 +111,7 @@ const onConfirm = async () => {
           <ARow>
             <ATextField v-model="userCreate.lastName" :v="v$.userCreate.lastName"></ATextField>
           </ARow>
-          <ARow>
+          <ARow v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials">
             <ATextField
               v-model="userCreate.plainPassword"
               :v="v$.userCreate.plainPassword"
