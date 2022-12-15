@@ -57,7 +57,7 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #extSystem="{ data }">
-        <LazyExtSystemChip :id="data"></LazyExtSystemChip>
+        <LazyExtSystemChip :id="data" variant="text"></LazyExtSystemChip>
       </template>
       <template #actions="{ data }">
         <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL"></ADetailButton>

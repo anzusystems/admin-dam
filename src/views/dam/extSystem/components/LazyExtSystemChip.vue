@@ -8,9 +8,11 @@ import { useLazyExtSystem } from '@/views/dam/extSystem/composables/lazyExtSyste
 const props = withDefaults(
   defineProps<{
     id?: null | number
+    variant?: 'text' | 'tonal'
   }>(),
   {
     id: null,
+    variant: 'tonal',
   }
 )
 
@@ -35,8 +37,8 @@ const onClick = () => {
   <div class="d-inline-flex">
     <span v-if="isNull(id)">-</span>
     <VProgressCircular v-else-if="showLoader" :size="16" :width="2" indeterminate></VProgressCircular>
-    <VChip v-else rounded="lg" size="small" variant="tonal" @click.stop="onClick">
+    <VBtn v-else rounded="lg" size="small" :variant="variant" @click.stop="onClick">
       {{ item?.name }}
-    </VChip>
+    </VBtn>
   </div>
 </template>
