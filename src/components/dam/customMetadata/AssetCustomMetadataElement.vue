@@ -5,6 +5,7 @@ import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import { maxLength, maxValue, minLength, minValue, requiredIf, stringArrayItemLength } from '@/plugins/validators'
+import type { ValidationScope } from '@/types/Validation'
 
 // todo: only string type si completely implemented, check other types
 
@@ -13,7 +14,7 @@ const props = withDefaults(
     modelValue: any
     config: DamConfigAssetCustomFormElement
     elementKey: string
-    validationScope?: string | number | boolean | symbol | undefined
+    validationScope?: ValidationScope
   }>(),
   {
     validationScope: undefined,
