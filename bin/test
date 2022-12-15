@@ -92,7 +92,7 @@ if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$ ]]; then
 fi
 
 # Ensure that the user has provided the terraform environment
-if [[  ! ${ENV} =~ ^local$ ]] && [ ! -f "cypress/config/${ENV}.ts" ]; then
+if [[ ! ${ENV} =~ ^local$ ]] && [ ! -f "cypress/config/${ENV}.ts" ]; then
     echo "[ERROR] config file ${ENV}.ts does not exist in cypress/config"
     exit
 fi
