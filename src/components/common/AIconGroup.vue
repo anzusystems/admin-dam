@@ -35,6 +35,8 @@ withDefaults(
 
   &__main-icon {
     position: relative;
+    top: -2px;
+    left: -2px;
   }
 
   &__secondary-icon {
@@ -52,13 +54,12 @@ withDefaults(
     position: absolute;
     bottom: -4px;
     right: -4px;
-
-    // transform: scaleX(0.6) scaleY(0.6);
+    transform: scaleX(0.8) scaleY(0.8);
     border-radius: 100%;
     display: block;
     text-align: center;
-    width: 18px;
-    height: 18px;
+    //width: 18px;
+    //height: 18px;
   }
 }
 
