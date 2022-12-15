@@ -43,14 +43,14 @@ $bg-color-actions-dark: #1a1a1a;
       &-actions {
         border-radius: 4px;
         position: absolute;
-        top: 11px;
-        right: 11px;
+        top: -2px;
+        right: -5px;
         display: none;
         overflow: hidden;
       }
     }
 
-    &-text {
+    &-text, &-text .line-clamp-1  {
       font-weight: 500;
       line-height: 30px;
       min-height: 38px;
@@ -96,7 +96,7 @@ $bg-color-actions-dark: #1a1a1a;
     display: block;
     width: 16px;
     height: 16px;
-    top: 0;
+    top: -3px;
     right: 0;
   }
 }

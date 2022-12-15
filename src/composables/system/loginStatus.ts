@@ -1,6 +1,6 @@
 import { readonly, ref } from 'vue'
 import type { RouteLocationNormalized } from 'vue-router'
-import { isNull, isUndefined } from '@/utils/common'
+import { isNull } from '@/utils/common'
 
 enum LoginState {
   Success = 'success',
@@ -12,7 +12,7 @@ enum LoginState {
 const status = ref<string | null>(null)
 
 export function useLoginStatus(to: RouteLocationNormalized) {
-  if (isUndefined(to.query.loginState)) {
+  if (to.query.loginState) {
     status.value = to.query.loginState.toString()
   }
 
