@@ -17,6 +17,8 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useKeywordFactory } from '@/model/dam/factory/KeywordFactory'
 import type { Keyword } from '@/types/dam/Keyword'
 import { useKeywordValidation } from '@/views/dam/keyword/composables/keywordValidation'
+import { ValidationScope } from '@/types/Validation'
+import { KeywordCreateValidationScopeSymbol } from '@/components/validationScopes'
 
 const props = withDefaults(
   defineProps<{
@@ -27,6 +29,7 @@ const props = withDefaults(
     buttonClass?: string
     dataCy?: string
     disabled?: boolean | undefined
+    validationScope?: ValidationScope
   }>(),
   {
     initialValue: '',
@@ -36,6 +39,7 @@ const props = withDefaults(
     buttonClass: 'ml-2',
     dataCy: '',
     disabled: undefined,
+    validationScope: KeywordCreateValidationScopeSymbol,
   }
 )
 const emit = defineEmits<{
@@ -59,7 +63,7 @@ const onCancel = () => {
 }
 
 const router = useRouter()
-const { v$ } = useKeywordValidation(keyword)
+const { v$ } = useKeywordValidation(keyword, props.validationScope)
 const { t } = useI18n({ useScope: 'global' })
 const { btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()

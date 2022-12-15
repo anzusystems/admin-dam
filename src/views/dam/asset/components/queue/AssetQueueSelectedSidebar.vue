@@ -110,7 +110,14 @@ const clearForm = () => {
                   <ASystemEntityScope subject="keyword" system="dam">
                     <div class="d-flex">
                       <div style="min-width: 292px">
-                        <KeywordSelect label="Keywords" v-model="massOperationsKeywords" chips clearable multiple />
+                        <KeywordSelect
+                          label="Keywords"
+                          v-model="massOperationsKeywords"
+                          chips
+                          clearable
+                          multiple
+                          :validation-scope="false"
+                        />
                       </div>
                       <VBtn
                         icon="mdi-file-arrow-left-right-outline"
@@ -134,7 +141,14 @@ const clearForm = () => {
                   <ASystemEntityScope subject="author" system="dam">
                     <div class="d-flex">
                       <div style="min-width: 292px">
-                        <AuthorSelect label="Authors" v-model="massOperationsAuthors" chips clearable multiple />
+                        <AuthorSelect
+                          label="Authors"
+                          v-model="massOperationsAuthors"
+                          chips
+                          clearable
+                          multiple
+                          :validation-scope="false"
+                        />
                       </div>
                       <VBtn
                         icon="mdi-file-arrow-left-right-outline"

@@ -3,8 +3,9 @@ import { computed } from 'vue'
 import { minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Author } from '@/types/dam/Author'
+import type { ValidationScope } from '@/types/Validation'
 
-export function useAuthorValidation(author: Ref<Author>) {
+export function useAuthorValidation(author: Ref<Author>, validationScope: ValidationScope = undefined) {
   const rules = computed(() => ({
     author: {
       name: {
@@ -16,7 +17,7 @@ export function useAuthorValidation(author: Ref<Author>) {
       },
     },
   }))
-  const v$ = useVuelidate(rules, { author })
+  const v$ = useVuelidate(rules, { author }, { $scope: validationScope })
 
   return {
     v$,

@@ -11,6 +11,7 @@ import type { Keyword } from '@/types/dam/Keyword'
 import { isArray } from '@/utils/common'
 import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
+import type { ValidationScope } from '@/types/Validation'
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +24,7 @@ const props = withDefaults(
     suggestions?: Suggestions
     chips?: boolean
     dataCy?: string
-    validationScope?: string | number | boolean | symbol | undefined
+    validationScope?: ValidationScope
   }>(),
   {
     label: null,
