@@ -3,7 +3,6 @@ import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { fetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/dam/assetApi'
 import { useAssetListFilter } from '@/model/dam/filter/AssetFilter'
 import { storeToRefs } from 'pinia'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { isNull } from '@/utils/common'
 import { toggleArrayItem } from '@/utils/array'
@@ -35,7 +34,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const uploadQueuesStore = useUploadQueuesStore()
 
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
-  const { resetFilter } = useFilterHelpers()
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
   const { maxSelectedItems } = useBetaTestFeatures()

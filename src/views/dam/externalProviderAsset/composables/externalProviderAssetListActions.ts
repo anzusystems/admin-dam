@@ -1,7 +1,6 @@
 import { usePagination } from '@/composables/system/pagination'
 import { useExternalProviderAssetFilter } from '@/model/dam/filter/ExternalProviderAssetFilter'
 import { storeToRefs } from 'pinia'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import {
   fetchExternalProviderAsset,
   fetchExternalProviderAssetList as apiFetchExternalProviderAssetList,
@@ -37,7 +36,6 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
-  const { resetFilter } = useFilterHelpers()
 
   const fetchAssetList = async () => {
     if (!activeExternalProvider.value) return
