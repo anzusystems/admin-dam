@@ -2,7 +2,7 @@
 
 import { EXTERNAL_SYS, RAND_NUM } from './support/constants'
 
-describe(`Test asset licences function, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test asset licences function, Env: ${Cypress.env('env')}`, () => {
   it('Create asset licence', () => {
     cy.visit('/settings')
     cy.verifySubPage('asset-licence-settings', 'asset-licence/list', 'List of Licenses')

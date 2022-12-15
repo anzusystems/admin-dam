@@ -2,7 +2,7 @@
 
 import { RAND_NUM, USER_FIRST_NAME } from './support/constants'
 
-describe(`Test authors function, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test authors function, Env: ${Cypress.env('env')}`, () => {
   it('Create author', () => {
     cy.visit('/settings')
     cy.verifySubPage('author-settings', 'author/list', 'Authors List')

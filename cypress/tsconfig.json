@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["es5", "dom"],
-    "types": ["cypress", "@cypress/grep"]
+    "types": ["cypress", "@cypress/grep", "node"]
   },
   "include": ["./**/*.ts"]
 }
