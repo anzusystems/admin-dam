@@ -37,7 +37,7 @@ Script used to run tests inside the application docker container:
 
 ### Command options
 
-    -b, --browser (Optional) Run tests in selected browser (Allowed values: electron|chrome|firefox|all, Default: electron)
+    -b, --browser (Optional) Run tests in selected browser (Allowed values: electron|chrome, Default: electron)
     -t, --tags    (Optional) Comma separated list of test suite tags. See docs for all tags. (Default: n/a)
     -s, --spec    (Optional) Relative dir to the test suite, wildcard can be used (Default: n/a - all tests)
     --dashboard   (Optional) Whether to push test results to cypress dashboard or create only local test results
