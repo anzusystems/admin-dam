@@ -7,7 +7,6 @@ import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
 import { UserAuthType } from '@/types/dam/DamConfig'
 
 const userAuthType = damPubConfig.userAuthType
-console.log(userAuthType)
 
 const { t } = useI18n({ useScope: 'global' })
 </script>

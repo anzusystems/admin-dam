@@ -98,12 +98,10 @@ const saveRoi = async () => {
 }
 
 const cropperReady = () => {
-  console.log('cropperReady')
   applyRegionOfInterest()
   enableCropper()
 }
 const cropperEnd = () => {
-  console.log('cropperEnd')
   saveRoi()
 }
 
