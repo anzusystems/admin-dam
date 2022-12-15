@@ -2,8 +2,7 @@
 
 import { PODCAST_TITLE } from './support/constants'
 
-// @ts-ignore
-describe(`Test Podcast function, Env: ${Cypress.env('domain')}`, { tags: '@test' }, () => {
+describe(`Test Podcast function, Env: ${Cypress.env('env')}`, () => {
   it('Create podcast', () => {
     cy.visit('/settings')
     cy.getCyVisibleClick('podcast-settings')

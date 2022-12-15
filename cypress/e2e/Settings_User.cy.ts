@@ -11,7 +11,7 @@ import {
   EXTERNAL_SYS,
 } from './support/constants'
 
-describe(`Test user function, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test user function, Env: ${Cypress.env('env')}`, () => {
   it('Create User', () => {
     cy.visit('/settings')
     cy.getCyVisibleClick('user-settings')

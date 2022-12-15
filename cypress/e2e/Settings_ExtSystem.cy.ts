@@ -2,7 +2,7 @@
 
 import { EXTERNAL_SYS } from './support/constants'
 
-describe(`Test ext system function, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test ext system function, Env: ${Cypress.env('env')}`, () => {
   it('Edit ext system', () => {
     cy.visit('/settings')
     cy.verifySubPage('ext-system-settings', 'ext-system/list', 'List of External Systems')
