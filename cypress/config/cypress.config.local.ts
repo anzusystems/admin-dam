@@ -33,8 +33,9 @@ export default defineConfig({
       require('@cypress/grep/src/plugin')(config)
       console.log(config)
       config.baseUrl = 'http://admin-dam.anzusystems.localhost:8150/'
-      config.reporterOptions.reportDir = 'report/html'
-      config.videosFolder = 'report/video'
+      config.reporterOptions.reportDir = '/cypress/report/html'
+      config.videosFolder = 'cypress/report/video'
+      config.screenshotsFolder = 'cypress/report/assets'
       return config
     },
     specPattern: 'cypress/e2e/*.cy.ts',

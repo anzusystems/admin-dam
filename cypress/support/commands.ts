@@ -91,7 +91,6 @@ Cypress.Commands.add('setDevCookie', () => {
       domain: `${Cypress.env('domain')}`,
       log: false,
     })
-    cy.log('Set Cookie: Devel')
   })
 })
 
@@ -101,7 +100,6 @@ Cypress.Commands.add('setStgCookie', () => {
       domain: `${Cypress.env('domain')}`,
       log: false,
     })
-    cy.log('Set Cookie: Staging')
   })
 })
 

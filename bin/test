@@ -9,8 +9,6 @@ ARGS="$*"
 DATE_EPOCH_TIME="$(date +%s)"
 BROWSER_OPTIONS=""
 BROWSER="electron"
-BROWSER_GROUP_CHROME=""
-BROWSER_GROUP_FIREFOX=""
 ENV="local"
 TAGS=""
 TAG=""
@@ -87,14 +85,14 @@ while [ "$#" -gt 0 ]; do
 done
 
 # Ensure that the user has provided the terraform environment
-if [ -z "${ENV}" ] || [[ ! ${ENV} =~ ^staging$|^devel$|^local$ ]]; then
+if [ -z "${ENV}" ] || [[ ! ${ENV} =~ ^dev|^stg$|^local$ ]]; then
     echo "[ERROR] Missing or invalid value using '-e, --env' option"
     help
     exit
 fi
 
 # Ensure that the user has provided the terraform environment
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^all$|^electron$|^chrome$|^firefox$ ]]; then
+if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
     echo "[ERROR] Invalid value using '-b, --browser' option"
     help
     exit
@@ -104,37 +102,14 @@ if [ -f /.dockerenv ]; then
       if ! yarn cypress verify >/dev/null 2>&1; then
           yarn cypress install --force
       fi
-    if [ -n "${BROWSER}" ] && [ "${BROWSER}" == "all" ]; then
-        if [ -n "${DASHBOARD_OPTIONS}" ]; then
-            BROWSER_GROUP_CHROME="--ci-build-id ${DATE_EPOCH_TIME} --group Chrome"
-            BROWSER_GROUP_FIREFOX="--ci-build-id ${DATE_EPOCH_TIME} --group Firefox"
-        fi
-        # shellcheck disable=SC2086
-        TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
-            --headless \
-            --env env=${ENV},grepTags=${TAGS} \
-            ${TEST_SPEC} \
-            ${DASHBOARD_OPTIONS} \
-            ${BROWSER_GROUP_CHROME} \
-            --browser chrome &
-        # shellcheck disable=SC2086
-        TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
-            --headless \
-            --env env=${ENV},grepTags=${TAGS} \
-            ${TEST_SPEC} \
-            ${DASHBOARD_OPTIONS} \
-            ${BROWSER_GROUP_FIREFOX} \
-            --browser firefox
-    else
-        # shellcheck disable=SC2086
-        TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
-            --headless \
-            --env env=${ENV},grepTags=${TAGS} \
-            ${BROWSER_OPTIONS} \
-            ${TEST_SPEC} \
-            ${DASHBOARD_OPTIONS}
-    fi
-    exit
+      # shellcheck disable=SC2086
+      TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
+         --config-file cypress/config/cypress.config.${ENV}.ts\
+         --headless \
+         --env env=${ENV},grepTags=${TAGS} \
+         ${BROWSER_OPTIONS} \
+         ${TEST_SPEC} \
+         ${DASHBOARD_OPTIONS}
 fi
 
 bin/docker-compose exec --user node app bash -c \'bin/test "${ARGS}"\'
