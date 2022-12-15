@@ -29,6 +29,7 @@ const setDamConfigAssetCustomFormElements = (responses: Awaited<{ data: DamConfi
 
 const onConfigError = (error: Error) => {
   // todo
+  console.error(error)
 }
 
 export const loadDamConfigAssetCustomFormElements = () => {
