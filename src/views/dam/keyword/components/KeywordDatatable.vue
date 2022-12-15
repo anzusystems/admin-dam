@@ -27,7 +27,6 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems } = useKeywordListActions()
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'name' },
   { name: 'flags.reviewed' },
   { name: 'createdAt' },

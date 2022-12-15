@@ -31,7 +31,6 @@ const getList = () => {
 }
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'serviceSlug' },
   { name: 'createdAt' },
   { name: 'modifiedAt' },

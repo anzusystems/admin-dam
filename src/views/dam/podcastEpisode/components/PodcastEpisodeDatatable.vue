@@ -35,7 +35,6 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems } = usePodcastEpisodeListActions()
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'texts.title' },
   { name: 'createdAt' },
   { name: 'modifiedAt' },

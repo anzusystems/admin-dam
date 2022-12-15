@@ -14,6 +14,7 @@ import { useI18n } from 'vue-i18n'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import PodcastSelect from '@/views/dam/podcast/components/PodcastSelect.vue'
+import ATextarea from '@/components/form/ATextarea.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -105,18 +106,18 @@ onMounted(async () => {
             ></PodcastSelect>
           </ARow>
           <ARow>
-            <ATextField
+            <ATextarea
               :label="t('coreDam.podcastEpisode.model.texts.title')"
               v-model="podcastEpisode.texts.title"
               :v="v$.podcastEpisode.texts.title"
-            ></ATextField>
+            ></ATextarea>
           </ARow>
           <ARow>
-            <ATextField
+            <ATextarea
               :label="t('coreDam.podcastEpisode.model.texts.description')"
               v-model="podcastEpisode.texts.description"
               :v="v$.podcastEpisode.texts.description"
-            ></ATextField>
+            ></ATextarea>
           </ARow>
           <ARow>
             <ATextField

@@ -27,7 +27,6 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems } = useExtSystemListActions()
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'name' },
   { name: 'slug' },
   { name: 'createdAt' },

@@ -27,7 +27,6 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems } = usePermissionGroupListActions()
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'title' },
   { name: 'description' },
   { name: 'createdAt' },
