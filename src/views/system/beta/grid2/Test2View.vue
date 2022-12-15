@@ -32,23 +32,23 @@ onMounted(async () => {
       </span>
     </div>
 
-<!--    <RecycleScroller-->
-<!--      ref="scroller"-->
-<!--      class="scroller"-->
-<!--      :items="list"-->
-<!--      :item-size="128"-->
-<!--      :grid-items="gridItems"-->
-<!--      :item-secondary-size="100"-->
-<!--    >-->
-<!--      <template #default="{ item, index }">-->
-<!--        <div class="item">-->
-<!--          <img :key="item.id" :src="item.value.avatar" />-->
-<!--          <div class="index">-->
-<!--            {{ index }}-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </RecycleScroller>-->
+    <!--    <RecycleScroller-->
+    <!--      ref="scroller"-->
+    <!--      class="scroller"-->
+    <!--      :items="list"-->
+    <!--      :item-size="128"-->
+    <!--      :grid-items="gridItems"-->
+    <!--      :item-secondary-size="100"-->
+    <!--    >-->
+    <!--      <template #default="{ item, index }">-->
+    <!--        <div class="item">-->
+    <!--          <img :key="item.id" :src="item.value.avatar" />-->
+    <!--          <div class="index">-->
+    <!--            {{ index }}-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </template>-->
+    <!--    </RecycleScroller>-->
   </div>
 </template>
 

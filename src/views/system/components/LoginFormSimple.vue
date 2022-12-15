@@ -25,10 +25,27 @@ const onSubmit = () => {
         <span>{{ t('auth.simpleLogin.description') }}</span>
       </h4>
       <VForm>
-        <VTextField v-model="simpleLoginForm.username" :label="t('auth.simpleLogin.form.username')" type="text" data-cy="username"/>
-        <VTextField v-model="simpleLoginForm.password" :label="t('auth.simpleLogin.form.password')" type="password" data-cy="password"/>
+        <VTextField
+          v-model="simpleLoginForm.username"
+          :label="t('auth.simpleLogin.form.username')"
+          type="text"
+          data-cy="username"
+        />
+        <VTextField
+          v-model="simpleLoginForm.password"
+          :label="t('auth.simpleLogin.form.password')"
+          type="password"
+          data-cy="password"
+        />
       </VForm>
-      <ABtn btn-helper="login" @click.stop="onSubmit" color="primary" size="large" variant="flat" data-cy="button-login">
+      <ABtn
+        btn-helper="login"
+        @click.stop="onSubmit"
+        color="primary"
+        size="large"
+        variant="flat"
+        data-cy="button-login"
+      >
         {{ t('auth.simpleLogin.buttons.login') }}
       </ABtn>
     </div>

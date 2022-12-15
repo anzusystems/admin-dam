@@ -77,7 +77,11 @@ const { getUserRoleOption } = useUserRole()
         <ARow :title="t('coreDam.user.model.id')">
           <ACopyText :value="user.id"></ACopyText>
         </ARow>
-        <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.ssoId')" :value="user.ssoId"></ARow>
+        <ARow
+          v-if="userAuthType === UserAuthType.OAuth2"
+          :title="t('coreDam.user.model.ssoId')"
+          :value="user.ssoId"
+        ></ARow>
         <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
       </ACard>
     </VCol>

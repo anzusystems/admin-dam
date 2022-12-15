@@ -21,12 +21,8 @@ export async function createAppInitialize(
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) {
-  const {
-    isStatusNotDefined,
-    isStatusSsoCommunicationFailure,
-    isStatusInternalErrorFailure,
-    isStatusUnauthorized
-  } = useLoginStatus(to)
+  const { isStatusNotDefined, isStatusSsoCommunicationFailure, isStatusInternalErrorFailure, isStatusUnauthorized } =
+    useLoginStatus(to)
 
   try {
     const updateCurrentUserPromise = updateCurrentUser()
@@ -62,7 +58,10 @@ export async function createAppInitialize(
 
   const { hasCurrentUser } = useCurrentUser()
 
-  if ((isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) && !hasCurrentUser()) {
+  if (
+    (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
+    !hasCurrentUser()
+  ) {
     next({ name: ROUTE.SYSTEM.LOGIN })
   } else if (isStatusUnauthorized()) {
     next({ name: ROUTE.SYSTEM.UNAUTHORIZED })

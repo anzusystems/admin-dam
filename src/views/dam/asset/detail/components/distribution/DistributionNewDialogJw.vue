@@ -116,47 +116,49 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="canDisplayForm" class="pa-4">
-    <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-      <VRow class="mb-6">
-        <VCol class="text-caption">File ID/version: {{ assetFileId }} </VCol>
-      </VRow>
-      <VRow class="mb-2">
-        <VCol>
-          <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
-        </VCol>
-      </VRow>
-      <VRow class="mb-2">
-        <VCol>
-          <ATextarea
-            v-model="distribution.texts.description"
-            :v="v$.distribution.texts.description"
-            required
-          ></ATextarea>
-        </VCol>
-      </VRow>
-      <VRow class="mb-2">
-        <VCol>
-          <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required></ATextField>
-        </VCol>
-      </VRow>
-      <VRow class="mb-2">
-        <VCol>
-          <VCombobox
-            :label="t('coreDam.jwDistribution.model.texts.keywords')"
-            v-model="distribution.texts.keywords"
-            :items="[]"
-            multiple
-            chips
-            closable-chips
-          ></VCombobox>
-        </VCol>
-      </VRow>
-    </ASystemEntityScope>
-  </div>
-  <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
-    <VProgressCircular indeterminate color="primary"></VProgressCircular>
-  </div>
+  <VCardText>
+    <div v-if="canDisplayForm" class="pa-4">
+      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+        <VRow class="mb-6">
+          <VCol class="text-caption">File ID/version: {{ assetFileId }} </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
+          </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <ATextarea
+              v-model="distribution.texts.description"
+              :v="v$.distribution.texts.description"
+              required
+            ></ATextarea>
+          </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required></ATextField>
+          </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <VCombobox
+              :label="t('coreDam.jwDistribution.model.texts.keywords')"
+              v-model="distribution.texts.keywords"
+              :items="[]"
+              multiple
+              chips
+              closable-chips
+            ></VCombobox>
+          </VCol>
+        </VRow>
+      </ASystemEntityScope>
+    </div>
+    <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
+      <VProgressCircular indeterminate color="primary"></VProgressCircular>
+    </div>
+  </VCardText>
   <VCardActions>
     <VSpacer></VSpacer>
     <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">Add</VBtn>
