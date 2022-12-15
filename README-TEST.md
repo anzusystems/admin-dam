@@ -50,5 +50,15 @@ Script used to run tests inside the application docker container:
     bin/test --tags=@ --dashboard --spec=cypress/e2e/**
     bin/test --browser=chrome --spec=cypress/e2e/Log-out.cy.ts --tag=Log-out --dashboard
 
+### Support for multiple environments
+    
+Create file "cypress.config.$ENV.ts" in /cypress/config folder with custom config.
+
+    bin/test -env=$ENV
+
+*Insert your value instead of $ENV *
+
+
+
 
 
