@@ -21,10 +21,9 @@ node_modules
 # Tests
 coverage
 .scannerwork
-/cypress/fixtures/credentials.json
-/cypress/report
-/cypress/config/cypress.config.dev.ts
-/cypress/config/cypress.config.stg.ts
+cypress/report
+cypress/config
+!cypress/config/cypress.config.ts
 
 # Managed by yarn
 .yarn/*

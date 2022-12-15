@@ -2,7 +2,7 @@
 
 import { USER_FIRST_NAME } from './support/constants'
 
-describe(`Test keyword function, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test keyword function, Env: ${Cypress.env('env')}`, () => {
   it('Create keyword', () => {
     cy.visit('/settings')
     cy.verifySubPage('keyword-settings', 'keyword/list', 'Keywords List')

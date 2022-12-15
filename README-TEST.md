@@ -11,19 +11,23 @@ Simple guide on how to run E2E tests on the project.
 Follow the [installation guide](README-DEV.md#Installation) to install the project.
 
 ## 2. Run dev server
-Follow the [run dev server guide](README-DEV.md#Dev-Run-dev-server) to run dev server.
+Follow the [run dev server guide](README-DEV.md#Dev---Run-dev-server) to run dev server.
 
-## 3. Setup credentials.json
+## 3. Setup credentials 
 
- Create file "credentials.json" in /cypress/fixtures folder with following content:
+ Create file "local.ts" in /cypress/config folder with following content:
 
-```json
-{
-  "admin": {
-    "username": "",
-    "password": ""
-  }
+```typescript
+function extendCypressConfig ( config ) {
+  config.env.credentials = {
+  admin: {
+    username: '',
+    password: '',
+  },
 }
+return config
+}
+module.exports = extendCypressConfig
 ```  
 *Insert your credentials to the file.*
 
@@ -52,11 +56,11 @@ Script used to run tests inside the application docker container:
 
 ### Support for multiple environments
     
-Create file "cypress.config.$ENV.ts" in /cypress/config folder with custom config.
+Create file "$ENV.ts" in /cypress/config folder with custom config.
 
     bin/test -env=$ENV
 
-*Insert your value instead of $ENV *
+*Insert your value instead of $ENV*
 
 
 
