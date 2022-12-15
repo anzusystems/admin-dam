@@ -14,10 +14,13 @@ import { useErrorHandler } from '@/composables/system/error'
 import { useUiHelper } from '@/composables/system/uiHelper'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
+import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const { toolbarColor } = useTheme()
+
+const { fetchAssetList } = useAssetListActions()
 
 const { footerViewUpload, showMinimalUpload, setMinimalUpload, autoShowUpload, hideUpload } = useAssetFooterUploadView()
 const uploadQueuesStore = useUploadQueuesStore()
@@ -83,6 +86,7 @@ const onSave = async () => {
     btnLoadingOn('save')
     btnDisable('saveAndClose')
     await bulkUpdateAssetsMetadata(list.value)
+    fetchAssetList()
     showRecordWas('updated')
   } catch (error) {
     handleError(error)
@@ -106,6 +110,7 @@ const onSaveAndClose = async () => {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     await onStopConfirm()
+    fetchAssetList()
   } catch (error) {
     handleError(error)
   } finally {
