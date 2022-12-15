@@ -58,7 +58,6 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
   const resetAssetList = async () => {
     externalProviderAssetListStore.resetList()
-    resetFilter(filter, pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {

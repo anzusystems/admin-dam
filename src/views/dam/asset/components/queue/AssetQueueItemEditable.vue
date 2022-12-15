@@ -84,11 +84,11 @@ const loadingProgress = computed(() => {
 })
 
 const uploadNew = async () => {
-  console.log('todo')
+  // todo
 }
 
 const viewOriginal = async () => {
-  console.log('todo')
+  // todo
 }
 
 const showDetail = async () => {

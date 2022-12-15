@@ -345,7 +345,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       } catch (e) {
         item.error.hasError = true
         item.status = QueueItemStatus.Failed
-        console.log(e)
         this.recalculateQueueCounts(queueId)
         this.processUpload(queueId)
       }

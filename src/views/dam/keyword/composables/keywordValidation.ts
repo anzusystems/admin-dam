@@ -3,8 +3,9 @@ import { computed } from 'vue'
 import { minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Keyword } from '@/types/dam/Keyword'
+import type { ValidationScope } from '@/types/Validation'
 
-export function useKeywordValidation(keyword: Ref<Keyword>) {
+export function useKeywordValidation(keyword: Ref<Keyword>, validationScope: ValidationScope = undefined) {
   const rules = computed(() => ({
     keyword: {
       name: {
@@ -13,7 +14,7 @@ export function useKeywordValidation(keyword: Ref<Keyword>) {
       },
     },
   }))
-  const v$ = useVuelidate(rules, { keyword })
+  const v$ = useVuelidate(rules, { keyword }, { $scope: validationScope })
 
   return {
     v$,

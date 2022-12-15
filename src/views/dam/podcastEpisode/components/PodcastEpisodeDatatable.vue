@@ -34,12 +34,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePodcastEpisodeListActions()
 
-const columns = useTableColumns([
-  { name: 'id' },
-  { name: 'texts.title' },
-  { name: 'createdAt' },
-  { name: 'modifiedAt' },
-])
+const columns = useTableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
 const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: row.id } })

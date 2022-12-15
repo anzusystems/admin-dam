@@ -47,7 +47,7 @@ const { t } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
-  <v-table>
+  <VTable class="anzu-data-table">
     <thead>
       <tr>
         <th class="text-left" v-for="column in availableColumns" :key="column.name">
@@ -77,5 +77,5 @@ const { t } = useI18n({ useScope: 'global' })
         </tr>
       </template>
     </tbody>
-  </v-table>
+  </VTable>
 </template>

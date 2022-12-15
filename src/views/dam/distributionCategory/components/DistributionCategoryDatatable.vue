@@ -45,7 +45,7 @@ const distributionServicesTableColumns = computed(() =>
 )
 
 const columns = useTableColumns([
-  ...[{ name: 'id' }, { name: 'name' }, { name: 'type' }],
+  ...[{ name: 'name' }, { name: 'type' }],
   ...distributionServicesTableColumns.value,
   ...[{ name: 'createdAt' }, { name: 'modifiedAt' }],
 ])

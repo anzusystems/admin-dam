@@ -58,11 +58,6 @@ someFunction([1])
 
 someFunction(['1'])
 
-
-
 someFunction(['1', 1, 0, undefined])
-
-
-
 
 someFunction({}) // invalid

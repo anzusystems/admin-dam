@@ -19,6 +19,8 @@ import { useAuthorValidation } from '@/views/dam/author/composables/authorValida
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { ValidationScope } from '@/types/Validation'
+import { AuthorCreateValidationScopeSymbol } from '@/components/validationScopes'
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +31,7 @@ const props = withDefaults(
     buttonClass?: string
     dataCy?: string
     disabled?: boolean | undefined
+    validationScope?: ValidationScope
   }>(),
   {
     initialValue: '',
@@ -38,6 +41,7 @@ const props = withDefaults(
     buttonClass: 'ml-2',
     dataCy: '',
     disabled: undefined,
+    validationScope: AuthorCreateValidationScopeSymbol,
   }
 )
 const emit = defineEmits<{
@@ -61,7 +65,7 @@ const onCancel = () => {
 }
 
 const router = useRouter()
-const { v$ } = useAuthorValidation(author)
+const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n({ useScope: 'global' })
 const { btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
