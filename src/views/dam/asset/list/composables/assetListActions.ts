@@ -57,7 +57,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const resetAssetList = async () => {
     assetListStore.resetList()
-    resetFilter(filter, pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {
