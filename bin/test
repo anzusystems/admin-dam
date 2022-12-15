@@ -85,16 +85,15 @@ while [ "$#" -gt 0 ]; do
 done
 
 # Ensure that the user has provided the terraform environment
-if [ -z "${ENV}" ] || [[ ! ${ENV} =~ ^dev|^stg$|^local$ ]]; then
-    echo "[ERROR] Missing or invalid value using '-e, --env' option"
+if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$ ]]; then
+    echo "[ERROR] Invalid value using '-b, --browser' option"
     help
     exit
 fi
 
 # Ensure that the user has provided the terraform environment
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
-    echo "[ERROR] Invalid value using '-b, --browser' option"
-    help
+if [[  ! ${ENV} =~ ^local$ ]] && [ ! -f "cypress/config/${ENV}.ts" ]; then
+    echo "[ERROR] config file ${ENV}.ts does not exist in cypress/config"
     exit
 fi
 
@@ -104,7 +103,7 @@ if [ -f /.dockerenv ]; then
       fi
       # shellcheck disable=SC2086
       TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
-         --config-file cypress/config/cypress.config.${ENV}.ts\
+         --config-file cypress/config/cypress.config.ts\
          --headless \
          --env env=${ENV},grepTags=${TAGS} \
          ${BROWSER_OPTIONS} \
