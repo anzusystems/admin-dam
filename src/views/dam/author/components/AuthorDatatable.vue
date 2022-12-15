@@ -28,7 +28,6 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems } = useAuthorListActions()
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'name' },
   { name: 'identifier' },
   { name: 'type' },

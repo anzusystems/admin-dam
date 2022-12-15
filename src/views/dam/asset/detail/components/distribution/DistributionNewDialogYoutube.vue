@@ -33,6 +33,7 @@ import DistributionYoutubeTermOfUse from '@/views/dam/asset/detail/components/di
 import DistributionYoutubePlaylistSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
+import ATextarea from '@/components/form/ATextarea.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -181,16 +182,16 @@ onUnmounted(async () => {
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextField v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextField>
+            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextField
+            <ATextarea
               v-model="distribution.texts.description"
               :v="v$.distribution.texts.description"
               required
-            ></ATextField>
+            ></ATextarea>
           </VCol>
         </VRow>
         <VRow class="mb-2">

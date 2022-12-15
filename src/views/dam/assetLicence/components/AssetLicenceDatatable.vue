@@ -28,7 +28,6 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems } = useAssetLicenceListActions()
 
 const columns = useTableColumns([
-  { name: 'id' },
   { name: 'name' },
   { name: 'extSystem' },
   { name: 'extId' },

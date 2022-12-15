@@ -15,6 +15,7 @@ import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import ATextField from '@/components/form/ATextField.vue'
 import { useI18n } from 'vue-i18n'
+import ATextarea from '@/components/form/ATextarea.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -122,16 +123,16 @@ onMounted(async () => {
       </VRow>
       <VRow class="mb-2">
         <VCol>
-          <ATextField v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextField>
+          <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
         </VCol>
       </VRow>
       <VRow class="mb-2">
         <VCol>
-          <ATextField
+          <ATextarea
             v-model="distribution.texts.description"
             :v="v$.distribution.texts.description"
             required
-          ></ATextField>
+          ></ATextarea>
         </VCol>
       </VRow>
       <VRow class="mb-2">
