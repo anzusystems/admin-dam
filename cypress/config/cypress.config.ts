@@ -1,9 +1,7 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 import { defineConfig } from 'cypress'
-
-declare function require(name: string): any // todo
-
+import * as fs from 'fs'
 export default defineConfig({
-  projectId: '',
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
     reportDir: 'report/html',
@@ -16,29 +14,35 @@ export default defineConfig({
   },
   trashAssetsBeforeRuns: true,
   videoUploadOnPasses: false,
-  screenshotsFolder: './cypress/assets',
   watchForFileChanges: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
-  env: {
-    grepFilterSpecs: true,
-    grepOmitFiltered: true,
-  },
   retries: {
     runMode: 1,
   },
+  env: {
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
+    credentials: {
+      admin: {
+        username: 'dam_admin@anzusystems.dev',
+        password: 'root',
+      },
+    },
+  },
   e2e: {
+    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
+    specPattern: 'cypress/e2e/*.cy.ts',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
-      console.log(config)
-      config.baseUrl = 'http://admin-dam.anzusystems.localhost:8150/'
-      config.reporterOptions.reportDir = '/cypress/report/html'
-      config.videosFolder = 'cypress/report/video'
-      config.screenshotsFolder = 'cypress/report/assets'
+      config.reporterOptions.reportDir = `/cypress/report/${config.env.env}/html`
+      config.videosFolder = `cypress/report/${config.env.env}/video`
+      config.screenshotsFolder = `cypress/report/${config.env.env}/assets`
+      if (fs.existsSync(`./${config.env.env}.ts`)) {
+        require(`./${config.env.env}.ts`)(config)
+      }
       return config
     },
-    specPattern: 'cypress/e2e/*.cy.ts',
-    experimentalStudio: true,
   },
 })

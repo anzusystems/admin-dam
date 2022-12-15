@@ -2,7 +2,7 @@
 
 import { USER_FIRST_NAME } from './support/constants'
 
-describe(`Test distribution category function, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test distribution category function, Env: ${Cypress.env('env')}`, () => {
   it('Create distribution category', () => {
     cy.visit('/settings')
     cy.verifySubPage('distribution-category-settings', 'distribution-category/list', 'List of Distribution category')
