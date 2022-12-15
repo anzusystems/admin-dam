@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 import { defineConfig } from 'cypress'
 import * as fs from 'fs'
 export default defineConfig({
@@ -16,14 +17,22 @@ export default defineConfig({
   watchForFileChanges: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
-  env: {
-    grepFilterSpecs: true,
-    grepOmitFiltered: true,
-  },
   retries: {
     runMode: 1,
   },
+  env: {
+    grepFilterSpecs: true,
+    grepOmitFiltered: true,
+    credentials: {
+      admin: {
+        username: 'dam_admin@anzusystems.dev',
+        password: 'root',
+      },
+    },
+  },
   e2e: {
+    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
+    specPattern: 'cypress/e2e/*.cy.ts',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
@@ -35,7 +44,5 @@ export default defineConfig({
       }
       return config
     },
-    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
-    specPattern: 'cypress/e2e/*.cy.ts',
   },
 })
