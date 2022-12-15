@@ -190,7 +190,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const nextItem = async () => {
-    console.log('nextItem')
     assetListStore.setActiveNext()
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()

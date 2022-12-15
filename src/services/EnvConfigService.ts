@@ -82,7 +82,6 @@ export const loadEnvConfig = (callback: () => void) => {
       callback()
     })
     .catch((err) => {
-      console.log(err)
       onConfigError(err)
     })
 }

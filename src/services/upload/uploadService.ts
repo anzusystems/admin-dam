@@ -14,7 +14,6 @@ const CHUNK_RETRY_INTERVAL = 1000
 const CHUNK_RETRY_MULTIPLY = 3
 
 const failUpload = async (queueItem: UploadQueueItem, error: unknown = null) => {
-  console.log(error)
   throw error
 }
 
@@ -179,8 +178,6 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
           resolve(queueItem)
         })
         .catch((err) => {
-          console.log('err')
-          console.log(err)
           reject(err)
         })
     })

@@ -54,7 +54,6 @@ const setDamConfig = (data: DamConfig) => {
 
 const onConfigError = (error: Error) => {
   // todo
-  console.log(error)
 }
 
 export const loadDamConfig = () => {
