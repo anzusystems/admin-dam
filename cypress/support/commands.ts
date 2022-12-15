@@ -1,22 +1,11 @@
-/* eslint-disable */
 /// <reference types="cypress" />
 
 declare namespace Cypress {
   interface Chainable {
     /**
-     * Accept cookie on first visit of SME page.
+     * Setup protection cookie based on env
      */
-    acceptCookie(): Chainable<Element>
-
-    /**
-     * Set custom cookie for Dev access
-     */
-    setDevCookie(): Chainable<Element>
-
-    /**
-     * Set custom cookie for Stg access
-     */
-    setStgCookie(): Chainable<Element>
+    protectionCookie(): Chainable<Element>
 
     /**
      * Wait for X seconds
@@ -32,10 +21,11 @@ declare namespace Cypress {
     getCy(selector: string, timeout?: number): Chainable<Element>
 
     /**
-     * Provide user from fixtures/credentials.json to login.
+     * Provide user credentials form config/cypress.config.ts env to login.
      * @param user User name
+     * @param timeout - timeout for command
      */
-    login(user: string): Chainable<Element>
+    login(user: string, timeout?: number): Chainable<Element>
 
     /**
      * Gets current URL and check if it contains provided string
@@ -53,8 +43,9 @@ declare namespace Cypress {
     /**
      * Test wait for response url to continue
      * @param response response URL
+     * @param timeout - timeout for command
      */
-    waitResponse(response: string): Chainable<Element>
+    waitResponse(response: string, timeout?: number): Chainable<Element>
 
     /**
      * Check if alert show up and display correct message
@@ -72,6 +63,14 @@ declare namespace Cypress {
   }
 }
 
+Cypress.Commands.add('protectionCookie', () => {
+  if (Cypress.env('cookie') != undefined) {
+    cy.setCookie(Cypress.env('cookie').name, Cypress.env('cookie').value, {
+      domain: Cypress.env('cookie').domain,
+      log: false,
+    })
+  }
+})
 Cypress.Commands.add('verifySubPage', (selector: string, url: string, title: string) => {
   cy.getCyVisibleClick(selector)
   cy.urlContains(url)
@@ -80,61 +79,31 @@ Cypress.Commands.add('verifySubPage', (selector: string, url: string, title: str
 Cypress.Commands.add('getCyVisibleClick', (selector: string, timeout?: number) => {
   cy.get(`[data-cy='${selector}']`, { timeout: timeout }).should('be.visible').click()
 })
-
-Cypress.Commands.add('acceptCookie', () => {
-  cy.get('.fc-cta-consent').click()
-})
-
-Cypress.Commands.add('setDevCookie', () => {
-  cy.fixture('credentials.json').then((credentails) => {
-    cy.setCookie(credentails.cookieDev.name, credentails.cookieDev.value, {
-      domain: `${Cypress.env('domain')}`,
-      log: false,
-    })
-  })
-})
-
-Cypress.Commands.add('setStgCookie', () => {
-  cy.fixture('credentials.json').then(($credentials) => {
-    cy.setCookie($credentials.cookieStg.name, $credentials.cookieStg.value, {
-      domain: `${Cypress.env('domain')}`,
-      log: false,
-    })
-  })
-})
-
 Cypress.Commands.add('waitSec', (sec: number) => {
   cy.wait(sec * 1000)
 })
-
 Cypress.Commands.add('getCy', (selector: string, timeout?: number) => {
   cy.get(`[data-cy='${selector}']`, { timeout: timeout })
 })
 
-Cypress.Commands.add('login', (user) => {
+Cypress.Commands.add('login', (user: string, timeout?: number) => {
   cy.visit('/')
-  cy.fixture('credentials').then((credentials) => {
-    cy.getCy('login-form').should('be.visible')
-    cy.getCy('username').find('input').clear().type(credentials[user].username)
-    cy.getCy('password').find('input').clear().type(credentials[user].password)
-    cy.getCyVisibleClick('button-login')
-    cy.urlContains('asset/list', 20000)
-  })
+  cy.getCy('login-form').should('be.visible')
+  cy.getCy('username').find('input').clear().type(Cypress.env('credentials')[user].username)
+  cy.getCy('password').find('input').clear().type(Cypress.env('credentials')[user].password)
+  cy.getCyVisibleClick('button-login')
+  cy.urlContains('asset/list', timeout)
 })
-
 Cypress.Commands.add('urlContains', (string: string, timeout?: number) => {
   cy.url({ timeout: timeout }).should('contain', string)
 })
-
 Cypress.Commands.add('urlNotContains', (string: string) => {
   cy.url().should('not.contain', string)
 })
-
-Cypress.Commands.add('waitResponse', (request: string) => {
+Cypress.Commands.add('waitResponse', (request: string, timeout?: number) => {
   cy.intercept(request, {}).as('waitResponse')
-  cy.wait('@waitResponse', { timeout: 10000 })
+  cy.wait('@waitResponse', { timeout: timeout })
 })
-
 Cypress.Commands.add('alertMessage', (message: string) => {
   cy.get('.v-alert').should('be.visible').and('contain.text', `${message}`)
   cy.get('.v-alert__close').click()

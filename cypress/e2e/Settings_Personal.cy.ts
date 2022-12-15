@@ -2,7 +2,7 @@
 
 import { LENGUAGE_SK, LENGUAGE_EN, THEME_LIGHT, THEME_DARK, THEME_AUTO } from './support/constants'
 
-describe(`Test user settings, Env: ${Cypress.env('domain')}`, () => {
+describe(`Test user settings, Env: ${Cypress.env('env')}`, () => {
   it('Test user settings', () => {
     cy.visit('/')
     cy.getCyVisibleClick('button-user')

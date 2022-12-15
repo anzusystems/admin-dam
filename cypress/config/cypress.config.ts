@@ -1,9 +1,6 @@
 import { defineConfig } from 'cypress'
-
-declare function require(name: string): any // todo
-
+import * as fs from 'fs'
 export default defineConfig({
-  projectId: '',
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
     reportDir: 'report/html',
@@ -16,7 +13,6 @@ export default defineConfig({
   },
   trashAssetsBeforeRuns: true,
   videoUploadOnPasses: false,
-  screenshotsFolder: './cypress/assets',
   watchForFileChanges: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
@@ -31,14 +27,15 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
-      console.log(config)
-      config.baseUrl = 'http://admin-dam.anzusystems.localhost:8150/'
-      config.reporterOptions.reportDir = '/cypress/report/html'
-      config.videosFolder = 'cypress/report/video'
-      config.screenshotsFolder = 'cypress/report/assets'
+      config.reporterOptions.reportDir = `/cypress/report/${config.env.env}/html`
+      config.videosFolder = `cypress/report/${config.env.env}/video`
+      config.screenshotsFolder = `cypress/report/${config.env.env}/assets`
+      if (fs.existsSync(`./${config.env.env}.ts`)) {
+        require(`./${config.env.env}.ts`)(config)
+      }
       return config
     },
+    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
     specPattern: 'cypress/e2e/*.cy.ts',
-    experimentalStudio: true,
   },
 })
