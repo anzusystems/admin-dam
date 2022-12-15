@@ -11,7 +11,6 @@ import useVuelidate from '@vuelidate/core'
 import type { DistributionYoutubeCreateDto } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import ATextField from '@/components/form/ATextField.vue'
 import { useI18n } from 'vue-i18n'
 import {
   createYoutubeDistribution,
@@ -21,7 +20,6 @@ import {
 } from '@/services/api/dam/distributionYoutubeApi'
 import { useDistributionYoutubeFactory } from '@/model/dam/factory/DistributionYoutube'
 import { distributionIsAuthorized } from '@/services/api/dam/distributionApi'
-import ABooleanToggle from '@/components/form/ABooleanToggle.vue'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import {
   DistributionYoutubePrivacy,
@@ -240,17 +238,17 @@ onUnmounted(async () => {
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ABooleanToggle label="Embeddable" v-model="distribution.flags.embeddable"></ABooleanToggle>
+            <VSwitch label="Embeddable" v-model="distribution.flags.embeddable"></VSwitch>
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ABooleanToggle label="For kids" v-model="distribution.flags.forKids"></ABooleanToggle>
+            <VSwitch label="For kids" v-model="distribution.flags.forKids"></VSwitch>
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ABooleanToggle label="Notify subscribers" v-model="distribution.flags.notifySubscribers"></ABooleanToggle>
+            <VSwitch label="Notify subscribers" v-model="distribution.flags.notifySubscribers"></VSwitch>
           </VCol>
         </VRow>
       </ASystemEntityScope>
