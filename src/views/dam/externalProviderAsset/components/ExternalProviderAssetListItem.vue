@@ -67,6 +67,7 @@ const imageSrc = computed(() => {
     class="dam-image-grid__item"
     :class="{ 'dam-image-grid__item--active': item.active, 'dam-image-grid__item--selected': item.selected }"
     @click.stop.exact="onItemClick"
+    @dblclick.stop.exact="showDetail"
     @click.ctrl.stop="toggleSelected"
     @click.shift.stop="selectMultiple"
   >
@@ -74,15 +75,6 @@ const imageSrc = computed(() => {
       <div v-if="item.selected" class="selected-triangle">
         <div class="selected-triangle__bg"></div>
         <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="x-small" />
-      </div>
-      <div class="dam-image-grid__item-card-actions">
-        <VBtn variant="flat" class="detail-icon" :width="26" :height="26" icon @click.stop="showDetail">
-          <VIcon icon="mdi-pencil" size="16" />
-        </VBtn>
-        <VBtn variant="flat" class="detail-icon" :width="26" :height="26" icon @click.stop="toggleSelected">
-          <VIcon icon="mdi-checkbox-outline" size="16" v-if="item.selected" />
-          <VIcon icon="mdi-checkbox-blank-outline" size="16" v-else />
-        </VBtn>
       </div>
       <AssetImage
         :src="imageSrc"
@@ -92,8 +84,33 @@ const imageSrc = computed(() => {
         :fallback-height="IMAGE_HEIGHT"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
-        <div class="d-flex align-center">
+        <div class="d-flex align-center justify-space-between position-relative">
           <div class="line-clamp-1">{{ asset.texts.displayTitle || 'no title todo' }}</div>
+          <div class="dam-image-grid__item-card-actions">
+            <VBtn
+              variant="flat"
+              class="detail-icon mr-1"
+              color="secondary"
+              :width="34"
+              :height="34"
+              icon
+              @click.stop="showDetail"
+            >
+              <VIcon icon="mdi-pencil" :size="20" />
+            </VBtn>
+            <VBtn
+              variant="flat"
+              class="detail-icon"
+              color="secondary"
+              :width="34"
+              :height="34"
+              icon
+              @click.stop="toggleSelected"
+            >
+              <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
+              <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
+            </VBtn>
+          </div>
         </div>
       </div>
     </div>

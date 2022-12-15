@@ -57,7 +57,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const resetAssetList = async () => {
     assetListStore.resetList()
-    resetFilter(filter, pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {
@@ -190,7 +189,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const nextItem = async () => {
-    console.log('nextItem')
     assetListStore.setActiveNext()
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()

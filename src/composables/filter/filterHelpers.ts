@@ -3,6 +3,7 @@ import type { TableSort } from '@/types/ElementPlus'
 import type { Filter, FilterBag, FilterVariant } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'
 import { i18n } from '@/plugins/i18n'
+import { simpleCloneObject } from '@/utils/object'
 
 const { t } = i18n.global || i18n
 
@@ -40,7 +41,7 @@ export function makeFilterHelper<T = any>(system?: string, subject?: string) {
       multiple: isArray(defaultValue),
       mandatory: isUndefined(options.mandatory) ? false : options.mandatory,
       exclude: isUndefined(options.exclude) ? false : options.exclude,
-      model: defaultValue,
+      model: simpleCloneObject(defaultValue),
       error: '',
     }
   }

@@ -12,13 +12,11 @@ export const initAppNotificationListeners = () => {
   const uploadQueuesStore = useUploadQueuesStore()
   addNotificationListener('asset_file_processed', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       uploadQueuesStore.queueItemProcessed(message.detail.asset)
     }
   })
   addNotificationListener('asset_file_duplicate', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       uploadQueuesStore.queueItemDuplicate(
         message.detail.asset,
         message.detail.originAssetFile,
@@ -28,7 +26,6 @@ export const initAppNotificationListeners = () => {
   })
   addNotificationListener('asset_metadata_processed', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       uploadQueuesStore.queueItemMetadataProcessed(message.detail.asset)
     }
   })
@@ -37,31 +34,26 @@ export const initAppNotificationListeners = () => {
   const distributionListStore = useDistributionListStore()
   addNotificationListener('distribution_distributing', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.Distributing)
     }
   })
   addNotificationListener('distribution_remote_processing', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.RemoteProcessing)
     }
   })
   addNotificationListener('distribution_distributed', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.Distributed)
     }
   })
   addNotificationListener('distribution_failed', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.Failed)
     }
   })
   addNotificationListener('distribution_authorized', (message: Event) => {
     if (message instanceof CustomEvent) {
-      console.log(message.detail)
       distributionListStore.authorizationMessage(message.detail.distributionService, message.detail.success)
     }
   })

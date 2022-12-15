@@ -31,7 +31,7 @@ export function useCreateUserValidation(userCreate: Ref<CreateUser>, userAuthTyp
   }
 
   const rules = computed(() => ({
-    userCreate: rulesRaw
+    userCreate: rulesRaw,
   }))
   const v$ = useVuelidate(rules, { userCreate })
 
@@ -58,7 +58,7 @@ export function useUpdateUserValidation(userUpdate: Ref<UpdateUser>, userAuthTyp
   }
 
   const rules = computed(() => ({
-    userUpdate: rulesRaw
+    userUpdate: rulesRaw,
   }))
   const v$ = useVuelidate(rules, { userUpdate })
 
