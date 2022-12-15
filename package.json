@@ -1,5 +1,5 @@
 {
-  "name": "dam-admin",
+  "name": "adam-admin",
   "packageManager": "yarn@3.2.4",
   "license": "Apache-2.0",
   "version": "0.0.1",
@@ -13,10 +13,7 @@
     "lint:eslint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
     "lint:eslint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "lint:stylelint": "stylelint **/*.{scss,vue}",
-    "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix",
-    "test:unit": "vitest watch",
-    "test:unit:ci": "vitest run",
-    "test:unit:coverage": "vitest --coverage"
+    "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix"
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^2.7.0",
@@ -46,7 +43,7 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@cypress/grep": "^3.1.2",
+    "@cypress/grep": "^3.1.3",
     "@intlify/unplugin-vue-i18n": "^0.8.1",
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/crypto-js": "^4.1.1",
