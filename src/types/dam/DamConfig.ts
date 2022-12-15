@@ -32,7 +32,7 @@ export interface DamPubConfig {
 export enum UserAuthType {
   JsonCredentials = 'json_credentials',
   OAuth2 = 'oauth2',
-  Default = JsonCredentials
+  Default = JsonCredentials,
 }
 
 export type DistributionServiceName = string

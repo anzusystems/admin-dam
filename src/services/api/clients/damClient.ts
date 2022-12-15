@@ -30,8 +30,8 @@ const damClient = function (
   // refresh token interceptor should run on all request except current user api which performs token refresh action
   mainInstance.interceptors.request.use(userRefreshRequestInterceptor, undefined, {
     runWhen: (requestConfig: AxiosRequestConfig): boolean => {
-      return !requestConfig.url?.startsWith(AUTH_PATH_PREFIX) && !requestConfig.url?.startsWith(PUB_END_POINT_PREFIX);
-    }
+      return !requestConfig.url?.startsWith(AUTH_PATH_PREFIX) && !requestConfig.url?.startsWith(PUB_END_POINT_PREFIX)
+    },
   })
   mainInstance.interceptors.response.use((response) => response, logoutUserResponseInterceptor)
 

@@ -172,106 +172,116 @@ onUnmounted(async () => {
 </script>
 
 <template>
-  <div>
-    <div v-if="canDisplayForm" class="pa-4">
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VRow class="mb-6">
-          <VCol class="text-caption">File ID/version: {{ assetFileId }}</VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <ATextarea
-              v-model="distribution.texts.description"
-              :v="v$.distribution.texts.description"
-              required
-            ></ATextarea>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <VCombobox
-              :label="t('coreDam.youtubeDistribution.model.texts.keywords')"
-              v-model="distribution.texts.keywords"
-              :items="[]"
-              multiple
-              chips
-              closable-chips
-            ></VCombobox>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <AValueObjectOptionsSelect
-              v-model="distribution.privacy"
-              :items="distributionYoutubePrivacyOptions"
-              label="Privacy"
-            ></AValueObjectOptionsSelect>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2" v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic">
-          <VCol>
-            <ADatetimePicker v-model="distribution.publishAt"></ADatetimePicker>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <DistributionYoutubeLanguageSelect
-              v-model="distribution.language"
-              label="Language"
-              :distribution-service-name="distributionServiceName"
-            />
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <DistributionYoutubePlaylistSelect
-              v-model="distribution.playlist"
-              label="Playlist"
-              :distribution-service-name="distributionServiceName"
-            />
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <VSwitch label="Embeddable" v-model="distribution.flags.embeddable"></VSwitch>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <VSwitch label="For kids" v-model="distribution.flags.forKids"></VSwitch>
-          </VCol>
-        </VRow>
-        <VRow class="mb-2">
-          <VCol>
-            <VSwitch label="Notify subscribers" v-model="distribution.flags.notifySubscribers"></VSwitch>
-          </VCol>
-        </VRow>
-      </ASystemEntityScope>
+  <VCardText>
+    <div>
+      <div v-if="canDisplayForm" class="pa-4">
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+          <VRow>
+            <VCol cols="6">
+              <VRow class="mb-6">
+                <VCol class="text-caption">File ID/version: {{ assetFileId }}</VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <ATextarea
+                    v-model="distribution.texts.description"
+                    :v="v$.distribution.texts.description"
+                    required
+                  ></ATextarea>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <VCombobox
+                    :label="t('coreDam.youtubeDistribution.model.texts.keywords')"
+                    v-model="distribution.texts.keywords"
+                    :items="[]"
+                    multiple
+                    chips
+                    closable-chips
+                  ></VCombobox>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <AValueObjectOptionsSelect
+                    v-model="distribution.privacy"
+                    :items="distributionYoutubePrivacyOptions"
+                    label="Privacy"
+                  ></AValueObjectOptionsSelect>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2" v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic">
+                <VCol>
+                  <ADatetimePicker v-model="distribution.publishAt"></ADatetimePicker>
+                </VCol>
+              </VRow> </VCol
+            ><VCol cols="6" class="pl-4">
+              <VRow class="mb-2">
+                <VCol>
+                  <DistributionYoutubeLanguageSelect
+                    v-model="distribution.language"
+                    label="Language"
+                    :distribution-service-name="distributionServiceName"
+                  />
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <DistributionYoutubePlaylistSelect
+                    v-model="distribution.playlist"
+                    label="Playlist"
+                    :distribution-service-name="distributionServiceName"
+                  />
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <VSwitch label="Embeddable" v-model="distribution.flags.embeddable" hide-details></VSwitch>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <VSwitch label="For kids" v-model="distribution.flags.forKids" hide-details></VSwitch>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <VSwitch
+                    label="Notify subscribers"
+                    v-model="distribution.flags.notifySubscribers"
+                    hide-details
+                  ></VSwitch>
+                </VCol>
+              </VRow>
+            </VCol>
+          </VRow>
+        </ASystemEntityScope>
+      </div>
+      <div
+        v-else-if="distributionAuthStatus === DistributionAuthStatus.WaitingForLogin && authUrl.length > 0"
+        class="pa-2 text-center"
+      >
+        <div class="pb-4">Login on new tab/window, then return to this screen</div>
+        <VBtn color="primary" variant="flat" :href="authUrl" target="_blank">Youtube Login</VBtn>
+      </div>
+      <div
+        v-else-if="distributionAuthStatus === DistributionAuthStatus.Error"
+        class="d-flex w-100 h-100 justify-center align-center pa-2 text-error"
+      >
+        An error occurred
+      </div>
+      <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
+        <VProgressCircular indeterminate color="primary"></VProgressCircular>
+      </div>
     </div>
-    <div
-      v-else-if="distributionAuthStatus === DistributionAuthStatus.WaitingForLogin && authUrl.length > 0"
-      class="pa-2 text-center"
-    >
-      <div class="pb-4">Login on new tab/window, then return to this screen</div>
-      <VBtn color="primary" variant="flat" :href="authUrl" target="_blank">Youtube Login</VBtn>
-    </div>
-    <div
-      v-else-if="distributionAuthStatus === DistributionAuthStatus.Error"
-      class="d-flex w-100 h-100 justify-center align-center pa-2 text-error"
-    >
-      An error occurred
-    </div>
-    <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
-      <VProgressCircular indeterminate color="primary"></VProgressCircular>
-    </div>
-  </div>
-  <VDivider />
-  <DistributionYoutubeTermOfUse class="pa-4 text-caption" />
+    <DistributionYoutubeTermOfUse class="pa-4 text-caption" />
+  </VCardText>
   <VCardActions>
     <VSpacer></VSpacer>
     <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">Add</VBtn>

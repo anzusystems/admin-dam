@@ -87,14 +87,26 @@ const imageSrc = computed(() => {
         <div class="d-flex align-center justify-space-between position-relative">
           <div class="line-clamp-1">{{ asset.texts.displayTitle || 'no title todo' }}</div>
           <div class="dam-image-grid__item-card-actions">
-            <VBtn variant="flat"
-                  class="detail-icon mr-1"
-                  color="secondary" :width="34" :height="34" icon @click.stop="showDetail">
+            <VBtn
+              variant="flat"
+              class="detail-icon mr-1"
+              color="secondary"
+              :width="34"
+              :height="34"
+              icon
+              @click.stop="showDetail"
+            >
               <VIcon icon="mdi-pencil" :size="20" />
             </VBtn>
-            <VBtn variant="flat"
-                  class="detail-icon"
-                  color="secondary" :width="34" :height="34" icon @click.stop="toggleSelected">
+            <VBtn
+              variant="flat"
+              class="detail-icon"
+              color="secondary"
+              :width="34"
+              :height="34"
+              icon
+              @click.stop="toggleSelected"
+            >
               <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
               <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
             </VBtn>

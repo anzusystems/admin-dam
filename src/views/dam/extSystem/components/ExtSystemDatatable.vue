@@ -26,12 +26,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useExtSystemListActions()
 
-const columns = useTableColumns([
-  { name: 'name' },
-  { name: 'slug' },
-  { name: 'createdAt' },
-  { name: 'modifiedAt' },
-])
+const columns = useTableColumns([{ name: 'name' }, { name: 'slug' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
 const onRowClick = (row: ExtSystem) => {
   router.push({ name: ROUTE.DAM.EXT_SYSTEM.DETAIL, params: { id: row.id } })

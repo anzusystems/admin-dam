@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 // @ts-ignore
-describe(`Test Log-out function, Env: ${Cypress.env('domain')}`,{ tags: '@logout' }, () => {
+describe(`Test Log-out function, Env: ${Cypress.env('domain')}`, { tags: '@logout' }, () => {
   it('Log-out', () => {
     cy.visit('/')
     cy.fixture('credentials').then((credentials) => {

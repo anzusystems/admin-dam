@@ -30,11 +30,7 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const columns = useTableColumns([
-  { name: 'serviceSlug' },
-  { name: 'createdAt' },
-  { name: 'modifiedAt' },
-])
+const columns = useTableColumns([{ name: 'serviceSlug' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
 const onRowClick = (row: ExtSystem) => {
   router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: row.id } })
