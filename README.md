@@ -3,7 +3,7 @@ AnzuSystems Admin-DAM by Petit Press a.s. (www.sme.sk)
 
 ## Introduction
 
-**Open Source Digital Asset Management (DAM) platform, which creates a centralized system for publishers to upload, store and access media assets such as images, videos, audio files and documents. The project is funded by Google.**
+**Open Source Digital Asset Management (DAM) platform, which creates a centralized system for publishers to upload, store and access media assets such as images, videos, audio files and documents. The project was developed in partnership with Google.**
 
 -----
 
