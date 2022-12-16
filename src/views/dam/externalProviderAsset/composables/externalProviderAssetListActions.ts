@@ -19,6 +19,7 @@ import { isNull, isString } from '@/utils/common'
 import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProviderAssetDetailStore'
 import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
+import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
@@ -33,7 +34,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const assetDetailStore = useExternalProviderAssetDetailStore()
   const externalProviderAssetListStore = useExternalProviderAssetListStore()
   const uploadQueuesStore = useUploadQueuesStore()
-
+  const { resetFilter } = useFilterHelpers()
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
 
@@ -56,6 +57,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
   const resetAssetList = async () => {
     externalProviderAssetListStore.resetList()
+    resetFilter(filter, pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {
@@ -196,7 +198,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const listMounted = async () => {
     await validateRouteProvider()
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
-    await resetAssetList()
+    externalProviderAssetListStore.resetList()
     assetDetailStore.reset()
     await fetchAssetList()
     // assetListStore.keyboardNavigationEnable()
