@@ -1,4 +1,4 @@
-AnzuSystems Admin-DAM by Petit Press a.s. (www.sme.sk)
+AnzuSystems Admin-DAM by Petit Press a.s. (www.sme.sk), in partnership with Google.
 =====
 
 ## Introduction
