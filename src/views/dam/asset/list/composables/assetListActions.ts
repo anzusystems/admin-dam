@@ -17,6 +17,7 @@ import type { DocId } from '@/types/common'
 import type { AssetSearchListItemDto } from '@/types/dam/Asset'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
+import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
@@ -34,6 +35,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const uploadQueuesStore = useUploadQueuesStore()
 
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
+  const { resetFilter } = useFilterHelpers()
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
   const { maxSelectedItems } = useBetaTestFeatures()
@@ -55,6 +57,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const resetAssetList = async () => {
     assetListStore.resetList()
+    resetFilter(filter, pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {
@@ -206,7 +209,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const listMounted = async () => {
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
-    await resetAssetList()
+    assetListStore.resetList()
     assetDetailStore.reset()
     await fetchAssetList()
     assetListStore.keyboardNavigationEnable()
