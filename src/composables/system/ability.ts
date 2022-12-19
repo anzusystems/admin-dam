@@ -39,9 +39,9 @@ export function useAcl() {
 
   const can = (acl: AclValue, subject?: object): boolean => {
     if (!hasCurrentUser()) return false
+    if (currentUserIsSuperAdmin.value) return true
     const permission = currentUser.value?.resolvedPermissions[acl]
     if (isUndefined(permission)) return false
-    if (currentUserIsSuperAdmin.value) return true
     if (
       isNotUndefined(currentExtSystemId.value) &&
       !aclsNotAlwaysAllowedForExtSystemAdmin.includes(acl) &&
