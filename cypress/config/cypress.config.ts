@@ -36,9 +36,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
-      config.reporterOptions.reportDir = `/cypress/report/${config.env.env}/html`
+      config.reporterOptions.reportDir = `cypress/report/${config.env.env}/html`
       config.videosFolder = `cypress/report/${config.env.env}/video`
-      config.screenshotsFolder = `cypress/report/${config.env.env}/assets`
       if (fs.existsSync(`./${config.env.env}.ts`)) {
         require(`./${config.env.env}.ts`)(config)
       }

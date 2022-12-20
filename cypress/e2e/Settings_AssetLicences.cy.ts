@@ -2,7 +2,7 @@
 
 import { EXTERNAL_SYS, RAND_NUM } from './support/constants'
 
-describe(`Test asset licences function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'test' }, () => {
   it('Create asset licence', () => {
     cy.visit('/settings')
     cy.verifySubPage('asset-licence-settings', 'asset-licence/list', 'List of Licenses')
@@ -14,7 +14,7 @@ describe(`Test asset licences function, Env: ${Cypress.env('env')}`, () => {
     cy.contains('.v-list-item-title', EXTERNAL_SYS[0]).click()
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
-    cy.getCyVisibleClick('button-create-licence')
+    cy.getCyVisibleClick('button-confirm')
     cy.alertMessage('Record was created')
     cy.wait(1000)
     cy.getCy('copy_text')
