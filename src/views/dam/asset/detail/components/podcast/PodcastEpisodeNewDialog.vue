@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@/types/common'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFactory'
-import { createPodcastEpisode, ENTITY } from '@/services/api/dam/podcastEpisodeApi'
+import { createPodcastEpisode, ENTITY, prepareFormDataPodcastEpisode } from '@/services/api/dam/podcastEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { usePodcastEpisodeValidation } from '@/views/dam/podcastEpisode/composables/podcastEpisodeValidation'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
@@ -15,6 +15,9 @@ import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import PodcastSelect from '@/views/dam/podcast/components/PodcastSelect.vue'
 import ATextarea from '@/components/form/ATextarea.vue'
+import { prepareFormDataJwDistribution } from '@/services/api/dam/distributionJwApi'
+import { AssetType } from '@/model/dam/valueObject/AssetType'
+import { isNull } from '@/utils/common'
 
 const props = withDefaults(
   defineProps<{
@@ -45,6 +48,7 @@ const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
 
 const saving = ref(false)
+const loadingFormData = ref(false)
 
 const { v$ } = usePodcastEpisodeValidation(podcastEpisode)
 
@@ -71,6 +75,29 @@ const submit = async () => {
     saving.value = false
   }
 }
+
+const loadFormData = async () => {
+  if (!podcastEpisode.value.podcast) return
+  loadingFormData.value = true
+  const res = await prepareFormDataPodcastEpisode(props.assetId, podcastEpisode.value.podcast)
+  podcastEpisode.value.texts.title = res.texts.title
+  podcastEpisode.value.texts.description = res.texts.description
+  podcastEpisode.value.texts.rawDescription = res.texts.rawDescription
+  podcastEpisode.value.attributes.episodeNumber = res.attributes.episodeNumber
+  podcastEpisode.value.attributes.seasonNumber = res.attributes.seasonNumber
+  podcastEpisode.value.attributes.extId = res.attributes.extId
+  loadingFormData.value = false
+}
+
+const podcastEpisodePodcast = computed(() => {
+  return podcastEpisode.value.podcast
+})
+
+watch(podcastEpisodePodcast, (newValue, oldValue) => {
+  if (newValue !== oldValue && !isNull(newValue)) {
+    loadFormData()
+  }
+})
 
 onMounted(async () => {
   podcastEpisode.value.asset = props.assetId
@@ -105,38 +132,43 @@ onMounted(async () => {
               :label="t('coreDam.podcastEpisode.model.podcast')"
             ></PodcastSelect>
           </ARow>
-          <ARow>
-            <ATextarea
-              :label="t('coreDam.podcastEpisode.model.texts.title')"
-              v-model="podcastEpisode.texts.title"
-              :v="v$.podcastEpisode.texts.title"
-            ></ATextarea>
-          </ARow>
-          <ARow>
-            <ATextarea
-              :label="t('coreDam.podcastEpisode.model.texts.description')"
-              v-model="podcastEpisode.texts.description"
-              :v="v$.podcastEpisode.texts.description"
-            ></ATextarea>
-          </ARow>
-          <ARow>
-            <ATextField
-              :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
-              v-model="podcastEpisode.attributes.seasonNumber"
-              :v="v$.podcastEpisode.attributes.seasonNumber"
-              type="number"
-              :step="1"
-            ></ATextField>
-          </ARow>
-          <ARow>
-            <ATextField
-              :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
-              v-model="podcastEpisode.attributes.episodeNumber"
-              :v="v$.podcastEpisode.attributes.episodeNumber"
-              type="number"
-              :step="1"
-            ></ATextField>
-          </ARow>
+          <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
+            <VProgressCircular indeterminate color="primary" />
+          </div>
+          <template v-if="podcastEpisode.podcast && !loadingFormData">
+            <ARow>
+              <ATextarea
+                :label="t('coreDam.podcastEpisode.model.texts.title')"
+                v-model="podcastEpisode.texts.title"
+                :v="v$.podcastEpisode.texts.title"
+              ></ATextarea>
+            </ARow>
+            <ARow>
+              <ATextarea
+                :label="t('coreDam.podcastEpisode.model.texts.description')"
+                v-model="podcastEpisode.texts.description"
+                :v="v$.podcastEpisode.texts.description"
+              ></ATextarea>
+            </ARow>
+            <ARow>
+              <ATextField
+                :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
+                v-model="podcastEpisode.attributes.seasonNumber"
+                :v="v$.podcastEpisode.attributes.seasonNumber"
+                type="number"
+                :step="1"
+              ></ATextField>
+            </ARow>
+            <ARow>
+              <ATextField
+                :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
+                v-model="podcastEpisode.attributes.episodeNumber"
+                :v="v$.podcastEpisode.attributes.episodeNumber"
+                type="number"
+                :step="1"
+              ></ATextField>
+            </ARow>
+          </template>
         </VContainer>
       </ASystemEntityScope>
       <VCardActions>

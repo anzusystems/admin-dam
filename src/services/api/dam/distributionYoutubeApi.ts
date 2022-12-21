@@ -47,7 +47,6 @@ export const getYoutubeAuthUrl = (distributionServiceName: DistributionServiceNa
     ENTITY
   )
 
-// todo check force reload
 export const fetchYoutubeLanguages = (distributionServiceName: DistributionServiceName) => {
   const pagination = usePagination()
   return apiFetchList<YoutubeLanguage[]>(
