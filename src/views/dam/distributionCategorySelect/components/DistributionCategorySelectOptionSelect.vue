@@ -56,7 +56,7 @@ const onBlur = () => {
     no-filter
     :error-messages="errorMessageComputed"
     @blur="onBlur"
-    data-cy="ext-system-name"
+    data-cy="distribution-category-select"
   >
     <template #label>
       <span>{{ select.serviceSlug }}</span>

@@ -33,6 +33,7 @@ const onCreateSuccess = (type: AssetType) => {
       <DistributionCategoryCreateButton
         :initial-asset-type="assetType"
         @on-create-success="onCreateSuccess"
+        data-cy="button-create"
       ></DistributionCategoryCreateButton>
     </Acl>
   </ActionbarButtonsWrapper>

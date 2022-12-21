@@ -21,7 +21,7 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
           <ATextField
             v-model="distributionCategory.name"
             :v="v$.distributionCategory.name"
-            data-cy="ext-system-name"
+            data-cy="category-name"
           ></ATextField>
         </ARow>
         <ARow
