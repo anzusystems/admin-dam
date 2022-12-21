@@ -168,7 +168,7 @@ const { authorTypeOptions } = useAuthorType()
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-create">
+        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
           {{ t(buttonT) }}
         </ABtn>
       </VCardActions>
