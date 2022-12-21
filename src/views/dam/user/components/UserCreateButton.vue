@@ -106,10 +106,14 @@ const onConfirm = async () => {
             <ATextField v-model="userCreate.email" :v="v$.userCreate.email" required data-cy="user-email"></ATextField>
           </ARow>
           <ARow>
-            <ATextField v-model="userCreate.firstName" :v="v$.userCreate.firstName"></ATextField>
+            <ATextField
+              v-model="userCreate.firstName"
+              :v="v$.userCreate.firstName"
+              data-cy="user-first-name"
+            ></ATextField>
           </ARow>
           <ARow>
-            <ATextField v-model="userCreate.lastName" :v="v$.userCreate.lastName"></ATextField>
+            <ATextField v-model="userCreate.lastName" :v="v$.userCreate.lastName" data-cy="user-last-name"></ATextField>
           </ARow>
           <ARow v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials">
             <ATextField
@@ -117,7 +121,7 @@ const onConfirm = async () => {
               :v="v$.userCreate.plainPassword"
               required
               type="password"
-              data-cy="user-plain-password"
+              data-cy="user-password"
             ></ATextField>
           </ARow>
           <ARow>

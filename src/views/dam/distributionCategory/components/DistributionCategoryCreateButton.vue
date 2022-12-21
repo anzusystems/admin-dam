@@ -98,14 +98,14 @@ const { assetTypeOptions } = useAssetType()
             <AValueObjectOptionsSelect
               v-model="distributionCategory.type"
               :items="assetTypeOptions"
-              data-cy="ext-system-name"
+              data-cy="category-type"
             ></AValueObjectOptionsSelect>
           </ARow>
           <ARow>
             <ATextField
               v-model="distributionCategory.name"
               :v="v$.distributionCategory.name"
-              data-cy="ext-system-name"
+              data-cy="category-name"
             ></ATextField>
           </ARow>
           <ARow
@@ -126,7 +126,7 @@ const { assetTypeOptions } = useAssetType()
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-create">
+        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
           {{ t(buttonT) }}
         </ABtn>
       </VCardActions>

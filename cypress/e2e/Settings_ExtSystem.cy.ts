@@ -17,7 +17,6 @@ describe(`Test ext system function, Env: ${Cypress.env('env')}`, () => {
     cy.getCyVisibleClick('button-edit')
     cy.urlContains('/edit')
     cy.getCy('ext-system-name').find('input').clear().type('CMS system')
-    cy.getCy('ext-system-slug').find('input').clear().type('cms')
     cy.getCyVisibleClick('button-save-close')
     cy.alertMessage('Record was updated')
     cy.urlNotContains('/edit')
