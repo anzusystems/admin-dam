@@ -104,11 +104,9 @@ if [ -f /.dockerenv ]; then
       # shellcheck disable=SC2086
       TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
          --config-file cypress/config/cypress.config.ts\
-         --headless \
          --env env=${ENV},grepTags=${TAGS} \
          ${BROWSER_OPTIONS} \
          ${TEST_SPEC} \
          ${DASHBOARD_OPTIONS}
 fi
-
 bin/docker-compose exec --user node app bash -c \'bin/test "${ARGS}"\'

@@ -24,6 +24,7 @@ coverage
 cypress/report
 cypress/config
 !cypress/config/cypress.config.ts
+cypress/screenshots
 
 # Managed by yarn
 .yarn/*
