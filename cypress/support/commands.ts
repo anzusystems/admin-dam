@@ -88,11 +88,15 @@ Cypress.Commands.add('getCy', (selector: string, timeout?: number) => {
 })
 
 Cypress.Commands.add('login', (user: string, timeout?: number) => {
-  cy.visit('/')
-  cy.getCy('login-form').should('be.visible')
-  cy.getCy('username').find('input').clear().type(Cypress.env('credentials')[user].username)
-  cy.getCy('password').find('input').clear().type(Cypress.env('credentials')[user].password)
-  cy.getCyVisibleClick('button-login')
+  if ('forceLoginLink' in Cypress.env('credentials')[user]) {
+    cy.visit(Cypress.env('credentials')[user].forceLoginLink)
+  } else {
+    cy.visit('/')
+    cy.getCy('login-form').should('be.visible')
+    cy.getCy('username').type(Cypress.env('credentials')[user].username)
+    cy.getCy('password').type(Cypress.env('credentials')[user].password)
+    cy.getCyVisibleClick('button-login')
+  }
   cy.urlContains('asset/list', timeout)
 })
 Cypress.Commands.add('urlContains', (string: string, timeout?: number) => {
