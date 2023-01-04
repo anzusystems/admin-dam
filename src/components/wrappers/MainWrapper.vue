@@ -45,7 +45,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :variant="sidebarLeft ? 'flat' : 'text'"
               >
                 <VIcon icon="mdi-tune" :size="16" />
-                <VTooltip activator="parent" location="bottom">{{ t('asset.list.filterToggle') }}</VTooltip>
+                <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.filterToggle') }}</VTooltip>
               </VBtn>
               <slot name="second-bar-left"></slot>
             </div>
@@ -61,7 +61,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :color="sidebarRight ? 'secondary' : undefined"
               >
                 <VIcon icon="mdi-information-outline" :size="16" />
-                <VTooltip activator="parent" location="bottom">{{ t('asset.list.infoToggle') }}</VTooltip>
+                <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.infoToggle') }}</VTooltip>
               </VBtn>
             </div>
           </div>

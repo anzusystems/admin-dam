@@ -153,7 +153,7 @@ const onSaveAndClose = async () => {
             icon
           >
             <VIcon icon="mdi-tag-text-outline" />
-            <VTooltip activator="parent" location="bottom">{{ t('asset.massOperations.title') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.title') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showMinimalSelected"
