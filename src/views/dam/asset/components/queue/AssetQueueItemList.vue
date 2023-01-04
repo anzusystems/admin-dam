@@ -35,8 +35,9 @@ const loadingProgress = computed(() => {
         >
         </VProgressCircular>
         <VIcon v-else-if="item.error.hasError" icon="mdi-alert" color="error" :size="16" class="mr-1"></VIcon>
+        <VIcon v-else-if="item.isDuplicate" icon="mdi-alert" color="warning" :size="16" class="mr-1"></VIcon>
         <VIcon v-else icon="mdi-check" color="success" :size="16" class="mr-1"></VIcon>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || 'no title, todo' }}</div>
+        <div class="text-caption line-clamp-1">{{ item.displayTitle || '' }}</div>
       </div>
     </div>
   </div>
