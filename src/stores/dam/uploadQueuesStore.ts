@@ -325,7 +325,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       this.clearQueue(queueId)
       this.forceReloadFileInput(queueId)
     },
-    stopItemUpload(queueId: string, queueItem: UploadQueueItem, index: number) {
+    async stopItemUpload(queueId: string, queueItem: UploadQueueItem, index: number) {
       if (!this.queues[queueId] || this.queues[queueId].items.length === 0) return
       queueItem.status = QueueItemStatus.Stop
       if (
@@ -334,7 +334,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       ) {
         uploadStop(queueItem.chunks[queueItem.currentChunkIndex].cancelTokenSource)
       }
-      this.removeByIndex(queueId, index)
+      await this.removeByIndex(queueId, index)
+      this.processUpload(queueId)
     },
     async queueItemUploadStart(item: UploadQueueItem, queueId: string) {
       // external provider asset import
