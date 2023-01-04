@@ -28,7 +28,7 @@ interface State {
   uploadSpeed: null | number
 }
 
-const QUEUE_MAX_PARALLEL_UPLOADS = 1
+const QUEUE_MAX_PARALLEL_UPLOADS = 2
 const CHUNK_SIZE = 10485760
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
@@ -307,7 +307,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         // wait for empty upload slot
         return
       }
-      this.queueItemUploadStart(waitingItems[0], queueId)
+      for (let i = 0; i < QUEUE_MAX_PARALLEL_UPLOADS; i++) {
+        if (waitingItems[i]) this.queueItemUploadStart(waitingItems[i], queueId)
+      }
     },
     stopUpload(queueId: string) {
       if (!this.queues[queueId] || this.queues[queueId].items.length === 0) return
