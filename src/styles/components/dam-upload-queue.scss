@@ -39,8 +39,34 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
       min-height: auto;
       max-height: none;
 
+      & .#{$class-name-root}__item-status {
+        display: flex;
+        width: 16px;
+        height: 16px;
+      }
+
+      & .#{$class-name-root}__item-remove {
+        display: none;
+        width: 16px;
+        height: 16px;
+      }
+
       .#{$class-name-root}__item-card {
         border: none;
+      }
+
+      &:hover {
+        & .#{$class-name-root}__item-status {
+          display: none;
+        }
+
+        & .#{$class-name-root}__item-status.#{$class-name-root}__item-status--permanent {
+          display: flex;
+        }
+
+        & .#{$class-name-root}__item-remove {
+          display: flex;
+        }
       }
     }
   }
