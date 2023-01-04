@@ -118,3 +118,6 @@ massOperations:
 queueItem:
   edit: Edit more
   uploadNew: Upload new file
+  duplicate: Duplicate
+  viewOriginal: View original
+  error: Error
