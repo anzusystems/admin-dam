@@ -2,6 +2,11 @@
 import { computed } from 'vue'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
+import { useI18n } from 'vue-i18n'
+import { AssetCustomData } from '@/types/dam/Asset'
+import { DocId } from '@/types/common'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(
   defineProps<{
@@ -11,13 +16,21 @@ const props = withDefaults(
   }>(),
   {}
 )
+const emit = defineEmits<{
+  (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
+}>()
 
 const loading = computed(() => {
   return [QueueItemStatus.Waiting, QueueItemStatus.Uploading, QueueItemStatus.Loading].includes(props.item.status)
 })
+
 const loadingProgress = computed(() => {
   return props.item.progress.progressPercent
 })
+
+const cancelItem = () => {
+  emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
+}
 </script>
 
 <template>
@@ -38,6 +51,10 @@ const loadingProgress = computed(() => {
         <VIcon v-else-if="item.isDuplicate" icon="mdi-alert" color="warning" :size="16" class="mr-1"></VIcon>
         <VIcon v-else icon="mdi-check" color="success" :size="16" class="mr-1"></VIcon>
         <div class="text-caption line-clamp-1">{{ item.displayTitle || '' }}</div>
+        <VBtn icon variant="text" size="x-small" class="ml-1" @click.stop="cancelItem">
+          <VIcon icon="mdi-close-circle" size="x-large" />
+          <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
+        </VBtn>
       </div>
     </div>
   </div>
