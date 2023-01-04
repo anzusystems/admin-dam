@@ -72,12 +72,14 @@ const progress = computed(() => {
     :class="buttonClass"
     :data-cy="dataCy"
     btn-helper="delete"
-    icon="mdi-trash-can-outline"
+    icon
     size="small"
     :variant="variant"
     @click.stop="onClick"
     :disabled="disabled"
   >
+    <VIcon icon="mdi-trash-can-outline" />
+    <VTooltip activator="parent" location="bottom">Remove</VTooltip>
   </ABtn>
   <VDialog v-model="dialog.delete" persistent :width="500" no-click-animation>
     <VCard v-if="dialog.delete" data-cy="delete-panel">

@@ -21,5 +21,7 @@ const style = computed(() => {
 </script>
 
 <template>
-  <div :style="style"></div>
+  <div :style="style">
+    <VTooltip activator="parent" location="bottom">{{ color }}</VTooltip>
+  </div>
 </template>

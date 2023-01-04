@@ -59,5 +59,6 @@ const loadingComputed = computed(() => {
   >
     <span v-if="icon"><VIcon :icon="icon"></VIcon></span>
     <span v-else><slot></slot></span>
+    <VTooltip v-if="icon" activator="parent" location="bottom"><slot></slot></VTooltip>
   </VBtn>
 </template>

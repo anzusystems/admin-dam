@@ -240,12 +240,14 @@ watch(selectedFiles, (newValue, oldValue) => {
     <VBtn
       tabindex="-1"
       @click.stop="clickDropzone"
-      icon="mdi-plus"
+      icon
       variant="flat"
       :height="height"
       :width="height"
       color="secondary"
     >
+      <VIcon icon="mdi-plus" />
+      <VTooltip activator="parent" location="bottom">Add to upload</VTooltip>
     </VBtn>
   </div>
   <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">

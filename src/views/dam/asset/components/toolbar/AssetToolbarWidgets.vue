@@ -39,5 +39,6 @@ const externalProviders = computed(() => {
         </VList>
       </VCard>
     </VMenu>
+    <VTooltip activator="parent" location="bottom">Widgets</VTooltip>
   </VBtn>
 </template>

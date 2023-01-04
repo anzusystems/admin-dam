@@ -166,11 +166,13 @@ const onSaveAndClose = async () => {
             :height="36"
             :width="36"
             class="mr-2"
-            icon="mdi-content-save"
+            icon
             color="secondary"
             :loading="btn.save.loading"
             :disabled="btn.save.disabled"
           >
+            <VIcon icon="mdi-content-save" />
+            <VTooltip activator="parent" location="bottom">Save and continue</VTooltip>
           </VBtn>
           <AssetUpload :height="36" variant="icon" />
           <VDivider vertical class="mx-4 my-2" />
@@ -185,6 +187,7 @@ const onSaveAndClose = async () => {
             icon
           >
             <VIcon icon="mdi-tag-text-outline" />
+            <VTooltip activator="parent" location="bottom">Mass operations</VTooltip>
           </VBtn>
           <VBtn
             v-show="showMinimalUpload"
@@ -197,6 +200,7 @@ const onSaveAndClose = async () => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-down"></VIcon>
+            <VTooltip activator="parent" location="bottom">Hide</VTooltip>
           </VBtn>
         </div>
       </VToolbar>
