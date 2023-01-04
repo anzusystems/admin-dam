@@ -119,19 +119,14 @@ const clearForm = () => {
                           :validation-scope="false"
                         />
                       </div>
-                      <VBtn
-                        icon="mdi-file-arrow-left-right-outline"
-                        size="small"
-                        variant="text"
-                        class="mr-1"
-                        @click.stop="fillEmptyKeywords"
-                      ></VBtn>
-                      <VBtn
-                        icon="mdi-file-replace-outline"
-                        size="small"
-                        variant="text"
-                        @click.stop="replaceKeywords"
-                      ></VBtn>
+                      <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyKeywords">
+                        <VIcon icon="mdi-file-arrow-left-right-outline" />
+                        <VTooltip activator="parent" location="bottom">Fill empty</VTooltip>
+                      </VBtn>
+                      <VBtn icon size="small" variant="text" @click.stop="replaceKeywords">
+                        <VIcon icon="mdi-file-replace-outline" />
+                        <VTooltip activator="parent" location="bottom">Replace in all assets</VTooltip>
+                      </VBtn>
                     </div>
                   </ASystemEntityScope>
                 </VCol>
@@ -150,19 +145,14 @@ const clearForm = () => {
                           :validation-scope="false"
                         />
                       </div>
-                      <VBtn
-                        icon="mdi-file-arrow-left-right-outline"
-                        size="small"
-                        variant="text"
-                        class="mr-1"
-                        @click.stop="fillEmptyAuthors"
-                      ></VBtn>
-                      <VBtn
-                        icon="mdi-file-replace-outline"
-                        size="small"
-                        variant="text"
-                        @click.stop="replaceAuthors"
-                      ></VBtn>
+                      <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyAuthors">
+                        <VIcon icon="mdi-file-arrow-left-right-outline" />
+                        <VTooltip activator="parent" location="bottom">Fill empty</VTooltip>
+                      </VBtn>
+                      <VBtn icon size="small" variant="text" @click.stop="replaceAuthors">
+                        <VIcon icon="mdi-file-replace-outline" />
+                        <VTooltip activator="parent" location="bottom">Replace in all assets</VTooltip>
+                      </VBtn>
                     </div>
                   </ASystemEntityScope>
                 </VCol>

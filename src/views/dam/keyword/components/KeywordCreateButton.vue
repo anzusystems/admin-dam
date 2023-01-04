@@ -110,12 +110,15 @@ const onConfirm = async () => {
     v-else
     :class="buttonClass"
     :data-cy="dataCy"
-    icon="mdi-plus"
+    icon
     :disabled="disabled"
     @click.stop="onClick"
     variant="text"
     size="small"
-  ></VBtn>
+  >
+    <VIcon icon="mdi-plus" />
+    <VTooltip activator="parent" location="bottom">Add new keyword</VTooltip>
+  </VBtn>
   <VDialog v-model="dialog" persistent>
     <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <VCardTitle class="d-flex pr-2">

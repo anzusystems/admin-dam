@@ -91,6 +91,7 @@ const isUploading = computed(() => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-down"></VIcon>
+            <VTooltip activator="parent" location="bottom">Hide</VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
@@ -103,6 +104,7 @@ const isUploading = computed(() => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-up"></VIcon>
+            <VTooltip activator="parent" location="bottom">Show</VTooltip>
           </VBtn>
         </div>
       </VToolbar>

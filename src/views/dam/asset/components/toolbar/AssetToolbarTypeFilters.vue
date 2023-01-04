@@ -29,6 +29,7 @@ const isPodcastActive = computed(() => {
 <template>
   <VBtn variant="text" icon size="x-small" class="mr-1" @click.stop="setTypeAndFetch()">
     <VIcon icon="mdi-multimedia" :size="16" />
+    <VTooltip activator="parent" location="bottom">All</VTooltip>
   </VBtn>
   <VBtn
     icon
@@ -40,6 +41,7 @@ const isPodcastActive = computed(() => {
     :variant="isImageActive ? 'flat' : 'text'"
   >
     <VIcon icon="mdi-image" :size="16" />
+    <VTooltip activator="parent" location="bottom">Image</VTooltip>
   </VBtn>
   <VBtn
     icon
@@ -51,6 +53,7 @@ const isPodcastActive = computed(() => {
     :variant="isVideoActive ? 'flat' : 'text'"
   >
     <VIcon icon="mdi-video" :size="16" />
+    <VTooltip activator="parent" location="bottom">Video</VTooltip>
   </VBtn>
   <VBtn
     icon
@@ -62,10 +65,8 @@ const isPodcastActive = computed(() => {
     :variant="isAudioActive ? 'flat' : 'text'"
   >
     <VIcon icon="mdi-music" :size="16" />
+    <VTooltip activator="parent" location="bottom">Audio</VTooltip>
   </VBtn>
-  <!--  <VBtn variant="outlined" icon size="x-small" class="mr-1">-->
-  <!--    <VIcon icon="mdi-podcast" :size="16" />-->
-  <!--  </VBtn>-->
   <VBtn
     icon
     size="x-small"
@@ -75,6 +76,7 @@ const isPodcastActive = computed(() => {
     :variant="isDocumentActive ? 'flat' : 'text'"
   >
     <VIcon icon="mdi-note" :size="16" />
+    <VTooltip activator="parent" location="bottom">Document</VTooltip>
   </VBtn>
   <VBtn
     icon
@@ -85,5 +87,6 @@ const isPodcastActive = computed(() => {
     :variant="isPodcastActive ? 'flat' : 'text'"
   >
     <VIcon icon="mdi-podcast" :size="16" />
+    <VTooltip activator="parent" location="bottom">Audio Podcast</VTooltip>
   </VBtn>
 </template>

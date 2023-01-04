@@ -35,5 +35,6 @@ const icon = computed(() => {
 <template>
   <VBtn :class="buttonClass" :data-cy="dataCy" icon size="x-small" variant="text" @click.stop="onClick">
     <VIcon :icon="icon" />
+    <VTooltip activator="parent" location="bottom">More filters</VTooltip>
   </VBtn>
 </template>

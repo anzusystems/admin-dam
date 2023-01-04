@@ -84,6 +84,7 @@ const clear = () => {
         :title="item.name"
       >
         <VIcon v-show="item.selected" icon="mdi-check position-absolute" :color="item.iconColor" :size="20" />
+        <VTooltip activator="parent" location="bottom">{{ item.color }}</VTooltip>
       </div>
       <VBtn @click.stop="clear" v-show="showClear" icon="mdi-close-circle" variant="text" :width="24" :height="24" />
     </div>

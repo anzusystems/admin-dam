@@ -124,6 +124,7 @@ const imageSrc = computed(() => {
             >
               <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
               <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
+              <VTooltip activator="parent" location="bottom">Select/Deselect</VTooltip>
             </VBtn>
             <VBtn
               variant="flat"
@@ -135,6 +136,7 @@ const imageSrc = computed(() => {
               @click.stop="showDetail"
             >
               <VIcon icon="mdi-pencil" :size="20" />
+              <VTooltip activator="parent" location="bottom">Edit</VTooltip>
             </VBtn>
           </div>
         </div>

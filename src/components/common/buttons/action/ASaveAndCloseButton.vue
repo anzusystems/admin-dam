@@ -38,5 +38,6 @@ const onClick = (event: Event) => {
     :height="35"
   >
     <AIconGroup main-icon="mdi-content-save" secondary-icon="mdi-close"></AIconGroup>
+    <VTooltip activator="parent" location="bottom">Save and close</VTooltip>
   </ABtn>
 </template>

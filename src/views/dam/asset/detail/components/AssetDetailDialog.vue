@@ -127,10 +127,12 @@ const totalCountText = computed(() => {
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div v-if="assetDetailStore.view === 'list'">
             <VBtn variant="text" icon @click.stop="prevItem" class="mx-1" :width="36" :height="36">
-              <VIcon icon="mdi-chevron-left"></VIcon>
+              <VIcon icon="mdi-chevron-left" />
+              <VTooltip activator="parent" location="bottom">Prev asset</VTooltip>
             </VBtn>
             <VBtn variant="text" icon @click.stop="nextItem" class="mr-2" :width="36" :height="36">
-              <VIcon icon="mdi-chevron-right"></VIcon>
+              <VIcon icon="mdi-chevron-right" />
+              <VTooltip activator="parent" location="bottom">Next asset</VTooltip>
             </VBtn>
           </div>
           <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">
@@ -150,9 +152,11 @@ const totalCountText = computed(() => {
               :height="36"
             >
               <VIcon icon="mdi-information-outline"></VIcon>
+              <VTooltip activator="parent" location="bottom">Show/hide info sidebar</VTooltip>
             </VBtn>
             <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
               <VIcon icon="mdi-close"></VIcon>
+              <VTooltip activator="parent" location="bottom">Close</VTooltip>
             </VBtn>
           </div>
         </VToolbar>

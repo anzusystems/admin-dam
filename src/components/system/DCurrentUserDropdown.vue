@@ -61,5 +61,6 @@ const { currentUser } = useCurrentUser()
         </VList>
       </VCard>
     </VMenu>
+    <VTooltip activator="parent" location="bottom">Options</VTooltip>
   </VBtn>
 </template>

@@ -34,5 +34,6 @@ const onClick = (event: Event) => {
     variant="flat"
   >
     <VIcon color="grey darken-1" icon="mdi-filter-remove-outline" />
+    <VTooltip activator="parent" location="bottom">Reset</VTooltip>
   </VBtn>
 </template>

@@ -34,12 +34,14 @@ const { t } = useI18n({ useScope: 'global' })
     v-if="icon"
     :class="buttonClass"
     :elevation="2"
-    icon="mdi-content-save"
+    icon
     size="small"
     variant="outlined"
     @click.stop="onClick"
     btn-helper="save"
   >
+    <VIcon icon="mdi-content-save" />
+    <VTooltip activator="parent" location="bottom">Save and close</VTooltip>
   </ABtn>
   <ABtn
     v-else

@@ -42,6 +42,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :variant="sidebarLeft ? 'flat' : 'text'"
               >
                 <VIcon icon="mdi-tune" :size="16" />
+                <VTooltip activator="parent" location="bottom">Filters</VTooltip>
               </VBtn>
               <slot name="second-bar-left"></slot>
             </div>
@@ -57,6 +58,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :color="sidebarRight ? 'secondary' : undefined"
               >
                 <VIcon icon="mdi-information-outline" :size="16" />
+                <VTooltip activator="parent" location="bottom">Info</VTooltip>
               </VBtn>
             </div>
           </div>
@@ -65,7 +67,6 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     </VAppBar>
     <VDialog v-if="customDialog" :model-value="true" fullscreen persistent no-click-animation class="overlay--sidebar">
       <VCard>
-        skuska
         <slot name="custom-dialog"></slot>
       </VCard>
     </VDialog>
