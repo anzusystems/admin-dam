@@ -44,3 +44,5 @@ upload:
   add: Add to upload
   dragAndDrop: Drag and drop files for upload
   incorrectFormatSize: Incorrect format or size
+  stop: Stop and cancel
+  stopConfirmQuestion: Are you sure you want to stop upload
