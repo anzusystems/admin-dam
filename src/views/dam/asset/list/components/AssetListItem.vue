@@ -127,7 +127,7 @@ const imageSrc = computed(() => {
             >
               <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
               <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
-              <VTooltip activator="parent" location="bottom">{{ t('asset.list.toggleSelect') }}</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.toggleSelect') }}</VTooltip>
             </VBtn>
             <VBtn
               variant="flat"
@@ -139,7 +139,7 @@ const imageSrc = computed(() => {
               @click.stop="showDetail"
             >
               <VIcon icon="mdi-pencil" :size="20" />
-              <VTooltip activator="parent" location="bottom">{{ t('asset.list.edit') }}</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.edit') }}</VTooltip>
             </VBtn>
           </div>
         </div>

@@ -80,7 +80,7 @@ watch(
       <VProgressCircular indeterminate color="primary"></VProgressCircular>
     </div>
     <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="!asset">
-      {{ t('asset.detial.noAssetSelected') }}
+      {{ t('coreDam.asset.detial.noAssetSelected') }}
     </div>
     <div v-else>
       <AssetInfobox :asset-status="assetStatus" />

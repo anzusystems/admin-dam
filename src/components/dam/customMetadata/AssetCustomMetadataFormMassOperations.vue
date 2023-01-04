@@ -57,11 +57,11 @@ const elements = computed(() => {
             @click.stop="fillEmptyField(element.key, modelValue[element.key])"
           >
             <VIcon icon="mdi-file-arrow-left-right-outline" />
-            <VTooltip activator="parent" location="bottom">{{ t('asset.massOperations.fillOne') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.fillOne') }}</VTooltip>
           </VBtn>
           <VBtn icon size="small" variant="text" @click.stop="replaceField(element.key, modelValue[element.key])">
             <VIcon icon="mdi-file-replace-outline" />
-            <VTooltip activator="parent" location="bottom">{{ t('asset.massOperations.replaceOne') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.replaceOne') }}</VTooltip>
           </VBtn>
         </div>
       </VCol>

@@ -131,11 +131,11 @@ const totalCountText = computed(() => {
           <div v-if="assetDetailStore.view === 'list'">
             <VBtn variant="text" icon @click.stop="prevItem" class="mx-1" :width="36" :height="36">
               <VIcon icon="mdi-chevron-left" />
-              <VTooltip activator="parent" location="bottom">{{ t('asset.list.prev') }}</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.prev') }}</VTooltip>
             </VBtn>
             <VBtn variant="text" icon @click.stop="nextItem" class="mr-2" :width="36" :height="36">
               <VIcon icon="mdi-chevron-right" />
-              <VTooltip activator="parent" location="bottom">{{ t('asset.list.next') }}</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.next') }}</VTooltip>
             </VBtn>
           </div>
           <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">
@@ -155,7 +155,7 @@ const totalCountText = computed(() => {
               :height="36"
             >
               <VIcon icon="mdi-information-outline"></VIcon>
-              <VTooltip activator="parent" location="bottom">{{ t('asset.detail.toggleInfo') }}</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
             <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
               <VIcon icon="mdi-close"></VIcon>
