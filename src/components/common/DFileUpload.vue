@@ -4,10 +4,13 @@ import { computed, ref, watch } from 'vue'
 import { flattenArray, fromArgs } from '@/utils/array'
 import { isArray, isUndefined } from '@/utils/common'
 import { useAlerts } from '@/composables/system/alerts'
+import { useI18n } from 'vue-i18n'
 
 type InputRef = null | HTMLInputElement
 
 const BLOCK_DOUBLE_CLICK_MS = 200
+
+const { t } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(
   defineProps<{
@@ -160,7 +163,7 @@ const checkFormatsAndSizes = (files: File[]) => {
   })
   if (incorrectFileNames.length) {
     const { showWarning } = useAlerts()
-    showWarning('Incorrect format or size:' + incorrectFileNames.join(', '))
+    showWarning(t('common.upload.incorrectFormatSize') + ':' + incorrectFileNames.join(', '))
   }
 
   return validFiles
@@ -247,7 +250,7 @@ watch(selectedFiles, (newValue, oldValue) => {
       color="secondary"
     >
       <VIcon icon="mdi-plus" />
-      <VTooltip activator="parent" location="bottom">Add to upload</VTooltip>
+      <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
     </VBtn>
   </div>
   <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
@@ -262,7 +265,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     @drop="onDrop"
     @click.stop="clickDropzone"
   >
-    <div class="text-h1">Drag and drop files for upload</div>
+    <div class="text-h1">{{ t('common.upload.dragAndDrop') }}</div>
   </div>
   <input
     ref="inputRef"

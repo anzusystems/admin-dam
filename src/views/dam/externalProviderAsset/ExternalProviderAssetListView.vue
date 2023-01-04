@@ -103,7 +103,7 @@ onMounted(async () => {
       <AssetUpload variant="button" :button-text="t('system.mainBar.upload')" />
     </template>
     <template #second-bar-right>
-      <div class="text-caption">Found items: {{ totalCountText }}</div>
+      <div class="text-caption">{{ t('asset.list.foundItems') }}: {{ totalCountText }}</div>
       <VDivider vertical class="mx-1 my-2" />
       <DGridViewToggle />
       <VDivider vertical class="mx-1 my-2" />

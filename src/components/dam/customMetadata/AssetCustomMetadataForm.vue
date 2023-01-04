@@ -6,6 +6,9 @@ import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCus
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { useAssetCustomMetadataForm } from '@/components/dam/customMetadata/useAssetCustomMetadataForm'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(
   defineProps<{
@@ -45,7 +48,7 @@ const pinnedCount = computed(() => {
 })
 
 const showHideButtonText = computed(() => {
-  return showAllMetadata.value ? 'Hide more metadata' : 'Show more metadata'
+  return showAllMetadata.value ? t('asset.detail.metadataToggle.hide') : t('asset.detail.metadataToggle.show')
 })
 const showHideButtonIcon = computed(() => {
   return showAllMetadata.value ? 'mdi-minus' : 'mdi-plus'

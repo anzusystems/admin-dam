@@ -5,6 +5,9 @@ import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainWrapper()
 </script>
@@ -42,7 +45,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :variant="sidebarLeft ? 'flat' : 'text'"
               >
                 <VIcon icon="mdi-tune" :size="16" />
-                <VTooltip activator="parent" location="bottom">Filters</VTooltip>
+                <VTooltip activator="parent" location="bottom">{{ t('asset.list.filterToggle') }}</VTooltip>
               </VBtn>
               <slot name="second-bar-left"></slot>
             </div>
@@ -58,7 +61,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :color="sidebarRight ? 'secondary' : undefined"
               >
                 <VIcon icon="mdi-information-outline" :size="16" />
-                <VTooltip activator="parent" location="bottom">Info</VTooltip>
+                <VTooltip activator="parent" location="bottom">{{ t('asset.list.infoToggle') }}</VTooltip>
               </VBtn>
             </div>
           </div>

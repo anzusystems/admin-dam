@@ -172,7 +172,7 @@ const onSaveAndClose = async () => {
             :disabled="btn.save.disabled"
           >
             <VIcon icon="mdi-content-save" />
-            <VTooltip activator="parent" location="bottom">Save and continue</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.upload.save') }}</VTooltip>
           </VBtn>
           <AssetUpload :height="36" variant="icon" />
           <VDivider vertical class="mx-4 my-2" />
@@ -187,7 +187,7 @@ const onSaveAndClose = async () => {
             icon
           >
             <VIcon icon="mdi-tag-text-outline" />
-            <VTooltip activator="parent" location="bottom">Mass operations</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('asset.massOperations.title') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showMinimalUpload"
@@ -200,7 +200,7 @@ const onSaveAndClose = async () => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-down"></VIcon>
-            <VTooltip activator="parent" location="bottom">Hide</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
         </div>
       </VToolbar>

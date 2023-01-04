@@ -15,6 +15,9 @@ import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useTheme } from '@/composables/system/themeSettings'
 import type { DocId } from '@/types/common'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const emit = defineEmits<{
   (e: 'nextItem'): void
@@ -128,11 +131,11 @@ const totalCountText = computed(() => {
           <div v-if="assetDetailStore.view === 'list'">
             <VBtn variant="text" icon @click.stop="prevItem" class="mx-1" :width="36" :height="36">
               <VIcon icon="mdi-chevron-left" />
-              <VTooltip activator="parent" location="bottom">Prev asset</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('asset.list.prev') }}</VTooltip>
             </VBtn>
             <VBtn variant="text" icon @click.stop="nextItem" class="mr-2" :width="36" :height="36">
               <VIcon icon="mdi-chevron-right" />
-              <VTooltip activator="parent" location="bottom">Next asset</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('asset.list.next') }}</VTooltip>
             </VBtn>
           </div>
           <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">
@@ -152,11 +155,11 @@ const totalCountText = computed(() => {
               :height="36"
             >
               <VIcon icon="mdi-information-outline"></VIcon>
-              <VTooltip activator="parent" location="bottom">Show/hide info sidebar</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
             <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
               <VIcon icon="mdi-close"></VIcon>
-              <VTooltip activator="parent" location="bottom">Close</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
             </VBtn>
           </div>
         </VToolbar>
