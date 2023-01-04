@@ -27,10 +27,12 @@ const IMAGE_ASPECT_RATIO = 16 / 9
 
 const props = withDefaults(
   defineProps<{
+    queueId: string
     customData: AssetCustomData
     keywords: DocId[]
     authors: DocId[]
     item: UploadQueueItem
+    index: number
   }>(),
   {}
 )
@@ -38,6 +40,7 @@ const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
   (e: 'update:authors', data: DocId[]): void
+  (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
 }>()
 
 const customData = computed({
@@ -124,6 +127,14 @@ const status = computed(() => {
 
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
+
+const cancelItem = () => {
+  emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
+}
+
+const showCancel = computed(() => {
+  return [QueueItemStatus.Loading, QueueItemStatus.Waiting, QueueItemStatus.Uploading].includes(props.item.status)
+})
 </script>
 
 <template>
@@ -146,15 +157,17 @@ const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.val
           class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
         >
           <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
-          <div class="text-warning">Duplicate</div>
-          <VBtn variant="text" size="small" @click.stop="viewOriginal" v-if="item.duplicateAssetId">View original</VBtn>
+          <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
+          <VBtn variant="text" size="small" @click.stop="viewOriginal" v-if="item.duplicateAssetId">
+            {{ t('coreDam.asset.queueItem.viewOriginal') }}
+          </VBtn>
         </div>
         <div
           v-if="item.error.hasError"
           class="dam-upload-queue__overlay dam-upload-queue__overlay--error d-flex align-center justify-center flex-column"
         >
           <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
-          <div class="text-error">Error</div>
+          <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
           <div v-if="item.error.message.length" class="text-caption" v-html="item.error.message"></div>
           <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
         </div>
@@ -182,7 +195,16 @@ const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.val
             >
               {{ t('coreDam.asset.queueItem.edit') }}
             </VBtn>
-            <ADeleteButton variant="text" @delete-record="remove" :disabled="!item.canEditMetadata"></ADeleteButton>
+            <VBtn icon variant="text" @click.stop="cancelItem" v-if="showCancel">
+              <VIcon icon="mdi-close-circle-outline" />
+              <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
+            </VBtn>
+            <ADeleteButton
+              variant="text"
+              @delete-record="remove"
+              :disabled="!item.canEditMetadata"
+              v-else
+            ></ADeleteButton>
           </div>
         </VCol>
       </VRow>
