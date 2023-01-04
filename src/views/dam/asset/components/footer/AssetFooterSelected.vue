@@ -92,7 +92,7 @@ const onClearConfirm = async () => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-down"></VIcon>
-            <VTooltip activator="parent" location="bottom">Hide</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
@@ -105,7 +105,7 @@ const onClearConfirm = async () => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-up"></VIcon>
-            <VTooltip activator="parent" location="bottom">Show</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.modal.show') }}</VTooltip>
           </VBtn>
         </div>
       </VToolbar>

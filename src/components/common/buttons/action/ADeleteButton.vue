@@ -24,7 +24,7 @@ const props = withDefaults(
   {
     variant: 'text',
     useUiHelper: false,
-    buttonT: 'common.button.create',
+    buttonT: 'common.button.delete',
     buttonClass: 'ml-2',
     dialogMessageT: 'common.modal.confirmDelete',
     dialogConfirmButtonT: 'common.button.delete',
@@ -79,7 +79,7 @@ const progress = computed(() => {
     :disabled="disabled"
   >
     <VIcon icon="mdi-trash-can-outline" />
-    <VTooltip activator="parent" location="bottom">Remove</VTooltip>
+    <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
   </ABtn>
   <VDialog v-model="dialog.delete" persistent :width="500" no-click-animation>
     <VCard v-if="dialog.delete" data-cy="delete-panel">

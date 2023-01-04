@@ -117,7 +117,7 @@ const onConfirm = async () => {
     size="small"
   >
     <VIcon icon="mdi-plus" />
-    <VTooltip activator="parent" location="bottom">Add new keyword</VTooltip>
+    <VTooltip activator="parent" location="bottom">{{ t('coreDam.keyword.button.add') }}</VTooltip>
   </VBtn>
   <VDialog v-model="dialog" persistent>
     <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">

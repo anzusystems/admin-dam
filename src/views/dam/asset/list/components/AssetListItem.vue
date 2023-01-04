@@ -6,6 +6,9 @@ import type { DocId } from '@/types/common'
 import { isImageFile } from '@/types/dam/File'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'
@@ -124,7 +127,7 @@ const imageSrc = computed(() => {
             >
               <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
               <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
-              <VTooltip activator="parent" location="bottom">Select/Deselect</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('asset.list.toggleSelect') }}</VTooltip>
             </VBtn>
             <VBtn
               variant="flat"
@@ -136,7 +139,7 @@ const imageSrc = computed(() => {
               @click.stop="showDetail"
             >
               <VIcon icon="mdi-pencil" :size="20" />
-              <VTooltip activator="parent" location="bottom">Edit</VTooltip>
+              <VTooltip activator="parent" location="bottom">{{ t('asset.list.edit') }}</VTooltip>
             </VBtn>
           </div>
         </div>
