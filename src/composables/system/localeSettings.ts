@@ -3,11 +3,12 @@ import { readonly } from 'vue'
 import { i18n } from '@/plugins/i18n'
 import { isNull } from '@/utils/common'
 
-export type LocaleCode = 'sk' | 'cz' | 'en' | 'xx'
+export type LocaleCode = 'sk' | 'en' | 'xx'
 
 export interface Locale {
   code: LocaleCode
   title: string
+  adminOnly?: boolean
 }
 
 let i18nGlobal = null as null | any
@@ -21,14 +22,11 @@ const allLocales = [
     code: 'sk',
     title: 'Slovensky',
   },
-  // {
-  //   code: 'cz',
-  //   title: 'Česky',
-  // },
-  // {
-  //   code: 'xx',
-  //   title: 'Translation ID',
-  // },
+  {
+    code: 'xx',
+    title: 'Translation ID',
+    adminOnly: true,
+  },
 ] as Locale[]
 
 export const DEFAULT_LANGUAGE = 'en'
