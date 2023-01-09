@@ -1,21 +1,23 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@/types/common'
-import { isNull, isUndefined } from '@/utils/common'
+import { isUndefined } from '@/utils/common'
 import { minValue, required } from '@/plugins/validators'
 import useVuelidate, { ErrorObject } from '@vuelidate/core'
 import { useAlerts } from '@/composables/system/alerts'
 import { updateCurrentUser } from '@/services/api/dam/userApi'
 import { useErrorHandler } from '@/composables/system/error'
 
+// todo: separate display button and update form
+
 const { t } = useI18n({ useScope: 'global' })
 
-const { currentExtSystem } = useCurrentExtSystem()
-const { currentAssetLicence } = useCurrentAssetLicence()
+const { currentExtSystem, currentExtSystemId } = useCurrentExtSystem()
+const { currentAssetLicence, currentAssetLicenceId } = useCurrentAssetLicence()
 const { currentUser } = useCurrentUser()
 
 const dialog = ref(false)
@@ -126,6 +128,26 @@ const onConfirm = async () => {
     saving.value = false
   }
 }
+
+watch(
+  currentExtSystemId,
+  (newValue, oldValue) => {
+    if (newValue !== oldValue && newValue > 0) {
+      selectedExtSystem.value = newValue
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  currentAssetLicenceId,
+  (newValue, oldValue) => {
+    if (newValue !== oldValue && newValue > 0) {
+      selectedLicence.value = newValue
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
