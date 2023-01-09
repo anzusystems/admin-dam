@@ -85,6 +85,9 @@ const loading = computed(() => {
 const loadingProgress = computed(() => {
   return props.item.progress.progressPercent
 })
+const processing = computed(() => {
+  return props.item.status === QueueItemStatus.Processing
+})
 
 const uploadNew = async () => {
   // todo
@@ -147,6 +150,7 @@ const showCancel = computed(() => {
           :src="imageSrc"
           background-color="#ccc"
           :show-loading="loading"
+          :show-processing="processing"
           :loading-progress="loadingProgress"
           use-component
           cover
