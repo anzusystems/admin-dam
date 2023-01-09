@@ -29,6 +29,7 @@ export interface CurrentUserDto
   superAdmin: boolean
   selectedLicence: IntegerIdNullable
   adminToExtSystems: CurrentUserExtSystem[]
+  userToExtSystems: CurrentUserExtSystem[]
   assetLicences: CurrentUserAssetLicence[]
 }
 

@@ -43,21 +43,3 @@ export function loadLazyAuthor(forceRefresh = false) {
 export function useLazyAuthor() {
   return useAllHelper<ValueObjectOption<string>, string>(all, allIds)
 }
-
-type ArrayScalarType<T> = T | Array<T>
-
-function someFunction<T extends ArrayScalarType<string | number | null | undefined>>(type: T): T {
-  return type
-}
-
-someFunction('1')
-
-someFunction(1)
-
-someFunction([1])
-
-someFunction(['1'])
-
-someFunction(['1', 1, 0, undefined])
-
-someFunction({}) // invalid
