@@ -11,6 +11,7 @@ import useVuelidate, { ErrorObject } from '@vuelidate/core'
 import { useAlerts } from '@/composables/system/alerts'
 import { updateCurrentUser } from '@/services/api/dam/userApi'
 import { useErrorHandler } from '@/composables/system/error'
+import { damConfig } from '@/services/DamConfigService'
 
 const props = withDefaults(
   defineProps<{
@@ -70,8 +71,7 @@ const licenceItems = computed(() => {
 })
 
 const allowSelect = computed(() => {
-  return true
-  // return damConfig.settings.allowSelectExtSystem && damConfig.settings.allowSelectLicenceId
+  return damConfig.settings.allowSelectExtSystem && damConfig.settings.allowSelectLicenceId
 })
 
 const onCancel = () => {

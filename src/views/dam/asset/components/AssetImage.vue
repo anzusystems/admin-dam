@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +18,9 @@ const props = withDefaults(
     cover?: boolean
     aspectRatio?: number
     showLoading?: boolean
+    showProcessing?: boolean
     loadingColor?: string
+    processingColor?: string
     loadingProgress?: number | null
   }>(),
   {
@@ -32,7 +35,9 @@ const props = withDefaults(
     cover: false,
     aspectRatio: undefined,
     showLoading: false,
+    showProcessing: false,
     loadingColor: 'primary',
+    processingColor: 'primary',
     loadingProgress: null,
   }
 )
@@ -40,6 +45,8 @@ const emit = defineEmits<{
   (e: 'load'): void
   (e: 'error'): void
 }>()
+
+const { t } = useI18n({ useScope: 'global' })
 
 const onLoad = () => {
   emit('load')
@@ -70,7 +77,7 @@ const percentage = computed(() => {
   return value > 100 ? '100%' : value + '%'
 })
 
-const color = computed(() => {
+const loadingColorComputed = computed(() => {
   return props.loadingProgress === null ? '' : props.loadingColor
 })
 
@@ -95,10 +102,23 @@ const iconColor = computed(() => {
     @load="onLoad"
   >
     <template v-slot:default>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showLoading">
+      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showProcessing">
         <div class="f-flex flex-column text-center">
           <VProgressCircular
-            :color="color"
+            :color="processingColor"
+            indeterminate
+            :size="iconSize"
+            :width="iconSize / 10"
+            class="ml-auto mr-auto"
+          ></VProgressCircular>
+          <br />
+          <span class="text-caption">{{ t('common.upload.processing') }}</span>
+        </div>
+      </div>
+      <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="showLoading">
+        <div class="f-flex flex-column text-center">
+          <VProgressCircular
+            :color="loadingColorComputed"
             :indeterminate="loadingProgress === null"
             :size="iconSize"
             :width="iconSize / 10"

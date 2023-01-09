@@ -46,3 +46,4 @@ upload:
   incorrectFormatSize: Incorrect format or size
   stop: Close
   stopConfirmQuestion: Are you sure you want to stop upload
+  processing: Processing
