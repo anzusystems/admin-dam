@@ -29,3 +29,5 @@ uploadErrors:
   mimeType: Incorrect mime type
 closePage:
   title: This page/tab can be safely closed.
+error:
+  notificationsNotConnected: Notification service is not working, some elements of admin will not work correctly.

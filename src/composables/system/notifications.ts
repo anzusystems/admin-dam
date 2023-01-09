@@ -1,7 +1,10 @@
 import { useWebSocket } from '@vueuse/core'
 import { envConfig } from '@/services/EnvConfigService'
+import { useAlerts } from '@/composables/system/alerts'
+import { i18n } from '@/plugins/i18n'
 
 const notificationEventTarget = new EventTarget()
+const { t } = i18n.global || i18n
 
 export function useNotification() {
   const { open, ws } = useWebSocket(envConfig.notification.webSocketUrl, {
@@ -23,6 +26,10 @@ export function useNotification() {
       console.log('ws notification-server open', event)
     }
     ws.value.onerror = function (this: WebSocket, event: Event) {
+      const { showWarning } = useAlerts()
+      setTimeout(() => {
+        showWarning(t('system.error.notificationsNotConnected'), -1)
+      }, 3000)
       console.log('ws notification-server error', event)
     }
     ws.value.onmessage = function (this: WebSocket, event: MessageEvent) {
