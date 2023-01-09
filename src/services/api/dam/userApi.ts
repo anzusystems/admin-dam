@@ -1,6 +1,13 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { apiCreateOne, apiDeleteOne, apiFetchByIds, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
+import {
+  apiAnyRequest,
+  apiCreateOne,
+  apiDeleteOne,
+  apiFetchByIds,
+  apiFetchOne,
+  apiUpdateOne,
+} from '@/services/api/anzuApi'
 import type { Pagination } from '@/types/Pagination'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
 import type { FilterBag } from '@/types/Filter'
@@ -15,11 +22,12 @@ export const fetchCurrentUser = () =>
   apiFetchOne<CurrentUserDto>(damClient, CURRENT_USER_END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
 
 export const updateCurrentUser = (data: UpdateCurrentUserDto) =>
-  apiUpdateOne<UpdateCurrentUserDto, CurrentUserDto>(
+  apiAnyRequest<UpdateCurrentUserDto, CurrentUserDto>(
     damClient,
-    data,
+    'PATCH',
     CURRENT_USER_END_POINT,
     {},
+    data,
     SYSTEM_CORE_DAM,
     ENTITY
   )

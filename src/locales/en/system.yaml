@@ -14,6 +14,12 @@ mainBar:
   userOptions: Options
   customIntegrations: Custom integrations
   podcasts: Podcasts
+  extSystemLicenceSwitch:
+    extSystem: External system
+    licence: Licence
+    title: Switch DAM ext system and asset licence
+    description: 'Important: Please finish all work first, any progress will be lost!'
+    confirm: Confirm and reload admin
 settings:
   locale: Locale
   theme: Theme
