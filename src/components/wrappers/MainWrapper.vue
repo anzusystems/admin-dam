@@ -6,6 +6,7 @@ import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
+import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -25,6 +26,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         </div>
         <div class="d-flex align-center">
           <slot name="main-bar-right"></slot>
+          <AssetToolbarExtSystemLicence />
           <AssetToolbarWidgets />
           <DCurrentUserDropdown variant="main" />
         </div>
