@@ -60,7 +60,7 @@ const status = computed(() => {
       </div>
       <div class="d-flex align-center w-100">
         <div></div>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || 'no title, todo' }}</div>
+        <div class="text-caption line-clamp-1">{{ item.displayTitle || '' }}</div>
       </div>
     </div>
   </div>
