@@ -5,12 +5,24 @@ import type { Pagination } from '@/types/Pagination'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
 import type { FilterBag } from '@/types/Filter'
 import type { CreateUser, UpdateUser, User } from '@/types/dam/User'
+import type { CurrentUserDto, UpdateCurrentUserDto } from '@/types/dam/CurrentUser'
 
 const END_POINT = '/adm/v1/user'
 export const CURRENT_USER_END_POINT = END_POINT + '/current'
 export const ENTITY = 'user'
 
-export const fetchCurrentUser = () => apiFetchOne<User>(damClient, CURRENT_USER_END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const fetchCurrentUser = () =>
+  apiFetchOne<CurrentUserDto>(damClient, CURRENT_USER_END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+
+export const updateCurrentUser = (data: UpdateCurrentUserDto) =>
+  apiUpdateOne<UpdateCurrentUserDto, CurrentUserDto>(
+    damClient,
+    data,
+    CURRENT_USER_END_POINT,
+    {},
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
 
 export const fetchUserListByIds = (ids: number[]) =>
   apiFetchByIds<User[]>(damClient, ids, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
