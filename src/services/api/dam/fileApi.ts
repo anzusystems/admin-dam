@@ -25,6 +25,7 @@ import {
   externalProviderUpload as documentExternalProviderUpload,
 } from '@/services/api/dam/documentApi'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
+import { QueueItemStatus } from '@/types/dam/UploadQueue'
 
 interface UploadStartResponse {
   id: DocId
@@ -72,6 +73,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case AssetType.Image:
         imageUploadFinish(item, sha)
           .then((res) => {
+            item.status = QueueItemStatus.Processing
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -79,6 +81,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case AssetType.Audio:
         audioUploadFinish(item, sha)
           .then((res) => {
+            item.status = QueueItemStatus.Processing
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -86,6 +89,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case AssetType.Video:
         videoUploadFinish(item, sha)
           .then((res) => {
+            item.status = QueueItemStatus.Processing
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -93,6 +97,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case AssetType.Document:
         documentUploadFinish(item, sha)
           .then((res) => {
+            item.status = QueueItemStatus.Processing
             resolve(res)
           })
           .catch((err) => reject(err))

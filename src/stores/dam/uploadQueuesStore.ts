@@ -356,6 +356,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       await uploadInit()
       try {
         await upload()
+        this.processUpload(queueId)
       } catch (e) {
         item.error.hasError = true
         item.status = QueueItemStatus.Failed
