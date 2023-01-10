@@ -49,3 +49,4 @@ upload:
   waiting: Waiting
   processing: Processing
   uploading: Uploading
+  done: Done

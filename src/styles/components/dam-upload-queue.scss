@@ -92,7 +92,22 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
 }
 
 .asset-image-loading-bg .v-responsive__content {
-  background-color: rgba(255, 255, 255, 0.5) // todo dark
+  background-color: rgba(255, 255, 255, 0.5); // todo dark
+}
+
+.asset-image-animate-done {
+  background-color: rgba(255, 255, 255, 0.5); // todo dark
+  animation: animate-upload-done 2s forwards;
+}
+
+@keyframes animate-upload-done {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 .v-theme--light {

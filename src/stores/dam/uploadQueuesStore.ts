@@ -393,6 +393,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             item.authorSuggestions = asset.metadata.authorSuggestions
             item.customData = asset.metadata.customData
             item.canEditMetadata = true
+            item.status = QueueItemStatus.Uploaded
             this.addToBufferLazyValues(item, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
           }
         })

@@ -85,6 +85,9 @@ const processing = computed(() => {
 const waiting = computed(() => {
   return [QueueItemStatus.Waiting, QueueItemStatus.Loading].includes(props.item.status)
 })
+const done = computed(() => {
+  return props.item.status === QueueItemStatus.Uploaded
+})
 const uploading = computed(() => {
   return props.item.status === QueueItemStatus.Uploading
 })
@@ -155,6 +158,7 @@ const showCancel = computed(() => {
           :show-uploading="uploading"
           :show-processing="processing"
           :show-waiting="waiting"
+          :show-done="done"
           :uploading-progress="uploadProgress"
           use-component
           cover
