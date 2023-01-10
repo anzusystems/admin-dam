@@ -79,14 +79,17 @@ const { showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 const { closeDeleteDialog } = useUiHelper()
 
-const loading = computed(() => {
-  return [QueueItemStatus.Waiting, QueueItemStatus.Uploading, QueueItemStatus.Loading].includes(props.item.status)
-})
-const loadingProgress = computed(() => {
-  return props.item.progress.progressPercent
-})
 const processing = computed(() => {
   return props.item.status === QueueItemStatus.Processing
+})
+const waiting = computed(() => {
+  return [QueueItemStatus.Waiting, QueueItemStatus.Loading].includes(props.item.status)
+})
+const uploading = computed(() => {
+  return props.item.status === QueueItemStatus.Uploading
+})
+const uploadProgress = computed(() => {
+  return props.item.progress.progressPercent
 })
 
 const uploadNew = async () => {
@@ -149,9 +152,10 @@ const showCancel = computed(() => {
           :asset-status="status"
           :src="imageSrc"
           background-color="#ccc"
-          :show-loading="loading"
+          :show-uploading="uploading"
           :show-processing="processing"
-          :loading-progress="loadingProgress"
+          :show-waiting="waiting"
+          :uploading-progress="uploadProgress"
           use-component
           cover
           :aspect-ratio="IMAGE_ASPECT_RATIO"

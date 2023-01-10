@@ -17,11 +17,12 @@ const props = withDefaults(
     useComponent?: boolean
     cover?: boolean
     aspectRatio?: number
-    showLoading?: boolean
+    showUploading?: boolean
     showProcessing?: boolean
-    loadingColor?: string
+    showWaiting?: boolean
+    uploadingColor?: string
     processingColor?: string
-    loadingProgress?: number | null
+    uploadingProgress?: number | null
   }>(),
   {
     assetType: AssetType.Image,
@@ -34,11 +35,12 @@ const props = withDefaults(
     useComponent: false,
     cover: false,
     aspectRatio: undefined,
-    showLoading: false,
+    showUploading: false,
     showProcessing: false,
-    loadingColor: 'primary',
+    showWaiting: false,
+    uploadingColor: 'primary',
     processingColor: 'primary',
-    loadingProgress: null,
+    uploadingProgress: null,
   }
 )
 const emit = defineEmits<{
@@ -71,14 +73,10 @@ const icon = computed(() => {
   }
 })
 
-const percentage = computed(() => {
-  if (!props.loadingProgress) return '0%'
-  const value = Math.ceil(props.loadingProgress)
+const uploadingPercentage = computed(() => {
+  if (!props.uploadingProgress) return '0%'
+  const value = Math.ceil(props.uploadingProgress)
   return value > 100 ? '100%' : value + '%'
-})
-
-const loadingColorComputed = computed(() => {
-  return props.loadingProgress === null ? '' : props.loadingColor
 })
 
 const backgroundColorComputed = computed(() => {
@@ -92,7 +90,7 @@ const iconColor = computed(() => {
 
 <template>
   <VImg
-    v-if="showLoading"
+    v-if="showUploading || showProcessing || showWaiting"
     :aspect-ratio="aspectRatio"
     :src="src"
     :width="width"
@@ -102,6 +100,14 @@ const iconColor = computed(() => {
     @load="onLoad"
   >
     <template v-slot:default>
+      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showWaiting">
+        <div class="f-flex flex-column text-center">
+          <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" class="ml-auto mr-auto">
+          </VProgressCircular>
+          <br />
+          <span class="text-caption">{{ t('common.upload.waiting') }}</span>
+        </div>
+      </div>
       <div class="d-flex w-100 h-100 align-center justify-center" v-if="showProcessing">
         <div class="f-flex flex-column text-center">
           <VProgressCircular
@@ -115,18 +121,19 @@ const iconColor = computed(() => {
           <span class="text-caption">{{ t('common.upload.processing') }}</span>
         </div>
       </div>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="showLoading">
+      <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="showUploading">
         <div class="f-flex flex-column text-center">
           <VProgressCircular
-            :color="loadingColorComputed"
-            :indeterminate="loadingProgress === null"
+            :color="uploadingColor"
             :size="iconSize"
             :width="iconSize / 10"
             class="ml-auto mr-auto"
-            :model-value="loadingProgress === null ? undefined : loadingProgress"
+            :model-value="uploadingProgress === null ? undefined : uploadingProgress"
           >
-            {{ percentage === '0%' ? '' : percentage }}
+            {{ uploadingPercentage }}
           </VProgressCircular>
+          <br />
+          <span class="text-caption">{{ t('common.upload.uploading') }}</span>
         </div>
       </div>
     </template>
