@@ -2,7 +2,6 @@
 import { computed, ref, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
-import { prettyBytes } from '@/utils/file'
 import AssetQueueEditable from '@/views/dam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { bulkUpdateAssetsMetadata } from '@/services/api/dam/assetApi'
@@ -30,12 +29,6 @@ const queueTotalCount = computed(() => {
 })
 const queueProcessedCount = computed(() => {
   return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
-const displaySpeed = computed(() => {
-  if (uploadQueuesStore.uploadSpeed && uploadQueuesStore.uploadSpeed > 0) {
-    return prettyBytes(uploadQueuesStore.uploadSpeed ? uploadQueuesStore.uploadSpeed : 0) + '/s'
-  }
-  return ''
 })
 
 watch(queueTotalCount, (newValue, oldValue) => {
@@ -139,11 +132,7 @@ const onSaveAndClose = async () => {
         <VSpacer></VSpacer>
         <div class="text-caption d-flex align-center" v-if="isUploading">
           <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"></VProgressCircular>
-          <div>
-            {{ t('coreDam.asset.upload.uploading') }} {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}
-            <span v-show="displaySpeed.length > 0">({{ displaySpeed }})</span>
-          </div>
-          <AssetFooterUploadButtonStop v-if="isUploading" @confirm="onStopConfirm" />
+          <div>{{ t('coreDam.asset.upload.uploading') }} {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
         </div>
         <div class="d-flex align-center">
           <VDivider v-show="isUploading" vertical class="mx-4 my-2" />
@@ -166,11 +155,13 @@ const onSaveAndClose = async () => {
             :height="36"
             :width="36"
             class="mr-2"
-            icon="mdi-content-save"
+            icon
             color="secondary"
             :loading="btn.save.loading"
             :disabled="btn.save.disabled"
           >
+            <VIcon icon="mdi-content-save" />
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.upload.save') }}</VTooltip>
           </VBtn>
           <AssetUpload :height="36" variant="icon" />
           <VDivider vertical class="mx-4 my-2" />
@@ -185,6 +176,7 @@ const onSaveAndClose = async () => {
             icon
           >
             <VIcon icon="mdi-tag-text-outline" />
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.title') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showMinimalUpload"
@@ -197,7 +189,9 @@ const onSaveAndClose = async () => {
             class="mr-2"
           >
             <VIcon icon="mdi-chevron-down"></VIcon>
+            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
+          <AssetFooterUploadButtonStop @confirm="onStopConfirm" :button-size="36" :is-uploading="isUploading" />
         </div>
       </VToolbar>
       <AssetQueueEditable :queue-id="QUEUE_ID_UPLOAD_GLOBAL" :mass-operations="massOperations"></AssetQueueEditable>

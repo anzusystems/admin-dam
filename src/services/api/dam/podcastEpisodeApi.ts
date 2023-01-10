@@ -32,6 +32,15 @@ export const fetchPodcastEpisodeListByAsset = (assetId: DocId, pagination: Pagin
     ENTITY
   )
 
+export const prepareFormDataPodcastEpisode = (assetId: DocId, podcastId: DocId) =>
+  apiFetchOne<PodcastEpisode>(
+    damClient,
+    END_POINT + '/asset/:assetId/podcast/:podcastId/prepare-payload',
+    { assetId, podcastId },
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
+
 export const createPodcastEpisode = (data: PodcastEpisode) =>
   apiCreateOne<PodcastEpisode>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
 

@@ -3,12 +3,17 @@ import { computed } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
+import { UploadQueueItem } from '@/types/dam/UploadQueue'
 
 const uploadQueuesStore = useUploadQueuesStore()
 
 const list = computed(() => {
   return uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL)
 })
+
+const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+}
 </script>
 
 <template>
@@ -19,6 +24,7 @@ const list = computed(() => {
       :index="index"
       :item="item"
       :queue-id="QUEUE_ID_UPLOAD_GLOBAL"
+      @cancel-item="cancelItem"
     />
   </div>
 </template>

@@ -15,6 +15,7 @@ export enum QueueItemStatus {
   Loading = 'loading', // loading additional api data
   Waiting = 'waiting', // waiting to be uploaded
   Uploading = 'uploading', // uploading right now
+  Processing = 'processing', // all data sent by FE, server processing, waiting for notification, todo
   Failed = 'failed', // any error
   Uploaded = 'uploaded', // uploaded/ready after loading
   Stop = 'stop', // after hitting stop upload
@@ -59,6 +60,7 @@ export interface UploadQueueItem {
     hasError: boolean
     message: string
   }
+  notificationFallbackTimer: ReturnType<typeof setTimeout> | undefined
 }
 
 export interface UploadQueue {

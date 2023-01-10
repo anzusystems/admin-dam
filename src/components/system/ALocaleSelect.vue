@@ -4,8 +4,10 @@ import type { Locale, LocaleCode } from '@/composables/system/localeSettings'
 import { defaultLocale, useLocaleSettings } from '@/composables/system/localeSettings'
 import { computed } from 'vue'
 import { isUndefined } from '@/utils/common'
+import { useCurrentUser } from '@/composables/system/currentUser'
 
 const { allLocales, currentLocaleCode, setLocale } = useLocaleSettings()
+const { currentUserIsSuperAdmin } = useCurrentUser()
 
 const onLocaleChange = (code: LocaleCode) => {
   setLocale(code)
@@ -17,6 +19,12 @@ const currentLocale = computed(() => {
   const found = allLocales.find((item) => item.code === currentLocaleCode.value)
   if (isUndefined(found)) return defaultLocale
   return found as Locale
+})
+
+const availableLocales = computed(() => {
+  return allLocales.filter((item) => {
+    return !(item.adminOnly && !currentUserIsSuperAdmin.value)
+  })
 })
 </script>
 
@@ -32,7 +40,7 @@ const currentLocale = computed(() => {
     </template>
     <VCard>
       <VList dense>
-        <VListItem v-for="locale in allLocales" :key="locale.code" @click.stop="onLocaleChange(locale.code)">
+        <VListItem v-for="locale in availableLocales" :key="locale.code" @click.stop="onLocaleChange(locale.code)">
           <VListItemTitle>
             <VAvatar class="mr-1" size="30">
               <div class="flag" v-html="getLocaleFlag(locale.code)"></div>

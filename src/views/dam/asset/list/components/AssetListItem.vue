@@ -6,6 +6,9 @@ import type { DocId } from '@/types/common'
 import { isImageFile } from '@/types/dam/File'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'
@@ -111,7 +114,7 @@ const imageSrc = computed(() => {
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">{{ asset.texts.displayTitle || 'no title todo' }}</div>
+          <div class="line-clamp-1">{{ asset.texts.displayTitle || '' }}</div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
               variant="flat"
@@ -124,6 +127,7 @@ const imageSrc = computed(() => {
             >
               <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
               <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.toggleSelect') }}</VTooltip>
             </VBtn>
             <VBtn
               variant="flat"
@@ -135,6 +139,7 @@ const imageSrc = computed(() => {
               @click.stop="showDetail"
             >
               <VIcon icon="mdi-pencil" :size="20" />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.edit') }}</VTooltip>
             </VBtn>
           </div>
         </div>

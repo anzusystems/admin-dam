@@ -4,6 +4,9 @@ import { useExternalProviderAssetDetailActions } from '@/views/dam/externalProvi
 import ExternalProviderAssetMetadata from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetMetadata.vue'
 import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProviderAssetDetailStore'
 import { useExternalProviderAssetImport } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const { sidebarRight } = useMainWrapper()
 
@@ -26,7 +29,9 @@ const onImport = () => {
     <div class="d-flex w-100 h-100 align-center justify-center" v-if="loader">
       <VProgressCircular indeterminate color="primary"></VProgressCircular>
     </div>
-    <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="!asset">No asset selected</div>
+    <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="!asset">
+      {{ t('coreDam.asset.detial.noAssetSelected') }}
+    </div>
     <div v-else>
       <ExternalProviderAssetMetadata />
     </div>

@@ -54,5 +54,6 @@ const onClick = (event: Event) => {
     @click.stop="onClick"
   >
     <AIconGroup :secondary-text="t(iconT)" main-icon="mdi-content-copy" size="small"></AIconGroup>
+    <VTooltip activator="parent" location="bottom">Copy ID</VTooltip>
   </VBtn>
 </template>

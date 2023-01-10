@@ -12,3 +12,5 @@ meta:
   edit: Keyword Edit
   detail: Keyword Detail
   list: Keywords List
+button:
+  add: Add new keyword

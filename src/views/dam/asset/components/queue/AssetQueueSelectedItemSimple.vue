@@ -14,11 +14,13 @@ const props = withDefaults(
   {}
 )
 
-const loading = computed(() => {
-  return [QueueItemStatus.Waiting, QueueItemStatus.Uploading, QueueItemStatus.Loading].includes(props.item.status)
-})
-const loadingProgress = computed(() => {
-  return props.item.progress.progressPercent
+const processing = computed(() => {
+  return [
+    QueueItemStatus.Waiting,
+    QueueItemStatus.Uploading,
+    QueueItemStatus.Loading,
+    QueueItemStatus.Processing,
+  ].includes(props.item.status)
 })
 const imageSrc = computed(() => {
   return props.item.links.length > 0 ? props.item.links[0].url : ''
@@ -44,8 +46,7 @@ const status = computed(() => {
           :width="160"
           :height="80"
           :fallback-height="80"
-          :show-loading="loading"
-          :loading-progress="loadingProgress"
+          :show-processing="processing"
           use-component
           cover
           :icon-size="50"
@@ -60,7 +61,7 @@ const status = computed(() => {
       </div>
       <div class="d-flex align-center w-100">
         <div></div>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || 'no title, todo' }}</div>
+        <div class="text-caption line-clamp-1">{{ item.displayTitle || '' }}</div>
       </div>
     </div>
   </div>

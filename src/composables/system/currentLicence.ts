@@ -2,13 +2,17 @@ import { readonly, ref, watch } from 'vue'
 import { damConfig, damConfigInitialized } from '@/services/DamConfigService'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
 import { fetchAssetLicence } from '@/services/api/dam/assetLicenceApi'
+import { useCurrentUser } from '@/composables/system/currentUser'
 
 const currentAssetLicence = ref<AssetLicence>()
 const currentAssetLicenceId = ref(0)
 
 export const initCurrentAssetLicence = () => {
-  watch(currentAssetLicenceId, async () => {
-    if (currentAssetLicenceId.value) {
+  const { currentUser } = useCurrentUser()
+
+  watch(currentAssetLicenceId, async (newValue, oldValue) => {
+    if (newValue !== oldValue && newValue > 0) {
+      currentAssetLicence.value = undefined
       currentAssetLicence.value = await fetchAssetLicence(currentAssetLicenceId.value)
     }
   })
@@ -17,10 +21,29 @@ export const initCurrentAssetLicence = () => {
     if (!damConfigInitialized.value) {
       console.error('Config must be loaded first.')
       reject(false)
+      return
+    }
+    if (!currentUser.value) {
+      console.error('Current user must be loaded first.')
+      reject(false)
+      return
     }
     if (damConfig.settings.allowSelectLicenceId) {
-      console.error('Not yet implemented.')
-      reject(false)
+      if (currentUser.value.selectedLicence) {
+        const foundLicence = currentUser.value.assetLicences.find(
+          (item) => item.id === currentUser.value!.selectedLicence
+        )
+        if (foundLicence) {
+          currentAssetLicenceId.value = foundLicence.id
+          resolve(true)
+          return
+        }
+      }
+      if (currentUser.value.assetLicences[0]) {
+        currentAssetLicenceId.value = currentUser.value.assetLicences[0].id
+        resolve(true)
+        return
+      }
     }
     currentAssetLicenceId.value = damConfig.settings.defaultAssetLicenceId
     resolve(true)

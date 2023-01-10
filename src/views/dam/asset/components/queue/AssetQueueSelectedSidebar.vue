@@ -103,7 +103,7 @@ const clearForm = () => {
       <div class="sidebar-info__content">
         <div class="text-caption pa-3">{{ t('coreDam.asset.massOperations.description') }}</div>
         <VExpansionPanels v-model="panels" multiple class="v-expansion-panels--compact">
-          <VExpansionPanel elevation="0" title="General" value="general">
+          <VExpansionPanel elevation="0" :title="t('coreDam.asset.massOperations.general')" value="general">
             <VExpansionPanelText>
               <VRow dense class="my-2">
                 <VCol>
@@ -119,19 +119,18 @@ const clearForm = () => {
                           :validation-scope="false"
                         />
                       </div>
-                      <VBtn
-                        icon="mdi-file-arrow-left-right-outline"
-                        size="small"
-                        variant="text"
-                        class="mr-1"
-                        @click.stop="fillEmptyKeywords"
-                      ></VBtn>
-                      <VBtn
-                        icon="mdi-file-replace-outline"
-                        size="small"
-                        variant="text"
-                        @click.stop="replaceKeywords"
-                      ></VBtn>
+                      <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyKeywords">
+                        <VIcon icon="mdi-file-arrow-left-right-outline" />
+                        <VTooltip activator="parent" location="bottom">
+                          {{ t('coreDam.asset.massOperations.fillOne') }}
+                        </VTooltip>
+                      </VBtn>
+                      <VBtn icon size="small" variant="text" @click.stop="replaceKeywords">
+                        <VIcon icon="mdi-file-replace-outline" />
+                        <VTooltip activator="parent" location="bottom">
+                          {{ t('coreDam.asset.massOperations.replaceOne') }}
+                        </VTooltip>
+                      </VBtn>
                     </div>
                   </ASystemEntityScope>
                 </VCol>
@@ -150,26 +149,25 @@ const clearForm = () => {
                           :validation-scope="false"
                         />
                       </div>
-                      <VBtn
-                        icon="mdi-file-arrow-left-right-outline"
-                        size="small"
-                        variant="text"
-                        class="mr-1"
-                        @click.stop="fillEmptyAuthors"
-                      ></VBtn>
-                      <VBtn
-                        icon="mdi-file-replace-outline"
-                        size="small"
-                        variant="text"
-                        @click.stop="replaceAuthors"
-                      ></VBtn>
+                      <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyAuthors">
+                        <VIcon icon="mdi-file-arrow-left-right-outline" />
+                        <VTooltip activator="parent" location="bottom">
+                          {{ t('coreDam.asset.massOperations.fillOne') }}
+                        </VTooltip>
+                      </VBtn>
+                      <VBtn icon size="small" variant="text" @click.stop="replaceAuthors">
+                        <VIcon icon="mdi-file-replace-outline" />
+                        <VTooltip activator="parent" location="bottom">
+                          {{ t('coreDam.asset.massOperations.replaceOne') }}
+                        </VTooltip>
+                      </VBtn>
                     </div>
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" title="Image" value="image">
+          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.image')" value="image">
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 :asset-type="AssetType.Image"
@@ -179,17 +177,17 @@ const clearForm = () => {
               />
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" title="Video" value="video">
+          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.video')" value="video">
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations :asset-type="AssetType.Video" v-model="massOperationsData.video" />
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" title="Audio" value="audio">
+          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.audio')" value="audio">
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations :asset-type="AssetType.Audio" v-model="massOperationsData.audio" />
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" title="Document" value="document">
+          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.document')" value="document">
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 :asset-type="AssetType.Document"

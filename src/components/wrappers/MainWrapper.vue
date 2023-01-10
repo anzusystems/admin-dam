@@ -5,6 +5,10 @@ import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import { useI18n } from 'vue-i18n'
+import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainWrapper()
 </script>
@@ -22,6 +26,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         </div>
         <div class="d-flex align-center">
           <slot name="main-bar-right"></slot>
+          <AssetToolbarExtSystemLicence />
           <AssetToolbarWidgets />
           <DCurrentUserDropdown variant="main" />
         </div>
@@ -42,6 +47,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :variant="sidebarLeft ? 'flat' : 'text'"
               >
                 <VIcon icon="mdi-tune" :size="16" />
+                <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.filterToggle') }}</VTooltip>
               </VBtn>
               <slot name="second-bar-left"></slot>
             </div>
@@ -57,6 +63,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :color="sidebarRight ? 'secondary' : undefined"
               >
                 <VIcon icon="mdi-information-outline" :size="16" />
+                <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.infoToggle') }}</VTooltip>
               </VBtn>
             </div>
           </div>
@@ -65,7 +72,6 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     </VAppBar>
     <VDialog v-if="customDialog" :model-value="true" fullscreen persistent no-click-animation class="overlay--sidebar">
       <VCard>
-        skuska
         <slot name="custom-dialog"></slot>
       </VCard>
     </VDialog>

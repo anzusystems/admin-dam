@@ -23,10 +23,12 @@ withDefaults(
     :data-cy="dataCy"
     :target="target"
     :to="{ name: routeName, params: { id: recordId } }"
-    icon="mdi-pencil"
+    icon
     size="x-small"
     variant="text"
     @click.stop="() => {}"
   >
+    <VIcon icon="mdi-pencil" />
+    <VTooltip activator="parent" location="bottom">Edit</VTooltip>
   </VBtn>
 </template>

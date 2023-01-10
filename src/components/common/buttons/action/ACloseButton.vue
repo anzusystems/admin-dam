@@ -19,10 +19,13 @@ withDefaults(
     :class="buttonClass"
     :data-cy="dataCy"
     :to="{ name: routeName }"
-    icon="mdi-close"
+    icon
     size="small"
     variant="outlined"
     :width="36"
     :height="36"
-  ></VBtn>
+  >
+    <VIcon icon="mdi-close" />
+    <VTooltip activator="parent" location="bottom">Close</VTooltip>
+  </VBtn>
 </template>

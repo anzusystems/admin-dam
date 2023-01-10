@@ -46,6 +46,7 @@ const onClick = (event: Event) => {
   >
     <span>{{ value }}</span>
     <VIcon v-if="isSupported" class="ml-1" size="x-small" icon="mdi-content-copy" />
+    <VTooltip activator="parent" location="bottom">Copy</VTooltip>
   </div>
 </template>
 
