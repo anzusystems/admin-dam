@@ -19,7 +19,12 @@ const emit = defineEmits<{
 }>()
 
 const loading = computed(() => {
-  return [QueueItemStatus.Waiting, QueueItemStatus.Uploading, QueueItemStatus.Loading].includes(props.item.status)
+  return [
+    QueueItemStatus.Waiting,
+    QueueItemStatus.Uploading,
+    QueueItemStatus.Loading,
+    QueueItemStatus.Processing,
+  ].includes(props.item.status)
 })
 
 const loadingProgress = computed(() => {
