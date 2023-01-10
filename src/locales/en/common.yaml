@@ -23,6 +23,8 @@ datatable:
   noDataText: No data to display
 modal:
   confirmDelete: Remove?
+  hide: Hide
+  show: Show
 alerts:
   unknownError: System error, try again later or contact administrator
   fixValidationErrors: Please fill all required fields and fix problems
@@ -38,3 +40,13 @@ alerts:
     deleted: Record was removed
   idWasCopied: ID was copied to clipboard
   textWasCopied: Text was copied to clipboard
+upload:
+  add: Add to upload
+  dragAndDrop: Drag and drop files for upload
+  incorrectFormatSize: Incorrect format or size
+  stop: Close
+  stopConfirmQuestion: Are you sure you want to stop upload
+  waiting: Waiting
+  processing: Processing
+  uploading: Uploading
+  done: Done

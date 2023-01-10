@@ -4,6 +4,9 @@ import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { useTheme } from '@/composables/system/themeSettings'
 import { computed } from 'vue'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const emit = defineEmits<{
   (e: 'closeDialog'): void
@@ -30,11 +33,13 @@ const totalCountText = computed(() => {
     <div class="d-flex flex-column w-100 h-100">
       <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
         <div v-if="assetDetailStore.view === 'list'">
-          <VBtn variant="text" @click.stop="" class="mx-1" :width="36" :height="36">
-            <VIcon icon="mdi-chevron-left"></VIcon>
+          <VBtn variant="text" icon @click.stop="" class="mx-1" :width="36" :height="36">
+            <VIcon icon="mdi-chevron-left" />
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.prev') }}</VTooltip>
           </VBtn>
-          <VBtn variant="text" @click.stop="" class="mr-2" :width="36" :height="36">
-            <VIcon icon="mdi-chevron-right"></VIcon>
+          <VBtn variant="text" icon @click.stop="" class="mr-2" :width="36" :height="36">
+            <VIcon icon="mdi-chevron-right" />
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.next') }}</VTooltip>
           </VBtn>
         </div>
         <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">

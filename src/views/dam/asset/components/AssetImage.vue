@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -16,9 +17,13 @@ const props = withDefaults(
     useComponent?: boolean
     cover?: boolean
     aspectRatio?: number
-    showLoading?: boolean
-    loadingColor?: string
-    loadingProgress?: number | null
+    showUploading?: boolean
+    showProcessing?: boolean
+    showWaiting?: boolean
+    showDone?: boolean
+    uploadingColor?: string
+    processingColor?: string
+    uploadingProgress?: number | null
   }>(),
   {
     assetType: AssetType.Image,
@@ -31,15 +36,21 @@ const props = withDefaults(
     useComponent: false,
     cover: false,
     aspectRatio: undefined,
-    showLoading: false,
-    loadingColor: 'primary',
-    loadingProgress: null,
+    showUploading: false,
+    showProcessing: false,
+    showWaiting: false,
+    showDone: false,
+    uploadingColor: 'primary',
+    processingColor: 'primary',
+    uploadingProgress: null,
   }
 )
 const emit = defineEmits<{
   (e: 'load'): void
   (e: 'error'): void
 }>()
+
+const { t } = useI18n({ useScope: 'global' })
 
 const onLoad = () => {
   emit('load')
@@ -64,14 +75,10 @@ const icon = computed(() => {
   }
 })
 
-const percentage = computed(() => {
-  if (!props.loadingProgress) return '0%'
-  const value = Math.ceil(props.loadingProgress)
+const uploadingPercentage = computed(() => {
+  if (!props.uploadingProgress) return '0%'
+  const value = Math.ceil(props.uploadingProgress)
   return value > 100 ? '100%' : value + '%'
-})
-
-const color = computed(() => {
-  return props.loadingProgress === null ? '' : props.loadingColor
 })
 
 const backgroundColorComputed = computed(() => {
@@ -85,7 +92,7 @@ const iconColor = computed(() => {
 
 <template>
   <VImg
-    v-if="showLoading"
+    v-if="showUploading || showProcessing || showWaiting"
     :aspect-ratio="aspectRatio"
     :src="src"
     :width="width"
@@ -93,20 +100,43 @@ const iconColor = computed(() => {
     :cover="cover"
     @error="onError"
     @load="onLoad"
+    class="asset-image-loading-bg"
   >
     <template v-slot:default>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showLoading">
+      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showWaiting">
+        <div class="f-flex flex-column text-center">
+          <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" class="ml-auto mr-auto">
+          </VProgressCircular>
+          <br />
+          <span class="text-caption">{{ t('common.upload.waiting') }}</span>
+        </div>
+      </div>
+      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showProcessing">
         <div class="f-flex flex-column text-center">
           <VProgressCircular
-            :color="color"
-            :indeterminate="loadingProgress === null"
+            :color="processingColor"
+            indeterminate
             :size="iconSize"
             :width="iconSize / 10"
             class="ml-auto mr-auto"
-            :model-value="loadingProgress === null ? undefined : loadingProgress"
+          ></VProgressCircular>
+          <br />
+          <span class="text-caption">{{ t('common.upload.processing') }}</span>
+        </div>
+      </div>
+      <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="showUploading">
+        <div class="f-flex flex-column text-center">
+          <VProgressCircular
+            :color="uploadingColor"
+            :size="iconSize"
+            :width="iconSize / 10"
+            class="ml-auto mr-auto"
+            :model-value="uploadingProgress === null ? undefined : uploadingProgress"
           >
-            {{ percentage === '0%' ? '' : percentage }}
+            {{ uploadingPercentage }}
           </VProgressCircular>
+          <br />
+          <span class="text-caption">{{ t('common.upload.uploading') }}</span>
         </div>
       </div>
     </template>
@@ -121,7 +151,19 @@ const iconColor = computed(() => {
     class="asset-image asset-image--component"
     :cover="cover"
     :aspect-ratio="aspectRatio"
-  ></VImg>
+  >
+    <template v-slot:default v-if="showDone">
+      <div class="d-flex w-100 h-100 align-center justify-center asset-image-animate-done">
+        <div class="f-flex flex-column text-center">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }" class="d-flex">
+            <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
+          </div>
+          <br />
+          <span class="text-caption">{{ t('common.upload.done') }}</span>
+        </div>
+      </div>
+    </template>
+  </VImg>
   <img
     v-else-if="assetStatus === AssetStatus.WithFile && assetType === AssetType.Image"
     :src="src"
@@ -138,5 +180,16 @@ const iconColor = computed(() => {
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
     <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor"></VIcon>
+    <div v-if="showDone" class="d-flex w-100 h-100 position-absolute">
+      <div class="d-flex w-100 h-100 align-center justify-center asset-image-animate-done">
+        <div class="f-flex flex-column text-center">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }" class="d-flex">
+            <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
+          </div>
+          <br />
+          <span class="text-caption">{{ t('common.upload.done') }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

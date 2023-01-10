@@ -3,7 +3,6 @@ import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { computed, watch } from 'vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
-import { prettyBytes } from '@/utils/file'
 import AssetFooterUploadButtonStop from '@/views/dam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import AssetQueueUploadList from '@/views/dam/asset/components/queue/AssetQueueUploadList.vue'
 import { useTheme } from '@/composables/system/themeSettings'
@@ -32,12 +31,6 @@ const queueTotalCount = computed(() => {
 const queueProcessedCount = computed(() => {
   return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
 })
-const displaySpeed = computed(() => {
-  if (uploadQueuesStore.uploadSpeed && uploadQueuesStore.uploadSpeed > 0) {
-    return prettyBytes(uploadQueuesStore.uploadSpeed ? uploadQueuesStore.uploadSpeed : 0) + '/s'
-  }
-  return ''
-})
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -46,7 +39,6 @@ watch(queueTotalCount, (newValue, oldValue) => {
 })
 
 const onStopConfirm = () => {
-  // todo clear html input file
   uploadQueuesStore.stopUpload(QUEUE_ID_UPLOAD_GLOBAL)
   hideUpload()
 }
@@ -71,14 +63,10 @@ const isUploading = computed(() => {
           </div>
         </div>
         <VSpacer></VSpacer>
-        <div class="d-flex align-center">
+        <div class="d-flex align-center pr-1">
           <div class="text-caption mr-2 d-flex align-center" v-if="isUploading">
             <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"></VProgressCircular>
-            <div>
-              {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}
-              <span v-show="displaySpeed.length > 0">({{ displaySpeed }})</span>
-            </div>
-            <AssetFooterUploadButtonStop v-if="isUploading" @confirm="onStopConfirm" variant="small" />
+            <div>{{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
           </div>
           <VBtn
             v-show="showMinimalUpload"
@@ -88,9 +76,10 @@ const isUploading = computed(() => {
             :height="26"
             :width="26"
             rounded="circle"
-            class="mr-2"
+            class="mr-1"
           >
             <VIcon icon="mdi-chevron-down"></VIcon>
+            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
@@ -100,10 +89,12 @@ const isUploading = computed(() => {
             :height="26"
             :width="26"
             rounded="circle"
-            class="mr-2"
+            class="mr-1"
           >
-            <VIcon icon="mdi-chevron-up"></VIcon>
+            <VIcon icon="mdi-chevron-up" />
+            <VTooltip activator="parent" location="bottom">{{ t('common.modal.show') }}</VTooltip>
           </VBtn>
+          <AssetFooterUploadButtonStop @confirm="onStopConfirm" :is-uploading="isUploading" />
         </div>
       </VToolbar>
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">

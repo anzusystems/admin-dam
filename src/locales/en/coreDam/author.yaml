@@ -21,3 +21,5 @@ meta:
   edit: Author Edit
   detail: Author Detail
   list: Authors List
+button:
+  add: Add new author

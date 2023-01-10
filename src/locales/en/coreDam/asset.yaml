@@ -40,7 +40,25 @@ imageOrientation:
   landscape: landscape
   portrait: portrait
   square: square
+list:
+  foundItems: Found items
+  gridView:
+    masonry: Masonry
+    thumbnail: Grid
+  infoToggle: Toggle info
+  filterToggle: Toggle filters
+  filters: Filters
+  allTypes: All types
+  toggleSelect: Toggle select
+  edit: Edit
+  prev: Prev asset
+  next: Next asset
 detail:
+  toggleInfo: Toggle info
+  metadataToggle:
+    show: Hide more metadata
+    hide: Show more metadata
+  noAssetSelected: No asset selected
   tabs:
     info: Meta
     roi: Focus
@@ -71,6 +89,7 @@ upload:
   title: Upload
   titleDone: Upload done
   edit: Add description
+  save: Save and continue
   saveAndClose: Save and finish
   uploading: Uploading
   stopOverlay:
@@ -85,13 +104,20 @@ selected:
     description: Any unsaved work will be lost
     confirm: Clear selected
   cancel: Cancel
+  save: Save and continue
   saveAndClose: Save and finish
 massOperations:
   title: Mass operations
   description: Bulk edit of all content data or selected fields.
+  fillOneEmpty: Fill empty
   fillAllEmpty: Fill all empty
+  replaceOne: Replace in all assets
   replaceAll: Replace all
   clearForm: Clear form
+  general: General
 queueItem:
   edit: Edit more
   uploadNew: Upload new file
+  duplicate: Duplicate
+  viewOriginal: View original
+  error: Error

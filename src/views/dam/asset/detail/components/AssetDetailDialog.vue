@@ -15,6 +15,9 @@ import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useTheme } from '@/composables/system/themeSettings'
 import type { DocId } from '@/types/common'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const emit = defineEmits<{
   (e: 'nextItem'): void
@@ -127,10 +130,12 @@ const totalCountText = computed(() => {
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div v-if="assetDetailStore.view === 'list'">
             <VBtn variant="text" icon @click.stop="prevItem" class="mx-1" :width="36" :height="36">
-              <VIcon icon="mdi-chevron-left"></VIcon>
+              <VIcon icon="mdi-chevron-left" />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.prev') }}</VTooltip>
             </VBtn>
             <VBtn variant="text" icon @click.stop="nextItem" class="mr-2" :width="36" :height="36">
-              <VIcon icon="mdi-chevron-right"></VIcon>
+              <VIcon icon="mdi-chevron-right" />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.next') }}</VTooltip>
             </VBtn>
           </div>
           <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">
@@ -150,9 +155,11 @@ const totalCountText = computed(() => {
               :height="36"
             >
               <VIcon icon="mdi-information-outline"></VIcon>
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
             <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
               <VIcon icon="mdi-close"></VIcon>
+              <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
             </VBtn>
           </div>
         </VToolbar>

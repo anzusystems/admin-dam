@@ -3,6 +3,9 @@ import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCusto
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { computed } from 'vue'
 import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCustomMetadataElement.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(
   defineProps<{
@@ -47,18 +50,19 @@ const elements = computed(() => {
             @update:model-value="updateModelValue"
           />
           <VBtn
-            icon="mdi-file-arrow-left-right-outline"
+            icon
             size="small"
             variant="text"
             class="mr-1"
             @click.stop="fillEmptyField(element.key, modelValue[element.key])"
-          ></VBtn>
-          <VBtn
-            icon="mdi-file-replace-outline"
-            size="small"
-            variant="text"
-            @click.stop="replaceField(element.key, modelValue[element.key])"
-          ></VBtn>
+          >
+            <VIcon icon="mdi-file-arrow-left-right-outline" />
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.fillOne') }}</VTooltip>
+          </VBtn>
+          <VBtn icon size="small" variant="text" @click.stop="replaceField(element.key, modelValue[element.key])">
+            <VIcon icon="mdi-file-replace-outline" />
+            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.replaceOne') }}</VTooltip>
+          </VBtn>
         </div>
       </VCol>
     </VRow>
