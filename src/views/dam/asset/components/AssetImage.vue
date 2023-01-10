@@ -20,6 +20,7 @@ const props = withDefaults(
     showUploading?: boolean
     showProcessing?: boolean
     showWaiting?: boolean
+    showDone?: boolean
     uploadingColor?: string
     processingColor?: string
     uploadingProgress?: number | null
@@ -38,6 +39,7 @@ const props = withDefaults(
     showUploading: false,
     showProcessing: false,
     showWaiting: false,
+    showDone: false,
     uploadingColor: 'primary',
     processingColor: 'primary',
     uploadingProgress: null,
@@ -149,7 +151,19 @@ const iconColor = computed(() => {
     class="asset-image asset-image--component"
     :cover="cover"
     :aspect-ratio="aspectRatio"
-  ></VImg>
+  >
+    <template v-slot:default v-if="showDone">
+      <div class="d-flex w-100 h-100 align-center justify-center asset-image-animate-done">
+        <div class="f-flex flex-column text-center">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }" class="d-flex">
+            <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
+          </div>
+          <br />
+          <span class="text-caption">{{ t('common.upload.done') }}</span>
+        </div>
+      </div>
+    </template>
+  </VImg>
   <img
     v-else-if="assetStatus === AssetStatus.WithFile && assetType === AssetType.Image"
     :src="src"
@@ -166,5 +180,16 @@ const iconColor = computed(() => {
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
     <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor"></VIcon>
+    <div v-if="showDone" class="d-flex w-100 h-100 position-absolute">
+      <div class="d-flex w-100 h-100 align-center justify-center asset-image-animate-done">
+        <div class="f-flex flex-column text-center">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }" class="d-flex">
+            <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
+          </div>
+          <br />
+          <span class="text-caption">{{ t('common.upload.done') }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
