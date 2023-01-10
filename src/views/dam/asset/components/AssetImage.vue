@@ -98,6 +98,7 @@ const iconColor = computed(() => {
     :cover="cover"
     @error="onError"
     @load="onLoad"
+    class="asset-image-loading-bg"
   >
     <template v-slot:default>
       <div class="d-flex w-100 h-100 align-center justify-center" v-if="showWaiting">
