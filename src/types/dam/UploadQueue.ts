@@ -60,6 +60,7 @@ export interface UploadQueueItem {
     hasError: boolean
     message: string
   }
+  notificationFallbackTimer: ReturnType<typeof setTimeout> | undefined
 }
 
 export interface UploadQueue {

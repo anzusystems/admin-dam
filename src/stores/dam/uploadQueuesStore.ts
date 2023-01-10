@@ -137,6 +137,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             hasError: false,
             message: '',
           },
+          notificationFallbackTimer: undefined,
         }
 
         this.createQueue(queueId)
@@ -187,6 +188,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             hasError: false,
             message: '',
           },
+          notificationFallbackTimer: undefined,
         }
 
         this.addToBufferLazyValues(queueItem, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
@@ -247,6 +249,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             hasError: false,
             message: '',
           },
+          notificationFallbackTimer: undefined,
         }
         this.createQueue(queueId)
         this.addQueueItem(queueId, queueItem)
