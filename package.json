@@ -39,7 +39,7 @@
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^3.1.0",
+    "vuetify": "^3.1.1",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "@types/node": "^16.18.11",
     "@types/uuid": "^9.0.0",
     "@types/webfontloader": "^1.6.35",
-    "@typescript-eslint/parser": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.2",
