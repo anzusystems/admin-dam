@@ -89,6 +89,11 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
+            <AFilterBooleanGroup @update:model-value="onAnyFilterUpdate" v-model="filter.generatedBySystem" />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
             <ClosestColor
               @update:model-value="onAnyFilterUpdate"
               v-model="filter.closestMostDominantColor"
