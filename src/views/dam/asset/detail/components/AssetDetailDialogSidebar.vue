@@ -12,6 +12,7 @@ import AssetDetailSidebarDistribution from '@/views/dam/asset/detail/components/
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/dam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
+import AssetDetailSidebarSlots from '@/views/dam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -52,6 +53,7 @@ const typeHasDistributions = computed(() => {
           {{ t('coreDam.asset.detail.tabs.distribution') }}
         </VTab>
         <VTab :value="AssetDetailTab.Podcast" v-if="isAudio">Podcast</VTab>
+        <VTab :value="AssetDetailTab.Slots">{{ t('coreDam.asset.detail.tabs.slots') }}</VTab>
       </VTabs>
 
       <div class="sidebar-info__content">
@@ -71,6 +73,13 @@ const typeHasDistributions = computed(() => {
         </div>
         <div class="py-2" v-if="isAudio && activeTab === AssetDetailTab.Podcast">
           <AssetDetailSidebarPodcast :asset-id="assetId" :is-active="activeTab === AssetDetailTab.Podcast" />
+        </div>
+        <div class="py-2" v-if="activeTab === AssetDetailTab.Slots">
+          <AssetDetailSidebarSlots
+            :asset-id="assetId"
+            :is-active="activeTab === AssetDetailTab.Slots"
+            :asset-type="assetType"
+          />
         </div>
       </div>
       <div class="sidebar-info__actions px-2">
