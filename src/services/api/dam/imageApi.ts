@@ -155,3 +155,83 @@ export const externalProviderUpload = (item: UploadQueueItem) => {
       })
   })
 }
+
+export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const deleteImage = (imageId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makeMainFile = (imageId: DocId, assetId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/main'
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

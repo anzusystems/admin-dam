@@ -6,24 +6,40 @@ import {
   uploadChunk as imageUploadChunk,
   uploadFinish as imageUploadFinish,
   uploadStart as imageUploadStart,
+  unsetSlot as imageUnsetSlot,
+  deleteImage,
+  makeMainFile as imageMakeMainFile,
+  existingImageToSlot,
 } from '@/services/api/dam/imageApi'
 import {
   externalProviderUpload as audioExternalProviderUpload,
   uploadChunk as audioUploadChunk,
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
+  unsetSlot as audioUnsetSlot,
+  deleteAudio,
+  makeMainFile as audioMakeMainFile,
+  existingAudioToSlot,
 } from '@/services/api/dam/audioApi'
 import {
   externalProviderUpload as videoExternalProviderUpload,
   uploadChunk as videoUploadChunk,
   uploadFinish as videoUploadFinish,
   uploadStart as videoUploadStart,
+  unsetSlot as videoUnsetSlot,
+  deleteVideo,
+  makeMainFile as videoMakeMainFile,
+  existingVideoToSlot,
 } from '@/services/api/dam/videoApi'
 import {
   externalProviderUpload as documentExternalProviderUpload,
   uploadChunk as documentUploadChunk,
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
+  unsetSlot as documentUnsetSlot,
+  deleteDocument,
+  makeMainFile as documentMakeMainFile,
+  existingDocumentToSlot,
 } from '@/services/api/dam/documentApi'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { fetchAsset } from '@/services/api/dam/assetApi'
@@ -238,6 +254,146 @@ export const externalProviderUpload: (item: UploadQueueItem) => Promise<UploadSt
         documentExternalProviderUpload(item)
           .then((res) => {
             resolve(res as UploadStartResponse)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const unsetAssetSlot = (assetType: AssetType, fileId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    switch (assetType) {
+      case AssetType.Image:
+        imageUnsetSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Audio:
+        audioUnsetSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Video:
+        videoUnsetSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Document:
+        documentUnsetSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const deleteFile = (assetType: AssetType, fileId: DocId) => {
+  return new Promise((resolve, reject) => {
+    switch (assetType) {
+      case AssetType.Image:
+        deleteImage(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Audio:
+        deleteAudio(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Video:
+        deleteVideo(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Document:
+        deleteDocument(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const makeMainFile = (assetType: AssetType, fileId: DocId, assetId: DocId) => {
+  return new Promise((resolve, reject) => {
+    switch (assetType) {
+      case AssetType.Image:
+        imageMakeMainFile(fileId, assetId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Audio:
+        audioMakeMainFile(fileId, assetId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Video:
+        videoMakeMainFile(fileId, assetId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Document:
+        documentMakeMainFile(fileId, assetId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const existingFileToSlot = (assetType: AssetType, fileId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    switch (assetType) {
+      case AssetType.Image:
+        existingImageToSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Audio:
+        existingAudioToSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Video:
+        existingVideoToSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Document:
+        existingDocumentToSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
           })
           .catch((err) => reject(err))
         break
