@@ -1,5 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import { HTTP_STATUS_CREATED, HTTP_STATUS_OK } from '@/services/api/statusCodes'
+import { HTTP_STATUS_CREATED, HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { DocId } from '@/types/common'
 import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -142,7 +142,7 @@ export const unsetSlot = (documentId: DocId, assetId: DocId, slotName: string) =
     damClient()
       .delete(url)
       .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
+        if (res.status === HTTP_STATUS_NO_CONTENT) {
           resolve(res.data)
         } else {
           //
@@ -162,7 +162,7 @@ export const deleteDocument = (documentId: DocId) => {
     damClient()
       .delete(url)
       .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
+        if (res.status === HTTP_STATUS_NO_CONTENT) {
           resolve(res.data)
         } else {
           //
