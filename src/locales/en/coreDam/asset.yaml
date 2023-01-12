@@ -64,6 +64,7 @@ detail:
     info: Meta
     roi: Focus
     distribution: Distribution
+    slots: Slots
   info:
     status:
       draft: Asset is without file
@@ -122,3 +123,22 @@ queueItem:
   duplicate: Duplicate
   viewOriginal: View original
   error: Error
+slots:
+  name: Slot name
+  file: File
+  noFile: No file
+  mainFile: Main file
+  actions:
+    slotOptions: Slot options
+    duplicate: Duplicate to another slot
+    makeMainFile: Make main file
+    switchSlots: Switch with another slot
+    remove: Remove
+  remove:
+    descriptionBothOptions: Asset file is used in several slots. Do you want to unset file only from selected slot or remove file permanently?
+    descriptionOnlyRemove: Do you want to permanently remove file from system?
+    removeFile: Remove asset file permanently
+    unsetSlot: Unset asset slot only
+  duplicate:
+    to: Duplicate to slot
+    onlyToEmptyWarning: Slot file can be duplicated only to empty slot

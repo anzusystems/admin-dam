@@ -26,6 +26,7 @@ const createDefaultExtSystemConfig = (override: Partial<ExtSystemConfig> = {}): 
       required: false,
     },
     customMetadataPinnedAmount: 1,
+    slots: [],
   } as ExtSystemConfig),
   ...override,
 })
