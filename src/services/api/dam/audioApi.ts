@@ -135,3 +135,83 @@ export const externalProviderUpload = (item: UploadQueueItem) => {
       })
   })
 }
+
+export const unsetSlot = (audioId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + audioId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const deleteAudio = (audioId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + audioId
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makeMainFile = (audioId: DocId, assetId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + audioId + '/asset/' + assetId + '/main'
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const existingAudioToSlot = (audioId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + audioId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

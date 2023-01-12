@@ -4,9 +4,9 @@ import type { AssetSlot } from '@/types/dam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import AssetSlotListItemRemove from '@/views/dam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
-import type { DocId } from '@/types/common'
 import AssetSlotListItemDuplicate from '@/views/dam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/dam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
+import { DocId } from '@/types/common'
 
 const props = withDefaults(
   defineProps<{
@@ -17,6 +17,14 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const emit = defineEmits<{
+  (e: 'removeFile', fileId: DocId): void
+  (e: 'makeMainFile', fileId: DocId): void
+  (e: 'unsetSlot', data: { fileId: DocId; slotName: string }): void
+  (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
+  (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
+}>()
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -32,23 +40,27 @@ const fileTitle = computed(() => {
 })
 
 const removeAssetFile = () => {
-  // todo
+  if (!props.item || !props.item.assetFile) return
+  emit('removeFile', props.item.assetFile.id)
 }
 
 const makeMainFile = () => {
-  // todo
+  if (!props.item || !props.item.assetFile) return
+  emit('makeMainFile', props.item.assetFile.id)
 }
 
 const unsetSlot = () => {
-  // todo
+  if (!props.item || !props.item.assetFile) return
+  emit('unsetSlot', { fileId: props.item.assetFile.id, slotName: props.slotName })
 }
 
 const duplicateSlot = (targetName: string) => {
-  // todo
+  if (!props.item || !props.item.assetFile) return
+  emit('duplicateSlot', { fileId: props.item.assetFile.id, targetSlotName: targetName })
 }
 
 const switchSlot = (targetName: string) => {
-  // todo
+  emit('switchSlot', { targetSlotName: targetName, sourceSlotName: props.slotName })
 }
 </script>
 

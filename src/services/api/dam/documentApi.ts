@@ -135,3 +135,83 @@ export const externalProviderUpload = (item: UploadQueueItem) => {
       })
   })
 }
+
+export const unsetSlot = (documentId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + documentId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const deleteDocument = (documentId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + documentId
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makeMainFile = (documentId: DocId, assetId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + documentId + '/asset/' + assetId + '/main'
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + documentId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

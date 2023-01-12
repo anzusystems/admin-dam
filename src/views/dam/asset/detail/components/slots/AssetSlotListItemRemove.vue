@@ -36,13 +36,11 @@ const onCancel = () => {
 }
 
 const onUnset = () => {
-  if (!props.item) return
   emit('unsetSlot')
   dialog.value = false
 }
 
 const onRemove = () => {
-  if (!props.item || !props.item.assetFile) return
   emit('removeFile')
   dialog.value = false
 }
