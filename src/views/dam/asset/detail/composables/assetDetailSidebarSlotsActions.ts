@@ -103,6 +103,8 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
         )
       } catch (e) {
         console.error(e)
+      } finally {
+        getList()
       }
       return
     } else if (
@@ -124,6 +126,8 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
         )
       } catch (e) {
         console.error(e)
+      } finally {
+        getList()
       }
       return
     }
@@ -143,6 +147,8 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       await updateAssetSlots(assetId, prepareData)
     } catch (e) {
       console.error(e)
+    } finally {
+      getList()
     }
   }
 
