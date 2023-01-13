@@ -23,12 +23,4 @@ export const fetchAssetSlotList = (assetId: DocId, pagination: Pagination, filte
   )
 
 export const updateAssetSlots = (assetId: DocId, data: Array<{ assetFile: DocId; slotName: string }>) =>
-  apiAnyRequest<any, any>(
-    damClient,
-    'PATCH',
-    CURRENT_USER_END_POINT + '/asset/:assetId',
-    { assetId },
-    data,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+  apiAnyRequest<any, any>(damClient, 'PATCH', END_POINT + '/asset/:assetId', { assetId }, data, SYSTEM_CORE_DAM, ENTITY)

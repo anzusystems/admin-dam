@@ -92,7 +92,7 @@ const onSwitch = () => {
           data-cy="button-unset"
           :disabled="targetOptions.length === 0 || targetSlot === null"
         >
-          {{ t('coreDam.asset.slots.actions.duplicate') }}
+          {{ t('coreDam.asset.slots.actions.switchSlots') }}
         </VBtn>
         <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
