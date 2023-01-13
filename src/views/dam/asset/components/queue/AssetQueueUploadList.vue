@@ -5,10 +5,19 @@ import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
 import { UploadQueueItem } from '@/types/dam/UploadQueue'
 
+const props = withDefaults(
+  defineProps<{
+    queueId?: string
+  }>(),
+  {
+    queueId: QUEUE_ID_UPLOAD_GLOBAL,
+  }
+)
+
 const uploadQueuesStore = useUploadQueuesStore()
 
 const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL)
+  return uploadQueuesStore.getQueueItems(props.queueId)
 })
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
@@ -23,7 +32,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
       :key="item.key"
       :index="index"
       :item="item"
-      :queue-id="QUEUE_ID_UPLOAD_GLOBAL"
+      :queue-id="queueId"
       @cancel-item="cancelItem"
     />
   </div>
