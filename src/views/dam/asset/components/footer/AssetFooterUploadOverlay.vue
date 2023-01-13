@@ -98,6 +98,7 @@ const isUploading = computed(() => {
         </div>
       </VToolbar>
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
+        <div class="ml-2 text-caption">New assets upload</div>
         <VSpacer></VSpacer>
         <div class="d-flex">
           <VBtn

@@ -7,11 +7,13 @@ import AssetQueueUploadList from '@/views/dam/asset/components/queue/AssetQueueU
 import { useTheme } from '@/composables/system/themeSettings'
 import { useI18n } from 'vue-i18n'
 import { useAssetFooterUploadSlotsView } from '@/composables/system/assetFooterUploadSlots'
+import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const { toolbarColor } = useTheme()
 
+const { footerViewUpload } = useAssetFooterUploadView()
 const {
   footerViewUploadSlots,
   showCompactUpload,
@@ -44,13 +46,19 @@ const onStopConfirm = () => {
 const isUploading = computed(() => {
   return queueTotalCount.value > queueProcessedCount.value
 })
+
+const classComputed = computed(() => {
+  const classes = []
+  classes.push('asset-upload-overlay--' + footerViewUploadSlots.value)
+  if ([FooterViewUpload.Minimal, FooterViewUpload.Compact].includes(footerViewUpload.value)) {
+    classes.push('asset-upload-overlay--second')
+  }
+  return classes.join(' ')
+})
 </script>
 
 <template>
-  <div
-    class="asset-upload-overlay asset-upload-overlay--slots"
-    :class="'asset-upload-overlay--' + footerViewUploadSlots"
-  >
+  <div class="asset-upload-overlay" :class="classComputed">
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="d-flex px-2">
@@ -99,6 +107,7 @@ const isUploading = computed(() => {
         </div>
       </VToolbar>
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
+        <div class="ml-2 text-caption">Asset slots upload</div>
         <VSpacer></VSpacer>
         <div class="d-flex">
           <VBtn
