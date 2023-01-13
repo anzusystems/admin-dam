@@ -9,6 +9,7 @@ export enum QueueItemType {
   File = 'file',
   Asset = 'asset',
   ExternalProviderAsset = 'externalProviderAsset',
+  SlotFile = 'slotFile',
 }
 
 export enum QueueItemStatus {
@@ -61,6 +62,7 @@ export interface UploadQueueItem {
     message: string
   }
   notificationFallbackTimer: ReturnType<typeof setTimeout> | undefined
+  slotName: string | null
 }
 
 export interface UploadQueue {

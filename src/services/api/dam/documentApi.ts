@@ -6,6 +6,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import type { DocumentFile } from '@/types/dam/File'
+import { QueueItemType } from '@/types/dam/UploadQueue'
 
 const END_POINT = '/adm/v1/document'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -15,7 +16,10 @@ export const fetchDocumentFile = (id: DocId) =>
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
-    const url = END_POINT + '/licence/' + item.licenceId
+    let url = END_POINT + '/licence/' + item.licenceId
+    if (item.type === QueueItemType.SlotFile && item.slotName && item.assetId) {
+      url = END_POINT + '/asset/' + item.assetId + '/slot-name/' + item.slotName
+    }
     damClient()
       .post(
         url,

@@ -15,7 +15,7 @@ const { t } = useI18n({ useScope: 'global' })
 const props = withDefaults(
   defineProps<{
     fileInputKey: number
-    variant?: 'dropzone-fullscreen' | 'button' | 'icon'
+    variant?: 'dropzone-fullscreen' | 'button' | 'icon' | 'slot-upload'
     accept?: string // example: 'image/*,.jpg'
     maxSizes?: Record<string, number> // example: { 'image/*': 20000 } or { 'image/png': 20000, 'image/jpg': 20000 } or { '.jpg': 20000, '.png': 20000 } or { '*': 20000, }
     directory?: boolean
@@ -253,6 +253,18 @@ watch(selectedFiles, (newValue, oldValue) => {
       <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
     </VBtn>
   </div>
+  <VBtn
+    tabindex="-1"
+    @click.stop="clickDropzone"
+    icon
+    variant="flat"
+    :height="height"
+    :width="height"
+    v-if="variant === 'slot-upload'"
+  >
+    <VIcon icon="mdi-plus" :size="18" />
+    <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
+  </VBtn>
   <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
     <VBtn tabindex="-1" @click.stop="clickDropzone" color="primary" rounded="pill" variant="flat" :height="height">
       {{ buttonText }}

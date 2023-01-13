@@ -1,35 +1,35 @@
 <script setup lang="ts">
-import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { computed, watch } from 'vue'
-import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
+import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import AssetFooterUploadButtonStop from '@/views/dam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import AssetQueueUploadList from '@/views/dam/asset/components/queue/AssetQueueUploadList.vue'
 import { useTheme } from '@/composables/system/themeSettings'
 import { useI18n } from 'vue-i18n'
+import { useAssetFooterUploadSlotsView } from '@/composables/system/assetFooterUploadSlots'
+import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const { toolbarColor } = useTheme()
 
+const { footerViewUpload } = useAssetFooterUploadView()
 const {
-  footerViewUpload,
-  showFullUpload,
-  setFullUpload,
+  footerViewUploadSlots,
   showCompactUpload,
   setCompactUpload,
   showMinimalUpload,
   setMinimalUpload,
   autoShowUpload,
   hideUpload,
-} = useAssetFooterUploadView()
+} = useAssetFooterUploadSlotsView()
 const uploadQueuesStore = useUploadQueuesStore()
 
 const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
+  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_SLOTS)
 })
 const queueProcessedCount = computed(() => {
-  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
+  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_SLOTS)
 })
 
 watch(queueTotalCount, (newValue, oldValue) => {
@@ -39,17 +39,26 @@ watch(queueTotalCount, (newValue, oldValue) => {
 })
 
 const onStopConfirm = () => {
-  uploadQueuesStore.stopUpload(QUEUE_ID_UPLOAD_GLOBAL)
+  uploadQueuesStore.stopUpload(QUEUE_ID_UPLOAD_SLOTS)
   hideUpload()
 }
 
 const isUploading = computed(() => {
   return queueTotalCount.value > queueProcessedCount.value
 })
+
+const classComputed = computed(() => {
+  const classes = []
+  classes.push('asset-upload-overlay--' + footerViewUploadSlots.value)
+  if ([FooterViewUpload.Minimal, FooterViewUpload.Compact].includes(footerViewUpload.value)) {
+    classes.push('asset-upload-overlay--second')
+  }
+  return classes.join(' ')
+})
 </script>
 
 <template>
-  <div class="asset-upload-overlay" :class="'asset-upload-overlay--' + footerViewUpload">
+  <div class="asset-upload-overlay" :class="classComputed">
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="d-flex px-2">
@@ -98,23 +107,23 @@ const isUploading = computed(() => {
         </div>
       </VToolbar>
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
-        <div class="ml-2 text-caption">New assets upload</div>
+        <div class="ml-2 text-caption">Asset slots upload</div>
         <VSpacer></VSpacer>
         <div class="d-flex">
           <VBtn
-            v-show="showFullUpload"
-            @click.stop="setFullUpload"
+            v-show="!isUploading"
+            @click.stop="onStopConfirm"
             color="primary"
             variant="flat"
             :height="26"
             class="mr-2"
           >
-            {{ t('coreDam.asset.upload.edit') }}
+            {{ t('coreDam.asset.upload.clear') }}
           </VBtn>
         </div>
       </VToolbar>
       <div class="asset-upload-overlay__content pa-2">
-        <AssetQueueUploadList :queue-id="QUEUE_ID_UPLOAD_GLOBAL" />
+        <AssetQueueUploadList :queue-id="QUEUE_ID_UPLOAD_SLOTS" />
       </div>
     </div>
   </div>

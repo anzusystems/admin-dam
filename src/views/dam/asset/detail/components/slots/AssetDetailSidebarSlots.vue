@@ -46,11 +46,13 @@ onMounted(async () => {
       :slot-name="slotName"
       :asset-type="assetType"
       :total-slot-count="assetSlotsStore.assetSlotNames.length"
+      :asset-id="assetId"
       @unset-slot="unsetSlot"
       @remove-file="removeAssetFile"
       @make-main-file="makeMainFile"
       @duplicate-slot="duplicateSlot"
       @switch-slot="switchSlot"
+      @refresh-list="getList"
     />
     <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
   </div>
