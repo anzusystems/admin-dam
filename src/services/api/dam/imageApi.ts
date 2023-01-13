@@ -5,6 +5,7 @@ import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
+import { QueueItemType } from '@/types/dam/UploadQueue'
 import type { ImageFile } from '@/types/dam/File'
 
 const END_POINT = '/adm/v1/image'
@@ -15,7 +16,10 @@ export const fetchImageFile = (id: DocId) =>
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
-    const url = END_POINT + '/licence/' + item.licenceId
+    let url = END_POINT + '/licence/' + item.licenceId
+    if (item.type === QueueItemType.SlotFile && item.slotName && item.assetId) {
+      url = END_POINT + '/asset/' + item.assetId + '/slot-name/' + item.slotName
+    }
     damClient()
       .post(
         url,

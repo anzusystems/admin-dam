@@ -46,6 +46,7 @@ onMounted(async () => {
       :slot-name="slotName"
       :asset-type="assetType"
       :total-slot-count="assetSlotsStore.assetSlotNames.length"
+      :asset-id="assetId"
       @unset-slot="unsetSlot"
       @remove-file="removeAssetFile"
       @make-main-file="makeMainFile"

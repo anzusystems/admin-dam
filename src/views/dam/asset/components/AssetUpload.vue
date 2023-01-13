@@ -6,17 +6,30 @@ import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { DocId } from '@/types/common'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    variant?: 'dropzone-fullscreen' | 'button' | 'icon'
+    variant?: 'dropzone-fullscreen' | 'button' | 'icon' | 'slot-upload'
+    type?: 'default' | 'slots'
     buttonText?: string
     height?: number
+    queueId?: string
+    assetId?: DocId
+    slotName?: string
+    multiple?: boolean
+    assetType?: AssetType
   }>(),
   {
     variant: 'dropzone-fullscreen',
+    type: 'default',
     buttonText: '',
     height: undefined,
+    queueId: QUEUE_ID_UPLOAD_GLOBAL,
+    assetId: undefined,
+    slotName: undefined,
+    multiple: true,
+    assetType: undefined,
   }
 )
 
@@ -33,16 +46,25 @@ const assetUpload = async (files: File[]) => {
     openDialog()
     return
   }
-  await uploadQueuesStore.addByFiles(QUEUE_ID_UPLOAD_GLOBAL, files)
-  fileCache.value = []
+  if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
+    // todo add check by type for slot uploads
+    await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)
+    fileCache.value = []
+    return
+  } else if (props.type === 'default') {
+    await uploadQueuesStore.addByFiles(props.queueId, files)
+    fileCache.value = []
+    return
+  }
+  console.error('Unsupported upload setup.')
 }
 
 const fileInputKey = computed(() => {
-  return uploadQueuesStore.getQueueFileInputKey(QUEUE_ID_UPLOAD_GLOBAL)
+  return uploadQueuesStore.getQueueFileInputKey(props.queueId)
 })
 
 const uploadQueueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
+  return uploadQueuesStore.getQueueTotalCount(props.queueId)
 })
 
 const alreadyAtUploadLimit = computed(() => {
@@ -55,14 +77,14 @@ const openDialog = () => {
 
 const onDialogCancel = () => {
   fileCache.value = []
-  uploadQueuesStore.forceReloadFileInput(QUEUE_ID_UPLOAD_GLOBAL)
+  uploadQueuesStore.forceReloadFileInput(props.queueId)
   uploadDialog.value = false
 }
 
 const onDialogConfirm = async () => {
   uploadDialogLoader.value = true
   const files = fileCache.value.slice(0, maxUploadItems.value - uploadQueueTotalCount.value)
-  await uploadQueuesStore.addByFiles(QUEUE_ID_UPLOAD_GLOBAL, files)
+  await uploadQueuesStore.addByFiles(props.queueId, files)
   fileCache.value = []
   uploadDialogLoader.value = false
   uploadDialog.value = false
@@ -77,6 +99,11 @@ const createSizesByAssetType = (assetType: AssetType) => {
 }
 
 const uploadSizes = computed(() => {
+  if (props.assetType) {
+    return {
+      ...createSizesByAssetType(props.assetType),
+    }
+  }
   return {
     ...createSizesByAssetType(AssetType.Image),
     ...createSizesByAssetType(AssetType.Audio),
@@ -99,6 +126,7 @@ const uploadAccept = computed(() => {
     @files-input="assetUpload"
     :accept="uploadAccept"
     :max-sizes="uploadSizes"
+    :multiple="multiple"
   />
   <VDialog v-model="uploadDialog" persistent no-click-animation :width="500">
     <VCard v-if="uploadDialog" data-cy="delete-panel">
