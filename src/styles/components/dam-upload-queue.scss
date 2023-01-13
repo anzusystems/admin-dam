@@ -6,6 +6,62 @@ $border-color-dark: #2c2c2c;
 $duplicate-bg-color-light: rgb(255 255 255 / 70%);
 $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
 
+.asset-image {
+  position: relative;
+
+  &__icon-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__icon-circle {
+    border-radius: 100%;
+    background-color: rgba(204 204 204 / 50%);
+  }
+
+  &__icon {
+    // todo
+  }
+
+  .asset-image--loading-bg .v-responsive__content {
+    background-color: rgba(255, 255, 255, 0.5); // todo dark
+  }
+
+  .asset-image__progress {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .asset-image__progress--animate-done {
+    //position: absolute;
+    //top: 0;
+    //right: 0;
+    //bottom: 0;
+    //left: 0;
+    //display: flex;
+    //flex-direction: column;
+    //gap: 0;
+    //align-items: center;
+    //justify-content: center;
+    background-color: rgba(255, 255, 255, 0.5); // todo dark
+    animation: animate-upload-done 2s forwards;
+  }
+}
+
 .#{$class-name-root} {
   overflow-x: auto;
   overflow-y: hidden;
@@ -89,15 +145,6 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
     right: 0;
     bottom: 0;
   }
-}
-
-.asset-image-loading-bg .v-responsive__content {
-  background-color: rgba(255, 255, 255, 0.5); // todo dark
-}
-
-.asset-image-animate-done {
-  background-color: rgba(255, 255, 255, 0.5); // todo dark
-  animation: animate-upload-done 2s forwards;
 }
 
 @keyframes animate-upload-done {

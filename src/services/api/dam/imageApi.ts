@@ -1,5 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import { HTTP_STATUS_CREATED, HTTP_STATUS_OK } from '@/services/api/statusCodes'
+import { HTTP_STATUS_CREATED, HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { DocId } from '@/types/common'
 import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -143,6 +143,86 @@ export const externalProviderUpload = (item: UploadQueueItem) => {
       )
       .then((res) => {
         if (res.status === HTTP_STATUS_CREATED) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_NO_CONTENT) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const deleteImage = (imageId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId
+    damClient()
+      .delete(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_NO_CONTENT) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makeMainFile = (imageId: DocId, assetId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/main'
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
           resolve(res.data)
         } else {
           //

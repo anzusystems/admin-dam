@@ -87,6 +87,7 @@ export interface AudioFile extends UserAndTimeTrackingFields {
   fileAttributes: FileAttributes
   audioAttributes: AudioAttributes
   originAssetFile: DocIdNullable
+  links?: Link[] // todo check
   _resourceName: 'audioFile'
 }
 
@@ -96,6 +97,7 @@ export interface VideoFile extends UserAndTimeTrackingFields {
   fileAttributes: FileAttributes
   videoAttributes: VideoAttributes
   originAssetFile: DocIdNullable
+  links?: Link[] // todo check
   _resourceName: 'videoFile'
 }
 
@@ -105,6 +107,7 @@ export interface DocumentFile extends UserAndTimeTrackingFields {
   fileAttributes: FileAttributes
   documentAttributes: DocumentAttributes
   originAssetFile: DocIdNullable
+  links?: Link[] // todo check
   _resourceName: 'documentFile'
 }
 

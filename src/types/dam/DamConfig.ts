@@ -90,6 +90,7 @@ export interface ExtSystemConfig {
   authors: ExtSystemAssetTypeExifMetadata
   keywords: ExtSystemAssetTypeExifMetadata
   customMetadataPinnedAmount: number
+  slots: string[]
 }
 
 export interface DamConfigExtSystem extends Record<AssetType, ExtSystemConfig> {
