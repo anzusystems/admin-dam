@@ -24,6 +24,9 @@ const filter = reactive({
   inPodcast: {
     ...makeFilter({ name: 'inPodcast', default: null }),
   },
+  generatedBySystem: {
+    ...makeFilter({ name: 'generatedBySystem', default: false }),
+  },
   status: {
     ...makeFilter({ name: 'status', default: [] }),
   },

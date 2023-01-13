@@ -16,7 +16,8 @@ export function usePagination() {
 
 export function usePaginationAutoHide(pagination: Pagination) {
   const showPagination = computed(() => {
-    return !(pagination.page === 1 && pagination.currentViewCount < pagination.totalCount)
+    if (pagination.page === 1 && pagination.currentViewCount < pagination.rowsPerPage) return false
+    return true
   })
 
   return {
