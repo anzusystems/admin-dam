@@ -91,6 +91,15 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         }
       }
     },
+    getQueueItemForSlotItem: (state) => {
+      return (queueId: string, slotName: string, assetId: DocId) => {
+        if (queueId in state.queues) {
+          return state.queues[queueId].items.find((item) => item.slotName === slotName && item.assetId === assetId)
+        } else {
+          return undefined
+        }
+      }
+    },
   },
   actions: {
     async addByFiles(queueId: string, files: File[]) {
@@ -134,6 +143,61 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          slotName: null,
+        }
+
+        this.createQueue(queueId)
+        this.addQueueItem(queueId, queueItem)
+        this.recalculateQueueCounts(queueId)
+        this.processUpload(queueId)
+      }
+    },
+    async addByFilesAsSlotUpload(
+      queueId: string,
+      files: File[],
+      assetId: DocId,
+      slotName: string,
+      assetType: AssetType
+    ) {
+      const { currentAssetLicenceId } = useCurrentAssetLicence()
+      for await (const file of files) {
+        const queueItem: UploadQueueItem = {
+          key: 'file_' + file.name,
+          type: QueueItemType.SlotFile,
+          file: file,
+          status: QueueItemStatus.Waiting,
+          isDuplicate: false,
+          duplicateAssetId: null,
+          assetType: assetType,
+          assetStatus: AssetStatus.Default,
+          displayTitle: file.name,
+          assetId: assetId,
+          fileId: null,
+          externalProviderAssetId: null,
+          externalProviderName: null,
+          externalProviderMetadata: {},
+          chunks: [],
+          chunkSize: CHUNK_SIZE,
+          currentChunkIndex: 0,
+          chunkTotalCount: 0,
+          licenceId: currentAssetLicenceId.value,
+          links: [],
+          keywords: [],
+          authors: [],
+          keywordSuggestions: {},
+          authorSuggestions: {},
+          customData: {},
+          progress: {
+            remainingTime: null,
+            progressPercent: null,
+          },
+          canEditMetadata: false,
+          error: {
+            hasError: false,
+            message: '',
+          },
+          notificationFallbackTimer: undefined,
+          slotName: slotName,
         }
 
         this.createQueue(queueId)
@@ -185,6 +249,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          slotName: null,
         }
 
         this.addToBufferLazyValues(queueItem, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
@@ -246,6 +311,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          slotName: null,
         }
         this.createQueue(queueId)
         this.addQueueItem(queueId, queueItem)
@@ -352,12 +418,12 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         return
       }
 
-      // standard upload
+      // standard + slot upload
       const { upload, uploadInit } = useUpload(item, (progress: number, speed: number, estimate: number) => {
         this.setUploadSpeed(item, progress, speed, estimate)
       })
-      await uploadInit()
       try {
+        await uploadInit()
         await upload()
         this.processUpload(queueId)
       } catch (e) {
@@ -389,7 +455,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
-          if (item.assetId === asset.id) {
+          if (item.assetId === asset.id && item.type !== QueueItemType.SlotFile) {
+            // todo check slots
             item.keywords = asset.keywords
             item.authors = asset.authors
             item.keywordSuggestions = asset.metadata.keywordSuggestions

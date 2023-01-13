@@ -94,6 +94,7 @@ upload:
   save: Save and continue
   saveAndClose: Save and finish
   uploading: Uploading
+  clear: Clear
   stopOverlay:
     title: Are you sure you want to stop upload?
     confirm: Stop upload
