@@ -19,6 +19,10 @@ $bg-color-dark: #1a1a1a;
   transform: translateY(0%);
   transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
+  &--slots {
+    right: 40px + $overlay-width;
+  }
+
   &--hidden {
     transform: translateY(150%);
   }

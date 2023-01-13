@@ -7,6 +7,7 @@ import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetF
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
 import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
+import AssetFooterUploadSlotsOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -78,6 +79,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     <VAppBar v-else location="bottom" :height="customFooterHeight" elevation="0" class="overflow-visible">
       <div class="w-100 h-100 overflow-visible">
         <div class="position-relative w-100 overflow-visible" style="height: 0">
+          <AssetFooterUploadSlotsOverlay />
           <AssetFooterUploadOverlay />
         </div>
         <div class="asset-footer position-relative d-flex flex-column justify-space-between w-100 h-100">
