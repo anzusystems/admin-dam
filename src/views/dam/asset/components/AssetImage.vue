@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { useI18n } from 'vue-i18n'
+import { isUndefined } from '@/utils/common'
+import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 
 const props = withDefaults(
   defineProps<{
     assetType?: AssetType
     assetStatus?: AssetStatus
-    src: string
+    src?: string
     backgroundColor?: string
     width?: number
     height?: number
@@ -24,10 +26,12 @@ const props = withDefaults(
     uploadingColor?: string
     processingColor?: string
     uploadingProgress?: number | null
+    hideIcon?: boolean
   }>(),
   {
     assetType: AssetType.Image,
     assetStatus: AssetStatus.WithFile,
+    src: undefined,
     backgroundColor: '#ccc',
     width: undefined,
     height: undefined,
@@ -43,6 +47,7 @@ const props = withDefaults(
     uploadingColor: 'primary',
     processingColor: 'primary',
     uploadingProgress: null,
+    hideIcon: false,
   }
 )
 const emit = defineEmits<{
@@ -86,7 +91,19 @@ const backgroundColorComputed = computed(() => {
 })
 
 const iconColor = computed(() => {
-  return props.assetStatus === AssetStatus.WithFile ? '#363636' : '#8f8f8f'
+  return props.assetStatus === AssetStatus.WithFile ? '#505050' : '#8f8f8f'
+})
+
+const srcComputed = computed(() => {
+  return isUndefined(props.src) ? placeholder16x9 : props.src
+})
+
+const showDoneComputed = computed(() => {
+  return props.showDone
+})
+
+watch(showDoneComputed, (newValue) => {
+  console.log(newValue)
 })
 </script>
 
@@ -94,102 +111,94 @@ const iconColor = computed(() => {
   <VImg
     v-if="showUploading || showProcessing || showWaiting"
     :aspect-ratio="aspectRatio"
-    :src="src"
+    :src="srcComputed"
     :width="width"
     :height="height"
     :cover="cover"
     @error="onError"
     @load="onLoad"
-    class="asset-image-loading-bg"
+    class="asset-image asset-image--loading-bg"
   >
     <template v-slot:default>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showWaiting">
-        <div class="f-flex flex-column text-center">
-          <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" class="ml-auto mr-auto">
-          </VProgressCircular>
-          <br />
-          <span class="text-caption">{{ t('common.upload.waiting') }}</span>
-        </div>
+      <div class="asset-image__progress" v-if="showWaiting">
+        <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" />
+        <div class="text-caption text-center">{{ t('common.upload.waiting') }}</div>
       </div>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-if="showProcessing">
-        <div class="f-flex flex-column text-center">
-          <VProgressCircular
-            :color="processingColor"
-            indeterminate
-            :size="iconSize"
-            :width="iconSize / 10"
-            class="ml-auto mr-auto"
-          ></VProgressCircular>
-          <br />
-          <span class="text-caption">{{ t('common.upload.processing') }}</span>
-        </div>
+      <div class="asset-image__progress" v-if="showProcessing">
+        <VProgressCircular
+          :color="processingColor"
+          indeterminate
+          :size="iconSize"
+          :width="iconSize / 10"
+          class="ml-auto mr-auto"
+        ></VProgressCircular>
+        <div class="text-caption text-center">{{ t('common.upload.processing') }}</div>
       </div>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="showUploading">
-        <div class="f-flex flex-column text-center">
-          <VProgressCircular
-            :color="uploadingColor"
-            :size="iconSize"
-            :width="iconSize / 10"
-            class="ml-auto mr-auto"
-            :model-value="uploadingProgress === null ? undefined : uploadingProgress"
-          >
-            {{ uploadingPercentage }}
-          </VProgressCircular>
-          <br />
-          <span class="text-caption">{{ t('common.upload.uploading') }}</span>
-        </div>
+      <div class="asset-image__progress" v-else-if="showUploading">
+        <VProgressCircular
+          :color="uploadingColor"
+          :size="iconSize"
+          :width="iconSize / 10"
+          class="ml-auto mr-auto"
+          :model-value="uploadingProgress === null ? undefined : uploadingProgress"
+        >
+          {{ uploadingPercentage }}
+        </VProgressCircular>
+        <div class="text-caption text-center">{{ t('common.upload.uploading') }}</div>
       </div>
     </template>
   </VImg>
   <VImg
-    v-else-if="assetStatus === AssetStatus.WithFile && assetType === AssetType.Image && useComponent"
-    :src="src"
+    v-else-if="assetStatus === AssetStatus.WithFile && src && useComponent"
+    :src="srcComputed"
     @load="onLoad"
     @error="onError"
     :width="width"
     :height="height"
-    class="asset-image asset-image--component"
+    class="asset-image asset-image--component position-relative"
     :cover="cover"
     :aspect-ratio="aspectRatio"
   >
-    <template v-slot:default v-if="showDone">
-      <div class="d-flex w-100 h-100 align-center justify-center asset-image-animate-done">
-        <div class="f-flex flex-column text-center">
-          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }" class="d-flex">
-            <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
-          </div>
-          <br />
-          <span class="text-caption">{{ t('common.upload.done') }}</span>
+    <template v-slot:default>
+      <div class="asset-image__icon-wrapper" v-if="!hideIcon">
+        <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
+          <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor" />
         </div>
+      </div>
+      <div class="asset-image__progress asset-image__progress--animate-done" v-if="showDone">
+        <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
+        <div class="text-caption text-center">{{ t('common.upload.done') }}</div>
       </div>
     </template>
   </VImg>
-  <img
-    v-else-if="assetStatus === AssetStatus.WithFile && assetType === AssetType.Image"
-    :src="src"
-    :width="width"
-    :height="height"
-    alt=""
-    :style="'background-color:' + backgroundColorComputed"
-    class="asset-image"
-  />
+  <div class="asset-image asset-image--img position-relative" v-else-if="assetStatus === AssetStatus.WithFile && src">
+    <img
+      :src="srcComputed"
+      :width="width"
+      :height="height"
+      alt=""
+      :style="'background-color:' + backgroundColorComputed"
+    />
+    <div class="asset-image__icon-wrapper" v-if="!hideIcon">
+      <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
+        <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor" class="asset-image__icon" />
+      </div>
+    </div>
+  </div>
   <div
     v-else
     :style="{ height: fallbackHeight + 'px', backgroundColor: backgroundColorComputed }"
     style="width: 100%"
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
-    <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor"></VIcon>
-    <div v-if="showDone" class="d-flex w-100 h-100 position-absolute">
-      <div class="d-flex w-100 h-100 align-center justify-center asset-image-animate-done">
-        <div class="f-flex flex-column text-center">
-          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }" class="d-flex">
-            <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
-          </div>
-          <br />
-          <span class="text-caption">{{ t('common.upload.done') }}</span>
-        </div>
+    <div class="asset-image__icon-wrapper" v-if="!hideIcon">
+      <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
+        <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor" class="asset-image__icon" />
       </div>
+    </div>
+    <div class="asset-image__progress asset-image__progress--animate-done" v-if="showDone">
+      <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
+      <div class="text-caption text-center">{{ t('common.upload.done') }}</div>
     </div>
   </div>
 </template>

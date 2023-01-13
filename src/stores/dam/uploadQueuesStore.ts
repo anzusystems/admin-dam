@@ -93,10 +93,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
   },
   actions: {
-    forceReloadFileInput(queueId: string) {
-      this.createQueue(queueId)
-      this.queues[queueId].fileInputKey++
-    },
     async addByFiles(queueId: string, files: File[]) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
@@ -178,7 +174,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           currentChunkIndex: 0,
           chunkTotalCount: 0,
           licenceId: currentAssetLicenceId.value,
-          links: !asset.mainFile || !isImageFile(asset.mainFile) ? [] : asset.mainFile.links,
+          links: asset.mainFile && asset.mainFile.links ? asset.mainFile.links : [],
           progress: {
             remainingTime: null,
             progressPercent: null,
@@ -256,6 +252,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         this.recalculateQueueCounts(queueId)
         this.processUpload(queueId)
       }
+    },
+    forceReloadFileInput(queueId: string) {
+      this.createQueue(queueId)
+      this.queues[queueId].fileInputKey++
     },
     async fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
       const res = await fetchAssetListByIds(assetIds, licenceId)
@@ -396,7 +396,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             item.authorSuggestions = asset.metadata.authorSuggestions
             item.customData = asset.metadata.customData
             item.canEditMetadata = true
-            item.status = QueueItemStatus.Uploaded
             this.addToBufferLazyValues(item, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
           }
         })

@@ -4,7 +4,6 @@ import type { AssetListItem } from '@/stores/dam/assetListStore'
 import type { AssetSearchListItemDto } from '@/types/dam/Asset'
 import type { DocId } from '@/types/common'
 import { isImageFile } from '@/types/dam/File'
-import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 
@@ -55,37 +54,26 @@ const selectMultiple = () => {
   emit('selectMultiple', { assetId: asset.value.id, index: props.index })
 }
 
-const backgroundColor = computed(() => {
-  if (
-    asset.value &&
-    asset.value.mainFile &&
-    isImageFile(asset.value.mainFile) &&
-    asset.value.mainFile.imageAttributes &&
-    asset.value.mainFile.imageAttributes.mostDominantColor
-  )
-    return asset.value.mainFile.imageAttributes.mostDominantColor
-  return IMAGE_BG_COLOR_DEFAULT
-})
-
-const imageWidth = computed(() => {
-  if (asset.value.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].width
+const imageProperties = computed(() => {
+  if (asset.value.mainFile && asset.value.mainFile.links && asset.value.mainFile.links[0]) {
+    return {
+      url: asset.value.mainFile.links[0].url,
+      width: asset.value.mainFile.links[0].width,
+      height: asset.value.mainFile.links[0].height,
+      bgColor:
+        isImageFile(asset.value.mainFile) &&
+        asset.value.mainFile.imageAttributes &&
+        asset.value.mainFile.imageAttributes.mostDominantColor
+          ? asset.value.mainFile.imageAttributes.mostDominantColor
+          : IMAGE_BG_COLOR_DEFAULT,
+    }
   }
-  return undefined
-})
-
-const imageHeight = computed(() => {
-  if (asset.value.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].height
+  return {
+    url: undefined,
+    width: undefined,
+    height: IMAGE_HEIGHT,
+    bgColor: IMAGE_BG_COLOR_DEFAULT,
   }
-  return IMAGE_HEIGHT
-})
-
-const imageSrc = computed(() => {
-  if (asset.value.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].url
-  }
-  return placeholder16x9
 })
 </script>
 
@@ -106,10 +94,10 @@ const imageSrc = computed(() => {
       <AssetImage
         :asset-type="assetType"
         :asset-status="assetStatus"
-        :src="imageSrc"
-        :background-color="backgroundColor"
-        :width="imageWidth"
-        :height="imageHeight"
+        :src="imageProperties.url"
+        :background-color="imageProperties.bgColor"
+        :width="imageProperties.width"
+        :height="imageProperties.height"
         :fallback-height="IMAGE_HEIGHT"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
