@@ -7,6 +7,8 @@ import AssetSlotListItemRemove from '@/views/dam/asset/detail/components/slots/A
 import AssetSlotListItemDuplicate from '@/views/dam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/dam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
 import { DocId } from '@/types/common'
+import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
+import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 
 const props = withDefaults(
   defineProps<{
@@ -14,6 +16,7 @@ const props = withDefaults(
     item: AssetSlot | null
     assetType: AssetType
     totalSlotCount: number
+    assetId: DocId
   }>(),
   {}
 )
@@ -80,10 +83,16 @@ const switchSlot = (targetName: string) => {
         <div>{{ t('coreDam.asset.slots.noFile') }}</div>
       </VCol>
       <VCol cols="3" class="text-right">
-        <VBtn variant="text" size="small" icon v-if="!itemHasFile">
-          <VIcon icon="mdi-plus" />
-          <VTooltip activator="parent" location="bottom">Upload file TODO</VTooltip>
-        </VBtn>
+        <AssetUpload
+          :height="40"
+          variant="slot-upload"
+          :queue-id="QUEUE_ID_UPLOAD_SLOTS"
+          type="slots"
+          :asset-id="assetId"
+          :slot-name="slotName"
+          :multiple="false"
+          :asset-type="assetType"
+        />
         <VBtn variant="text" icon size="small" class="mx-1" v-if="itemHasFile">
           <VIcon icon="mdi-dots-horizontal" />
           <VMenu activator="parent">
