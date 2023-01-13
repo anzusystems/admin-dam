@@ -436,16 +436,14 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async queueItemProcessed(assetId: DocId) {
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
-        this.queues[queueId].items.forEach((item, index, all) => {
-          if (item.assetId === asset.id && asset.mainFile && item.type !== QueueItemType.SlotFile) {
+        this.queues[queueId].items.forEach((item) => {
+          if (item.assetId === asset.id && asset.mainFile) {
             item.status = QueueItemStatus.Uploaded
             item.assetStatus = asset.attributes.assetStatus
             if (isImageFile(asset.mainFile)) {
               item.links = asset.mainFile.links
             }
             this.processUpload(queueId)
-          } else if (item.assetId === asset.id) {
-            all.splice(index, 1)
           }
         })
         this.recalculateQueueCounts(queueId)
