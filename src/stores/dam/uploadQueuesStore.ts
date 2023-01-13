@@ -91,6 +91,15 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         }
       }
     },
+    getQueueItemForSlotItem: (state) => {
+      return (queueId: string, slotName: string, assetId: DocId) => {
+        if (queueId in state.queues) {
+          return state.queues[queueId].items.find((item) => item.slotName === slotName && item.assetId === assetId)
+        } else {
+          return undefined
+        }
+      }
+    },
   },
   actions: {
     async addByFiles(queueId: string, files: File[]) {
@@ -427,14 +436,16 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async queueItemProcessed(assetId: DocId) {
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
-        this.queues[queueId].items.forEach((item) => {
-          if (item.assetId === asset.id && asset.mainFile) {
+        this.queues[queueId].items.forEach((item, index, all) => {
+          if (item.assetId === asset.id && asset.mainFile && item.type !== QueueItemType.SlotFile) {
             item.status = QueueItemStatus.Uploaded
             item.assetStatus = asset.attributes.assetStatus
             if (isImageFile(asset.mainFile)) {
               item.links = asset.mainFile.links
             }
             this.processUpload(queueId)
+          } else if (item.assetId === asset.id) {
+            all.splice(index, 1)
           }
         })
         this.recalculateQueueCounts(queueId)
@@ -446,7 +457,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
-          if (item.assetId === asset.id) {
+          if (item.assetId === asset.id && item.type !== QueueItemType.SlotFile) {
+            // todo check slots
             item.keywords = asset.keywords
             item.authors = asset.authors
             item.keywordSuggestions = asset.metadata.keywordSuggestions

@@ -2,13 +2,17 @@
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import AssetSlotListItemRemove from '@/views/dam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemDuplicate from '@/views/dam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/dam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
 import { DocId } from '@/types/common'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
+import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { QueueItemStatus, UploadQueueItem } from '@/types/dam/UploadQueue'
+import { isUndefined } from '@/utils/common'
+import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -27,9 +31,11 @@ const emit = defineEmits<{
   (e: 'unsetSlot', data: { fileId: DocId; slotName: string }): void
   (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
   (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
+  (e: 'refreshList'): void
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
+const uploadQueuesStore = useUploadQueuesStore()
 
 const itemHasFile = computed(() => {
   return props.item && props.item.assetFile
@@ -40,6 +46,29 @@ const fileTitle = computed(() => {
   return props.item.assetFile.fileAttributes.originFileName
     ? props.item.assetFile.fileAttributes.originFileName
     : props.item.assetFile.id
+})
+
+const uploadQueueItemInAnyProgress = computed(() => {
+  const item = uploadQueuesStore.getQueueItemForSlotItem(QUEUE_ID_UPLOAD_SLOTS, props.slotName, props.assetId)
+  if (item && item.status !== QueueItemStatus.Uploaded) return item
+  return undefined
+})
+
+const uploadQueueItemInAnyProgressIndex = computed(() => {
+  if (isUndefined(uploadQueueItemInAnyProgress.value)) return -1
+  return uploadQueuesStore
+    .getQueueItems(QUEUE_ID_UPLOAD_SLOTS)
+    .findIndex(
+      (item) =>
+        item.assetId === uploadQueueItemInAnyProgress.value?.assetId &&
+        item.slotName === uploadQueueItemInAnyProgress.value?.slotName
+    )
+})
+
+watch(uploadQueueItemInAnyProgress, async (newValue, oldValue) => {
+  if (isUndefined(newValue) && !isUndefined(oldValue)) {
+    emit('refreshList')
+  }
 })
 
 const removeAssetFile = () => {
@@ -65,11 +94,32 @@ const duplicateSlot = (targetName: string) => {
 const switchSlot = (targetName: string) => {
   emit('switchSlot', { targetSlotName: targetName, sourceSlotName: props.slotName })
 }
+
+const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+}
 </script>
 
 <template>
   <div class="pa-4 pb-8 text-body-2">
-    <VRow>
+    <VRow v-if="uploadQueueItemInAnyProgress">
+      <VCol>
+        <div class="font-weight-bold">
+          {{ slotName }}
+        </div>
+        <div class="dam-upload-queue dam-upload-queue--list w-100 h-100 d-block">
+          <AssetQueueItemList
+            v-if="uploadQueueItemInAnyProgressIndex > -1"
+            :key="uploadQueueItemInAnyProgress.key"
+            :index="uploadQueueItemInAnyProgressIndex"
+            :item="uploadQueueItemInAnyProgress"
+            :queue-id="QUEUE_ID_UPLOAD_SLOTS"
+            @cancel-item="cancelItem"
+          />
+        </div>
+      </VCol>
+    </VRow>
+    <VRow v-else>
       <VCol v-if="itemHasFile">
         <div class="font-weight-bold">
           {{ slotName }} <span v-if="item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
@@ -84,6 +134,7 @@ const switchSlot = (targetName: string) => {
       </VCol>
       <VCol cols="3" class="text-right">
         <AssetUpload
+          v-if="!itemHasFile"
           :height="40"
           variant="slot-upload"
           :queue-id="QUEUE_ID_UPLOAD_SLOTS"

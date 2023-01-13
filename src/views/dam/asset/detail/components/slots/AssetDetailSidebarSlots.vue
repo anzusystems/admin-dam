@@ -52,6 +52,7 @@ onMounted(async () => {
       @make-main-file="makeMainFile"
       @duplicate-slot="duplicateSlot"
       @switch-slot="switchSlot"
+      @refresh-list="getList"
     />
     <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
   </div>
