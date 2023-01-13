@@ -10,9 +10,11 @@ import {
   unsetAssetSlot,
 } from '@/services/api/dam/fileApi'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
+import { useErrorHandler } from '@/composables/system/error'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: AssetType) {
   const assetSlotsStore = useAssetSlotsStore()
+  const { handleError } = useErrorHandler()
 
   const pagination = usePagination()
   const filter = useAssetSlotListFilter()
@@ -32,7 +34,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await deleteFile(assetType, fileId)
     } catch (e) {
-      console.error(e)
+      handleError(e)
     } finally {
       getList()
     }
@@ -44,7 +46,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await apiMakeMainFile(assetType, fileId, assetId)
     } catch (e) {
-      console.error(e)
+      handleError(e)
     } finally {
       getList()
     }
@@ -56,7 +58,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await unsetAssetSlot(assetType, data.fileId, assetId, data.slotName)
     } catch (e) {
-      console.error(e)
+      handleError(e)
     } finally {
       getList()
     }
@@ -68,7 +70,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await existingFileToSlot(assetType, data.fileId, assetId, data.targetSlotName)
     } catch (e) {
-      console.error(e)
+      handleError(e)
     } finally {
       getList()
     }
@@ -102,7 +104,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
           targetSlotNameCache
         )
       } catch (e) {
-        console.error(e)
+        handleError(e)
       } finally {
         getList()
       }
@@ -125,7 +127,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
           sourceSlotNameCache
         )
       } catch (e) {
-        console.error(e)
+        handleError(e)
       } finally {
         getList()
       }
@@ -146,7 +148,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
     try {
       await updateAssetSlots(assetId, prepareData)
     } catch (e) {
-      console.error(e)
+      handleError(e)
     } finally {
       getList()
     }
