@@ -166,7 +166,7 @@ watch(showDoneComputed, (newValue) => {
     :aspect-ratio="aspectRatio"
   >
     <template v-slot:default>
-      <div class="asset-image__icon-wrapper" v-if="!hideIcon">
+      <div class="asset-image__icon-wrapper" v-if="showIconComputed">
         <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
           <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor" />
         </div>
