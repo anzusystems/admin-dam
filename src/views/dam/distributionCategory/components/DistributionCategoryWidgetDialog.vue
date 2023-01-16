@@ -5,10 +5,14 @@ import DistributionCategorySelect from '@/views/dam/distributionCategory/compone
 import type { DocId, DocIdNullable } from '@/types/common'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
+import { ENTITY, fetchDistributionCategory } from '@/services/api/dam/distributionCategoryApi'
 import ARow from '@/components/common/ARow.vue'
 import { useErrorHandler } from '@/composables/system/error'
 import { updateAssetCategory } from '@/services/api/dam/assetApi'
+import { DistributionCategory } from '@/types/dam/DistributionCategory'
+import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { isNull } from '@/utils/common'
 
 const props = withDefaults(
   defineProps<{
@@ -28,8 +32,12 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: 'global' })
 
+const { createDefault } = useDistributionCategoryFactory()
+const { currentExtSystemId } = useCurrentExtSystem()
+
 const selectedCategoryId = ref<DocIdNullable>(null)
 const saving = ref(false)
+const category = ref<DistributionCategory>(createDefault(currentExtSystemId.value))
 
 const dialogComputed = computed({
   get() {
@@ -55,6 +63,12 @@ const onConfirm = async () => {
     saving.value = false
   }
 }
+
+const loadCategory = async (id: DocId) => {
+  category.value = createDefault(currentExtSystemId.value)
+  category.value = await fetchDistributionCategory(id)
+}
+
 const onCancel = () => {
   dialogComputed.value = false
 }
@@ -65,6 +79,19 @@ watch(
     if (newValue !== oldValue) {
       selectedCategoryId.value = props.categoryId
     }
+  },
+  { immediate: true }
+)
+
+watch(
+  selectedCategoryId,
+  (newValue, oldValue) => {
+    if (newValue === oldValue) return
+    if (isNull(newValue)) {
+      category.value = createDefault(currentExtSystemId.value)
+      return
+    }
+    loadCategory(newValue)
   },
   { immediate: true }
 )
@@ -91,7 +118,11 @@ watch(
                 clearable
                 :label="t('coreDam.asset.model.distributionCategory')"
               />
-              {{ selectedCategoryId }}
+            </ARow>
+            <ARow>
+              <div :key="item.id" v-for="item in category.selectedOptionsDetail">
+                <div>{{ item.serviceSlug }} - {{ item.name }}</div>
+              </div>
             </ARow>
           </VContainer>
         </ASystemEntityScope>
