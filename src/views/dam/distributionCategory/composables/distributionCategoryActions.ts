@@ -8,6 +8,7 @@ import {
   createDistributionCategory,
   fetchDistributionCategory,
   fetchDistributionCategoryList,
+  fetchDistributionCategoryListByIds,
   updateDistributionCategory,
 } from '@/services/api/dam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/dam/DistributionCategory'
@@ -24,6 +25,8 @@ import { usePagination } from '@/composables/system/pagination'
 import { useDistributionCategorySelectFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
 import { simpleCloneObject } from '@/utils/object'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
+import type { ValueObjectOption } from '@/types/ValueObject'
+import type { DocId } from '@/types/common'
 
 const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
@@ -217,5 +220,27 @@ export const useDistributionCategoryEditActions = () => {
     fetchData,
     onUpdate,
     resetStore: distributionCategoryOneStore.reset,
+  }
+}
+
+export const useDistributionCategorySelectActions = () => {
+  const mapToValueObjectOption = (categories: DistributionCategory[]): ValueObjectOption<DocId>[] => {
+    return categories.map((category: DistributionCategory) => ({
+      title: category.name,
+      value: category.id,
+    }))
+  }
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToValueObjectOption(await fetchDistributionCategoryList(currentExtSystemId.value, pagination, filterBag))
+  }
+
+  const fetchItemsByIds = async (ids: DocId[]) => {
+    return mapToValueObjectOption(await fetchDistributionCategoryListByIds(currentExtSystemId.value, ids))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
   }
 }

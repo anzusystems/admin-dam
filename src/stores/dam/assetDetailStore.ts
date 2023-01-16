@@ -4,6 +4,7 @@ import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { getValues } from '@/utils/object'
 import { loadLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import { loadLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
+import type { DocIdNullable } from '@/types/common'
 
 interface State {
   asset: AssetDetailItemDto | null
@@ -53,6 +54,11 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     setView(value: 'list' | 'queue') {
       this.view = value
+    },
+    setDistributionCategory(value: DocIdNullable) {
+      if (this.asset) {
+        this.asset.distributionCategory = value
+      }
     },
     setDeleting() {
       if (!this.asset) return

@@ -1,5 +1,6 @@
 model:
   id: ID
+  distributionCategory: Distribution Category
 filter:
   text: Text
   type: Type
