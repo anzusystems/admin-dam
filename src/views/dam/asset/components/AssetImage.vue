@@ -98,6 +98,12 @@ const srcComputed = computed(() => {
   return isUndefined(props.src) ? placeholder16x9 : props.src
 })
 
+const showIconComputed = computed(() => {
+  if (props.hideIcon) return false
+  else if (props.assetType === AssetType.Image && props.src) return false
+  return true
+})
+
 const showDoneComputed = computed(() => {
   return props.showDone
 })
@@ -179,7 +185,7 @@ watch(showDoneComputed, (newValue) => {
       alt=""
       :style="'background-color:' + backgroundColorComputed"
     />
-    <div class="asset-image__icon-wrapper" v-if="!hideIcon">
+    <div class="asset-image__icon-wrapper" v-if="showIconComputed">
       <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
         <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor" class="asset-image__icon" />
       </div>
@@ -191,7 +197,7 @@ watch(showDoneComputed, (newValue) => {
     style="width: 100%"
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
-    <div class="asset-image__icon-wrapper" v-if="!hideIcon">
+    <div class="asset-image__icon-wrapper" v-if="showIconComputed">
       <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
         <VIcon :size="iconSize" v-if="icon.length" :icon="icon" :color="iconColor" class="asset-image__icon" />
       </div>
