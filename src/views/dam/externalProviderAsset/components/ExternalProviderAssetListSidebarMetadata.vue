@@ -30,7 +30,7 @@ const onImport = () => {
       <VProgressCircular indeterminate color="primary"></VProgressCircular>
     </div>
     <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="!asset">
-      {{ t('coreDam.asset.detial.noAssetSelected') }}
+      {{ t('coreDam.asset.detail.noAssetSelected') }}
     </div>
     <div v-else>
       <ExternalProviderAssetMetadata />
