@@ -1,4 +1,5 @@
 button:
+  confirm: Confirm
   create: Create
   save: Save
   saveAndClose: Save and close

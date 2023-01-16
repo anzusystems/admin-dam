@@ -1,10 +1,10 @@
 import { damClient } from '@/services/api/clients/damClient'
 import type { FilterBag } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'
-import { apiDeleteOne, apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
+import { apiAnyRequest, apiDeleteOne, apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { AssetDetailItemDto, AssetSearchListItemDto, AssetMetadataDto, AssetCustomData } from '@/types/dam/Asset'
-import type { DocId } from '@/types/common'
+import type { DocId, DocIdNullable } from '@/types/common'
 import { HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isNull } from '@/utils/common'
@@ -13,6 +13,7 @@ import { type ApiErrors, useErrorHandler, type ValidationResponseData } from '@/
 import { useAlerts } from '@/composables/system/alerts'
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
+import { AUTH_LOGIN_PATH } from '@/services/api/dam/authApi'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -200,3 +201,14 @@ export const updateAssetMetadata = (asset: AssetDetailItemDto) => {
 
 export const deleteAsset = (id: DocId) =>
   apiDeleteOne<AssetDetailItemDto>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+
+export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocIdNullable) =>
+  apiAnyRequest<any, any>(
+    damClient,
+    'PUT',
+    END_POINT + '/:assetId',
+    { assetId },
+    { id: assetId, distributionCategory: distributionCategoryId },
+    SYSTEM_CORE_DAM,
+    ''
+  )
