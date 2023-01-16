@@ -37,21 +37,19 @@ const loadCategory = async (id: DocId) => {
   loading.value = false
 }
 
-const afterSave = async (id: DocIdNullable) => {
-  if (id) {
-    await loadCategory(id)
-    return
-  }
-  category.value = createDefault(currentExtSystemId.value)
+const afterSave = async (categoryId: DocIdNullable) => {
+  assetDetailStore.setDistributionCategory(categoryId)
 }
 
 watch(
   distributionCategoryId,
   (newValue, oldValue) => {
     if (newValue === oldValue) return
-    if (!isNull(newValue)) {
-      loadCategory(newValue)
+    if (isNull(newValue)) {
+      category.value = createDefault(currentExtSystemId.value)
+      return
     }
+    loadCategory(newValue)
   },
   { immediate: true }
 )
