@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
 withDefaults(
   defineProps<{
     recordId: number | string
@@ -15,6 +17,8 @@ withDefaults(
     dataCy: 'table-edit',
   }
 )
+
+const { t } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
@@ -29,6 +33,6 @@ withDefaults(
     @click.stop="() => {}"
   >
     <VIcon icon="mdi-pencil" />
-    <VTooltip activator="parent" location="bottom">Edit</VTooltip>
+    <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
   </VBtn>
 </template>

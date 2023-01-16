@@ -1,4 +1,4 @@
-import type { DocId, IntegerId } from '@/types/common'
+import type { DocId, DocIdNullable, IntegerId } from '@/types/common'
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 import type { System } from '@/types/System'
 import type { AssetFile } from '@/types/dam/File'
@@ -52,6 +52,7 @@ export interface AssetDetailItemDto extends UserAndTimeTrackingFields, System {
   authors: DocId[]
   podcasts: DocId[]
   metadata: Metadata
+  distributionCategory: DocIdNullable
 }
 
 export interface AssetMetadataDto extends UserAndTimeTrackingFields, System, Metadata {

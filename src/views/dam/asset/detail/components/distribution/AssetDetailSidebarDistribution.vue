@@ -49,21 +49,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn color="secondary" @click.stop="addNew" variant="flat">Add new</VBtn>
-  </AssetDetailSidebarActionsWrapper>
-  <div v-if="distributionListStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
-    <VProgressCircular indeterminate color="primary"></VProgressCircular>
+  <div class="d-flex flex-column w-100">
+    <AssetDetailSidebarActionsWrapper v-if="isActive">
+      <VBtn color="secondary" @click.stop="addNew" variant="flat">Add new</VBtn>
+    </AssetDetailSidebarActionsWrapper>
+    <div class="px-4 text-caption">List of distributions:</div>
+    <div v-if="distributionListStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
+      <VProgressCircular indeterminate color="primary" />
+    </div>
+    <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-caption">Nothing to show</div>
+    <div v-else>
+      <DistributionListItem
+        v-for="item in distributionListStore.list"
+        :key="item.id"
+        :item="item"
+        :asset-type="assetType"
+      />
+      <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
+    </div>
+    <DistributionNewDialog v-model="dialogNew" :asset-type="assetType" :asset-id="assetId" @reload-list="reloadList" />
   </div>
-  <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-caption">Nothing to show</div>
-  <div v-else>
-    <DistributionListItem
-      v-for="item in distributionListStore.list"
-      :key="item.id"
-      :item="item"
-      :asset-type="assetType"
-    />
-    <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
-  </div>
-  <DistributionNewDialog v-model="dialogNew" :asset-type="assetType" :asset-id="assetId" @reload-list="reloadList" />
 </template>

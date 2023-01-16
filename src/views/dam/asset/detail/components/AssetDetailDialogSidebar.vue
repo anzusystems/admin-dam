@@ -13,6 +13,7 @@ import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/dam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
 import AssetDetailSidebarSlots from '@/views/dam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
+import DistributionCategoryWidget from '@/views/dam/distributionCategory/components/DistributionCategoryWidget.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -49,7 +50,7 @@ const typeHasDistributions = computed(() => {
       <VTabs v-model="activeTab" class="sidebar-info__tabs">
         <VTab :value="AssetDetailTab.Info">{{ t('coreDam.asset.detail.tabs.info') }}</VTab>
         <VTab :value="AssetDetailTab.ROI" v-if="isImage">{{ t('coreDam.asset.detail.tabs.roi') }}</VTab>
-        <VTab :value="AssetDetailTab.Distribution" v-if="typeHasDistributions">
+        <VTab :value="AssetDetailTab.Distribution">
           {{ t('coreDam.asset.detail.tabs.distribution') }}
         </VTab>
         <VTab :value="AssetDetailTab.Podcast" v-if="isAudio">Podcast</VTab>
@@ -64,8 +65,10 @@ const typeHasDistributions = computed(() => {
         <div class="py-2" v-if="isImage && activeTab === AssetDetailTab.ROI">
           <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
         </div>
-        <div class="py-2" v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution">
+        <div class="py-2" v-if="activeTab === AssetDetailTab.Distribution">
+          <DistributionCategoryWidget class="px-4 mb-4" />
           <AssetDetailSidebarDistribution
+            v-if="typeHasDistributions"
             :asset-id="assetId"
             :is-active="activeTab === AssetDetailTab.Distribution"
             :asset-type="assetType"
