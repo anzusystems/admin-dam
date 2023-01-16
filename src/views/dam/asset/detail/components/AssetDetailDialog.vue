@@ -99,7 +99,7 @@ const imageHeight = computed(() => {
   return 200
 })
 const imageSrc = computed(() => {
-  if (asset.value?.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
+  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links[0]) {
     return asset.value.mainFile.links[0].url
   }
   return placeholder16x9
