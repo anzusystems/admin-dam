@@ -44,7 +44,7 @@ const { handleError } = useErrorHandler()
 
 const onConfirm = async () => {
   saving.value = true
-  const idCache = props.categoryId
+  const idCache = selectedCategoryId.value
   try {
     await updateAssetCategory(props.assetId, idCache)
     dialogComputed.value = false
