@@ -13,6 +13,7 @@ import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/dam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
 import AssetDetailSidebarSlots from '@/views/dam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
+import DistributionCategoryWidget from '@/views/dam/distributionCategory/components/DistributionCategoryWidget.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -65,6 +66,7 @@ const typeHasDistributions = computed(() => {
           <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
         </div>
         <div class="py-2" v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution">
+          <DistributionCategoryWidget class="px-4 mb-4" />
           <AssetDetailSidebarDistribution
             :asset-id="assetId"
             :is-active="activeTab === AssetDetailTab.Distribution"

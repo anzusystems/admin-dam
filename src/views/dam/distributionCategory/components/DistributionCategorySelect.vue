@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
 import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
-import { useAssetLicenceSelectActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
-import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
+import { useDistributionCategorySelectActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: number | null | number[] | any
+    modelValue: string | null | string[] | any
     label?: string | null
     required?: boolean | null
     multiple?: boolean
@@ -26,9 +26,9 @@ const emit = defineEmits<{
 }>()
 const { modelValue } = useVModels(props, emit)
 
-const { fetchItems, fetchItemsByIds } = useAssetLicenceSelectActions()
+const { fetchItems, fetchItemsByIds } = useDistributionCategorySelectActions()
 
-const innerFilter = useAssetLicenceFilter()
+const innerFilter = useDistributionCategoryFilter()
 </script>
 
 <template>
