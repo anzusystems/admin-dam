@@ -31,6 +31,7 @@ const {
   loader,
   items,
   pagination,
+  fetchAssetList,
   fetchNextPage,
   listMounted,
   listUnmounted,
@@ -110,6 +111,10 @@ onUnmounted(() => {
     </template>
     <template #second-bar-right>
       <div class="text-caption">{{ t('coreDam.asset.list.foundItems') }}: {{ totalCountText }}</div>
+      <VBtn variant="text" icon @click.stop="fetchAssetList" size="x-small" class="ml-1">
+        <VIcon icon="mdi-refresh"></VIcon>
+        <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
+      </VBtn>
       <VDivider vertical class="mx-1 my-2" />
       <DGridViewToggle />
       <VDivider vertical class="mx-1 my-2" />
