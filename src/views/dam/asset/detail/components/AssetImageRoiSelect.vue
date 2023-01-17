@@ -128,6 +128,18 @@ onMounted(async () => {
   imageRoiStore.setRoi(null)
 })
 
+const showCropper = computed(() => {
+  if (
+    assetDetailStore.asset &&
+    assetDetailStore.asset.mainFile &&
+    assetDetailStore.asset.mainFile.links?.image_detail &&
+    imageRoiStore.cropper
+  ) {
+    return true
+  }
+  return false
+})
+
 onUnmounted(() => {
   if (cropper.value) {
     cropper.value.destroy()
@@ -138,7 +150,7 @@ onUnmounted(() => {
 
 <template>
   <vue-cropper
-    v-if="imageRoiStore.cropper"
+    v-if="showCropper"
     :key="imageUrl"
     ref="cropper"
     :aspect-ratio="DAM_IMAGE_ASPECT_RATIO"

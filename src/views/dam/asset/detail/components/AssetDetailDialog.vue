@@ -9,7 +9,6 @@ import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDet
 import AssetImageRoiSelect from '@/views/dam/asset/detail/components/AssetImageRoiSelect.vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { isImageFile } from '@/types/dam/File'
-import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useTheme } from '@/composables/system/themeSettings'
@@ -27,7 +26,6 @@ const emit = defineEmits<{
 
 const { toolbarColor } = useTheme()
 
-const imageLoading = ref(true)
 const { activeTab } = useAssetDetailTab()
 
 const assetDetailStore = useAssetDetailStore()
@@ -38,7 +36,6 @@ const { asset } = storeToRefs(assetDetailStore)
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  imageLoading.value = true
 }
 
 const postDelete = (data: DocId) => {
@@ -56,7 +53,7 @@ const toggleSidebar = () => {
 }
 
 const onImageLoad = () => {
-  imageLoading.value = false
+  // imageLoading.value = false
 }
 
 const nextItem = () => {
@@ -103,7 +100,7 @@ const imageProperties = computed(() => {
     }
   }
   return {
-    url: undefined,
+    url: '',
     width: 356,
     height: 200,
     bgColor: '#ccc',
@@ -163,9 +160,6 @@ const totalCountText = computed(() => {
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
-              <div v-if="imageLoading" class="d-flex w-100 h-100 align-center justify-center">
-                <VProgressCircular indeterminate color="white"></VProgressCircular>
-              </div>
               <AssetImageRoiSelect></AssetImageRoiSelect>
             </div>
             <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
