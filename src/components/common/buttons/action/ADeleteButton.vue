@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { clickBlur } from '@/utils/event'
 import { useI18n } from 'vue-i18n'
 import { useUiHelper } from '@/composables/system/uiHelper'
@@ -20,6 +20,7 @@ const props = withDefaults(
     dialogMaxWidth?: number
     dataCy?: string
     disabled?: boolean
+    disableCloseAfterConfirm?: boolean
   }>(),
   {
     variant: 'text',
@@ -35,24 +36,30 @@ const props = withDefaults(
     dialogMaxWidth: 300,
     dataCy: 'button-delete',
     disabled: false,
+    disableCloseAfterConfirm: false,
   }
 )
 const emit = defineEmits<{
   (e: 'deleteRecord'): void
 }>()
 
-const { dialog } = useUiHelper()
+const dialog = ref(false)
 
 const onClick = (event: Event) => {
   clickBlur(event)
-  dialog.delete = true
+  dialog.value = true
 }
 const onConfirm = () => {
   emit('deleteRecord')
+  if (!props.disableCloseAfterConfirm) closeDialog()
+}
+
+const closeDialog = () => {
+  dialog.value = false
 }
 
 const onCancel = () => {
-  dialog.delete = false
+  closeDialog()
 }
 
 const { t } = useI18n({ useScope: 'global' })
@@ -64,6 +71,10 @@ const progress = computed(() => {
     return btn.delete.loading
   }
   return false
+})
+
+defineExpose({
+  closeDialog,
 })
 </script>
 
@@ -81,8 +92,8 @@ const progress = computed(() => {
     <VIcon icon="mdi-trash-can-outline" />
     <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
   </ABtn>
-  <VDialog v-model="dialog.delete" persistent :width="500" no-click-animation>
-    <VCard v-if="dialog.delete" data-cy="delete-panel">
+  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
+    <VCard v-if="dialog" data-cy="delete-panel">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t(dialogMessageT) }}</div>

@@ -55,6 +55,7 @@ list:
   edit: Edit
   prev: Prev asset
   next: Next asset
+  refresh: Reload list
 detail:
   toggleInfo: Toggle info
   metadataToggle:
