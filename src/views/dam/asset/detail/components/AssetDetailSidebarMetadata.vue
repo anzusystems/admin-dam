@@ -2,7 +2,6 @@
 import { useAssetDetailActions } from '@/views/dam/asset/detail/composables/assetDetailActions'
 import { deleteAsset, updateAssetMetadata } from '@/services/api/dam/assetApi'
 import { isNull } from '@/utils/common'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { useUiHelper } from '@/composables/system/uiHelper'
@@ -12,6 +11,7 @@ import type { DocId } from '@/types/common'
 import AssetMetadata from '@/views/dam/asset/components/AssetMetadata.vue'
 import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
+import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 
 withDefaults(
   defineProps<{
@@ -29,7 +29,7 @@ const { asset } = useAssetDetailActions()
 
 const { showRecordWas, showValidationError } = useAlerts()
 const { handleError } = useErrorHandler()
-const { btn, btnReset, btnLoadingOn, closeDeleteDialog, btnDisable, btnEnable } = useUiHelper()
+const { btn, btnReset, btnLoadingOn, btnDisable, btnEnable } = useUiHelper()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
@@ -56,22 +56,18 @@ const onSave = async () => {
 const onDelete = async () => {
   if (isNull(asset.value)) return
   try {
-    btnLoadingOn('delete')
     await deleteAsset(asset.value.id)
     showRecordWas('deleted')
     emit('postDelete', asset.value.id)
   } catch (error) {
     handleError(error)
-  } finally {
-    closeDeleteDialog()
-    btnReset('delete')
   }
 }
 </script>
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ADeleteButton @delete-record="onDelete"></ADeleteButton>
+    <ADeleteButton @delete-record="onDelete" />
     <VBtn
       color="success"
       type="submit"
