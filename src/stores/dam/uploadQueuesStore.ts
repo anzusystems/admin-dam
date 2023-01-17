@@ -5,7 +5,7 @@ import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/dam/assetApi'
 import type { UploadQueue, UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus, QueueItemType } from '@/types/dam/UploadQueue'
-import type { AssetFileNullable } from '@/types/dam/File'
+import type { AssetFileNullable, Link, Links } from '@/types/dam/File'
 import { isImageFile } from '@/types/dam/File'
 import type { AssetSearchListItemDto } from '@/types/dam/Asset'
 import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
@@ -127,7 +127,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           currentChunkIndex: 0,
           chunkTotalCount: 0,
           licenceId: currentAssetLicenceId.value,
-          links: [],
+          links: {},
           keywords: [],
           authors: [],
           keywordSuggestions: {},
@@ -181,7 +181,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           currentChunkIndex: 0,
           chunkTotalCount: 0,
           licenceId: currentAssetLicenceId.value,
-          links: [],
+          links: {},
           keywords: [],
           authors: [],
           keywordSuggestions: {},
@@ -238,7 +238,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           currentChunkIndex: 0,
           chunkTotalCount: 0,
           licenceId: currentAssetLicenceId.value,
-          links: asset.mainFile && asset.mainFile.links ? asset.mainFile.links : [],
+          links: asset.mainFile && asset.mainFile.links ? asset.mainFile.links : {},
           progress: {
             remainingTime: null,
             progressPercent: null,
@@ -291,8 +291,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           currentChunkIndex: 0,
           chunkTotalCount: 0,
           licenceId: currentAssetLicenceId.value,
-          links: [
-            {
+          links: {
+            image_list: {
               width: 0,
               height: 0,
               requestedWidth: 0,
@@ -300,7 +300,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
               url: asset.url,
               title: '',
             },
-          ],
+          } as Links,
           progress: {
             remainingTime: null,
             progressPercent: null,
@@ -440,7 +440,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           if (item.assetId === asset.id && asset.mainFile) {
             item.status = QueueItemStatus.Uploaded
             item.assetStatus = asset.attributes.assetStatus
-            if (isImageFile(asset.mainFile)) {
+            if (asset.mainFile.links) {
               item.links = asset.mainFile.links
             }
             this.processUpload(queueId)
@@ -498,7 +498,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
               item.fileId = file.id
               item.duplicateAssetId = file.asset
             }
-            if (isImageFile(file)) {
+            if (file?.links) {
               item.links = file.links
             }
             this.processUpload(queueId)

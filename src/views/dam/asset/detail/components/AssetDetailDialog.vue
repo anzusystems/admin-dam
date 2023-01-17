@@ -87,29 +87,28 @@ const isTypeAudio = computed(() => {
 const isTypeDocument = computed(() => {
   return assetType.value === AssetType.Document
 })
-const imageWidth = computed(() => {
-  if (asset.value?.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].width
-  }
-  return 356
-})
-const imageHeight = computed(() => {
-  if (asset.value?.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].height
-  }
-  return 200
-})
-const imageSrc = computed(() => {
-  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].url
-  }
-  return placeholder16x9
-})
-const backgroundColor = computed(() => {
-  if (!asset.value?.mainFile || !isImageFile(asset.value.mainFile)) return '#ccc'
-  return asset.value.mainFile.imageAttributes.mostDominantColor
-})
 
+const imageProperties = computed(() => {
+  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_list) {
+    return {
+      url: asset.value.mainFile.links.image_list.url,
+      width: asset.value.mainFile.links.image_list.width,
+      height: asset.value.mainFile.links.image_list.height,
+      bgColor:
+        isImageFile(asset.value.mainFile) &&
+        asset.value.mainFile.imageAttributes &&
+        asset.value.mainFile.imageAttributes.mostDominantColor
+          ? asset.value.mainFile.imageAttributes.mostDominantColor
+          : '#ccc',
+    }
+  }
+  return {
+    url: undefined,
+    width: 356,
+    height: 200,
+    bgColor: '#ccc',
+  }
+})
 const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
@@ -176,10 +175,10 @@ const totalCountText = computed(() => {
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"
-                :src="imageSrc"
-                :background-color="backgroundColor"
-                :width="imageWidth"
-                :height="imageHeight"
+                :src="imageProperties.url"
+                :background-color="imageProperties.bgColor"
+                :width="imageProperties.width"
+                :height="imageProperties.height"
                 @load="onImageLoad"
                 @error="onImageLoad"
                 use-component
