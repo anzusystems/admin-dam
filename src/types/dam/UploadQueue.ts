@@ -46,7 +46,7 @@ export interface UploadQueueItem {
   currentChunkIndex: number
   chunkTotalCount: number
   licenceId: IntegerId
-  links: Links
+  imagePreview?: Link
   canEditMetadata: boolean
   keywords: DocId[]
   authors: DocId[]

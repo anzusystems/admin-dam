@@ -23,7 +23,7 @@ const processing = computed(() => {
   ].includes(props.item.status)
 })
 const imageSrc = computed(() => {
-  return props.item.links.image_list ? props.item.links.image_list.url : undefined
+  return props.item.imagePreview ? props.item.imagePreview.url : undefined
 })
 const assetType = computed(() => {
   return props.item.assetType

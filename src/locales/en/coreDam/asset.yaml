@@ -121,7 +121,6 @@ massOperations:
   general: General
 queueItem:
   edit: Edit more
-  uploadNew: Upload new file
   duplicate: Duplicate
   viewOriginal: View original
   error: Error
