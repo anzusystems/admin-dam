@@ -89,11 +89,11 @@ const isTypeDocument = computed(() => {
 })
 
 const imageProperties = computed(() => {
-  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_list) {
+  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_detail) {
     return {
-      url: asset.value.mainFile.links.image_list.url,
-      width: asset.value.mainFile.links.image_list.width,
-      height: asset.value.mainFile.links.image_list.height,
+      url: asset.value.mainFile.links.image_detail.url,
+      width: asset.value.mainFile.links.image_detail.width,
+      height: asset.value.mainFile.links.image_detail.height,
       bgColor:
         isImageFile(asset.value.mainFile) &&
         asset.value.mainFile.imageAttributes &&
@@ -112,9 +112,6 @@ const imageProperties = computed(() => {
 const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
-})
-const hasFile = computed(() => {
-  return asset.value?.attributes.assetStatus === AssetStatus.WithFile
 })
 const totalCountText = computed(() => {
   if (isNull(assetListStore.activeItemIndex)) return ''
@@ -166,12 +163,12 @@ const totalCountText = computed(() => {
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
+              <div v-if="imageLoading" class="d-flex w-100 h-100 align-center justify-center">
+                <VProgressCircular indeterminate color="white"></VProgressCircular>
+              </div>
               <AssetImageRoiSelect></AssetImageRoiSelect>
             </div>
             <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
-              <div v-if="imageLoading && isTypeImage && hasFile" class="d-flex w-100 h-100 align-center justify-center">
-                <VProgressCircular indeterminate color="white"></VProgressCircular>
-              </div>
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"

@@ -111,16 +111,21 @@ const cropperEnd = () => {
 }
 
 onMounted(async () => {
-  imageRoiStore.showLoader()
-  if (assetDetailStore.asset && isImageFile(assetDetailStore.asset.mainFile)) {
+  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
+    imageRoiStore.showLoader()
     const res = await fetchImageRoiList(assetDetailStore.asset.mainFile.id, pagination, filter)
     if (res.length > 0 && res[0].id) {
       const roi = await fetchRoi(res[0].id)
       imageRoiStore.setRoi(roi)
       imageRoiStore.showCropper()
       imageRoiStore.hideLoader()
+      return
     }
+    imageRoiStore.setRoi(null)
+    imageRoiStore.hideLoader()
+    return
   }
+  imageRoiStore.setRoi(null)
 })
 
 onUnmounted(() => {
