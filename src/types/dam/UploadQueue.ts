@@ -1,5 +1,5 @@
 import type { DocId, DocIdNullable, IntegerId } from '@/types/common'
-import type { Link } from '@/types/dam/File'
+import type { Link, Links } from '@/types/dam/File'
 import type { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { CancelTokenSource } from 'axios'
@@ -46,7 +46,7 @@ export interface UploadQueueItem {
   currentChunkIndex: number
   chunkTotalCount: number
   licenceId: IntegerId
-  links: Link[]
+  imagePreview?: Link
   canEditMetadata: boolean
   keywords: DocId[]
   authors: DocId[]

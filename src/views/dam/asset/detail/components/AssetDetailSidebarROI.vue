@@ -29,7 +29,7 @@ const imageRoiStore = useImageRoiStore()
     <VProgressCircular indeterminate color="primary"></VProgressCircular>
   </div>
   <div v-else-if="imageRoiStore.roi" class="crop-preview pa-2">
-    <div v-for="item in imageRoiStore.roi?.links" :key="item.url" class="pb-2">
+    <div v-for="item in imageRoiStore.roi?.links.image_roi_example" :key="item.url" class="pb-2">
       <div class="text-subtitle-2">{{ item.title }}</div>
       <img :src="item.url + '?timestamp=' + imageRoiStore.timestamp" :width="item.width" :height="item.height" alt="" />
     </div>

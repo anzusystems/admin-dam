@@ -95,10 +95,6 @@ const uploadProgress = computed(() => {
   return props.item.progress.progressPercent
 })
 
-const uploadNew = async () => {
-  // todo
-}
-
 const viewOriginal = async () => {
   // todo
 }
@@ -124,7 +120,7 @@ const remove = async () => {
   }
 }
 const imageSrc = computed(() => {
-  return props.item.links.length > 0 ? props.item.links[0].url : undefined
+  return props.item.imagePreview ? props.item.imagePreview.url : undefined
 })
 const assetType = computed(() => {
   return props.item.assetType
@@ -188,17 +184,7 @@ const showCancel = computed(() => {
         <VCol>
           <div class="w-100 d-flex justify-space-between align-center">
             <VBtn
-              v-if="item.isDuplicate"
-              size="small"
-              @click.stop="uploadNew"
-              :disabled="!item.canEditMetadata"
-              :variant="item.canEditMetadata ? 'flat' : 'text'"
-              :color="item.canEditMetadata ? 'secondary' : undefined"
-            >
-              {{ t('coreDam.asset.queueItem.uploadNew') }}
-            </VBtn>
-            <VBtn
-              v-else
+              v-if="!item.isDuplicate"
               size="small"
               :variant="item.canEditMetadata ? 'flat' : 'text'"
               :color="item.canEditMetadata ? 'secondary' : undefined"

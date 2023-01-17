@@ -12,5 +12,7 @@ export interface RegionOfInterest extends UserAndTimeTrackingFields, System {
   pointY: number
   percentageWidth: number
   percentageHeight: number
-  links: Link[]
+  links: {
+    image_roi_example: Link[]
+  }
 }
