@@ -3,6 +3,7 @@ import type { DocId, IntegerIdNullable } from '@/types/common'
 import type { System } from '@/types/System'
 import type { PodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/dam/valueObject/PodcastLastImportStatus'
+import type { Links } from '@/types/dam/File'
 
 interface Texts {
   title: string
@@ -20,6 +21,7 @@ export interface Podcast extends UserAndTimeTrackingFields, System {
   licence: IntegerIdNullable
   texts: Texts
   attributes: Attributes
+  links?: Links
 }
 
 export interface PodcastMinimal {

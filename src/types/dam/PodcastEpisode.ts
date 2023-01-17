@@ -1,6 +1,7 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 import type { DocId, DocIdNullable, DatetimeUTCNullable } from '@/types/common'
 import type { System } from '@/types/System'
+import type { Links } from '@/types/dam/File'
 
 interface Texts {
   title: string
@@ -25,4 +26,5 @@ export interface PodcastEpisode extends UserAndTimeTrackingFields, System {
   attributes: Attributes
   dates: Dates
   position: number
+  links?: Links
 }
