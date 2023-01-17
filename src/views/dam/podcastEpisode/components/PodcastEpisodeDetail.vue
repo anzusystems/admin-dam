@@ -7,10 +7,16 @@ import { storeToRefs } from 'pinia'
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import { usePodcastEpisodeOneStore } from '@/stores/dam/podcastEpisodeStore'
 import ADatetime from '@/components/common/ADatetime.vue'
+import { computed } from 'vue'
+import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
 const { t } = useI18n({ useScope: 'global' })
+
+const imageSrc = computed(() => {
+  return podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined
+})
 </script>
 
 <template>
@@ -48,6 +54,9 @@ const { t } = useI18n({ useScope: 'global' })
       <ACard loader="detail">
         <ARow :title="t('coreDam.podcastEpisode.model.id')">
           <ACopyText :value="podcastEpisode.id"></ACopyText>
+        </ARow>
+        <ARow title="Image" v-if="imageSrc">
+          <AssetImage :src="imageSrc" use-component />
         </ARow>
         <ARow :title="t('coreDam.podcastEpisode.model.asset')">
           {{ podcastEpisode.asset }}

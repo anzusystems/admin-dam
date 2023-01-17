@@ -8,10 +8,16 @@ import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTracking
 import { usePodcastOneStore } from '@/stores/dam/podcastStore'
 import PodcastModeChip from '@/views/dam/podcast/components/PodcastModeChip.vue'
 import PodcastLastImportStatusChip from '@/views/dam/podcast/components/PodcastLastImportStatusChip.vue'
+import { computed } from 'vue'
+import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 
 const { podcast } = storeToRefs(usePodcastOneStore())
 
 const { t } = useI18n({ useScope: 'global' })
+
+const imageSrc = computed(() => {
+  return podcast.value.links ? podcast.value.links.image_list.url : undefined
+})
 </script>
 
 <template>
@@ -33,6 +39,9 @@ const { t } = useI18n({ useScope: 'global' })
       <ACard loader="detail">
         <ARow :title="t('coreDam.podcast.model.id')">
           <ACopyText :value="podcast.id" data-cy="podcast-id"></ACopyText>
+        </ARow>
+        <ARow title="Image" v-if="imageSrc">
+          <AssetImage :src="imageSrc" use-component />
         </ARow>
         <AUserAndTimeTrackingFields :data="podcast"></AUserAndTimeTrackingFields>
       </ACard>
