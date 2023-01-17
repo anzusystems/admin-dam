@@ -124,7 +124,7 @@ const remove = async () => {
   }
 }
 const imageSrc = computed(() => {
-  return props.item.links.length > 0 ? props.item.links[0].url : undefined
+  return props.item.links.image_list ? props.item.links.image_list.url : undefined
 })
 const assetType = computed(() => {
   return props.item.assetType

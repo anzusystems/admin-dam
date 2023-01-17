@@ -55,11 +55,11 @@ const selectMultiple = () => {
 }
 
 const imageProperties = computed(() => {
-  if (asset.value.mainFile && asset.value.mainFile.links && asset.value.mainFile.links[0]) {
+  if (asset.value.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_list) {
     return {
-      url: asset.value.mainFile.links[0].url,
-      width: asset.value.mainFile.links[0].width,
-      height: asset.value.mainFile.links[0].height,
+      url: asset.value.mainFile.links.image_list.url,
+      width: asset.value.mainFile.links.image_list.width,
+      height: asset.value.mainFile.links.image_list.height,
       bgColor:
         isImageFile(asset.value.mainFile) &&
         asset.value.mainFile.imageAttributes &&

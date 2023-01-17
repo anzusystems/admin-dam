@@ -30,8 +30,13 @@ const filter = useImageRoiListFilter()
 const pagination = usePagination()
 
 const imageUrl = computed(() => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
-    return assetDetailStore.asset.mainFile.links[0].url
+  if (
+    assetDetailStore.asset &&
+    assetDetailStore.asset.mainFile &&
+    isImageFile(assetDetailStore.asset.mainFile) &&
+    assetDetailStore.asset.mainFile.links?.image_detail
+  ) {
+    return assetDetailStore.asset.mainFile.links.image_detail.url
   }
   return ''
 })

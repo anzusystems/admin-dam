@@ -70,13 +70,15 @@ export interface Link {
   title: string
 }
 
+export type Links = Record<'image_list' | 'image_detail', Link> | Record<string, never>
+
 export interface ImageFile extends UserAndTimeTrackingFields {
   id: DocId
   asset: DocId
   fileAttributes: FileAttributes
   imageAttributes: ImageAttributes
   originAssetFile: DocIdNullable
-  links: Link[]
+  links?: Links
   metadata: Metadata
   _resourceName: 'imageFile'
 }
@@ -87,7 +89,7 @@ export interface AudioFile extends UserAndTimeTrackingFields {
   fileAttributes: FileAttributes
   audioAttributes: AudioAttributes
   originAssetFile: DocIdNullable
-  links?: Link[] // todo check
+  links?: Links
   _resourceName: 'audioFile'
 }
 
@@ -97,7 +99,7 @@ export interface VideoFile extends UserAndTimeTrackingFields {
   fileAttributes: FileAttributes
   videoAttributes: VideoAttributes
   originAssetFile: DocIdNullable
-  links?: Link[] // todo check
+  links?: Links
   _resourceName: 'videoFile'
 }
 
@@ -107,7 +109,7 @@ export interface DocumentFile extends UserAndTimeTrackingFields {
   fileAttributes: FileAttributes
   documentAttributes: DocumentAttributes
   originAssetFile: DocIdNullable
-  links?: Link[] // todo check
+  links?: Links
   _resourceName: 'documentFile'
 }
 
