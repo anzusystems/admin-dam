@@ -9,13 +9,13 @@ import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDet
 import AssetImageRoiSelect from '@/views/dam/asset/detail/components/AssetImageRoiSelect.vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { isImageFile } from '@/types/dam/File'
-import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useTheme } from '@/composables/system/themeSettings'
 import type { DocId } from '@/types/common'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
+import { isNull } from '@/utils/common'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -26,7 +26,6 @@ const emit = defineEmits<{
 
 const { toolbarColor } = useTheme()
 
-const imageLoading = ref(true)
 const { activeTab } = useAssetDetailTab()
 
 const assetDetailStore = useAssetDetailStore()
@@ -37,7 +36,6 @@ const { asset } = storeToRefs(assetDetailStore)
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  imageLoading.value = true
 }
 
 const postDelete = (data: DocId) => {
@@ -55,7 +53,7 @@ const toggleSidebar = () => {
 }
 
 const onImageLoad = () => {
-  imageLoading.value = false
+  // imageLoading.value = false
 }
 
 const nextItem = () => {
@@ -86,38 +84,34 @@ const isTypeAudio = computed(() => {
 const isTypeDocument = computed(() => {
   return assetType.value === AssetType.Document
 })
-const imageWidth = computed(() => {
-  if (asset.value?.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].width
-  }
-  return 356
-})
-const imageHeight = computed(() => {
-  if (asset.value?.mainFile && isImageFile(asset.value.mainFile) && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].height
-  }
-  return 200
-})
-const imageSrc = computed(() => {
-  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links[0]) {
-    return asset.value.mainFile.links[0].url
-  }
-  return placeholder16x9
-})
-const backgroundColor = computed(() => {
-  if (!asset.value?.mainFile || !isImageFile(asset.value.mainFile)) return '#ccc'
-  return asset.value.mainFile.imageAttributes.mostDominantColor
-})
 
+const imageProperties = computed(() => {
+  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_detail) {
+    return {
+      url: asset.value.mainFile.links.image_detail.url,
+      width: asset.value.mainFile.links.image_detail.width,
+      height: asset.value.mainFile.links.image_detail.height,
+      bgColor:
+        isImageFile(asset.value.mainFile) &&
+        asset.value.mainFile.imageAttributes &&
+        asset.value.mainFile.imageAttributes.mostDominantColor
+          ? asset.value.mainFile.imageAttributes.mostDominantColor
+          : '#ccc',
+    }
+  }
+  return {
+    url: '',
+    width: 356,
+    height: 200,
+    bgColor: '#ccc',
+  }
+})
 const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
 })
-const hasFile = computed(() => {
-  return asset.value?.attributes.assetStatus === AssetStatus.WithFile
-})
 const totalCountText = computed(() => {
-  if (!assetListStore.activeItemIndex) return ''
+  if (isNull(assetListStore.activeItemIndex)) return ''
   return assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.hasNextPage ? '+' : '')
 })
 </script>
@@ -169,16 +163,13 @@ const totalCountText = computed(() => {
               <AssetImageRoiSelect></AssetImageRoiSelect>
             </div>
             <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
-              <div v-if="imageLoading && isTypeImage && hasFile" class="d-flex w-100 h-100 align-center justify-center">
-                <VProgressCircular indeterminate color="white"></VProgressCircular>
-              </div>
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"
-                :src="imageSrc"
-                :background-color="backgroundColor"
-                :width="imageWidth"
-                :height="imageHeight"
+                :src="imageProperties.url"
+                :background-color="imageProperties.bgColor"
+                :width="imageProperties.width"
+                :height="imageProperties.height"
                 @load="onImageLoad"
                 @error="onImageLoad"
                 use-component

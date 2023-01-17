@@ -17,7 +17,7 @@ export function useCreateUserValidation(userCreate: Ref<CreateUser>, userAuthTyp
       required,
       email,
     },
-  }
+  } as Record<string, any> // todo find better type
   if (userAuthType === UserAuthType.OAuth2) {
     rulesRaw['ssoId'] = {
       required,
@@ -48,7 +48,7 @@ export function useUpdateUserValidation(userUpdate: Ref<UpdateUser>, userAuthTyp
     lastName: {
       maxLength: maxLength(120),
     },
-  }
+  } as Record<string, any> // todo find better type
 
   if (userAuthType === UserAuthType.JsonCredentials) {
     rulesRaw['plainPassword'] = {

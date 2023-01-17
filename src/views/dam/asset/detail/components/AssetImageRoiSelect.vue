@@ -30,8 +30,13 @@ const filter = useImageRoiListFilter()
 const pagination = usePagination()
 
 const imageUrl = computed(() => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
-    return assetDetailStore.asset.mainFile.links[0].url
+  if (
+    assetDetailStore.asset &&
+    assetDetailStore.asset.mainFile &&
+    isImageFile(assetDetailStore.asset.mainFile) &&
+    assetDetailStore.asset.mainFile.links?.image_detail
+  ) {
+    return assetDetailStore.asset.mainFile.links.image_detail.url
   }
   return ''
 })
@@ -106,16 +111,33 @@ const cropperEnd = () => {
 }
 
 onMounted(async () => {
-  imageRoiStore.showLoader()
-  if (assetDetailStore.asset && isImageFile(assetDetailStore.asset.mainFile)) {
+  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
+    imageRoiStore.showLoader()
     const res = await fetchImageRoiList(assetDetailStore.asset.mainFile.id, pagination, filter)
     if (res.length > 0 && res[0].id) {
       const roi = await fetchRoi(res[0].id)
       imageRoiStore.setRoi(roi)
       imageRoiStore.showCropper()
       imageRoiStore.hideLoader()
+      return
     }
+    imageRoiStore.setRoi(null)
+    imageRoiStore.hideLoader()
+    return
   }
+  imageRoiStore.setRoi(null)
+})
+
+const showCropper = computed(() => {
+  if (
+    assetDetailStore.asset &&
+    assetDetailStore.asset.mainFile &&
+    assetDetailStore.asset.mainFile.links?.image_detail &&
+    imageRoiStore.cropper
+  ) {
+    return true
+  }
+  return false
 })
 
 onUnmounted(() => {
@@ -128,7 +150,7 @@ onUnmounted(() => {
 
 <template>
   <vue-cropper
-    v-if="imageRoiStore.cropper"
+    v-if="showCropper"
     :key="imageUrl"
     ref="cropper"
     :aspect-ratio="DAM_IMAGE_ASPECT_RATIO"

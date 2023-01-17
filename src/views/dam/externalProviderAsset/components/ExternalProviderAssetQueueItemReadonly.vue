@@ -25,7 +25,7 @@ const remove = () => {
 }
 
 const imageSrc = computed(() => {
-  return props.item.links.length > 0 ? props.item.links[0].url : ''
+  return props.item.imagePreview ? props.item.imagePreview.url : ''
 })
 </script>
 
