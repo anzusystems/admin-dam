@@ -13,12 +13,12 @@ import ARow from '@/components/common/ARow.vue'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createPodcast, ENTITY } from '@/services/api/dam/podcastApi'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastFactory } from '@/model/dam/factory/PodcastFactory'
 import type { Podcast } from '@/types/dam/Podcast'
 import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastValidation'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
+import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
 
 withDefaults(
   defineProps<{
@@ -38,14 +38,14 @@ const emit = defineEmits<{
   (e: 'afterCreate', data: Podcast): void
 }>()
 
-const { currentExtSystemId } = useCurrentExtSystem()
+const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const { createDefault } = usePodcastFactory()
-const podcast = ref<Podcast>(createDefault(currentExtSystemId.value))
+const podcast = ref<Podcast>(createDefault(currentAssetLicenceId.value))
 const dialog = ref(false)
 
 const onClick = () => {
-  podcast.value = createDefault(currentExtSystemId.value)
+  podcast.value = createDefault(currentAssetLicenceId.value)
   dialog.value = true
 }
 
