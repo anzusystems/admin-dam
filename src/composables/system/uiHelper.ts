@@ -41,10 +41,6 @@ const loader = reactive({
   create: false,
 })
 
-const dialog = reactive({
-  delete: false,
-})
-
 const btnReset = (...args: ButtonName[]) => {
   for (let i = 0; i < args.length; i++) {
     btn[args[i]].loading = false
@@ -84,10 +80,6 @@ const loaderOff = (name: LoaderName) => {
   loader[name] = false
 }
 
-const closeDeleteDialog = () => {
-  dialog.delete = false
-}
-
 // Note: use only on common CRUD actions, for more complex situations create custom loading/disabled states
 export function useUiHelper() {
   return {
@@ -100,7 +92,5 @@ export function useUiHelper() {
     loader,
     loaderOn,
     loaderOff,
-    dialog,
-    closeDeleteDialog,
   }
 }

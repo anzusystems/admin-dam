@@ -6,7 +6,6 @@ import { isNull } from '@/utils/common'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import KeywordSelect from '@/views/dam/keyword/components/KeywordSelect.vue'
@@ -21,6 +20,7 @@ import type { DocId } from '@/types/common'
 import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
+import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -80,7 +80,6 @@ const assetListStore = useAssetListStore()
 
 const { showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
-const { closeDeleteDialog } = useUiHelper()
 
 const processing = computed(() => {
   return props.item.status === QueueItemStatus.Processing
@@ -119,8 +118,6 @@ const remove = async () => {
     showRecordWas('deleted')
   } catch (error) {
     handleError(error)
-  } finally {
-    closeDeleteDialog()
   }
 }
 const imageSrc = computed(() => {
@@ -202,17 +199,7 @@ const showCancel = computed(() => {
                 <VIcon icon="mdi-close-circle-outline" />
                 <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
               </VBtn>
-              <VBtn icon variant="text" @click.stop="remove" v-else :disabled="!item.canEditMetadata" size="small">
-                <VIcon icon="mdi-trash-can-outline" />
-                <VTooltip activator="parent" location="bottom">{{ t('common.button.delete') }}</VTooltip>
-              </VBtn>
-              <!--              todo: not working:-->
-              <!--              <ADeleteButton-->
-              <!--                v-else-->
-              <!--                variant="text"-->
-              <!--                :confirm-callback="remove"-->
-              <!--                :disabled="!item.canEditMetadata"-->
-              <!--              ></ADeleteButton>-->
+              <ADeleteButton variant="text" :disabled="!item.canEditMetadata" @delete-record="remove" />
             </div>
           </VCol>
         </VRow>
