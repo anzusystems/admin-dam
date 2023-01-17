@@ -20,6 +20,7 @@ export function usePodcastFactory() {
         mode: PodcastMode.Default,
         lastImportStatus: PodcastLastImportStatus.Default,
       },
+      links: undefined,
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 1,

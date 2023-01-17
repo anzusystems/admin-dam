@@ -4,7 +4,6 @@ import { deleteAsset, fetchAsset } from '@/services/api/dam/assetApi'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { isNull } from '@/utils/common'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { useUiHelper } from '@/composables/system/uiHelper'
@@ -27,20 +26,24 @@ const IMAGE_ASPECT_RATIO = 16 / 9
 
 const props = withDefaults(
   defineProps<{
+    index: number
     queueId: string
     customData: AssetCustomData
     keywords: DocId[]
     authors: DocId[]
     item: UploadQueueItem
-    index: number
+    disableDoneAnimation?: boolean
   }>(),
-  {}
+  {
+    disableDoneAnimation: false,
+  }
 )
 const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
   (e: 'update:authors', data: DocId[]): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
+  (e: 'removeItem', index: number): void
 }>()
 
 const customData = computed({
@@ -86,7 +89,7 @@ const waiting = computed(() => {
   return [QueueItemStatus.Waiting, QueueItemStatus.Loading].includes(props.item.status)
 })
 const done = computed(() => {
-  return props.item.status === QueueItemStatus.Uploaded
+  return !props.disableDoneAnimation && props.item.status === QueueItemStatus.Uploaded
 })
 const uploading = computed(() => {
   return props.item.status === QueueItemStatus.Uploading
@@ -109,9 +112,10 @@ const showDetail = async () => {
   assetDetailStore.hideLoader()
 }
 const remove = async () => {
-  if (!props.item || !props.item.assetId) return
+  if (!props.item.assetId) return
   try {
     await deleteAsset(props.item.assetId)
+    emit('removeItem', props.index)
     showRecordWas('deleted')
   } catch (error) {
     handleError(error)
@@ -143,109 +147,116 @@ const showCancel = computed(() => {
 </script>
 
 <template>
-  <div class="dam-upload-queue__item">
-    <div class="dam-upload-queue__item-card">
-      <div class="position-relative">
-        <AssetImage
-          :asset-type="assetType"
-          :asset-status="status"
-          :src="imageSrc"
-          background-color="#ccc"
-          :show-uploading="uploading"
-          :show-processing="processing"
-          :show-waiting="waiting"
-          :show-done="done"
-          :uploading-progress="uploadProgress"
-          use-component
-          cover
-          :aspect-ratio="IMAGE_ASPECT_RATIO"
-        />
-        <div
-          v-if="item.isDuplicate"
-          class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
-        >
-          <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
-          <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
-          <VBtn variant="text" size="small" @click.stop="viewOriginal" v-if="item.duplicateAssetId">
-            {{ t('coreDam.asset.queueItem.viewOriginal') }}
-          </VBtn>
-        </div>
-        <div
-          v-if="item.error.hasError"
-          class="dam-upload-queue__overlay dam-upload-queue__overlay--error d-flex align-center justify-center flex-column"
-        >
-          <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
-          <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
-          <div v-if="item.error.message.length" class="text-caption" v-html="item.error.message"></div>
-          <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
-        </div>
-      </div>
-      <VRow dense class="my-2">
-        <VCol>
-          <div class="w-100 d-flex justify-space-between align-center">
-            <VBtn
-              v-if="!item.isDuplicate"
-              size="small"
-              :variant="item.canEditMetadata ? 'flat' : 'text'"
-              :color="item.canEditMetadata ? 'secondary' : undefined"
-              @click.stop="showDetail"
-              :disabled="!item.canEditMetadata"
-            >
-              {{ t('coreDam.asset.queueItem.edit') }}
+  <VCol xxl="2" xl="3" md="4" sm="6" cols="12">
+    <div class="dam-upload-queue__item">
+      <div class="dam-upload-queue__item-card">
+        <div class="position-relative">
+          <AssetImage
+            :asset-type="assetType"
+            :asset-status="status"
+            :src="imageSrc"
+            background-color="#ccc"
+            :show-uploading="uploading"
+            :show-processing="processing"
+            :show-waiting="waiting"
+            :show-done="done"
+            :uploading-progress="uploadProgress"
+            use-component
+            cover
+            :aspect-ratio="IMAGE_ASPECT_RATIO"
+          />
+          <div
+            v-if="item.isDuplicate"
+            class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
+          >
+            <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
+            <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
+            <VBtn variant="text" size="small" @click.stop="viewOriginal" v-if="item.duplicateAssetId">
+              {{ t('coreDam.asset.queueItem.viewOriginal') }}
             </VBtn>
-            <VBtn icon variant="text" @click.stop="cancelItem" v-if="showCancel">
-              <VIcon icon="mdi-close-circle-outline" />
-              <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
-            </VBtn>
-            <ADeleteButton
-              variant="text"
-              @delete-record="remove"
-              :disabled="!item.canEditMetadata"
-              v-else
-            ></ADeleteButton>
           </div>
-        </VCol>
-      </VRow>
-      <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
-        <AssetCustomMetadataForm v-if="item" :asset-type="assetType" v-model="customData">
-          <template #after-pinned>
-            <VRow dense class="my-2" v-if="keywordEnabled">
-              <VCol>
-                <ASystemEntityScope subject="keyword" system="dam">
-                  <KeywordSelect
-                    label="Keywords"
-                    v-model="keywords"
-                    :suggestions="item.keywordSuggestions"
-                    chips
-                    clearable
-                    multiple
-                    :required="keywordRequired"
-                    :validation-scope="AssetMetadataValidationScopeSymbol"
-                    :disabled="!item.canEditMetadata"
-                  />
-                </ASystemEntityScope>
-              </VCol>
-            </VRow>
-            <VRow dense class="my-2" v-if="authorEnabled">
-              <VCol>
-                <ASystemEntityScope subject="author" system="dam">
-                  <AuthorSelect
-                    label="Authors"
-                    v-model="authors"
-                    :suggestions="item.authorSuggestions"
-                    chips
-                    clearable
-                    multiple
-                    :required="authorRequired"
-                    :validation-scope="AssetMetadataValidationScopeSymbol"
-                    :disabled="!item.canEditMetadata"
-                  />
-                </ASystemEntityScope>
-              </VCol>
-            </VRow>
-          </template>
-        </AssetCustomMetadataForm>
-      </VForm>
+          <div
+            v-if="item.error.hasError"
+            class="dam-upload-queue__overlay dam-upload-queue__overlay--error d-flex align-center justify-center flex-column"
+          >
+            <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
+            <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
+            <div v-if="item.error.message.length" class="text-caption" v-html="item.error.message"></div>
+            <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
+          </div>
+        </div>
+        <VRow dense class="my-2">
+          <VCol>
+            <div class="w-100 d-flex justify-space-between align-center">
+              <VBtn
+                v-if="!item.isDuplicate"
+                size="small"
+                :variant="item.canEditMetadata ? 'flat' : 'text'"
+                :color="item.canEditMetadata ? 'secondary' : undefined"
+                @click.stop="showDetail"
+                :disabled="!item.canEditMetadata"
+              >
+                {{ t('coreDam.asset.queueItem.edit') }}
+              </VBtn>
+              <VBtn icon variant="text" @click.stop="cancelItem" v-if="showCancel">
+                <VIcon icon="mdi-close-circle-outline" />
+                <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
+              </VBtn>
+              <VBtn icon variant="text" @click.stop="remove" v-else :disabled="!item.canEditMetadata" size="small">
+                <VIcon icon="mdi-trash-can-outline" />
+                <VTooltip activator="parent" location="bottom">{{ t('common.button.delete') }}</VTooltip>
+              </VBtn>
+              <!--              todo: not working:-->
+              <!--              <ADeleteButton-->
+              <!--                v-else-->
+              <!--                variant="text"-->
+              <!--                :confirm-callback="remove"-->
+              <!--                :disabled="!item.canEditMetadata"-->
+              <!--              ></ADeleteButton>-->
+            </div>
+          </VCol>
+        </VRow>
+        <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
+          <AssetCustomMetadataForm v-if="item" :asset-type="assetType" v-model="customData">
+            <template #after-pinned>
+              <VRow dense class="my-2" v-if="keywordEnabled">
+                <VCol>
+                  <ASystemEntityScope subject="keyword" system="dam">
+                    <KeywordSelect
+                      label="Keywords"
+                      v-model="keywords"
+                      :suggestions="item.keywordSuggestions"
+                      chips
+                      clearable
+                      multiple
+                      :required="keywordRequired"
+                      :validation-scope="AssetMetadataValidationScopeSymbol"
+                      :disabled="!item.canEditMetadata"
+                    />
+                  </ASystemEntityScope>
+                </VCol>
+              </VRow>
+              <VRow dense class="my-2" v-if="authorEnabled">
+                <VCol>
+                  <ASystemEntityScope subject="author" system="dam">
+                    <AuthorSelect
+                      label="Authors"
+                      v-model="authors"
+                      :suggestions="item.authorSuggestions"
+                      chips
+                      clearable
+                      multiple
+                      :required="authorRequired"
+                      :validation-scope="AssetMetadataValidationScopeSymbol"
+                      :disabled="!item.canEditMetadata"
+                    />
+                  </ASystemEntityScope>
+                </VCol>
+              </VRow>
+            </template>
+          </AssetCustomMetadataForm>
+        </VForm>
+      </div>
     </div>
-  </div>
+  </VCol>
 </template>
