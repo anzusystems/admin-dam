@@ -33,8 +33,11 @@ const props = withDefaults(
     authors: DocId[]
     item: UploadQueueItem
     index: number
+    disableDoneAnimation?: boolean
   }>(),
-  {}
+  {
+    disableDoneAnimation: false,
+  }
 )
 const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
@@ -86,7 +89,7 @@ const waiting = computed(() => {
   return [QueueItemStatus.Waiting, QueueItemStatus.Loading].includes(props.item.status)
 })
 const done = computed(() => {
-  return props.item.status === QueueItemStatus.Uploaded
+  return !props.disableDoneAnimation && props.item.status === QueueItemStatus.Uploaded
 })
 const uploading = computed(() => {
   return props.item.status === QueueItemStatus.Uploading

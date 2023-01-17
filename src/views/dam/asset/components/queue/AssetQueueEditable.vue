@@ -9,8 +9,11 @@ const props = withDefaults(
   defineProps<{
     queueId: string
     massOperations: boolean
+    disableDoneAnimation?: boolean
   }>(),
-  {}
+  {
+    disableDoneAnimation: false,
+  }
 )
 
 const uploadQueuesStore = useUploadQueuesStore()
@@ -38,6 +41,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
               :index="index"
               :queue-id="queueId"
               @cancel-item="cancelItem"
+              :disable-done-animation="disableDoneAnimation"
             />
           </VCol>
         </VRow>
