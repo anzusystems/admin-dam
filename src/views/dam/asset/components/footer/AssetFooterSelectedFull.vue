@@ -173,6 +173,7 @@ const onSaveAndClose = async () => {
       <AssetQueueMassEditEditable
         :queue-id="QUEUE_ID_MASS_EDIT"
         :mass-operations="massOperations"
+        disable-done-animation
       ></AssetQueueMassEditEditable>
     </div>
   </div>
