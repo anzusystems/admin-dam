@@ -16,6 +16,7 @@ import { useTheme } from '@/composables/system/themeSettings'
 import type { DocId } from '@/types/common'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
+import { isNull } from '@/utils/common'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -117,7 +118,7 @@ const hasFile = computed(() => {
   return asset.value?.attributes.assetStatus === AssetStatus.WithFile
 })
 const totalCountText = computed(() => {
-  if (!assetListStore.activeItemIndex) return ''
+  if (isNull(assetListStore.activeItemIndex)) return ''
   return assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.hasNextPage ? '+' : '')
 })
 </script>
