@@ -16,7 +16,7 @@ export const useImageRoiStore = defineStore('damImageRoiStore', {
     timestamp: Date.now(),
   }),
   actions: {
-    setRoi(roi: RegionOfInterest) {
+    setRoi(roi: RegionOfInterest | null) {
       this.roi = roi
     },
     showLoader() {
