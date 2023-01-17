@@ -2,7 +2,6 @@
 import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 
 withDefaults(
   defineProps<{
@@ -14,7 +13,6 @@ withDefaults(
 const { t } = useI18n({ useScope: 'global' })
 
 const imageRoiStore = useImageRoiStore()
-const assetDetailStore = useAssetDetailStore()
 </script>
 
 <template>
