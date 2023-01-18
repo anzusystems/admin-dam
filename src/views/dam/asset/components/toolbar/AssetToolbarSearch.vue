@@ -20,10 +20,21 @@ const submitFilter = () => {
       hide-details
       prepend-inner-icon="mdi-magnify"
       class="mr-2 v-text-field--pill"
-      style="min-width: 300px"
       density="compact"
       color="grey"
       clearable
     ></VTextField>
   </VForm>
 </template>
+
+<style lang="scss" scoped>
+@use 'vuetify/lib/styles/settings/_variables.scss' as vars;
+
+.v-text-field--pill {
+  min-width: 120px;
+
+  @media #{map-get(vars.$display-breakpoints, 'sm-and-up')} {
+    min-width: 300px;
+  }
+}
+</style>
