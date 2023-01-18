@@ -30,12 +30,12 @@ export const initCurrentAssetLicence = () => {
     }
     if (damConfig.settings.allowSelectLicenceId) {
       if (currentUserIsSuperAdmin.value && currentUser.value.selectedLicence) {
-        currentAssetLicenceId.value = currentUser.value.selectedLicence
+        currentAssetLicenceId.value = currentUser.value.selectedLicence.id
         resolve(true)
         return
       } else if (currentUser.value.selectedLicence) {
         const foundLicence = currentUser.value.assetLicences.find(
-          (item) => item.id === currentUser.value!.selectedLicence
+          (item) => item.id === currentUser.value!.selectedLicence!.id
         )
         if (foundLicence) {
           currentAssetLicenceId.value = foundLicence.id
