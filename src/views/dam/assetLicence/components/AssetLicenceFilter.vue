@@ -2,14 +2,14 @@
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
-import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
+import { useAssetLicenceListFilter } from '@/model/dam/filter/AssetLicenceFilter'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
   (e: 'resetFilter'): void
 }>()
 
-const filterAssetLicence = useAssetLicenceFilter()
+const filterAssetLicence = useAssetLicenceListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

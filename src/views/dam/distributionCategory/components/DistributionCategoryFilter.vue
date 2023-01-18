@@ -2,7 +2,7 @@
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
-import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
+import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useAssetType } from '@/model/dam/valueObject/AssetType'
 
@@ -11,7 +11,7 @@ const emit = defineEmits<{
   (e: 'resetFilter'): void
 }>()
 
-const filter = useDistributionCategoryFilter()
+const filter = useDistributionCategoryListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

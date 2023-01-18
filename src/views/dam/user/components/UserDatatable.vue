@@ -16,12 +16,12 @@ import type { User } from '@/types/dam/User'
 import { useRouter } from 'vue-router'
 import UserFilter from '@/views/dam/user/components/UserFilter.vue'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { useUserFilter } from '@/model/dam/filter/UserFilter'
+import { useUserListFilter } from '@/model/dam/filter/UserFilter'
 import { ACL } from '@/types/Permission'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useUserFilter()
+const filter = useUserListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useUserListActions()
@@ -47,7 +47,6 @@ const getList = () => {
 onMounted(() => {
   fetchList(pagination, filter)
 })
-
 </script>
 
 <template>

@@ -4,14 +4,14 @@ import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
 import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useAssetType } from '@/model/dam/valueObject/AssetType'
-import { useDistributionCategorySelectFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
+import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
   (e: 'resetFilter'): void
 }>()
 
-const filter = useDistributionCategorySelectFilter()
+const filter = useDistributionCategorySelectListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

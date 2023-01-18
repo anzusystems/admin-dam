@@ -14,6 +14,14 @@ const filter = reactive({
   },
 })
 
-export function usePodcastFilter() {
+export function usePodcastListFilter() {
   return filter
+}
+
+export function usePodcastFilter() {
+  return reactive({
+    title: {
+      ...makeFilter({ name: 'title', field: 'texts.title', variant: 'startsWith' }),
+    },
+  })
 }

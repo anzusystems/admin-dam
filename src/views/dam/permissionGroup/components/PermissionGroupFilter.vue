@@ -2,14 +2,14 @@
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
-import { usePermissionGroupFilter } from '@/model/dam/filter/PermissionGroupFilter'
+import { usePermissionGroupListFilter } from '@/model/dam/filter/PermissionGroupFilter'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
   (e: 'resetFilter'): void
 }>()
 
-const filter = usePermissionGroupFilter()
+const filter = usePermissionGroupListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

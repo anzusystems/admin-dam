@@ -15,12 +15,12 @@ import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { Author } from '@/types/dam/Author'
 import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastActions'
-import { usePodcastFilter } from '@/model/dam/filter/PodcastFilter'
+import { usePodcastListFilter } from '@/model/dam/filter/PodcastFilter'
 import PodcastFilter from '@/views/dam/podcast/components/PodcastFilter.vue'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = usePodcastFilter()
+const filter = usePodcastListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePodcastListActions()

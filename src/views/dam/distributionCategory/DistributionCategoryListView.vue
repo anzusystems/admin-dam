@@ -4,14 +4,14 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import { useI18n } from 'vue-i18n'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import DistributionCategoryDatatable from '@/views/dam/distributionCategory/components/DistributionCategoryDatatable.vue'
-import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
+import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 import { computed, ref } from 'vue'
 import { useDistributionCategoryManageActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryCreateButton from '@/views/dam/distributionCategory/components/DistributionCategoryCreateButton.vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { ACL } from '@/types/Permission'
 
-const filter = useDistributionCategoryFilter()
+const filter = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()
 
 const assetType = computed(() => filter.type.model as AssetType)

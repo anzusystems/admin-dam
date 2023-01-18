@@ -18,11 +18,11 @@ import { useAuthorListActions } from '@/views/dam/author/composables/authorActio
 import type { Author } from '@/types/dam/Author'
 import AuthorFilter from '@/views/dam/author/components/AuthorFilter.vue'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
-import { useAuthorFilter } from '@/model/dam/filter/AuthorFilter'
+import { useAuthorListFilter } from '@/model/dam/filter/AuthorFilter'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useAuthorFilter()
+const filter = useAuthorListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useAuthorListActions()
