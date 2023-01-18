@@ -20,8 +20,11 @@ export function useAssetLicenceListFilter() {
 
 export function useAssetLicenceFilter() {
   return reactive({
-    title: {
+    name: {
       ...makeFilter({ name: 'name', variant: 'startsWith' }),
+    },
+    extSystem: {
+      ...makeFilter({ name: 'extSystem', default: null }),
     },
   })
 }
