@@ -88,9 +88,18 @@ const fillAll = (forceReplace = false) => {
       forceReplace
     )
   }
+  if (forceReplace) {
+    replaceAuthors()
+    replaceKeywords()
+    return
+  }
+  fillEmptyAuthors()
+  fillEmptyKeywords()
 }
 const clearForm = () => {
   massOperationsData.value = { image: {}, video: {}, audio: {}, document: {} }
+  massOperationsAuthors.value = []
+  massOperationsKeywords.value = []
 }
 </script>
 
@@ -122,7 +131,7 @@ const clearForm = () => {
                       <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyKeywords">
                         <VIcon icon="mdi-file-arrow-left-right-outline" />
                         <VTooltip activator="parent" location="bottom">
-                          {{ t('coreDam.asset.massOperations.fillOne') }}
+                          {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
                         </VTooltip>
                       </VBtn>
                       <VBtn icon size="small" variant="text" @click.stop="replaceKeywords">
@@ -152,7 +161,7 @@ const clearForm = () => {
                       <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyAuthors">
                         <VIcon icon="mdi-file-arrow-left-right-outline" />
                         <VTooltip activator="parent" location="bottom">
-                          {{ t('coreDam.asset.massOperations.fillOne') }}
+                          {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
                         </VTooltip>
                       </VBtn>
                       <VBtn icon size="small" variant="text" @click.stop="replaceAuthors">
