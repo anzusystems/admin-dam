@@ -2,7 +2,6 @@ import type { CreateUser, UpdateUser, User } from '@/types/dam/User'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@/utils/datetime'
 import { ENTITY } from '@/services/api/dam/userApi'
-import { UserRole } from '@/model/dam/valueObject/UserRole'
 
 export function useUserFactory() {
   const createDefault = (): User => {
@@ -51,7 +50,7 @@ export function useUserFactory() {
     return {
       firstName: user.firstName,
       lastName: user.lastName,
-      superAdmin: user.roles.includes(UserRole.Admin),
+      superAdmin: user.roles.includes('ROLE_ADMIN'),
       plainPassword: '',
       enabled: user.enabled,
       adminToExtSystems: user.adminToExtSystems,

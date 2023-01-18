@@ -5,7 +5,6 @@ import { usePagination } from '@/composables/system/pagination'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import { useTableColumns } from '@/composables/system/tableColumns'
 import ADatatable from '@/components/common/ADatatable.vue'
-import { useUserRole } from '@/model/dam/valueObject/UserRole'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/userApi'
@@ -49,7 +48,6 @@ onMounted(() => {
   fetchList(pagination, filter)
 })
 
-const { getUserRoleOption } = useUserRole()
 </script>
 
 <template>
@@ -61,7 +59,7 @@ const { getUserRoleOption } = useUserRole()
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #roles="{ data }">
-        <VChip v-for="role in data ?? []" :key="role" size="small">{{ getUserRoleOption(role)?.title }}</VChip>
+        <VChip v-for="role in data ?? []" :key="role" size="small">{{ role }}</VChip>
       </template>
       <template #actions="{ data }">
         <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.USER.DETAIL"></ADetailButton>
