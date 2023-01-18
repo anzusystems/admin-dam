@@ -3,6 +3,8 @@ import { useVModels } from '@vueuse/core'
 import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
 import { useAssetLicenceSelectActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
+import { IntegerId } from '@/types/common'
+import { computed, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -12,6 +14,7 @@ const props = withDefaults(
     multiple?: boolean
     clearable?: boolean
     dataCy?: string
+    extSystemId?: IntegerId | null
   }>(),
   {
     label: null,
@@ -19,6 +22,7 @@ const props = withDefaults(
     multiple: false,
     clearable: false,
     dataCy: '',
+    extSystemId: null,
   }
 )
 const emit = defineEmits<{
@@ -29,10 +33,29 @@ const { modelValue } = useVModels(props, emit)
 const { fetchItems, fetchItemsByIds } = useAssetLicenceSelectActions()
 
 const innerFilter = useAssetLicenceFilter()
+
+const selectedExtSystemId = computed(() => {
+  return props.extSystemId
+})
+
+watch(
+  selectedExtSystemId,
+  (newValue, oldValue) => {
+    if (newValue === oldValue) return
+    modelValue.value = null
+    if (newValue) {
+      innerFilter.extSystem.model = newValue
+      return
+    }
+    innerFilter.extSystem.model = null
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
   <ARemoteSelect
+    :key="selectedExtSystemId + ''"
     v-model="modelValue"
     :required="required"
     :label="label"

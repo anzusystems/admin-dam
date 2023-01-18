@@ -12,6 +12,11 @@ import { useAlerts } from '@/composables/system/alerts'
 import { updateCurrentUser } from '@/services/api/dam/userApi'
 import { useErrorHandler } from '@/composables/system/error'
 import { damConfig } from '@/services/DamConfigService'
+import ExtSystemSelect from '@/views/dam/extSystem/components/ExtSystemSelect.vue'
+import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicenceSelect.vue'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { ENTITY } from '@/services/api/dam/extSystemApi'
+import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -38,7 +43,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
-const { currentUser } = useCurrentUser()
+const { currentUser, currentUserIsSuperAdmin } = useCurrentUser()
 
 const saving = ref(false)
 const selectedExtSystem = ref<undefined | IntegerId>(undefined)
@@ -169,7 +174,21 @@ watch(
           ></VBtn>
         </VToolbarItems>
       </VToolbar>
-      <VCardText v-if="allowSelect">
+      <VCardText v-if="currentUserIsSuperAdmin">
+        <div class="mb-4 text-caption">
+          Current ext system id: {{ currentExtSystemId }}<br />
+          Current licence id: {{ currentAssetLicenceId }}<br />
+        </div>
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+          <ExtSystemSelect v-model="selectedExtSystem" />
+          <AssetLicenceSelect
+            :key="selectedExtSystem + ''"
+            v-model="selectedLicence"
+            :ext-system-id="selectedExtSystem"
+          />
+        </ASystemEntityScope>
+      </VCardText>
+      <VCardText v-else-if="allowSelect">
         <div class="mb-4">{{ t('system.mainBar.extSystemLicenceSwitch.description') }}</div>
         <VSelect
           :items="extSystemsItems"
