@@ -27,7 +27,7 @@ export interface CurrentUserDto
     | 'ssoId'
   > {
   superAdmin: boolean
-  selectedLicence: IntegerIdNullable
+  selectedLicence: CurrentUserAssetLicence | null
   adminToExtSystems: CurrentUserExtSystem[]
   userToExtSystems: CurrentUserExtSystem[]
   assetLicences: CurrentUserAssetLicence[]
