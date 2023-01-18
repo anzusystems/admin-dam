@@ -17,6 +17,14 @@ const filter = reactive({
   },
 })
 
-export function useExtSystemFilter() {
+export function useExtSystemListFilter() {
   return filter
+}
+
+export function useExtSystemFilter() {
+  return reactive({
+    name: {
+      ...makeFilter({ name: 'name', variant: 'startsWith' }),
+    },
+  })
 }

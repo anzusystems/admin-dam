@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
-import { usePodcastEpisodeFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
+import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
   (e: 'resetFilter'): void
 }>()
 
-const filter = usePodcastEpisodeFilter()
+const filter = usePodcastEpisodeListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

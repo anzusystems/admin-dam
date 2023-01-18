@@ -2,14 +2,14 @@
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
 import AFilterBooleanGroup from '@/components/filter/AFilterBooleanGroup.vue'
-import { useKeywordFilter } from '@/model/dam/filter/KeywordFilter'
+import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
   (e: 'resetFilter'): void
 }>()
 
-const filter = useKeywordFilter()
+const filter = useKeywordListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

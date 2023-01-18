@@ -1,6 +1,6 @@
 import { useAssetSlotsStore } from '@/stores/dam/assetSlotsStore'
 import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
-import { useAssetSlotListFilter } from '@/model/dam/filter/AssetSlotFilter'
+import { useAssetSlotFilter } from '@/model/dam/filter/AssetSlotFilter'
 import { fetchAssetSlotList, updateAssetSlots } from '@/services/api/dam/assetSlotApi'
 import type { DocId } from '@/types/common'
 import {
@@ -17,7 +17,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
   const { handleError } = useErrorHandler()
 
   const pagination = usePagination()
-  const filter = useAssetSlotListFilter()
+  const filter = useAssetSlotFilter()
 
   const { showPagination } = usePaginationAutoHide(pagination)
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
-import { useAuthorFilter } from '@/model/dam/filter/AuthorFilter'
+import { useAuthorListFilter } from '@/model/dam/filter/AuthorFilter'
 import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useI18n } from 'vue-i18n'
@@ -12,7 +12,7 @@ const emit = defineEmits<{
   (e: 'resetFilter'): void
 }>()
 
-const filter = useAuthorFilter()
+const filter = useAuthorListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

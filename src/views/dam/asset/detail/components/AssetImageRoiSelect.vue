@@ -8,7 +8,7 @@ import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { fetchImageRoiList, fetchRoi, updateRoi } from '@/services/api/dam/imageRoiApi'
 import { usePagination } from '@/composables/system/pagination'
 import { isImageFile } from '@/types/dam/File'
-import { useImageRoiListFilter } from '@/model/dam/filter/ImageRoiFilter'
+import { useImageRoiFilter } from '@/model/dam/filter/ImageRoiFilter'
 import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
 import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
 import { useErrorHandler } from '@/composables/system/error'
@@ -25,7 +25,7 @@ const imageRoiStore = useImageRoiStore()
 
 const cropper = ref<Cropper | null>(null)
 
-const filter = useImageRoiListFilter()
+const filter = useImageRoiFilter()
 
 const pagination = usePagination()
 

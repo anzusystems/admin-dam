@@ -22,7 +22,7 @@ import { fetchDistributionCategorySelectList } from '@/services/api/dam/distribu
 import { ROUTE } from '@/router/routes'
 import { useDistributionCategoryOneStore } from '@/stores/dam/distributionCategoryStore'
 import { usePagination } from '@/composables/system/pagination'
-import { useDistributionCategorySelectFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
+import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
 import { simpleCloneObject } from '@/utils/object'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import type { ValueObjectOption } from '@/types/ValueObject'
@@ -97,7 +97,7 @@ export const useDistributionCategoryManageActions = () => {
 
   const fetchDistributionCategorySelectsData = async (assetType: AssetType) => {
     const pagination = usePagination()
-    const filter = simpleCloneObject(useDistributionCategorySelectFilter())
+    const filter = simpleCloneObject(useDistributionCategorySelectListFilter())
     filter.serviceSlug.model = getAvailableDistributionServiceSlugs(assetType)
     filter.type.model = assetType
     return await fetchDistributionCategorySelectList(currentExtSystemId.value, pagination, filter)

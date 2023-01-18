@@ -19,6 +19,6 @@ const filter = reactive({
   },
 })
 
-export function useDistributionCategorySelectFilter() {
+export function useDistributionCategorySelectListFilter() {
   return filter
 }
