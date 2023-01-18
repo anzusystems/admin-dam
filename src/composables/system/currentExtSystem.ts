@@ -3,12 +3,13 @@ import { damConfig, damConfigInitialized } from '@/services/DamConfigService'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { fetchExtSystem } from '@/services/api/dam/extSystemApi'
 import { useCurrentUser } from '@/composables/system/currentUser'
+import { fetchAssetLicence } from '@/services/api/dam/assetLicenceApi'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<ExtSystem>()
 
 export const initCurrentExtSystem = () => {
-  const { currentUser } = useCurrentUser()
+  const { currentUser, currentUserIsSuperAdmin } = useCurrentUser()
 
   watch(currentExtSystemId, async (newValue, oldValue) => {
     if (newValue !== oldValue && newValue > 0) {
@@ -29,7 +30,17 @@ export const initCurrentExtSystem = () => {
       return
     }
     if (damConfig.settings.allowSelectExtSystem) {
-      if (currentUser.value.selectedLicence) {
+      if (currentUserIsSuperAdmin.value && currentUser.value.selectedLicence) {
+        fetchAssetLicence(currentUser.value.selectedLicence).then((res) => {
+          if (res.extSystem) {
+            currentExtSystemId.value = res.extSystem
+            resolve(true)
+            return
+          }
+          currentExtSystemId.value = damConfig.settings.defaultExtSystemId
+          resolve(true)
+        })
+      } else if (currentUser.value.selectedLicence) {
         const foundLicence = currentUser.value.assetLicences.find(
           (item) => item.id === currentUser.value!.selectedLicence
         )
@@ -38,8 +49,7 @@ export const initCurrentExtSystem = () => {
           resolve(true)
           return
         }
-      }
-      if (currentUser.value.assetLicences[0]) {
+      } else if (currentUser.value.assetLicences[0]) {
         currentExtSystemId.value = currentUser.value.assetLicences[0].extSystem
         resolve(true)
         return
