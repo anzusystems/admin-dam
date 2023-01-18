@@ -22,7 +22,7 @@
     "@vuelidate/validators": "^2.0.0",
     "@vueuse/core": "9.11.0",
     "@vueuse/integrations": "9.11.0",
-    "axios": "^1.2.2",
+    "axios": "^1.2.3",
     "core-js": "^3.27.1",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.7",
