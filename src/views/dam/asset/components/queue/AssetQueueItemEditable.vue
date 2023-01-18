@@ -21,6 +21,8 @@ import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywo
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
+import { useCurrentUser } from '@/composables/system/currentUser'
+import ACopyText from '@/components/common/ACopyText.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -77,6 +79,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
+const { currentUserIsSuperAdmin } = useCurrentUser()
 
 const { showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
@@ -203,6 +206,16 @@ const showCancel = computed(() => {
             </div>
           </VCol>
         </VRow>
+        <div v-if="currentUserIsSuperAdmin" class="text-caption">
+          <VRow v-if="item.assetId">
+            <VCol>{{ t('coreDam.asset.detail.info.field.id') }}</VCol>
+            <VCol cols="9"><ACopyText :value="item.assetId" /></VCol>
+          </VRow>
+          <VRow v-if="item.fileId">
+            <VCol>{{ t('coreDam.asset.detail.info.field.mainFileId') }}</VCol>
+            <VCol cols="9"><ACopyText :value="item.fileId" /></VCol>
+          </VRow>
+        </div>
         <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
           <AssetCustomMetadataForm v-if="item" :asset-type="assetType" v-model="customData">
             <template #after-pinned>
