@@ -37,6 +37,7 @@ action:
   update: Editácia
   create: Vytvorenie
   delete: Vymazanie
+  ugcImpersonate: UGC impersonalizácia
 group:
   asset: Assety
   video: Video
