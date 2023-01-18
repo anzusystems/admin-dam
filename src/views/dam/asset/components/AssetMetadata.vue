@@ -15,6 +15,7 @@ import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/dam/
 import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
+import ACopyText from '@/components/common/ACopyText.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -97,7 +98,7 @@ const onAnyMetadataChange = () => {
         <!-- all types -->
         <VRow>
           <VCol>{{ t('coreDam.asset.detail.info.field.id') }}</VCol>
-          <VCol cols="9">{{ asset.id }}</VCol>
+          <VCol cols="9"><ACopyText :value="asset.id" /></VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('coreDam.asset.detail.info.field.type') }}</VCol>
@@ -114,7 +115,7 @@ const onAnyMetadataChange = () => {
         <div v-if="assetMainFile">
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.mainFileId') }}</VCol>
-            <VCol cols="9">{{ assetMainFile.id }}</VCol>
+            <VCol cols="9"><ACopyText :value="assetMainFile.id" /></VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.mimeType') }}</VCol>
