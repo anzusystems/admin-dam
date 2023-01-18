@@ -31,7 +31,7 @@ export const initCurrentExtSystem = () => {
     }
     if (damConfig.settings.allowSelectExtSystem) {
       if (currentUserIsSuperAdmin.value && currentUser.value.selectedLicence) {
-        fetchAssetLicence(currentUser.value.selectedLicence).then((res) => {
+        fetchAssetLicence(currentUser.value.selectedLicence.id).then((res) => {
           if (res.extSystem) {
             currentExtSystemId.value = res.extSystem
             resolve(true)
@@ -42,7 +42,7 @@ export const initCurrentExtSystem = () => {
         })
       } else if (currentUser.value.selectedLicence) {
         const foundLicence = currentUser.value.assetLicences.find(
-          (item) => item.id === currentUser.value!.selectedLicence
+          (item) => item.id === currentUser.value!.selectedLicence!.id
         )
         if (foundLicence) {
           currentExtSystemId.value = foundLicence.extSystem
