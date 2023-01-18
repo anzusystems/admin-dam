@@ -32,6 +32,7 @@ const submitFilter = () => {
 
 .v-text-field--pill {
   min-width: 120px;
+
   @media #{map-get(vars.$display-breakpoints, 'sm-and-up')} {
     min-width: 300px;
   }
