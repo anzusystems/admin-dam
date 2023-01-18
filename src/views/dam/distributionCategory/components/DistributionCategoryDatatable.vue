@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { ACL } from '@/types/Permission'
-import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
+import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 import { useDistributionCategoryListActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/dam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
@@ -23,7 +23,7 @@ import DistributionCategorySelectedOptionChip from '@/views/dam/distributionCate
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useDistributionCategoryFilter()
+const filter = useDistributionCategoryListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useDistributionCategoryListActions()

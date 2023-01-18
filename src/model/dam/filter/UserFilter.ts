@@ -14,6 +14,14 @@ const filter = reactive({
   },
 })
 
-export function useUserFilter() {
+export function useUserListFilter() {
   return filter
+}
+
+export function useUserFilter() {
+  return reactive({
+    email: {
+      ...makeFilter({ name: 'email', variant: 'startsWith' }),
+    },
+  })
 }

@@ -14,14 +14,14 @@ import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { PermissionGroup } from '@/types/dam/PermissionGroup'
-import { usePermissionGroupFilter } from '@/model/dam/filter/PermissionGroupFilter'
+import { usePermissionGroupListFilter } from '@/model/dam/filter/PermissionGroupFilter'
 import { usePermissionGroupListActions } from '@/views/dam/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/dam/permissionGroup/components/PermissionGroupFilter.vue'
 import { ACL } from '@/types/Permission'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = usePermissionGroupFilter()
+const filter = usePermissionGroupListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePermissionGroupListActions()

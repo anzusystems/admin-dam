@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { Author } from '@/types/dam/Author'
 import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
-import { usePodcastEpisodeFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
+import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/dam/podcastEpisode/components/PodcastEpisodeFilter.vue'
 import type { DocId } from '@/types/common'
 
@@ -29,7 +29,7 @@ const props = withDefaults(
 const router = useRouter()
 const pagination = usePagination()
 pagination.sortBy = 'position'
-const filter = usePodcastEpisodeFilter()
+const filter = usePodcastEpisodeListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePodcastEpisodeListActions()

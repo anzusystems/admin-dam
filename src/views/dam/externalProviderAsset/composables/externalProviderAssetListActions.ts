@@ -1,5 +1,5 @@
 import { usePagination } from '@/composables/system/pagination'
-import { useExternalProviderAssetFilter } from '@/model/dam/filter/ExternalProviderAssetFilter'
+import { useExternalProviderAssetListFilter } from '@/model/dam/filter/ExternalProviderAssetFilter'
 import { storeToRefs } from 'pinia'
 import {
   fetchExternalProviderAsset,
@@ -24,7 +24,7 @@ import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
 
-const filter = useExternalProviderAssetFilter()
+const filter = useExternalProviderAssetListFilter()
 const pagination = usePagination()
 const { activeExternalProvider } = useExternalProviders()
 

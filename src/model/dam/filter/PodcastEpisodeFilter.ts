@@ -14,6 +14,6 @@ const filter = reactive({
   },
 })
 
-export function usePodcastEpisodeFilter() {
+export function usePodcastEpisodeListFilter() {
   return filter
 }

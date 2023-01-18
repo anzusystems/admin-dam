@@ -16,12 +16,12 @@ import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { ACL } from '@/types/Permission'
 import type { Author } from '@/types/dam/Author'
 import { useKeywordListActions } from '@/views/dam/keyword/composables/keywordActions'
-import { useKeywordFilter } from '@/model/dam/filter/KeywordFilter'
+import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 import KeywordFilter from '@/views/dam/keyword/components/KeywordFilter.vue'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useKeywordFilter()
+const filter = useKeywordListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useKeywordListActions()

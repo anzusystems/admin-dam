@@ -20,6 +20,17 @@ const filter = reactive({
   },
 })
 
-export function useKeywordFilter() {
+export function useKeywordListFilter() {
   return filter
+}
+
+export function useKeywordFilter() {
+  return reactive({
+    _elastic: {
+      ...makeFilter({ exclude: true }),
+    },
+    text: {
+      ...makeFilter({ name: 'text' }),
+    },
+  })
 }

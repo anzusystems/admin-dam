@@ -26,6 +26,17 @@ const filter = reactive({
   },
 })
 
-export function useAuthorFilter() {
+export function useAuthorListFilter() {
   return filter
+}
+
+export function useAuthorFilter() {
+  return reactive({
+    _elastic: {
+      ...makeFilter({ exclude: true }),
+    },
+    text: {
+      ...makeFilter({ name: 'text' }),
+    },
+  })
 }

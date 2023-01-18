@@ -14,6 +14,14 @@ const filter = reactive({
   },
 })
 
-export function usePermissionGroupFilter() {
+export function usePermissionGroupListFilter() {
   return filter
+}
+
+export function usePermissionGroupFilter() {
+  return reactive({
+    title: {
+      ...makeFilter({ name: 'title', variant: 'startsWith' }),
+    },
+  })
 }
