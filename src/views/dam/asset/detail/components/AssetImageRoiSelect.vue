@@ -126,6 +126,7 @@ onMounted(async () => {
     return
   }
   imageRoiStore.setRoi(null)
+  imageRoiStore.hideLoader()
 })
 
 const showCropper = computed(() => {

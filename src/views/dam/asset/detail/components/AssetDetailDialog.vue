@@ -114,6 +114,9 @@ const totalCountText = computed(() => {
   if (isNull(assetListStore.activeItemIndex)) return ''
   return assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.hasNextPage ? '+' : '')
 })
+const assetMainFile = computed(() => {
+  return asset.value?.mainFile || undefined
+})
 </script>
 
 <template>
@@ -186,6 +189,7 @@ const totalCountText = computed(() => {
               :is-document="isTypeDocument"
               :asset-status="assetStatus"
               :asset-type="assetType"
+              :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               @post-delete="postDelete"
             ></AssetDetailDialogSidebar>
           </div>
