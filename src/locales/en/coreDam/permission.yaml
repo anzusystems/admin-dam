@@ -57,6 +57,7 @@ action:
   delete: Delete
   access: Access
   list: List
+  ugcImpersonate: UGC Impersonate
 group:
   asset: Assets
   video: Video
