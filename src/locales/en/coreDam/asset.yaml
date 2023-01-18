@@ -27,6 +27,8 @@ filter:
   durationUntil: Duration until
   bitrateFrom: Bitrate from
   bitrateUntil: Bitrate until
+meta:
+  create: Create empty asset
 filterTitle: Filter
 noItemsFound: No matching assets found
 assetType:
@@ -69,6 +71,7 @@ detail:
     slots: Slots
   info:
     status:
+      duplicate: Asset main file is duplicate
       draft: Asset is without file
       deleting: Asset will be removed soon
     metadata: Metadata

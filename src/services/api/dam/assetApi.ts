@@ -1,10 +1,16 @@
 import { damClient } from '@/services/api/clients/damClient'
 import type { FilterBag } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'
-import { apiAnyRequest, apiDeleteOne, apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
+import { apiAnyRequest, apiCreateOne, apiDeleteOne, apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { AssetDetailItemDto, AssetSearchListItemDto, AssetMetadataDto, AssetCustomData } from '@/types/dam/Asset'
-import type { DocId, DocIdNullable } from '@/types/common'
+import type {
+  AssetCreateDto,
+  AssetCustomData,
+  AssetDetailItemDto,
+  AssetMetadataDto,
+  AssetSearchListItemDto,
+} from '@/types/dam/Asset'
+import type { DocId, DocIdNullable, IntegerId } from '@/types/common'
 import { HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isNull } from '@/utils/common'
@@ -13,7 +19,6 @@ import { type ApiErrors, useErrorHandler, type ValidationResponseData } from '@/
 import { useAlerts } from '@/composables/system/alerts'
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import { AUTH_LOGIN_PATH } from '@/services/api/dam/authApi'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -211,4 +216,14 @@ export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocI
     { id: assetId, distributionCategory: distributionCategoryId },
     SYSTEM_CORE_DAM,
     ''
+  )
+
+export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) =>
+  apiCreateOne<AssetCreateDto, AssetDetailItemDto>(
+    damClient,
+    data,
+    END_POINT + '/licence/' + licenceId,
+    {},
+    SYSTEM_CORE_DAM,
+    ENTITY
   )
