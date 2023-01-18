@@ -8,7 +8,7 @@ const currentAssetLicence = ref<AssetLicence>()
 const currentAssetLicenceId = ref(0)
 
 export const initCurrentAssetLicence = () => {
-  const { currentUser } = useCurrentUser()
+  const { currentUser, currentUserIsSuperAdmin } = useCurrentUser()
 
   watch(currentAssetLicenceId, async (newValue, oldValue) => {
     if (newValue !== oldValue && newValue > 0) {
@@ -29,7 +29,11 @@ export const initCurrentAssetLicence = () => {
       return
     }
     if (damConfig.settings.allowSelectLicenceId) {
-      if (currentUser.value.selectedLicence) {
+      if (currentUserIsSuperAdmin.value && currentUser.value.selectedLicence) {
+        currentAssetLicenceId.value = currentUser.value.selectedLicence
+        resolve(true)
+        return
+      } else if (currentUser.value.selectedLicence) {
         const foundLicence = currentUser.value.assetLicences.find(
           (item) => item.id === currentUser.value!.selectedLicence
         )
@@ -38,8 +42,7 @@ export const initCurrentAssetLicence = () => {
           resolve(true)
           return
         }
-      }
-      if (currentUser.value.assetLicences[0]) {
+      } else if (currentUser.value.assetLicences[0]) {
         currentAssetLicenceId.value = currentUser.value.assetLicences[0].id
         resolve(true)
         return
