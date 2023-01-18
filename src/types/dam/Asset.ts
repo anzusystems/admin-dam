@@ -59,3 +59,7 @@ export interface AssetMetadataDto extends UserAndTimeTrackingFields, System, Met
   id: DocId
   customData: AssetCustomData
 }
+
+export interface AssetCreateDto {
+  type: AssetType
+}
