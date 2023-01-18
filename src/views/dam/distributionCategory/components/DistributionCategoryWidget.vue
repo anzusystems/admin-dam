@@ -69,7 +69,7 @@ watch(
         </VBtn>
       </VCol>
     </VRow>
-    <VRow v-if="loading">
+    <VRow v-else-if="loading">
       <VCol class="d-flex w-100 h-100 justify-center align-center pa-2">
         <VProgressCircular indeterminate color="primary"></VProgressCircular>
       </VCol>

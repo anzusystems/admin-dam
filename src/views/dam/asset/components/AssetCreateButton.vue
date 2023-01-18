@@ -1,0 +1,121 @@
+<script lang="ts" setup>
+import { ref } from 'vue'
+import ABtn from '@/components/common/buttons/ABtn.vue'
+import ARow from '@/components/common/ARow.vue'
+import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { ENTITY } from '@/services/api/dam/authorApi'
+import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
+import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
+import { useAssetFactory } from '@/model/dam/factory/AssetFactory'
+import { useAssetType } from '@/model/dam/valueObject/AssetType'
+import { useI18n } from 'vue-i18n'
+import type { AssetCreateDto, AssetDetailItemDto } from '@/types/dam/Asset'
+import { createAsset, fetchAsset } from '@/services/api/dam/assetApi'
+import { useUiHelper } from '@/composables/system/uiHelper'
+import { useAlerts } from '@/composables/system/alerts'
+import { useErrorHandler } from '@/composables/system/error'
+import { DocId } from '@/types/common'
+import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
+
+const emit = defineEmits<{
+  (e: 'afterCreate', data: AssetDetailItemDto): void
+}>()
+
+const { t } = useI18n({ useScope: 'global' })
+const { currentAssetLicenceId } = useCurrentAssetLicence()
+
+const { createCreateDto } = useAssetFactory()
+const asset = ref<AssetCreateDto>(createCreateDto())
+const dialog = ref(false)
+
+const onClick = () => {
+  asset.value = createCreateDto()
+  dialog.value = true
+}
+
+const onCancel = () => {
+  dialog.value = false
+}
+
+const { btnLoadingOn, btnReset } = useUiHelper()
+const { showRecordWas } = useAlerts()
+const { handleError } = useErrorHandler()
+
+const showDetail = async (asset: AssetDetailItemDto) => {
+  assetDetailStore.setView('queue')
+  assetDetailStore.showLoader()
+  assetDetailStore.showDetail()
+  assetDetailStore.setAsset(asset)
+  if (assetDetailStore.asset?.createdBy) {
+    addToLazyUserBuffer(assetDetailStore.asset.createdBy)
+  }
+  if (assetDetailStore.asset?.modifiedBy) {
+    addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
+  }
+  fetchLazyUser()
+  assetDetailStore.hideLoader()
+}
+
+const onConfirm = async () => {
+  try {
+    btnLoadingOn('create')
+    const res = await createAsset(currentAssetLicenceId.value, asset.value)
+    showRecordWas('created')
+    dialog.value = false
+    emit('afterCreate', res)
+    await showDetail(res)
+  } catch (error) {
+    handleError(error)
+  } finally {
+    btnReset('create')
+  }
+}
+
+const assetDetailStore = useAssetDetailStore()
+const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+
+const { assetTypeOptions } = useAssetType()
+</script>
+
+<template>
+  <VListItem title="Create empty asset" @click.stop="onClick" />
+  <VDialog v-model="dialog" persistent>
+    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
+      <VCardTitle class="d-flex pr-2">
+        <span>{{ t('coreDam.asset.meta.create') }}</span>
+        <VSpacer></VSpacer>
+        <VBtn
+          class="ml-2"
+          icon="mdi-close"
+          size="small"
+          variant="text"
+          @click.stop="onCancel"
+          data-cy="button-close"
+        ></VBtn>
+      </VCardTitle>
+      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+        <VContainer class="pa-4" fluid>
+          <ARow>
+            <AValueObjectOptionsSelect
+              :label="t('coreDam.author.model.type')"
+              v-model="asset.type"
+              :items="assetTypeOptions"
+              data-cy="author-type"
+            ></AValueObjectOptionsSelect>
+          </ARow>
+        </VContainer>
+      </ASystemEntityScope>
+      <VCardActions>
+        <VSpacer></VSpacer>
+        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+          {{ t('common.button.cancel') }}
+        </VBtn>
+        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
+          {{ t('common.button.create') }}
+        </ABtn>
+      </VCardActions>
+    </VCard>
+  </VDialog>
+</template>

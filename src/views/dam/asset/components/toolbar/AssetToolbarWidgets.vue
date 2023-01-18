@@ -4,6 +4,7 @@ import { ROUTE } from '@/router/routes'
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { useI18n } from 'vue-i18n'
+import AssetCreateButton from '@/views/dam/asset/components/AssetCreateButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
@@ -26,6 +27,7 @@ const externalProviders = computed(() => {
     <VMenu activator="parent">
       <VCard min-width="300">
         <VList>
+          <AssetCreateButton />
           <VListItem :to="{ name: ROUTE.DAM.PODCAST.LIST }" :title="t('system.mainBar.podcasts')" />
         </VList>
         <VList>

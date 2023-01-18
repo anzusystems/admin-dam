@@ -27,6 +27,8 @@ filter:
   durationUntil: Duration until
   bitrateFrom: Bitrate from
   bitrateUntil: Bitrate until
+meta:
+  create: Create empty asset
 filterTitle: Filter
 noItemsFound: No matching assets found
 assetType:
