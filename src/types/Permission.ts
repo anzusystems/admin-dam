@@ -78,6 +78,7 @@ const acls = {
   DAM_DISTRIBUTION_CATEGORY_SELECT_UI: 'dam_distributionCategorySelect_ui',
   DAM_PODCAST_UI: 'dam_podcast_ui',
   DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
+  DAM_USER_UGC_IMPERSONATE: 'dam_user_ugcImpersonate',
   ADMIN_LOG_UI: 'admin_log_ui',
 } as const
 

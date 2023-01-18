@@ -5,7 +5,6 @@ import ARow from '@/components/common/ARow.vue'
 import ACopyText from '@/components/common/ACopyText.vue'
 import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/dam/userStore'
-import { UserRole, useUserRole } from '@/model/dam/valueObject/UserRole'
 import ABooleanValue from '@/components/common/ABooleanValue.vue'
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
@@ -21,10 +20,8 @@ const { loaded, user } = storeToRefs(useUserOneStore())
 
 const { t } = useI18n({ useScope: 'global' })
 
-const notSuperAdmin = computed(() => !user.value.roles.includes(UserRole.Admin))
+const notSuperAdmin = computed(() => !user.value.roles.includes('ROLE_ADMIN'))
 const userAuthType = damPubConfig.userAuthType
-
-const { getUserRoleOption } = useUserRole()
 </script>
 
 <template>
@@ -33,7 +30,7 @@ const { getUserRoleOption } = useUserRole()
       <ACard loader="detail">
         <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
         <ARow :title="t('coreDam.user.model.roles')">
-          <VChip v-for="role in user.roles" :key="role" size="small">{{ getUserRoleOption(role)?.title }}</VChip>
+          <VChip v-for="role in user.roles" :key="role" size="small">{{ role }}</VChip>
         </ARow>
         <ARow :title="t('coreDam.user.model.assetLicences')">
           <LazyAssetLicenceChip
