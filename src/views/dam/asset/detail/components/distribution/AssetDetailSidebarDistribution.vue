@@ -5,7 +5,7 @@ import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { fetchAssetDistributionList } from '@/services/api/dam/distributionApi'
 import type { DocId } from '@/types/common'
 import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
-import { useDistributionListFilter } from '@/model/dam/filter/DistributionFilter'
+import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/views/dam/asset/detail/components/distribution/DistributionNewDialog.vue'
@@ -22,7 +22,7 @@ const props = withDefaults(
 
 const distributionListStore = useDistributionListStore()
 const pagination = usePagination()
-const filter = useDistributionListFilter()
+const filter = useDistributionFilter()
 
 const { showPagination } = usePaginationAutoHide(pagination)
 

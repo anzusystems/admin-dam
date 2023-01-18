@@ -4,7 +4,7 @@ import type { DocId } from '@/types/common'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
-import { usePodcastEpisodeFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
+import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import { fetchPodcastEpisodeListByAsset } from '@/services/api/dam/podcastEpisodeApi'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import PodcastEpisodeListItem from '@/views/dam/asset/detail/components/podcast/PodcastEpisodeListItem.vue'
@@ -21,7 +21,7 @@ const props = withDefaults(
 
 const pagination = usePagination()
 pagination.sortBy = 'position'
-const filter = usePodcastEpisodeFilter()
+const filter = usePodcastEpisodeListFilter()
 
 const { showPagination } = usePaginationAutoHide(pagination)
 

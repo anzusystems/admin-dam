@@ -16,12 +16,12 @@ import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { ACL } from '@/types/Permission'
 import { onMounted } from 'vue'
 import { useDistributionCategorySelectListActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
-import { useDistributionCategorySelectFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
+import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
 import DistributionCategorySelectFilter from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useDistributionCategorySelectFilter()
+const filter = useDistributionCategorySelectListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useDistributionCategorySelectListActions()

@@ -112,7 +112,7 @@ const onFlatpickrChange = () => {
 
 const onTextFieldBlur = () => {
   if (!flatickrRefIsInitialized(flatickrRef.value)) return
-  const filtered = textFieldValue.value.replace(/[^\d.:]/g, '')
+  const filtered = textFieldValue.value.replace(/[^\s\d.:]/g, '')
   const date = flatickrRef.value.fp.parseDate(filtered, altFormat.value)
   if (isUndefined(date)) {
     if (isNull(props.defaultValue)) {

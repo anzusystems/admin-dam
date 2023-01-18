@@ -14,6 +14,6 @@ const filter = reactive({
   },
 })
 
-export function useExternalProviderAssetFilter() {
+export function useExternalProviderAssetListFilter() {
   return filter
 }

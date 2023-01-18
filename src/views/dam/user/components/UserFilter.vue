@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useUserFilter } from '@/model/dam/filter/UserFilter'
+import { useUserListFilter } from '@/model/dam/filter/UserFilter'
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
@@ -9,7 +9,7 @@ const emit = defineEmits<{
   (e: 'resetFilter'): void
 }>()
 
-const userFilter = useUserFilter()
+const userFilter = useUserListFilter()
 
 const submitFilter = () => {
   emit('submitFilter')

@@ -1,7 +1,5 @@
 import { reactive } from 'vue'
 
-const filter = reactive({})
-
-export function useDistributionListFilter() {
-  return filter
+export function useDistributionFilter() {
+  return reactive({})
 }

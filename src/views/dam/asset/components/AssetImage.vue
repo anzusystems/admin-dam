@@ -125,6 +125,7 @@ watch(showDoneComputed, (newValue) => {
     @load="onLoad"
     class="asset-image asset-image--loading-bg"
   >
+    <template v-slot:placeholder></template>
     <template v-slot:default>
       <div class="asset-image__progress" v-if="showWaiting">
         <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" />
@@ -165,6 +166,7 @@ watch(showDoneComputed, (newValue) => {
     :cover="cover"
     :aspect-ratio="aspectRatio"
   >
+    <template v-slot:placeholder></template>
     <template v-slot:default>
       <div class="asset-image__icon-wrapper" v-if="showIconComputed">
         <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">

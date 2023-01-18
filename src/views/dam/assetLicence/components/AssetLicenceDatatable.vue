@@ -16,13 +16,13 @@ import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { useAssetLicenceListActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
 import AssetLicenceFilter from '@/views/dam/assetLicence/components/AssetLicenceFilter.vue'
-import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
+import { useAssetLicenceListFilter } from '@/model/dam/filter/AssetLicenceFilter'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
 import { ACL } from '@/types/Permission'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useAssetLicenceFilter()
+const filter = useAssetLicenceListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useAssetLicenceListActions()

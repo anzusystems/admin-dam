@@ -13,7 +13,7 @@ import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { useExtSystemFilter } from '@/model/dam/filter/ExtSystemFilter'
+import { useExtSystemListFilter } from '@/model/dam/filter/ExtSystemFilter'
 import { useExtSystemListActions } from '@/views/dam/extSystem/composables/extSystemActions'
 import ExtSystemFilter from '@/views/dam/extSystem/components/ExtSystemFilter.vue'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
@@ -21,7 +21,7 @@ import { ACL } from '@/types/Permission'
 
 const router = useRouter()
 const pagination = usePagination()
-const filter = useExtSystemFilter()
+const filter = useExtSystemListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useExtSystemListActions()

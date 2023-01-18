@@ -14,6 +14,14 @@ const filter = reactive({
   },
 })
 
-export function useAssetLicenceFilter() {
+export function useAssetLicenceListFilter() {
   return filter
+}
+
+export function useAssetLicenceFilter() {
+  return reactive({
+    title: {
+      ...makeFilter({ name: 'name', variant: 'startsWith' }),
+    },
+  })
 }

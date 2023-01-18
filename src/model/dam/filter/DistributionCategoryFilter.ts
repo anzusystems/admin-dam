@@ -19,6 +19,14 @@ const filter = reactive({
   },
 })
 
-export function useDistributionCategoryFilter() {
+export function useDistributionCategoryListFilter() {
   return filter
+}
+
+export function useDistributionCategoryFilter() {
+  return reactive({
+    name: {
+      ...makeFilter({ name: 'name', variant: 'startsWith' }),
+    },
+  })
 }
