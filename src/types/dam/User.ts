@@ -1,7 +1,6 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 import type { Permissions } from '@/types/Permission'
 import type { IntegerId } from '@/types/common'
-import type { UserRole } from '@/model/dam/valueObject/UserRole'
 import type { System } from '@/types/System'
 
 export interface UserMinimal {
@@ -12,7 +11,7 @@ export interface UserMinimal {
 }
 
 export interface User extends UserMinimal, UserAndTimeTrackingFields, System {
-  roles: UserRole[]
+  roles: string[]
   permissions: Permissions
   resolvedPermissions: Permissions
   permissionGroups: IntegerId[]
