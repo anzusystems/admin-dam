@@ -61,6 +61,10 @@ const assetStatus = computed(() => {
   return asset.value?.attributes.assetStatus || AssetStatus.Draft
 })
 
+const assetMainFile = computed(() => {
+  return asset.value?.mainFile || undefined
+})
+
 watch(
   asset,
   (newValue, oldValue) => {
@@ -83,7 +87,10 @@ watch(
       {{ t('coreDam.asset.detail.noAssetSelected') }}
     </div>
     <div v-else>
-      <AssetInfobox :asset-status="assetStatus" />
+      <AssetInfobox
+        :asset-status="assetStatus"
+        :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
+      />
       <AssetMetadata />
     </div>
     <template v-slot:append v-if="!loader && asset">
