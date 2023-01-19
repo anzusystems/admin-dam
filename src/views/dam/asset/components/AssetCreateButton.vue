@@ -6,7 +6,6 @@ import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/authorApi'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
-import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
 import { useAssetFactory } from '@/model/dam/factory/AssetFactory'
 import { useAssetType } from '@/model/dam/valueObject/AssetType'
 import { useI18n } from 'vue-i18n'
@@ -18,6 +17,7 @@ import { useErrorHandler } from '@/composables/system/error'
 import { DocId } from '@/types/common'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 
 const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void

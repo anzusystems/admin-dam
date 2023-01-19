@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { isNull } from '@/utils/common'
 import { toggleArrayItem } from '@/utils/array'
-import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
 import { useErrorHandler } from '@/composables/system/error'
 import { computed, readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
@@ -18,6 +17,7 @@ import type { AssetSearchListItemDto } from '@/types/dam/Asset'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()

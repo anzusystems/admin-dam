@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 
 const { t } = useI18n({ useScope: 'global' })
