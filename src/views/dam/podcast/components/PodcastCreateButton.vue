@@ -19,6 +19,7 @@ import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastVal
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
+import ATextarea from '@/components/form/ATextarea.vue'
 
 withDefaults(
   defineProps<{
@@ -123,12 +124,12 @@ const onConfirm = async () => {
             ></ATextField>
           </ARow>
           <ARow>
-            <ATextField
+            <ATextarea
               :label="t('coreDam.podcast.model.texts.description')"
               v-model="podcast.texts.description"
               :v="v$.podcast.texts.description"
               data-cy="podcast-description"
-            ></ATextField>
+            ></ATextarea>
           </ARow>
           <ARow>
             <AValueObjectOptionsSelect
