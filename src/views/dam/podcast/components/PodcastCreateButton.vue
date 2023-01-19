@@ -18,8 +18,8 @@ import type { Podcast } from '@/types/dam/Podcast'
 import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastValidation'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
-import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
 import ATextarea from '@/components/form/ATextarea.vue'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 
 withDefaults(
   defineProps<{
