@@ -75,7 +75,7 @@ const showCancel = computed(() => {
             <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
           </VBtn>
         </div>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || '' }}</div>
+        <div class="text-caption line-clamp-1">{{ item.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
       </div>
     </div>
   </div>

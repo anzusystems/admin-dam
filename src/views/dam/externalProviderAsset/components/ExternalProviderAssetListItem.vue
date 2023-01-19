@@ -4,6 +4,7 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import type { ExternalProviderAssetListItem } from '@/stores/dam/externalProviderAssetListStore'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
+import { useI18n } from 'vue-i18n'
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'
@@ -21,6 +22,8 @@ const emit = defineEmits<{
   (e: 'toggleSelected', data: { assetId: AssetExternalProviderId; index: number }): void
   (e: 'selectMultiple', data: { assetId: AssetExternalProviderId; index: number }): void
 }>()
+
+const { t } = useI18n({ useScope: 'global' })
 
 const asset = computed<AssetExternalProviderListDto>(() => {
   return props.item.asset
@@ -85,7 +88,7 @@ const imageSrc = computed(() => {
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">{{ asset.texts.displayTitle || '' }}</div>
+          <div class="line-clamp-1">{{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
               variant="flat"

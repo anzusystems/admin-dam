@@ -4,6 +4,7 @@ import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -13,6 +14,8 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n({ useScope: 'global' })
 
 const processing = computed(() => {
   return [
@@ -61,7 +64,7 @@ const status = computed(() => {
       </div>
       <div class="d-flex align-center w-100">
         <div></div>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || '' }}</div>
+        <div class="text-caption line-clamp-1">{{ item.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
       </div>
     </div>
   </div>
