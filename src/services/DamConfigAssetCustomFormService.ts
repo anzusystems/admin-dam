@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import type { DamConfigAssetCustomFormElement } from '@/types/dam/DamConfigAssetCustomForm'
 import { fetchAssetCustomFormElements } from '@/services/api/dam/assetCustomFormApi'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 export const damConfigAssetCustomFormElementsInitialized = ref(false)
 
@@ -34,11 +35,12 @@ const onConfigError = (error: Error) => {
 
 export const loadDamConfigAssetCustomFormElements = () => {
   return new Promise((resolve, reject) => {
+    const { currentExtSystemId } = useCurrentExtSystem()
     const promises = [
-      fetchAssetCustomFormElements(1, AssetType.Image),
-      fetchAssetCustomFormElements(1, AssetType.Audio),
-      fetchAssetCustomFormElements(1, AssetType.Video),
-      fetchAssetCustomFormElements(1, AssetType.Document),
+      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Image),
+      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Audio),
+      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Video),
+      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Document),
     ]
 
     Promise.all(promises)
