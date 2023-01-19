@@ -49,8 +49,8 @@ const pinnedCount = computed(() => {
 
 const showHideButtonText = computed(() => {
   return showAllMetadata.value
-    ? t('coreDam.asset.detail.metadataToggle.hide')
-    : t('coreDam.asset.detail.metadataToggle.show')
+    ? t('coreDam.asset.detail.metadataToggle.show')
+    : t('coreDam.asset.detail.metadataToggle.hide')
 })
 const showHideButtonIcon = computed(() => {
   return showAllMetadata.value ? 'mdi-minus' : 'mdi-plus'
