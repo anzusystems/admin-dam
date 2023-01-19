@@ -45,6 +45,7 @@ imageOrientation:
   portrait: portrait
   square: square
 list:
+  noTitle: no title
   foundItems: Found items
   gridView:
     masonry: Masonry

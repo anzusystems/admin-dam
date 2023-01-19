@@ -446,6 +446,20 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         this.recalculateQueueCounts(queueId)
       }
     },
+    async queueItemFailed(assetId: DocId) {
+      const asset = await fetchAsset(assetId)
+      for (const queueId in this.queues) {
+        this.queues[queueId].items.forEach((item) => {
+          if (item.assetId === asset.id) {
+            item.error.hasError = true
+            item.status = QueueItemStatus.Failed
+            item.canEditMetadata = false
+            this.processUpload(queueId)
+          }
+        })
+        this.recalculateQueueCounts(queueId)
+      }
+    },
     async queueItemMetadataProcessed(assetId: DocId) {
       const { fetchLazyKeyword, addToLazyKeywordBuffer } = loadLazyKeyword()
       const { fetchLazyAuthor, addToLazyAuthorBuffer } = loadLazyAuthor()

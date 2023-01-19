@@ -102,7 +102,7 @@ const imageProperties = computed(() => {
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">{{ asset.texts.displayTitle || '' }}</div>
+          <div class="line-clamp-1">{{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
               variant="flat"
