@@ -53,7 +53,7 @@ export const initCurrentExtSystemAndLicence = () => {
       }
     }
     currentExtSystemId.value = damConfig.settings.defaultExtSystemId
-    currentAssetLicenceId.value = damConfig.settings.defaultExtSystemId
+    currentAssetLicenceId.value = damConfig.settings.defaultAssetLicenceId
     resolve(true)
   })
 }
