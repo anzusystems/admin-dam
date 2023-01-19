@@ -34,8 +34,6 @@ export async function createAppInitialize(
 
   try {
     await initCurrentExtSystemAndLicence()
-    await loadDamConfigAssetCustomFormElements()
-    initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
@@ -43,7 +41,9 @@ export async function createAppInitialize(
 
   try {
     const loadDamConfigExtSystemPromise = loadDamConfigExtSystem()
-    await Promise.all([loadDamConfigExtSystemPromise])
+    const loadDamConfigAssetCustomFormElementsPromise = loadDamConfigAssetCustomFormElements()
+    await Promise.all([loadDamConfigExtSystemPromise, loadDamConfigAssetCustomFormElementsPromise])
+    initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return

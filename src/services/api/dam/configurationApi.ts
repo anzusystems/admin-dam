@@ -11,6 +11,7 @@ export const ENTITY = 'settings'
 
 export const fetchPubConfiguration = () =>
   apiFetchOne<DamPubConfig>(damClient, PUB_END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+
 export const fetchConfiguration = () => apiFetchOne<DamConfig>(damClient, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
 
 export const fetchExtSystemConfiguration = (extSystem: IntegerId) =>
