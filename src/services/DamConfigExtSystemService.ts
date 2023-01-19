@@ -1,6 +1,7 @@
 import type { DamConfigExtSystem, ExtSystemConfig } from '@/types/dam/DamConfig'
 import { fetchExtSystemConfiguration } from '@/services/api/dam/configurationApi'
 import { ref } from 'vue'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 export const damConfigExtSystemInitialized = ref(false)
 
@@ -60,7 +61,8 @@ const onConfigError = (error: Error) => {
 
 export const loadDamConfigExtSystem = () => {
   return new Promise((resolve, reject) => {
-    fetchExtSystemConfiguration(1)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    fetchExtSystemConfiguration(currentExtSystemId.value)
       .then((config) => {
         if (Object.keys(config).length < 1) {
           throw new Error('Unable to load dam ext system config. Incorrect response body.')
