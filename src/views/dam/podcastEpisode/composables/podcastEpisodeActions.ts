@@ -99,7 +99,7 @@ export const usePodcastEpisodeEditActions = () => {
       await updatePodcastEpisode(podcastEpisodeOneStore.podcastEpisode.id, podcastEpisode.value)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
-      router.push({ name: ROUTE.DAM.PODCAST.LIST, params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
+      router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
     } catch (error) {
       handleError(error)
     } finally {
