@@ -9,6 +9,7 @@ import { usePodcastEditActions } from '@/views/dam/podcast/composables/podcastAc
 import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
+import ATextarea from '@/components/form/ATextarea.vue'
 
 const { podcast } = usePodcastEditActions()
 
@@ -31,11 +32,11 @@ const { podcastModeOptions } = usePodcastMode()
           ></ATextField>
         </ARow>
         <ARow>
-          <ATextField
+          <ATextarea
             :label="t('coreDam.podcast.model.texts.description')"
             v-model="podcast.texts.description"
             :v="v$.podcast.texts.description"
-          ></ATextField>
+          ></ATextarea>
         </ARow>
         <ARow>
           <AValueObjectOptionsSelect
