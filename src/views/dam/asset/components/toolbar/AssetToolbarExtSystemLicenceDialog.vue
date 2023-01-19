@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@/types/common'
 import { isUndefined } from '@/utils/common'

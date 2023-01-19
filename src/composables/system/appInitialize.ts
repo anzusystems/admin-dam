@@ -7,8 +7,7 @@ import { checkAbility } from '@/router/checkAbility'
 import { isNotUndefined } from '@/utils/common'
 import { loadDamConfig } from '@/services/DamConfigService'
 import { envConfig } from '@/services/EnvConfigService'
-import { initCurrentAssetLicence } from '@/composables/system/currentLicence'
-import { initCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { initCurrentExtSystemAndLicence } from '@/composables/system/currentExtSystem'
 import { loadDamConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { loadDamConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
@@ -42,14 +41,8 @@ export async function createAppInitialize(
   }
 
   try {
-    const initCurrentAssetLicencePromise = initCurrentAssetLicence()
-    const initCurrentExtSystemPromise = initCurrentExtSystem()
-    const loadDamConfigAssetCustomFormElementsPromise = loadDamConfigAssetCustomFormElements()
-    await Promise.all([
-      initCurrentAssetLicencePromise,
-      initCurrentExtSystemPromise,
-      loadDamConfigAssetCustomFormElementsPromise,
-    ])
+    await initCurrentExtSystemAndLicence()
+    await loadDamConfigAssetCustomFormElements()
     initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })

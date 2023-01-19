@@ -5,9 +5,8 @@ import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/dam/assetApi'
 import type { UploadQueue, UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus, QueueItemType } from '@/types/dam/UploadQueue'
-import type { AssetFileNullable, Links } from '@/types/dam/File'
+import type { AssetFileNullable } from '@/types/dam/File'
 import type { AssetSearchListItemDto } from '@/types/dam/Asset'
-import { useCurrentAssetLicence } from '@/composables/system/currentLicence'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { getAssetTypeByMimeType } from '@/services/upload/mimeTypeService'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
@@ -21,6 +20,7 @@ import { isUndefined } from '@/utils/common'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
 import { externalProviderImport } from '@/services/upload/externalProviderImportService'
 import { useExternalProviders } from '@/composables/system/externalProviders'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
