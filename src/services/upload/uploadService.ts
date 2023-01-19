@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import sha1 from 'crypto-js/sha1'
+import sha1 from 'js-sha1'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/dam/fileApi'
 import axios, { type CancelTokenSource } from 'axios'
@@ -18,6 +18,7 @@ const failUpload = async (queueItem: UploadQueueItem, error: unknown = null) => 
 }
 
 const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
+  console.log(sha)
   return await uploadFinish(queueItem, sha)
 }
 
@@ -76,6 +77,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   let lastTimestamp = 0
   let endTimestamp = 0
   let lastLoaded = 0
+  const assetAlgo = sha1.create()
 
   // @ts-ignore
   function progressCallback(progressEvent) {
@@ -96,6 +98,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   const processChunk = async (index: number) => {
     queueItem.currentChunkIndex = index
     const arrayBuffer = await readFile(index, queueItem.file!, queueItem.chunkSize)
+    assetAlgo.update(arrayBuffer.data)
     const chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
     const cancelToken = axios.CancelToken
     queueItem.chunks[index] = { cancelTokenSource: cancelToken.source() }
@@ -194,9 +197,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
     }
     endTimestamp = Date.now() / 1000
     if (chunkTotalCount.value === 0) return Promise.reject()
-    const fileContent = await queueItem.file?.text()
-    const fileSha = sha1(fileContent ? fileContent : '')
-    return await finishUpload(queueItem, fileSha.toString())
+    return await finishUpload(queueItem, assetAlgo.hex())
   }
 
   return {
