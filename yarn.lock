@@ -1301,7 +1301,6 @@ __metadata:
     "@vueuse/integrations": 9.11.0
     axios: ^1.2.3
     core-js: ^3.27.2
-    crypto-js: ^4.1.1
     cypress: ^12.3.0
     cypress-mochawesome-reporter: ^3.2.3
     dayjs: ^1.11.7
@@ -1309,6 +1308,7 @@ __metadata:
     eslint-plugin-cypress: ^2.12.1
     eslint-plugin-vue: ^9.9.0
     flatpickr: ^4.6.13
+    js-sha1: ^0.6.0
     jwt-decode: ^3.1.2
     pinia: ^2.0.29
     postcss: ^8.4.21
@@ -2078,13 +2078,6 @@ __metadata:
     shebang-command: ^2.0.0
     which: ^2.0.1
   checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
-  languageName: node
-  linkType: hard
-
-"crypto-js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "crypto-js@npm:4.1.1"
-  checksum: b3747c12ee3a7632fab3b3e171ea50f78b182545f0714f6d3e7e2858385f0f4101a15f2517e033802ce9d12ba50a391575ff4638c9de3dd9b2c4bc47768d5425
   languageName: node
   linkType: hard
 
@@ -3837,6 +3830,13 @@ __metadata:
   version: 4.1.4
   resolution: "js-sdsl@npm:4.1.4"
   checksum: 1977cea4ab18e0e03e28bdf0371d8b443fad65ca0988e0faa216406faf6bb943714fe8f7cc7a5bfe5f35ba3d94ddae399f4d10200f547f2c3320688b0670d726
+  languageName: node
+  linkType: hard
+
+"js-sha1@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "js-sha1@npm:0.6.0"
+  checksum: f12adcdac8da2b42eb40b9f83003bd085f647a8ca4364ac736462714e1b8681aab97efda09737889e001a7df569c8b35f28f35c638a3af93ef586281f92b2ca5
   languageName: node
   linkType: hard
 
