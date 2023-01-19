@@ -45,6 +45,7 @@ export const initCurrentExtSystemAndLicence = () => {
         currentExtSystemId.value = currentUser.value.selectedLicence.extSystem
         currentAssetLicenceId.value = currentUser.value.selectedLicence.id
         resolve(true)
+        return
       } else if (currentUser.value.assetLicences[0]) {
         currentExtSystemId.value = currentUser.value.assetLicences[0].extSystem
         currentAssetLicenceId.value = currentUser.value.assetLicences[0].id

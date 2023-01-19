@@ -33,17 +33,17 @@ export async function createAppInitialize(
   }
 
   try {
-    const loadDamConfigExtSystemPromise = loadDamConfigExtSystem()
-    await Promise.all([loadDamConfigExtSystemPromise])
+    await initCurrentExtSystemAndLicence()
+    await loadDamConfigAssetCustomFormElements()
+    initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
   }
 
   try {
-    await initCurrentExtSystemAndLicence()
-    await loadDamConfigAssetCustomFormElements()
-    initAppNotificationListeners()
+    const loadDamConfigExtSystemPromise = loadDamConfigExtSystem()
+    await Promise.all([loadDamConfigExtSystemPromise])
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
