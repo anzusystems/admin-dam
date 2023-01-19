@@ -103,14 +103,6 @@ const showIconComputed = computed(() => {
   else if (props.assetType === AssetType.Image && props.src) return false
   return true
 })
-
-const showDoneComputed = computed(() => {
-  return props.showDone
-})
-
-watch(showDoneComputed, (newValue) => {
-  console.log(newValue)
-})
 </script>
 
 <template>

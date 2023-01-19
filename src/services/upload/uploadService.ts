@@ -18,7 +18,6 @@ const failUpload = async (queueItem: UploadQueueItem, error: unknown = null) => 
 }
 
 const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
-  console.log(sha)
   return await uploadFinish(queueItem, sha)
 }
 
