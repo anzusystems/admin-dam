@@ -6,6 +6,7 @@ import DistributionStatusChip from '@/views/dam/asset/detail/components/distribu
 import { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 import type { DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
 import type { DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -15,6 +16,8 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n({ useScope: 'global' })
 
 const serviceRequirements = computed(() => {
   return damConfigExtSystem[props.assetType].distribution.distributionRequirements[props.item.distributionService]
@@ -29,17 +32,17 @@ const serviceRequirements = computed(() => {
       </VCol>
     </VRow>
     <VRow>
-      <VCol>Status: <DistributionStatusChip :status="item.status" /></VCol>
+      <VCol>{{ t('coreDam.distribution.common.status') }}: <DistributionStatusChip :status="item.status" /></VCol>
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Distributed">
       <VCol>
         <a :href="'https://dashboard.jwplayer.com/#/content/detail?key=' + item.extId" target="_blank">
-          Administrácia videa v Jw Player
+          {{ t('coreDam.jwDistribution.videoAdministrationLink') }}
         </a>
       </VCol>
     </VRow>
     <VRow v-else-if="item.status === DistributionStatus.Failed">
-      <VCol>An error occurred: {{ item.failReason }}</VCol>
+      <VCol>{{ t('coreDam.distribution.common.error') }}: {{ item.failReason }}</VCol>
     </VRow>
   </div>
 </template>

@@ -4,3 +4,11 @@ distributionStatus:
   remoteProcessing: Remote processing
   distributed: Distributed
   failed: Failed
+common:
+  list: List of distributions
+  addButton: Add new
+  addTitle: Add new distribution
+  noEntries: Nothing to show
+  status: Status
+  error: An error occurred
+  fileIdVersion: File ID/version

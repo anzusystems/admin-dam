@@ -9,6 +9,7 @@ import DistributionNewDialogEmpty from '@/views/dam/asset/detail/components/dist
 import { type DistributionServiceName, DistributionServiceResourceName } from '@/types/dam/DamConfig'
 import type { DocId } from '@/types/common'
 import { isNull } from '@/utils/common'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -30,6 +31,8 @@ const value = computed({
     emit('update:modelValue', newValue)
   },
 })
+
+const { t } = useI18n({ useScope: 'global' })
 
 const activeDistributionName = ref<DistributionServiceName | null>(null)
 
@@ -71,7 +74,7 @@ const componentComputed = computed(() => {
     <VCard v-if="value">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">Add new distribution</div>
+          <div class="text-h6">{{ t('coreDam.distribution.common.addTitle') }}</div>
         </div>
         <VSpacer></VSpacer>
         <VToolbarItems>
