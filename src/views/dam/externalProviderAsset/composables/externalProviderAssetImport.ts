@@ -52,7 +52,7 @@ export const useExternalProviderAssetImport = () => {
         attributes: {
           assetType: item.assetType,
         },
-        url: item.links.image_list ? item.links.image_list.url : '',
+        url: item.imagePreview?.url ? item.imagePreview.url : '',
         metadata: {},
       }
     })
