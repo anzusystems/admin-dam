@@ -16,7 +16,7 @@ privacy:
   public: Public
   unlisted: Unlisted
   dynamic: Dynamic
-videoPreviewLink: Video preview on Youtube
-videoAdministrationLink: Video administration on Youtube
+videoPreviewLink: Video preview on YouTube
+videoAdministrationLink: Video administration on YouTube
 loginDescription: Login on new tab/window, then return to this screen
-loginButton: Youtube Login
+loginButton: YouTube Login
