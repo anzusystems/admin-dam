@@ -10,6 +10,7 @@ import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/component
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/views/dam/asset/detail/components/distribution/DistributionNewDialog.vue'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -19,6 +20,8 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n({ useScope: 'global' })
 
 const distributionListStore = useDistributionListStore()
 const pagination = usePagination()
@@ -51,13 +54,17 @@ onMounted(async () => {
 <template>
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
-      <VBtn color="secondary" @click.stop="addNew" variant="flat">Add new</VBtn>
+      <VBtn color="secondary" @click.stop="addNew" variant="flat">
+        {{ t('coreDam.distribution.common.addButton') }}
+      </VBtn>
     </AssetDetailSidebarActionsWrapper>
-    <div class="px-4 text-caption">List of distributions:</div>
+    <div class="px-4 text-caption">{{ t('coreDam.distribution.common.list') }}:</div>
     <div v-if="distributionListStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
       <VProgressCircular indeterminate color="primary" />
     </div>
-    <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-caption">Nothing to show</div>
+    <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-caption">
+      {{ t('coreDam.distribution.common.noEntries') }}
+    </div>
     <div v-else>
       <DistributionListItem
         v-for="item in distributionListStore.list"
