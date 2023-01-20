@@ -15,6 +15,7 @@ const props = withDefaults(
     iconT?: string
     notifyT?: string
     dataCy?: string
+    size?: 'small' | 'x-small'
   }>(),
   {
     buttonT: 'common.button.copyId',
@@ -22,6 +23,7 @@ const props = withDefaults(
     iconT: 'common.button.id',
     notifyT: 'common.alerts.idWasCopied',
     dataCy: 'table-copy',
+    size: 'x-small',
   }
 )
 
@@ -49,11 +51,11 @@ const onClick = (event: Event) => {
     :class="buttonClass"
     :data-cy="dataCy"
     icon
-    size="x-small"
+    :size="size"
     variant="text"
     @click.stop="onClick"
   >
     <AIconGroup :secondary-text="t(iconT)" main-icon="mdi-content-copy" size="small"></AIconGroup>
-    <VTooltip activator="parent" location="bottom">Copy ID</VTooltip>
+    <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
   </VBtn>
 </template>
