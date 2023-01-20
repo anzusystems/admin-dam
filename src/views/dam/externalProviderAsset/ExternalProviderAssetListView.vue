@@ -53,14 +53,14 @@ const autoloadOnIntersect = (isIntersecting: boolean) => {
     fetchNextPage()
   }
 }
-
-onKeyUp('ArrowRight', async (e) => {
-  await onArrowRight(e)
-})
-
-onKeyUp('ArrowLeft', async (e) => {
-  await onArrowLeft(e)
-})
+// todo disabled for now, bug
+// onKeyUp('ArrowRight', async (e) => {
+//   await onArrowRight(e)
+// })
+//
+// onKeyUp('ArrowLeft', async (e) => {
+//   await onArrowLeft(e)
+// })
 
 const { externalProviderFooterViewSelected } = useExternalProviderAssetFooterSelectedView()
 const { footerViewUpload } = useAssetFooterUploadView()
