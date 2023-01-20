@@ -10,6 +10,7 @@ button:
   cancel: Cancel
   delete: Delete
   id: ID
+  copyId: Copy ID
 tracking:
   createdAt: Created
   modifiedAt: Modified

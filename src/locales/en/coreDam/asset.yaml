@@ -128,7 +128,9 @@ queueItem:
   edit: Edit more
   duplicate: Duplicate
   viewOriginal: View original
+  displayTitle: Original name
   error: Error
+  copyAssetId: Copy Asset ID
 slots:
   name: Slot name
   file: File
