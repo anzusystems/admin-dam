@@ -120,7 +120,7 @@ onMounted(async () => {
     <div v-if="canDisplayForm" class="pa-4">
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VRow class="mb-6">
-          <VCol class="text-caption">File ID/version: {{ assetFileId }} </VCol>
+          <VCol class="text-caption">{{ t('coreDam.distribution.common.fileIdVersion') }}: {{ assetFileId }} </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
@@ -161,7 +161,9 @@ onMounted(async () => {
   </VCardText>
   <VCardActions>
     <VSpacer></VSpacer>
-    <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">Add</VBtn>
-    <VBtn text @click.stop="closeDialog(false)">Cancel</VBtn>
+    <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">
+      {{ t('common.button.add') }}
+    </VBtn>
+    <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
   </VCardActions>
 </template>

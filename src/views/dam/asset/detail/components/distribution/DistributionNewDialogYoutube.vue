@@ -179,7 +179,9 @@ onUnmounted(async () => {
           <VRow>
             <VCol cols="6">
               <VRow class="mb-6">
-                <VCol class="text-caption">File ID/version: {{ assetFileId }}</VCol>
+                <VCol class="text-caption"
+                  >{{ t('coreDam.distribution.common.fileIdVersion') }}: {{ assetFileId }}</VCol
+                >
               </VRow>
               <VRow class="mb-2">
                 <VCol>
@@ -212,7 +214,7 @@ onUnmounted(async () => {
                   <AValueObjectOptionsSelect
                     v-model="distribution.privacy"
                     :items="distributionYoutubePrivacyOptions"
-                    label="Privacy"
+                    :label="t('coreDam.youtubeDistribution.model.privacy')"
                   ></AValueObjectOptionsSelect>
                 </VCol>
               </VRow>
@@ -220,13 +222,14 @@ onUnmounted(async () => {
                 <VCol>
                   <ADatetimePicker v-model="distribution.publishAt"></ADatetimePicker>
                 </VCol>
-              </VRow> </VCol
-            ><VCol cols="6" class="pl-4">
+              </VRow>
+            </VCol>
+            <VCol cols="6" class="pl-4">
               <VRow class="mb-2">
                 <VCol>
                   <DistributionYoutubeLanguageSelect
                     v-model="distribution.language"
-                    label="Language"
+                    :label="t('coreDam.youtubeDistribution.model.language')"
                     :distribution-service-name="distributionServiceName"
                   />
                 </VCol>
@@ -235,25 +238,33 @@ onUnmounted(async () => {
                 <VCol>
                   <DistributionYoutubePlaylistSelect
                     v-model="distribution.playlist"
-                    label="Playlist"
+                    :label="t('coreDam.youtubeDistribution.model.playlist')"
                     :distribution-service-name="distributionServiceName"
                   />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
                 <VCol>
-                  <VSwitch label="Embeddable" v-model="distribution.flags.embeddable" hide-details></VSwitch>
-                </VCol>
-              </VRow>
-              <VRow class="mb-2">
-                <VCol>
-                  <VSwitch label="For kids" v-model="distribution.flags.forKids" hide-details></VSwitch>
+                  <VSwitch
+                    :label="t('coreDam.youtubeDistribution.model.flags.embeddable')"
+                    v-model="distribution.flags.embeddable"
+                    hide-details
+                  ></VSwitch>
                 </VCol>
               </VRow>
               <VRow class="mb-2">
                 <VCol>
                   <VSwitch
-                    label="Notify subscribers"
+                    :label="t('coreDam.youtubeDistribution.model.flags.forKids')"
+                    v-model="distribution.flags.forKids"
+                    hide-details
+                  ></VSwitch>
+                </VCol>
+              </VRow>
+              <VRow class="mb-2">
+                <VCol>
+                  <VSwitch
+                    :label="t('coreDam.youtubeDistribution.model.flags.notifySubscribers')"
                     v-model="distribution.flags.notifySubscribers"
                     hide-details
                   ></VSwitch>
@@ -267,14 +278,16 @@ onUnmounted(async () => {
         v-else-if="distributionAuthStatus === DistributionAuthStatus.WaitingForLogin && authUrl.length > 0"
         class="pa-2 text-center"
       >
-        <div class="pb-4">Login on new tab/window, then return to this screen</div>
-        <VBtn color="primary" variant="flat" :href="authUrl" target="_blank">Youtube Login</VBtn>
+        <div class="pb-4">{{ t('coreDam.youtubeDistribution.loginDescription') }}</div>
+        <VBtn color="primary" variant="flat" :href="authUrl" target="_blank">
+          {{ t('coreDam.youtubeDistribution.loginButton') }}
+        </VBtn>
       </div>
       <div
         v-else-if="distributionAuthStatus === DistributionAuthStatus.Error"
         class="d-flex w-100 h-100 justify-center align-center pa-2 text-error"
       >
-        An error occurred
+        {{ t('coreDam.distribution.common.error') }}
       </div>
       <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
         <VProgressCircular indeterminate color="primary"></VProgressCircular>
@@ -284,7 +297,9 @@ onUnmounted(async () => {
   </VCardText>
   <VCardActions>
     <VSpacer></VSpacer>
-    <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">Add</VBtn>
-    <VBtn text @click.stop="closeDialog(false)">Cancel</VBtn>
+    <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">
+      {{ t('common.button.add') }}
+    </VBtn>
+    <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
   </VCardActions>
 </template>
