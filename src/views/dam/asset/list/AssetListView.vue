@@ -55,13 +55,14 @@ const autoloadOnIntersect = (isIntersecting: boolean) => {
   }
 }
 
-onKeyUp('ArrowRight', async (e) => {
-  await onArrowRight(e)
-})
-
-onKeyUp('ArrowLeft', async (e) => {
-  await onArrowLeft(e)
-})
+// todo disabled for now, bug
+// onKeyUp('ArrowRight', async (e) => {
+//   await onArrowRight(e)
+// })
+//
+// onKeyUp('ArrowLeft', async (e) => {
+//   await onArrowLeft(e)
+// })
 
 onMounted(async () => {
   await listMounted()
