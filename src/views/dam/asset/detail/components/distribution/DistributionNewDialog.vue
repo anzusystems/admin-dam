@@ -67,7 +67,7 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation scrollable>
+  <VDialog v-model="value" persistent no-click-animation scrollable :max-width="1400">
     <VCard v-if="value">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
