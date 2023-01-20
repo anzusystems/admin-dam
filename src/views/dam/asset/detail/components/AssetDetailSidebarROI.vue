@@ -2,6 +2,8 @@
 import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
+import AssetFileRotate from '@/views/dam/asset/detail/components/AssetFileRotate.vue'
+import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 
 withDefaults(
   defineProps<{
@@ -13,6 +15,7 @@ withDefaults(
 const { t } = useI18n({ useScope: 'global' })
 
 const imageRoiStore = useImageRoiStore()
+const assetDetailStore = useAssetDetailStore()
 </script>
 
 <template>
@@ -34,6 +37,12 @@ const imageRoiStore = useImageRoiStore()
       <img :src="item.url + '?timestamp=' + imageRoiStore.timestamp" :width="item.width" :height="item.height" alt="" />
     </div>
   </div>
+  <AssetFileRotate
+    v-if="assetDetailStore.asset?.mainFile?.id"
+    :image-id="assetDetailStore.asset.mainFile.id"
+    class="mx-2"
+    @after-rotate="imageRoiStore.forceReload()"
+  />
 </template>
 
 <style lang="scss">
