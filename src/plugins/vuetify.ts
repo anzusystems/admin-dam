@@ -88,5 +88,8 @@ export const vuetify = createVuetify({
       density: 'compact',
       color: 'primary',
     },
+    VSwitch: {
+      color: 'success',
+    },
   },
 }) as any // todo: temp ts fix
