@@ -1152,24 +1152,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:9.11.0":
-  version: 9.11.0
-  resolution: "@vueuse/core@npm:9.11.0"
+"@vueuse/core@npm:9.11.1":
+  version: 9.11.1
+  resolution: "@vueuse/core@npm:9.11.1"
   dependencies:
     "@types/web-bluetooth": ^0.0.16
-    "@vueuse/metadata": 9.11.0
-    "@vueuse/shared": 9.11.0
+    "@vueuse/metadata": 9.11.1
+    "@vueuse/shared": 9.11.1
     vue-demi: "*"
-  checksum: 469bacd20709c3e68de1edf726edae3d68ad2c2cb6f37f197250a42e2ff12d2bd267b9f3c212a55e06a5351d6708fb59dd54d9eac2746ca0482b0aac1767b5b1
+  checksum: c9b4d65d50441d19d452dfebe4e13c8b56a8ea296b31b9cd93b5a52ee1b461c40ebc530415d3869083852eb874c99d5742311fd8bf750d405f4d52a768aebaa3
   languageName: node
   linkType: hard
 
-"@vueuse/integrations@npm:9.11.0":
-  version: 9.11.0
-  resolution: "@vueuse/integrations@npm:9.11.0"
+"@vueuse/integrations@npm:9.11.1":
+  version: 9.11.1
+  resolution: "@vueuse/integrations@npm:9.11.1"
   dependencies:
-    "@vueuse/core": 9.11.0
-    "@vueuse/shared": 9.11.0
+    "@vueuse/core": 9.11.1
+    "@vueuse/shared": 9.11.1
     vue-demi: "*"
   peerDependencies:
     async-validator: "*"
@@ -1206,23 +1206,23 @@ __metadata:
       optional: true
     universal-cookie:
       optional: true
-  checksum: e31e8348c15eb19f6cfd1aa3c9983d25bf823199220760833f60ff6d134e8cbf65b119a079dd8cf6ea51b73f8719ed36e1b80c1fe93f950e1647e4edc64709a6
+  checksum: 00a480f7ac8816c29059cb820cba3631c93209740e7092b2650f2de6344c4160ecdd3d12bb7d08d0feca3abde5c797ca1bae36892fdd51f95079f78750b028fa
   languageName: node
   linkType: hard
 
-"@vueuse/metadata@npm:9.11.0":
-  version: 9.11.0
-  resolution: "@vueuse/metadata@npm:9.11.0"
-  checksum: 262ba0cfe89b65ead26b7d9bdb47221c6d8bf3e5a67dc6ff5fb2a67d5fe849b8854749f9bfa337bab6597d2f7e596f01a24028507cc511b9d198ea403f46f6ed
+"@vueuse/metadata@npm:9.11.1":
+  version: 9.11.1
+  resolution: "@vueuse/metadata@npm:9.11.1"
+  checksum: d4025257dc891b4ae3712a68b881409e7a58517f7b96f8949a74a99cec5e46f202fc2c326765eed9bffc8fbde6417ee737d3c2ac650799dd9e99fa5a7f9c2363
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:9.11.0":
-  version: 9.11.0
-  resolution: "@vueuse/shared@npm:9.11.0"
+"@vueuse/shared@npm:9.11.1":
+  version: 9.11.1
+  resolution: "@vueuse/shared@npm:9.11.1"
   dependencies:
     vue-demi: "*"
-  checksum: 6ede8f66df880be27b447b4b95085ae223916328e10f86a87b2a9d69baf51184c313a7be6136b0c9ad0d38b68c5616fad64cf535911f3695aa53629d9ccaacba
+  checksum: 373a725ba87dd84eec3882cef4dc92706f28b53256f1c23a800444c12de675c71c1773c254def5d9c3096e54b9830154d13540264c1f017770395f04b07d789f
   languageName: node
   linkType: hard
 
@@ -1297,8 +1297,8 @@ __metadata:
     "@vue/tsconfig": ^0.1.3
     "@vuelidate/core": ^2.0.0
     "@vuelidate/validators": ^2.0.0
-    "@vueuse/core": 9.11.0
-    "@vueuse/integrations": 9.11.0
+    "@vueuse/core": 9.11.1
+    "@vueuse/integrations": 9.11.1
     axios: ^1.2.3
     core-js: ^3.27.2
     cypress: ^12.3.0
