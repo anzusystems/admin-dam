@@ -121,7 +121,7 @@ const assetMainFile = computed(() => {
 
 <template>
   <VDialog v-model="assetDetailStore.detail" fullscreen persistent no-click-animation>
-    <AssetDetailDialogLoader v-if="assetDetailStore.loader" @close-dialog="closeDialog"></AssetDetailDialogLoader>
+    <AssetDetailDialogLoader v-if="assetDetailStore.loader" @close-dialog="closeDialog" />
     <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }" v-else-if="asset">
       <div class="dam-image-detail__wrapper d-flex flex-column">
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
@@ -139,7 +139,7 @@ const assetMainFile = computed(() => {
             <div class="pr-4">{{ totalCountText }}</div>
             <div>{{ toolbarTitle }}</div>
           </div>
-          <VSpacer></VSpacer>
+          <VSpacer />
           <div>
             <VBtn
               :active="sidebar"
@@ -151,11 +151,11 @@ const assetMainFile = computed(() => {
               :width="36"
               :height="36"
             >
-              <VIcon icon="mdi-information-outline"></VIcon>
+              <VIcon icon="mdi-information-outline" />
               <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
             <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
-              <VIcon icon="mdi-close"></VIcon>
+              <VIcon icon="mdi-close" />
               <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
             </VBtn>
           </div>
@@ -163,7 +163,7 @@ const assetMainFile = computed(() => {
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
-              <AssetImageRoiSelect></AssetImageRoiSelect>
+              <AssetImageRoiSelect />
             </div>
             <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <AssetImage
@@ -191,7 +191,7 @@ const assetMainFile = computed(() => {
               :asset-type="assetType"
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               @post-delete="postDelete"
-            ></AssetDetailDialogSidebar>
+            />
           </div>
         </div>
       </div>
