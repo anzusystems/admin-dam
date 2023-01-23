@@ -3,17 +3,17 @@ import type { RegionOfInterest } from '@/types/dam/Roi'
 
 interface State {
   loader: boolean
-  cropper: boolean
   roi: null | RegionOfInterest
-  timestamp: number
+  timestampCropper: number
+  timestampRoiPreviews: number
 }
 
 export const useImageRoiStore = defineStore('damImageRoiStore', {
   state: (): State => ({
     loader: true,
-    cropper: true,
     roi: null,
-    timestamp: Date.now(),
+    timestampCropper: Date.now(),
+    timestampRoiPreviews: Date.now(),
   }),
   actions: {
     setRoi(roi: RegionOfInterest | null) {
@@ -25,18 +25,14 @@ export const useImageRoiStore = defineStore('damImageRoiStore', {
     hideLoader() {
       this.loader = false
     },
-    showCropper() {
-      this.cropper = true
+    forceReloadRoiPreviews() {
+      this.timestampRoiPreviews = Date.now()
     },
-    hideCropper() {
-      this.cropper = false
-    },
-    forceReload() {
-      this.timestamp = Date.now()
+    forceReloadCropper() {
+      this.timestampCropper = Date.now()
     },
     reset() {
       this.loader = true
-      this.cropper = false
       this.roi = null
     },
   },
