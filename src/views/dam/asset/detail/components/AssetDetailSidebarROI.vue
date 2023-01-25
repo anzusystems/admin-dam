@@ -50,6 +50,7 @@ const afterRotate = async () => {
 }
 
 onMounted(async () => {
+  imageRoiStore.setRoi(null)
   await loadRois()
 })
 </script>
