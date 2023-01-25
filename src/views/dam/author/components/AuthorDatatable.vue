@@ -24,8 +24,12 @@ const router = useRouter()
 const pagination = usePagination()
 const filter = useAuthorListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
+const { getAuthorTypeOption } = useAuthorType()
 
 const { fetchList, listItems } = useAuthorListActions()
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const columns = useTableColumns([
   { name: 'name' },
@@ -40,15 +44,17 @@ const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: row.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
-}
-
 onMounted(() => {
-  fetchList(pagination, filter)
+  getList()
 })
 
-const { getAuthorTypeOption } = useAuthorType()
+const refresh = () => {
+  getList()
+}
+
+defineExpose({
+  refresh,
+})
 </script>
 
 <template>

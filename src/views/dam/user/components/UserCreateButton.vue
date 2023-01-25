@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 import { useCreateUserValidation } from '@/views/dam/user/composables/userValidation'
 import { useUserFactory } from '@/model/dam/factory/UserFactory'
 import { ref } from 'vue'
-import type { CreateUser } from '@/types/dam/User'
+import type { CreateUser, User } from '@/types/dam/User'
 import { useI18n } from 'vue-i18n'
 import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
@@ -23,19 +23,25 @@ import DistributionServiceSelect from '@/views/dam/distribution/components/Distr
 import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicenceSelect.vue'
 import { damPubConfig } from '@/services/DamConfigService'
 import { UserAuthType } from '@/types/dam/DamConfig'
+import { Podcast } from '@/types/dam/Podcast'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    disableRedirect?: boolean
     buttonT?: string
     buttonClass?: string
     dataCy?: string
   }>(),
   {
+    disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
   }
 )
+const emit = defineEmits<{
+  (e: 'afterCreate', data: User): void
+}>()
 
 const { createDefaultForCreate } = useUserFactory()
 const userCreate = ref<CreateUser>(createDefaultForCreate())
@@ -68,9 +74,12 @@ const onConfirm = async () => {
     }
     btnLoadingOn('create')
     const res = await createUser(userCreate.value)
+    emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false
-    if (!isUndefined(res.id)) router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: res.id } })
+    if (!isUndefined(res.id) && !props.disableRedirect) {
+      router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: res.id } })
+    }
   } catch (error) {
     handleError(error)
   } finally {

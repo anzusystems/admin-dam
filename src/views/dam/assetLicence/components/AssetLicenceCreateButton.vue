@@ -17,19 +17,25 @@ import { useAssetLicenceFactory } from '@/model/dam/factory/AssetLicenceFactory'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
 import { useAssetLicenceValidation } from '@/views/dam/assetLicence/composables/assetLicenceValidation'
 import { createAssetLicence, ENTITY } from '@/services/api/dam/assetLicenceApi'
+import { User } from '@/types/dam/User'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    disableRedirect?: boolean
     buttonT?: string
     buttonClass?: string
     dataCy?: string
   }>(),
   {
+    disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
   }
 )
+const emit = defineEmits<{
+  (e: 'afterCreate', data: AssetLicence): void
+}>()
 
 const { createDefault } = useAssetLicenceFactory()
 const assetLicence = ref<AssetLicence>(createDefault())
@@ -62,9 +68,12 @@ const onConfirm = async () => {
     }
     btnLoadingOn('create')
     const res = await createAssetLicence(assetLicence.value)
+    emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false
-    if (!isUndefined(res.id)) router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: res.id } })
+    if (!isUndefined(res.id) && !props.disableRedirect) {
+      router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: res.id } })
+    }
   } catch (error) {
     handleError(error)
   } finally {

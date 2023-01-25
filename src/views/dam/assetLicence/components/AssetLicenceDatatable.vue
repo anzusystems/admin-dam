@@ -26,6 +26,9 @@ const filter = useAssetLicenceListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useAssetLicenceListActions()
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const columns = useTableColumns([
   { name: 'name' },
@@ -39,12 +42,16 @@ const onRowClick = (row: AssetLicence) => {
   router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: row.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
+onMounted(() => {
+  getList()
+})
+
+const refresh = () => {
+  getList()
 }
 
-onMounted(() => {
-  fetchList(pagination, filter)
+defineExpose({
+  refresh,
 })
 </script>
 
@@ -52,21 +59,20 @@ onMounted(() => {
   <AssetLicenceFilter
     @submit-filter="submitFilter(filter, pagination, getList)"
     @reset-filter="resetFilter(filter, pagination, getList)"
-  >
-  </AssetLicenceFilter>
+  />
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #extSystem="{ data }">
-        <LazyExtSystemChip :id="data" variant="text"></LazyExtSystemChip>
+        <LazyExtSystemChip :id="data" variant="text" />
       </template>
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL"></ADetailButton>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL" />
+        <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT"></AEditButton>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

@@ -1,9 +1,10 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { DocId, IntegerIdNullable } from '@/types/common'
+import type { DocId, IntegerIdNullable } from '@anzusystems/common-admin'
 import type { System } from '@/types/System'
 import type { PodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/dam/valueObject/PodcastLastImportStatus'
 import type { Links } from '@/types/dam/File'
+import type { DocIdNullable } from '@anzusystems/common-admin'
 
 interface Texts {
   title: string
@@ -22,6 +23,7 @@ export interface Podcast extends UserAndTimeTrackingFields, System {
   texts: Texts
   attributes: Attributes
   links?: Links
+  previewImage: DocIdNullable
 }
 
 export interface PodcastMinimal {

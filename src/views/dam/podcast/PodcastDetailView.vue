@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
@@ -27,7 +27,9 @@ watch(
   (newValue) => {
     if (newValue === PodcastDetailTab.Episodes) {
       loadPodcastEpisodeDatatable.value = true
+      return
     }
+    loadPodcastEpisodeDatatable.value = false
   },
   { immediate: true }
 )
@@ -45,6 +47,15 @@ onBeforeUnmount(() => {
 })
 
 const { t } = useI18n({ useScope: 'global' })
+
+const afterPodcastEpisodeCreate = () => {
+  if (activeTab.value === PodcastDetailTab.Episodes) {
+    loadPodcastEpisodeDatatable.value = false
+    nextTick(() => {
+      loadPodcastEpisodeDatatable.value = true
+    })
+  }
+}
 </script>
 
 <template>
@@ -55,6 +66,8 @@ const { t } = useI18n({ useScope: 'global' })
       data-cy="button-create"
       button-t="coreDam.podcastEpisode.button.create"
       :podcast-id="podcastId"
+      disable-redirect
+      @after-create="afterPodcastEpisodeCreate"
     />
     <AEditButton v-if="loaded" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
     <ACloseButton :route-name="ROUTE.DAM.PODCAST.LIST" />

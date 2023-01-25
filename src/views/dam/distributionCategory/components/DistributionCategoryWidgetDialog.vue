@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
 import DistributionCategorySelect from '@/views/dam/distributionCategory/components/DistributionCategorySelect.vue'
-import type { DocId, DocIdNullable } from '@/types/common'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/dam/distributionCategoryApi'

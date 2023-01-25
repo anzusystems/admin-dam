@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'

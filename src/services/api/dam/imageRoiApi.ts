@@ -3,7 +3,7 @@ import type { FilterBag } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'
 import { apiFetchList, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import type { RegionOfInterest } from '@/types/dam/Roi'
 
 export interface AssetMetadataBulkItem {

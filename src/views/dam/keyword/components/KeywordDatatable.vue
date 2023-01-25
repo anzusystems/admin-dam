@@ -25,6 +25,9 @@ const filter = useKeywordListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useKeywordListActions()
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const columns = useTableColumns([
   { name: 'name' },
@@ -37,12 +40,16 @@ const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: row.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
+onMounted(() => {
+  getList()
+})
+
+const refresh = () => {
+  getList()
 }
 
-onMounted(() => {
-  fetchList(pagination, filter)
+defineExpose({
+  refresh,
 })
 </script>
 
@@ -50,18 +57,17 @@ onMounted(() => {
   <KeywordFilter
     @submit-filter="submitFilter(filter, pagination, getList)"
     @reset-filter="resetFilter(filter, pagination, getList)"
-  >
-  </KeywordFilter>
+  />
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.DETAIL"></ADetailButton>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.DETAIL" />
+        <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.EDIT"></AEditButton>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.EDIT" />
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

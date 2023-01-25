@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import AssetSlotListItem from '@/views/dam/asset/detail/components/slots/AssetSlotListItem.vue'

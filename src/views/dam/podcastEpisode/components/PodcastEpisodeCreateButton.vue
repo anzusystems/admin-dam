@@ -17,7 +17,7 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFactory'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { usePodcastEpisodeValidation } from '@/views/dam/podcastEpisode/composables/podcastEpisodeValidation'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { rotateImage } from '@/services/api/dam/imageApi'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { ref } from 'vue'
 import { useAlerts } from '@/composables/system/alerts'

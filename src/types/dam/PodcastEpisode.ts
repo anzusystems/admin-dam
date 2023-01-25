@@ -1,5 +1,5 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { DocId, DocIdNullable, DatetimeUTCNullable } from '@/types/common'
+import type { DatetimeUTCNullable, DocId, DocIdNullable } from '@anzusystems/common-admin'
 import type { System } from '@/types/System'
 import type { Links } from '@/types/dam/File'
 
@@ -27,4 +27,5 @@ export interface PodcastEpisode extends UserAndTimeTrackingFields, System {
   dates: Dates
   position: number
   links?: Links
+  previewImage: DocIdNullable
 }

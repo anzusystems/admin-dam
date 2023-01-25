@@ -1,4 +1,4 @@
-import type { DocId, DocIdNullable, IntegerId } from '@/types/common'
+import type { DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 import type { Link, Links } from '@/types/dam/File'
 import type { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'

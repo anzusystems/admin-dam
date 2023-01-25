@@ -1,6 +1,6 @@
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import {
   externalProviderUpload as imageExternalProviderUpload,
   uploadChunk as imageUploadChunk,

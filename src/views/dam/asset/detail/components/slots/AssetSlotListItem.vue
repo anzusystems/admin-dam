@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import type { AssetType } from '@/model/dam/valueObject/AssetType'
+import { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { computed, watch } from 'vue'
 import AssetSlotListItemRemove from '@/views/dam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemDuplicate from '@/views/dam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/dam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
-import { DocId } from '@/types/common'
+import { DocId } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QueueItemStatus, UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isUndefined } from '@/utils/common'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
+import FileImage from '@/views/dam/asset/components/FileImage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -125,6 +126,11 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           {{ slotName }} <span v-if="item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
         </div>
         <div>{{ fileTitle }}</div>
+        <FileImage
+          :model-value="item.assetFile.id"
+          v-if="assetType === AssetType.Image && item.assetFile"
+          :height="200"
+        />
       </VCol>
       <VCol v-else>
         <div class="font-weight-bold">

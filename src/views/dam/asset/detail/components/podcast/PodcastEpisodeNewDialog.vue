@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFactory'
