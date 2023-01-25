@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { usePagination } from '@/composables/system/pagination'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import { useTableColumns } from '@/composables/system/tableColumns'
 import ADatatable from '@/components/common/ADatatable.vue'
@@ -15,8 +14,9 @@ import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { Author } from '@/types/dam/Author'
 import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastActions'
-import { usePodcastListFilter } from '@/model/dam/filter/PodcastFilter'
 import PodcastFilter from '@/views/dam/podcast/components/PodcastFilter.vue'
+import { usePagination } from '@/composables/system/pagination'
+import { usePodcastListFilter } from '@/model/dam/filter/PodcastFilter'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -24,6 +24,9 @@ const filter = usePodcastListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePodcastListActions()
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const columns = useTableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
@@ -31,12 +34,16 @@ const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: row.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
+onMounted(() => {
+  getList()
+})
+
+const refresh = () => {
+  getList()
 }
 
-onMounted(() => {
-  fetchList(pagination, filter)
+defineExpose({
+  refresh,
 })
 </script>
 

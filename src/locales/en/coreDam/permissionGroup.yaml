@@ -7,6 +7,7 @@ filter:
   id: ID
   title: Title
 meta:
+  create: Create Permission Group
   edit: Edit Permission Group
   detail: Permission Group detail
   list: List of Permission Groups
