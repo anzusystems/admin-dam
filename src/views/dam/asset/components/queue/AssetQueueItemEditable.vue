@@ -22,6 +22,7 @@ import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorC
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
+import { prettyBytes } from '@/utils/file'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -215,7 +216,10 @@ const showCancel = computed(() => {
           </VCol>
         </VRow>
         <VRow dense class="my-2 mb-3 mt-0 text-caption" v-if="item.displayTitle">
-          <VCol class="pt-0">{{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}</VCol>
+          <VCol class="pt-0">
+            {{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}
+            <span v-if="item.file?.size">&nbsp;({{ prettyBytes(item.file.size) }})</span>
+          </VCol>
         </VRow>
         <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
           <AssetCustomMetadataForm v-if="item" :asset-type="assetType" v-model="customData">
