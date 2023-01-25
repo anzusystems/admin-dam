@@ -8,6 +8,8 @@ import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
 import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 import AssetFooterUploadSlotsOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
+import logo from '@/assets/logo-adam.svg'
+import { ROUTE } from '@/router/routes'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -22,7 +24,10 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     <VAppBar :order="-1" :height="46" elevation="0" class="system-border-b">
       <div class="d-flex w-100 justify-space-between align-center">
         <div class="d-flex align-center">
-          <div class="mx-2 font-weight-bold">ADAM</div>
+          <!--          <div class="mx-2 font-weight-bold">ADAM</div>-->
+          <div class="main-logo mr-2">
+            <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img :src="logo" alt="ADAM" /></RouterLink>
+          </div>
           <slot name="main-bar-left"></slot>
         </div>
         <div class="d-flex align-center">
@@ -95,3 +100,11 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     </VMain>
   </VLayout>
 </template>
+
+<style lang="scss">
+.main-logo img {
+  height: 42px;
+  display: block;
+  width: auto;
+}
+</style>
