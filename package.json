@@ -16,6 +16,7 @@
     "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix"
   },
   "dependencies": {
+    "@anzusystems/common-admin": "^0.0.4",
     "@kyvg/vue3-notification": "^2.8.0",
     "@mdi/font": "7.1.96",
     "@vuelidate/core": "^2.0.0",
