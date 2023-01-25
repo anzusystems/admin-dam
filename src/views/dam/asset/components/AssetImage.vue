@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { useI18n } from 'vue-i18n'
@@ -8,9 +8,9 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 
 const props = withDefaults(
   defineProps<{
+    src?: string
     assetType?: AssetType
     assetStatus?: AssetStatus
-    src?: string
     backgroundColor?: string
     width?: number
     height?: number
