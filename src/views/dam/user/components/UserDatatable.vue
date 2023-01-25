@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useUserListActions } from '@/views/dam/user/composables/userActions'
 import { onMounted } from 'vue'
-import { usePagination } from '@/composables/system/pagination'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import { useTableColumns } from '@/composables/system/tableColumns'
 import ADatatable from '@/components/common/ADatatable.vue'
@@ -16,8 +15,9 @@ import type { User } from '@/types/dam/User'
 import { useRouter } from 'vue-router'
 import UserFilter from '@/views/dam/user/components/UserFilter.vue'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { useUserListFilter } from '@/model/dam/filter/UserFilter'
 import { ACL } from '@/types/Permission'
+import { usePagination } from '@/composables/system/pagination'
+import { useUserListFilter } from '@/model/dam/filter/UserFilter'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -25,6 +25,10 @@ const filter = useUserListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useUserListActions()
+
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const columns = useTableColumns([
   { name: 'email' },
@@ -40,12 +44,16 @@ const onRowClick = (row: User) => {
   router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: row.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
+onMounted(() => {
+  getList()
+})
+
+const refresh = () => {
+  getList()
 }
 
-onMounted(() => {
-  fetchList(pagination, filter)
+defineExpose({
+  refresh,
 })
 </script>
 

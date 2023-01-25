@@ -5,16 +5,23 @@ import { useI18n } from 'vue-i18n'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import PodcastCreateButton from '@/views/dam/podcast/components/PodcastCreateButton.vue'
 import PodcastDatatable from '@/views/dam/podcast/components/PodcastDatatable.vue'
+import { ref } from 'vue'
 
 const { t } = useI18n({ useScope: 'global' })
+
+const datatable = ref<InstanceType<typeof PodcastDatatable> | null>(null)
+
+const afterCreate = () => {
+  datatable.value?.refresh()
+}
 </script>
 
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.list')" icon="mdi-podcast" />
   <ActionbarButtonsWrapper>
-    <PodcastCreateButton data-cy="button-create"></PodcastCreateButton>
+    <PodcastCreateButton data-cy="button-create" @after-create="afterCreate" disable-redirect />
   </ActionbarButtonsWrapper>
   <ACard loader="list">
-    <PodcastDatatable />
+    <PodcastDatatable ref="datatable" />
   </ACard>
 </template>

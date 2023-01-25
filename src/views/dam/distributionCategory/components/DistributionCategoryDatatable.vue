@@ -21,16 +21,6 @@ import DistributionCategoryFilter from '@/views/dam/distributionCategory/compone
 import { computed, onMounted } from 'vue'
 import DistributionCategorySelectedOptionChip from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 
-const router = useRouter()
-const pagination = usePagination()
-const filter = useDistributionCategoryListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
-
-const { fetchList, listItems } = useDistributionCategoryListActions()
-
-const getList = () => {
-  fetchList(pagination, filter)
-}
 const props = withDefaults(
   defineProps<{
     distributionServiceSlugs?: string[]
@@ -39,6 +29,16 @@ const props = withDefaults(
     distributionServiceSlugs: () => [],
   }
 )
+
+const router = useRouter()
+const pagination = usePagination()
+const filter = useDistributionCategoryListFilter()
+const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { fetchList, listItems } = useDistributionCategoryListActions()
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const distributionServicesTableColumns = computed(() =>
   props.distributionServiceSlugs.map((serviceSlug): ColumnConfig => ({ name: serviceSlug, label: serviceSlug }))
@@ -54,7 +54,9 @@ const onRowClick = (row: ExtSystem) => {
   router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL, params: { id: row.id } })
 }
 
-onMounted(() => getList())
+onMounted(() => {
+  getList()
+})
 
 const refresh = () => {
   getList()

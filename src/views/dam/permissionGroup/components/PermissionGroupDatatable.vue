@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { usePagination } from '@/composables/system/pagination'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import { useTableColumns } from '@/composables/system/tableColumns'
 import ADatatable from '@/components/common/ADatatable.vue'
@@ -14,10 +13,11 @@ import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { PermissionGroup } from '@/types/dam/PermissionGroup'
-import { usePermissionGroupListFilter } from '@/model/dam/filter/PermissionGroupFilter'
 import { usePermissionGroupListActions } from '@/views/dam/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/dam/permissionGroup/components/PermissionGroupFilter.vue'
 import { ACL } from '@/types/Permission'
+import { usePagination } from '@/composables/system/pagination'
+import { usePermissionGroupListFilter } from '@/model/dam/filter/PermissionGroupFilter'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -25,6 +25,9 @@ const filter = usePermissionGroupListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePermissionGroupListActions()
+const getList = () => {
+  fetchList(pagination, filter)
+}
 
 const columns = useTableColumns([
   { name: 'title' },
@@ -37,12 +40,16 @@ const onRowClick = (row: PermissionGroup) => {
   router.push({ name: ROUTE.DAM.PERMISSION_GROUP.DETAIL, params: { id: row.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
+onMounted(() => {
+  getList()
+})
+
+const refresh = () => {
+  getList()
 }
 
-onMounted(() => {
-  fetchList(pagination, filter)
+defineExpose({
+  refresh,
 })
 </script>
 
@@ -55,13 +62,13 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.PERMISSION_GROUP.DETAIL"></ADetailButton>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.PERMISSION_GROUP.DETAIL" />
+        <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.PERMISSION_GROUP.EDIT"></AEditButton>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.PERMISSION_GROUP.EDIT" />
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

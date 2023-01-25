@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
-import { isUndefined } from '@/utils/common'
-import { ROUTE } from '@/router/routes'
 import ABtn from '@/components/common/buttons/ABtn.vue'
 import ATextField from '@/components/form/ATextField.vue'
 import ARow from '@/components/common/ARow.vue'
@@ -20,15 +17,20 @@ import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSele
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import ATextarea from '@/components/form/ATextarea.vue'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { isUndefined } from '@/utils/common'
+import { ROUTE } from '@/router/routes'
+import { useRouter } from 'vue-router'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    disableRedirect?: boolean
     buttonT?: string
     buttonClass?: string
     dataCy?: string
     disabled?: boolean | undefined
   }>(),
   {
+    disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
@@ -77,7 +79,7 @@ const onConfirm = async () => {
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false
-    if (!isUndefined(res.id)) {
+    if (!isUndefined(res.id) && !props.disableRedirect) {
       router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
