@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/dam/assetApi'

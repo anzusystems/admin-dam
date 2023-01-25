@@ -1,6 +1,6 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { HTTP_STATUS_CREATED, HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK } from '@/services/api/statusCodes'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'

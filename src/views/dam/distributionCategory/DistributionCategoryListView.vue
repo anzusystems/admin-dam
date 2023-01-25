@@ -18,7 +18,7 @@ const assetType = computed(() => filter.type.model as AssetType)
 
 const { t } = useI18n({ useScope: 'global' })
 
-const datatable = ref()
+const datatable = ref<InstanceType<typeof DistributionCategoryDatatable> | null>(null)
 
 const onCreateSuccess = (type: AssetType) => {
   filter.type.model = type

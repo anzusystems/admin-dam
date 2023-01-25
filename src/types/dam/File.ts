@@ -1,4 +1,4 @@
-import type { DocId, DocIdNullable } from '@/types/common'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 
 export enum AssetFileProcessStatus {
@@ -100,6 +100,7 @@ export interface VideoFile extends UserAndTimeTrackingFields {
   videoAttributes: VideoAttributes
   originAssetFile: DocIdNullable
   links?: Links
+  previewImage: DocIdNullable
   _resourceName: 'videoFile'
 }
 

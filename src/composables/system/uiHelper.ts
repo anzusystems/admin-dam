@@ -81,7 +81,11 @@ const loaderOff = (name: LoaderName) => {
 }
 
 // Note: use only on common CRUD actions, for more complex situations create custom loading/disabled states
+/**
+ * @deprecated The composable should not be used, replace by local ref or entity state.
+ */
 export function useUiHelper() {
+  console.warn('useUiHelper is deprecated')
   return {
     btn,
     btnReset,

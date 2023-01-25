@@ -16,19 +16,25 @@ import { usePermissionGroupFactory } from '@/model/dam/factory/PermissionGroupFa
 import type { PermissionGroup } from '@/types/dam/PermissionGroup'
 import { usePermissionGroupValidation } from '@/views/dam/permissionGroup/composables/permissionGroupValidation'
 import { createPermissionGroup, ENTITY } from '@/services/api/dam/permissionGroupApi'
+import { Podcast } from '@/types/dam/Podcast'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    disableRedirect?: boolean
     buttonT?: string
     buttonClass?: string
     dataCy?: string
   }>(),
   {
+    disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
   }
 )
+const emit = defineEmits<{
+  (e: 'afterCreate', data: PermissionGroup): void
+}>()
 
 const { createDefault } = usePermissionGroupFactory()
 const permissionGroup = ref<PermissionGroup>(createDefault())
@@ -61,9 +67,12 @@ const onConfirm = async () => {
     }
     btnLoadingOn('create')
     const res = await createPermissionGroup(permissionGroup.value)
+    emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false
-    if (!isUndefined(res.id)) router.push({ name: ROUTE.DAM.PERMISSION_GROUP.DETAIL, params: { id: res.id } })
+    if (!isUndefined(res.id) && !props.disableRedirect) {
+      router.push({ name: ROUTE.DAM.PERMISSION_GROUP.DETAIL, params: { id: res.id } })
+    }
   } catch (error) {
     handleError(error)
   } finally {

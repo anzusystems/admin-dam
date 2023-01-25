@@ -1,4 +1,4 @@
-import type { IntegerId, IntegerIdNullable } from '@/types/common'
+import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 import type { User } from '@/types/dam/User'
 
 interface CurrentUserExtSystem {

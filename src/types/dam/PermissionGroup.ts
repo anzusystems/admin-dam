@@ -1,5 +1,5 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { IntegerId } from '@/types/common'
+import type { IntegerId } from '@anzusystems/common-admin'
 import type { Permissions } from '@/types/Permission'
 import type { System } from '@/types/System'
 

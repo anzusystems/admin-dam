@@ -4,7 +4,7 @@ import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { getValues } from '@/utils/object'
 import { loadLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import { loadLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
-import type { DocIdNullable } from '@/types/common'
+import type { DocIdNullable } from '@anzusystems/common-admin'
 
 interface State {
   asset: AssetDetailItemDto | null

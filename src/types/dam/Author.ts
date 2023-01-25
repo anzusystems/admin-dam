@@ -1,4 +1,4 @@
-import type { DocId, IntegerId } from '@/types/common'
+import type { DocId, IntegerId } from '@anzusystems/common-admin'
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 import type { AuthorType } from '@/model/dam/valueObject/AuthorType'
 import type { System } from '@/types/System'

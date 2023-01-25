@@ -1,7 +1,7 @@
 import { apiFetchOne } from '@/services/api/anzuApi'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { IntegerId } from '@/types/common'
+import type { IntegerId } from '@anzusystems/common-admin'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DamConfigAssetCustomFormElement } from '@/types/dam/DamConfigAssetCustomForm'
 
