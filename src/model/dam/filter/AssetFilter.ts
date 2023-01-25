@@ -16,7 +16,7 @@ const filter = reactive({
     ...makeFilter({ name: 'type', default: [] }),
   },
   described: {
-    ...makeFilter({ name: 'described' }),
+    ...makeFilter({ name: 'described', default: true }),
   },
   visible: {
     ...makeFilter({ name: 'visible', default: true }),
