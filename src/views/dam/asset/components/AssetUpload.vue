@@ -6,7 +6,7 @@ import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

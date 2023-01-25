@@ -1,4 +1,4 @@
-import type { DocId, DocIdNullable, IntegerId } from '@/types/common'
+import type { DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 import type { System } from '@/types/System'
 import type { AssetFile } from '@/types/dam/File'

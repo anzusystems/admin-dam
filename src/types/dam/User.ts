@@ -1,6 +1,6 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 import type { Permissions } from '@/types/Permission'
-import type { IntegerId } from '@/types/common'
+import type { IntegerId } from '@anzusystems/common-admin'
 import type { System } from '@/types/System'
 
 export interface UserMinimal {

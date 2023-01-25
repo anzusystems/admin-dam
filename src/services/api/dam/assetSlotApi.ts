@@ -3,7 +3,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { Pagination } from '@/types/Pagination'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
 import type { FilterBag } from '@/types/Filter'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 import { apiAnyRequest } from '@/services/api/anzuApi'
 

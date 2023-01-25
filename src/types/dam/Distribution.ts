@@ -1,5 +1,5 @@
 import type { DistributionServiceName, DistributionServiceResourceName } from '@/types/dam/DamConfig'
-import type { DatetimeUTCNullable, DocId } from '@/types/common'
+import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
 import type { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 import type { DistributionYoutubePrivacy } from '@/model/dam/valueObject/DistributionYoutubePrivacy'
 

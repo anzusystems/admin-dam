@@ -1,7 +1,7 @@
 import { apiCreateOne, apiFetchOne } from '@/services/api/anzuApi'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
 import type { DistributionJwCreateDto, DistributionJwItem } from '@/types/dam/Distribution'
 

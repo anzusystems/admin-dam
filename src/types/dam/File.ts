@@ -1,4 +1,4 @@
-import type { DocId, DocIdNullable } from '@/types/common'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
 
 export enum AssetFileProcessStatus {

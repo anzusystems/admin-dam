@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { isNull, isUndefined } from '@/utils/common'
-import type { DatetimeUTC, DatetimeUTCNullable } from '@/types/common'
+import type { DatetimeUTC, DatetimeUTCNullable } from '@anzusystems/common-admin'
 
 dayjs.extend(utc)
 

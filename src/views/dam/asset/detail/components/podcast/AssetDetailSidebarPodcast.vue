@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'

@@ -10,7 +10,7 @@ import type {
   AssetMetadataDto,
   AssetSearchListItemDto,
 } from '@/types/dam/Asset'
-import type { DocId, DocIdNullable, IntegerId } from '@/types/common'
+import type { DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 import { HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isNull } from '@/utils/common'

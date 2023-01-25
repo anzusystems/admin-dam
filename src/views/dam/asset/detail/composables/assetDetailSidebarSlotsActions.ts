@@ -2,7 +2,7 @@ import { useAssetSlotsStore } from '@/stores/dam/assetSlotsStore'
 import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
 import { useAssetSlotFilter } from '@/model/dam/filter/AssetSlotFilter'
 import { fetchAssetSlotList, updateAssetSlots } from '@/services/api/dam/assetSlotApi'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 import {
   deleteFile,
   existingFileToSlot,

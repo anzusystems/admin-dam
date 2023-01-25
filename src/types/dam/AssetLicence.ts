@@ -1,5 +1,5 @@
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { IntegerId, IntegerIdNullable } from '@/types/common'
+import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 import type { System } from '@/types/System'
 
 export interface AssetLicenceMinimal {

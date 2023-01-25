@@ -26,7 +26,7 @@ import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/Dist
 import { simpleCloneObject } from '@/utils/object'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import type { ValueObjectOption } from '@/types/ValueObject'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 
 const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
