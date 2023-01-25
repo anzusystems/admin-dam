@@ -1,4 +1,4 @@
-import type { DatetimeUTC, IntegerId } from '@/types/common'
+import type { DatetimeUTC, IntegerId } from '@anzusystems/common-admin'
 
 export interface TimeTrackingFields {
   createdAt: DatetimeUTC

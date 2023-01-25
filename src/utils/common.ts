@@ -1,4 +1,4 @@
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 
 export const isUndefined = (value: unknown): value is undefined => {
   return typeof value === 'undefined'

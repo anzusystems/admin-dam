@@ -1,5 +1,5 @@
 import type { LogLevel } from '@/model/common/valueObject/LogLevel'
-import type { DatetimeUTC, IntegerIdNullable } from '@/types/common'
+import type { DatetimeUTC, IntegerIdNullable } from '@anzusystems/common-admin'
 
 export interface Log {
   id: string

@@ -17,7 +17,7 @@ import type { Author } from '@/types/dam/Author'
 import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/dam/podcastEpisode/components/PodcastEpisodeFilter.vue'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

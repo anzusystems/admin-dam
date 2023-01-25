@@ -5,7 +5,7 @@ import type { Pagination } from '@/types/Pagination'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
 import type { FilterBag } from '@/types/Filter'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
-import type { DocId } from '@/types/common'
+import type { DocId } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/podcast-episode'
 export const ENTITY = 'podcastEpisode'

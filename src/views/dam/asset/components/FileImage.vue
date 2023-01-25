@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { DocId, DocIdNullable } from '@/types/common'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { isNull } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
-import { isNull } from '@/utils/common'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchAsset } from '@/services/api/dam/assetApi'
 import type { AssetDetailItemDto } from '@/types/dam/Asset'
