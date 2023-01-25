@@ -2,7 +2,7 @@
 import { isNull } from '@/utils/common'
 import type { ButtonName } from '@/composables/system/uiHelper'
 import { useUiHelper } from '@/composables/system/uiHelper'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import type { IconValue } from '@/types/Vuetify'
 
 const props = withDefaults(
@@ -45,6 +45,10 @@ const loadingComputed = computed(() => {
     return false
   }
   return false
+})
+
+onMounted(() => {
+  console.warn('ABtn.vue is deprecated, use VBtn instead')
 })
 </script>
 

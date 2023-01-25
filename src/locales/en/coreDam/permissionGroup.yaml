@@ -1,6 +1,6 @@
 model:
   id: ID
-  title: Title
+  name: Name
   description: Description
   users: Users
 filter:
