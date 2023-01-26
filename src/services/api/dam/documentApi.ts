@@ -219,3 +219,23 @@ export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotNa
       })
   })
 }
+
+export const downloadLink = (documentId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + documentId + '/download-link'
+    damClient()
+      .get(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

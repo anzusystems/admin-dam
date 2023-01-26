@@ -8,6 +8,9 @@ import { useExternalProviderAssetFooterSelectedView } from '@/composables/system
 import ExternalProviderAssetQueueReadonly from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetQueueReadonly.vue'
 import { useExternalProviderAssetImport } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const { toolbarColor } = useTheme()
 
@@ -54,15 +57,15 @@ const onImport = () => {
       <VToolbar class="w-100 system-border-b" :color="toolbarColor" density="compact" :height="64">
         <div class="d-flex align-center pa-2">
           <div>
-            <span class="text-subtitle-2">Selected files: {{ queueTotalCount }}</span>
+            <span class="text-subtitle-2">{{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}</span>
           </div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="d-flex align-center">
-          <VBtn @click.stop="onImport" color="success" variant="flat" :height="36" class="mr-2" rounded="pill">
-            Import to DAM
+          <VBtn @click.stop="onImport" color="primary" variant="flat" :height="36" class="mr-2" rounded="pill">
+            {{ t('coreDam.asset.selected.import') }} ({{ queueTotalCount }})
           </VBtn>
-          <AssetFooterSelectedButtonClear @confirm="onClearConfirm" variant="normal"></AssetFooterSelectedButtonClear>
+          <AssetFooterSelectedButtonClear @confirm="onClearConfirm" variant="normal" />
           <VDivider vertical class="mx-4 my-2" />
           <VBtn
             v-show="showMinimalSelected"
@@ -74,7 +77,7 @@ const onImport = () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-down"></VIcon>
+            <VIcon icon="mdi-chevron-down" />
           </VBtn>
         </div>
       </VToolbar>
