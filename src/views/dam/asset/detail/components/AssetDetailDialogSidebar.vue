@@ -54,10 +54,10 @@ const typeHasDistributions = computed(() => {
       <VTabs v-model="activeTab" class="sidebar-info__tabs">
         <VTab :value="AssetDetailTab.Info">{{ t('coreDam.asset.detail.tabs.info') }}</VTab>
         <VTab :value="AssetDetailTab.ROI" v-if="isImage">{{ t('coreDam.asset.detail.tabs.roi') }}</VTab>
-        <VTab :value="AssetDetailTab.Distribution">
+        <VTab :value="AssetDetailTab.Distribution" v-if="typeHasDistributions">
           {{ t('coreDam.asset.detail.tabs.distribution') }}
         </VTab>
-        <VTab :value="AssetDetailTab.Podcast" v-if="isAudio">Podcast</VTab>
+        <VTab :value="AssetDetailTab.Podcast" v-if="isAudio">{{ t('coreDam.asset.detail.tabs.podcast') }}</VTab>
         <VTab :value="AssetDetailTab.Slots">{{ t('coreDam.asset.detail.tabs.slots') }}</VTab>
       </VTabs>
 
@@ -69,10 +69,9 @@ const typeHasDistributions = computed(() => {
         <div class="py-2" v-if="isImage && activeTab === AssetDetailTab.ROI">
           <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
         </div>
-        <div class="py-2" v-if="activeTab === AssetDetailTab.Distribution">
+        <div class="py-2" v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution">
           <DistributionCategoryWidget class="px-4 mb-4" />
           <AssetDetailSidebarDistribution
-            v-if="typeHasDistributions"
             :asset-id="assetId"
             :is-active="activeTab === AssetDetailTab.Distribution"
             :asset-type="assetType"
