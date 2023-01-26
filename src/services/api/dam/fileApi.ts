@@ -7,6 +7,7 @@ import {
   uploadFinish as imageUploadFinish,
   uploadStart as imageUploadStart,
   unsetSlot as imageUnsetSlot,
+  downloadLink as imageDownloadLink,
   deleteImage,
   makeMainFile as imageMakeMainFile,
   existingImageToSlot,
@@ -17,6 +18,7 @@ import {
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
   unsetSlot as audioUnsetSlot,
+  downloadLink as audioDownloadLink,
   deleteAudio,
   makeMainFile as audioMakeMainFile,
   existingAudioToSlot,
@@ -27,6 +29,7 @@ import {
   uploadFinish as videoUploadFinish,
   uploadStart as videoUploadStart,
   unsetSlot as videoUnsetSlot,
+  downloadLink as videoDownloadLink,
   deleteVideo,
   makeMainFile as videoMakeMainFile,
   existingVideoToSlot,
@@ -37,6 +40,7 @@ import {
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
   unsetSlot as documentUnsetSlot,
+  downloadLink as documentDownloadLink,
   deleteDocument,
   makeMainFile as documentMakeMainFile,
   existingDocumentToSlot,
@@ -392,6 +396,41 @@ export const existingFileToSlot = (assetType: AssetType, fileId: DocId, assetId:
         break
       case AssetType.Document:
         existingDocumentToSlot(fileId, assetId, slotName)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const fileDownloadLink = (assetType: AssetType, fileId: DocId) => {
+  return new Promise((resolve, reject) => {
+    switch (assetType) {
+      case AssetType.Image:
+        imageDownloadLink(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Audio:
+        audioDownloadLink(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Video:
+        videoDownloadLink(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case AssetType.Document:
+        documentDownloadLink(fileId)
           .then((res) => {
             resolve(res)
           })

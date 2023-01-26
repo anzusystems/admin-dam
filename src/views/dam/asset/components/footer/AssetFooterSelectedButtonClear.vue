@@ -46,7 +46,7 @@ const { t } = useI18n({ useScope: 'global' })
       variant="flat"
       :height="26"
       class="mr-2"
-      color="grey-lighten-2"
+      color="secondary"
       :data-cy="dataCy"
       @click.stop="onClick"
     >
@@ -55,7 +55,7 @@ const { t } = useI18n({ useScope: 'global' })
     <VBtn
       v-else-if="variant === 'normal'"
       @click.stop="onClick"
-      color="grey-lighten-2"
+      color="secondary"
       :height="36"
       variant="flat"
       rounded="pill"

@@ -108,6 +108,8 @@ selected:
   selectedFiles: Selected files
   edit: Edit
   clear: Clear
+  more: View more
+  import: Import to ADAM
   clearOverlay:
     title: Are you sure you want to clear selection?
     description: Any unsaved work will be lost
@@ -142,6 +144,7 @@ slots:
     makeMainFile: Make main file
     switchSlots: Switch with another slot
     remove: Remove
+    Download: Download
   remove:
     descriptionBothOptions: Asset file is used in several slots. Do you want to unset file only from selected slot or remove file permanently?
     descriptionOnlyRemove: Do you want to permanently remove file from system?

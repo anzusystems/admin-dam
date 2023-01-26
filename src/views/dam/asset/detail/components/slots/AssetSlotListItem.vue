@@ -14,6 +14,7 @@ import { QueueItemStatus, UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isUndefined } from '@/utils/common'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
 import FileImage from '@/views/dam/asset/components/FileImage.vue'
+import { fileDownloadLink } from '@/services/api/dam/fileApi'
 
 const props = withDefaults(
   defineProps<{
@@ -75,6 +76,12 @@ watch(uploadQueueItemInAnyProgress, async (newValue, oldValue) => {
 const removeAssetFile = () => {
   if (!props.item || !props.item.assetFile) return
   emit('removeFile', props.item.assetFile.id)
+}
+
+const downloadFile = async () => {
+  if (!props.item || !props.item.assetFile) return
+  const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
+  window.open(res.link) // todo add ts type
 }
 
 const makeMainFile = () => {
@@ -155,6 +162,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           <VMenu activator="parent">
             <VCard min-width="300">
               <VList>
+                <VListItem @click.stop="downloadFile" :title="t('coreDam.asset.slots.actions.download')" />
                 <VListItem
                   v-if="totalSlotCount > 1 && !item.main"
                   @click.stop="makeMainFile"
