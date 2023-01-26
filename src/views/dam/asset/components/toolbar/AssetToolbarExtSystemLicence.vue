@@ -31,7 +31,7 @@ const openDialog = () => {
 </script>
 
 <template>
-  <VBtn variant="text" size="small" class="mx-1" @click.stop="openDialog">
+  <VBtn variant="text" size="small" class="mx-1" rounded="pill" @click.stop="openDialog" :height="34">
     {{ displayTextLicence }}
     <VIcon icon="mdi-chevron-down" />
     <VTooltip activator="parent" location="bottom">

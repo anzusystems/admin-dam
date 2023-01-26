@@ -5,15 +5,6 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({ useScope: 'global' })
 
-withDefaults(
-  defineProps<{
-    variant?: 'main' | 'settings'
-  }>(),
-  {
-    variant: 'main',
-  }
-)
-
 const { currentUser } = useCurrentUser()
 </script>
 
@@ -37,20 +28,6 @@ const { currentUser } = useCurrentUser()
           </VListItem>
         </VList>
         <VList>
-          <VDivider></VDivider>
-          <VListItem
-            :to="{ name: ROUTE.SYSTEM.SETTINGS }"
-            :title="t('system.currentUser.settings')"
-            prepend-icon="mdi-cog"
-            v-show="variant === 'main'"
-            data-cy="button-settings"
-          />
-          <VListItem
-            prepend-icon="mdi-home"
-            :to="{ name: ROUTE.DAM.ASSET.LIST }"
-            :title="t('system.currentUser.backToAssets')"
-            v-show="variant === 'settings'"
-          ></VListItem>
           <VDivider></VDivider>
           <VListItem
             prepend-icon="mdi-logout-variant"
