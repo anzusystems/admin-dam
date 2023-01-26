@@ -240,6 +240,26 @@ export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: st
   })
 }
 
+export const downloadLink = (imageId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/download-link'
+    damClient()
+      .get(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
 export const rotateImage = (imageId: DocId, angle: 90 | 270) => {
   return new Promise((resolve, reject) => {
     const url = END_POINT + '/' + imageId + '/rotate/' + angle

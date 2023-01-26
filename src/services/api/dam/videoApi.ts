@@ -219,3 +219,23 @@ export const existingVideoToSlot = (videoId: DocId, assetId: DocId, slotName: st
       })
   })
 }
+
+export const downloadLink = (videoId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + videoId + '/download-link'
+    damClient()
+      .get(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

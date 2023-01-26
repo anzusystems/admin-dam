@@ -8,6 +8,7 @@ import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/
 import { useTheme } from '@/composables/system/themeSettings'
 import { useI18n } from 'vue-i18n'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
+import { useExternalProviderAssetImport } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -48,6 +49,12 @@ const onClearConfirm = async () => {
   assetListStore.clearSelected()
   hideSelected()
 }
+
+const { importFromSelected } = useExternalProviderAssetImport()
+
+const onImport = () => {
+  importFromSelected()
+}
 </script>
 
 <template>
@@ -69,18 +76,20 @@ const onClearConfirm = async () => {
             </span>
           </div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="d-flex">
+          <VBtn @click.stop="onImport" color="primary" variant="flat" :height="26" class="mr-2">
+            {{ t('coreDam.asset.selected.import') }} ({{ queueTotalCount }})
+          </VBtn>
           <VBtn
             v-show="showFullSelected"
             @click.stop="setFullSelected"
-            color="primary"
+            color="secondary"
             variant="flat"
             :height="26"
             class="mr-2"
           >
-            <!--            {{ t('coreDam.asset.selected.edit') }}-->
-            View more
+            {{ t('coreDam.asset.selected.more') }}
           </VBtn>
           <AssetFooterSelectedButtonClear
             v-show="showFullSelected"
@@ -97,7 +106,7 @@ const onClearConfirm = async () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-down"></VIcon>
+            <VIcon icon="mdi-chevron-down" />
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
@@ -109,11 +118,11 @@ const onClearConfirm = async () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-up"></VIcon>
+            <VIcon icon="mdi-chevron-up" />
           </VBtn>
         </div>
       </VToolbar>
-      <AssetQueueMassEditSimple></AssetQueueMassEditSimple>
+      <AssetQueueMassEditSimple />
     </div>
   </div>
 </template>
