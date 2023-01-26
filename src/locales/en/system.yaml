@@ -10,9 +10,11 @@ mainBar:
   upload: Upload
   search: Search
   backToAssets: Back to assets
-  widgets: Widgets
-  userOptions: Options
-  customIntegrations: Custom integrations
+  options: Options
+  userOptions: Account
+  customIntegrations:
+    title: Custom integrations
+    general: General
   podcasts: Podcasts
   extSystemLicenceSwitch:
     extSystem: External system

@@ -38,12 +38,19 @@ const { theme } = useTheme()
     <VAppBar :height="46" elevation="0" class="system-border-b">
       <div class="d-flex justify-space-between w-100 align-center">
         <div class="d-flex w-100 align-center">
-          <VAppBarNavIcon @click.stop="navIconClick"></VAppBarNavIcon>
-          <VBtn :to="{ name: ROUTE.DAM.ASSET.LIST }" size="small" variant="text" class="mx-2">
+          <VAppBarNavIcon @click.stop="navIconClick" />
+          <VSpacer />
+          <VBtn
+            :to="{ name: ROUTE.DAM.ASSET.LIST }"
+            size="small"
+            variant="text"
+            class="mx-2"
+            rounded="pill"
+            :height="34"
+          >
             <VIcon icon="mdi-home" :size="20" class="mr-2" /> {{ t('system.mainBar.backToAssets') }}
           </VBtn>
-          <VSpacer />
-          <DCurrentUserDropdown variant="settings" />
+          <DCurrentUserDropdown />
         </div>
       </div>
     </VAppBar>
