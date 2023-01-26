@@ -13,7 +13,6 @@ import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QueueItemStatus, UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isUndefined } from '@/utils/common'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
-import FileImage from '@/views/dam/asset/components/FileImage.vue'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 
 const props = withDefaults(
@@ -133,11 +132,12 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           {{ slotName }} <span v-if="item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
         </div>
         <div>{{ fileTitle }}</div>
-        <FileImage
-          :model-value="item.assetFile.id"
-          v-if="assetType === AssetType.Image && item.assetFile"
-          :height="200"
-        />
+        <!-- todo: use file image after BE change -->
+        <!--        <FileImage-->
+        <!--          :model-value="item.assetFile.id"-->
+        <!--          v-if="assetType === AssetType.Image && item.assetFile"-->
+        <!--          :height="200"-->
+        <!--        />-->
       </VCol>
       <VCol v-else>
         <div class="font-weight-bold">

@@ -70,6 +70,7 @@ detail:
     roi: Focus
     distribution: Distribution
     slots: Slots
+    podcast: Podcast
   info:
     status:
       duplicate: Asset main file is duplicate
