@@ -32,7 +32,7 @@ const activeDisplayText = computed(() => {
   if (route.name === ROUTE.DAM.EXTERNAL_PROVIDER.LIST && providerParam && externalProviders.value[providerParam]) {
     return externalProviders.value[providerParam].title
   }
-  return 'General'
+  return t('system.mainBar.customIntegrations.assets')
 })
 </script>
 
@@ -46,7 +46,7 @@ const activeDisplayText = computed(() => {
       </VBtn>
     </template>
     <VList>
-      <VListItem :title="t('system.mainBar.customIntegrations.general')" @click="backToDam" />
+      <VListItem :title="t('system.mainBar.customIntegrations.assets')" @click="backToDam" />
       <VListItem
         @click.stop="goToExternalProvider(key)"
         v-for="(value, key) in externalProviders"

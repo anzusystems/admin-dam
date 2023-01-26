@@ -14,7 +14,7 @@ mainBar:
   userOptions: Account
   customIntegrations:
     title: Custom integrations
-    general: General
+    assets: Assets
   podcasts: Podcasts
   extSystemLicenceSwitch:
     extSystem: External system
