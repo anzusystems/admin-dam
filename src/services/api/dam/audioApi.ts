@@ -219,3 +219,23 @@ export const existingAudioToSlot = (audioId: DocId, assetId: DocId, slotName: st
       })
   })
 }
+
+export const downloadLink = (audioId: DocId) => {
+  return new Promise((resolve, reject) => {
+    const url = END_POINT + '/' + audioId + '/download-link'
+    damClient()
+      .get(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
