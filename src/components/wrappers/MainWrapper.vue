@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ASystemBar from '@/components/system/ASystemBar.vue'
-import AssetToolbarWidgets from '@/views/dam/asset/components/toolbar/AssetToolbarWidgets.vue'
+import AssetToolbarOptions from '@/views/dam/asset/components/toolbar/AssetToolbarOptions.vue'
 import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadOverlay.vue'
@@ -10,6 +10,7 @@ import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/A
 import AssetFooterUploadSlotsOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logo from '@/assets/logo-adam.svg'
 import { ROUTE } from '@/router/routes'
+import AssetToolbarIntegrations from '@/views/dam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -28,13 +29,14 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
           <div class="main-logo mr-2">
             <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img :src="logo" alt="ADAM" /></RouterLink>
           </div>
+          <AssetToolbarIntegrations />
           <slot name="main-bar-left"></slot>
         </div>
         <div class="d-flex align-center">
           <slot name="main-bar-right"></slot>
           <AssetToolbarExtSystemLicence />
-          <AssetToolbarWidgets />
-          <DCurrentUserDropdown variant="main" />
+          <AssetToolbarOptions variant="main" />
+          <DCurrentUserDropdown />
         </div>
       </div>
     </VAppBar>
