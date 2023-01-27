@@ -13,7 +13,6 @@ model:
   permissionGroups: Skupiny oprávnení
   allowedAssetExternalProviders: Povolené externé providre assetov
   allowedDistributionServices: Povolené distribučné služby
-  ssoId: SSO ID
 filter:
   id: ID
   email: Email
