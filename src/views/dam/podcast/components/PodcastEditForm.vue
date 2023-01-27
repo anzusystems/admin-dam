@@ -10,7 +10,7 @@ import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastVal
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import ATextarea from '@/components/form/ATextarea.vue'
-import FileImage from '@/views/dam/asset/components/FileImage.vue'
+import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 
 const { podcast } = usePodcastEditActions()
 
@@ -54,7 +54,7 @@ const { podcastModeOptions } = usePodcastMode()
           ></ATextField>
         </ARow>
         <ARow>
-          <FileImage v-model="podcast.previewImage" />
+          <ImagePreview v-model="podcast.imagePreview" show-actions />
         </ARow>
       </VCol>
     </VRow>
