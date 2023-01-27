@@ -109,7 +109,7 @@ const onClearConfirm = async () => {
           </VBtn>
         </div>
       </VToolbar>
-      <AssetQueueMassEditSimple></AssetQueueMassEditSimple>
+      <AssetQueueMassEditSimple />
     </div>
   </div>
 </template>

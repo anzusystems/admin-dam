@@ -27,5 +27,5 @@ export interface PodcastEpisode extends UserAndTimeTrackingFields, System {
   dates: Dates
   position: number
   links?: Links
-  previewImage: DocIdNullable
+  imagePreview: DocIdNullable
 }

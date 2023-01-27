@@ -53,6 +53,7 @@ const status = computed(() => {
           use-component
           cover
           :icon-size="50"
+          disable-processing-text
         />
         <div
           v-if="item.isDuplicate"

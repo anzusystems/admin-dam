@@ -3,7 +3,7 @@ import type { Pagination } from '@/types/Pagination'
 
 export function usePagination() {
   return reactive<Pagination>({
-    sortBy: 'id',
+    sortBy: 'createdAt',
     descending: true,
     page: 1,
     rowsPerPage: 10,
