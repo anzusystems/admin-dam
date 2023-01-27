@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import type { CreateUser, UpdateUser } from '@/types/dam/User'
-import { email, maxLength, minLength, required } from '@/plugins/validators'
+import { email, maxLength, minLength, minValue, required, numeric } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import { UserAuthType } from '@/types/dam/DamConfig'
 
@@ -19,8 +19,10 @@ export function useCreateUserValidation(userCreate: Ref<CreateUser>, userAuthTyp
     },
   } as Record<string, any> // todo find better type
   if (userAuthType === UserAuthType.OAuth2) {
-    rulesRaw['ssoId'] = {
+    rulesRaw['id'] = {
       required,
+      numeric,
+      minValue: minValue(1),
     }
   }
   if (userAuthType === UserAuthType.JsonCredentials) {

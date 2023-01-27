@@ -109,7 +109,7 @@ const onConfirm = async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow v-if="damPubConfig.userAuthType === UserAuthType.OAuth2">
-            <ATextField v-model="userCreate.ssoId" :v="v$.userCreate.ssoId" required data-cy="user-ssoId"></ATextField>
+            <ATextField v-model="userCreate.id" :v="v$.userCreate.id" required data-cy="user-id"></ATextField>
           </ARow>
           <ARow>
             <ATextField v-model="userCreate.email" :v="v$.userCreate.email" required data-cy="user-email"></ATextField>

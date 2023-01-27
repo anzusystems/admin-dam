@@ -20,7 +20,6 @@ export function useUserFactory() {
       adminToExtSystems: [],
       allowedAssetExternalProviders: [],
       allowedDistributionServices: [],
-      ssoId: '',
       modifiedAt: dateTimeNow(),
       createdBy: 0,
       modifiedBy: 0,
@@ -31,6 +30,7 @@ export function useUserFactory() {
 
   const createDefaultForCreate = (): CreateUser => {
     return {
+      id: 0,
       email: '',
       firstName: '',
       lastName: '',
@@ -42,7 +42,6 @@ export function useUserFactory() {
       assetLicences: [],
       allowedAssetExternalProviders: [],
       allowedDistributionServices: [],
-      ssoId: '',
     }
   }
 

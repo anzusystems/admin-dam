@@ -20,12 +20,12 @@ export interface User extends UserMinimal, UserAndTimeTrackingFields, System {
   allowedDistributionServices: string[]
   adminToExtSystems: IntegerId[]
   enabled: boolean
-  ssoId?: string
 }
 
 export interface CreateUser
   extends Pick<
     User,
+    | 'id'
     | 'email'
     | 'firstName'
     | 'lastName'
@@ -35,7 +35,6 @@ export interface CreateUser
     | 'assetLicences'
     | 'allowedAssetExternalProviders'
     | 'allowedDistributionServices'
-    | 'ssoId'
   > {
   plainPassword: string
   superAdmin: boolean

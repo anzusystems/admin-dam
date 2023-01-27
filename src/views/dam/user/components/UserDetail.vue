@@ -74,11 +74,7 @@ const userAuthType = damPubConfig.userAuthType
         <ARow :title="t('coreDam.user.model.id')">
           <ACopyText :value="user.id"></ACopyText>
         </ARow>
-        <ARow
-          v-if="userAuthType === UserAuthType.OAuth2"
-          :title="t('coreDam.user.model.ssoId')"
-          :value="user.ssoId"
-        ></ARow>
+        <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.id')" :value="user.id"></ARow>
         <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
       </ACard>
     </VCol>

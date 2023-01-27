@@ -24,7 +24,6 @@ export interface CurrentUserDto
     | 'resolvedPermissions'
     | 'allowedAssetExternalProviders'
     | 'allowedDistributionServices'
-    | 'ssoId'
   > {
   superAdmin: boolean
   selectedLicence: CurrentUserAssetLicence | null
