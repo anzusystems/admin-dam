@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { useI18n } from 'vue-i18n'
 import AssetCustomMetadataFormMassOperations from '@/components/dam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
@@ -21,7 +21,7 @@ const massOperationsAuthors = ref([])
 
 const { t } = useI18n({ useScope: 'global' })
 
-const panels = ref([])
+const panels = ref<Array<string>>(['general'])
 
 const uploadQueuesStore = useUploadQueuesStore()
 
@@ -101,6 +101,16 @@ const clearForm = () => {
   massOperationsAuthors.value = []
   massOperationsKeywords.value = []
 }
+
+const assetTypes = computed(() => {
+  return uploadQueuesStore.getQueueItemsTypes(props.queueId)
+})
+
+onMounted(() => {
+  if (assetTypes.value[0]) {
+    panels.value.push(assetTypes.value[0])
+  }
+})
 </script>
 
 <template>
@@ -176,7 +186,12 @@ const clearForm = () => {
               </VRow>
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.image')" value="image">
+          <VExpansionPanel
+            v-if="assetTypes.includes(AssetType.Image)"
+            elevation="0"
+            :title="t('coreDam.asset.assetType.image')"
+            :value="AssetType.Image"
+          >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 :asset-type="AssetType.Image"
@@ -186,17 +201,32 @@ const clearForm = () => {
               />
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.video')" value="video">
+          <VExpansionPanel
+            v-if="assetTypes.includes(AssetType.Video)"
+            elevation="0"
+            :title="t('coreDam.asset.assetType.video')"
+            :value="AssetType.Video"
+          >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations :asset-type="AssetType.Video" v-model="massOperationsData.video" />
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.audio')" value="audio">
+          <VExpansionPanel
+            v-if="assetTypes.includes(AssetType.Audio)"
+            elevation="0"
+            :title="t('coreDam.asset.assetType.audio')"
+            :value="AssetType.Audio"
+          >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations :asset-type="AssetType.Audio" v-model="massOperationsData.audio" />
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel elevation="0" :title="t('coreDam.asset.assetType.document')" value="document">
+          <VExpansionPanel
+            v-if="assetTypes.includes(AssetType.Document)"
+            elevation="0"
+            :title="t('coreDam.asset.assetType.document')"
+            :value="AssetType.Document"
+          >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 :asset-type="AssetType.Document"
