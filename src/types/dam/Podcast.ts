@@ -4,7 +4,7 @@ import type { System } from '@/types/System'
 import type { PodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/dam/valueObject/PodcastLastImportStatus'
 import type { Links } from '@/types/dam/File'
-import type { DocIdNullable } from '@anzusystems/common-admin'
+import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 
 interface Texts {
   title: string
@@ -23,7 +23,7 @@ export interface Podcast extends UserAndTimeTrackingFields, System {
   texts: Texts
   attributes: Attributes
   links?: Links
-  previewImage: DocIdNullable
+  imagePreview: ImagePreviewNullable
 }
 
 export interface PodcastMinimal {

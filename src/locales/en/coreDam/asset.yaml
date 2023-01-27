@@ -145,7 +145,7 @@ slots:
     makeMainFile: Make main file
     switchSlots: Switch with another slot
     remove: Remove
-    Download: Download
+    download: Download
   remove:
     descriptionBothOptions: Asset file is used in several slots. Do you want to unset file only from selected slot or remove file permanently?
     descriptionOnlyRemove: Do you want to permanently remove file from system?

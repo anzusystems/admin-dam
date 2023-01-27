@@ -8,7 +8,7 @@ import ARow from '@/components/common/ARow.vue'
 import { usePodcastEpisodeEditActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeValidation } from '@/views/dam/podcastEpisode/composables/podcastEpisodeValidation'
 import ADatetimePicker from '@/components/common/ADatetimePicker.vue'
-import FileImage from '@/views/dam/asset/components/FileImage.vue'
+import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 
 const { podcastEpisode } = usePodcastEpisodeEditActions()
 
@@ -69,7 +69,7 @@ const { t } = useI18n({ useScope: 'global' })
       </VCol>
       <VCol cols="12" md="4">
         <ARow>
-          <FileImage v-model="podcastEpisode.previewImage" />
+          <ImagePreview v-model="podcastEpisode.imagePreview" show-actions />
         </ARow>
       </VCol>
     </VRow>

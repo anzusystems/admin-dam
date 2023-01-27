@@ -25,6 +25,7 @@ export function usePodcastFactory() {
       modifiedAt: dateTimeNow(),
       createdBy: 1,
       modifiedBy: 1,
+      imagePreview: null,
       _resourceName: ENTITY,
       _system: SYSTEM_CORE_DAM,
     }
