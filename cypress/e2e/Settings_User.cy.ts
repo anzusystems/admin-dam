@@ -18,7 +18,7 @@ describe(`Test user function, Env: ${Cypress.env('env')}`, () => {
     cy.getCyVisibleClick('user-settings')
     cy.getCyVisibleClick('button-create')
     cy.getCy('create-panel').should('be.visible')
-    cy.getCy('user-ssoId').type(RAND_NUM)
+    cy.getCy('user-id').type(RAND_NUM)
     cy.getCy('user-email').type(`${USER_EMAIL}`)
     cy.getCy('user-first-name').type(`${USER_FIRST_NAME}`)
     cy.getCy('user-last-name').type(`${USER_LAST_NAME}`)

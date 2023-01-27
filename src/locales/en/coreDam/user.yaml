@@ -15,7 +15,6 @@ model:
   permissionGroups: Permission Group
   allowedAssetExternalProviders: Allowed External asset providers
   allowedDistributionServices: Allowed Distribution services
-  ssoId: SSO ID
 filter:
   id: ID
   email: Email
