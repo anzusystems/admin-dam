@@ -84,10 +84,10 @@ const { showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const processing = computed(() => {
-  return props.item.status === QueueItemStatus.Processing
+  return [QueueItemStatus.Processing, QueueItemStatus.Loading].includes(props.item.status)
 })
 const waiting = computed(() => {
-  return [QueueItemStatus.Waiting, QueueItemStatus.Loading].includes(props.item.status)
+  return props.item.status === QueueItemStatus.Waiting
 })
 const done = computed(() => {
   return !props.disableDoneAnimation && props.item.status === QueueItemStatus.Uploaded
@@ -206,11 +206,16 @@ const showCancel = computed(() => {
                   :id="item.assetId"
                   size="small"
                 />
-                <VBtn icon variant="text" @click.stop="cancelItem" v-if="showCancel">
+                <VBtn icon size="small" variant="text" @click.stop="cancelItem" v-if="showCancel">
                   <VIcon icon="mdi-close-circle-outline" />
                   <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
                 </VBtn>
-                <ADeleteButton variant="text" :disabled="!item.canEditMetadata" @delete-record="remove" />
+                <ADeleteButton
+                  variant="text"
+                  :disabled="!item.canEditMetadata"
+                  @delete-record="remove"
+                  button-class=""
+                />
               </div>
             </div>
           </VCol>

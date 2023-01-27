@@ -25,6 +25,7 @@ const props = withDefaults(
     showDone?: boolean
     uploadingColor?: string
     processingColor?: string
+    disableProcessingText?: boolean
     uploadingProgress?: number | null
     hideIcon?: boolean
   }>(),
@@ -46,6 +47,7 @@ const props = withDefaults(
     showDone: false,
     uploadingColor: 'primary',
     processingColor: 'primary',
+    disableProcessingText: false,
     uploadingProgress: null,
     hideIcon: false,
   }
@@ -131,7 +133,7 @@ const showIconComputed = computed(() => {
           :width="iconSize / 10"
           class="ml-auto mr-auto"
         ></VProgressCircular>
-        <div class="text-caption text-center">{{ t('common.upload.processing') }}</div>
+        <div class="text-caption text-center" v-if="!disableProcessingText">{{ t('common.upload.processing') }}</div>
       </div>
       <div class="asset-image__progress" v-else-if="showUploading">
         <VProgressCircular

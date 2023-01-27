@@ -40,63 +40,70 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       return (queueId: string) => {
         if (queueId in state.queues) {
           return state.queues[queueId].fileInputKey
-        } else {
-          return -1
         }
+        return -1
       }
     },
     getQueue: (state) => {
       return (queueId: string) => {
         if (queueId in state.queues) {
           return state.queues[queueId]
-        } else {
-          return null
         }
+        return null
       }
     },
     getQueueItems: (state) => {
       return (queueId: string) => {
         if (queueId in state.queues) {
           return state.queues[queueId].items
-        } else {
-          return []
         }
+        return []
       }
     },
     getQueueItemsByStatus: (state) => {
       return (queueId: string, status: QueueItemStatus) => {
         if (queueId in state.queues) {
           return state.queues[queueId].items.filter((item) => item.status === status)
-        } else {
-          return []
         }
+        return []
       }
     },
     getQueueTotalCount: (state) => {
       return (queueId: string) => {
         if (queueId in state.queues) {
           return state.queues[queueId].totalCount
-        } else {
-          return 0
         }
+        return 0
       }
     },
     getQueueProcessedCount: (state) => {
       return (queueId: string) => {
         if (queueId in state.queues) {
           return state.queues[queueId].processedCount
-        } else {
-          return 0
         }
+        return 0
       }
     },
     getQueueItemForSlotItem: (state) => {
       return (queueId: string, slotName: string, assetId: DocId) => {
         if (queueId in state.queues) {
           return state.queues[queueId].items.find((item) => item.slotName === slotName && item.assetId === assetId)
-        } else {
-          return undefined
         }
+        return undefined
+      }
+    },
+    getQueueItemsTypes: (state) => {
+      return (queueId: string) => {
+        const types: Array<AssetType> = []
+        if (queueId in state.queues && state.queues[queueId].items.length > 0) {
+          for (let i = 0; i < state.queues[queueId].items.length; i++) {
+            if (types.includes(state.queues[queueId].items[i].assetType)) {
+              continue
+            }
+            types.push(state.queues[queueId].items[i].assetType)
+          }
+        }
+        return types
       }
     },
   },
@@ -242,7 +249,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             remainingTime: null,
             progressPercent: null,
           },
-          canEditMetadata: true,
+          canEditMetadata: false,
           error: {
             hasError: false,
             message: '',
@@ -331,6 +338,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           this.queues[queueId].items[foundIndex].keywordSuggestions = res[i].metadata.keywordSuggestions
           this.queues[queueId].items[foundIndex].customData = res[i].metadata.customData
           this.queues[queueId].items[foundIndex].status = QueueItemStatus.Uploaded
+          this.queues[queueId].items[foundIndex].canEditMetadata = true
         }
       }
     },
