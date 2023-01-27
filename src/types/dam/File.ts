@@ -100,7 +100,7 @@ export interface VideoFile extends UserAndTimeTrackingFields {
   videoAttributes: VideoAttributes
   originAssetFile: DocIdNullable
   links?: Links
-  previewImage: DocIdNullable
+  imagePreview: DocIdNullable
   _resourceName: 'videoFile'
 }
 

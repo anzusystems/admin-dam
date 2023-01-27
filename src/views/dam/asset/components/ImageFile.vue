@@ -3,20 +3,20 @@ import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { isNull } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import { fetchAsset } from '@/services/api/dam/assetApi'
-import type { AssetDetailItemDto } from '@/types/dam/Asset'
-
-// todo: now it support asset id, needs update on BE
+import type { ImageFile } from '@/types/dam/File'
+import { fetchImageFile } from '@/services/api/dam/imageApi'
 
 const props = withDefaults(
   defineProps<{
     modelValue: DocIdNullable
     width?: number
     height?: number
+    showActions?: boolean
   }>(),
   {
     width: undefined,
     height: undefined,
+    showActions: false,
   }
 )
 const emit = defineEmits<{
@@ -25,16 +25,16 @@ const emit = defineEmits<{
 
 const loading = ref(false)
 const dialog = ref(false)
-const newAssetId = ref('')
-const asset = ref<null | AssetDetailItemDto>(null)
+const newFileId = ref<DocId>('')
+const imageFile = ref<null | ImageFile>(null)
 
 const fetchImage = async (id: DocId) => {
   loading.value = true
-  asset.value = await fetchAsset(id)
+  imageFile.value = await fetchImageFile(id)
   loading.value = false
 }
 
-const assetIdModel = computed({
+const fileIdModel = computed({
   get() {
     return props.modelValue
   },
@@ -44,19 +44,19 @@ const assetIdModel = computed({
 })
 
 const src = computed(() => {
-  if (asset.value && asset.value.mainFile?.links?.image_detail) return asset.value.mainFile.links.image_detail.url
+  if (imageFile.value && imageFile.value.links?.image_detail) return imageFile.value.links.image_detail.url
   return placeholder16x9
 })
 
 const removeImage = () => {
-  assetIdModel.value = null
-  asset.value = null
+  fileIdModel.value = null
+  imageFile.value = null
 }
 
 const onConfirm = () => {
-  if (newAssetId.value.length === 0) return
+  if (newFileId.value.length === 0) return
   dialog.value = false
-  assetIdModel.value = newAssetId.value
+  fileIdModel.value = newFileId.value
 }
 
 const onCancel = () => {
@@ -64,7 +64,7 @@ const onCancel = () => {
 }
 
 watch(
-  assetIdModel,
+  fileIdModel,
   (newValue, oldValue) => {
     if (newValue !== oldValue && !isNull(newValue)) {
       fetchImage(newValue)
@@ -83,18 +83,22 @@ watch(
       </div>
     </template>
   </VImg>
-  <VImg v-else :width="width" :height="width" :src="src" contain></VImg>
-  <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">WIP Replace by asset ID</VBtn>
-  <VBtn v-if="assetIdModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="removeImage">
-    Unassign image
-  </VBtn>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
+  <VImg v-else :width="width" :height="width" :src="src" contain />
+  <div v-if="showActions">
+    <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">
+      WIP Replace by image file ID
+    </VBtn>
+    <VBtn v-if="fileIdModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="removeImage">
+      Unassign image
+    </VBtn>
+  </div>
+  <VDialog v-if="showActions" v-model="dialog" persistent :width="500" no-click-animation>
     <VCard v-if="dialog" data-cy="delete-panel">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">WIP Replace image by asset ID</div>
+          <div class="text-h6">Replace by image file ID</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -107,11 +111,10 @@ watch(
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <div>Main file will be used</div>
-        <VTextField label="Asset ID" v-model="newAssetId" />
+        <VTextField label="Image File ID" v-model="newFileId" />
       </VCardText>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn text @click.stop="onCancel" data-cy="button-cancel"> Cancel </VBtn>
         <VBtn color="success" @click.stop="onConfirm" data-cy="button-confirm"> Confirm </VBtn>
       </VCardActions>
