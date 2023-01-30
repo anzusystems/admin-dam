@@ -64,7 +64,7 @@ const onClearConfirm = async () => {
             </span>
           </div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="d-flex">
           <VBtn
             v-show="showFullSelected"

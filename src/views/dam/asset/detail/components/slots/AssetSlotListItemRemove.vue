@@ -54,7 +54,7 @@ const onRemove = () => {
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t('common.modal.confirmDelete') }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -79,7 +79,7 @@ const onRemove = () => {
         </div>
       </VCardText>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn color="warning" text @click.stop="onUnset" data-cy="button-unset" v-if="showUnset">
           {{ t('coreDam.asset.slots.remove.unsetSlot') }}
         </VBtn>

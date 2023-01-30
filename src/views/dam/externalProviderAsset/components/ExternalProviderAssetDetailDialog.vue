@@ -110,7 +110,7 @@ const totalCountText = computed(() => {
             <div class="pr-4">{{ totalCountText }}</div>
             <div>{{ toolbarTitle }}</div>
           </div>
-          <VSpacer></VSpacer>
+          <VSpacer />
           <div>
             <VBtn
               :active="sidebar"

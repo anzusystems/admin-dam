@@ -112,7 +112,7 @@ const onSaveAndClose = async () => {
             <span class="text-subtitle-2">Selected files: {{ queueTotalCount }}</span>
           </div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="d-flex align-center">
           <VBtn
             @click.stop="onSaveAndClose"

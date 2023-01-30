@@ -25,9 +25,19 @@ const initLoad = async () => {
   loading.value = true
   await getList()
   if (assetSlotsStore.list.length > 0) {
+    const found = assetSlotsStore.list.find((item) => {
+      return item.main === true
+    })
+    if (found) {
+      activeSlot.value = found.slotName
+      loading.value = false
+      return
+    }
     activeSlot.value = assetSlotsStore.list[0].slotName
     loading.value = false
+    return
   }
+  loading.value = false
 }
 
 const slotItems = computed(() => {

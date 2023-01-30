@@ -89,7 +89,7 @@ const onConfirm = async () => {
     <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.permissionGroup.meta.create') }}</span>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn
           class="ml-2"
           icon="mdi-close"
@@ -122,7 +122,7 @@ const onConfirm = async () => {
         </VContainer>
       </ASystemEntityScope>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>

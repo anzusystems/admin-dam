@@ -111,7 +111,7 @@ onMounted(async () => {
         <div class="d-block pl-0 w-100">
           <div class="text-h6">Add new podcast episode</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -172,7 +172,7 @@ onMounted(async () => {
         </VContainer>
       </ASystemEntityScope>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn color="success" @click.stop="submit" :loading="saving">Add</VBtn>
         <VBtn text @click.stop="closeDialog(false)">Cancel</VBtn>
       </VCardActions>

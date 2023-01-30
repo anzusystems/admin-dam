@@ -98,7 +98,7 @@ defineExpose({
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t(dialogMessageT) }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -112,7 +112,7 @@ defineExpose({
         </VToolbarItems>
       </VToolbar>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <ABtn :color="dialogCancelColor" text @click.stop="onCancel" :disabled="progress" data-cy="button-cancel">
           {{ t(dialogCancelButtonT) }}
         </ABtn>

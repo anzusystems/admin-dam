@@ -45,7 +45,7 @@ const totalCountText = computed(() => {
         <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">
           <div class="pr-4">{{ totalCountText }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div>
           <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
             <VIcon icon="mdi-close"></VIcon>
