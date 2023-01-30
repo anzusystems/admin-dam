@@ -12,10 +12,13 @@ import AssetMetadata from '@/views/dam/asset/components/AssetMetadata.vue'
 import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
+import AssetDownloadButton from '@/views/dam/asset/detail/components/AssetDownloadButton.vue'
+import { AssetType } from '@/model/dam/valueObject/AssetType'
 
 withDefaults(
   defineProps<{
     isActive: boolean
+    assetType: AssetType
   }>(),
   {}
 )
@@ -67,6 +70,7 @@ const onDelete = async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
+    <AssetDownloadButton :asset-type="assetType" />
     <ADeleteButton @delete-record="onDelete" />
     <VBtn
       color="success"

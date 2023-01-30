@@ -71,6 +71,7 @@ detail:
     distribution: Distribution
     slots: Slots
     podcast: Podcast
+    imagePreview: Image preview
   info:
     status:
       duplicate: Asset main file is duplicate
