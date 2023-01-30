@@ -41,7 +41,7 @@ const isDisabled = computed(() => {
 })
 
 watch(activeSlot, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
+  if (newValue !== oldValue && oldValue !== '') {
     const found = assetSlotsStore.list.find((item) => {
       return item.slotName === newValue
     })
