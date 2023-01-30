@@ -6,7 +6,6 @@ import { onMounted, ref } from 'vue'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import type { VideoFile } from '@/types/dam/File'
 import { isVideoFile } from '@/types/dam/File'
-import { simpleCloneObject } from '@/utils/object'
 import { fetchVideoFile } from '@/services/api/dam/videoApi'
 import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 

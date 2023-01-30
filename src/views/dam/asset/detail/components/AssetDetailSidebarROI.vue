@@ -92,7 +92,7 @@ onMounted(async () => {
     <div class="text-caption">{{ t('coreDam.asset.detail.roi.description') }}</div>
   </div>
   <div v-if="imageRoiStore.loader" class="w-100 h-100 d-flex align-center justify-center">
-    <VProgressCircular indeterminate color="primary"></VProgressCircular>
+    <VProgressCircular indeterminate color="primary" />
   </div>
   <div v-else-if="imageRoiStore.roi" class="crop-preview pa-2">
     <div v-for="item in imageRoiStore.roi?.links.image_roi_example" :key="item.url" class="pb-2">
