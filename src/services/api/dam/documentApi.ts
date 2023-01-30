@@ -5,7 +5,7 @@ import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
-import type { DocumentFile } from '@/types/dam/File'
+import type { DocumentFile, FileDownloadLink } from '@/types/dam/File'
 import { QueueItemType } from '@/types/dam/UploadQueue'
 
 const END_POINT = '/adm/v1/document'
@@ -221,7 +221,7 @@ export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotNa
 }
 
 export const downloadLink = (documentId: DocId) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<FileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + documentId + '/download-link'
     damClient()
       .get(url)
