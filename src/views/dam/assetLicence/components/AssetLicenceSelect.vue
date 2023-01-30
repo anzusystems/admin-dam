@@ -15,6 +15,8 @@ const props = withDefaults(
     clearable?: boolean
     dataCy?: string
     extSystemId?: IntegerId | null
+    hideDetails?: boolean
+    fetchFewOnInit?: boolean
   }>(),
   {
     label: null,
@@ -23,6 +25,8 @@ const props = withDefaults(
     clearable: false,
     dataCy: '',
     extSystemId: null,
+    hideDetails: undefined,
+    fetchFewOnInit: true,
   }
 )
 const emit = defineEmits<{
@@ -66,5 +70,7 @@ watch(
     :clearable="clearable"
     filter-by-field="name"
     :data-cy="dataCy"
-  ></ARemoteSelect>
+    :hide-details="hideDetails"
+    :fetch-few-on-init="fetchFewOnInit"
+  />
 </template>

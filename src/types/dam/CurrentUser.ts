@@ -32,4 +32,6 @@ export interface CurrentUserDto
   assetLicences: CurrentUserAssetLicence[]
 }
 
-export interface UpdateCurrentUserDto extends Pick<CurrentUserDto, 'selectedLicence'> {}
+export interface UpdateCurrentUserDto {
+  selectedLicence: IntegerId
+}
