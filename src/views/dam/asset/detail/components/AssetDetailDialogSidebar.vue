@@ -68,7 +68,11 @@ const typeHasDistributions = computed(() => {
       <div class="sidebar-info__content">
         <AssetInfobox :asset-status="assetStatus" />
         <div class="py-2" v-if="activeTab === AssetDetailTab.Info">
-          <AssetDetailSidebarMetadata :is-active="activeTab === AssetDetailTab.Info" @post-delete="postDelete" />
+          <AssetDetailSidebarMetadata
+            :is-active="activeTab === AssetDetailTab.Info"
+            @post-delete="postDelete"
+            :asset-type="assetType"
+          />
         </div>
         <div class="py-2" v-if="isImage && activeTab === AssetDetailTab.ROI">
           <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
