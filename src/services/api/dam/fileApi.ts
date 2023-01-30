@@ -47,7 +47,7 @@ import {
 } from '@/services/api/dam/documentApi'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { fetchAsset } from '@/services/api/dam/assetApi'
-import { AssetFileProcessStatus } from '@/types/dam/File'
+import { AssetFileProcessStatus, type FileDownloadLink } from '@/types/dam/File'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 
 interface UploadStartResponse {
@@ -406,7 +406,7 @@ export const existingFileToSlot = (assetType: AssetType, fileId: DocId, assetId:
 }
 
 export const fileDownloadLink = (assetType: AssetType, fileId: DocId) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<FileDownloadLink>((resolve, reject) => {
     switch (assetType) {
       case AssetType.Image:
         imageDownloadLink(fileId)

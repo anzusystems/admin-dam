@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { clickBlur } from '@/utils/event'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
@@ -17,7 +17,7 @@ const props = withDefaults(
 
 const dialog = ref(false)
 const loading = ref(false)
-const link = ref(null)
+const link = ref<string | null>(null)
 
 const assetDetailStore = useAssetDetailStore()
 
@@ -39,7 +39,7 @@ const updateLink = async (fileId: DocId) => {
   link.value = null
   const res = await fileDownloadLink(props.assetType, fileId)
   console.log(res)
-  link.value = res.link // todo add ts type
+  link.value = res.link
   loading.value = false
 }
 

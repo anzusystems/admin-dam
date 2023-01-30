@@ -114,6 +114,13 @@ export interface DocumentFile extends UserAndTimeTrackingFields {
   _resourceName: 'documentFile'
 }
 
+export interface FileDownloadLink extends UserAndTimeTrackingFields {
+  id: DocId
+  link: string
+  _system: string
+  _resourceName: 'imageFile'
+}
+
 export type AssetFile = ImageFile | AudioFile | VideoFile | DocumentFile
 
 export type AssetFileNullable = ImageFile | AudioFile | VideoFile | DocumentFile | null
