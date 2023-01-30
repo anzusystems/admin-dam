@@ -22,7 +22,6 @@ const cropper = ref<Cropper | null>(null)
 const cropperOpacityHide = ref(true)
 
 const imageUrl = computed(() => {
-  console.log(imageRoiStore.imageFile)
   if (imageRoiStore.imageFile && imageRoiStore.imageFile.links?.image_detail) {
     return imageRoiStore.imageFile.links.image_detail.url
   }
