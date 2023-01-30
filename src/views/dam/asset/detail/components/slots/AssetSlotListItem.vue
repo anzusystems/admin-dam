@@ -81,7 +81,7 @@ const removeAssetFile = () => {
 const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
   const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
-  window.open(res.link) // todo add ts type
+  window.open(res.link)
 }
 
 const makeMainFile = () => {

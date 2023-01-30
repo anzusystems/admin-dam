@@ -6,7 +6,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemType } from '@/types/dam/UploadQueue'
-import type { ImageFile } from '@/types/dam/File'
+import type { FileDownloadLink, ImageFile } from '@/types/dam/File'
 
 const END_POINT = '/adm/v1/image'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -241,7 +241,7 @@ export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: st
 }
 
 export const downloadLink = (imageId: DocId) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<FileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + imageId + '/download-link'
     damClient()
       .get(url)
