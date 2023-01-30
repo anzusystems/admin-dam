@@ -1,5 +1,6 @@
 import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
 
 const HEIGHT_MINIMAL = 32
 const HEIGHT_COMPACT = 160
@@ -33,6 +34,8 @@ const externalProviderFooterViewSelected = ref<ExternalProviderFooterViewSelecte
 )
 
 export function useExternalProviderAssetFooterSelectedView() {
+  const externalProviderAssetListStore = useExternalProviderAssetListStore()
+
   const setExternalProviderFooterViewSelected = (value: ExternalProviderFooterViewSelected) => {
     externalProviderFooterViewSelected.value = value
     customFooterHeight.value = getExternalProviderFooterViewSelectedHeight(externalProviderFooterViewSelected.value)
@@ -45,6 +48,7 @@ export function useExternalProviderAssetFooterSelectedView() {
   }
 
   const hideSelected = () => {
+    externalProviderAssetListStore.keyboardNavigationEnable()
     setExternalProviderFooterViewSelected(ExternalProviderFooterViewSelected.Hidden)
     customDialog.value = false
   }
@@ -54,6 +58,7 @@ export function useExternalProviderAssetFooterSelectedView() {
   })
 
   const setMinimalSelected = () => {
+    externalProviderAssetListStore.keyboardNavigationEnable()
     setExternalProviderFooterViewSelected(ExternalProviderFooterViewSelected.Minimal)
     customDialog.value = false
   }
@@ -63,6 +68,7 @@ export function useExternalProviderAssetFooterSelectedView() {
   })
 
   const setFullSelected = () => {
+    externalProviderAssetListStore.keyboardNavigationDisable()
     setExternalProviderFooterViewSelected(ExternalProviderFooterViewSelected.Full)
     customDialog.value = true
   }
@@ -72,6 +78,7 @@ export function useExternalProviderAssetFooterSelectedView() {
   })
 
   const setCompactSelected = () => {
+    externalProviderAssetListStore.keyboardNavigationEnable()
     setExternalProviderFooterViewSelected(ExternalProviderFooterViewSelected.Compact)
     customDialog.value = false
   }
