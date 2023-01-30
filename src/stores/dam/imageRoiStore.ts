@@ -1,7 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { RegionOfInterest } from '@/types/dam/Roi'
+import type { ImageFile } from '@/types/dam/File'
 
 interface State {
+  imageFile: null | ImageFile
   loader: boolean
   roi: null | RegionOfInterest
   timestampCropper: number
@@ -10,12 +12,16 @@ interface State {
 
 export const useImageRoiStore = defineStore('damImageRoiStore', {
   state: (): State => ({
-    loader: true,
+    imageFile: null,
+    loader: false,
     roi: null,
     timestampCropper: Date.now(),
     timestampRoiPreviews: Date.now(),
   }),
   actions: {
+    setImageFile(file: ImageFile | null) {
+      this.imageFile = file
+    },
     setRoi(roi: RegionOfInterest | null) {
       this.roi = roi
     },
@@ -32,8 +38,11 @@ export const useImageRoiStore = defineStore('damImageRoiStore', {
       this.timestampCropper = Date.now()
     },
     reset() {
-      this.loader = true
+      this.imageFile = null
+      this.loader = false
       this.roi = null
+      this.timestampCropper = Date.now()
+      this.timestampRoiPreviews = Date.now()
     },
   },
 })

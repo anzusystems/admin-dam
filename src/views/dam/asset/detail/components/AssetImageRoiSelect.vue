@@ -4,9 +4,7 @@ import VueCropper from 'vue-cropperjs'
 import type Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.css'
 import { computed, onUnmounted, ref } from 'vue'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { updateRoi } from '@/services/api/dam/imageRoiApi'
-import { isImageFile } from '@/types/dam/File'
 import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
 import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
 import { useErrorHandler } from '@/composables/system/error'
@@ -18,20 +16,15 @@ const { showRecordWas } = useAlerts()
 const DAM_IMAGE_ASPECT_RATIO = 16 / 9
 const cropperContainerStyle = { overflow: 'hidden', maxHeight: 'calc(100vh - 160px)' }
 
-const assetDetailStore = useAssetDetailStore()
 const imageRoiStore = useImageRoiStore()
 
 const cropper = ref<Cropper | null>(null)
 const cropperOpacityHide = ref(true)
 
 const imageUrl = computed(() => {
-  if (
-    assetDetailStore.asset &&
-    assetDetailStore.asset.mainFile &&
-    isImageFile(assetDetailStore.asset.mainFile) &&
-    assetDetailStore.asset.mainFile.links?.image_detail
-  ) {
-    return assetDetailStore.asset.mainFile.links.image_detail.url
+  console.log(imageRoiStore.imageFile)
+  if (imageRoiStore.imageFile && imageRoiStore.imageFile.links?.image_detail) {
+    return imageRoiStore.imageFile.links.image_detail.url
   }
   return ''
 })
@@ -49,19 +42,13 @@ const disableCropper = () => {
 }
 
 const applyRegionOfInterest = () => {
-  if (
-    cropper.value &&
-    imageRoiStore.roi &&
-    assetDetailStore.asset &&
-    assetDetailStore.asset.mainFile &&
-    isImageFile(assetDetailStore.asset.mainFile)
-  ) {
+  if (cropper.value && imageRoiStore.roi && imageRoiStore.imageFile) {
     enableCropper()
     const data = regionToCrop(
       cropper.value,
       imageRoiStore.roi,
-      assetDetailStore.asset.mainFile.imageAttributes.width,
-      assetDetailStore.asset.mainFile.imageAttributes.height
+      imageRoiStore.imageFile.imageAttributes.width,
+      imageRoiStore.imageFile.imageAttributes.height
     )
     cropper.value.setData(data)
     disableCropper()
@@ -69,18 +56,12 @@ const applyRegionOfInterest = () => {
 }
 
 const saveRoi = async () => {
-  if (
-    cropper.value &&
-    imageRoiStore.roi &&
-    assetDetailStore.asset &&
-    assetDetailStore.asset.mainFile &&
-    isImageFile(assetDetailStore.asset.mainFile)
-  ) {
+  if (cropper.value && imageRoiStore.roi && imageRoiStore.imageFile) {
     const roi = cropToRegion(
       cropper.value,
       imageRoiStore.roi,
-      assetDetailStore.asset.mainFile.imageAttributes.width,
-      assetDetailStore.asset.mainFile.imageAttributes.height
+      imageRoiStore.imageFile.imageAttributes.width,
+      imageRoiStore.imageFile.imageAttributes.height
     )
     try {
       imageRoiStore.showLoader()
@@ -108,12 +89,7 @@ const cropperEnd = () => {
 }
 
 const showCropper = computed(() => {
-  if (
-    assetDetailStore.asset &&
-    assetDetailStore.asset.mainFile &&
-    assetDetailStore.asset.mainFile.links?.image_detail &&
-    !imageRoiStore.loader
-  ) {
+  if (imageRoiStore.imageFile && imageRoiStore.imageFile.links?.image_detail && !imageRoiStore.loader) {
     return true
   }
   return false
@@ -128,8 +104,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <VProgressCircular v-if="imageRoiStore.loader" indeterminate color="primary"></VProgressCircular>
-  <vue-cropper
+  <VProgressCircular v-if="imageRoiStore.loader" indeterminate color="primary" />
+  <VueCropper
     :class="{ 'image-cropper-hidden': cropperOpacityHide }"
     v-if="showCropper"
     :key="imageRoiStore.timestampCropper"
@@ -145,7 +121,7 @@ onUnmounted(() => {
     :zoomOnWheel="false"
     canvas
     responsive
-  ></vue-cropper>
+  />
 </template>
 
 <style lang="scss">
