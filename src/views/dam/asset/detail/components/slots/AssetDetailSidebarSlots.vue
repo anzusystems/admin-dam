@@ -35,7 +35,7 @@ onMounted(async () => {
     </VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div v-if="assetSlotsStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
-    <VProgressCircular indeterminate color="primary"></VProgressCircular>
+    <VProgressCircular indeterminate color="primary" />
   </div>
   <div v-else-if="assetSlotsStore.assetSlotNames.length === 0" class="pa-4 text-caption">Nothing to show</div>
   <div v-else>
