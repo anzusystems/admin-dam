@@ -12,6 +12,8 @@ const props = withDefaults(
     multiple?: boolean
     clearable?: boolean
     dataCy?: string
+    hideDetails?: boolean
+    fetchFewOnInit?: boolean
   }>(),
   {
     label: null,
@@ -19,6 +21,8 @@ const props = withDefaults(
     multiple: false,
     clearable: false,
     dataCy: '',
+    hideDetails: undefined,
+    fetchFewOnInit: true,
   }
 )
 const emit = defineEmits<{
@@ -43,5 +47,7 @@ const innerFilter = useExtSystemFilter()
     :clearable="clearable"
     filter-by-field="name"
     :data-cy="dataCy"
-  ></ARemoteSelect>
+    :hide-details="hideDetails"
+    :fetch-few-on-init="fetchFewOnInit"
+  />
 </template>

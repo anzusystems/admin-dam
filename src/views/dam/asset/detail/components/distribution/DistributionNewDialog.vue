@@ -76,7 +76,7 @@ const componentComputed = computed(() => {
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t('coreDam.distribution.common.addTitle') }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
