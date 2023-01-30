@@ -55,7 +55,7 @@ const onSwitch = () => {
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t('coreDam.asset.slots.actions.switchSlots') }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -84,7 +84,7 @@ const onSwitch = () => {
         </div>
       </VCardText>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn
           color="primary"
           text

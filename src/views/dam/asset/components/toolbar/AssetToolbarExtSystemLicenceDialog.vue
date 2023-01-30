@@ -161,7 +161,7 @@ watch(
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t('system.mainBar.extSystemLicenceSwitch.title') }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -223,7 +223,7 @@ watch(
         </VRow>
       </VCardText>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn text @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>

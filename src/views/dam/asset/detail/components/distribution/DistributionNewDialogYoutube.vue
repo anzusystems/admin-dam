@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
-import type { DocId } from '@anzusystems/common-admin'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
@@ -19,7 +19,7 @@ import {
   prepareFormDataYoutubeDistribution,
 } from '@/services/api/dam/distributionYoutubeApi'
 import { useDistributionYoutubeFactory } from '@/model/dam/factory/DistributionYoutube'
-import { distributionIsAuthorized } from '@/services/api/dam/distributionApi'
+import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/services/api/dam/distributionApi'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import {
   DistributionYoutubePrivacy,
@@ -32,6 +32,12 @@ import DistributionYoutubePlaylistSelect from '@/views/dam/asset/detail/componen
 import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
 import ATextarea from '@/components/form/ATextarea.vue'
+import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
+import { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
+import { usePagination } from '@/composables/system/pagination'
+import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
+import { AssetSlot } from '@/types/dam/AssetSlot'
+import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -46,6 +52,9 @@ const emit = defineEmits<{
   (e: 'closeDialog', reloadList: boolean): void
 }>()
 
+const assetFileId = ref<DocIdNullable>(null)
+const existingDistributions = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
+
 const { t } = useI18n({ useScope: 'global' })
 
 const { createCreateDto } = useDistributionYoutubeFactory()
@@ -57,15 +66,15 @@ const saving = ref(false)
 const authUrl = ref('')
 
 const assetDetailStore = useAssetDetailStore()
+const pagination = usePagination()
+const filter = useDistributionFilter()
 const distributionListStore = useDistributionListStore()
-
-const assetFileId = computed(() => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile) return assetDetailStore.asset.mainFile.id
-  return ''
-})
 
 const loadFormData = async () => {
   canDisplayForm.value = false
+  if (!assetFileId.value) return
+  existingDistributions.value = await fetchAssetFileDistributionList(assetFileId.value, pagination, filter)
+  if (existingDistributions.value.length > 0) return
   const res = await prepareFormDataYoutubeDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
     publishAt: res.publishAt,
@@ -131,6 +140,7 @@ const checkAuthorized = async () => {
 }
 
 const submit = async () => {
+  if (!assetFileId.value) return
   saving.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
@@ -161,7 +171,17 @@ watch(distributionAuthStatus, async (newValue) => {
   }
 })
 
+const activeSlotChange = async (slot: null | AssetSlot) => {
+  if (!slot || !slot.assetFile) return
+  assetFileId.value = slot.assetFile.id
+  existingDistributions.value = []
+  await loadFormData()
+}
+
 onMounted(async () => {
+  if (assetDetailStore.asset && assetDetailStore.asset.mainFile) {
+    assetFileId.value = assetDetailStore.asset.mainFile.id
+  }
   distributionListStore.setAuthStatus(props.distributionServiceName)
   await checkAuthorized()
 })
@@ -173,16 +193,24 @@ onUnmounted(async () => {
 
 <template>
   <VCardText>
+    <VRow class="mb-6" v-if="distributionAuthStatus === DistributionAuthStatus.Success">
+      <VCol>
+        <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
+      </VCol>
+    </VRow>
     <div>
-      <div v-if="canDisplayForm" class="pa-4">
+      <div v-if="existingDistributions.length > 0">
+        <DistributionListItem
+          v-for="item in existingDistributions"
+          :key="item.id"
+          :item="item"
+          :asset-type="assetType"
+        />
+      </div>
+      <div v-else-if="canDisplayForm" class="pa-4">
         <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <VRow>
             <VCol cols="6">
-              <VRow class="mb-6">
-                <VCol class="text-caption"
-                  >{{ t('coreDam.distribution.common.fileIdVersion') }}: {{ assetFileId }}</VCol
-                >
-              </VRow>
               <VRow class="mb-2">
                 <VCol>
                   <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
@@ -290,13 +318,13 @@ onUnmounted(async () => {
         {{ t('coreDam.distribution.common.error') }}
       </div>
       <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
-        <VProgressCircular indeterminate color="primary"></VProgressCircular>
+        <VProgressCircular indeterminate color="primary" />
       </div>
     </div>
     <DistributionYoutubeTermOfUse class="pa-4 text-caption" />
   </VCardText>
   <VCardActions>
-    <VSpacer></VSpacer>
+    <VSpacer />
     <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">
       {{ t('common.button.add') }}
     </VBtn>

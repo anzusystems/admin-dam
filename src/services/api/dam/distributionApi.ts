@@ -38,7 +38,7 @@ export const fetchAssetDistributionList = (assetId: DocId, pagination: Paginatio
 export const fetchAssetFileDistributionList = (assetFileId: DocId, pagination: Pagination, filterBag: FilterBag) =>
   apiFetchList<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>(
     damClient,
-    END_POINT + '/asset/:assetFileId',
+    END_POINT + '/asset-file/:assetFileId',
     { assetFileId },
     pagination,
     filterBag,
