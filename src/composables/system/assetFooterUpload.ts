@@ -1,5 +1,6 @@
 import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import { useAssetListStore } from '@/stores/dam/assetListStore'
 
 export enum FooterViewUpload {
   Hidden = 'hidden',
@@ -11,9 +12,10 @@ export enum FooterViewUpload {
 const { customDialog } = useMainWrapper()
 
 const footerViewUpload = ref<FooterViewUpload>(FooterViewUpload.Hidden)
-// const footerViewSelectedContainItems = ref(false)
 
 export function useAssetFooterUploadView() {
+  const assetListStore = useAssetListStore()
+
   const setFooterViewUpload = (value: FooterViewUpload) => {
     footerViewUpload.value = value
   }
@@ -25,6 +27,7 @@ export function useAssetFooterUploadView() {
   }
 
   const hideUpload = () => {
+    assetListStore.keyboardNavigationEnable()
     setFooterViewUpload(FooterViewUpload.Hidden)
     customDialog.value = false
   }
@@ -34,9 +37,7 @@ export function useAssetFooterUploadView() {
   })
 
   const setMinimalUpload = () => {
-    // if (footerViewSelectedContainItems.value && footerViewSelected.value === FooterViewSelected.Hidden) {
-    //   footerViewSelected.value = FooterViewSelected.Minimal
-    // }
+    assetListStore.keyboardNavigationEnable()
     setFooterViewUpload(FooterViewUpload.Minimal)
     customDialog.value = false
   }
@@ -46,9 +47,7 @@ export function useAssetFooterUploadView() {
   })
 
   const setFullUpload = () => {
-    // if (footerViewSelected.value !== FooterViewSelected.Hidden) {
-    //   setFooterViewSelected(FooterViewSelected.Hidden)
-    // }
+    assetListStore.keyboardNavigationDisable()
     setFooterViewUpload(FooterViewUpload.Full)
     customDialog.value = true
   }
@@ -58,9 +57,7 @@ export function useAssetFooterUploadView() {
   })
 
   const setCompactUpload = () => {
-    // if (footerViewSelectedContainItems.value && footerViewSelected.value === FooterViewSelected.Hidden) {
-    //   footerViewSelected.value = FooterViewSelected.Minimal
-    // }
+    assetListStore.keyboardNavigationEnable()
     setFooterViewUpload(FooterViewUpload.Compact)
     customDialog.value = false
   }

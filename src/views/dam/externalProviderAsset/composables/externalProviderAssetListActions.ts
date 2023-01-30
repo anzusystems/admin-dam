@@ -20,6 +20,8 @@ import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProvid
 import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
+import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
+import { fetchAsset } from '@/services/api/dam/assetApi'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
@@ -163,20 +165,36 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   }
 
   const nextItem = async () => {
-    // todo
+    externalProviderAssetListStore.setActiveNext()
+    if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
+    assetDetailStore.showLoader()
+    const res = await fetchExternalProviderAsset(
+      activeExternalProvider.value,
+      externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex].asset.id
+    )
+    assetDetailStore.setAsset(res)
+    assetDetailStore.hideLoader()
   }
 
   const prevItem = async () => {
-    // todo
+    externalProviderAssetListStore.setActivePrev()
+    if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
+    assetDetailStore.showLoader()
+    const res = await fetchExternalProviderAsset(
+      activeExternalProvider.value,
+      externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex].asset.id
+    )
+    assetDetailStore.setAsset(res)
+    assetDetailStore.hideLoader()
   }
 
-  const onArrowRight = async (e: KeyboardEvent) => {
-    e.preventDefault()
+  const onArrowRight = async (event: KeyboardEvent) => {
+    if (keyboardEventTargetIsAnyFormElement(event) || !externalProviderAssetListStore.keyboardNavigation) return
     await nextItem()
   }
 
-  const onArrowLeft = async (e: KeyboardEvent) => {
-    e.preventDefault()
+  const onArrowLeft = async (event: KeyboardEvent) => {
+    if (keyboardEventTargetIsAnyFormElement(event) || !externalProviderAssetListStore.keyboardNavigation) return
     await prevItem()
   }
 
@@ -201,7 +219,11 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     externalProviderAssetListStore.resetList()
     assetDetailStore.reset()
     await fetchAssetList()
-    // assetListStore.keyboardNavigationEnable()
+    externalProviderAssetListStore.keyboardNavigationEnable()
+  }
+
+  const listUnmounted = () => {
+    externalProviderAssetListStore.keyboardNavigationDisable()
   }
 
   return {
@@ -217,6 +239,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     filterTouch,
     filterUnTouch,
     listMounted,
+    listUnmounted,
     showDetail,
     onItemClick,
     toggleSelected,
