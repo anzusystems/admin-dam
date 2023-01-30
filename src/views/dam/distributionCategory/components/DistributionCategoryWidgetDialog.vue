@@ -104,7 +104,7 @@ watch(
         <div class="d-block pl-0 w-100">
           <div class="text-h6">Manage distribution category</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel"></VBtn>
         </VToolbarItems>
@@ -128,7 +128,7 @@ watch(
         </ASystemEntityScope>
       </VCardText>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>

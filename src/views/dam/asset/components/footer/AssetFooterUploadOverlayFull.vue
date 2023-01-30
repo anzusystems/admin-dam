@@ -129,7 +129,7 @@ const onSaveAndClose = async () => {
             </div>
           </div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="text-caption d-flex align-center" v-if="isUploading">
           <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"></VProgressCircular>
           <div>{{ t('coreDam.asset.upload.uploading') }} {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>

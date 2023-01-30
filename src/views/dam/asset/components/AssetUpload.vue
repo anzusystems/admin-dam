@@ -134,7 +134,7 @@ const uploadAccept = computed(() => {
         <div class="d-block pl-0 w-100">
           <div class="text-h6">Upload warning</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -158,7 +158,7 @@ const uploadAccept = computed(() => {
         </p>
       </div>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn text @click.stop="onDialogCancel">Cancel</VBtn>
         <VBtn v-if="!alreadyAtUploadLimit" color="success" @click.stop="onDialogConfirm" :loading="uploadDialogLoader">
           Add first {{ maxUploadItems - uploadQueueTotalCount }} file(s)

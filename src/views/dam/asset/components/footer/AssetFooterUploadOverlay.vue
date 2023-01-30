@@ -61,7 +61,7 @@ const isUploading = computed(() => {
             </div>
           </div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="d-flex align-center pr-1">
           <div class="text-caption mr-2 d-flex align-center" v-if="isUploading">
             <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"></VProgressCircular>
@@ -97,7 +97,7 @@ const isUploading = computed(() => {
       </VToolbar>
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="ml-2 text-caption">New assets upload</div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <div class="d-flex">
           <VBtn
             v-show="showFullUpload"

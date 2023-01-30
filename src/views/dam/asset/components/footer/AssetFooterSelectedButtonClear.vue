@@ -68,7 +68,7 @@ const { t } = useI18n({ useScope: 'global' })
           <div class="d-block pl-0 w-100">
             <div class="text-h6">{{ t('coreDam.asset.selected.clearOverlay.title') }}</div>
           </div>
-          <VSpacer></VSpacer>
+          <VSpacer />
           <VToolbarItems>
             <VBtn
               class="ml-2"
@@ -82,7 +82,7 @@ const { t } = useI18n({ useScope: 'global' })
         </VToolbar>
         <div class="pa-2">{{ t('coreDam.asset.selected.clearOverlay.description') }}</div>
         <VCardActions>
-          <VSpacer></VSpacer>
+          <VSpacer />
           <ABtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
             {{ t('common.button.cancel') }}
           </ABtn>

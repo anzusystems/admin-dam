@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCurrentUser } from '@/composables/system/currentUser'
@@ -16,6 +16,7 @@ import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicence
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/extSystemApi'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { fetchAssetLicence } from '@/services/api/dam/assetLicenceApi'
 
 const props = withDefaults(
   defineProps<{
@@ -45,8 +46,11 @@ const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { currentUser, currentUserIsSuperAdmin } = useCurrentUser()
 
 const saving = ref(false)
-const selectedExtSystem = ref<undefined | IntegerId>(undefined)
-const selectedLicence = ref<undefined | IntegerId>(undefined)
+const selectedExtSystem = ref<null | IntegerId>(null)
+const selectedLicence = ref<null | IntegerId>(null)
+
+const selectedExtSystemSearch = ref<null | IntegerId>(null)
+const selectedLicenceSearch = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
   if (currentUser.value && currentUser.value.userToExtSystems.length > 0) {
@@ -82,26 +86,13 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const rulesExtSystem = computed(() => ({
-  selectedExtSystem: {
-    required,
-    minValue: minValue(1),
-  },
-}))
 const rulesLicence = computed(() => ({
   selectedLicence: {
     required,
     minValue: minValue(1),
   },
 }))
-const validateExtSystem = useVuelidate(rulesExtSystem, { selectedExtSystem })
 const validateLicence = useVuelidate(rulesLicence, { selectedLicence })
-
-const errorMessageExtSystem = computed(() => {
-  if (validateExtSystem.value.$errors?.length)
-    return validateExtSystem.value.$errors.map((item: ErrorObject) => item.$message) as string[]
-  return []
-})
 
 const errorMessageLicence = computed(() => {
   if (validateLicence.value.$errors?.length)
@@ -114,14 +105,18 @@ const { handleError } = useErrorHandler()
 
 const onConfirm = async () => {
   saving.value = true
-  validateExtSystem.value.$touch()
   validateLicence.value.$touch()
-  if (validateExtSystem.value.$invalid || validateLicence.value.$invalid || isUndefined(selectedLicence.value)) {
+  if (
+    validateLicence.value.$invalid ||
+    !selectedLicence.value ||
+    currentAssetLicenceId.value === selectedLicence.value
+  ) {
     showValidationError()
     saving.value = false
     return
   }
   try {
+    await fetchAssetLicence(selectedLicence.value)
     await updateCurrentUser({ selectedLicence: selectedLicence.value })
     dialog.value = false
     showRecordWas('updated')
@@ -133,25 +128,21 @@ const onConfirm = async () => {
   }
 }
 
-watch(
-  currentExtSystemId,
-  (newValue, oldValue) => {
-    if (newValue !== oldValue && newValue > 0) {
-      selectedExtSystem.value = newValue
-    }
-  },
-  { immediate: true }
-)
+const onSelectedExtSystemSearchChange = (value: IntegerId) => {
+  if (value) {
+    selectedExtSystem.value = value
+    selectedLicence.value = null
+  }
+}
 
-watch(
-  currentAssetLicenceId,
-  (newValue, oldValue) => {
-    if (newValue !== oldValue && newValue > 0) {
-      selectedLicence.value = newValue
-    }
-  },
-  { immediate: true }
-)
+const onSelectedLicenceSearchChange = (value: IntegerId) => {
+  if (value) selectedLicence.value = value
+}
+
+onMounted(async () => {
+  selectedExtSystem.value = currentExtSystemId.value
+  selectedLicence.value = currentAssetLicenceId.value
+})
 </script>
 
 <template>
@@ -161,7 +152,7 @@ watch(
         <div class="d-block pl-0 w-100">
           <div class="text-h6">{{ t('system.mainBar.extSystemLicenceSwitch.title') }}</div>
         </div>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VToolbarItems>
           <VBtn
             class="ml-2"
@@ -175,16 +166,38 @@ watch(
       </VToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">
         <div class="mb-4 text-caption">
-          Current ext system id: {{ currentExtSystemId }}<br />
-          Current licence id: {{ currentAssetLicenceId }}<br />
+          Current ext system: {{ currentExtSystemId }} ({{ extSystemName }})<br />
+          Current licence: {{ currentAssetLicenceId }} ({{ licenceName }})<br />
         </div>
         <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-          <ExtSystemSelect v-model="selectedExtSystem" />
-          <AssetLicenceSelect
-            :key="selectedExtSystem + ''"
-            v-model="selectedLicence"
-            :ext-system-id="selectedExtSystem"
-          />
+          <VRow>
+            <VCol class="pt-2">
+              <ExtSystemSelect
+                v-model="selectedExtSystemSearch"
+                label="Filter ext system"
+                hide-details
+                @update:model-value="onSelectedExtSystemSearchChange"
+              />
+            </VCol>
+            <VCol>
+              <VTextField v-model="selectedExtSystem" hide-details label="Ext system ID"></VTextField>
+            </VCol>
+          </VRow>
+          <VRow>
+            <VCol class="pt-2">
+              <AssetLicenceSelect
+                v-model="selectedLicenceSearch"
+                label="Filter licence"
+                :ext-system-id="selectedExtSystem"
+                hide-details
+                @update:model-value="onSelectedLicenceSearchChange"
+              />
+            </VCol>
+            <VCol>
+              <VTextField v-model="selectedLicence" hide-details label="Licence ID"></VTextField>
+            </VCol>
+          </VRow>
+          <div class="mb-4 text-caption font-weight-bold">Change to licence ID: {{ selectedLicence }}</div>
         </ASystemEntityScope>
       </VCardText>
       <VCardText v-else-if="allowSelect">
@@ -195,6 +208,7 @@ watch(
           :label="t('system.mainBar.extSystemLicenceSwitch.extSystem')"
           @blur="validateExtSystem.$touch()"
           :error-messages="errorMessageExtSystem"
+          @update:model-value="selectedLicence = undefined"
         >
           <template #label>
             <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required"></span></span>
@@ -223,7 +237,7 @@ watch(
         </VRow>
       </VCardText>
       <VCardActions>
-        <VSpacer></VSpacer>
+        <VSpacer />
         <VBtn text @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
