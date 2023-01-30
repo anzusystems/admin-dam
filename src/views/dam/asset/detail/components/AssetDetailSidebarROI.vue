@@ -9,6 +9,10 @@ import { isImageFile } from '@/types/dam/File'
 import { fetchImageRoiList, fetchRoi } from '@/services/api/dam/imageRoiApi'
 import { useImageRoiFilter } from '@/model/dam/filter/ImageRoiFilter'
 import { usePagination } from '@/composables/system/pagination'
+import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
+import { AssetSlot } from '@/types/dam/AssetSlot'
+import { simpleCloneObject } from '@anzusystems/common-admin'
+import { fetchImageFile } from '@/services/api/dam/imageApi'
 
 withDefaults(
   defineProps<{
@@ -26,9 +30,9 @@ const filter = useImageRoiFilter()
 const pagination = usePagination()
 
 const loadRois = async () => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
+  if (imageRoiStore.imageFile) {
     imageRoiStore.showLoader()
-    const res = await fetchImageRoiList(assetDetailStore.asset.mainFile.id, pagination, filter)
+    const res = await fetchImageRoiList(imageRoiStore.imageFile.id, pagination, filter)
     if (res.length > 0 && res[0].id) {
       const roi = await fetchRoi(res[0].id)
       imageRoiStore.setRoi(roi)
@@ -49,9 +53,25 @@ const afterRotate = async () => {
   imageRoiStore.forceReloadCropper()
 }
 
-onMounted(async () => {
+const activeSlotChange = async (slot: null | AssetSlot) => {
   imageRoiStore.setRoi(null)
+  if (!slot || !isImageFile(slot.assetFile)) return
+  imageRoiStore.showLoader()
+  const imageFileDetail = await fetchImageFile(slot.assetFile.id)
+  imageRoiStore.setImageFile(simpleCloneObject(imageFileDetail))
   await loadRois()
+  imageRoiStore.forceReloadRoiPreviews()
+  imageRoiStore.forceReloadCropper()
+}
+
+onMounted(async () => {
+  imageRoiStore.reset()
+  imageRoiStore.showLoader()
+  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
+    imageRoiStore.setImageFile(simpleCloneObject(assetDetailStore.asset.mainFile))
+    await loadRois()
+  }
+  imageRoiStore.hideLoader()
 })
 </script>
 
@@ -67,6 +87,7 @@ onMounted(async () => {
     </VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div class="px-3">
+    <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
     <div class="v-expansion-panel-title px-0">{{ t('coreDam.asset.detail.roi.title') }}</div>
     <div class="text-caption">{{ t('coreDam.asset.detail.roi.description') }}</div>
   </div>
@@ -85,8 +106,8 @@ onMounted(async () => {
     </div>
   </div>
   <AssetFileRotate
-    v-if="assetDetailStore.asset?.mainFile?.id"
-    :image-id="assetDetailStore.asset.mainFile.id"
+    v-if="imageRoiStore.imageFile"
+    :image-id="imageRoiStore.imageFile.id"
     class="mx-2"
     @after-rotate="afterRotate"
   />
