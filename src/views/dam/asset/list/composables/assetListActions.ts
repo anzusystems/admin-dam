@@ -18,6 +18,7 @@ import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
@@ -219,15 +220,13 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.keyboardNavigationDisable()
   }
 
-  const onArrowRight = async (e: KeyboardEvent) => {
-    e.preventDefault()
-    if (!assetListStore.keyboardNavigation) return
+  const onArrowRight = async (event: KeyboardEvent) => {
+    if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
     await nextItem()
   }
 
-  const onArrowLeft = async (e: KeyboardEvent) => {
-    e.preventDefault()
-    if (!assetListStore.keyboardNavigation) return
+  const onArrowLeft = async (event: KeyboardEvent) => {
+    if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
     await prevItem()
   }
 

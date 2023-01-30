@@ -1,5 +1,6 @@
 import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import { useAssetListStore } from '@/stores/dam/assetListStore'
 
 const HEIGHT_MINIMAL = 32
 const HEIGHT_COMPACT = 160
@@ -31,6 +32,8 @@ const getFooterViewSelectedHeight = (value: FooterViewSelected) => {
 const footerViewSelected = ref<FooterViewSelected>(FooterViewSelected.Hidden)
 
 export function useAssetFooterSelectedView() {
+  const assetListStore = useAssetListStore()
+
   const setFooterViewSelected = (value: FooterViewSelected) => {
     footerViewSelected.value = value
     customFooterHeight.value = getFooterViewSelectedHeight(footerViewSelected.value)
@@ -43,6 +46,7 @@ export function useAssetFooterSelectedView() {
   }
 
   const hideSelected = () => {
+    assetListStore.keyboardNavigationEnable()
     setFooterViewSelected(FooterViewSelected.Hidden)
     customDialog.value = false
   }
@@ -52,9 +56,7 @@ export function useAssetFooterSelectedView() {
   })
 
   const setMinimalSelected = () => {
-    // if (footerViewUploadContainsItems.value && footerViewUpload.value === FooterViewUpload.Hidden) {
-    //   footerViewUpload.value = FooterViewUpload.Minimal
-    // }
+    assetListStore.keyboardNavigationEnable()
     setFooterViewSelected(FooterViewSelected.Minimal)
     customDialog.value = false
   }
@@ -64,9 +66,7 @@ export function useAssetFooterSelectedView() {
   })
 
   const setFullSelected = () => {
-    // if (footerViewUpload.value !== FooterViewUpload.Hidden) {
-    //   setFooterViewUpload(FooterViewUpload.Hidden)
-    // }
+    assetListStore.keyboardNavigationDisable()
     setFooterViewSelected(FooterViewSelected.Full)
     customDialog.value = true
   }
@@ -76,9 +76,7 @@ export function useAssetFooterSelectedView() {
   })
 
   const setCompactSelected = () => {
-    // if (footerViewUploadContainsItems.value && footerViewUpload.value === FooterViewUpload.Hidden) {
-    //   footerViewUpload.value = FooterViewUpload.Minimal
-    // }
+    assetListStore.keyboardNavigationEnable()
     setFooterViewSelected(FooterViewSelected.Compact)
     customDialog.value = false
   }
