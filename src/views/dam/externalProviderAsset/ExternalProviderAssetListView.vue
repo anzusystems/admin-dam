@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { useGridView } from '@/composables/system/gridView'
 import { useI18n } from 'vue-i18n'
@@ -37,6 +37,7 @@ const {
   fetchAssetList,
   fetchNextPage,
   listMounted,
+  listUnmounted,
   showDetail,
   onItemClick,
   toggleSelected,
@@ -53,20 +54,24 @@ const autoloadOnIntersect = (isIntersecting: boolean) => {
     fetchNextPage()
   }
 }
-// todo disabled for now, bug
-// onKeyUp('ArrowRight', async (e) => {
-//   await onArrowRight(e)
-// })
-//
-// onKeyUp('ArrowLeft', async (e) => {
-//   await onArrowLeft(e)
-// })
+
+onKeyUp('ArrowRight', async (e) => {
+  await onArrowRight(e)
+})
+
+onKeyUp('ArrowLeft', async (e) => {
+  await onArrowLeft(e)
+})
 
 const { externalProviderFooterViewSelected } = useExternalProviderAssetFooterSelectedView()
 const { footerViewUpload } = useAssetFooterUploadView()
 
 onMounted(async () => {
   await listMounted()
+})
+
+onUnmounted(() => {
+  listUnmounted()
 })
 </script>
 

@@ -79,6 +79,7 @@ $bg-color-actions-dark: #1a1a1a;
   position: absolute;
   top: 11px;
   right: 11px;
+  z-index: 1;
 
   &__bg {
     content: '';

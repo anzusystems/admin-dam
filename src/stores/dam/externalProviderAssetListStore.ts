@@ -115,9 +115,11 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
       })
     },
     keyboardNavigationEnable() {
+      console.log('external provider asset list keyboardNavigationEnable')
       this.keyboardNavigation = true
     },
     keyboardNavigationDisable() {
+      console.log('external provider asset list keyboardNavigationDisable')
       this.keyboardNavigation = false
     },
     resetList() {
