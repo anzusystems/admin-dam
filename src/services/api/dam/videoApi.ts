@@ -7,6 +7,7 @@ import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import type { FileDownloadLink, VideoFile } from '@/types/dam/File'
 import { QueueItemType } from '@/types/dam/UploadQueue'
+import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -225,6 +226,31 @@ export const downloadLink = (videoId: DocId) => {
     const url = END_POINT + '/' + videoId + '/download-link'
     damClient()
       .get(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const updatePreviewImage = (fileId: DocId, imagePreview: ImagePreviewNullable) => {
+  return new Promise((resolve, reject) => {
+    damClient()
+      .put(
+        END_POINT + '/' + fileId,
+        JSON.stringify({
+          id: fileId,
+          imagePreview: imagePreview,
+        })
+      )
       .then((res) => {
         if (res.status === HTTP_STATUS_OK) {
           resolve(res.data)
