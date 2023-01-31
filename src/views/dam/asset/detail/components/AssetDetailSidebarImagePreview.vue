@@ -6,8 +6,11 @@ import { onMounted, ref } from 'vue'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import type { VideoFile } from '@/types/dam/File'
 import { isVideoFile } from '@/types/dam/File'
-import { fetchVideoFile } from '@/services/api/dam/videoApi'
+import { fetchVideoFile, updatePreviewImage } from '@/services/api/dam/videoApi'
 import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
+import { useI18n } from 'vue-i18n'
+import { useErrorHandler } from '@/composables/system/error'
+import { useAlerts } from '@/composables/system/alerts'
 
 withDefaults(
   defineProps<{
@@ -16,10 +19,15 @@ withDefaults(
   {}
 )
 
+const { t } = useI18n({ useScope: 'global' })
+
 const loading = ref(true)
+const saving = ref(false)
 const videoFile = ref<VideoFile | null>(null)
 
 const assetDetailStore = useAssetDetailStore()
+const { handleError } = useErrorHandler()
+const { showRecordWas } = useAlerts()
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
@@ -36,6 +44,19 @@ const initLoad = async () => {
   loading.value = false
 }
 
+const onSave = async () => {
+  if (!videoFile.value) return
+  saving.value = true
+  try {
+    await updatePreviewImage(videoFile.value.id, videoFile.value.imagePreview)
+    showRecordWas('updated')
+  } catch (e) {
+    handleError(e)
+  } finally {
+    saving.value = false
+  }
+}
+
 onMounted(async () => {
   await initLoad()
 })
@@ -43,7 +64,17 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <div>TODO, needs BE work</div>
+    <VBtn
+      color="success"
+      type="submit"
+      @click.stop="onSave"
+      variant="flat"
+      class="ml-2"
+      :loading="saving"
+      :disabled="loading"
+    >
+      {{ t('common.button.save') }}
+    </VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div class="px-3">
     <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />

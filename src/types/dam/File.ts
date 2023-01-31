@@ -1,5 +1,6 @@
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 
 export enum AssetFileProcessStatus {
   Uploading = 'uploading', // file entity created and ready to receive chunks
@@ -100,7 +101,7 @@ export interface VideoFile extends UserAndTimeTrackingFields {
   videoAttributes: VideoAttributes
   originAssetFile: DocIdNullable
   links?: Links
-  imagePreview: DocIdNullable
+  imagePreview: ImagePreviewNullable
   _resourceName: 'videoFile'
 }
 
