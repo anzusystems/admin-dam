@@ -67,8 +67,6 @@ const onCancel = () => {
 watch(
   imagePreviewModel,
   (newValue, oldValue) => {
-    console.log(newValue)
-    console.log(oldValue)
     if (!isNull(newValue) && newValue.imageFile !== oldValue?.imageFile) {
       fetchImage(newValue.imageFile)
     }
