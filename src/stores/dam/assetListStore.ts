@@ -122,11 +122,9 @@ export const useAssetListStore = defineStore('damAssetListStore', {
       })
     },
     keyboardNavigationEnable() {
-      console.log('asset list keyboardNavigationEnable')
       this.keyboardNavigation = true
     },
     keyboardNavigationDisable() {
-      console.log('asset list keyboardNavigationDisable')
       this.keyboardNavigation = false
     },
     resetList() {

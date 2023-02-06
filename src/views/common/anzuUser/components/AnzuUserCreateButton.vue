@@ -35,7 +35,6 @@ const props = withDefaults(
     disabled: undefined,
   }
 )
-console.log(props.disableRedirect)
 const emit = defineEmits<{
   (e: 'afterCreate', data: AnzuUser): void
 }>()
