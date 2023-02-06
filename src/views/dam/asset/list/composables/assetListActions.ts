@@ -19,6 +19,9 @@ import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
+import { useRouter } from 'vue-router'
+import { ROUTE } from '@/router/routes'
+import { replaceBrowserHistoryURLByRouter } from '@/utils/history'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
@@ -31,6 +34,7 @@ pagination.rowsPerPage = 25 // todo
 const filterIsTouched = ref(false)
 
 export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
+  const router = useRouter()
   const assetListStore = useAssetListStore()
   const assetDetailStore = useAssetDetailStore()
   const uploadQueuesStore = useUploadQueuesStore()
@@ -119,6 +123,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
+    replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: data.assetId } })
     const res = await fetchAsset(data.assetId)
     assetDetailStore.setAsset(res)
     if (assetDetailStore.asset?.createdBy) {

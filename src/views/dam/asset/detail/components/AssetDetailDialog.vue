@@ -16,6 +16,9 @@ import type { DocId } from '@anzusystems/common-admin'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 import { isNull } from '@/utils/common'
+import { replaceBrowserHistoryURLByRouter } from '@/utils/history'
+import { useRouter } from 'vue-router'
+import { ROUTE } from '@/router/routes'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -25,6 +28,7 @@ const emit = defineEmits<{
 }>()
 
 const { toolbarColor } = useTheme()
+const router = useRouter()
 
 const { activeTab } = useAssetDetailTab()
 
@@ -36,6 +40,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
+  replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.LIST })
 }
 
 const postDelete = (data: DocId) => {
