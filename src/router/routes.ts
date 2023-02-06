@@ -8,6 +8,16 @@ const routes = {
       LIST: 'common_log_list',
       DETAIL: 'common_log_detail',
     },
+    PERMISSION_GROUP: {
+      LIST: 'permissionGroup_list',
+      DETAIL: 'permissionGroup_detail',
+      EDIT: 'permissionGroup_edit',
+    },
+    ANZU_USER: {
+      LIST: 'common_anzuUser_list',
+      DETAIL: 'common_anzuUser_detail',
+      EDIT: 'common_anzuUser_edit',
+    },
   },
   DAM: {
     ASSET: {
@@ -31,11 +41,6 @@ const routes = {
       LIST: 'assetLicence_list',
       DETAIL: 'assetLicence_detail',
       EDIT: 'assetLicence_edit',
-    },
-    PERMISSION_GROUP: {
-      LIST: 'permissionGroup_list',
-      DETAIL: 'permissionGroup_detail',
-      EDIT: 'permissionGroup_edit',
     },
     AUTHOR: {
       LIST: 'author_list',
