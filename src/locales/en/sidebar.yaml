@@ -4,6 +4,7 @@ settings:
   podcasts: Podcasts
   podcastEpisodes: Podcast episodes
   permissionGroups: Permission Groups
+  anzuUser: Permission Users
   extSystems: External Systems
   assetLicences: Asset Licences
   keywords: Keywords

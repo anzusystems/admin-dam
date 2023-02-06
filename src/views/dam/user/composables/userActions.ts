@@ -13,9 +13,7 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import type { ValueObjectOption } from '@/types/ValueObject'
 import { loadLazyExtSystem } from '@/views/dam/extSystem/composables/lazyExtSystem'
-import { useDescribedPermissionAction } from '@/views/dam/permissionGroup/composables/permissionList'
 import { simpleCloneObject } from '@/utils/object'
-import { loadLazyPermissionGroup } from '@/views/dam/permissionGroup/composables/lazyPermissionGroup'
 import { loadLazyAssetLicence } from '@/views/dam/assetLicence/composables/lazyAssetLicence'
 
 const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
@@ -23,7 +21,6 @@ const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
-const { fetchLazyPermissionGroup, addToLazyPermissionGroupBuffer } = loadLazyPermissionGroup()
 const { fetchLazyAssetLicence, addToLazyAssetLicenceBuffer } = loadLazyAssetLicence()
 
 export const useUserListActions = () => {
@@ -56,10 +53,8 @@ export const useUserDetailActions = () => {
       const user = await fetchUser(id)
       userOneStore.setUser(user)
       user.adminToExtSystems.forEach((id) => addToLazyExtSystemBuffer(id))
-      user.permissionGroups.forEach((id) => addToLazyPermissionGroupBuffer(id))
       user.assetLicences.forEach((id) => addToLazyAssetLicenceBuffer(id))
       fetchLazyExtSystem()
-      fetchLazyPermissionGroup()
       fetchLazyAssetLicence()
       userOneStore.setLoaded(true)
     } catch (error) {
@@ -97,7 +92,6 @@ export const useUserEditActions = () => {
   }
 
   const onUpdate = async (close = false) => {
-    const { cleanUpPermissions } = useDescribedPermissionAction()
     try {
       btnDisable('save', 'saveAndClose', 'delete')
       v$.value.$touch()
@@ -109,7 +103,6 @@ export const useUserEditActions = () => {
       btnDisable(close ? 'save' : 'saveAndClose', 'delete')
       btnLoadingOn(close ? 'saveAndClose' : 'save')
       const userUpdateCloned = simpleCloneObject(userUpdate.value)
-      cleanUpPermissions(userUpdateCloned.permissions)
       await updateUser(userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
       if (!close) return

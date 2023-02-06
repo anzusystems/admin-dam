@@ -21,6 +21,7 @@ const props = withDefaults(
     dataCy?: string
     disabled?: boolean
     disableCloseAfterConfirm?: boolean
+    loading?: boolean
   }>(),
   {
     variant: 'text',
@@ -67,6 +68,9 @@ const { t } = useI18n({ useScope: 'global' })
 const { btn } = useUiHelper()
 
 const progress = computed(() => {
+  if (props.loading) {
+    return props.loading
+  }
   if (props.useUiHelper) {
     return btn.delete.loading
   }
@@ -88,6 +92,7 @@ defineExpose({
     :variant="variant"
     @click.stop="onClick"
     :disabled="disabled"
+    :loading="loading"
   >
     <VIcon icon="mdi-trash-can-outline" />
     <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>

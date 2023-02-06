@@ -8,19 +8,16 @@ import { useUserOneStore } from '@/stores/dam/userStore'
 import ABooleanValue from '@/components/common/ABooleanValue.vue'
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
-import PermissionList from '@/views/dam/permissionGroup/components/PermissionList.vue'
 import ExternalProviderAssetChip from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/dam/distribution/components/DistributionServiceChip.vue'
 import LazyAssetLicenceChip from '@/views/dam/assetLicence/components/LazyAssetLicenceChip.vue'
-import { computed } from 'vue'
 import { damPubConfig } from '@/services/DamConfigService'
 import { UserAuthType } from '@/types/dam/DamConfig'
 
-const { loaded, user } = storeToRefs(useUserOneStore())
+const { user } = storeToRefs(useUserOneStore())
 
 const { t } = useI18n({ useScope: 'global' })
 
-const notSuperAdmin = computed(() => !user.value.roles.includes('ROLE_ADMIN'))
 const userAuthType = damPubConfig.userAuthType
 </script>
 
@@ -29,9 +26,8 @@ const userAuthType = damPubConfig.userAuthType
     <VCol cols="8">
       <ACard loader="detail">
         <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
-        <ARow :title="t('coreDam.user.model.roles')">
-          <VChip v-for="role in user.roles" :key="role" size="small">{{ role }}</VChip>
-        </ARow>
+        <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName"></ARow>
+        <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName"></ARow>
         <ARow :title="t('coreDam.user.model.assetLicences')">
           <LazyAssetLicenceChip
             class="mr-1"
@@ -76,13 +72,6 @@ const userAuthType = damPubConfig.userAuthType
         </ARow>
         <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.id')" :value="user.id"></ARow>
         <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
-      </ACard>
-    </VCol>
-    <VCol cols="12" v-if="notSuperAdmin">
-      <ACard loader="detail">
-        <ARow>
-          <PermissionList v-if="loaded" v-model="user.permissions" readonly></PermissionList>
-        </ARow>
       </ACard>
     </VCol>
   </VRow>

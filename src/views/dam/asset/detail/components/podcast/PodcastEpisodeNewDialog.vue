@@ -15,8 +15,6 @@ import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import PodcastSelect from '@/views/dam/podcast/components/PodcastSelect.vue'
 import ATextarea from '@/components/form/ATextarea.vue'
-import { prepareFormDataJwDistribution } from '@/services/api/dam/distributionJwApi'
-import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { isNull } from '@/utils/common'
 
 const props = withDefaults(

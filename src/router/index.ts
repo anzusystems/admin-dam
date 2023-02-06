@@ -8,7 +8,7 @@ import { externalProviderRoutes } from '@/router/routes/dam/externalProvider'
 import { userRoutes } from '@/router/routes/dam/user'
 import { extSystemRoutes } from '@/router/routes/dam/extSystem'
 import { assetLicenceRoutes } from '@/router/routes/dam/assetLicence'
-import { permissionGroupRoutes } from '@/router/routes/dam/permissionGroup'
+import { permissionGroupRoutes } from '@/router/routes/common/permissionGroup'
 import { authorRoutes } from '@/router/routes/dam/author'
 import { keywordRoutes } from '@/router/routes/dam/keyword'
 import { distributionCategoryRoutes } from '@/router/routes/dam/distributionCategory'
@@ -16,6 +16,7 @@ import { distributionCategorySelectRoutes } from '@/router/routes/dam/distributi
 import { commonLogRoutes } from '@/router/common/log'
 import { podcastRoutes } from '@/router/routes/dam/podcast'
 import { podcastEpisodeRoutes } from '@/router/routes/dam/podcastEpisode'
+import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -26,6 +27,7 @@ const vueRouter = createRouter({
     ...extSystemRoutes,
     ...assetLicenceRoutes,
     ...permissionGroupRoutes,
+    ...anzuUserRoutes,
     ...authorRoutes,
     ...keywordRoutes,
     ...distributionCategoryRoutes,
