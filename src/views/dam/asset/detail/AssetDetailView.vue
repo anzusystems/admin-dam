@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import { DocId, isDocId, isString } from '@anzusystems/common-admin'
 import { useAlerts } from '@/composables/system/alerts'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
@@ -54,6 +54,21 @@ const onImageLoad = () => {
 }
 
 const getDetail = async () => {
+  if (assetDetailStore.directDetailLoad) {
+    assetDetailStore.setView('list')
+    assetDetailStore.showDetail()
+    if (assetDetailStore.asset?.createdBy) {
+      addToLazyUserBuffer(assetDetailStore.asset.createdBy)
+    }
+    if (assetDetailStore.asset?.modifiedBy) {
+      addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
+    }
+    fetchLazyUser()
+    nextTick(() => {
+      assetDetailStore.directDetailLoad = false
+    })
+    return
+  }
   id.value = isString(route.params.id) && isDocId(route.params.id) ? route.params.id.toString() : ''
   if (id.value.length === 0) {
     showErrorT('coreDam.asset.detail.incorrectId')

@@ -14,13 +14,13 @@ import { useAuthorOneStore } from '@/stores/dam/authorStore'
 import type { ValueObjectOption } from '@/types/ValueObject'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
-const { currentExtSystemId } = useCurrentExtSystem()
-
 const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 export const useAuthorListActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+
   const listItems = ref<Author[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
@@ -116,6 +116,8 @@ export const useAuthorEditActions = () => {
 }
 
 export const useAuthorSelectActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+
   const mapToValueObject = (author: Author): ValueObjectOption<string> => ({
     title: author.name + (author.identifier ? ` (${author.identifier})` : ''),
     value: author.id,
