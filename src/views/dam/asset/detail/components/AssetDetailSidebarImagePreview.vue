@@ -39,7 +39,6 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 const initLoad = async () => {
   if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isVideoFile(assetDetailStore.asset.mainFile)) {
     videoFile.value = await fetchVideoFile(assetDetailStore.asset.mainFile.id)
-    console.log(videoFile.value)
   }
   loading.value = false
 }

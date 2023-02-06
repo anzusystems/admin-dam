@@ -38,7 +38,6 @@ const updateLink = async (fileId: DocId) => {
   loading.value = true
   link.value = null
   const res = await fileDownloadLink(props.assetType, fileId)
-  console.log(res)
   link.value = res.link
   loading.value = false
 }

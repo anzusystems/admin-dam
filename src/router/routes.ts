@@ -22,6 +22,7 @@ const routes = {
   DAM: {
     ASSET: {
       LIST: 'asset_list',
+      DETAIL: 'asset_detail',
     },
     EXTERNAL_PROVIDER: {
       LIST: 'external_provider_list',

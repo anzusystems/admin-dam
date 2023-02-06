@@ -99,7 +99,6 @@ export const uploadStart: (item: UploadQueueItem) => Promise<UploadStartResponse
 // - increment timer and do some max tries
 // - check slot implementation
 async function notificationFallbackCallback(item: UploadQueueItem) {
-  console.log('notificationFallbackCallback')
   clearTimeout(item.notificationFallbackTimer)
   if (!item.assetId) return
   const asset = await fetchAsset(item.assetId)

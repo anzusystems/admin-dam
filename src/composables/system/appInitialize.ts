@@ -31,9 +31,8 @@ export async function createAppInitialize(
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
   }
-
   try {
-    await initCurrentExtSystemAndLicence()
+    await initCurrentExtSystemAndLicence(to.name === ROUTE.DAM.ASSET.DETAIL, to.params.id as string | undefined)
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
