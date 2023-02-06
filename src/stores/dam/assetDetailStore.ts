@@ -12,6 +12,7 @@ interface State {
   detail: boolean
   view: 'list' | 'queue'
   metadataAreTouched: boolean
+  directDetailLoad: boolean
 }
 
 export const useAssetDetailStore = defineStore('damAssetDetailStore', {
@@ -21,6 +22,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     detail: false,
     view: 'list',
     metadataAreTouched: false,
+    directDetailLoad: false,
   }),
   actions: {
     showDetail() {

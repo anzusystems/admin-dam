@@ -14,13 +14,12 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import type { ValueObjectOption } from '@/types/ValueObject'
 
-const { currentExtSystemId } = useCurrentExtSystem()
-
 const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 export const useKeywordListActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<Keyword[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
@@ -116,6 +115,8 @@ export const useKeywordEditActions = () => {
 }
 
 export const useKeywordSelectActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+
   const mapToValueObject = (keyword: Keyword): ValueObjectOption<string> => ({
     title: keyword.name,
     value: keyword.id,

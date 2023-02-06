@@ -5,6 +5,9 @@ import { fetchExtSystem } from '@/services/api/dam/extSystemApi'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import { fetchAssetLicence } from '@/services/api/dam/assetLicenceApi'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
+import { fetchAsset } from '@/services/api/dam/assetApi'
+import { isDocId, isString } from '@anzusystems/common-admin'
+import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<ExtSystem>()
@@ -12,7 +15,7 @@ const currentExtSystem = ref<ExtSystem>()
 const currentAssetLicence = ref<AssetLicence>()
 const currentAssetLicenceId = ref(0)
 
-export const initCurrentExtSystemAndLicence = () => {
+export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: string | undefined = undefined) => {
   const { currentUser } = useCurrentUser()
 
   watch(currentExtSystemId, async (newValue, oldValue) => {
@@ -39,6 +42,35 @@ export const initCurrentExtSystemAndLicence = () => {
       console.error('Current user must be loaded first.')
       reject(false)
       return
+    }
+    if (loadFromAsset && isString(assetId) && isDocId(assetId)) {
+      fetchAsset(assetId)
+        .then((assetRes) => {
+          fetchAssetLicence(assetRes.licence)
+            .then((licenceRes) => {
+              if (licenceRes.id && licenceRes.extSystem) {
+                const assetDetailStore = useAssetDetailStore()
+                assetDetailStore.directDetailLoad = true
+                assetDetailStore.setAsset(assetRes)
+                currentAssetLicenceId.value = licenceRes.id
+                currentExtSystemId.value = licenceRes.extSystem
+                resolve(true)
+                return
+              }
+              reject(false)
+              return
+            })
+            .catch(() => {
+              reject(false)
+              return
+            })
+          reject(false)
+          return
+        })
+        .catch(() => {
+          reject(false)
+          return
+        })
     }
     if (damConfig.settings.allowSelectExtSystem && damConfig.settings.allowSelectLicenceId) {
       if (currentUser.value.selectedLicence) {
