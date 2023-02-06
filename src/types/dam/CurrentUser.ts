@@ -1,4 +1,4 @@
-import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
 import type { User } from '@/types/dam/User'
 
 interface CurrentUserExtSystem {
@@ -25,7 +25,7 @@ export interface CurrentUserDto
     | 'allowedAssetExternalProviders'
     | 'allowedDistributionServices'
   > {
-  superAdmin: boolean
+  roles: string[]
   selectedLicence: CurrentUserAssetLicence | null
   adminToExtSystems: CurrentUserExtSystem[]
   userToExtSystems: CurrentUserExtSystem[]
