@@ -1,7 +1,8 @@
 settings:
   settings: Osobné
   users: Používatelia
-  permissionGroups: Skupiny oprávnení
+  permissionGroups: Oprávnenia skupín
+  anzuUser: Oprávnenia používateľov
   extSystems: Externé systémy
   assetLicences: Licencie assetov
   keywords: Kľúčové slová

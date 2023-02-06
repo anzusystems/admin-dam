@@ -21,7 +21,12 @@ const afterCreate = () => {
   <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.list')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_CREATE">
-      <PermissionGroupCreateButton data-cy="button-create" :client="damClient" @after-create="afterCreate" />
+      <PermissionGroupCreateButton
+        data-cy="button-create"
+        disable-redirect
+        :client="damClient"
+        @after-create="afterCreate"
+      />
     </Acl>
   </ActionbarButtonsWrapper>
   <PermissionGroupDatatable ref="datatable" :client="damClient" />

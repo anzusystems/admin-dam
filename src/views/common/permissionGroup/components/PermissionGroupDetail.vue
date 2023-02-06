@@ -9,7 +9,7 @@ import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTracking
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
 
-const props = defineProps<{
+defineProps<{
   client: () => AxiosInstance
 }>()
 

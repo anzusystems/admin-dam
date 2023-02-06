@@ -1,7 +1,4 @@
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { Permissions } from '@/types/Permission'
-import type { IntegerId } from '@anzusystems/common-admin'
-import type { System } from '@/types/System'
+import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 
 export interface UserMinimal {
   id: number
@@ -10,49 +7,12 @@ export interface UserMinimal {
   email: string
 }
 
-export interface User extends UserMinimal, UserAndTimeTrackingFields, System {
-  roles: string[]
-  permissions: Permissions
-  resolvedPermissions: Permissions
-  permissionGroups: IntegerId[]
+export interface UpdateUser extends Pick<UserMinimal, 'id' | 'firstName' | 'lastName'> {
   assetLicences: IntegerId[]
   allowedAssetExternalProviders: string[]
   allowedDistributionServices: string[]
   adminToExtSystems: IntegerId[]
-  enabled: boolean
-}
-
-export interface CreateUser
-  extends Pick<
-    User,
-    | 'id'
-    | 'email'
-    | 'firstName'
-    | 'lastName'
-    | 'enabled'
-    | 'adminToExtSystems'
-    | 'permissions'
-    | 'assetLicences'
-    | 'allowedAssetExternalProviders'
-    | 'allowedDistributionServices'
-  > {
-  plainPassword: string
-  superAdmin: boolean
-}
-
-export interface UpdateUser
-  extends Pick<
-    User,
-    | 'firstName'
-    | 'lastName'
-    | 'enabled'
-    | 'adminToExtSystems'
-    | 'permissions'
-    | 'permissionGroups'
-    | 'assetLicences'
-    | 'allowedAssetExternalProviders'
-    | 'allowedDistributionServices'
-  > {
   plainPassword?: string
-  superAdmin: boolean
 }
+
+export interface User extends AnzuUser, UpdateUser {}

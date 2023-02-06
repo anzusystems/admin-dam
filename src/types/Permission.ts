@@ -40,6 +40,7 @@ const acls = {
   DAM_USER_VIEW: 'dam_user_view',
   DAM_USER_CREATE: 'dam_user_create',
   DAM_USER_UPDATE: 'dam_user_update',
+  DAM_USER_UGC_IMPERSONATE: 'dam_user_ugcImpersonate',
   DAM_PERMISSION_GROUP_VIEW: 'dam_permissionGroup_view',
   DAM_PERMISSION_GROUP_CREATE: 'dam_permissionGroup_create',
   DAM_PERMISSION_GROUP_UPDATE: 'dam_permissionGroup_update',
@@ -78,56 +79,12 @@ const acls = {
   DAM_DISTRIBUTION_CATEGORY_SELECT_UI: 'dam_distributionCategorySelect_ui',
   DAM_PODCAST_UI: 'dam_podcast_ui',
   DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
-  DAM_USER_UGC_IMPERSONATE: 'dam_user_ugcImpersonate',
-  ADMIN_LOG_UI: 'admin_log_ui',
+  DAM_LOG_UI: 'dam_log_ui',
 } as const
 
 export const ACL: Immutable<typeof acls> = deepFreeze(acls)
 
 type AclKey = keyof typeof ACL
-export type AclValue = typeof ACL[AclKey]
+export type AclValue = (typeof ACL)[AclKey]
 
-export enum Grant {
-  NotSet = -1,
-  Deny = 0,
-  AllowOwner = 1,
-  Allow = 2,
-}
-
-export type Permissions = {
-  [key in AclValue]?: Grant
-}
-
-export interface DescribedPermission {
-  name: AclValue
-  searchIndex: string
-  category: PermissionCategory
-  categoryTitle: string
-  categoryAndGroup: string
-  groupTitle: string
-  subject: string
-  subjectTitle: string
-  action: string
-  actionTitle: string
-  grants: Grant[]
-}
-
-export interface PermissionDetail {
-  grants: Grant[]
-  ui: {
-    category: PermissionCategory
-    group: string
-  }
-}
-
-export type PermissionDetails = {
-  [key in AclValue]: PermissionDetail
-}
-
-export enum PermissionCategory {
-  All = 'all',
-  Dam = 'dam',
-  AdminDam = 'adminDam',
-}
-
-export const ALL_ADMIN_PERMISSION_CATEGORIES = [PermissionCategory.AdminDam]
+export interface Permissions extends Partial<Record<AclKey, AclValue>> {}

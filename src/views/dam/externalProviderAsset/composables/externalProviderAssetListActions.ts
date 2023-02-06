@@ -21,7 +21,6 @@ import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
-import { fetchAsset } from '@/services/api/dam/assetApi'
 
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()

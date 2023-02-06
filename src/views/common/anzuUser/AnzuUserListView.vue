@@ -21,7 +21,7 @@ const afterCreate = () => {
   <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.list')" icon="mdi-account-edit-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_CREATE">
-      <AnzuUserCreateButton data-cy="button-create" :client="damClient" @after-create="afterCreate" />
+      <AnzuUserCreateButton data-cy="button-create" disable-redirect :client="damClient" @after-create="afterCreate" />
     </Acl>
   </ActionbarButtonsWrapper>
   <AnzuUserDatatable ref="datatable" :client="damClient" />

@@ -19,12 +19,14 @@ import { AxiosInstance } from 'axios'
 const props = withDefaults(
   defineProps<{
     client: () => AxiosInstance
+    disableRedirect?: boolean
     buttonT?: string
     buttonClass?: string
     dataCy?: string
     disabled?: boolean | undefined
   }>(),
   {
+    disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
@@ -70,7 +72,7 @@ const onConfirm = async () => {
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false
-    if (!isUndefined(res.id)) {
+    if (!isUndefined(res.id) && !props.disableRedirect) {
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: res.id } })
     }
   } catch (error) {

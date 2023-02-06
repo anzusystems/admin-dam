@@ -85,6 +85,7 @@ const { translatePermission } = usePermissionConfigActions(props.client)
             </template>
             <template #roles="{ data }">
               <VChip v-for="role in data" :key="role" class="mr-1 mb-1">{{ translatePermission('roles', role) }}</VChip>
+              <span v-if="data.length === 0">-</span>
             </template>
             <template #permissionGroups="{ data }">
               <PermissionGroupLazyChip

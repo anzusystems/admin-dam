@@ -37,10 +37,9 @@ const { t } = useI18n({ useScope: 'global' })
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.roles') }}</h4>
-          <VChip
-            v-for="role in anzuUser.roles"
-            class="mr-1 mb-1"
-          >{{ translatePermission('roles', role) }}</VChip>
+          <VChip v-for="role in anzuUser.roles" :key="role" class="mr-1 mb-1">{{
+            translatePermission('roles', role)
+          }}</VChip>
         </VCol>
         <VCol cols="12" sm="8" v-if="anzuUser.permissionGroups.length > 0">
           <h4>{{ t('common.anzuUser.model.permissionGroups') }}</h4>

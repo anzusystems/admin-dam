@@ -21,18 +21,21 @@ import PermissionGroupSelect from '@/views/common/permissionGroup/components/Per
 const props = withDefaults(
   defineProps<{
     client: () => AxiosInstance
+    disableRedirect?: boolean
     buttonT?: string
     buttonClass?: string
     dataCy?: string
     disabled?: boolean | undefined
   }>(),
   {
+    disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
     disabled: undefined,
   }
 )
+console.log(props.disableRedirect)
 const emit = defineEmits<{
   (e: 'afterCreate', data: AnzuUser): void
 }>()
@@ -72,7 +75,7 @@ const onConfirm = async () => {
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false
-    if (!isUndefined(res.id)) {
+    if (!isUndefined(res.id) && !props.disableRedirect) {
       router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
