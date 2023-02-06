@@ -8,6 +8,7 @@ export const envConfig: EnvConfig = {
     apiUrl: '',
   },
   logoutCoreDamUrl: '',
+  uploadStatusFallback: true,
   cookies: {
     refreshTokenExistsName: 'anz_rte',
     jwtPayloadName: 'anz_jp',
@@ -37,6 +38,7 @@ const setEnvConfig = (data: EnvConfig) => {
     envConfig.dam.imageUrl = data.dam.imageUrl
     envConfig.notification.enabled = data.notification.enabled
     envConfig.notification.webSocketUrl = data.notification.webSocketUrl
+    envConfig.uploadStatusFallback = data.uploadStatusFallback
   } catch (err) {
     throw new Error('Unable to load env config. Incorrect fields in json.')
   }

@@ -149,6 +149,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: null,
         }
 
@@ -203,6 +204,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: slotName,
         }
 
@@ -255,6 +257,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: null,
         }
 
@@ -315,6 +318,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: null,
         }
         this.createQueue(queueId)

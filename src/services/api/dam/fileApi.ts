@@ -1,62 +1,64 @@
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
 import type { DocId } from '@anzusystems/common-admin'
+import { toInt } from '@anzusystems/common-admin'
 import {
+  deleteImage,
+  downloadLink as imageDownloadLink,
+  existingImageToSlot,
   externalProviderUpload as imageExternalProviderUpload,
+  makeMainFile as imageMakeMainFile,
+  unsetSlot as imageUnsetSlot,
   uploadChunk as imageUploadChunk,
   uploadFinish as imageUploadFinish,
   uploadStart as imageUploadStart,
-  unsetSlot as imageUnsetSlot,
-  downloadLink as imageDownloadLink,
-  deleteImage,
-  makeMainFile as imageMakeMainFile,
-  existingImageToSlot,
 } from '@/services/api/dam/imageApi'
 import {
+  deleteAudio,
+  downloadLink as audioDownloadLink,
+  existingAudioToSlot,
   externalProviderUpload as audioExternalProviderUpload,
+  makeMainFile as audioMakeMainFile,
+  unsetSlot as audioUnsetSlot,
   uploadChunk as audioUploadChunk,
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
-  unsetSlot as audioUnsetSlot,
-  downloadLink as audioDownloadLink,
-  deleteAudio,
-  makeMainFile as audioMakeMainFile,
-  existingAudioToSlot,
 } from '@/services/api/dam/audioApi'
 import {
+  deleteVideo,
+  downloadLink as videoDownloadLink,
+  existingVideoToSlot,
   externalProviderUpload as videoExternalProviderUpload,
+  makeMainFile as videoMakeMainFile,
+  unsetSlot as videoUnsetSlot,
   uploadChunk as videoUploadChunk,
   uploadFinish as videoUploadFinish,
   uploadStart as videoUploadStart,
-  unsetSlot as videoUnsetSlot,
-  downloadLink as videoDownloadLink,
-  deleteVideo,
-  makeMainFile as videoMakeMainFile,
-  existingVideoToSlot,
 } from '@/services/api/dam/videoApi'
 import {
+  deleteDocument,
+  downloadLink as documentDownloadLink,
+  existingDocumentToSlot,
   externalProviderUpload as documentExternalProviderUpload,
+  makeMainFile as documentMakeMainFile,
+  unsetSlot as documentUnsetSlot,
   uploadChunk as documentUploadChunk,
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
-  unsetSlot as documentUnsetSlot,
-  downloadLink as documentDownloadLink,
-  deleteDocument,
-  makeMainFile as documentMakeMainFile,
-  existingDocumentToSlot,
 } from '@/services/api/dam/documentApi'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { fetchAsset } from '@/services/api/dam/assetApi'
 import { AssetFileProcessStatus, type FileDownloadLink } from '@/types/dam/File'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { envConfig } from '@/services/EnvConfigService'
 
 interface UploadStartResponse {
   id: DocId
   asset: DocId
 }
 
-const NOTIFICATION_FALLBACK_ENABLED = false
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
+const NOTIFICATION_FALLBACK_MAX_TRIES = 3
 
 export const uploadStart: (item: UploadQueueItem) => Promise<UploadStartResponse> = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
@@ -92,14 +94,31 @@ export const uploadStart: (item: UploadQueueItem) => Promise<UploadStartResponse
     }
   })
 }
+
+function calculateFallbackTime(item: UploadQueueItem) {
+  console.log(
+    item.assetId,
+    NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * item.notificationFallbackTry * item.notificationFallbackTry,
+    'notificationFallbackCallbackTimeCalc'
+  )
+  return NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * item.notificationFallbackTry * item.notificationFallbackTry
+  // if (item.notificationFallbackTry === 1) return timeout
+  // if (item.file && item.file.size) {
+  //   const sizeBasedTimeout = toInt((item.file.size / 1000) * item.notificationFallbackTry)
+  //   if (sizeBasedTimeout > timeout) return sizeBasedTimeout
+  // }
+  // return timeout
+}
+
 // this is just a testing version, todo:
-// - be stuck now on storing
 // - remove duplicate api call for asset
-// - duplicate
-// - increment timer and do some max tries
-// - check slot implementation
+// - duplicate asset check
+// - slot implementation check
 async function notificationFallbackCallback(item: UploadQueueItem) {
+  console.log(item.assetId, item.notificationFallbackTry, 'notificationFallbackCallbackCall')
   clearTimeout(item.notificationFallbackTimer)
+  if (item.status === QueueItemStatus.Uploaded) return
+  if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) return
   if (!item.assetId) return
   const asset = await fetchAsset(item.assetId)
   if (
@@ -112,9 +131,10 @@ async function notificationFallbackCallback(item: UploadQueueItem) {
     uploadQueuesStore.queueItemProcessed(asset.id)
     return
   }
+  item.notificationFallbackTry++
   item.notificationFallbackTimer = setTimeout(function () {
     notificationFallbackCallback(item)
-  }, NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * 2)
+  }, calculateFallbackTime(item))
 }
 
 export const uploadFinish = (item: UploadQueueItem, sha: string) => {
@@ -124,10 +144,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
         imageUploadFinish(item, sha)
           .then((res) => {
             item.status = QueueItemStatus.Processing
-            if (NOTIFICATION_FALLBACK_ENABLED) {
+            if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
-              }, NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000)
+              }, calculateFallbackTime(item))
             }
             resolve(res)
           })
@@ -137,10 +157,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
         audioUploadFinish(item, sha)
           .then((res) => {
             item.status = QueueItemStatus.Processing
-            if (NOTIFICATION_FALLBACK_ENABLED) {
+            if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
-              }, NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000)
+              }, calculateFallbackTime(item))
             }
             resolve(res)
           })
@@ -150,10 +170,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
         videoUploadFinish(item, sha)
           .then((res) => {
             item.status = QueueItemStatus.Processing
-            if (NOTIFICATION_FALLBACK_ENABLED) {
+            if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
-              }, NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000)
+              }, calculateFallbackTime(item))
             }
             resolve(res)
           })
@@ -163,10 +183,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
         documentUploadFinish(item, sha)
           .then((res) => {
             item.status = QueueItemStatus.Processing
-            if (NOTIFICATION_FALLBACK_ENABLED) {
+            if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
-              }, NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000)
+              }, calculateFallbackTime(item))
             }
             resolve(res)
           })

@@ -6,6 +6,7 @@
     "apiUrl": "${API_LOG_ERROR_URL}"
   },
   "logoutCoreDamUrl": "${LOGOUT_CORE_DAM_URL}",
+  "uploadStatusFallback": ${UPLOAD_STATUS_FALLBACK},
   "cookies": {
     "refreshTokenExistsName": "${COOKIES_REFRESH_TOKEN_EXISTS_NAME}",
     "jwtPayloadName": "${COOKIES_JWT_PAYLOAD_NAME}"
