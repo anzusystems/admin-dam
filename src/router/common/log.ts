@@ -12,7 +12,7 @@ export const commonLogRoutes = [
     component: DetailView,
     meta: {
       requiresAuth: true,
-      requiredPermissions: [ACL.ADMIN_LOG_UI],
+      requiredPermissions: [ACL.DAM_LOG_UI],
       layout: 'AppLayoutSidebar',
     },
   },
@@ -22,7 +22,7 @@ export const commonLogRoutes = [
     component: ListView,
     meta: {
       requiresAuth: true,
-      requiredPermissions: [ACL.ADMIN_LOG_UI],
+      requiredPermissions: [ACL.DAM_LOG_UI],
       layout: 'AppLayoutSidebar',
     },
   },

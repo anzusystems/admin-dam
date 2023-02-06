@@ -15,10 +15,6 @@ export const newDateNow = (): Date => {
   return dayjs().utc().toDate()
 }
 
-export const currentTimestamp = (): number => {
-  return dayjs().unix()
-}
-
 export const dateTimeNow = (ignoreFractionalSeconds = true, ignoreSeconds = false): string => {
   if (ignoreFractionalSeconds && !ignoreSeconds) return dayjs().utc().format('YYYY-MM-DDTHH:mm:ss') + SUFFIX
   if (ignoreFractionalSeconds && ignoreSeconds) return dayjs().utc().format('YYYY-MM-DDTHH:mm:00') + SUFFIX

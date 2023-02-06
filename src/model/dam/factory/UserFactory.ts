@@ -1,4 +1,4 @@
-import type { CreateUser, UpdateUser, User } from '@/types/dam/User'
+import type { UpdateUser, User } from '@/types/dam/User'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@/utils/datetime'
 import { ENTITY } from '@/services/api/dam/userApi'
@@ -28,33 +28,13 @@ export function useUserFactory() {
     }
   }
 
-  const createDefaultForCreate = (): CreateUser => {
-    return {
-      id: 0,
-      email: '',
-      firstName: '',
-      lastName: '',
-      superAdmin: false,
-      plainPassword: '',
-      enabled: true,
-      adminToExtSystems: [],
-      permissions: {},
-      assetLicences: [],
-      allowedAssetExternalProviders: [],
-      allowedDistributionServices: [],
-    }
-  }
-
   const createDefaultForUpdate = (user: User): UpdateUser => {
     return {
+      id: 0,
       firstName: user.firstName,
       lastName: user.lastName,
-      superAdmin: user.roles.includes('ROLE_ADMIN'),
       plainPassword: '',
-      enabled: user.enabled,
       adminToExtSystems: user.adminToExtSystems,
-      permissions: user.permissions,
-      permissionGroups: user.permissionGroups,
       assetLicences: user.assetLicences,
       allowedAssetExternalProviders: user.allowedAssetExternalProviders,
       allowedDistributionServices: user.allowedDistributionServices,
@@ -63,7 +43,6 @@ export function useUserFactory() {
 
   return {
     createDefault,
-    createDefaultForCreate,
     createDefaultForUpdate,
   }
 }

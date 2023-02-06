@@ -17,7 +17,6 @@ import { useAssetLicenceFactory } from '@/model/dam/factory/AssetLicenceFactory'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
 import { useAssetLicenceValidation } from '@/views/dam/assetLicence/composables/assetLicenceValidation'
 import { createAssetLicence, ENTITY } from '@/services/api/dam/assetLicenceApi'
-import { User } from '@/types/dam/User'
 
 const props = withDefaults(
   defineProps<{

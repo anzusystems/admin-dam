@@ -1,0 +1,16 @@
+meta:
+  detail: Detail
+  list: Zoznam
+  create: Vytvoriť
+  edit: Upraviť
+  subHeading: Skupiny oprávnení
+model:
+  id: ID
+  title: Názov
+  description: Popis
+  permissions: Oprávnenia
+filter:
+  id: ID
+  title: Názov
+button:
+  deleteConfirm: Naozaj chcete zmazať túto skupinu oprávnení?

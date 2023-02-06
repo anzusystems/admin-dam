@@ -34,9 +34,6 @@ const columns = useTableColumns([
   { name: 'email' },
   { name: 'firstName' },
   { name: 'lastName' },
-  { name: 'roles' },
-  { name: 'enabled' },
-  { name: 'createdAt' },
   { name: 'modifiedAt' },
 ])
 
@@ -65,9 +62,6 @@ defineExpose({
   </UserFilter>
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
-      <template #roles="{ data }">
-        <VChip v-for="role in data ?? []" :key="role" size="small">{{ role }}</VChip>
-      </template>
       <template #actions="{ data }">
         <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.USER.DETAIL"></ADetailButton>
         <ACopyIdButton :id="data.id"></ACopyIdButton>
