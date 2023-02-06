@@ -6,6 +6,7 @@ export interface EnvConfig {
     apiUrl: string
   }
   logoutCoreDamUrl: string
+  uploadStatusFallback: boolean
   cookies: {
     refreshTokenExistsName: string
     jwtPayloadName: string
