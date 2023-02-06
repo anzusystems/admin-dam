@@ -60,6 +60,7 @@ list:
   next: Next asset
   refresh: Reload list
 detail:
+  incorrectId: Incorrect asset ID or rights
   toggleInfo: Toggle info
   metadataToggle:
     show: Hide more metadata
