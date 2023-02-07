@@ -23,22 +23,22 @@ const { t } = useI18n({ useScope: 'global' })
       <VCol cols="12" md="8">
         <ARow>
           <ATextField
-            :label="t('coreDam.podcastEpisode.model.texts.title')"
             v-model="podcastEpisode.texts.title"
+            :label="t('coreDam.podcastEpisode.model.texts.title')"
             :v="v$.podcastEpisode.texts.title"
           />
         </ARow>
         <ARow>
           <ATextField
-            :label="t('coreDam.podcastEpisode.model.texts.description')"
             v-model="podcastEpisode.texts.description"
+            :label="t('coreDam.podcastEpisode.model.texts.description')"
             :v="v$.podcastEpisode.texts.description"
           />
         </ARow>
         <ARow>
           <ATextField
-            :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
             v-model="podcastEpisode.attributes.seasonNumber"
+            :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
             :v="v$.podcastEpisode.attributes.seasonNumber"
             type="number"
             :step="1"
@@ -46,8 +46,8 @@ const { t } = useI18n({ useScope: 'global' })
         </ARow>
         <ARow>
           <ATextField
-            :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
             v-model="podcastEpisode.attributes.episodeNumber"
+            :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
             :v="v$.podcastEpisode.attributes.episodeNumber"
             type="number"
             :step="1"
@@ -55,15 +55,15 @@ const { t } = useI18n({ useScope: 'global' })
         </ARow>
         <ARow>
           <ATextField
-            :label="t('coreDam.podcastEpisode.model.attributes.extId')"
             v-model="podcastEpisode.attributes.extId"
+            :label="t('coreDam.podcastEpisode.model.attributes.extId')"
             :v="v$.podcastEpisode.attributes.extId"
           />
         </ARow>
         <ARow>
           <ADatetimePicker
-            :label="t('coreDam.podcastEpisode.model.dates.publicationDate')"
             v-model="podcastEpisode.dates.publicationDate"
+            :label="t('coreDam.podcastEpisode.model.dates.publicationDate')"
           />
         </ARow>
       </VCol>

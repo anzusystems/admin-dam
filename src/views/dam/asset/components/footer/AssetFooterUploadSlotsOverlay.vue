@@ -63,47 +63,47 @@ const classComputed = computed(() => {
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="d-flex px-2">
           <div class="d-flex align-center">
-            <div class="text-caption d-flex align-center font-weight-bold" v-if="isUploading">
+            <div v-if="isUploading" class="text-caption d-flex align-center font-weight-bold">
               {{ t('coreDam.asset.upload.title') }}
             </div>
-            <div class="text-caption d-flex align-center text-green-darken-3 font-weight-bold" v-else>
+            <div v-else class="text-caption d-flex align-center text-green-darken-3 font-weight-bold">
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
           </div>
         </div>
         <VSpacer />
         <div class="d-flex align-center pr-1">
-          <div class="text-caption mr-2 d-flex align-center" v-if="isUploading">
-            <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"/>
+          <div v-if="isUploading" class="text-caption mr-2 d-flex align-center">
+            <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1" />
             <div>{{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
           </div>
           <VBtn
             v-show="showMinimalUpload"
             icon
-            @click.stop="setMinimalUpload"
             variant="flat"
             :height="26"
             :width="26"
             rounded="circle"
             class="mr-1"
+            @click.stop="setMinimalUpload"
           >
-            <VIcon icon="mdi-chevron-down"/>
+            <VIcon icon="mdi-chevron-down" />
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
             icon
-            @click.stop="setCompactUpload"
             variant="flat"
             :height="26"
             :width="26"
             rounded="circle"
             class="mr-1"
+            @click.stop="setCompactUpload"
           >
             <VIcon icon="mdi-chevron-up" />
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.show') }}</VTooltip>
           </VBtn>
-          <AssetFooterUploadButtonStop @confirm="onStopConfirm" :is-uploading="isUploading" />
+          <AssetFooterUploadButtonStop :is-uploading="isUploading" @confirm="onStopConfirm" />
         </div>
       </VToolbar>
       <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
@@ -112,11 +112,11 @@ const classComputed = computed(() => {
         <div class="d-flex">
           <VBtn
             v-show="!isUploading"
-            @click.stop="onStopConfirm"
             color="primary"
             variant="flat"
             :height="26"
             class="mr-2"
+            @click.stop="onStopConfirm"
           >
             {{ t('coreDam.asset.upload.clear') }}
           </VBtn>

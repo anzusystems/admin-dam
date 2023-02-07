@@ -62,20 +62,20 @@ const onImport = () => {
         </div>
         <VSpacer />
         <div class="d-flex align-center">
-          <VBtn @click.stop="onImport" color="primary" variant="flat" :height="36" class="mr-2" rounded="pill">
+          <VBtn color="primary" variant="flat" :height="36" class="mr-2" rounded="pill" @click.stop="onImport">
             {{ t('coreDam.asset.selected.import') }} ({{ queueTotalCount }})
           </VBtn>
-          <AssetFooterSelectedButtonClear @confirm="onClearConfirm" variant="normal" />
+          <AssetFooterSelectedButtonClear variant="normal" @confirm="onClearConfirm" />
           <VDivider vertical class="mx-4 my-2" />
           <VBtn
             v-show="showMinimalSelected"
             icon
-            @click.stop="setMinimalSelected"
             variant="flat"
             :height="36"
             :width="36"
             rounded="circle"
             class="mr-2"
+            @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
           </VBtn>

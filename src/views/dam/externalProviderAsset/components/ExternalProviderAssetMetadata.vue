@@ -30,7 +30,7 @@ const onImport = () => {
 
 <template>
   <ExternalProviderAssetDetailSidebarActionsWrapper v-if="detailDialog && asset">
-    <VBtn color="secondary" type="submit" @click.stop="onImport" variant="flat" class="ml-2"> Import to DAM </VBtn>
+    <VBtn color="secondary" type="submit" variant="flat" class="ml-2" @click.stop="onImport"> Import to DAM </VBtn>
   </ExternalProviderAssetDetailSidebarActionsWrapper>
   <VExpansionPanels v-if="asset" v-model="panels" multiple class="v-expansion-panels--compact">
     <VExpansionPanel elevation="0" title="Metadata" value="meta">

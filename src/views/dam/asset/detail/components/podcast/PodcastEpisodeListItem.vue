@@ -18,7 +18,7 @@ withDefaults(
       </VCol>
     </VRow>
     <VRow>
-      <VCol>Podcast: <LazyPodcastChip :id="item.podcast"/></VCol>
+      <VCol>Podcast: <LazyPodcastChip :id="item.podcast" /></VCol>
     </VRow>
   </div>
 </template>

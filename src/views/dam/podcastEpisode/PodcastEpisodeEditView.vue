@@ -44,15 +44,15 @@ onBeforeUnmount(() => {
   <ActionbarButtonsWrapper>
     <ASaveButton
       v-if="!detailLoading"
-      @save-record="onUpdate"
       :loading="saveButtonLoading"
       :disabled="saveAndCloseButtonLoading"
+      @save-record="onUpdate"
     />
     <ASaveAndCloseButton
       v-if="!detailLoading"
-      @save-record-and-close="onUpdate(true)"
       :loading="saveAndCloseButtonLoading"
       :disabled="saveButtonLoading"
+      @save-record-and-close="onUpdate(true)"
     />
     <VBtn class="ml-2" :to="closeRoute" icon="mdi-close" size="small" variant="outlined" :width="36" :height="36" />
   </ActionbarButtonsWrapper>

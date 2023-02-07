@@ -27,29 +27,29 @@ const { podcastModeOptions } = usePodcastMode()
       <VCol cols="12" md="8">
         <ARow>
           <ATextField
-            :label="t('coreDam.podcast.model.texts.title')"
             v-model="podcast.texts.title"
+            :label="t('coreDam.podcast.model.texts.title')"
             :v="v$.podcast.texts.title"
           />
         </ARow>
         <ARow>
           <ATextarea
-            :label="t('coreDam.podcast.model.texts.description')"
             v-model="podcast.texts.description"
+            :label="t('coreDam.podcast.model.texts.description')"
             :v="v$.podcast.texts.description"
           />
         </ARow>
         <ARow>
           <AValueObjectOptionsSelect
-            :label="t('coreDam.podcast.model.attributes.mode')"
             v-model="podcast.attributes.mode"
+            :label="t('coreDam.podcast.model.attributes.mode')"
             :items="podcastModeOptions"
           />
         </ARow>
         <ARow>
           <ATextField
-            :label="t('coreDam.podcast.model.attributes.rssUrl')"
             v-model="podcast.attributes.rssUrl"
+            :label="t('coreDam.podcast.model.attributes.rssUrl')"
             :v="v$.podcast.attributes.rssUrl"
           />
         </ARow>

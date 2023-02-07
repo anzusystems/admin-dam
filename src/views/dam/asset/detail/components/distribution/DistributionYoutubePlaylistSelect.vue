@@ -55,9 +55,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <VSelect :label="label" v-model="modelValueComputed" :loading="loading" :items="itemsComputed">
-    <template v-slot:append>
-      <VBtn @click.stop="fetchItems(true)" class="ml-2" icon="mdi-refresh" size="small" variant="text"/>
+  <VSelect v-model="modelValueComputed" :label="label" :loading="loading" :items="itemsComputed">
+    <template #append>
+      <VBtn class="ml-2" icon="mdi-refresh" size="small" variant="text" @click.stop="fetchItems(true)" />
     </template>
   </VSelect>
 </template>

@@ -61,8 +61,8 @@ const onRemove = () => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
@@ -80,13 +80,13 @@ const onRemove = () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="warning" text @click.stop="onUnset" data-cy="button-unset" v-if="showUnset">
+        <VBtn v-if="showUnset" color="warning" text data-cy="button-unset" @click.stop="onUnset">
           {{ t('coreDam.asset.slots.remove.unsetSlot') }}
         </VBtn>
-        <VBtn color="error" text @click.stop="onRemove" data-cy="button-remove">
+        <VBtn color="error" text data-cy="button-remove" @click.stop="onRemove">
           {{ t('coreDam.asset.slots.remove.removeFile') }}
         </VBtn>
-        <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
       </VCardActions>

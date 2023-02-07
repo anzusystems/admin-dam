@@ -35,8 +35,8 @@ const value = computed({
     :label="modelValue.title"
     :multiple="modelValue.multiple"
     :clearable="!modelValue.mandatory"
+    data-cy="filter-value"
     @clear="clearOne(modelValue)"
     @change="emit('change')"
-    data-cy="filter-value"
   />
 </template>

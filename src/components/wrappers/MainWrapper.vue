@@ -20,8 +20,8 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
 <template>
   <VLayout>
     <ASystemBar />
-    <slot name="sidebar-left"/>
-    <slot name="sidebar-right"/>
+    <slot name="sidebar-left" />
+    <slot name="sidebar-right" />
     <VAppBar :order="-1" :height="46" elevation="0" class="system-border-b">
       <div class="d-flex w-100 justify-space-between align-center">
         <div class="d-flex align-center">
@@ -30,10 +30,10 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
             <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img :src="logo" alt="ADAM" /></RouterLink>
           </div>
           <AssetToolbarIntegrations />
-          <slot name="main-bar-left"/>
+          <slot name="main-bar-left" />
         </div>
         <div class="d-flex align-center">
-          <slot name="main-bar-right"/>
+          <slot name="main-bar-right" />
           <AssetToolbarExtSystemLicence />
           <AssetToolbarOptions variant="main" />
           <DCurrentUserDropdown />
@@ -47,28 +47,28 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
             <div class="d-flex align-center">
               <VBtn
                 :active="sidebarLeft"
-                @click.stop="sidebarLeft = !sidebarLeft"
                 icon
                 :width="30"
                 :height="30"
                 :color="sidebarLeft ? 'secondary' : undefined"
                 :variant="sidebarLeft ? 'flat' : 'text'"
+                @click.stop="sidebarLeft = !sidebarLeft"
               >
                 <VIcon icon="mdi-tune" :size="16" />
                 <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.filterToggle') }}</VTooltip>
               </VBtn>
-              <slot name="second-bar-left"/>
+              <slot name="second-bar-left" />
             </div>
             <div class="d-flex align-center">
-              <slot name="second-bar-right"/>
+              <slot name="second-bar-right" />
               <VBtn
                 :active="sidebarRight"
-                @click.stop="sidebarRight = !sidebarRight"
                 icon
                 :width="30"
                 :height="30"
                 :variant="sidebarRight ? 'flat' : 'text'"
                 :color="sidebarRight ? 'secondary' : undefined"
+                @click.stop="sidebarRight = !sidebarRight"
               >
                 <VIcon icon="mdi-information-outline" :size="16" />
                 <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.infoToggle') }}</VTooltip>
@@ -80,7 +80,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     </VAppBar>
     <VDialog v-if="customDialog" :model-value="true" fullscreen persistent no-click-animation class="overlay--sidebar">
       <VCard>
-        <slot name="custom-dialog"/>
+        <slot name="custom-dialog" />
       </VCard>
     </VDialog>
     <VAppBar v-else location="bottom" :height="customFooterHeight" elevation="0" class="overflow-visible">
@@ -90,13 +90,13 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
           <AssetFooterUploadOverlay />
         </div>
         <div class="asset-footer position-relative d-flex flex-column justify-space-between w-100 h-100">
-          <slot name="custom-footer"/>
+          <slot name="custom-footer" />
         </div>
       </div>
     </VAppBar>
     <VMain style="height: 100vh">
       <VContainer class="pa-3 h-100 overflow-y-auto" fluid>
-        <slot/>
+        <slot />
       </VContainer>
       <AssetUpload />
     </VMain>

@@ -130,8 +130,8 @@ onMounted(() => {
                     <div class="d-flex">
                       <div style="min-width: 292px">
                         <KeywordSelect
-                          label="Keywords"
                           v-model="massOperationsKeywords"
+                          label="Keywords"
                           chips
                           clearable
                           multiple
@@ -160,8 +160,8 @@ onMounted(() => {
                     <div class="d-flex">
                       <div style="min-width: 292px">
                         <AuthorSelect
-                          label="Authors"
                           v-model="massOperationsAuthors"
+                          label="Authors"
                           chips
                           clearable
                           multiple
@@ -194,8 +194,8 @@ onMounted(() => {
           >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
-                :asset-type="AssetType.Image"
                 v-model="massOperationsData.image"
+                :asset-type="AssetType.Image"
                 @fill-empty-field="fillEmptyField"
                 @replace-field="replaceField"
               />
@@ -208,7 +208,7 @@ onMounted(() => {
             :value="AssetType.Video"
           >
             <VExpansionPanelText>
-              <AssetCustomMetadataFormMassOperations :asset-type="AssetType.Video" v-model="massOperationsData.video" />
+              <AssetCustomMetadataFormMassOperations v-model="massOperationsData.video" :asset-type="AssetType.Video" />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
@@ -218,7 +218,7 @@ onMounted(() => {
             :value="AssetType.Audio"
           >
             <VExpansionPanelText>
-              <AssetCustomMetadataFormMassOperations :asset-type="AssetType.Audio" v-model="massOperationsData.audio" />
+              <AssetCustomMetadataFormMassOperations v-model="massOperationsData.audio" :asset-type="AssetType.Audio" />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
@@ -229,21 +229,21 @@ onMounted(() => {
           >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
-                :asset-type="AssetType.Document"
                 v-model="massOperationsData.document"
+                :asset-type="AssetType.Document"
               />
             </VExpansionPanelText>
           </VExpansionPanel>
         </VExpansionPanels>
       </div>
       <div class="sidebar-info__actions pa-2 d-flex align-center justify-center">
-        <VBtn class="mr-2" @click.stop="fillAll(false)" variant="flat" color="secondary" size="small">
+        <VBtn class="mr-2" variant="flat" color="secondary" size="small" @click.stop="fillAll(false)">
           {{ t('coreDam.asset.massOperations.fillAllEmpty') }}
         </VBtn>
-        <VBtn class="mr-2" @click.stop="fillAll(true)" variant="flat" color="secondary" size="small">
+        <VBtn class="mr-2" variant="flat" color="secondary" size="small" @click.stop="fillAll(true)">
           {{ t('coreDam.asset.massOperations.replaceAll') }}
         </VBtn>
-        <VBtn @click.stop="clearForm" variant="flat" color="secondary" size="small">
+        <VBtn variant="flat" color="secondary" size="small" @click.stop="clearForm">
           {{ t('coreDam.asset.massOperations.clearForm') }}
         </VBtn>
       </div>

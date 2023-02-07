@@ -32,7 +32,7 @@ const formattedJSON = (data: string) => {
           </VCol>
           <VCol cols="3">
             <h4 class="text-subtitle-2">{{ t('common.log.model.levelName') }}</h4>
-            <LogLevelChip :level="log.levelName"/>
+            <LogLevelChip :level="log.levelName" />
           </VCol>
           <VCol cols="2">
             <h4 class="text-subtitle-2">{{ t('common.log.model.context.userId') }}</h4>

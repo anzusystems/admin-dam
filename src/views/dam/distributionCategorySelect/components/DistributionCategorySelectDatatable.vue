@@ -49,17 +49,14 @@ onMounted(() => getList())
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
         <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW">
-          <ADetailButton
-            :record-id="data.id"
-            :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL"
-          />
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL" />
         </Acl>
-        <ACopyIdButton :id="data.id"/>
+        <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"/>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT" />
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"/>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

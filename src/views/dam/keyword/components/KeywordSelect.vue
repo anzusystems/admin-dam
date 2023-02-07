@@ -124,8 +124,8 @@ const afterCreate = (keyword: Keyword) => {
       :lazy-loader="useLazyKeyword"
       @search-change="searchChange"
     >
-      <template #chip="{ props, item }">
-        <VChip v-bind="props">
+      <template #chip="{ props: chipProps, item }">
+        <VChip v-bind="chipProps">
           <VIcon v-if="isNewKeyword(item.raw.title, item.raw.value)" start icon="mdi-new-box" />
           <span v-if="loadedAll">{{ item.title }}</span>
           <VProgressCircular v-else indeterminate size="15" />
@@ -137,8 +137,8 @@ const afterCreate = (keyword: Keyword) => {
         variant="icon"
         :initial-value="addNewKeywordText"
         disable-redirect
-        @after-create="afterCreate"
         :disabled="disabled"
+        @after-create="afterCreate"
       />
     </div>
   </div>

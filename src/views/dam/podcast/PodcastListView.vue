@@ -21,7 +21,7 @@ const afterCreate = () => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.list')" icon="mdi-podcast" />
   <ActionbarButtonsWrapper>
-    <PodcastCreateButton data-cy="button-create" @after-create="afterCreate" disable-redirect />
+    <PodcastCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
   </ActionbarButtonsWrapper>
   <ACard :loading="listLoading">
     <PodcastDatatable ref="datatable" />

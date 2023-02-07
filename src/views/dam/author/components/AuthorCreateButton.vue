@@ -113,9 +113,9 @@ const { authorTypeOptions } = useAuthorType()
     :data-cy="dataCy"
     icon
     :disabled="disabled"
-    @click.stop="onClick"
     variant="text"
     size="small"
+    @click.stop="onClick"
   >
     <VIcon icon="mdi-plus" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.author.button.add') }}</VTooltip>
@@ -125,21 +125,14 @@ const { authorTypeOptions } = useAuthorType()
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.author.meta.create') }}</span>
         <VSpacer />
-        <VBtn
-          class="ml-2"
-          icon="mdi-close"
-          size="small"
-          variant="text"
-          @click.stop="onCancel"
-          data-cy="button-close"
-        />
+        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
             <ATextField
-              :label="t('coreDam.author.model.name')"
               v-model="author.name"
+              :label="t('coreDam.author.model.name')"
               :v="v$.author.name"
               required
               data-cy="author-name"
@@ -147,16 +140,16 @@ const { authorTypeOptions } = useAuthorType()
           </ARow>
           <ARow>
             <ATextField
-              :label="t('coreDam.author.model.identifier')"
               v-model="author.identifier"
+              :label="t('coreDam.author.model.identifier')"
               :v="v$.author.identifier"
               data-cy="author-identifier"
             />
           </ARow>
           <ARow>
             <AValueObjectOptionsSelect
-              :label="t('coreDam.author.model.type')"
               v-model="author.type"
+              :label="t('coreDam.author.model.type')"
               :items="authorTypeOptions"
               data-cy="author-type"
             />
@@ -165,10 +158,10 @@ const { authorTypeOptions } = useAuthorType()
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
+        <VBtn color="success" btn-helper="create" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

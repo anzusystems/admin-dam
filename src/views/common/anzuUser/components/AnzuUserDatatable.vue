@@ -81,7 +81,7 @@ const { translatePermission } = usePermissionConfigActions(props.client)
         <ASystemEntityScope system="common" :subject="ENTITY">
           <ADatatable :data="anzuUserList" :columns="columns" @row-click="onRowClick">
             <template #enabled="{ data }">
-              <ABooleanValue chip :value="data"/>
+              <ABooleanValue chip :value="data" />
             </template>
             <template #roles="{ data }">
               <VChip v-for="role in data" :key="role" class="mr-1 mb-1">{{ translatePermission('roles', role) }}</VChip>
@@ -90,8 +90,8 @@ const { translatePermission } = usePermissionConfigActions(props.client)
             <template #permissionGroups="{ data }">
               <PermissionGroupLazyChip
                 v-for="permissionGroupId in data"
-                :key="permissionGroupId"
                 :id="permissionGroupId"
+                :key="permissionGroupId"
                 class="mr-1 mb-1"
               />
               <span v-if="data.length === 0">-</span>
@@ -100,14 +100,14 @@ const { translatePermission } = usePermissionConfigActions(props.client)
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL"/>
-              <ACopyIdButton :id="data.id"/>
+              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
+              <ACopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_USER_UPDATE">
-                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT"/>
+                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" />
               </Acl>
             </template>
           </ADatatable>
-          <ADatatablePagination v-model="pagination" @change="getList"/>
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </ASystemEntityScope>
       </div>
     </VCardText>

@@ -33,23 +33,23 @@ const onAnyFilterUpdate = () => {
       <VForm name="search2" @submit.prevent="submitFilter">
         <VRow>
           <VCol>
-            <AFilterString @update:model-value="onAnyFilterUpdate" v-model="filter.term" />
+            <AFilterString v-model="filter.term" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
       </VForm>
     </div>
-    <template v-slot:append>
+    <template #append>
       <div class="pa-2 d-flex align-center justify-center">
         <VBtn
           :color="filterIsTouched ? 'success' : 'secondary'"
-          @click.stop="submitFilter"
           class="mr-2"
           variant="flat"
           size="small"
+          @click.stop="submitFilter"
         >
           {{ t('common.button.submitFilter') }}
         </VBtn>
-        <VBtn class="px-2" color="light" min-width="36px" @click.stop="resetFilter" variant="flat" size="small">
+        <VBtn class="px-2" color="light" min-width="36px" variant="flat" size="small" @click.stop="resetFilter">
           <VIcon icon="mdi-filter-remove-outline" />
         </VBtn>
       </div>

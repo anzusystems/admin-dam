@@ -80,8 +80,8 @@ onMounted(async () => {
     <VBtn
       v-if="!imageRoiStore.loader"
       color="secondary"
-      @click.stop="imageRoiStore.forceReloadRoiPreviews()"
       variant="flat"
+      @click.stop="imageRoiStore.forceReloadRoiPreviews()"
     >
       {{ t('coreDam.asset.detail.roi.refresh') }}
     </VBtn>

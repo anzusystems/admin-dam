@@ -62,15 +62,15 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn color="secondary" @click.stop="addNew" variant="flat">Add asset to new podcast episode</VBtn>
+    <VBtn color="secondary" variant="flat" @click.stop="addNew">Add asset to new podcast episode</VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
-    <VProgressCircular indeterminate color="primary"/>
+    <VProgressCircular indeterminate color="primary" />
   </div>
   <div v-else-if="listItems.length === 0" class="pa-4 text-caption">Nothing to show</div>
   <div v-else>
     <PodcastEpisodeListItem v-for="item in listItems" :key="item.id" :item="item" />
-    <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
+    <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
   </div>
   <PodcastEpisodeNewDialog v-model="dialogNew" :asset-id="assetId" @reload-list="reloadList" />
 </template>

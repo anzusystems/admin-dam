@@ -105,19 +105,19 @@ onUnmounted(() => {
 <template>
   <VProgressCircular v-if="imageRoiStore.loader" indeterminate color="primary" />
   <VueCropper
-    :class="{ 'image-cropper-hidden': cropperOpacityHide }"
     v-if="showCropper"
     :key="imageRoiStore.timestampCropper"
     ref="cropper"
+    :class="{ 'image-cropper-hidden': cropperOpacityHide }"
     :aspect-ratio="DAM_IMAGE_ASPECT_RATIO"
     :background="false"
-    :checkCrossOrigin="false"
+    :check-cross-origin="false"
     :container-style="cropperContainerStyle"
     :ready="cropperReady"
     :cropend="cropperEnd"
     :src="imageUrl"
-    :viewMode="1"
-    :zoomOnWheel="false"
+    :view-mode="1"
+    :zoom-on-wheel="false"
     canvas
     responsive
   />

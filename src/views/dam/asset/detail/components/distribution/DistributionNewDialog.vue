@@ -83,25 +83,25 @@ const componentComputed = computed(() => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="closeDialog(false)"
             data-cy="button-close"
+            @click.stop="closeDialog(false)"
           />
         </VToolbarItems>
       </VToolbar>
       <div>
-        <VTabs density="compact" v-model="activeDistributionName" class="sidebar-info__tabs">
-          <VTab v-for="(value, key) in serviceRequirements" :key="key" :value="key">{{ value.title }}</VTab>
+        <VTabs v-model="activeDistributionName" density="compact" class="sidebar-info__tabs">
+          <VTab v-for="(requirement, key) in serviceRequirements" :key="key" :value="key">{{ requirement.title }}</VTab>
         </VTabs>
       </div>
       <component
-        v-if="activeDistributionName"
         :is="componentComputed"
+        v-if="activeDistributionName"
+        :key="activeDistributionName"
         :asset-id="assetId"
         :asset-type="assetType"
         :config="activeConfig"
         :distribution-service-name="activeDistributionName"
         @close-dialog="closeDialog"
-        :key="activeDistributionName"
       />
     </VCard>
   </VDialog>

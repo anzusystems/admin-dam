@@ -110,8 +110,8 @@ const imageSrc = computed(() => {
               icon
               @click.stop="toggleSelected"
             >
-              <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
-              <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
+              <VIcon v-if="item.selected" icon="mdi-checkbox-outline" :size="20" />
+              <VIcon v-else icon="mdi-checkbox-blank-outline" :size="20" />
             </VBtn>
           </div>
         </div>

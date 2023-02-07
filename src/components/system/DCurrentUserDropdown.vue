@@ -20,7 +20,7 @@ const { currentUser } = useCurrentUser()
             :subtitle="currentUser.email"
             data-cy="user-email"
           >
-            <template v-slot:prepend>
+            <template #prepend>
               <div class="mr-3">
                 <VIcon color="secondary" icon="mdi-account" :size="44" />
               </div>
@@ -28,7 +28,7 @@ const { currentUser } = useCurrentUser()
           </VListItem>
         </VList>
         <VList>
-          <VDivider/>
+          <VDivider />
           <VListItem
             prepend-icon="mdi-logout-variant"
             :to="{ name: ROUTE.SYSTEM.LOGOUT }"

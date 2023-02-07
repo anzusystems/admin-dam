@@ -127,15 +127,15 @@ const assetMainFile = computed(() => {
 <template>
   <VDialog v-model="assetDetailStore.detail" fullscreen persistent no-click-animation>
     <AssetDetailDialogLoader v-if="assetDetailStore.loader" @close-dialog="closeDialog" />
-    <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }" v-else-if="asset">
+    <VCard v-else-if="asset" class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
       <div class="dam-image-detail__wrapper d-flex flex-column">
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div v-if="assetDetailStore.view === 'list'">
-            <VBtn variant="text" icon @click.stop="prevItem" class="mx-1" :width="36" :height="36">
+            <VBtn variant="text" icon class="mx-1" :width="36" :height="36" @click.stop="prevItem">
               <VIcon icon="mdi-chevron-left" />
               <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.prev') }}</VTooltip>
             </VBtn>
-            <VBtn variant="text" icon @click.stop="nextItem" class="mr-2" :width="36" :height="36">
+            <VBtn variant="text" icon class="mr-2" :width="36" :height="36" @click.stop="nextItem">
               <VIcon icon="mdi-chevron-right" />
               <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.next') }}</VTooltip>
             </VBtn>
@@ -151,15 +151,15 @@ const assetMainFile = computed(() => {
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
               icon
-              @click.stop="toggleSidebar"
               class="mr-1"
               :width="36"
               :height="36"
+              @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
               <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
-            <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
+            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
               <VIcon icon="mdi-close" />
               <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
             </VBtn>
@@ -178,9 +178,9 @@ const assetMainFile = computed(() => {
                 :background-color="imageProperties.bgColor"
                 :width="imageProperties.width"
                 :height="imageProperties.height"
+                use-component
                 @load="onImageLoad"
                 @error="onImageLoad"
-                use-component
               />
             </div>
           </div>

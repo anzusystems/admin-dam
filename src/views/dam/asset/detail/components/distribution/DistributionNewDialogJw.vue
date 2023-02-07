@@ -151,28 +151,24 @@ onMounted(async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VRow class="mb-2">
           <VCol>
-            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required/>
+            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextarea
-              v-model="distribution.texts.description"
-              :v="v$.distribution.texts.description"
-              required
-            />
+            <ATextarea v-model="distribution.texts.description" :v="v$.distribution.texts.description" required />
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required/>
+            <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required />
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
             <VCombobox
-              :label="t('coreDam.jwDistribution.model.texts.keywords')"
               v-model="distribution.texts.keywords"
+              :label="t('coreDam.jwDistribution.model.texts.keywords')"
               :items="[]"
               multiple
               chips
@@ -188,7 +184,7 @@ onMounted(async () => {
   </VCardText>
   <VCardActions>
     <VSpacer />
-    <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">
+    <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
       {{ t('common.button.add') }}
     </VBtn>
     <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>

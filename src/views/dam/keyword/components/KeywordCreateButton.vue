@@ -109,9 +109,9 @@ const onConfirm = async () => {
     :data-cy="dataCy"
     icon
     :disabled="disabled"
-    @click.stop="onClick"
     variant="text"
     size="small"
+    @click.stop="onClick"
   >
     <VIcon icon="mdi-plus" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.keyword.button.add') }}</VTooltip>
@@ -121,14 +121,14 @@ const onConfirm = async () => {
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.keyword.meta.create') }}</span>
         <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel" data-cy="button-close" />
+        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
             <ATextField
-              :label="t('coreDam.keyword.model.name')"
               v-model="keyword.name"
+              :label="t('coreDam.keyword.model.name')"
               :v="v$.keyword.name"
               required
               data-cy="keyword-name"
@@ -138,10 +138,10 @@ const onConfirm = async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" :loading="buttonLoading" data-cy="button-confirm">
+        <VBtn color="success" :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

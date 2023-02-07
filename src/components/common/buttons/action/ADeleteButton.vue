@@ -73,9 +73,9 @@ defineExpose({
     icon
     size="small"
     :variant="variant"
-    @click.stop="onClick"
     :disabled="disabled"
     :loading="loading"
+    @click.stop="onClick"
   >
     <VIcon icon="mdi-trash-can-outline" />
     <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
@@ -93,18 +93,18 @@ defineExpose({
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             :disabled="loading"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
       <VCardActions>
         <VSpacer />
-        <VBtn :color="dialogCancelColor" text @click.stop="onCancel" :disabled="loading" data-cy="button-cancel">
+        <VBtn :color="dialogCancelColor" text :disabled="loading" data-cy="button-cancel" @click.stop="onCancel">
           {{ t(dialogCancelButtonT) }}
         </VBtn>
-        <VBtn :color="dialogConfirmColor" @click.stop="onConfirm" :loading="loading" data-cy="button-confirm">
+        <VBtn :color="dialogConfirmColor" :loading="loading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(dialogConfirmButtonT) }}
         </VBtn>
       </VCardActions>

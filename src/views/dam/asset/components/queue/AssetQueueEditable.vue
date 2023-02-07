@@ -45,9 +45,9 @@ const removeItem = (index: number) => {
             :item="item"
             :index="index"
             :queue-id="queueId"
+            :disable-done-animation="disableDoneAnimation"
             @cancel-item="cancelItem"
             @remove-item="removeItem"
-            :disable-done-animation="disableDoneAnimation"
           />
         </VRow>
       </div>

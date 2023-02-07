@@ -54,6 +54,6 @@ onMounted(async () => {
       @switch-slot="switchSlot"
       @refresh-list="getList"
     />
-    <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
+    <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
   </div>
 </template>

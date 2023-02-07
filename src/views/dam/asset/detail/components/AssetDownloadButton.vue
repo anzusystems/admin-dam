@@ -74,8 +74,8 @@ const onCancel = () => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
@@ -90,7 +90,7 @@ const onCancel = () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text @click.stop="onCancel" data-cy="button-cancel">Close</VBtn>
+        <VBtn text data-cy="button-cancel" @click.stop="onCancel">Close</VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

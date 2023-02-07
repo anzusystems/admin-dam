@@ -33,9 +33,9 @@ const removeItem = (index: number) => {
     <Draggable v-model="distributionCategorySelect.options" item-key="position" @change="reorder">
       <template #item="{ index }">
         <DistributionCategoryOptionEditForm
-          class="draggable__item"
-          v-model="distributionCategorySelect.options[index]"
           :key="index"
+          v-model="distributionCategorySelect.options[index]"
+          class="draggable__item"
           @remove="() => removeItem(index)"
         >
         </DistributionCategoryOptionEditForm>

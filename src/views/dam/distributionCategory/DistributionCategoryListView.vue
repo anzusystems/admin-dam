@@ -36,16 +36,16 @@ const onCreateSuccess = (type: AssetType) => {
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_CREATE">
       <DistributionCategoryCreateButton
         :initial-asset-type="assetType"
-        @on-create-success="onCreateSuccess"
         data-cy="button-create"
+        @on-create-success="onCreateSuccess"
       />
     </Acl>
   </ActionbarButtonsWrapper>
   <ACard :loading="listLoading">
     <DistributionCategoryDatatable
       :key="assetType"
-      :distribution-service-slugs="getAvailableDistributionServiceSlugs(assetType)"
       ref="datatable"
+      :distribution-service-slugs="getAvailableDistributionServiceSlugs(assetType)"
     />
   </ACard>
 </template>

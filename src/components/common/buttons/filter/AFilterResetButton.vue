@@ -30,8 +30,8 @@ const onClick = (event: Event) => {
     :data-cy="dataCy"
     color="light"
     min-width="36px"
-    @click.stop="onClick"
     variant="flat"
+    @click.stop="onClick"
   >
     <VIcon color="grey darken-1" icon="mdi-filter-remove-outline" />
     <VTooltip activator="parent" location="bottom">Reset</VTooltip>

@@ -15,7 +15,7 @@ const item = computed(() => {
 
 <template>
   <div class="d-inline-flex">
-    <VChip rounded="lg" size="small" variant="tonal" v-if="item">
+    <VChip v-if="item" rounded="lg" size="small" variant="tonal">
       {{ item.title }}
     </VChip>
   </div>

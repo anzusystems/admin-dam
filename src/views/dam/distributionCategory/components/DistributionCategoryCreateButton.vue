@@ -88,14 +88,7 @@ const { assetTypeOptions } = useAssetType()
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.permissionGroup.meta.create') }}</span>
         <VSpacer />
-        <VBtn
-          class="ml-2"
-          icon="mdi-close"
-          size="small"
-          variant="text"
-          @click.stop="onCancel"
-          data-cy="button-close"
-        />
+        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
@@ -107,16 +100,12 @@ const { assetTypeOptions } = useAssetType()
             />
           </ARow>
           <ARow>
-            <ATextField
-              v-model="distributionCategory.name"
-              :v="v$.distributionCategory.name"
-              data-cy="category-name"
-            />
+            <ATextField v-model="distributionCategory.name" :v="v$.distributionCategory.name" data-cy="category-name" />
           </ARow>
           <ARow
-            class="mt-5"
             v-for="distributionCategorySelect in distributionCategorySelects"
             :key="distributionCategorySelect.serviceSlug"
+            class="mt-5"
           >
             <DistributionCategorySelectOptionSelect
               v-model="distributionCategorySelectedOptions[distributionCategorySelect.serviceSlug]"
@@ -128,10 +117,10 @@ const { assetTypeOptions } = useAssetType()
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" :loading="createButtonLoading" data-cy="button-confirm">
+        <VBtn color="success" :loading="createButtonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

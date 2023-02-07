@@ -38,12 +38,12 @@ const onSubmit = () => {
         />
       </VForm>
       <VBtn
-        @click.stop="onSubmit"
         color="primary"
         size="large"
         variant="flat"
         data-cy="button-login"
         :loading="loginButtonLoading"
+        @click.stop="onSubmit"
       >
         {{ t('auth.simpleLogin.buttons.login') }}
       </VBtn>
