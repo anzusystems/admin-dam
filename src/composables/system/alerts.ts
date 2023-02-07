@@ -4,6 +4,8 @@ import type { ApiErrors } from '@/composables/system/error'
 
 const DEFAULT_DURATION_SECONDS = 3
 
+export const NEW_LINE_MARK = '\n'
+
 export type RecordWasType =
   | 'created'
   | 'deleted'
@@ -96,11 +98,11 @@ export function useAlerts() {
 
   const showApiError = (errors: ApiErrors[], duration = -1, fieldIsTranslated = false) => {
     const { t } = i18n.global || i18n
-    let text = t('common.alerts.fixApiValidationErrors') + '<br>'
+    let text = t('common.alerts.fixApiValidationErrors') + NEW_LINE_MARK
     for (let i = 0; i < errors.length; i++) {
       text += fieldIsTranslated ? errors[i].field + ': ' : t(errors[i].field) + ': '
       for (let j = 0; j < errors[i].errors.length; j++) {
-        text += t('common.alerts.apiValidationErrors.' + errors[i].errors[j]) + '<br>'
+        text += t('common.alerts.apiValidationErrors.' + errors[i].errors[j]) + NEW_LINE_MARK
       }
     }
     notify({

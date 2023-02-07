@@ -6,6 +6,7 @@ import axios, { type CancelTokenSource } from 'axios'
 import { useErrorHandler, type ValidationResponseData } from '@/composables/system/error'
 import { i18n } from '@/plugins/i18n'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
+import { NEW_LINE_MARK } from '@/composables/system/alerts'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
@@ -41,7 +42,7 @@ const handleValidationErrorMessage = (error: Error | any) => {
         errorMessages.push(t('system.uploadErrors.systemError') + ': ' + key + ' - ' + values.join(','))
     }
   }
-  return errorMessages.length > 0 ? errorMessages.join('<br>') : t('system.uploadErrors.unknownError')
+  return errorMessages.length > 0 ? errorMessages.join(NEW_LINE_MARK) : t('system.uploadErrors.unknownError')
 }
 
 const readFile = async (index: number, file: File, chunkSize: number): Promise<{ data: string; offset: number }> => {
