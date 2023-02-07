@@ -12,6 +12,7 @@ import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProvid
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
 import ExternalProviderAssetDetailDialogSidebar from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { isNull } from '@/utils/common'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void
@@ -78,7 +79,7 @@ const toolbarTitle = computed(() => {
   return asset.value.texts.displayTitle
 })
 const totalCountText = computed(() => {
-  if (!externalProviderAssetListStore.activeItemIndex) return ''
+  if (isNull(externalProviderAssetListStore.activeItemIndex)) return ''
   return (
     externalProviderAssetListStore.activeItemIndex +
     1 +
