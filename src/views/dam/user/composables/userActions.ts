@@ -53,6 +53,7 @@ export const useUserDetailActions = () => {
       const user = await fetchUser(id)
       userOneStore.setUser(user)
       user.adminToExtSystems.forEach((id) => addToLazyExtSystemBuffer(id))
+      user.userToExtSystems.forEach((id) => addToLazyExtSystemBuffer(id))
       user.assetLicences.forEach((id) => addToLazyAssetLicenceBuffer(id))
       fetchLazyExtSystem()
       fetchLazyAssetLicence()

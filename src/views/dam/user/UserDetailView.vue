@@ -37,6 +37,12 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_UPDATE">
       <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.USER.EDIT"></AEditButton>
+      <AEditButton
+        v-if="loaded"
+        :record-id="id"
+        :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
+        buttonT="coreDam.user.button.editPermissions"
+      ></AEditButton>
     </Acl>
     <ACloseButton :route-name="ROUTE.DAM.USER.LIST"></ACloseButton>
   </ActionbarButtonsWrapper>

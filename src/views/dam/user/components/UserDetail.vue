@@ -5,27 +5,21 @@ import ARow from '@/components/common/ARow.vue'
 import ACopyText from '@/components/common/ACopyText.vue'
 import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/dam/userStore'
-import ABooleanValue from '@/components/common/ABooleanValue.vue'
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
 import ExternalProviderAssetChip from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/dam/distribution/components/DistributionServiceChip.vue'
 import LazyAssetLicenceChip from '@/views/dam/assetLicence/components/LazyAssetLicenceChip.vue'
-import { damPubConfig } from '@/services/DamConfigService'
-import { UserAuthType } from '@/types/dam/DamConfig'
 
 const { user } = storeToRefs(useUserOneStore())
 
 const { t } = useI18n({ useScope: 'global' })
-
-const userAuthType = damPubConfig.userAuthType
 </script>
 
 <template>
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
         <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName"></ARow>
         <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName"></ARow>
         <ARow :title="t('coreDam.user.model.assetLicences')">
@@ -44,6 +38,14 @@ const userAuthType = damPubConfig.userAuthType
             v-for="adminToExtSystem in user.adminToExtSystems"
           ></LazyExtSystemChip>
         </ARow>
+        <ARow :title="t('coreDam.user.model.userToExtSystems')">
+          <LazyExtSystemChip
+            class="mr-1"
+            :id="userToExtSystem"
+            :key="userToExtSystem"
+            v-for="userToExtSystem in user.userToExtSystems"
+          ></LazyExtSystemChip>
+        </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <ExternalProviderAssetChip
             class="mr-1"
@@ -60,9 +62,6 @@ const userAuthType = damPubConfig.userAuthType
             v-for="allowedDistributionService in user.allowedDistributionServices"
           ></DistributionServiceChip>
         </ARow>
-        <ARow :title="t('coreDam.user.model.enabled')">
-          <ABooleanValue chip :value="user.enabled"></ABooleanValue>
-        </ARow>
       </ACard>
     </VCol>
     <VCol cols="4">
@@ -70,7 +69,7 @@ const userAuthType = damPubConfig.userAuthType
         <ARow :title="t('coreDam.user.model.id')">
           <ACopyText :value="user.id"></ACopyText>
         </ARow>
-        <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.id')" :value="user.id"></ARow>
+        <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
         <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
       </ACard>
     </VCol>
