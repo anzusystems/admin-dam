@@ -10,7 +10,8 @@ model:
   enabled: Enabled
   plainPassword: New password
   assetLicences: Licences
-  adminToExtSystems: External Systems Admin
+  userToExtSystems: User to External Systems
+  adminToExtSystems: Admin to External Systems
   superAdmin: Super admin
   permissionGroups: Permission Group
   allowedAssetExternalProviders: Allowed External asset providers
@@ -23,3 +24,5 @@ meta:
   edit: Edit User
   detail: User detail
   list: List of Users
+button:
+  editPermissions: Edit Permissions

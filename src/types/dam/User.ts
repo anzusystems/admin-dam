@@ -12,6 +12,7 @@ export interface UpdateUser extends Pick<UserMinimal, 'id' | 'firstName' | 'last
   allowedAssetExternalProviders: string[]
   allowedDistributionServices: string[]
   adminToExtSystems: IntegerId[]
+  userToExtSystems: IntegerId[]
   plainPassword?: string
 }
 
