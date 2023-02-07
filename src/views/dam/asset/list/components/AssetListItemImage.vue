@@ -49,6 +49,6 @@ const icon = computed(() => {
     style="width: 100%; min-width: 200px"
     class="asset-list-item-image-placeholder d-flex align-center justify-center"
   >
-    <VIcon size="100" v-if="icon.length" :icon="icon" color="#363636"></VIcon>
+    <VIcon size="100" v-if="icon.length" :icon="icon" color="#363636"/>
   </div>
 </template>

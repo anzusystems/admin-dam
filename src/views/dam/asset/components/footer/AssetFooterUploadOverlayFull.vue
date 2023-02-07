@@ -10,7 +10,6 @@ import { useTheme } from '@/composables/system/themeSettings'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
@@ -18,6 +17,9 @@ import { useAssetListActions } from '@/views/dam/asset/list/composables/assetLis
 const { t } = useI18n({ useScope: 'global' })
 
 const { toolbarColor } = useTheme()
+
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
 
 const { fetchAssetList } = useAssetListActions()
 
@@ -62,44 +64,39 @@ const toggleMassOperations = async () => {
 
 const { showRecordWas, showValidationError } = useAlerts()
 const { handleError } = useErrorHandler()
-const { btn, btnReset, btnLoadingOn, btnDisable, btnEnable } = useUiHelper()
 
 const v$ = useVuelidate()
 
 const onSave = async () => {
   if (list.value.length === 0) return
-  btnDisable('save', 'saveAndClose')
+  saveButtonLoading.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
     showValidationError()
-    btnEnable('save', 'saveAndClose')
+    saveButtonLoading.value = false
     return
   }
   try {
-    btnLoadingOn('save')
-    btnDisable('saveAndClose')
     await bulkUpdateAssetsMetadata(list.value)
     fetchAssetList()
     showRecordWas('updated')
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('save', 'saveAndClose')
+    saveButtonLoading.value = true
   }
 }
 
 const onSaveAndClose = async () => {
   if (list.value.length === 0) return
-  btnDisable('save', 'saveAndClose')
+  saveAndCloseButtonLoading.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
     showValidationError()
-    btnEnable('save', 'saveAndClose')
+    saveAndCloseButtonLoading.value = false
     return
   }
   try {
-    btnLoadingOn('saveAndClose')
-    btnDisable('save')
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     await onStopConfirm()
@@ -107,7 +104,7 @@ const onSaveAndClose = async () => {
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('save', 'saveAndClose')
+    saveAndCloseButtonLoading.value = false
   }
 }
 </script>
@@ -131,7 +128,7 @@ const onSaveAndClose = async () => {
         </div>
         <VSpacer />
         <div class="text-caption d-flex align-center" v-if="isUploading">
-          <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"></VProgressCircular>
+          <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"/>
           <div>{{ t('coreDam.asset.upload.uploading') }} {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
         </div>
         <div class="d-flex align-center">
@@ -144,8 +141,8 @@ const onSaveAndClose = async () => {
             :height="36"
             class="mr-2"
             rounded="pill"
-            :loading="btn.saveAndClose.loading"
-            :disabled="btn.saveAndClose.disabled"
+            :loading="saveAndCloseButtonLoading"
+            :disabled="saveButtonLoading"
           >
             {{ t('coreDam.asset.upload.saveAndClose') }}
           </VBtn>
@@ -157,8 +154,8 @@ const onSaveAndClose = async () => {
             class="mr-2"
             icon
             color="secondary"
-            :loading="btn.save.loading"
-            :disabled="btn.save.disabled"
+            :loading="saveButtonLoading"
+            :disabled="saveAndCloseButtonLoading"
           >
             <VIcon icon="mdi-content-save" />
             <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.upload.save') }}</VTooltip>
@@ -188,13 +185,13 @@ const onSaveAndClose = async () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-down"></VIcon>
+            <VIcon icon="mdi-chevron-down"/>
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <AssetFooterUploadButtonStop @confirm="onStopConfirm" :button-size="36" :is-uploading="isUploading" />
         </div>
       </VToolbar>
-      <AssetQueueEditable :queue-id="QUEUE_ID_UPLOAD_GLOBAL" :mass-operations="massOperations"></AssetQueueEditable>
+      <AssetQueueEditable :queue-id="QUEUE_ID_UPLOAD_GLOBAL" :mass-operations="massOperations"/>
     </div>
     <AssetUpload />
   </div>

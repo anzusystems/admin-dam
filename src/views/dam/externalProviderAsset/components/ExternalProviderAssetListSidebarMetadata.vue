@@ -27,7 +27,7 @@ const onImport = () => {
 <template>
   <VNavigationDrawer v-model="sidebarRight" permanent location="right" :width="300">
     <div class="d-flex w-100 h-100 align-center justify-center" v-if="loader">
-      <VProgressCircular indeterminate color="primary"></VProgressCircular>
+      <VProgressCircular indeterminate color="primary" />
     </div>
     <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="!asset">
       {{ t('coreDam.asset.detail.noAssetSelected') }}

@@ -28,7 +28,7 @@ const { currentUser } = useCurrentUser()
           </VListItem>
         </VList>
         <VList>
-          <VDivider></VDivider>
+          <VDivider/>
           <VListItem
             prepend-icon="mdi-logout-variant"
             :to="{ name: ROUTE.SYSTEM.LOGOUT }"

@@ -12,7 +12,7 @@ import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 
-const { loaded, fetchData, resetStore } = useExtSystemDetailActions()
+const { detailLoading, fetchData, resetStore } = useExtSystemDetailActions()
 
 const route = useRoute()
 const id = toInt(route.params.id)
@@ -36,9 +36,11 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT" />
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT" />
     </Acl>
     <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
   </ActionbarButtonsWrapper>
-  <ExtSystemDetail />
+  <ACard :loading="detailLoading">
+    <ExtSystemDetail />
+  </ACard>
 </template>

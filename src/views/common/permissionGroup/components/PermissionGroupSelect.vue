@@ -48,5 +48,5 @@ const innerFilter = usePermissionGroupFilter()
     chips
     closable-chips
     hide-details
-  ></ARemoteSelect>
+  />
 </template>

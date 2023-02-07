@@ -1,54 +1,37 @@
 <script lang="ts" setup>
-import { isNull } from '@/utils/common'
-import type { LoaderName } from '@/composables/system/uiHelper'
-import { useUiHelper } from '@/composables/system/uiHelper'
-import { computed } from 'vue'
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    loading?: boolean | null
-    loader?: LoaderName | ''
+    variant?: string
+    loading?: boolean
     innerDivClass?: string
     title?: string
   }>(),
   {
-    loading: null,
-    loader: '',
+    variant: 'flat',
+    loading: undefined,
     innerDivClass: 'pa-2',
     title: undefined,
   }
 )
-
-const { loader: globalLoader } = useUiHelper()
-
-const loadingComputed = computed(() => {
-  if (!isNull(props.loading)) {
-    return props.loading
-  }
-  if (props.loader !== '') {
-    return globalLoader[props.loader]
-  }
-  return false
-})
 </script>
 
 <template>
-  <VCard :title="title" elevation="0">
-    <div class="progress-container">
-      <VProgressLinear :active="loadingComputed" color="primary" height="3" indeterminate rounded></VProgressLinear>
-    </div>
+  <VCard :title="title" :variant="variant" class="position-relative" :loading="loading">
+    <!--    <div class="progress-container">-->
+    <!--      <VProgressLinear v-if="loading" :active="true" color="primary" height="3" indeterminate rounded />-->
+    <!--    </div>-->
     <div :class="innerDivClass">
-      <slot></slot>
+      <slot />
     </div>
-    <div v-show="loadingComputed" class="a-overlay"></div>
+    <div v-show="loading" class="a-overlay" />
   </VCard>
 </template>
 
 <style lang="scss" scoped>
-.progress-container {
-  height: 3px;
-  width: 100%;
-}
+//.progress-container {
+//  height: 3px;
+//  width: 100%;
+//}
 
 .a-overlay {
   position: absolute;

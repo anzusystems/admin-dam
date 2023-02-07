@@ -151,7 +151,7 @@ onMounted(async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VRow class="mb-2">
           <VCol>
-            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
+            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required/>
           </VCol>
         </VRow>
         <VRow class="mb-2">
@@ -160,12 +160,12 @@ onMounted(async () => {
               v-model="distribution.texts.description"
               :v="v$.distribution.texts.description"
               required
-            ></ATextarea>
+            />
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required></ATextField>
+            <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required/>
           </VCol>
         </VRow>
         <VRow class="mb-2">
@@ -177,7 +177,7 @@ onMounted(async () => {
               multiple
               chips
               closable-chips
-            ></VCombobox>
+            />
           </VCol>
         </VRow>
       </ASystemEntityScope>

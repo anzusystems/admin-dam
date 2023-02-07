@@ -37,9 +37,9 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.detail')" icon="mdi-account-edit-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_UPDATE" v-if="!loadingAnzuUser">
-      <AEditButton :record-id="id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" :loading="loadingAnzuUser"></AEditButton>
+      <AEditButton :record-id="id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" :loading="loadingAnzuUser"/>
     </Acl>
-    <ACloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST"/>
   </ActionbarButtonsWrapper>
   <AnzuUserDetail :client="damClient" />
 </template>

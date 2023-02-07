@@ -6,8 +6,10 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import PodcastCreateButton from '@/views/dam/podcast/components/PodcastCreateButton.vue'
 import PodcastDatatable from '@/views/dam/podcast/components/PodcastDatatable.vue'
 import { ref } from 'vue'
+import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastActions'
 
 const { t } = useI18n({ useScope: 'global' })
+const { listLoading } = usePodcastListActions()
 
 const datatable = ref<InstanceType<typeof PodcastDatatable> | null>(null)
 
@@ -21,7 +23,7 @@ const afterCreate = () => {
   <ActionbarButtonsWrapper>
     <PodcastCreateButton data-cy="button-create" @after-create="afterCreate" disable-redirect />
   </ActionbarButtonsWrapper>
-  <ACard loader="list">
+  <ACard :loading="listLoading">
     <PodcastDatatable ref="datatable" />
   </ACard>
 </template>

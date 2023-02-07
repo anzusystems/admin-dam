@@ -38,13 +38,13 @@ const { t } = useI18n({ useScope: 'global' })
         :v="v$.distributionCategoryOption.name"
         v-model="modelValue.name"
         data-cy="ext-system-name"
-      ></ATextField>
+      />
     </VCol>
     <VCol cols="12" sm="1">
       <ABooleanToggle
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
         v-model="modelValue.assignable"
-      ></ABooleanToggle>
+      />
     </VCol>
     <VCol cols="12" sm="6">
       <ATextField
@@ -53,7 +53,7 @@ const { t } = useI18n({ useScope: 'global' })
         :v="v$.distributionCategoryOption.value"
         v-model="modelValue.value"
         data-cy="ext-system-name"
-      ></ATextField>
+      />
     </VCol>
   </VRow>
 </template>

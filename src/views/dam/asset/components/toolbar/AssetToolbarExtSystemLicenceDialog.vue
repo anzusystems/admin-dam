@@ -161,7 +161,7 @@ onMounted(async () => {
             variant="text"
             @click.stop="onCancel"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">
@@ -180,7 +180,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol>
-              <VTextField v-model="selectedExtSystem" hide-details label="Ext system ID"></VTextField>
+              <VTextField v-model="selectedExtSystem" hide-details label="Ext system ID"/>
             </VCol>
           </VRow>
           <VRow>
@@ -194,7 +194,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol>
-              <VTextField v-model="selectedLicence" hide-details label="Licence ID"></VTextField>
+              <VTextField v-model="selectedLicence" hide-details label="Licence ID"/>
             </VCol>
           </VRow>
           <div class="mb-4 text-caption font-weight-bold">Change to licence ID: {{ selectedLicence }}</div>
@@ -211,7 +211,7 @@ onMounted(async () => {
           @update:model-value="selectedLicence = undefined"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required"></span></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required"/></span>
           </template>
         </VSelect>
         <VSelect
@@ -222,7 +222,7 @@ onMounted(async () => {
           :error-messages="errorMessageLicence"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="required"></span></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="required"/></span>
           </template>
         </VSelect>
       </VCardText>

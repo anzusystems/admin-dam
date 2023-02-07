@@ -33,7 +33,7 @@ const availableLocales = computed(() => {
     <template v-slot:activator="{ props }">
       <VBtn class="pl-1" rounded="pill" v-bind="props" variant="text" data-cy="settings-language">
         <VAvatar class="mr-1" size="30">
-          <div class="flag" v-html="getLocaleFlag(currentLocale?.code)"></div>
+          <div class="flag" v-html="getLocaleFlag(currentLocale?.code)"/>
         </VAvatar>
         {{ currentLocale.title }}
       </VBtn>
@@ -43,7 +43,7 @@ const availableLocales = computed(() => {
         <VListItem v-for="locale in availableLocales" :key="locale.code" @click.stop="onLocaleChange(locale.code)">
           <VListItemTitle>
             <VAvatar class="mr-1" size="30">
-              <div class="flag" v-html="getLocaleFlag(locale.code)"></div>
+              <div class="flag" v-html="getLocaleFlag(locale.code)"/>
             </VAvatar>
             {{ locale.title }}
           </VListItemTitle>

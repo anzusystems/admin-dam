@@ -33,7 +33,7 @@ const isBoolean = computed(() => typeof value.value === 'boolean')
 <template>
   <td>
     <slot :name="normalizeForSlotName(column.name)" :data="value">
-      <ABooleanValue v-if="isBoolean" chip :value="value"></ABooleanValue>
+      <ABooleanValue v-if="isBoolean" chip :value="value" />
       <span v-else>{{ formattedValue }}</span>
     </slot>
   </td>

@@ -119,5 +119,5 @@ watchDebounced(
     :label="modelValue.title"
     :multiple="modelValue.multiple"
     :clearable="!modelValue.mandatory"
-  ></VAutocomplete>
+  />
 </template>

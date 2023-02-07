@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { clickBlur } from '@/utils/event'
 import { useI18n } from 'vue-i18n'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -63,15 +62,15 @@ const { t } = useI18n({ useScope: 'global' })
             variant="text"
             @click.stop="onCancel"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <VCardActions>
         <VSpacer />
-        <ABtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
-        </ABtn>
-        <ABtn color="error" @click.stop="onConfirm" data-cy="button-confirm">{{ t('common.upload.stop') }}</ABtn>
+        </VBtn>
+        <VBtn color="error" @click.stop="onConfirm" data-cy="button-confirm">{{ t('common.upload.stop') }}</VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

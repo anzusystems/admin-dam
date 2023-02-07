@@ -122,13 +122,13 @@ const { t } = useI18n({ useScope: 'global' })
                   :available-grants="getAvailableGrants(permissionSubject, permissionAction)"
                   :selected-grant="getSelectedGrant(permissionSubject, permissionAction)"
                   @change="changeGrant(permissionSubject, permissionAction, $event)"
-                ></PermissionGrantEditor>
+                />
               </td>
               <td>
                 <PermissionValueChip
                   :grant="getResolvedGrant(permissionSubject, permissionAction)"
                   :grant-origin="getGrantOrigin(permissionSubject, permissionAction)"
-                ></PermissionValueChip>
+                />
               </td>
             </tr>
           </template>

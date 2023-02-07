@@ -11,7 +11,6 @@ interface State {
   distributionCategory: DistributionCategory
   distributionCategorySelects: DistributionCategorySelect[]
   distributionCategorySelectedOptions: Partial<Record<DistributionServiceName, DistributionCategoryOption | null>>
-  loaded: boolean
 }
 
 export const useDistributionCategoryOneStore = defineStore('distributionCategoryOneStore', {
@@ -19,7 +18,6 @@ export const useDistributionCategoryOneStore = defineStore('distributionCategory
     distributionCategory: createDefault(0),
     distributionCategorySelects: [],
     distributionCategorySelectedOptions: {},
-    loaded: false,
   }),
   actions: {
     setDistributionCategory(distributionCategory: DistributionCategory, selects: DistributionCategorySelect[]) {
@@ -30,14 +28,10 @@ export const useDistributionCategoryOneStore = defineStore('distributionCategory
           distributionCategory.selectedOptionsDetail.find((option) => option.serviceSlug === select.serviceSlug) ?? null
       })
     },
-    setLoaded(loaded: boolean) {
-      this.loaded = loaded
-    },
     reset() {
       this.distributionCategory = createDefault(0)
       this.distributionCategorySelects = []
       this.distributionCategorySelectedOptions = {}
-      this.loaded = false
     },
   },
 })

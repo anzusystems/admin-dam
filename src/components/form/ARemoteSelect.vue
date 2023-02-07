@@ -223,7 +223,7 @@ onMounted(async () => {
   >
     <template #label>
       <span v-if="!hideLabel" :key="requiredComputed + ''"
-        >{{ labelComputed }}<span v-if="requiredComputed" class="required"></span>
+        >{{ labelComputed }}<span v-if="requiredComputed" class="required" />
       </span>
     </template>
     <template v-if="chips" #chip="{ props, item }">

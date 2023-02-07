@@ -50,13 +50,13 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.DETAIL"></ADetailButton>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.DETAIL" />
+        <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT"></AEditButton>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT" />
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

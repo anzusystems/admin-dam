@@ -48,12 +48,12 @@ const totalCountText = computed(() => {
         <VSpacer />
         <div>
           <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
-            <VIcon icon="mdi-close"></VIcon>
+            <VIcon icon="mdi-close"/>
           </VBtn>
         </div>
       </VToolbar>
       <div class="d-flex w-100 h-100 justify-center align-center">
-        <VProgressCircular indeterminate color="primary"></VProgressCircular>
+        <VProgressCircular indeterminate color="primary"/>
       </div>
     </div>
   </VCard>

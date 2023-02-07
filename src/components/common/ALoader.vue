@@ -16,12 +16,5 @@ withDefaults(
 </script>
 
 <template>
-  <VProgressCircular
-    v-if="active"
-    indeterminate
-    :data-cy="dataCy"
-    :color="color"
-    :size="size"
-    :width="2"
-  ></VProgressCircular>
+  <VProgressCircular v-if="active" indeterminate :data-cy="dataCy" :color="color" :size="size" :width="2" />
 </template>

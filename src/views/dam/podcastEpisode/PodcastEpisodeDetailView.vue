@@ -8,8 +8,9 @@ import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { usePodcastEpisodeDetailActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeDetail from '@/views/dam/podcastEpisode/components/PodcastEpisodeDetail.vue'
+import ACard from '@/components/common/ACard.vue'
 
-const { loaded, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
+const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -39,7 +40,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.detail')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT"></AEditButton>
+    <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
     <VBtn
       class="ml-2"
       :to="closeRoute"
@@ -49,7 +50,9 @@ onBeforeUnmount(() => {
       :width="36"
       :height="36"
       data-cy="button-close"
-    ></VBtn>
+    />
   </ActionbarButtonsWrapper>
-  <PodcastEpisodeDetail></PodcastEpisodeDetail>
+  <ACard :loading="detailLoading">
+    <PodcastEpisodeDetail />
+  </ACard>
 </template>

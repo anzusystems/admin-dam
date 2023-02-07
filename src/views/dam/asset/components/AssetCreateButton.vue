@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 import ARow from '@/components/common/ARow.vue'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -11,7 +10,6 @@ import { useAssetType } from '@/model/dam/valueObject/AssetType'
 import { useI18n } from 'vue-i18n'
 import type { AssetCreateDto, AssetDetailItemDto } from '@/types/dam/Asset'
 import { createAsset } from '@/services/api/dam/assetApi'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
@@ -28,6 +26,7 @@ const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { createCreateDto } = useAssetFactory()
 const asset = ref<AssetCreateDto>(createCreateDto())
 const dialog = ref(false)
+const buttonLoading = ref(false)
 
 const onClick = () => {
   asset.value = createCreateDto()
@@ -38,7 +37,6 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const { btnLoadingOn, btnReset } = useUiHelper()
 const { showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
@@ -59,7 +57,7 @@ const showDetail = async (asset: AssetDetailItemDto) => {
 
 const onConfirm = async () => {
   try {
-    btnLoadingOn('create')
+    buttonLoading.value = true
     const res = await createAsset(currentAssetLicenceId.value, asset.value)
     showRecordWas('created')
     dialog.value = false
@@ -68,7 +66,7 @@ const onConfirm = async () => {
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('create')
+    buttonLoading.value = false
   }
 }
 
@@ -92,7 +90,7 @@ const { assetTypeOptions } = useAssetType()
           variant="text"
           @click.stop="onCancel"
           data-cy="button-close"
-        ></VBtn>
+        />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
@@ -102,7 +100,7 @@ const { assetTypeOptions } = useAssetType()
               v-model="asset.type"
               :items="assetTypeOptions"
               data-cy="author-type"
-            ></AValueObjectOptionsSelect>
+            />
           </ARow>
         </VContainer>
       </ASystemEntityScope>
@@ -111,9 +109,9 @@ const { assetTypeOptions } = useAssetType()
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
+        <VBtn color="success" @click.stop="onConfirm" :loading="buttonLoading" data-cy="button-confirm">
           {{ t('common.button.create') }}
-        </ABtn>
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

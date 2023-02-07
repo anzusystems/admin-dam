@@ -11,8 +11,9 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
+import ACard from '@/components/common/ACard.vue'
 
-const { loaded, fetchData, resetStore } = useUserDetailActions()
+const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 
 const route = useRoute()
 const id = toInt(route.params.id)
@@ -36,9 +37,11 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.user.meta.detail')" icon="mdi-account" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.USER.EDIT"></AEditButton>
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.USER.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.USER.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.USER.LIST" />
   </ActionbarButtonsWrapper>
-  <UserDetail></UserDetail>
+  <ACard :loading="detailLoading">
+    <UserDetail />
+  </ACard>
 </template>

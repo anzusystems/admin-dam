@@ -17,7 +17,8 @@ const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { loaded, fetchData, resetStore, onUpdate } = useDistributionCategoryEditActions()
+const { saveAndCloseButtonLoading, saveButtonLoading, detailLoading, fetchData, resetStore, onUpdate } =
+  useDistributionCategoryEditActions()
 
 const getData = () => {
   fetchData(id)
@@ -35,11 +36,21 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.edit')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton v-if="loaded" @save-record="onUpdate"></ASaveButton>
-    <ASaveAndCloseButton v-if="loaded" @save-record-and-close="onUpdate(true)"></ASaveAndCloseButton>
-    <ACloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST"></ACloseButton>
+    <ASaveButton
+      v-if="!detailLoading"
+      @save-record="onUpdate"
+      :loading="saveButtonLoading"
+      :disabled="saveAndCloseButtonLoading"
+    />
+    <ASaveAndCloseButton
+      v-if="!detailLoading"
+      @save-record-and-close="onUpdate(true)"
+      :loading="saveAndCloseButtonLoading"
+      :disabled="saveButtonLoading"
+    />
+    <ACloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST" />
   </ActionbarButtonsWrapper>
-  <ACard loader="edit">
-    <DistributionCategoryEditForm></DistributionCategoryEditForm>
+  <ACard :loading="detailLoading">
+    <DistributionCategoryEditForm />
   </ACard>
 </template>

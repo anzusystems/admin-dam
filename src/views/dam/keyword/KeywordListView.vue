@@ -8,10 +8,13 @@ import KeywordCreateButton from '@/views/dam/keyword/components/KeywordCreateBut
 import KeywordDatatable from '@/views/dam/keyword/components/KeywordDatatable.vue'
 import { ref } from 'vue'
 import AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
+import { useKeywordListActions } from '@/views/dam/keyword/composables/keywordActions'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
+
+const { listLoading } = useKeywordListActions()
 
 const afterCreate = () => {
   // todo check why timeout is needed
@@ -28,7 +31,7 @@ const afterCreate = () => {
       <KeywordCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
     </Acl>
   </ActionbarButtonsWrapper>
-  <ACard loader="list">
+  <ACard :loading="listLoading">
     <KeywordDatatable ref="datatable" />
   </ACard>
 </template>

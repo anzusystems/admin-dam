@@ -1,4 +1,3 @@
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { ref } from 'vue'
@@ -17,25 +16,30 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import type { DocId } from '@anzusystems/common-admin'
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
+
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
 
 export const usePodcastEpisodeListActions = () => {
   const listItems = ref<PodcastEpisode[]>([])
 
   const fetchList = async (podcastId: DocId, pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchPodcastEpisodeListByPodcast(podcastId, pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -43,24 +47,23 @@ export const usePodcastEpisodeListActions = () => {
 
 export const usePodcastEpisodeDetailActions = () => {
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
-  const { podcastEpisode, loaded } = storeToRefs(podcastEpisodeOneStore)
+  const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
 
   const fetchData = async (id: string) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const podcastEpisode = await fetchPodcastEpisode(id)
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
-      podcastEpisodeOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
     podcastEpisode,
-    loaded,
+    detailLoading,
     fetchData,
     resetStore: podcastEpisodeOneStore.reset,
   }
@@ -70,32 +73,30 @@ export const usePodcastEpisodeEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
-  const { podcastEpisode, loaded } = storeToRefs(podcastEpisodeOneStore)
+  const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
 
   const fetchData = async (id: string) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const podcastEpisode = await fetchPodcastEpisode(id)
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
-      podcastEpisodeOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       await updatePodcastEpisode(podcastEpisodeOneStore.podcastEpisode.id, podcastEpisode.value)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
@@ -103,12 +104,15 @@ export const usePodcastEpisodeEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     podcastEpisode,
     fetchData,
     onUpdate,

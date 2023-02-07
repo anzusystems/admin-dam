@@ -213,7 +213,7 @@ onUnmounted(async () => {
             <VCol cols="6">
               <VRow class="mb-2">
                 <VCol>
-                  <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required></ATextarea>
+                  <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required/>
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -222,7 +222,7 @@ onUnmounted(async () => {
                     v-model="distribution.texts.description"
                     :v="v$.distribution.texts.description"
                     required
-                  ></ATextarea>
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -234,7 +234,7 @@ onUnmounted(async () => {
                     multiple
                     chips
                     closable-chips
-                  ></VCombobox>
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -243,12 +243,12 @@ onUnmounted(async () => {
                     v-model="distribution.privacy"
                     :items="distributionYoutubePrivacyOptions"
                     :label="t('coreDam.youtubeDistribution.model.privacy')"
-                  ></AValueObjectOptionsSelect>
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2" v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic">
                 <VCol>
-                  <ADatetimePicker v-model="distribution.publishAt"></ADatetimePicker>
+                  <ADatetimePicker v-model="distribution.publishAt"/>
                 </VCol>
               </VRow>
             </VCol>
@@ -277,7 +277,7 @@ onUnmounted(async () => {
                     :label="t('coreDam.youtubeDistribution.model.flags.embeddable')"
                     v-model="distribution.flags.embeddable"
                     hide-details
-                  ></VSwitch>
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -286,7 +286,7 @@ onUnmounted(async () => {
                     :label="t('coreDam.youtubeDistribution.model.flags.forKids')"
                     v-model="distribution.flags.forKids"
                     hide-details
-                  ></VSwitch>
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -295,7 +295,7 @@ onUnmounted(async () => {
                     :label="t('coreDam.youtubeDistribution.model.flags.notifySubscribers')"
                     v-model="distribution.flags.notifySubscribers"
                     hide-details
-                  ></VSwitch>
+                  />
                 </VCol>
               </VRow>
             </VCol>

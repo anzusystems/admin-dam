@@ -11,8 +11,9 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
+import ACard from '@/components/common/ACard.vue'
 
-const { loaded, fetchData, resetStore } = useAssetLicenceDetailActions()
+const { detailLoading, fetchData, resetStore } = useAssetLicenceDetailActions()
 
 const route = useRoute()
 const id = toInt(route.params.id)
@@ -36,9 +37,11 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT"></AEditButton>
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.ASSET_LICENCE.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.ASSET_LICENCE.LIST" />
   </ActionbarButtonsWrapper>
-  <AssetLicenceDetail></AssetLicenceDetail>
+  <ACard :loading="detailLoading">
+    <AssetLicenceDetail />
+  </ACard>
 </template>
