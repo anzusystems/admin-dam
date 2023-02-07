@@ -9,6 +9,7 @@ model:
   plainPassword: Nové heslo
   assetLicences: Licencie
   adminToExtSystems: Administrátor externých systémov
+  userToExtSystems: Používateľ externých systémov
   superAdmin: Super administrátor
   permissionGroups: Skupiny oprávnení
   allowedAssetExternalProviders: Povolené externé providre assetov
@@ -21,3 +22,5 @@ meta:
   edit: Upraviť používateľa
   detail: Detail používateľa
   list: Zoznam používateľov
+button:
+  editPermissions: Edit Permissions

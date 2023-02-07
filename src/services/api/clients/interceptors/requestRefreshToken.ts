@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig } from 'axios'
+import type { InternalAxiosRequestConfig } from 'axios'
 import { refreshToken } from '@/services/api/dam/authApi'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { logoutUser } from '@/composables/system/currentUser'
@@ -15,8 +15,8 @@ const onRefreshedUser = (accept = true) =>
 const addRefreshUserSubscriber = (callback: AcceptRequestConfigCallbackType) => userRefreshSubscribers.push(callback)
 
 const userRefreshRequestInterceptor = (
-  requestConfig: AxiosRequestConfig
-): Promise<AxiosRequestConfig> | AxiosRequestConfig => {
+  requestConfig: Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig
+): Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig => {
   const cookies = useCookies([envConfig.cookies.refreshTokenExistsName, envConfig.cookies.jwtPayloadName])
 
   if (!cookies.get(envConfig.cookies.refreshTokenExistsName) && !cookies.get(envConfig.cookies.jwtPayloadName)) {
