@@ -54,7 +54,7 @@ onMounted(async () => {
 <template>
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
-      <VBtn color="secondary" @click.stop="addNew" variant="flat">
+      <VBtn color="secondary" variant="flat" @click.stop="addNew">
         {{ t('coreDam.distribution.common.addButton') }}
       </VBtn>
     </AssetDetailSidebarActionsWrapper>
@@ -72,7 +72,7 @@ onMounted(async () => {
         :item="item"
         :asset-type="assetType"
       />
-      <ADatatablePagination v-if="showPagination" hide-records-per-page v-model="pagination" @change="getList" />
+      <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
     </div>
     <DistributionNewDialog v-model="dialogNew" :asset-type="assetType" :asset-id="assetId" @reload-list="reloadList" />
   </div>

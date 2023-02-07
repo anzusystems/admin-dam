@@ -242,31 +242,31 @@ watch(selectedFiles, (newValue, oldValue) => {
   <div v-if="variant === 'icon'" class="dam-upload-icon d-inline-flex">
     <VBtn
       tabindex="-1"
-      @click.stop="clickDropzone"
       icon
       variant="flat"
       :height="height"
       :width="height"
       color="secondary"
+      @click.stop="clickDropzone"
     >
       <VIcon icon="mdi-plus" />
       <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
     </VBtn>
   </div>
   <VBtn
+    v-if="variant === 'slot-upload'"
     tabindex="-1"
-    @click.stop="clickDropzone"
     icon
     variant="flat"
     :height="height"
     :width="height"
-    v-if="variant === 'slot-upload'"
+    @click.stop="clickDropzone"
   >
     <VIcon icon="mdi-plus" :size="18" />
     <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
   </VBtn>
   <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
-    <VBtn tabindex="-1" @click.stop="clickDropzone" color="primary" rounded="pill" variant="flat" :height="height">
+    <VBtn tabindex="-1" color="primary" rounded="pill" variant="flat" :height="height" @click.stop="clickDropzone">
       {{ buttonText }}
     </VBtn>
   </div>
@@ -281,6 +281,7 @@ watch(selectedFiles, (newValue, oldValue) => {
   </div>
   <input
     ref="inputRef"
+    :key="fileInputKey"
     :accept="accept"
     :multiple="multiple"
     :webkitdirectory="directory"
@@ -289,7 +290,6 @@ watch(selectedFiles, (newValue, oldValue) => {
     type="file"
     @change="onFileChange"
     @reset="onReset"
-    :key="fileInputKey"
   />
 </template>
 

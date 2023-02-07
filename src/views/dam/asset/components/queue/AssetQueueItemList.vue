@@ -63,13 +63,13 @@ const showCancel = computed(() => {
             <VIcon v-else icon="mdi-check" color="success" :size="16" />
           </div>
           <VBtn
+            v-if="showCancel"
             icon
             variant="text"
             :width="16"
             :height="16"
-            @click.stop="cancelItem"
-            v-if="showCancel"
             class="dam-upload-queue__item-remove"
+            @click.stop="cancelItem"
           >
             <VIcon icon="mdi-close-circle-outline" :size="16" />
             <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>

@@ -35,13 +35,13 @@ const { t } = useI18n({ useScope: 'global' })
           <VCardText>
             <VRow>
               <VCol cols="12" sm="3">
-                <ATextField v-if="!isEdit" v-model.number="anzuUser.id" :v="v$.anzuUser.id"/>
+                <ATextField v-if="!isEdit" v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
                 <ARow v-else :title="t('common.anzuUser.model.id')">
-                  <ACopyText :value="anzuUser.id"/>
+                  <ACopyText :value="anzuUser.id" />
                 </ARow>
               </VCol>
               <VCol cols="12" sm="7">
-                <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email"/>
+                <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
               </VCol>
               <VCol cols="12" sm="2">
                 <VSwitch
@@ -55,7 +55,7 @@ const { t } = useI18n({ useScope: 'global' })
             </VRow>
             <VRow>
               <VCol cols="12" sm="3">
-                <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client"/>
+                <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />
               </VCol>
               <VCol cols="12" sm="9">
                 <PermissionGroupSelect

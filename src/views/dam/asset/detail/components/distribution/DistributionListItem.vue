@@ -31,10 +31,5 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <component
-    :is="componentComputed"
-    :item="item"
-    :asset-type="assetType"
-    :resource-name="item._resourceName"
-  />
+  <component :is="componentComputed" :item="item" :asset-type="assetType" :resource-name="item._resourceName" />
 </template>

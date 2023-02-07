@@ -25,7 +25,7 @@ const { t } = useI18n({ useScope: 'global' })
       <VRow>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.id') }}</h4>
-          <ACopyText :value="anzuUser.id"/>
+          <ACopyText :value="anzuUser.id" />
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.email') }}</h4>
@@ -33,7 +33,7 @@ const { t } = useI18n({ useScope: 'global' })
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.enabled') }}</h4>
-          <ABooleanValue :value="anzuUser.enabled" chip/>
+          <ABooleanValue :value="anzuUser.enabled" chip />
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.roles') }}</h4>
@@ -41,12 +41,12 @@ const { t } = useI18n({ useScope: 'global' })
             translatePermission('roles', role)
           }}</VChip>
         </VCol>
-        <VCol cols="12" sm="8" v-if="anzuUser.permissionGroups.length > 0">
+        <VCol v-if="anzuUser.permissionGroups.length > 0" cols="12" sm="8">
           <h4>{{ t('common.anzuUser.model.permissionGroups') }}</h4>
           <PermissionGroupLazyChip
             v-for="permissionGroupId in anzuUser.permissionGroups"
-            :key="permissionGroupId"
             :id="permissionGroupId"
+            :key="permissionGroupId"
             class="mr-1 mb-1"
           />
         </VCol>

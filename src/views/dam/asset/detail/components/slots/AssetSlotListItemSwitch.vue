@@ -62,8 +62,8 @@ const onSwitch = () => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
@@ -76,10 +76,10 @@ const onSwitch = () => {
           <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
           {{ fileTitle }}
         </div>
-        <div class="my-2 text-warning" v-if="targetOptions.length === 0">
+        <div v-if="targetOptions.length === 0" class="my-2 text-warning">
           {{ t('coreDam.asset.slots.duplicate.onlyToEmptyWarning') }}
         </div>
-        <div class="my-2" v-else>
+        <div v-else class="my-2">
           <VSelect v-model="targetSlot" :label="t('coreDam.asset.slots.duplicate.to')" :items="targetOptions" />
         </div>
       </VCardText>
@@ -88,13 +88,13 @@ const onSwitch = () => {
         <VBtn
           color="primary"
           text
-          @click.stop="onSwitch"
           data-cy="button-unset"
           :disabled="targetOptions.length === 0 || targetSlot === null"
+          @click.stop="onSwitch"
         >
           {{ t('coreDam.asset.slots.actions.switchSlots') }}
         </VBtn>
-        <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
       </VCardActions>

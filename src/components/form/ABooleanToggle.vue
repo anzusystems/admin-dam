@@ -32,7 +32,7 @@ const value = computed({
 const { t } = useI18n({ useScope: 'global' })
 </script>
 <template>
-  <VLabel class="pr-1" v-if="label">{{ label }}</VLabel>
+  <VLabel v-if="label" class="pr-1">{{ label }}</VLabel>
   <VBtnToggle v-model="value" :mandatory="mandatory">
     <VBtn :value="true" data-cy="toggle-true">{{ t('common.boolean.true') }}</VBtn>
     <VBtn :value="false" data-cy="toggle-false">{{ t('common.boolean.false') }}</VBtn>

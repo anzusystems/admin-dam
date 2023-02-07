@@ -31,7 +31,7 @@ const openDialog = () => {
 </script>
 
 <template>
-  <VBtn variant="text" size="small" class="mx-1" rounded="pill" @click.stop="openDialog" :height="34">
+  <VBtn variant="text" size="small" class="mx-1" rounded="pill" :height="34" @click.stop="openDialog">
     {{ displayTextLicence }}
     <VIcon icon="mdi-chevron-down" />
     <VTooltip activator="parent" location="bottom">
@@ -41,8 +41,8 @@ const openDialog = () => {
   </VBtn>
   <AssetToolbarExtSystemLicenceDialog
     v-if="dialog"
+    v-model="dialog"
     :ext-system-name="displayTextExtSystem"
     :licence-name="displayTextLicence"
-    v-model="dialog"
   />
 </template>

@@ -170,7 +170,7 @@ const showCancel = computed(() => {
           >
             <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
             <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
-            <VBtn variant="text" size="small" @click.stop="viewOriginal" v-if="item.duplicateAssetId">
+            <VBtn v-if="item.duplicateAssetId" variant="text" size="small" @click.stop="viewOriginal">
               {{ t('coreDam.asset.queueItem.viewOriginal') }}
             </VBtn>
           </div>
@@ -180,7 +180,7 @@ const showCancel = computed(() => {
           >
             <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
             <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
-            <div v-if="item.error.message.length" class="text-caption" v-html="item.error.message"/>
+            <div v-if="item.error.message.length" class="text-caption" v-html="item.error.message" />
             <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
           </div>
         </div>
@@ -193,48 +193,48 @@ const showCancel = computed(() => {
                   size="small"
                   :variant="item.canEditMetadata ? 'flat' : 'text'"
                   :color="item.canEditMetadata ? 'secondary' : undefined"
-                  @click.stop="showDetail"
                   :disabled="!item.canEditMetadata"
+                  @click.stop="showDetail"
                 >
                   {{ t('coreDam.asset.queueItem.edit') }}
                 </VBtn>
               </div>
               <div>
                 <ACopyIdButton
-                  button-t="coreDam.asset.queueItem.copyAssetId"
                   v-if="item.assetId"
                   :id="item.assetId"
+                  button-t="coreDam.asset.queueItem.copyAssetId"
                   size="small"
                 />
-                <VBtn icon size="small" variant="text" @click.stop="cancelItem" v-if="showCancel">
+                <VBtn v-if="showCancel" icon size="small" variant="text" @click.stop="cancelItem">
                   <VIcon icon="mdi-close-circle-outline" />
                   <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
                 </VBtn>
                 <ADeleteButton
                   variant="text"
                   :disabled="!item.canEditMetadata"
-                  @delete-record="remove"
                   button-class=""
+                  @delete-record="remove"
                 />
               </div>
             </div>
           </VCol>
         </VRow>
-        <VRow dense class="my-2 mb-3 mt-0 text-caption" v-if="item.displayTitle">
+        <VRow v-if="item.displayTitle" dense class="my-2 mb-3 mt-0 text-caption">
           <VCol class="pt-0">
             {{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}
             <span v-if="item.file?.size">&nbsp;({{ prettyBytes(item.file.size) }})</span>
           </VCol>
         </VRow>
         <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
-          <AssetCustomMetadataForm v-if="item" :asset-type="assetType" v-model="customData">
+          <AssetCustomMetadataForm v-if="item" v-model="customData" :asset-type="assetType">
             <template #after-pinned>
-              <VRow dense class="my-2" v-if="keywordEnabled">
+              <VRow v-if="keywordEnabled" dense class="my-2">
                 <VCol>
                   <ASystemEntityScope subject="keyword" system="dam">
                     <KeywordSelect
-                      label="Keywords"
                       v-model="keywords"
+                      label="Keywords"
                       :suggestions="item.keywordSuggestions"
                       chips
                       clearable
@@ -246,12 +246,12 @@ const showCancel = computed(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow dense class="my-2" v-if="authorEnabled">
+              <VRow v-if="authorEnabled" dense class="my-2">
                 <VCol>
                   <ASystemEntityScope subject="author" system="dam">
                     <AuthorSelect
-                      label="Authors"
                       v-model="authors"
+                      label="Authors"
                       :suggestions="item.authorSuggestions"
                       chips
                       clearable

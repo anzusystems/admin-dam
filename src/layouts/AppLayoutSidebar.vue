@@ -23,9 +23,9 @@ const { theme } = useTheme()
   <notifications :max="5" group="alerts" position="top center" width="50%">
     <template #body="props">
       <VAlert :type="props.item.type" class="ma-1" density="compact">
-        <div v-html="props.item.text" data-cy="page-title"/>
+        <div data-cy="page-title" v-html="props.item.text" />
         <template #close>
-          <VIcon @click.stop="props.close" icon="mdi-close" />
+          <VIcon icon="mdi-close" @click.stop="props.close" />
         </template>
       </VAlert>
     </template>
@@ -63,7 +63,7 @@ const { theme } = useTheme()
     </VAppBar>
     <VMain>
       <VContainer class="pa-2" fluid>
-        <slot/>
+        <slot />
       </VContainer>
     </VMain>
   </VApp>

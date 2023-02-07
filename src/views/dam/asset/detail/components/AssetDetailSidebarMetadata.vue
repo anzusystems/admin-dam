@@ -72,7 +72,7 @@ const onDelete = async () => {
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <AssetDownloadButton :asset-type="assetType" />
     <ADeleteButton @delete-record="onDelete" />
-    <VBtn color="success" type="submit" @click.stop="onSave" variant="flat" class="ml-2" :loading="saveButtonLoading">
+    <VBtn color="success" type="submit" variant="flat" class="ml-2" :loading="saveButtonLoading" @click.stop="onSave">
       {{ t('common.button.save') }}
     </VBtn>
   </AssetDetailSidebarActionsWrapper>

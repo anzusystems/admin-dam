@@ -18,16 +18,12 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField
-            v-model="distributionCategory.name"
-            :v="v$.distributionCategory.name"
-            data-cy="category-name"
-          />
+          <ATextField v-model="distributionCategory.name" :v="v$.distributionCategory.name" data-cy="category-name" />
         </ARow>
         <ARow
-          class="mt-5"
           v-for="distributionCategorySelect in distributionCategorySelects"
           :key="distributionCategorySelect.serviceSlug"
+          class="mt-5"
         >
           <DistributionCategorySelectOptionSelect
             v-model="distributionCategorySelectedOptions[distributionCategorySelect.serviceSlug]"

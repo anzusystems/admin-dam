@@ -14,8 +14,8 @@ const submitFilter = () => {
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
     <VTextField
-      variant="outlined"
       v-model="filter.term.model"
+      variant="outlined"
       :placeholder="t('system.mainBar.search')"
       hide-details
       prepend-inner-icon="mdi-magnify"

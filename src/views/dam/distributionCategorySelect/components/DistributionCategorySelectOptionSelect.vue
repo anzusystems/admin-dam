@@ -46,8 +46,8 @@ const onBlur = () => {
 
 <template>
   <VSelect
-    :items="select.options"
     v-model="modelValue"
+    :items="select.options"
     item-title="name"
     item-value="id"
     :label="select.serviceSlug"
@@ -55,12 +55,12 @@ const onBlur = () => {
     clearable
     no-filter
     :error-messages="errorMessageComputed"
-    @blur="onBlur"
     data-cy="distribution-category-select"
+    @blur="onBlur"
   >
     <template #label>
       <span>{{ select.serviceSlug }}</span>
-      <span v-if="requiredComputed" class="required"/>
+      <span v-if="requiredComputed" class="required" />
     </template>
   </VSelect>
 </template>

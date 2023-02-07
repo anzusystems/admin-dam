@@ -41,8 +41,8 @@ const { t } = useI18n({ useScope: 'global' })
         </ARow>
         <ARow>
           <AssetLicenceSelect
-            :label="t('coreDam.user.model.assetLicences')"
             v-model="userUpdate.assetLicences"
+            :label="t('coreDam.user.model.assetLicences')"
             :v="v$.userUpdate.assetLicences"
             multiple
             data-cy="user-asset-licences"
@@ -50,24 +50,24 @@ const { t } = useI18n({ useScope: 'global' })
         </ARow>
         <ARow>
           <ExtSystemSelect
-            :label="t('coreDam.user.model.adminToExtSystems')"
             v-model="userUpdate.adminToExtSystems"
+            :label="t('coreDam.user.model.adminToExtSystems')"
             multiple
             data-cy="user-admin-to-ext-systems"
           />
         </ARow>
         <ARow>
           <ExternalProviderAssetSelect
-            :label="t('coreDam.user.model.allowedAssetExternalProviders')"
             v-model="userUpdate.allowedAssetExternalProviders"
+            :label="t('coreDam.user.model.allowedAssetExternalProviders')"
             multiple
             data-cy="user-allowed-asset-external-providers"
           />
         </ARow>
         <ARow>
           <DistributionServiceSelect
-            :label="t('coreDam.user.model.allowedDistributionServices')"
             v-model="userUpdate.allowedDistributionServices"
+            :label="t('coreDam.user.model.allowedDistributionServices')"
             multiple
             data-cy="user-allowed-distribution-services"
           />

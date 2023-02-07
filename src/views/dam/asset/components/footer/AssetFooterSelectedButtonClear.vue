@@ -53,11 +53,11 @@ const { t } = useI18n({ useScope: 'global' })
     </VBtn>
     <VBtn
       v-else-if="variant === 'normal'"
-      @click.stop="onClick"
       color="secondary"
       :height="36"
       variant="flat"
       rounded="pill"
+      @click.stop="onClick"
     >
       {{ t('coreDam.asset.selected.cancel') }}
     </VBtn>
@@ -74,18 +74,18 @@ const { t } = useI18n({ useScope: 'global' })
               icon="mdi-close"
               size="small"
               variant="text"
-              @click.stop="onCancel"
               data-cy="button-close"
+              @click.stop="onCancel"
             />
           </VToolbarItems>
         </VToolbar>
         <div class="pa-2">{{ t('coreDam.asset.selected.clearOverlay.description') }}</div>
         <VCardActions>
           <VSpacer />
-          <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+          <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
             {{ t('common.button.cancel') }}
           </VBtn>
-          <VBtn color="warning" @click.stop="onConfirm" data-cy="button-confirm">
+          <VBtn color="warning" data-cy="button-confirm" @click.stop="onConfirm">
             {{ t('coreDam.asset.selected.clearOverlay.confirm') }}
           </VBtn>
         </VCardActions>

@@ -1,7 +1,6 @@
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
 import type { DocId } from '@anzusystems/common-admin'
-import { toInt } from '@anzusystems/common-admin'
 import {
   deleteImage,
   downloadLink as imageDownloadLink,

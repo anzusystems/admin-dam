@@ -112,7 +112,6 @@ const onSaveAndClose = async () => {
         <VSpacer />
         <div class="d-flex align-center">
           <VBtn
-            @click.stop="onSaveAndClose"
             color="success"
             variant="flat"
             :height="36"
@@ -120,11 +119,11 @@ const onSaveAndClose = async () => {
             rounded="pill"
             :loading="saveAndCloseButtonLoading"
             :disabled="saveButtonLoading"
+            @click.stop="onSaveAndClose"
           >
             {{ t('coreDam.asset.selected.saveAndClose') }}
           </VBtn>
           <VBtn
-            @click.stop="onSave"
             icon
             color="secondary"
             variant="flat"
@@ -133,14 +132,14 @@ const onSaveAndClose = async () => {
             class="mr-2"
             :loading="saveButtonLoading"
             :disabled="saveAndCloseButtonLoading"
+            @click.stop="onSave"
           >
             <VIcon icon="mdi-content-save" />
             <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.selected.save') }}</VTooltip>
           </VBtn>
-          <AssetFooterSelectedButtonClear @confirm="onClearConfirm" variant="normal"/>
+          <AssetFooterSelectedButtonClear variant="normal" @confirm="onClearConfirm" />
           <VDivider vertical class="mx-4 my-2" />
           <VBtn
-            @click.stop="toggleMassOperations"
             :height="36"
             :width="36"
             :active="massOperations"
@@ -148,6 +147,7 @@ const onSaveAndClose = async () => {
             :color="massOperations ? 'secondary' : ''"
             class="mr-2"
             icon
+            @click.stop="toggleMassOperations"
           >
             <VIcon icon="mdi-tag-text-outline" />
             <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.title') }}</VTooltip>
@@ -155,14 +155,14 @@ const onSaveAndClose = async () => {
           <VBtn
             v-show="showMinimalSelected"
             icon
-            @click.stop="setMinimalSelected"
             variant="flat"
             :height="36"
             :width="36"
             rounded="circle"
             class="mr-2"
+            @click.stop="setMinimalSelected"
           >
-            <VIcon icon="mdi-chevron-down"/>
+            <VIcon icon="mdi-chevron-down" />
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
         </div>

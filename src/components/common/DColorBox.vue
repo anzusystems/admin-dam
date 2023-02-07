@@ -8,6 +8,7 @@ const props = withDefaults(
     height?: number
   }>(),
   {
+    color: null,
     width: 20,
     height: 20,
   }

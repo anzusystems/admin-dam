@@ -34,25 +34,25 @@ const { t } = useI18n({ useScope: 'global' })
   <VRow class="mt-5">
     <VCol cols="12" sm="5">
       <ATextField
+        v-model="modelValue.name"
         prepend-icon="mdi-drag"
         :v="v$.distributionCategoryOption.name"
-        v-model="modelValue.name"
         data-cy="ext-system-name"
       />
     </VCol>
     <VCol cols="12" sm="1">
       <ABooleanToggle
-        :label="t('coreDam.distributionCategorySelect.model.assignable')"
         v-model="modelValue.assignable"
+        :label="t('coreDam.distributionCategorySelect.model.assignable')"
       />
     </VCol>
     <VCol cols="12" sm="6">
       <ATextField
-        append-icon="mdi-trash-can-outline"
-        @click:append="emit('remove')"
-        :v="v$.distributionCategoryOption.value"
         v-model="modelValue.value"
+        append-icon="mdi-trash-can-outline"
+        :v="v$.distributionCategoryOption.value"
         data-cy="ext-system-name"
+        @click:append="emit('remove')"
       />
     </VCol>
   </VRow>

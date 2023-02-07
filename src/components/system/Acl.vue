@@ -9,7 +9,9 @@ const props = withDefaults(
     permission: AclValue
     subject?: object
   }>(),
-  {}
+  {
+    subject: undefined,
+  }
 )
 
 const { can } = useAcl()
@@ -22,5 +24,5 @@ watch(currentUser, () => {
 </script>
 
 <template>
-  <slot v-if="allowed"/>
+  <slot v-if="allowed" />
 </template>

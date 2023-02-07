@@ -45,15 +45,15 @@ const onClick = () => {
 
 <template>
   <div class="d-inline-flex">
-    <VProgressCircular v-if="showLoader" :size="16" :width="2" indeterminate/>
+    <VProgressCircular v-if="showLoader" :size="16" :width="2" indeterminate />
     <VChip
       v-else-if="hideChip === false"
       rounded="lg"
       size="small"
       variant="tonal"
-      @click.stop="onClick"
       link
       data-cy="permissionGroup"
+      @click.stop="onClick"
     >
       {{ text }}
     </VChip>

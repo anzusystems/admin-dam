@@ -43,17 +43,17 @@ const { t } = useI18n({ useScope: 'global' })
 <template>
   <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
-    <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE" v-if="!loadingPermissionGroup">
+    <Acl v-if="!loadingPermissionGroup" :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
       <AEditButton
         :record-id="id"
         :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
         :loading="loadingDeletePermissionGroup"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_PERMISSION_GROUP_DELETE" v-if="!loadingPermissionGroup">
-      <ADeleteButton @delete-record="deletePermissionGroup(id)" :loading="loadingDeletePermissionGroup"/>
+    <Acl v-if="!loadingPermissionGroup" :permission="ACL.DAM_PERMISSION_GROUP_DELETE">
+      <ADeleteButton :loading="loadingDeletePermissionGroup" @delete-record="deletePermissionGroup(id)" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST"/>
+    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
   </ActionbarButtonsWrapper>
   <PermissionGroupDetail :client="damClient" />
 </template>

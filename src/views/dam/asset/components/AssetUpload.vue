@@ -123,10 +123,10 @@ const uploadAccept = computed(() => {
     :button-text="buttonText"
     :height="height"
     :file-input-key="fileInputKey"
-    @files-input="assetUpload"
     :accept="uploadAccept"
     :max-sizes="uploadSizes"
     :multiple="multiple"
+    @files-input="assetUpload"
   />
   <VDialog v-model="uploadDialog" persistent no-click-animation :width="500">
     <VCard v-if="uploadDialog" data-cy="delete-panel">
@@ -141,8 +141,8 @@ const uploadAccept = computed(() => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onDialogCancel"
             data-cy="button-close"
+            @click.stop="onDialogCancel"
           />
         </VToolbarItems>
       </VToolbar>
@@ -160,7 +160,7 @@ const uploadAccept = computed(() => {
       <VCardActions>
         <VSpacer />
         <VBtn text @click.stop="onDialogCancel">Cancel</VBtn>
-        <VBtn v-if="!alreadyAtUploadLimit" color="success" @click.stop="onDialogConfirm" :loading="uploadDialogLoader">
+        <VBtn v-if="!alreadyAtUploadLimit" color="success" :loading="uploadDialogLoader" @click.stop="onDialogConfirm">
           Add first {{ maxUploadItems - uploadQueueTotalCount }} file(s)
         </VBtn>
       </VCardActions>
