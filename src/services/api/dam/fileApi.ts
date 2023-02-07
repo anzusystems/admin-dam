@@ -96,40 +96,28 @@ export const uploadStart: (item: UploadQueueItem) => Promise<UploadStartResponse
 }
 
 function calculateFallbackTime(item: UploadQueueItem) {
-  console.log(
-    item.assetId,
-    NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * item.notificationFallbackTry * item.notificationFallbackTry,
-    'notificationFallbackCallbackTimeCalc'
-  )
   return NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * item.notificationFallbackTry * item.notificationFallbackTry
-  // if (item.notificationFallbackTry === 1) return timeout
-  // if (item.file && item.file.size) {
-  //   const sizeBasedTimeout = toInt((item.file.size / 1000) * item.notificationFallbackTry)
-  //   if (sizeBasedTimeout > timeout) return sizeBasedTimeout
-  // }
-  // return timeout
 }
 
-// this is just a testing version, todo:
-// - remove duplicate api call for asset
-// - duplicate asset check
-// - slot implementation check
+// this is just a testing version, todo test
 async function notificationFallbackCallback(item: UploadQueueItem) {
-  console.log(item.assetId, item.notificationFallbackTry, 'notificationFallbackCallbackCall')
   clearTimeout(item.notificationFallbackTimer)
   if (item.status === QueueItemStatus.Uploaded) return
   if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) return
   if (!item.assetId) return
   const asset = await fetchAsset(item.assetId)
-  if (
-    asset &&
-    asset.mainFile &&
-    asset.mainFile.fileAttributes &&
-    asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Processed
-  ) {
+  if (asset && asset.mainFile && asset.mainFile.fileAttributes) {
     const uploadQueuesStore = useUploadQueuesStore()
-    uploadQueuesStore.queueItemProcessed(asset.id)
-    return
+    if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Processed) {
+      uploadQueuesStore.queueItemProcessed(asset.id)
+      return
+    } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
+      uploadQueuesStore.queueItemDuplicate(asset.id)
+      return
+    } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Failed) {
+      uploadQueuesStore.queueItemFailed(asset.id)
+      return
+    }
   }
   item.notificationFallbackTry++
   item.notificationFallbackTimer = setTimeout(function () {
