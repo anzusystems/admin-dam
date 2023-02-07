@@ -76,10 +76,10 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL"></ADetailButton>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL"/>
+        <ACopyIdButton :id="data.id"/>
         <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT"></AEditButton>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT"/>
         </Acl>
       </template>
       <template
@@ -90,9 +90,9 @@ defineExpose({
         <DistributionCategorySelectedOptionChip
           :distribution-category="rowData"
           :service-slug="distributionServiceSlug"
-        ></DistributionCategorySelectedOptionChip>
+        />
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList"/>
   </ASystemEntityScope>
 </template>

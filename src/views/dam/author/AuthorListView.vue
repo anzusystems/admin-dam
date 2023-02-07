@@ -8,8 +8,11 @@ import AuthorDatatable from '@/views/dam/author/components/AuthorDatatable.vue'
 import AuthorCreateButton from '@/views/dam/author/components/AuthorCreateButton.vue'
 import { ref } from 'vue'
 import AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
+import { useAuthorListActions } from '@/views/dam/author/composables/authorActions'
 
 const { t } = useI18n({ useScope: 'global' })
+
+const { listLoading } = useAuthorListActions()
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 
@@ -25,7 +28,7 @@ const afterCreate = () => {
       <AuthorCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
     </Acl>
   </ActionbarButtonsWrapper>
-  <ACard loader="list">
+  <ACard :loading="listLoading">
     <AuthorDatatable ref="datatable" />
   </ACard>
 </template>

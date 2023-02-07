@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { clickBlur } from '@/utils/event'
 import { useI18n } from 'vue-i18n'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 
 withDefaults(
   defineProps<{
@@ -77,18 +76,18 @@ const { t } = useI18n({ useScope: 'global' })
               variant="text"
               @click.stop="onCancel"
               data-cy="button-close"
-            ></VBtn>
+            />
           </VToolbarItems>
         </VToolbar>
         <div class="pa-2">{{ t('coreDam.asset.selected.clearOverlay.description') }}</div>
         <VCardActions>
           <VSpacer />
-          <ABtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+          <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
             {{ t('common.button.cancel') }}
-          </ABtn>
-          <ABtn color="warning" @click.stop="onConfirm" data-cy="button-confirm">
+          </VBtn>
+          <VBtn color="warning" @click.stop="onConfirm" data-cy="button-confirm">
             {{ t('coreDam.asset.selected.clearOverlay.confirm') }}
-          </ABtn>
+          </VBtn>
         </VCardActions>
       </VCard>
     </VDialog>

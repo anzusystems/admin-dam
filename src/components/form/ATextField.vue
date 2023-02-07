@@ -89,7 +89,7 @@ const requiredComputed = computed(() => {
     @update:model-value="onUpdate($event)"
   >
     <template v-if="!hideLabel" #label>
-      {{ labelComputed }}<span v-if="requiredComputed" class="required"></span>
+      {{ labelComputed }}<span v-if="requiredComputed" class="required"/>
     </template>
   </VTextField>
 </template>

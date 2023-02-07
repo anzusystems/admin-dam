@@ -64,7 +64,7 @@ const onDuplicate = () => {
             variant="text"
             @click.stop="onCancel"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <VCardText>

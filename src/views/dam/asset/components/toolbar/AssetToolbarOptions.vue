@@ -27,7 +27,7 @@ const { t } = useI18n({ useScope: 'global' })
             :title="t('system.mainBar.podcasts')"
             prepend-icon="mdi-podcast"
           />
-          <VDivider></VDivider>
+          <VDivider/>
           <VListItem
             :to="{ name: ROUTE.SYSTEM.SETTINGS }"
             :title="t('system.currentUser.settings')"
@@ -40,7 +40,7 @@ const { t } = useI18n({ useScope: 'global' })
             :to="{ name: ROUTE.DAM.ASSET.LIST }"
             :title="t('system.currentUser.backToAssets')"
             v-show="variant === 'settings'"
-          ></VListItem>
+          />
         </VList>
       </VCard>
     </VMenu>

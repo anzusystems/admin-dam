@@ -24,17 +24,17 @@ const { v$ } = usePermissionGroupValidation(permissionGroup)
               v-model="permissionGroup.title"
               :v="v$.permissionGroup.title"
               data-cy="permissionGroup-title"
-            ></ATextField>
+            />
             <ATextField
               v-model="permissionGroup.description"
               :v="v$.permissionGroup.description"
               data-cy="permissionGroup-description"
-            ></ATextField>
+            />
           </VCardText>
         </VCard>
       </VCol>
       <VCol cols="12">
-        <PermissionEditor v-model="permissionGroup.permissions" :client="client" is-edit></PermissionEditor>
+        <PermissionEditor v-model="permissionGroup.permissions" :client="client" is-edit/>
       </VCol>
     </VRow>
   </ASystemEntityScope>

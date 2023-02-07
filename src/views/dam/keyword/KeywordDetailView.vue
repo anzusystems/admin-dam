@@ -10,8 +10,9 @@ import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useKeywordDetailActions } from '@/views/dam/keyword/composables/keywordActions'
 import KeywordDetail from '@/views/dam/keyword/components/KeywordDetail.vue'
+import ACard from '@/components/common/ACard.vue'
 
-const { loaded, fetchData, resetStore } = useKeywordDetailActions()
+const { detailLoading, fetchData, resetStore } = useKeywordDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -35,9 +36,11 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.detail')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.KEYWORD.EDIT"></AEditButton>
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.KEYWORD.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.KEYWORD.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.KEYWORD.LIST" />
   </ActionbarButtonsWrapper>
-  <KeywordDetail></KeywordDetail>
+  <ACard :loading="detailLoading">
+    <KeywordDetail />
+  </ACard>
 </template>

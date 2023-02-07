@@ -118,7 +118,7 @@ onMounted(async () => {
             variant="text"
             @click.stop="closeDialog(false)"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
@@ -128,7 +128,7 @@ onMounted(async () => {
               v-model="podcastEpisode.podcast"
               required
               :label="t('coreDam.podcastEpisode.model.podcast')"
-            ></PodcastSelect>
+            />
           </ARow>
           <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
             <VProgressCircular indeterminate color="primary" />
@@ -139,14 +139,14 @@ onMounted(async () => {
                 :label="t('coreDam.podcastEpisode.model.texts.title')"
                 v-model="podcastEpisode.texts.title"
                 :v="v$.podcastEpisode.texts.title"
-              ></ATextarea>
+              />
             </ARow>
             <ARow>
               <ATextarea
                 :label="t('coreDam.podcastEpisode.model.texts.description')"
                 v-model="podcastEpisode.texts.description"
                 :v="v$.podcastEpisode.texts.description"
-              ></ATextarea>
+              />
             </ARow>
             <ARow>
               <ATextField
@@ -155,7 +155,7 @@ onMounted(async () => {
                 :v="v$.podcastEpisode.attributes.seasonNumber"
                 type="number"
                 :step="1"
-              ></ATextField>
+              />
             </ARow>
             <ARow>
               <ATextField
@@ -164,7 +164,7 @@ onMounted(async () => {
                 :v="v$.podcastEpisode.attributes.episodeNumber"
                 type="number"
                 :step="1"
-              ></ATextField>
+              />
             </ARow>
           </template>
         </VContainer>

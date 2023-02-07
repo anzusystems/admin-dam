@@ -11,7 +11,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useDistributionCategorySelectDetailActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import DistributionCategorySelectDetail from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
 
-const { loaded, fetchData, resetStore } = useDistributionCategorySelectDetailActions()
+const { detailLoading, fetchData, resetStore } = useDistributionCategorySelectDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -38,13 +38,11 @@ const { t } = useI18n({ useScope: 'global' })
   />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
-      <AEditButton
-        v-if="loaded"
-        :record-id="id"
-        :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"
-      ></AEditButton>
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST" />
   </ActionbarButtonsWrapper>
-  <DistributionCategorySelectDetail></DistributionCategorySelectDetail>
+  <ACard :loading="detailLoading">
+    <DistributionCategorySelectDetail />
+  </ACard>
 </template>

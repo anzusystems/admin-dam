@@ -11,7 +11,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useDistributionCategoryDetailActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryDetail from '@/views/dam/distributionCategory/components/DistributionCategoryDetail.vue'
 
-const { loaded, fetchData, resetStore } = useDistributionCategoryDetailActions()
+const { detailLoading, fetchData, resetStore } = useDistributionCategoryDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -35,9 +35,11 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT"></AEditButton>
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST" />
   </ActionbarButtonsWrapper>
-  <DistributionCategoryDetail></DistributionCategoryDetail>
+  <ACard :loading="detailLoading">
+    <DistributionCategoryDetail />
+  </ACard>
 </template>

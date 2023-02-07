@@ -37,12 +37,12 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.edit')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton @save-record="updatePermissionGroup" :loading="loadingUpdatePermissionGroup"></ASaveButton>
+    <ASaveButton @save-record="updatePermissionGroup" :loading="loadingUpdatePermissionGroup"/>
     <ASaveAndCloseButton
       @save-record-and-close="updatePermissionGroup(true)"
       :loading="loadingUpdatePermissionGroup"
-    ></ASaveAndCloseButton>
-    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST"></ACloseButton>
+    />
+    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST"/>
   </ActionbarButtonsWrapper>
   <PermissionGroupEditForm :client="damClient" />
 </template>

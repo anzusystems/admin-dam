@@ -30,7 +30,7 @@ const { authorTypeOptions } = useAuthorType()
             v-model="author.name"
             :v="v$.author.name"
             data-cy="author-name"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextField
@@ -38,14 +38,14 @@ const { authorTypeOptions } = useAuthorType()
             v-model="author.identifier"
             :v="v$.author.identifier"
             data-cy="author-identifier"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ABooleanToggle
             :label="t('coreDam.author.model.flags.reviewed')"
             v-model="author.flags.reviewed"
             data-cy="author-flags-reviewed"
-          ></ABooleanToggle>
+          />
         </ARow>
         <ARow>
           <AValueObjectOptionsSelect
@@ -53,7 +53,7 @@ const { authorTypeOptions } = useAuthorType()
             v-model="author.type"
             :items="authorTypeOptions"
             data-cy="author-type"
-          ></AValueObjectOptionsSelect>
+          />
         </ARow>
       </VCol>
     </VRow>

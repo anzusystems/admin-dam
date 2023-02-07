@@ -18,7 +18,8 @@ const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const id = toInt(route.params.id)
 
-const { loaded, fetchData, resetStore, onUpdate } = useExtSystemEditActions()
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
+  useExtSystemEditActions()
 
 const getData = () => {
   fetchData(id)
@@ -36,11 +37,21 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.edit')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton v-if="loaded" @save-record="onUpdate"></ASaveButton>
-    <ASaveAndCloseButton v-if="loaded" @save-record-and-close="onUpdate(true)"></ASaveAndCloseButton>
-    <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST"></ACloseButton>
+    <ASaveButton
+      v-if="!detailLoading"
+      @save-record="onUpdate"
+      :loading="saveButtonLoading"
+      :disabled="saveAndCloseButtonLoading"
+    />
+    <ASaveAndCloseButton
+      v-if="!detailLoading"
+      @save-record-and-close="onUpdate(true)"
+      :loading="saveAndCloseButtonLoading"
+      :disabled="saveButtonLoading"
+    />
+    <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
   </ActionbarButtonsWrapper>
-  <ACard loader="edit">
-    <ExtSystemEditForm></ExtSystemEditForm>
+  <ACard :loading="detailLoading">
+    <ExtSystemEditForm />
   </ACard>
 </template>

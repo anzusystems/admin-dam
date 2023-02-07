@@ -26,10 +26,10 @@ const { t } = useI18n({ useScope: 'global' })
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField v-model="userUpdate.firstName" :v="v$.userUpdate.firstName"></ATextField>
+          <ATextField v-model="userUpdate.firstName" :v="v$.userUpdate.firstName" />
         </ARow>
         <ARow>
-          <ATextField v-model="userUpdate.lastName" :v="v$.userUpdate.lastName"></ATextField>
+          <ATextField v-model="userUpdate.lastName" :v="v$.userUpdate.lastName" />
         </ARow>
         <ARow v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials">
           <ATextField
@@ -37,7 +37,7 @@ const { t } = useI18n({ useScope: 'global' })
             :v="v$.userUpdate.plainPassword"
             type="password"
             data-cy="user-plain-password"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <AssetLicenceSelect
@@ -46,7 +46,7 @@ const { t } = useI18n({ useScope: 'global' })
             :v="v$.userUpdate.assetLicences"
             multiple
             data-cy="user-asset-licences"
-          ></AssetLicenceSelect>
+          />
         </ARow>
         <ARow>
           <ExtSystemSelect
@@ -54,7 +54,7 @@ const { t } = useI18n({ useScope: 'global' })
             v-model="userUpdate.adminToExtSystems"
             multiple
             data-cy="user-admin-to-ext-systems"
-          ></ExtSystemSelect>
+          />
         </ARow>
         <ARow>
           <ExternalProviderAssetSelect
@@ -62,7 +62,7 @@ const { t } = useI18n({ useScope: 'global' })
             v-model="userUpdate.allowedAssetExternalProviders"
             multiple
             data-cy="user-allowed-asset-external-providers"
-          ></ExternalProviderAssetSelect>
+          />
         </ARow>
         <ARow>
           <DistributionServiceSelect
@@ -70,7 +70,7 @@ const { t } = useI18n({ useScope: 'global' })
             v-model="userUpdate.allowedDistributionServices"
             multiple
             data-cy="user-allowed-distribution-services"
-          ></DistributionServiceSelect>
+          />
         </ARow>
       </VCol>
     </VRow>

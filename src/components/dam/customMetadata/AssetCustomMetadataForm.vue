@@ -63,7 +63,7 @@ const enableShowHide = computed(() => {
 
 <template>
   <div class="w-100">
-    <slot name="before-pinned"></slot>
+    <slot name="before-pinned" />
     <VRow dense class="mt-1" v-for="element in elementsPinned" :key="element.id">
       <VCol>
         <AssetCustomMetadataElement
@@ -75,7 +75,7 @@ const enableShowHide = computed(() => {
         />
       </VCol>
     </VRow>
-    <slot name="after-pinned"></slot>
+    <slot name="after-pinned" />
   </div>
   <div class="w-100" v-show="showAllMetadata">
     <VRow dense class="mt-1" v-for="element in elementsOther" :key="element.id">

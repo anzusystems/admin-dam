@@ -91,11 +91,7 @@ const onImport = () => {
           >
             {{ t('coreDam.asset.selected.more') }}
           </VBtn>
-          <AssetFooterSelectedButtonClear
-            v-show="showFullSelected"
-            @confirm="onClearConfirm"
-            variant="small"
-          ></AssetFooterSelectedButtonClear>
+          <AssetFooterSelectedButtonClear v-show="showFullSelected" @confirm="onClearConfirm" variant="small" />
           <VBtn
             v-show="showMinimalSelected"
             icon

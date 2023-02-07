@@ -84,7 +84,7 @@ const requiredComputed = computed(() => {
     :data-cy="dataCy"
   >
     <template #label>
-      <span v-if="!hideLabel">{{ labelComputed }}<span v-if="requiredComputed" class="required"></span> </span>
+      <span v-if="!hideLabel">{{ labelComputed }}<span v-if="requiredComputed" class="required"/> </span>
     </template>
   </VAutocomplete>
 </template>

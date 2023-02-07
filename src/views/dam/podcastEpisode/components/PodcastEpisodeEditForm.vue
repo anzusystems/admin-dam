@@ -26,14 +26,14 @@ const { t } = useI18n({ useScope: 'global' })
             :label="t('coreDam.podcastEpisode.model.texts.title')"
             v-model="podcastEpisode.texts.title"
             :v="v$.podcastEpisode.texts.title"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextField
             :label="t('coreDam.podcastEpisode.model.texts.description')"
             v-model="podcastEpisode.texts.description"
             :v="v$.podcastEpisode.texts.description"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextField
@@ -42,7 +42,7 @@ const { t } = useI18n({ useScope: 'global' })
             :v="v$.podcastEpisode.attributes.seasonNumber"
             type="number"
             :step="1"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextField
@@ -51,20 +51,20 @@ const { t } = useI18n({ useScope: 'global' })
             :v="v$.podcastEpisode.attributes.episodeNumber"
             type="number"
             :step="1"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextField
             :label="t('coreDam.podcastEpisode.model.attributes.extId')"
             v-model="podcastEpisode.attributes.extId"
             :v="v$.podcastEpisode.attributes.extId"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ADatetimePicker
             :label="t('coreDam.podcastEpisode.model.dates.publicationDate')"
             v-model="podcastEpisode.dates.publicationDate"
-          ></ADatetimePicker>
+          />
         </ARow>
       </VCol>
       <VCol cols="12" md="4">

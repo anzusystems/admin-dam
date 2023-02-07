@@ -10,8 +10,9 @@ import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useAuthorDetailActions } from '@/views/dam/author/composables/authorActions'
 import AuthorDetail from '@/views/dam/author/components/AuthorDetail.vue'
+import ACard from '@/components/common/ACard.vue'
 
-const { loaded, fetchData, resetStore } = useAuthorDetailActions()
+const { detailLoading, fetchData, resetStore } = useAuthorDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -35,9 +36,11 @@ const { t } = useI18n({ useScope: 'global' })
   <ActionbarTitleWrapper :heading="t('coreDam.author.meta.detail')" icon="mdi-account-circle-outline" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-      <AEditButton v-if="loaded" :record-id="id" :route-name="ROUTE.DAM.AUTHOR.EDIT"></AEditButton>
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.AUTHOR.EDIT" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.AUTHOR.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
   </ActionbarButtonsWrapper>
-  <AuthorDetail></AuthorDetail>
+  <ACard :loading="detailLoading">
+    <AuthorDetail />
+  </ACard>
 </template>

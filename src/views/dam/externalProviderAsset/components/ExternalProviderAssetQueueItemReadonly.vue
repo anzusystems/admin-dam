@@ -38,8 +38,8 @@ const imageSrc = computed(() => {
       <VRow dense class="my-2">
         <VCol>
           <div class="w-100 d-flex justify-space-between align-center">
-            <div></div>
-            <VBtn icon="mdi-trash-can-outline" variant="text" @click.stop="remove" size="small"></VBtn>
+            <div />
+            <VBtn icon="mdi-trash-can-outline" variant="text" @click.stop="remove" size="small" />
           </div>
         </VCol>
       </VRow>

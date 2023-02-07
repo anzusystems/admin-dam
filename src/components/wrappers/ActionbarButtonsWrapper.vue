@@ -6,6 +6,6 @@ const { canTeleport } = useActionbar()
 
 <template>
   <Teleport v-if="canTeleport" to="#anzu-actionbar-buttons">
-    <slot></slot>
+    <slot/>
   </Teleport>
 </template>
