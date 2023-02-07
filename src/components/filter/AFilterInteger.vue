@@ -35,5 +35,5 @@ const { clearOne } = useFilterHelpers()
     :clearable="!modelValue.mandatory"
     @click:clear.stop="clearOne(modelValue)"
     :data-cy="dataCy"
-  ></VTextField>
+  />
 </template>

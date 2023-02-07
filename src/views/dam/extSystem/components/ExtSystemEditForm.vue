@@ -21,7 +21,7 @@ const { t } = useI18n({ useScope: 'global' })
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField v-model="extSystem.name" :v="v$.extSystem.name" data-cy="ext-system-name"></ATextField>
+          <ATextField v-model="extSystem.name" :v="v$.extSystem.name" data-cy="ext-system-name" />
         </ARow>
         <ARow>
           <UserSelect
@@ -29,7 +29,7 @@ const { t } = useI18n({ useScope: 'global' })
             multiple
             v-model="extSystem.adminUsers"
             data-cy="ext-system-admin-users"
-          ></UserSelect>
+          />
         </ARow>
       </VCol>
     </VRow>

@@ -19,6 +19,6 @@ const list = computed(() => {
       :index="index"
       :item="item"
       :queue-id="QUEUE_ID_MASS_EDIT"
-    ></AssetQueueSelectedItemSimple>
+    />
   </div>
 </template>

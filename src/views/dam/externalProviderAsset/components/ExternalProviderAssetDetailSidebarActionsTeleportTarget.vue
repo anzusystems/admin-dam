@@ -15,5 +15,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="anzu-external-provider-asset-detail-sidebar-actions"></div>
+  <div id="anzu-external-provider-asset-detail-sidebar-actions" />
 </template>

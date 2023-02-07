@@ -6,13 +6,17 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import DistributionCategoryDatatable from '@/views/dam/distributionCategory/components/DistributionCategoryDatatable.vue'
 import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 import { computed, ref } from 'vue'
-import { useDistributionCategoryManageActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import {
+  useDistributionCategoryListActions,
+  useDistributionCategoryManageActions,
+} from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryCreateButton from '@/views/dam/distributionCategory/components/DistributionCategoryCreateButton.vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { ACL } from '@/types/Permission'
 
 const filter = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()
+const { listLoading } = useDistributionCategoryListActions()
 
 const assetType = computed(() => filter.type.model as AssetType)
 
@@ -34,14 +38,14 @@ const onCreateSuccess = (type: AssetType) => {
         :initial-asset-type="assetType"
         @on-create-success="onCreateSuccess"
         data-cy="button-create"
-      ></DistributionCategoryCreateButton>
+      />
     </Acl>
   </ActionbarButtonsWrapper>
-  <ACard loader="list">
+  <ACard :loading="listLoading">
     <DistributionCategoryDatatable
       :key="assetType"
       :distribution-service-slugs="getAvailableDistributionServiceSlugs(assetType)"
       ref="datatable"
-    ></DistributionCategoryDatatable>
+    />
   </ACard>
 </template>

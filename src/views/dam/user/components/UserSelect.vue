@@ -43,5 +43,5 @@ const innerFilter = useUserFilter()
     :clearable="clearable"
     filter-by-field="email"
     :data-cy="dataCy"
-  ></ARemoteSelect>
+  />
 </template>

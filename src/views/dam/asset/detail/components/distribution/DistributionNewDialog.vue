@@ -85,7 +85,7 @@ const componentComputed = computed(() => {
             variant="text"
             @click.stop="closeDialog(false)"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <div>
@@ -102,7 +102,7 @@ const componentComputed = computed(() => {
         :distribution-service-name="activeDistributionName"
         @close-dialog="closeDialog"
         :key="activeDistributionName"
-      ></component>
+      />
     </VCard>
   </VDialog>
 </template>

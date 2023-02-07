@@ -80,7 +80,7 @@ const onClearConfirm = async () => {
             v-show="showFullSelected"
             @confirm="onClearConfirm"
             variant="small"
-          ></AssetFooterSelectedButtonClear>
+          />
           <VBtn
             v-show="showMinimalSelected"
             icon
@@ -91,7 +91,7 @@ const onClearConfirm = async () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-down"></VIcon>
+            <VIcon icon="mdi-chevron-down"/>
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn
@@ -104,7 +104,7 @@ const onClearConfirm = async () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-up"></VIcon>
+            <VIcon icon="mdi-chevron-up"/>
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.show') }}</VTooltip>
           </VBtn>
         </div>

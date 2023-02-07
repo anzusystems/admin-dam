@@ -106,7 +106,7 @@ watch(
         </div>
         <VSpacer />
         <VToolbarItems>
-          <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel"></VBtn>
+          <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel"/>
         </VToolbarItems>
       </VToolbar>
       <VCardText>

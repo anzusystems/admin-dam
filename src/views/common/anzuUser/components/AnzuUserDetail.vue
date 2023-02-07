@@ -25,7 +25,7 @@ const { t } = useI18n({ useScope: 'global' })
       <VRow>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.id') }}</h4>
-          <ACopyText :value="anzuUser.id"></ACopyText>
+          <ACopyText :value="anzuUser.id"/>
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.email') }}</h4>
@@ -33,7 +33,7 @@ const { t } = useI18n({ useScope: 'global' })
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.enabled') }}</h4>
-          <ABooleanValue :value="anzuUser.enabled" chip></ABooleanValue>
+          <ABooleanValue :value="anzuUser.enabled" chip/>
         </VCol>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.roles') }}</h4>
@@ -48,7 +48,7 @@ const { t } = useI18n({ useScope: 'global' })
             :key="permissionGroupId"
             :id="permissionGroupId"
             class="mr-1 mb-1"
-          ></PermissionGroupLazyChip>
+          />
         </VCol>
       </VRow>
     </VCardText>
@@ -59,5 +59,5 @@ const { t } = useI18n({ useScope: 'global' })
     :roles="anzuUser.roles"
     :client="client"
     class="mt-3"
-  ></PermissionEditor>
+  />
 </template>

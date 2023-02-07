@@ -76,7 +76,7 @@ const imageSrc = computed(() => {
   >
     <div class="dam-image-grid__item-card">
       <div v-if="item.selected" class="selected-triangle">
-        <div class="selected-triangle__bg"></div>
+        <div class="selected-triangle__bg" />
         <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="x-small" />
       </div>
       <AssetImage

@@ -10,13 +10,15 @@ import { useTheme } from '@/composables/system/themeSettings'
 import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const { toolbarColor } = useTheme()
+
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
 
 const { footerViewSelected, showMinimalSelected, setMinimalSelected, autoShowSelected, hideSelected } =
   useAssetFooterSelectedView()
@@ -52,50 +54,45 @@ const toggleMassOperations = async () => {
 
 const { showRecordWas, showValidationError } = useAlerts()
 const { handleError } = useErrorHandler()
-const { btn, btnReset, btnLoadingOn, btnDisable, btnEnable } = useUiHelper()
 
 const v$ = useVuelidate()
 
 const onSave = async () => {
   if (list.value.length === 0) return
-  btnDisable('save', 'saveAndClose')
+  saveButtonLoading.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
     showValidationError()
-    btnEnable('save', 'saveAndClose')
+    saveButtonLoading.value = false
     return
   }
   try {
-    btnLoadingOn('save')
-    btnDisable('saveAndClose')
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('save', 'saveAndClose')
+    saveButtonLoading.value = false
   }
 }
 
 const onSaveAndClose = async () => {
   if (list.value.length === 0) return
-  btnDisable('save', 'saveAndClose')
+  saveAndCloseButtonLoading.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
     showValidationError()
-    btnEnable('save', 'saveAndClose')
+    saveAndCloseButtonLoading.value = false
     return
   }
   try {
-    btnLoadingOn('saveAndClose')
-    btnDisable('save')
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     await onClearConfirm()
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('save', 'saveAndClose')
+    saveAndCloseButtonLoading.value = false
   }
 }
 </script>
@@ -121,8 +118,8 @@ const onSaveAndClose = async () => {
             :height="36"
             class="mr-2"
             rounded="pill"
-            :loading="btn.saveAndClose.loading"
-            :disabled="btn.saveAndClose.disabled"
+            :loading="saveAndCloseButtonLoading"
+            :disabled="saveButtonLoading"
           >
             {{ t('coreDam.asset.selected.saveAndClose') }}
           </VBtn>
@@ -134,13 +131,13 @@ const onSaveAndClose = async () => {
             :height="36"
             :width="36"
             class="mr-2"
-            :loading="btn.save.loading"
-            :disabled="btn.save.disabled"
+            :loading="saveButtonLoading"
+            :disabled="saveAndCloseButtonLoading"
           >
             <VIcon icon="mdi-content-save" />
             <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.selected.save') }}</VTooltip>
           </VBtn>
-          <AssetFooterSelectedButtonClear @confirm="onClearConfirm" variant="normal"></AssetFooterSelectedButtonClear>
+          <AssetFooterSelectedButtonClear @confirm="onClearConfirm" variant="normal"/>
           <VDivider vertical class="mx-4 my-2" />
           <VBtn
             @click.stop="toggleMassOperations"
@@ -165,7 +162,7 @@ const onSaveAndClose = async () => {
             rounded="circle"
             class="mr-2"
           >
-            <VIcon icon="mdi-chevron-down"></VIcon>
+            <VIcon icon="mdi-chevron-down"/>
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
         </div>
@@ -174,7 +171,7 @@ const onSaveAndClose = async () => {
         :queue-id="QUEUE_ID_MASS_EDIT"
         :mass-operations="massOperations"
         disable-done-animation
-      ></AssetQueueMassEditEditable>
+      />
     </div>
   </div>
 </template>

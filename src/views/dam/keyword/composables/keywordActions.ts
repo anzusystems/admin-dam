@@ -1,5 +1,4 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { ref } from 'vue'
@@ -14,26 +13,31 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import type { ValueObjectOption } from '@/types/ValueObject'
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
+
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
 
 export const useKeywordListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<Keyword[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchKeywordList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -41,24 +45,23 @@ export const useKeywordListActions = () => {
 
 export const useKeywordDetailActions = () => {
   const keywordOneStore = useKeywordOneStore()
-  const { keyword, loaded } = storeToRefs(keywordOneStore)
+  const { keyword } = storeToRefs(keywordOneStore)
 
   const fetchData = async (id: string) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const keyword = await fetchKeyword(id)
       keywordOneStore.setKeyword(keyword)
-      keywordOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
+    detailLoading,
     keyword,
-    loaded,
     fetchData,
     resetStore: keywordOneStore.reset,
   }
@@ -68,32 +71,30 @@ export const useKeywordEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const keywordOneStore = useKeywordOneStore()
-  const { keyword, loaded } = storeToRefs(keywordOneStore)
+  const { keyword } = storeToRefs(keywordOneStore)
 
   const fetchData = async (id: string) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const keyword = await fetchKeyword(id)
       keywordOneStore.setKeyword(keyword)
-      keywordOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       await updateKeyword(keywordOneStore.keyword.id, keyword.value)
       showRecordWas('updated')
       if (!close) return
@@ -101,12 +102,15 @@ export const useKeywordEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     keyword,
     fetchData,
     onUpdate,

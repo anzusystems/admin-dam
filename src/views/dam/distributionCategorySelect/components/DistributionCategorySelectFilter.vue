@@ -33,13 +33,13 @@ const { assetTypeOptions } = useAssetType()
             @change="submitFilter"
             v-model="filter.type"
             :items="assetTypeOptions"
-          ></AFilterValueObject>
+          />
         </VCol>
         <VCol cols="1">
-          <AFilterInteger v-model="filter.id"></AFilterInteger>
+          <AFilterInteger v-model="filter.id"/>
         </VCol>
         <VCol cols="2">
-          <AFilterString v-model="filter.serviceSlug"></AFilterString>
+          <AFilterString v-model="filter.serviceSlug"/>
         </VCol>
       </VRow>
     </FilterWrapper>

@@ -20,15 +20,15 @@ const { t } = useI18n({ useScope: 'global' })
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName"></ARow>
-        <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName"></ARow>
+        <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName" />
+        <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName" />
         <ARow :title="t('coreDam.user.model.assetLicences')">
           <LazyAssetLicenceChip
             class="mr-1"
             v-for="assetLicenceId in user.assetLicences"
             :id="assetLicenceId"
             :key="assetLicenceId"
-          ></LazyAssetLicenceChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.adminToExtSystems')">
           <LazyExtSystemChip
@@ -36,7 +36,7 @@ const { t } = useI18n({ useScope: 'global' })
             :id="adminToExtSystem"
             :key="adminToExtSystem"
             v-for="adminToExtSystem in user.adminToExtSystems"
-          ></LazyExtSystemChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.userToExtSystems')">
           <LazyExtSystemChip
@@ -52,7 +52,7 @@ const { t } = useI18n({ useScope: 'global' })
             :provider-name="allowedAssetExternalProvider"
             :key="allowedAssetExternalProvider"
             v-for="allowedAssetExternalProvider in user.allowedAssetExternalProviders"
-          ></ExternalProviderAssetChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <DistributionServiceChip
@@ -60,17 +60,17 @@ const { t } = useI18n({ useScope: 'global' })
             :service-name="allowedDistributionService"
             :key="allowedDistributionService"
             v-for="allowedDistributionService in user.allowedDistributionServices"
-          ></DistributionServiceChip>
+          />
         </ARow>
       </ACard>
     </VCol>
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.user.model.id')">
-          <ACopyText :value="user.id"></ACopyText>
+          <ACopyText :value="user.id" />
         </ARow>
         <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
-        <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
+        <AUserAndTimeTrackingFields :data="user" />
       </ACard>
     </VCol>
   </VRow>

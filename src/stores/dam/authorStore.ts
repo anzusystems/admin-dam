@@ -6,24 +6,18 @@ const { createDefault } = useAuthorFactory()
 
 interface State {
   author: Author
-  loaded: boolean
 }
 
 export const useAuthorOneStore = defineStore('authorOneStore', {
   state: (): State => ({
     author: createDefault(0),
-    loaded: false,
   }),
   actions: {
     setAuthor(author: Author) {
       this.author = author
     },
-    setLoaded(loaded: boolean) {
-      this.loaded = loaded
-    },
     reset() {
       this.author = createDefault(0)
-      this.loaded = false
     },
   },
 })

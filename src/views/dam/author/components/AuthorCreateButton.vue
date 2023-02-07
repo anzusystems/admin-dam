@@ -2,12 +2,10 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 import ATextField from '@/components/form/ATextField.vue'
 import ARow from '@/components/common/ARow.vue'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
@@ -53,6 +51,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 const { createDefault } = useAuthorFactory()
 const author = ref<Author>(createDefault(currentExtSystemId.value))
 const dialog = ref(false)
+const buttonLoading = ref(false)
 
 const onClick = () => {
   author.value = createDefault(currentExtSystemId.value, true)
@@ -67,20 +66,18 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n({ useScope: 'global' })
-const { btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const onConfirm = async () => {
   try {
-    btnDisable('create')
+    buttonLoading.value = true
     v$.value.$touch()
     if (v$.value.$invalid) {
       showValidationError()
-      btnEnable('create')
+      buttonLoading.value = false
       return
     }
-    btnLoadingOn('create')
     const res = await createAuthor(author.value)
     emit('afterCreate', res)
     showRecordWas('created')
@@ -91,7 +88,7 @@ const onConfirm = async () => {
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('create')
+    buttonLoading.value = false
   }
 }
 
@@ -135,7 +132,7 @@ const { authorTypeOptions } = useAuthorType()
           variant="text"
           @click.stop="onCancel"
           data-cy="button-close"
-        ></VBtn>
+        />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
@@ -146,7 +143,7 @@ const { authorTypeOptions } = useAuthorType()
               :v="v$.author.name"
               required
               data-cy="author-name"
-            ></ATextField>
+            />
           </ARow>
           <ARow>
             <ATextField
@@ -154,7 +151,7 @@ const { authorTypeOptions } = useAuthorType()
               v-model="author.identifier"
               :v="v$.author.identifier"
               data-cy="author-identifier"
-            ></ATextField>
+            />
           </ARow>
           <ARow>
             <AValueObjectOptionsSelect
@@ -162,7 +159,7 @@ const { authorTypeOptions } = useAuthorType()
               v-model="author.type"
               :items="authorTypeOptions"
               data-cy="author-type"
-            ></AValueObjectOptionsSelect>
+            />
           </ARow>
         </VContainer>
       </ASystemEntityScope>
@@ -171,9 +168,9 @@ const { authorTypeOptions } = useAuthorType()
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
+        <VBtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
           {{ t(buttonT) }}
-        </ABtn>
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

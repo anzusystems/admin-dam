@@ -1,18 +1,22 @@
 <script lang="ts" setup>
 import AIconGroup from '@/components/common/AIconGroup.vue'
 import { clickBlur } from '@/utils/event'
-import ABtn from '@/components/common/buttons/ABtn.vue'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
     buttonT?: string
     buttonClass?: string
     dataCy?: string
+    loading?: boolean
+    disabled?: boolean
   }>(),
   {
     buttonT: 'common.button.saveAndClose',
     buttonClass: 'ml-2',
     dataCy: 'button-save-close',
+    loading: undefined,
+    disabled: undefined,
   }
 )
 const emit = defineEmits<{
@@ -23,13 +27,16 @@ const onClick = (event: Event) => {
   clickBlur(event)
   emit('saveRecordAndClose')
 }
+
+const { t } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
-  <ABtn
+  <VBtn
     :class="buttonClass"
     :data-cy="dataCy"
-    btn-helper="saveAndClose"
+    :loading="loading"
+    :disabled="disabled"
     color="primary"
     icon=""
     variant="outlined"
@@ -37,7 +44,7 @@ const onClick = (event: Event) => {
     :width="36"
     :height="35"
   >
-    <AIconGroup main-icon="mdi-content-save" secondary-icon="mdi-close"></AIconGroup>
-    <VTooltip activator="parent" location="bottom">Save and close</VTooltip>
-  </ABtn>
+    <AIconGroup main-icon="mdi-content-save" secondary-icon="mdi-close" />
+    <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
+  </VBtn>
 </template>

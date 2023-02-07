@@ -43,5 +43,5 @@ const innerFilter = usePodcastFilter()
     :clearable="clearable"
     filter-by-field="title"
     :data-cy="dataCy"
-  ></ARemoteSelect>
+  />
 </template>

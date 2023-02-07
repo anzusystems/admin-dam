@@ -7,8 +7,11 @@ import AssetLicenceCreateButton from '@/views/dam/assetLicence/components/AssetL
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { ref } from 'vue'
+import { useAssetLicenceListActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 
 const { t } = useI18n({ useScope: 'global' })
+
+const { listLoading } = useAssetLicenceListActions()
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 
@@ -24,7 +27,7 @@ const afterCreate = () => {
       <AssetLicenceCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
     </Acl>
   </ActionbarButtonsWrapper>
-  <ACard loader="list">
+  <ACard :loading="listLoading">
     <AssetLicenceDatatable ref="datatable" />
   </ACard>
 </template>

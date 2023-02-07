@@ -52,14 +52,14 @@ onMounted(() => getList())
           <ADetailButton
             :record-id="data.id"
             :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL"
-          ></ADetailButton>
+          />
         </Acl>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
+        <ACopyIdButton :id="data.id"/>
         <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"></AEditButton>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"/>
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList"/>
   </ASystemEntityScope>
 </template>

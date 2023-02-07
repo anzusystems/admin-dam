@@ -17,5 +17,5 @@ provide<string>(SubjectScopeSymbol, props.subject)
 </script>
 
 <template>
-  <slot></slot>
+  <slot />
 </template>

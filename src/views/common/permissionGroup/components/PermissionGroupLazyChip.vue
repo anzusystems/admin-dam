@@ -45,7 +45,7 @@ const onClick = () => {
 
 <template>
   <div class="d-inline-flex">
-    <VProgressCircular v-if="showLoader" :size="16" :width="2" indeterminate></VProgressCircular>
+    <VProgressCircular v-if="showLoader" :size="16" :width="2" indeterminate/>
     <VChip
       v-else-if="hideChip === false"
       rounded="lg"

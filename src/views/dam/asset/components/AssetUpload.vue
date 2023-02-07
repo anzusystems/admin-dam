@@ -143,7 +143,7 @@ const uploadAccept = computed(() => {
             variant="text"
             @click.stop="onDialogCancel"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <div class="pa-2">
