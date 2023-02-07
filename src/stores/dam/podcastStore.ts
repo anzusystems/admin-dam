@@ -6,24 +6,18 @@ const { createDefault } = usePodcastFactory()
 
 interface State {
   podcast: Podcast
-  loaded: boolean
 }
 
 export const usePodcastOneStore = defineStore('podcastOneStore', {
   state: (): State => ({
     podcast: createDefault(0),
-    loaded: false,
   }),
   actions: {
     setPodcast(podcast: Podcast) {
       this.podcast = podcast
     },
-    setLoaded(loaded: boolean) {
-      this.loaded = loaded
-    },
     reset() {
       this.podcast = createDefault(0)
-      this.loaded = false
     },
   },
 })

@@ -43,7 +43,7 @@ const onClick = () => {
 <template>
   <div class="d-inline-flex">
     <span v-if="isNull(id)">-</span>
-    <VProgressCircular v-else-if="showLoader" :size="16" :width="2" indeterminate></VProgressCircular>
+    <VProgressCircular v-else-if="showLoader" :size="16" :width="2" indeterminate />
     <VChip v-else rounded="lg" size="small" variant="tonal" @click.stop="onClick">
       {{ text }}
     </VChip>

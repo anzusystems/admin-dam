@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 import ATextField from '@/components/form/ATextField.vue'
 import ARow from '@/components/common/ARow.vue'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
@@ -26,7 +25,6 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-
 const emit = defineEmits<{
   (e: 'onCreateSuccess', data: AssetType): void
 }>()
@@ -34,13 +32,14 @@ const emit = defineEmits<{
 const dialog = ref(false)
 
 const {
+  createFormDataLoaded,
   distributionCategory,
   distributionCategorySelects,
   distributionCategorySelectedOptions,
-  loaded,
   prepareData,
   onCreate,
   resetStore,
+  createButtonLoading,
 } = useDistributionCategoryCreateActions()
 
 const onClick = async () => {
@@ -79,7 +78,13 @@ const { assetTypeOptions } = useAssetType()
     {{ t(buttonT) }}
   </VBtn>
   <VDialog v-model="dialog" persistent no-click-animation>
-    <VCard v-if="dialog" :loading="!loaded" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
+    <VCard
+      v-if="dialog"
+      :loading="!createFormDataLoaded"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.permissionGroup.meta.create') }}</span>
         <VSpacer />
@@ -90,7 +95,7 @@ const { assetTypeOptions } = useAssetType()
           variant="text"
           @click.stop="onCancel"
           data-cy="button-close"
-        ></VBtn>
+        />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
@@ -99,14 +104,14 @@ const { assetTypeOptions } = useAssetType()
               v-model="distributionCategory.type"
               :items="assetTypeOptions"
               data-cy="category-type"
-            ></AValueObjectOptionsSelect>
+            />
           </ARow>
           <ARow>
             <ATextField
               v-model="distributionCategory.name"
               :v="v$.distributionCategory.name"
               data-cy="category-name"
-            ></ATextField>
+            />
           </ARow>
           <ARow
             class="mt-5"
@@ -126,9 +131,9 @@ const { assetTypeOptions } = useAssetType()
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-confirm">
+        <VBtn color="success" @click.stop="onConfirm" :loading="createButtonLoading" data-cy="button-confirm">
           {{ t(buttonT) }}
-        </ABtn>
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

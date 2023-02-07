@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { clickBlur } from '@/utils/event'
 import { useI18n } from 'vue-i18n'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 
 withDefaults(
   defineProps<{
@@ -9,12 +8,16 @@ withDefaults(
     buttonClass?: string
     icon?: boolean
     dataCy?: string
+    loading?: boolean
+    disabled?: boolean
   }>(),
   {
     buttonT: 'common.button.save',
     buttonClass: 'ml-2',
     icon: false,
     dataCy: 'button-save',
+    loading: undefined,
+    disabled: undefined,
   }
 )
 const emit = defineEmits<{
@@ -30,7 +33,7 @@ const { t } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
-  <ABtn
+  <VBtn
     v-if="icon"
     :class="buttonClass"
     :elevation="2"
@@ -38,20 +41,22 @@ const { t } = useI18n({ useScope: 'global' })
     size="small"
     variant="outlined"
     @click.stop="onClick"
-    btn-helper="save"
+    :loading="loading"
+    :disabled="disabled"
   >
     <VIcon icon="mdi-content-save" />
-    <VTooltip activator="parent" location="bottom">Save and close</VTooltip>
-  </ABtn>
-  <ABtn
+    <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
+  </VBtn>
+  <VBtn
     v-else
     :class="buttonClass"
     :data-cy="dataCy"
     color="primary"
     rounded="pill"
     @click.stop="onClick"
-    btn-helper="save"
+    :loading="loading"
+    :disabled="disabled"
   >
     {{ t(buttonT) }}
-  </ABtn>
+  </VBtn>
 </template>

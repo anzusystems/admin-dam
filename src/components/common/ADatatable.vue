@@ -53,7 +53,7 @@ const { t } = useI18n({ useScope: 'global' })
         <th class="text-left" v-for="column in availableColumns" :key="column.name">
           {{ column.getLabel(system, subject) }}
         </th>
-        <th v-if="actions"></th>
+        <th v-if="actions" />
       </tr>
     </thead>
     <tbody>
@@ -61,12 +61,12 @@ const { t } = useI18n({ useScope: 'global' })
         <tr v-for="(rowData, index) in props.data" :key="index" @click="onRowClick(rowData)">
           <ADatatableColumn v-for="column in availableColumns" :key="column.name" :row-data="rowData" :column="column">
             <template v-slot:[normalizeForSlotName(column.name)]="{ data }">
-              <slot :name="normalizeForSlotName(column.name)" :data="data" :row-data="rowData"></slot>
+              <slot :name="normalizeForSlotName(column.name)" :data="data" :row-data="rowData" />
             </template>
           </ADatatableColumn>
           <td v-if="actions">
             <div class="d-flex justify-end">
-              <slot name="actions" :data="rowData"></slot>
+              <slot name="actions" :data="rowData" />
             </div>
           </td>
         </tr>

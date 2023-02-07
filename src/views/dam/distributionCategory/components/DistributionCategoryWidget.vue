@@ -64,14 +64,14 @@ watch(
       <VCol>No distribution category selected</VCol>
       <VCol cols="auto">
         <VBtn variant="text" icon size="small" @click.stop="dialog = true">
-          <VIcon icon="mdi-pencil"></VIcon>
+          <VIcon icon="mdi-pencil"/>
           <VTooltip activator="parent" location="bottom">{{ t('common.button.edit') }}</VTooltip>
         </VBtn>
       </VCol>
     </VRow>
     <VRow v-else-if="loading">
       <VCol class="d-flex w-100 h-100 justify-center align-center pa-2">
-        <VProgressCircular indeterminate color="primary"></VProgressCircular>
+        <VProgressCircular indeterminate color="primary"/>
       </VCol>
     </VRow>
     <VRow v-else align="center">
@@ -83,7 +83,7 @@ watch(
       </VCol>
       <VCol cols="auto">
         <VBtn variant="text" icon size="small" @click.stop="dialog = true">
-          <VIcon icon="mdi-pencil"></VIcon>
+          <VIcon icon="mdi-pencil"/>
           <VTooltip activator="parent" location="bottom">{{ t('common.button.edit') }}</VTooltip>
         </VBtn>
       </VCol>

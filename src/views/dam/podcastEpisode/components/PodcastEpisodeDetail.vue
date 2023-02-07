@@ -23,37 +23,31 @@ const imageSrc = computed(() => {
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.podcastEpisode.model.texts.title')" :value="podcastEpisode.texts.title"></ARow>
-        <ARow :title="t('coreDam.podcastEpisode.model.position')" :value="podcastEpisode.position"></ARow>
-        <ARow
-          :title="t('coreDam.podcastEpisode.model.texts.description')"
-          :value="podcastEpisode.texts.description"
-        ></ARow>
+        <ARow :title="t('coreDam.podcastEpisode.model.texts.title')" :value="podcastEpisode.texts.title" />
+        <ARow :title="t('coreDam.podcastEpisode.model.position')" :value="podcastEpisode.position" />
+        <ARow :title="t('coreDam.podcastEpisode.model.texts.description')" :value="podcastEpisode.texts.description" />
         <ARow
           :title="t('coreDam.podcastEpisode.model.texts.rawDescription')"
           :value="podcastEpisode.texts.rawDescription"
-        ></ARow>
+        />
         <ARow
           :title="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
           :value="podcastEpisode.attributes.seasonNumber"
-        ></ARow>
+        />
         <ARow
           :title="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
           :value="podcastEpisode.attributes.episodeNumber"
-        ></ARow>
-        <ARow
-          :title="t('coreDam.podcastEpisode.model.attributes.extId')"
-          :value="podcastEpisode.attributes.extId"
-        ></ARow>
+        />
+        <ARow :title="t('coreDam.podcastEpisode.model.attributes.extId')" :value="podcastEpisode.attributes.extId" />
         <ARow :title="t('coreDam.podcastEpisode.model.dates.publicationDate')">
-          <ADatetime :date-time="podcastEpisode.dates.publicationDate"></ADatetime>
+          <ADatetime :date-time="podcastEpisode.dates.publicationDate" />
         </ARow>
       </ACard>
     </VCol>
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.podcastEpisode.model.id')">
-          <ACopyText :value="podcastEpisode.id"></ACopyText>
+          <ACopyText :value="podcastEpisode.id" />
         </ARow>
         <ARow title="Image" v-if="imageSrc">
           <AssetImage :src="imageSrc" use-component />

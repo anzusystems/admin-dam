@@ -126,9 +126,9 @@ const afterCreate = (keyword: Keyword) => {
     >
       <template #chip="{ props, item }">
         <VChip v-bind="props">
-          <VIcon v-if="isNewKeyword(item.raw.title, item.raw.value)" start icon="mdi-new-box"></VIcon>
+          <VIcon v-if="isNewKeyword(item.raw.title, item.raw.value)" start icon="mdi-new-box" />
           <span v-if="loadedAll">{{ item.title }}</span>
-          <VProgressCircular v-else indeterminate size="15"></VProgressCircular>
+          <VProgressCircular v-else indeterminate size="15" />
         </VChip>
       </template>
     </ARemoteSelect>

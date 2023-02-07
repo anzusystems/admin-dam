@@ -97,7 +97,7 @@ const onBlur = () => {
     :error-messages="errorMessageComputed"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required"></span></template>
+    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
   </VTextarea>
   <VTextField
     :model-value="modelValue"
@@ -108,7 +108,7 @@ const onBlur = () => {
     :error-messages="errorMessageComputed"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required"></span></template>
+    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
   </VTextField>
   <VCombobox
     :model-value="modelValue"
@@ -120,6 +120,6 @@ const onBlur = () => {
     :error-messages="errorMessageComputed"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required"></span></template>
+    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
   </VCombobox>
 </template>

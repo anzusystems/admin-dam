@@ -91,19 +91,16 @@ const totalCountText = computed(() => {
 
 <template>
   <VDialog v-model="externalProviderAssetDetailStore.detail" fullscreen persistent no-click-animation>
-    <AssetDetailDialogLoader
-      v-if="externalProviderAssetDetailStore.loader"
-      @close-dialog="closeDialog"
-    ></AssetDetailDialogLoader>
+    <AssetDetailDialogLoader v-if="externalProviderAssetDetailStore.loader" @close-dialog="closeDialog" />
     <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }" v-else-if="asset">
       <div class="dam-image-detail__wrapper d-flex flex-column">
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div>
             <VBtn icon variant="text" @click.stop="prevItem" class="mx-1" :width="36" :height="36">
-              <VIcon icon="mdi-chevron-left"></VIcon>
+              <VIcon icon="mdi-chevron-left" />
             </VBtn>
             <VBtn icon variant="text" @click.stop="nextItem" class="mr-2" :width="36" :height="36">
-              <VIcon icon="mdi-chevron-right"></VIcon>
+              <VIcon icon="mdi-chevron-right" />
             </VBtn>
           </div>
           <div class="text-subtitle-2 d-flex">
@@ -122,21 +119,21 @@ const totalCountText = computed(() => {
               :width="36"
               :height="36"
             >
-              <VIcon icon="mdi-information-outline"></VIcon>
+              <VIcon icon="mdi-information-outline" />
             </VBtn>
             <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
-              <VIcon icon="mdi-close"></VIcon>
+              <VIcon icon="mdi-close" />
             </VBtn>
           </div>
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
-              <AssetImageRoiSelect></AssetImageRoiSelect>
+              <AssetImageRoiSelect />
             </div>
             <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <div v-if="imageLoading && isTypeImage" class="d-flex w-100 h-100 align-center justify-center">
-                <VProgressCircular indeterminate color="white"></VProgressCircular>
+                <VProgressCircular indeterminate color="white" />
               </div>
               <AssetImage :src="imageSrc" @load="onImageLoad" @error="onImageLoad" use-component />
             </div>

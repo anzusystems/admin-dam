@@ -2,7 +2,6 @@ import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { useAssetLicenceOneStore } from '@/stores/dam/assetLicenceStore'
@@ -21,15 +20,19 @@ import type { ValueObjectOption } from '@/types/ValueObject'
 
 const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
+
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceListActions = () => {
   const listItems = ref<AssetLicence[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchAssetLicenceList(pagination, filterBag)
       listItems.value.forEach((item) => {
@@ -39,11 +42,12 @@ export const useAssetLicenceListActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -51,26 +55,25 @@ export const useAssetLicenceListActions = () => {
 
 export const useAssetLicenceDetailActions = () => {
   const assetLicenceOneStore = useAssetLicenceOneStore()
-  const { assetLicence, loaded } = storeToRefs(assetLicenceOneStore)
+  const { assetLicence } = storeToRefs(assetLicenceOneStore)
 
   const fetchData = async (id: number) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const assetLicence = await fetchAssetLicence(id)
       if (assetLicence.extSystem) addToLazyExtSystemBuffer(assetLicence.extSystem)
       fetchLazyExtSystem()
       assetLicenceOneStore.setAssetLicence(assetLicence)
-      assetLicenceOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
     assetLicence,
-    loaded,
+    detailLoading,
     fetchData,
     resetStore: assetLicenceOneStore.reset,
   }
@@ -80,34 +83,32 @@ export const useAssetLicenceEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const assetLicenceOneStore = useAssetLicenceOneStore()
-  const { assetLicence, loaded } = storeToRefs(assetLicenceOneStore)
+  const { assetLicence } = storeToRefs(assetLicenceOneStore)
 
   const fetchData = async (id: number) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const assetLicence = await fetchAssetLicence(id)
       if (assetLicence.extSystem) addToLazyExtSystemBuffer(assetLicence.extSystem)
       fetchLazyExtSystem()
       assetLicenceOneStore.setAssetLicence(assetLicence)
-      assetLicenceOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       await updateAssetLicence(assetLicenceOneStore.assetLicence.id, assetLicence.value)
       showRecordWas('updated')
       if (!close) return
@@ -115,12 +116,15 @@ export const useAssetLicenceEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     assetLicence,
     fetchData,
     onUpdate,

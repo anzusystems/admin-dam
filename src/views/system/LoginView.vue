@@ -14,8 +14,8 @@ const { t } = useI18n({ useScope: 'global' })
 <template>
   <div class="d-flex justify-center align-center h-100">
     <div class="flex-grow-1 text-center login-wrapper">
-      <LoginFormSimple v-if="userAuthType === UserAuthType.JsonCredentials"></LoginFormSimple>
-      <LoginFormSso v-else></LoginFormSso>
+      <LoginFormSimple v-if="userAuthType === UserAuthType.JsonCredentials" />
+      <LoginFormSso v-else />
     </div>
   </div>
   <div class="full-screen-page-footer px-10">

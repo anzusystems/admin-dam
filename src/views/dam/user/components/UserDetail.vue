@@ -25,16 +25,16 @@ const userAuthType = damPubConfig.userAuthType
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
-        <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName"></ARow>
-        <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName"></ARow>
+        <ARow :title="t('coreDam.user.model.email')" :value="user.email" />
+        <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName" />
+        <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName" />
         <ARow :title="t('coreDam.user.model.assetLicences')">
           <LazyAssetLicenceChip
             class="mr-1"
             v-for="assetLicenceId in user.assetLicences"
             :id="assetLicenceId"
             :key="assetLicenceId"
-          ></LazyAssetLicenceChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.adminToExtSystems')">
           <LazyExtSystemChip
@@ -42,7 +42,7 @@ const userAuthType = damPubConfig.userAuthType
             :id="adminToExtSystem"
             :key="adminToExtSystem"
             v-for="adminToExtSystem in user.adminToExtSystems"
-          ></LazyExtSystemChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <ExternalProviderAssetChip
@@ -50,7 +50,7 @@ const userAuthType = damPubConfig.userAuthType
             :provider-name="allowedAssetExternalProvider"
             :key="allowedAssetExternalProvider"
             v-for="allowedAssetExternalProvider in user.allowedAssetExternalProviders"
-          ></ExternalProviderAssetChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <DistributionServiceChip
@@ -58,20 +58,20 @@ const userAuthType = damPubConfig.userAuthType
             :service-name="allowedDistributionService"
             :key="allowedDistributionService"
             v-for="allowedDistributionService in user.allowedDistributionServices"
-          ></DistributionServiceChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.enabled')">
-          <ABooleanValue chip :value="user.enabled"></ABooleanValue>
+          <ABooleanValue chip :value="user.enabled" />
         </ARow>
       </ACard>
     </VCol>
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.user.model.id')">
-          <ACopyText :value="user.id"></ACopyText>
+          <ACopyText :value="user.id" />
         </ARow>
-        <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.id')" :value="user.id"></ARow>
-        <AUserAndTimeTrackingFields :data="user"></AUserAndTimeTrackingFields>
+        <ARow v-if="userAuthType === UserAuthType.OAuth2" :title="t('coreDam.user.model.id')" :value="user.id" />
+        <AUserAndTimeTrackingFields :data="user" />
       </ACard>
     </VCol>
   </VRow>

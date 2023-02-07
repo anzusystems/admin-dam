@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 <template>
   <VAppBar v-if="showSystemBar" height="24" color="orange accent-3" elevation="0" :order="-1">
     <div class="text-center w-100 text-caption pb-1">
-      <component :is="systemBarComponent"></component>
+      <component :is="systemBarComponent"/>
     </div>
   </VAppBar>
 </template>

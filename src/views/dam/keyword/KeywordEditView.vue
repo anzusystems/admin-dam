@@ -17,7 +17,8 @@ const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { loaded, fetchData, resetStore, onUpdate } = useKeywordEditActions()
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
+  useKeywordEditActions()
 
 const getData = () => {
   fetchData(id)
@@ -35,11 +36,21 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.edit')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton v-if="loaded" @save-record="onUpdate"></ASaveButton>
-    <ASaveAndCloseButton v-if="loaded" @save-record-and-close="onUpdate(true)"></ASaveAndCloseButton>
-    <ACloseButton :route-name="ROUTE.DAM.KEYWORD.LIST"></ACloseButton>
+    <ASaveButton
+      v-if="!detailLoading"
+      @save-record="onUpdate"
+      :loading="saveButtonLoading"
+      :disabled="saveAndCloseButtonLoading"
+    />
+    <ASaveAndCloseButton
+      v-if="!detailLoading"
+      @save-record-and-close="onUpdate(true)"
+      :loading="saveAndCloseButtonLoading"
+      :disabled="saveButtonLoading"
+    />
+    <ACloseButton :route-name="ROUTE.DAM.KEYWORD.LIST" />
   </ActionbarButtonsWrapper>
-  <ACard loader="edit">
-    <KeywordEditForm></KeywordEditForm>
+  <ACard :loading="detailLoading">
+    <KeywordEditForm />
   </ACard>
 </template>

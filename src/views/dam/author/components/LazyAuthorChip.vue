@@ -51,7 +51,7 @@ const onClose = (id: string) => {
 <template>
   <div class="d-inline-flex" v-if="showed">
     <span v-if="isNull(id)">-</span>
-    <VProgressCircular v-else-if="showLoader" :size="16" :width="2" indeterminate></VProgressCircular>
+    <VProgressCircular v-else-if="showLoader" :size="16" :width="2" indeterminate/>
     <VChip
       v-else
       rounded="lg"

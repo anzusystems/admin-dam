@@ -13,8 +13,10 @@ import { PodcastDetailTab, usePodcastDetailTab } from '@/views/dam/podcast/compo
 import PodcastEpisodeDatatable from '@/views/dam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import PodcastEpisodeCreateButton from '@/views/dam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
 import ACard from '@/components/common/ACard.vue'
+import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 
-const { loaded, fetchData, resetStore } = usePodcastDetailActions()
+const { detailLoading, fetchData, resetStore } = usePodcastDetailActions()
+const { listLoading } = usePodcastEpisodeListActions()
 
 const route = useRoute()
 const podcastId = route.params.id.toString()
@@ -62,14 +64,14 @@ const afterPodcastEpisodeCreate = () => {
   <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.detail')" icon="mdi-podcast" />
   <ActionbarButtonsWrapper>
     <PodcastEpisodeCreateButton
-      v-if="loaded"
+      v-if="!detailLoading"
       data-cy="button-create"
       button-t="coreDam.podcastEpisode.button.create"
       :podcast-id="podcastId"
       disable-redirect
       @after-create="afterPodcastEpisodeCreate"
     />
-    <AEditButton v-if="loaded" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
+    <AEditButton v-if="!detailLoading" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
     <ACloseButton :route-name="ROUTE.DAM.PODCAST.LIST" />
   </ActionbarButtonsWrapper>
   <VTabs v-model="activeTab" class="mb-4">
@@ -77,10 +79,12 @@ const afterPodcastEpisodeCreate = () => {
     <VTab :value="PodcastDetailTab.Episodes" data-cy="episode-list">{{ t('coreDam.podcast.tabs.episodes') }}</VTab>
   </VTabs>
   <div v-show="activeTab === PodcastDetailTab.Detail">
-    <PodcastDetail />
+    <ACard :loading="detailLoading">
+      <PodcastDetail />
+    </ACard>
   </div>
   <div v-show="activeTab === PodcastDetailTab.Episodes">
-    <ACard loader="list">
+    <ACard :loading="listLoading">
       <PodcastEpisodeDatatable v-if="loadPodcastEpisodeDatatable" :podcast-id="podcastId" />
     </ACard>
   </div>

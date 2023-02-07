@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { clickBlur } from '@/utils/event'
 import { useI18n } from 'vue-i18n'
-import { useUiHelper } from '@/composables/system/uiHelper'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 
 const props = withDefaults(
   defineProps<{
     variant?: string
-    useUiHelper?: boolean
     buttonT?: string
     buttonClass?: string
     dialogMessageT?: string
@@ -25,7 +22,6 @@ const props = withDefaults(
   }>(),
   {
     variant: 'text',
-    useUiHelper: false,
     buttonT: 'common.button.delete',
     buttonClass: 'ml-2',
     dialogMessageT: 'common.modal.confirmDelete',
@@ -65,28 +61,15 @@ const onCancel = () => {
 
 const { t } = useI18n({ useScope: 'global' })
 
-const { btn } = useUiHelper()
-
-const progress = computed(() => {
-  if (props.loading) {
-    return props.loading
-  }
-  if (props.useUiHelper) {
-    return btn.delete.loading
-  }
-  return false
-})
-
 defineExpose({
   closeDialog,
 })
 </script>
 
 <template>
-  <ABtn
+  <VBtn
     :class="buttonClass"
     :data-cy="dataCy"
-    btn-helper="delete"
     icon
     size="small"
     :variant="variant"
@@ -96,7 +79,7 @@ defineExpose({
   >
     <VIcon icon="mdi-trash-can-outline" />
     <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
-  </ABtn>
+  </VBtn>
   <VDialog v-model="dialog" persistent :width="500" no-click-animation>
     <VCard v-if="dialog" data-cy="delete-panel">
       <VToolbar class="pl-2" density="compact">
@@ -111,19 +94,19 @@ defineExpose({
             size="small"
             variant="text"
             @click.stop="onCancel"
-            :disabled="progress"
+            :disabled="loading"
             data-cy="button-close"
-          ></VBtn>
+          />
         </VToolbarItems>
       </VToolbar>
       <VCardActions>
         <VSpacer />
-        <ABtn :color="dialogCancelColor" text @click.stop="onCancel" :disabled="progress" data-cy="button-cancel">
+        <VBtn :color="dialogCancelColor" text @click.stop="onCancel" :disabled="loading" data-cy="button-cancel">
           {{ t(dialogCancelButtonT) }}
-        </ABtn>
-        <ABtn :color="dialogConfirmColor" @click.stop="onConfirm" :loading="progress" data-cy="button-confirm">
+        </VBtn>
+        <VBtn :color="dialogConfirmColor" @click.stop="onConfirm" :loading="loading" data-cy="button-confirm">
           {{ t(dialogConfirmButtonT) }}
-        </ABtn>
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -140,9 +140,9 @@ onMounted(() => {
             v-if="loadedAll && suggestionsDefined && !existingAuthorsIds.includes(item.value)"
             start
             icon="mdi-new-box"
-          ></VIcon>
+          />
           <span v-if="loadedAll">{{ item.title }}</span>
-          <VProgressCircular v-else indeterminate size="15"></VProgressCircular>
+          <VProgressCircular v-else indeterminate size="15"/>
         </VChip>
       </template>
     </ARemoteSelect>

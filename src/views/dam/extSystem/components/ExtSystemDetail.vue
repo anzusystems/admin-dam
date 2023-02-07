@@ -17,24 +17,19 @@ const { t } = useI18n({ useScope: 'global' })
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.extSystem.model.name')" :value="extSystem.name"></ARow>
-        <ARow :title="t('coreDam.extSystem.model.slug')" :value="extSystem.slug"></ARow>
+        <ARow :title="t('coreDam.extSystem.model.name')" :value="extSystem.name" />
+        <ARow :title="t('coreDam.extSystem.model.slug')" :value="extSystem.slug" />
         <ARow :title="t('coreDam.extSystem.model.adminUsers')">
-          <LazyUserChip
-            class="mr-2 mt-2"
-            v-for="userId in extSystem.adminUsers"
-            :id="userId"
-            :key="userId"
-          ></LazyUserChip>
+          <LazyUserChip class="mr-2 mt-2" v-for="userId in extSystem.adminUsers" :id="userId" :key="userId" />
         </ARow>
       </ACard>
     </VCol>
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.extSystem.model.id')">
-          <ACopyText :value="extSystem.id"></ACopyText>
+          <ACopyText :value="extSystem.id" />
         </ARow>
-        <AUserAndTimeTrackingFields :data="extSystem"></AUserAndTimeTrackingFields>
+        <AUserAndTimeTrackingFields :data="extSystem" />
       </ACard>
     </VCol>
   </VRow>

@@ -24,10 +24,10 @@ const resetFilter = () => {
     <FilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="4">
-          <AFilterString v-model="filter.id"></AFilterString>
+          <AFilterString v-model="filter.id" />
         </VCol>
         <VCol cols="4">
-          <AFilterString v-model="filter.title"></AFilterString>
+          <AFilterString v-model="filter.title" />
         </VCol>
       </VRow>
     </FilterWrapper>

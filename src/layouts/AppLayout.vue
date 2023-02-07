@@ -23,6 +23,6 @@ watch(
 
 <template>
   <component :is="layout">
-    <slot></slot>
+    <slot/>
   </component>
 </template>

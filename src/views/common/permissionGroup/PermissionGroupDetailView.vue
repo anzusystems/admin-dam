@@ -48,12 +48,12 @@ const { t } = useI18n({ useScope: 'global' })
         :record-id="id"
         :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
         :loading="loadingDeletePermissionGroup"
-      ></AEditButton>
+      />
     </Acl>
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_DELETE" v-if="!loadingPermissionGroup">
-      <ADeleteButton @delete-record="deletePermissionGroup(id)" :loading="loadingDeletePermissionGroup"></ADeleteButton>
+      <ADeleteButton @delete-record="deletePermissionGroup(id)" :loading="loadingDeletePermissionGroup"/>
     </Acl>
-    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST"/>
   </ActionbarButtonsWrapper>
   <PermissionGroupDetail :client="damClient" />
 </template>

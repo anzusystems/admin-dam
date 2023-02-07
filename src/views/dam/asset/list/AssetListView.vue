@@ -76,7 +76,7 @@ onUnmounted(() => {
   <MainWrapper>
     <template #default>
       <div class="d-flex w-100 h-100 align-center justify-center" v-if="loader.hard">
-        <VProgressCircular indeterminate color="primary"></VProgressCircular>
+        <VProgressCircular indeterminate color="primary"/>
       </div>
       <div v-else-if="items.length">
         <div class="dam-image-grid" :class="'dam-image-grid--' + gridView">
@@ -89,11 +89,11 @@ onUnmounted(() => {
             @item-click="onItemClick"
             @toggle-selected="toggleSelected"
             @select-multiple="selectMultiple"
-          ></AssetListItem>
+          />
           <div v-if="loader.soft" class="w-100 d-flex align-center justify-center pa-4">
-            <VProgressCircular indeterminate color="primary"></VProgressCircular>
+            <VProgressCircular indeterminate color="primary"/>
           </div>
-          <div class="w-100" v-if="loadOnScroll" v-intersect="autoloadOnIntersect"></div>
+          <div class="w-100" v-if="loadOnScroll" v-intersect="autoloadOnIntersect"/>
         </div>
         <AssetDetailDialog @prev-item="prevItem" @next-item="nextItem" />
       </div>
@@ -112,7 +112,7 @@ onUnmounted(() => {
     <template #second-bar-right>
       <div class="text-caption">{{ t('coreDam.asset.list.foundItems') }}: {{ totalCountText }}</div>
       <VBtn variant="text" icon @click.stop="fetchAssetList" size="x-small" class="ml-1">
-        <VIcon icon="mdi-refresh"></VIcon>
+        <VIcon icon="mdi-refresh"/>
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
       </VBtn>
       <VDivider vertical class="mx-1 my-2" />

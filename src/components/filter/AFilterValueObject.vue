@@ -38,5 +38,5 @@ const value = computed({
     @clear="clearOne(modelValue)"
     @change="emit('change')"
     data-cy="filter-value"
-  ></VAutocomplete>
+  />
 </template>

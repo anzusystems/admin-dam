@@ -36,5 +36,5 @@ const componentComputed = computed(() => {
     :item="item"
     :asset-type="assetType"
     :resource-name="item._resourceName"
-  ></component>
+  />
 </template>

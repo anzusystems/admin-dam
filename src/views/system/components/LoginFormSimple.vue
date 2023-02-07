@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 import { useSimpleLoginActions } from '@/views/system/composables/loginActions'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const { simpleLoginForm, onLogin } = useSimpleLoginActions()
+const { simpleLoginForm, onLogin, loginButtonLoading } = useSimpleLoginActions()
 
 const onSubmit = () => {
   onLogin()
@@ -18,7 +17,7 @@ const onSubmit = () => {
       <h1 class="display-1 my-3">
         ADAM
         <svg width="1000" height="623" class="logo-login pr-10 pb-5">
-          <use xlink:href="#svg-logo"></use>
+          <use xlink:href="#svg-logo" />
         </svg>
       </h1>
       <h4 class="mb-3 body-1">
@@ -38,16 +37,16 @@ const onSubmit = () => {
           data-cy="password"
         />
       </VForm>
-      <ABtn
-        btn-helper="login"
+      <VBtn
         @click.stop="onSubmit"
         color="primary"
         size="large"
         variant="flat"
         data-cy="button-login"
+        :loading="loginButtonLoading"
       >
         {{ t('auth.simpleLogin.buttons.login') }}
-      </ABtn>
+      </VBtn>
     </div>
   </div>
 </template>

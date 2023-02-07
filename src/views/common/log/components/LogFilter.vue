@@ -34,42 +34,42 @@ const { logSystemOptions } = useLogSystem()
     <FilterWrapper enable-advanced enable-top @reset-filter="resetFilter">
       <VRow align="start">
         <VCol class="pb-0" cols="12" sm="4">
-          <AFilterValueObject v-model="logFilter.levelName" :items="logLevelOptions"></AFilterValueObject>
+          <AFilterValueObject v-model="logFilter.levelName" :items="logLevelOptions"/>
         </VCol>
         <VCol cols="12" sm="2">
-          <AFilterString v-model="logFilter.contextId"></AFilterString>
+          <AFilterString v-model="logFilter.contextId"/>
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="logFilter.datetimeFrom" disable-clearable></AFilterDatetime>
+          <AFilterDatetime v-model="logFilter.datetimeFrom" disable-clearable/>
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="logFilter.datetimeTo" disable-clearable></AFilterDatetime>
+          <AFilterDatetime v-model="logFilter.datetimeTo" disable-clearable/>
         </VCol>
       </VRow>
       <template #top>
         <VRow align="start">
           <VCol class="pb-0" cols="12" sm="8">
-            <AFilterValueObject v-model="logFilter.system" :items="logSystemOptions"></AFilterValueObject>
+            <AFilterValueObject v-model="logFilter.system" :items="logSystemOptions"/>
           </VCol>
           <VCol class="pb-0" cols="12" sm="4">
-            <AFilterValueObject v-model="logFilter.type" :items="logTypeOptions"></AFilterValueObject>
+            <AFilterValueObject v-model="logFilter.type" :items="logTypeOptions"/>
           </VCol>
         </VRow>
-        <VDivider class="mb-4"></VDivider>
+        <VDivider class="mb-4"/>
       </template>
       <template #advanced>
         <VRow align="start">
           <VCol cols="12" sm="2">
-            <AFilterString v-model="logFilter.id"></AFilterString>
+            <AFilterString v-model="logFilter.id"/>
           </VCol>
           <VCol cols="12" sm="6">
-            <AFilterString v-model="logFilter.message"></AFilterString>
+            <AFilterString v-model="logFilter.message"/>
           </VCol>
           <VCol cols="12" sm="2">
-            <AFilterString v-model="logFilter.appVersion"></AFilterString>
+            <AFilterString v-model="logFilter.appVersion"/>
           </VCol>
           <VCol cols="12" sm="2">
-            <AFilterInteger v-model="logFilter.userId"></AFilterInteger>
+            <AFilterInteger v-model="logFilter.userId"/>
           </VCol>
         </VRow>
       </template>

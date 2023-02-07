@@ -2,7 +2,6 @@ import { ref } from 'vue'
 import type { User } from '@/types/dam/User'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { fetchUser, fetchUserList, fetchUserListByIds, updateUser } from '@/services/api/dam/userApi'
@@ -16,28 +15,33 @@ import { loadLazyExtSystem } from '@/views/dam/extSystem/composables/lazyExtSyst
 import { simpleCloneObject } from '@/utils/object'
 import { loadLazyAssetLicence } from '@/views/dam/assetLicence/composables/lazyAssetLicence'
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
 const { fetchLazyAssetLicence, addToLazyAssetLicenceBuffer } = loadLazyAssetLicence()
 
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
+
 export const useUserListActions = () => {
   const listItems = ref<User[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchUserList(pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -45,10 +49,10 @@ export const useUserListActions = () => {
 
 export const useUserDetailActions = () => {
   const userOneStore = useUserOneStore()
-  const { user, loaded } = storeToRefs(userOneStore)
+  const { user } = storeToRefs(userOneStore)
 
   const fetchData = async (id: number) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const user = await fetchUser(id)
       userOneStore.setUser(user)
@@ -56,17 +60,16 @@ export const useUserDetailActions = () => {
       user.assetLicences.forEach((id) => addToLazyAssetLicenceBuffer(id))
       fetchLazyExtSystem()
       fetchLazyAssetLicence()
-      userOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
     user,
-    loaded,
+    detailLoading,
     fetchData,
     resetStore: userOneStore.reset,
   }
@@ -76,32 +79,30 @@ export const useUserEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const userOneStore = useUserOneStore()
-  const { userUpdate, loaded } = storeToRefs(userOneStore)
+  const { userUpdate } = storeToRefs(userOneStore)
 
   const fetchData = async (id: number) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const user = await fetchUser(id)
       userOneStore.setUser(user)
-      userOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       const userUpdateCloned = simpleCloneObject(userUpdate.value)
       await updateUser(userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
@@ -110,12 +111,15 @@ export const useUserEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     userUpdate,
     fetchData,
     onUpdate,

@@ -24,6 +24,6 @@ const submitFilter = () => {
       density="compact"
       color="grey"
       clearable
-    ></VTextField>
+    />
   </VForm>
 </template>

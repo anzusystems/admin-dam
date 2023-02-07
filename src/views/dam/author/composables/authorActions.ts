@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import type { Author } from '@/types/dam/Author'
@@ -14,9 +13,13 @@ import { useAuthorOneStore } from '@/stores/dam/authorStore'
 import type { ValueObjectOption } from '@/types/ValueObject'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
+
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
 
 export const useAuthorListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
@@ -24,17 +27,18 @@ export const useAuthorListActions = () => {
   const listItems = ref<Author[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchAuthorList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -42,24 +46,23 @@ export const useAuthorListActions = () => {
 
 export const useAuthorDetailActions = () => {
   const authorOneStore = useAuthorOneStore()
-  const { author, loaded } = storeToRefs(authorOneStore)
+  const { author } = storeToRefs(authorOneStore)
 
   const fetchData = async (id: string) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const author = await fetchAuthor(id)
       authorOneStore.setAuthor(author)
-      authorOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
     author,
-    loaded,
+    detailLoading,
     fetchData,
     resetStore: authorOneStore.reset,
   }
@@ -69,32 +72,30 @@ export const useAuthorEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const authorOneStore = useAuthorOneStore()
-  const { author, loaded } = storeToRefs(authorOneStore)
+  const { author } = storeToRefs(authorOneStore)
 
   const fetchData = async (id: string) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const author = await fetchAuthor(id)
       authorOneStore.setAuthor(author)
-      authorOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       await updateAuthor(authorOneStore.author.id, author.value)
       showRecordWas('updated')
       if (!close) return
@@ -102,12 +103,15 @@ export const useAuthorEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     author,
     fetchData,
     onUpdate,

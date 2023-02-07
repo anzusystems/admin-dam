@@ -1,5 +1,4 @@
 import { useErrorHandler } from '@/composables/system/error'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { fetchLog, fetchLogList } from '@/services/api/common/logApi'
 import { useLogOneStore } from '@/stores/common/log'
 import type { Log } from '@/types/common/Log'
@@ -8,24 +7,27 @@ import type { Pagination } from '@/types/Pagination'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
-const { loaderOn, loaderOff } = useUiHelper()
 const { handleError } = useErrorHandler()
+
+const listLoading = ref(false)
+const detailLoading = ref(false)
 
 export const useLogListActions = () => {
   const listItems = ref<Log[]>([])
 
   const fetchList = async (system: string, pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchLogList(system, pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     fetchList,
     listItems,
   }
@@ -33,25 +35,23 @@ export const useLogListActions = () => {
 
 export const useLogDetailActions = () => {
   const logOneStore = useLogOneStore()
-  const { log, loaded } = storeToRefs(logOneStore)
+  const { log } = storeToRefs(logOneStore)
 
   const fetchData = async (id: string, system: string, type: string) => {
-    logOneStore.setLoaded(false)
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const logRes = await fetchLog(id, system, type)
       logOneStore.setLog(logRes)
-      logOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
+    detailLoading,
     log,
-    loaded,
     fetchData,
     resetStore: logOneStore.reset,
   }

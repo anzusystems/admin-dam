@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 import ATextField from '@/components/form/ATextField.vue'
 import ARow from '@/components/common/ARow.vue'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
@@ -43,6 +41,7 @@ const { createAnzuUser } = useAnzuUserFactory()
 const { apiCreateAnzuUser } = useAnzuUserApi(props.client)
 const anzuUser = ref<AnzuUser>(createAnzuUser())
 const dialog = ref(false)
+const buttonLoading = ref(false)
 
 const onClick = () => {
   anzuUser.value = createAnzuUser()
@@ -56,20 +55,18 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useAnzuUserValidation(anzuUser)
 const { t } = useI18n({ useScope: 'global' })
-const { btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const onConfirm = async () => {
   try {
-    btnDisable('create')
+    buttonLoading.value = true
     v$.value.$touch()
     if (v$.value.$invalid) {
       showValidationError()
-      btnEnable('create')
+      buttonLoading.value = false
       return
     }
-    btnLoadingOn('create')
     const res = await apiCreateAnzuUser(anzuUser.value)
     emit('afterCreate', res)
     showRecordWas('created')
@@ -80,7 +77,7 @@ const onConfirm = async () => {
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('create')
+    buttonLoading.value = false
   }
 }
 </script>
@@ -108,18 +105,18 @@ const onConfirm = async () => {
           variant="text"
           @click.stop="onCancel"
           data-cy="button-close"
-        ></VBtn>
+        />
       </VCardTitle>
       <ASystemEntityScope system="common" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField v-model.number="anzuUser.id" :v="v$.anzuUser.id"></ATextField>
+            <ATextField v-model.number="anzuUser.id" :v="v$.anzuUser.id"/>
           </ARow>
           <ARow>
-            <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email"></ATextField>
+            <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email"/>
           </ARow>
           <ARow>
-            <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client"></AnzuUserRoleSelect>
+            <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client"/>
           </ARow>
           <ARow>
             <PermissionGroupSelect
@@ -128,7 +125,7 @@ const onConfirm = async () => {
               :label="t('common.anzuUser.model.permissionGroups')"
               multiple
               clearable
-            ></PermissionGroupSelect>
+            />
           </ARow>
         </VContainer>
       </ASystemEntityScope>
@@ -137,9 +134,9 @@ const onConfirm = async () => {
         <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <ABtn color="success" @click.stop="onConfirm" btn-helper="create" data-cy="button-create-podcast">
+        <VBtn color="success" @click.stop="onConfirm" :loading="buttonLoading" data-cy="button-create-podcast">
           {{ t(buttonT) }}
-        </ABtn>
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

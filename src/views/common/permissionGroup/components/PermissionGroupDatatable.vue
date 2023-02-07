@@ -70,21 +70,21 @@ defineExpose({
         <PermissionGroupFilter
           @submit-filter="submitFilter(filter, pagination, getList)"
           @reset-filter="resetFilter(filter, pagination, getList)"
-        ></PermissionGroupFilter>
+        />
         <ASystemEntityScope system="common" :subject="ENTITY">
           <ADatatable :data="permissionGroupList" :columns="columns" @row-click="onRowClick">
             <template #permissions="{ data }">
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"></ADetailButton>
-              <ACopyIdButton :id="data.id"></ACopyIdButton>
+              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"/>
+              <ACopyIdButton :id="data.id"/>
               <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"></AEditButton>
+                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"/>
               </Acl>
             </template>
           </ADatatable>
-          <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+          <ADatatablePagination v-model="pagination" @change="getList"/>
         </ASystemEntityScope>
       </div>
     </VCardText>

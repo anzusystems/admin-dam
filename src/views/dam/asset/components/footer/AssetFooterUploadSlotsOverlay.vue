@@ -74,7 +74,7 @@ const classComputed = computed(() => {
         <VSpacer />
         <div class="d-flex align-center pr-1">
           <div class="text-caption mr-2 d-flex align-center" v-if="isUploading">
-            <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"></VProgressCircular>
+            <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"/>
             <div>{{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
           </div>
           <VBtn
@@ -87,7 +87,7 @@ const classComputed = computed(() => {
             rounded="circle"
             class="mr-1"
           >
-            <VIcon icon="mdi-chevron-down"></VIcon>
+            <VIcon icon="mdi-chevron-down"/>
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn

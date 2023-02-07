@@ -22,7 +22,7 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
             v-model="distributionCategory.name"
             :v="v$.distributionCategory.name"
             data-cy="category-name"
-          ></ATextField>
+          />
         </ARow>
         <ARow
           class="mt-5"

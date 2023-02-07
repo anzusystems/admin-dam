@@ -30,28 +30,28 @@ const { podcastModeOptions } = usePodcastMode()
             :label="t('coreDam.podcast.model.texts.title')"
             v-model="podcast.texts.title"
             :v="v$.podcast.texts.title"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextarea
             :label="t('coreDam.podcast.model.texts.description')"
             v-model="podcast.texts.description"
             :v="v$.podcast.texts.description"
-          ></ATextarea>
+          />
         </ARow>
         <ARow>
           <AValueObjectOptionsSelect
             :label="t('coreDam.podcast.model.attributes.mode')"
             v-model="podcast.attributes.mode"
             :items="podcastModeOptions"
-          ></AValueObjectOptionsSelect>
+          />
         </ARow>
         <ARow>
           <ATextField
             :label="t('coreDam.podcast.model.attributes.rssUrl')"
             v-model="podcast.attributes.rssUrl"
             :v="v$.podcast.attributes.rssUrl"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ImagePreview v-model="podcast.imagePreview" show-actions />

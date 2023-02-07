@@ -14,5 +14,5 @@ withDefaults(
 </script>
 
 <template>
-  <div></div>
+  <div/>
 </template>

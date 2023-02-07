@@ -42,5 +42,5 @@ const innerFilter = useDistributionCategoryFilter()
     :clearable="clearable"
     filter-by-field="name"
     :data-cy="dataCy"
-  ></ARemoteSelect>
+  />
 </template>

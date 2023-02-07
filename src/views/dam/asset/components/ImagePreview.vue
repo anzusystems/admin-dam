@@ -77,7 +77,7 @@ watch(
 
 <template>
   <VImg v-if="loading" :width="width" :height="height" class="asset-image asset-image--loading-bg">
-    <template v-slot:placeholder></template>
+    <template v-slot:placeholder/>
     <template v-slot:default>
       <div class="d-flex w-100 h-100 align-center justify-center">
         <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />

@@ -8,7 +8,7 @@ const { theme } = useTheme()
   <Notifications :max="5" group="alerts" position="top center" width="50%">
     <template #body="props">
       <VAlert :type="props.item.type" class="ma-1" density="compact">
-        <div v-html="props.item.text"></div>
+        <div v-html="props.item.text"/>
         <template #close>
           <VIcon @click.stop="props.close" icon="mdi-close" />
         </template>
@@ -16,7 +16,7 @@ const { theme } = useTheme()
     </template>
   </Notifications>
   <VApp :theme="theme">
-    <slot></slot>
+    <slot/>
   </VApp>
 </template>
 

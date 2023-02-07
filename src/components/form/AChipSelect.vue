@@ -33,5 +33,5 @@ const modelValue = useVModel(props, 'modelValue')
     :closable-chips="closableChips"
     no-filter
     :data-cy="dataCy"
-  ></VCombobox>
+  />
 </template>
