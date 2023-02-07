@@ -55,5 +55,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <VSelect :label="label" v-model="modelValueComputed" :loading="loading" :items="itemsComputed"/>
+  <VSelect v-model="modelValueComputed" :label="label" :loading="loading" :items="itemsComputed" />
 </template>

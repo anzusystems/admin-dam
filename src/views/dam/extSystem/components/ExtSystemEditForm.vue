@@ -25,9 +25,9 @@ const { t } = useI18n({ useScope: 'global' })
         </ARow>
         <ARow>
           <UserSelect
+            v-model="extSystem.adminUsers"
             :label="t('coreDam.extSystem.model.adminUsers')"
             multiple
-            v-model="extSystem.adminUsers"
             data-cy="ext-system-admin-users"
           />
         </ARow>

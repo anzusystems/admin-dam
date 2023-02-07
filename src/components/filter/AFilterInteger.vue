@@ -33,7 +33,7 @@ const { clearOne } = useFilterHelpers()
     v-model="value"
     :label="modelValue.title"
     :clearable="!modelValue.mandatory"
-    @click:clear.stop="clearOne(modelValue)"
     :data-cy="dataCy"
+    @click:clear.stop="clearOne(modelValue)"
   />
 </template>

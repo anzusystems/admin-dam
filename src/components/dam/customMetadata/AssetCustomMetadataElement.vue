@@ -88,36 +88,36 @@ const onBlur = () => {
 
 <template>
   <VTextarea
-    :model-value="modelValue"
     v-if="config.attributes.type === CustomFormType.String"
+    :model-value="modelValue"
     auto-grow
     :rows="1"
     :label="config.name"
-    @update:model-value="updateModelValue"
     :error-messages="errorMessageComputed"
+    @update:model-value="updateModelValue"
     @blur="onBlur"
   >
     <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
   </VTextarea>
   <VTextField
-    :model-value="modelValue"
     v-else-if="config.attributes.type === CustomFormType.Number"
+    :model-value="modelValue"
     type="number"
     :label="config.name"
-    @update:model-value="updateModelValue"
     :error-messages="errorMessageComputed"
+    @update:model-value="updateModelValue"
     @blur="onBlur"
   >
     <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
   </VTextField>
   <VCombobox
-    :model-value="modelValue"
     v-else-if="config.attributes.type === CustomFormType.StringArray"
+    :model-value="modelValue"
     :label="config.name"
     multiple
     chips
-    @update:model-value="updateModelValue"
     :error-messages="errorMessageComputed"
+    @update:model-value="updateModelValue"
     @blur="onBlur"
   >
     <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>

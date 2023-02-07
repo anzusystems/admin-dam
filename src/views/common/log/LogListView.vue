@@ -64,13 +64,13 @@ watch(
   <ActionbarTitleWrapper />
   <ACard :loading="listLoading">
     <LogFilter @submit-filter="submitFilter" @reset-filter="resetFilter" />
-    <VTabs v-model="activeTab" v-if="systems.length > 1" color="primary">
+    <VTabs v-if="systems.length > 1" v-model="activeTab" color="primary">
       <VTab v-for="system in logFilter.system.model" :key="system" :value="system">
         <span>{{ system }}</span>
         <VChip v-if="counts[system]" class="ml-1" size="small">{{ counts[system] }}</VChip>
       </VTab>
     </VTabs>
-    <div v-for="system in logFilter.system.model" :key="system" v-show="system === activeTab">
+    <div v-for="system in logFilter.system.model" v-show="system === activeTab" :key="system">
       <LogDatatable
         :key="system"
         :ref="(el: any) => { datatables[system] = el }"

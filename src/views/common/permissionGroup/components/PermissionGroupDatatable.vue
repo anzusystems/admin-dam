@@ -77,14 +77,14 @@ defineExpose({
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"/>
-              <ACopyIdButton :id="data.id"/>
+              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
+              <ACopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"/>
+                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT" />
               </Acl>
             </template>
           </ADatatable>
-          <ADatatablePagination v-model="pagination" @change="getList"/>
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </ASystemEntityScope>
       </div>
     </VCardText>

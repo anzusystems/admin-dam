@@ -16,7 +16,7 @@ const props = withDefaults(
     errorMessage?: string | null
     required?: boolean | null
     v?: any
-    prependIcon?: string | null
+    prependIcon?: IconValue
     appendIcon?: IconValue
     dataCy?: string
     hideLabel?: boolean
@@ -27,7 +27,8 @@ const props = withDefaults(
     errorMessage: null,
     required: null,
     v: null,
-    prependIcon: null,
+    prependIcon: undefined,
+    appendIcon: undefined,
     dataCy: '',
     hideLabel: false,
     rows: 1,
@@ -81,13 +82,11 @@ const requiredComputed = computed(() => {
     :rows="rows"
     auto-grow
     :append-icon="appendIcon"
-    @click:append="(event) => emit('click:append', event)"
     trim
+    @click:append="(event) => emit('click:append', event)"
     @blur="onBlur"
     @update:model-value="onUpdate($event)"
   >
-    <template v-if="!hideLabel" #label>
-      {{ labelComputed }}<span v-if="requiredComputed" class="required"/>
-    </template>
+    <template v-if="!hideLabel" #label> {{ labelComputed }}<span v-if="requiredComputed" class="required" /> </template>
   </VTextarea>
 </template>

@@ -207,28 +207,28 @@ onMounted(async () => {
 
 <template>
   <VAutocomplete
-    :chips="chips"
     v-model="value"
     v-model:search="search"
+    :chips="chips"
     :items="allItems"
     item-title="title"
     item-value="value"
     no-filter
     :multiple="multiple"
     :clearable="clearable"
-    @blur="onBlur"
     :error-messages="errorMessageComputed"
     :loading="loading"
     dirty
+    @blur="onBlur"
   >
     <template #label>
       <span v-if="!hideLabel" :key="requiredComputed + ''"
         >{{ labelComputed }}<span v-if="requiredComputed" class="required" />
       </span>
     </template>
-    <template v-if="chips" #chip="{ props, item }">
-      <slot name="chip" :props="props" :item="item">
-        <VChip v-bind="props" :text="item.title"></VChip>
+    <template v-if="chips" #chip="{ props: chipProps, item }">
+      <slot name="chip" :props="chipProps" :item="item">
+        <VChip v-bind="props" :text="item.title" />
       </slot>
     </template>
   </VAutocomplete>

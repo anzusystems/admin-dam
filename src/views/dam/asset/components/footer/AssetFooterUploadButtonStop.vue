@@ -43,7 +43,7 @@ const { t } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
-  <VBtn variant="flat" :data-cy="dataCy" @click.stop="onClick" icon :width="buttonSize" :height="buttonSize">
+  <VBtn variant="flat" :data-cy="dataCy" icon :width="buttonSize" :height="buttonSize" @click.stop="onClick">
     <VIcon icon="mdi-close" />
     <VTooltip activator="parent" location="bottom">{{ t('common.upload.stop') }}</VTooltip>
   </VBtn>
@@ -60,17 +60,17 @@ const { t } = useI18n({ useScope: 'global' })
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="error" @click.stop="onConfirm" data-cy="button-confirm">{{ t('common.upload.stop') }}</VBtn>
+        <VBtn color="error" data-cy="button-confirm" @click.stop="onConfirm">{{ t('common.upload.stop') }}</VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -79,12 +79,12 @@ const requiredComputed = computed(() => {
     item-value="value"
     :multiple="multiple"
     :clearable="clearable"
-    @blur="onBlur"
     :error-messages="errorMessageComputed"
     :data-cy="dataCy"
+    @blur="onBlur"
   >
     <template #label>
-      <span v-if="!hideLabel">{{ labelComputed }}<span v-if="requiredComputed" class="required"/> </span>
+      <span v-if="!hideLabel">{{ labelComputed }}<span v-if="requiredComputed" class="required" /> </span>
     </template>
   </VAutocomplete>
 </template>

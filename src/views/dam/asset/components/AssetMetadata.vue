@@ -49,41 +49,41 @@ const onAnyMetadataChange = () => {
       <VExpansionPanelText>
         <AssetCustomMetadataForm
           v-if="asset"
-          :asset-type="assetType"
           v-model="asset.metadata.customData"
+          :asset-type="assetType"
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
-            <VRow dense class="my-2" v-if="keywordEnabled">
+            <VRow v-if="keywordEnabled" dense class="my-2">
               <VCol>
                 <ASystemEntityScope subject="keyword" system="dam">
                   <KeywordSelect
-                    label="Keywords"
                     v-model="asset.keywords"
+                    label="Keywords"
                     :suggestions="asset.metadata.keywordSuggestions"
                     chips
                     clearable
                     multiple
-                    @update:model-value="onAnyMetadataChange"
                     :required="keywordRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
+                    @update:model-value="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow dense class="my-2" v-if="authorEnabled">
+            <VRow v-if="authorEnabled" dense class="my-2">
               <VCol>
                 <ASystemEntityScope subject="author" system="dam">
                   <AuthorSelect
-                    label="Authors"
                     v-model="asset.authors"
+                    label="Authors"
                     :suggestions="asset.metadata.authorSuggestions"
                     chips
                     clearable
                     multiple
-                    @update:model-value="onAnyMetadataChange"
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
+                    @update:model-value="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
               </VCol>

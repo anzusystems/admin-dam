@@ -40,9 +40,9 @@ const { t } = useI18n({ useScope: 'global' })
     color="primary"
     icon=""
     variant="outlined"
-    @click.stop="onClick"
     :width="36"
     :height="35"
+    @click.stop="onClick"
   >
     <AIconGroup main-icon="mdi-content-save" secondary-icon="mdi-close" />
     <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>

@@ -39,15 +39,15 @@ onBeforeUnmount(() => {
   <ActionbarButtonsWrapper>
     <ASaveButton
       v-if="!detailLoading"
-      @save-record="onUpdate"
       :loading="saveButtonLoading"
       :disabled="saveAndCloseButtonLoading"
+      @save-record="onUpdate"
     />
     <ASaveAndCloseButton
       v-if="!detailLoading"
-      @save-record-and-close="onUpdate(true)"
       :loading="saveAndCloseButtonLoading"
       :disabled="saveButtonLoading"
+      @save-record-and-close="onUpdate(true)"
     />
     <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
   </ActionbarButtonsWrapper>

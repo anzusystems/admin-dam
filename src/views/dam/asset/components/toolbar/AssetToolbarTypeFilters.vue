@@ -39,9 +39,9 @@ const isPodcastActive = computed(() => {
     size="x-small"
     class="mr-1"
     :active="isImageActive"
-    @click.stop="setTypeAndFetch(AssetType.Image)"
     :color="isImageActive ? 'secondary' : ''"
     :variant="isImageActive ? 'flat' : 'text'"
+    @click.stop="setTypeAndFetch(AssetType.Image)"
   >
     <VIcon icon="mdi-image" :size="16" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.assetType.image') }}</VTooltip>
@@ -51,9 +51,9 @@ const isPodcastActive = computed(() => {
     size="x-small"
     class="mr-1"
     :active="isVideoActive"
-    @click.stop="setTypeAndFetch(AssetType.Video)"
     :color="isVideoActive ? 'secondary' : ''"
     :variant="isVideoActive ? 'flat' : 'text'"
+    @click.stop="setTypeAndFetch(AssetType.Video)"
   >
     <VIcon icon="mdi-video" :size="16" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.assetType.video') }}</VTooltip>
@@ -63,9 +63,9 @@ const isPodcastActive = computed(() => {
     size="x-small"
     class="mr-1"
     :active="isAudioActive"
-    @click.stop="setTypeAndFetch(AssetType.Audio)"
     :color="isAudioActive ? 'secondary' : ''"
     :variant="isAudioActive ? 'flat' : 'text'"
+    @click.stop="setTypeAndFetch(AssetType.Audio)"
   >
     <VIcon icon="mdi-music" :size="16" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.assetType.audio') }}</VTooltip>
@@ -74,9 +74,9 @@ const isPodcastActive = computed(() => {
     icon
     size="x-small"
     :active="isDocumentActive"
-    @click.stop="setTypeAndFetch(AssetType.Document)"
     :color="isDocumentActive ? 'secondary' : ''"
     :variant="isDocumentActive ? 'flat' : 'text'"
+    @click.stop="setTypeAndFetch(AssetType.Document)"
   >
     <VIcon icon="mdi-note" :size="16" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.assetType.document') }}</VTooltip>
@@ -85,9 +85,9 @@ const isPodcastActive = computed(() => {
     icon
     size="x-small"
     :active="isPodcastActive"
-    @click.stop="togglePodcastAndFetch()"
     :color="isPodcastActive ? 'secondary' : ''"
     :variant="isPodcastActive ? 'flat' : 'text'"
+    @click.stop="togglePodcastAndFetch()"
   >
     <VIcon icon="mdi-podcast" :size="16" />
     <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.filter.inPodcast') }}</VTooltip>

@@ -106,7 +106,7 @@ watch(
         </div>
         <VSpacer />
         <VToolbarItems>
-          <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel"/>
+          <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel" />
         </VToolbarItems>
       </VToolbar>
       <VCardText>
@@ -120,7 +120,7 @@ watch(
               />
             </ARow>
             <ARow>
-              <div :key="item.id" v-for="item in category.selectedOptionsDetail">
+              <div v-for="item in category.selectedOptionsDetail" :key="item.id">
                 <div>{{ item.serviceSlug }} - {{ item.name }}</div>
               </div>
             </ARow>
@@ -129,10 +129,10 @@ watch(
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" text @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="primary" @click.stop="onConfirm" :loading="saving" data-cy="button-confirm">
+        <VBtn color="primary" :loading="saving" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t('common.button.confirm') }}
         </VBtn>
       </VCardActions>

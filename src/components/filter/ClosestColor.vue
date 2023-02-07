@@ -75,18 +75,18 @@ const clear = () => {
     </VLabel>
     <div class="color-swatches d-flex flex-wrap">
       <div
+        v-for="(item, key) in items"
+        :key="key"
         class="color-swatches__item pa-1 cursor-pointer position-relative system-border-a"
         :class="{ 'color-swatches__item--active': item.selected }"
         :style="{ backgroundColor: item.color }"
-        @click.stop="toggleSelected(item.color)"
-        v-for="(item, key) in items"
-        :key="key"
         :title="item.name"
+        @click.stop="toggleSelected(item.color)"
       >
         <VIcon v-show="item.selected" icon="mdi-check position-absolute" :color="item.iconColor" :size="20" />
         <VTooltip activator="parent" location="bottom">{{ item.color }}</VTooltip>
       </div>
-      <VBtn @click.stop="clear" v-show="showClear" icon="mdi-close-circle" variant="text" :width="24" :height="24" />
+      <VBtn v-show="showClear" icon="mdi-close-circle" variant="text" :width="24" :height="24" @click.stop="clear" />
     </div>
   </div>
 </template>

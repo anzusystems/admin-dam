@@ -44,8 +44,8 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterString
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.text"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -53,51 +53,51 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterValueObject
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.type"
               :items="assetTypeOptions"
               multiple
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanGroup @update:model-value="onAnyFilterUpdate" v-model="filter.inPodcast" />
+            <AFilterBooleanGroup v-model="filter.inPodcast" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
             <AFilterValueObject
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.status"
               :items="assetStatusOptions"
               multiple
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanGroup @update:model-value="onAnyFilterUpdate" v-model="filter.described" />
+            <AFilterBooleanGroup v-model="filter.described" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanGroup @update:model-value="onAnyFilterUpdate" v-model="filter.visible" />
+            <AFilterBooleanGroup v-model="filter.visible" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanGroup @update:model-value="onAnyFilterUpdate" v-model="filter.generatedBySystem" />
+            <AFilterBooleanGroup v-model="filter.generatedBySystem" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
             <ClosestColor
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.closestMostDominantColor"
               multiple
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -105,10 +105,10 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterValueObject
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.orientation"
               :items="imageOrientationOptions"
               multiple
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -116,15 +116,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.pixelSizeFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.pixelSizeUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -132,15 +132,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.widthFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.widthUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -148,15 +148,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.heightFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.heightUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -164,15 +164,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.ratioWidthFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.ratioWidthUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -180,15 +180,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.ratioHeightFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.ratioHeightUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -196,15 +196,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.rotationFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.rotationUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -212,15 +212,15 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.durationFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.durationUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
@@ -228,33 +228,33 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.bitrateFrom"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
             <AFilterInteger
-              @update:model-value="onAnyFilterUpdate"
               v-model="filter.bitrateUntil"
+              @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
         </VRow>
       </VForm>
     </div>
-    <template v-slot:append>
+    <template #append>
       <div class="pa-2 d-flex align-center justify-center">
         <VBtn
           :color="filterIsTouched ? 'success' : 'secondary'"
-          @click.stop="submitFilter"
           class="mr-2"
           variant="flat"
           size="small"
+          @click.stop="submitFilter"
         >
           {{ t('common.button.submitFilter') }}
         </VBtn>
-        <VBtn class="px-2" color="light" min-width="36px" @click.stop="resetFilter" variant="flat" size="small">
+        <VBtn class="px-2" color="light" min-width="36px" variant="flat" size="small" @click.stop="resetFilter">
           <VIcon icon="mdi-filter-remove-outline" />
           <VTooltip activator="parent" location="bottom">Reset</VTooltip>
         </VBtn>

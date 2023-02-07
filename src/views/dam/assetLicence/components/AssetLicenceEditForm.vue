@@ -22,24 +22,24 @@ const { t } = useI18n({ useScope: 'global' })
       <VCol cols="12" md="8">
         <ARow>
           <ATextField
-            :label="t('coreDam.assetLicence.model.name')"
             v-model="assetLicence.name"
+            :label="t('coreDam.assetLicence.model.name')"
             :v="v$.assetLicence.name"
             data-cy="asset-licence-name"
           />
         </ARow>
         <ARow>
           <ATextField
-            :label="t('coreDam.assetLicence.model.extId')"
             v-model="assetLicence.extId"
+            :label="t('coreDam.assetLicence.model.extId')"
             :v="v$.assetLicence.extId"
             data-cy="asset-licence-ext-id"
           />
         </ARow>
         <ARow>
           <ExtSystemSelect
-            :label="t('coreDam.assetLicence.model.extSystem')"
             v-model="assetLicence.extSystem"
+            :label="t('coreDam.assetLicence.model.extSystem')"
             :v="v$.assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
           />

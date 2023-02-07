@@ -15,11 +15,11 @@ const { t } = useI18n({ useScope: 'global' })
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.distributionCategory.model.name')" :value="distributionCategory.name"/>
+        <ARow :title="t('coreDam.distributionCategory.model.name')" :value="distributionCategory.name" />
         <ARow
-          :title="serviceName + ''"
           v-for="(option, serviceName) in distributionCategorySelectedOptions"
           :key="serviceName"
+          :title="serviceName + ''"
         >
           <VChip size="small">{{ option?.name ?? '-' }}</VChip>
         </ARow>
@@ -28,9 +28,9 @@ const { t } = useI18n({ useScope: 'global' })
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.distributionCategory.model.id')">
-          <ACopyText :value="distributionCategory.id"/>
+          <ACopyText :value="distributionCategory.id" />
         </ARow>
-        <AUserAndTimeTrackingFields :data="distributionCategory"/>
+        <AUserAndTimeTrackingFields :data="distributionCategory" />
       </ACard>
     </VCol>
   </VRow>

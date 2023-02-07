@@ -193,7 +193,7 @@ onUnmounted(async () => {
 
 <template>
   <VCardText>
-    <VRow class="mb-6" v-if="distributionAuthStatus === DistributionAuthStatus.Success">
+    <VRow v-if="distributionAuthStatus === DistributionAuthStatus.Success" class="mb-6">
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
@@ -213,23 +213,19 @@ onUnmounted(async () => {
             <VCol cols="6">
               <VRow class="mb-2">
                 <VCol>
-                  <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required/>
+                  <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
                 <VCol>
-                  <ATextarea
-                    v-model="distribution.texts.description"
-                    :v="v$.distribution.texts.description"
-                    required
-                  />
+                  <ATextarea v-model="distribution.texts.description" :v="v$.distribution.texts.description" required />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
                 <VCol>
                   <VCombobox
-                    :label="t('coreDam.youtubeDistribution.model.texts.keywords')"
                     v-model="distribution.texts.keywords"
+                    :label="t('coreDam.youtubeDistribution.model.texts.keywords')"
                     :items="[]"
                     multiple
                     chips
@@ -246,9 +242,9 @@ onUnmounted(async () => {
                   />
                 </VCol>
               </VRow>
-              <VRow class="mb-2" v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic">
+              <VRow v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic" class="mb-2">
                 <VCol>
-                  <ADatetimePicker v-model="distribution.publishAt"/>
+                  <ADatetimePicker v-model="distribution.publishAt" />
                 </VCol>
               </VRow>
             </VCol>
@@ -274,8 +270,8 @@ onUnmounted(async () => {
               <VRow class="mb-2">
                 <VCol>
                   <VSwitch
-                    :label="t('coreDam.youtubeDistribution.model.flags.embeddable')"
                     v-model="distribution.flags.embeddable"
+                    :label="t('coreDam.youtubeDistribution.model.flags.embeddable')"
                     hide-details
                   />
                 </VCol>
@@ -283,8 +279,8 @@ onUnmounted(async () => {
               <VRow class="mb-2">
                 <VCol>
                   <VSwitch
-                    :label="t('coreDam.youtubeDistribution.model.flags.forKids')"
                     v-model="distribution.flags.forKids"
+                    :label="t('coreDam.youtubeDistribution.model.flags.forKids')"
                     hide-details
                   />
                 </VCol>
@@ -292,8 +288,8 @@ onUnmounted(async () => {
               <VRow class="mb-2">
                 <VCol>
                   <VSwitch
-                    :label="t('coreDam.youtubeDistribution.model.flags.notifySubscribers')"
                     v-model="distribution.flags.notifySubscribers"
+                    :label="t('coreDam.youtubeDistribution.model.flags.notifySubscribers')"
                     hide-details
                   />
                 </VCol>
@@ -325,7 +321,7 @@ onUnmounted(async () => {
   </VCardText>
   <VCardActions>
     <VSpacer />
-    <VBtn color="success" @click.stop="submit" v-if="canDisplayForm" :loading="saving">
+    <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
       {{ t('common.button.add') }}
     </VBtn>
     <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>

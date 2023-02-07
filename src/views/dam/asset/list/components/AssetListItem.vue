@@ -88,7 +88,7 @@ const imageProperties = computed(() => {
   >
     <div class="dam-image-grid__item-card">
       <div v-if="item.selected" class="selected-triangle">
-        <div class="selected-triangle__bg"/>
+        <div class="selected-triangle__bg" />
         <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="x-small" />
       </div>
       <AssetImage
@@ -113,8 +113,8 @@ const imageProperties = computed(() => {
               icon
               @click.stop="toggleSelected"
             >
-              <VIcon icon="mdi-checkbox-outline" :size="20" v-if="item.selected" />
-              <VIcon icon="mdi-checkbox-blank-outline" :size="20" v-else />
+              <VIcon v-if="item.selected" icon="mdi-checkbox-outline" :size="20" />
+              <VIcon v-else icon="mdi-checkbox-blank-outline" :size="20" />
               <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.toggleSelect') }}</VTooltip>
             </VBtn>
             <VBtn

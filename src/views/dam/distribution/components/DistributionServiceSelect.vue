@@ -11,6 +11,7 @@ const props = withDefaults(
   }>(),
   {
     multiple: false,
+    label: undefined,
     dataCy: '',
   }
 )
@@ -31,16 +32,16 @@ const { allDistributionServiceTypeOptions } = useDistributionServiceType()
 
 <template>
   <VSelect
-    :items="allDistributionServiceTypeOptions"
     v-model="modelValue"
+    :items="allDistributionServiceTypeOptions"
     item-title="title"
     item-value="value"
     :label="label"
     :multiple="multiple"
     clearable
     no-filter
-    @blur="onBlur"
     :data-cy="dataCy"
+    @blur="onBlur"
   >
   </VSelect>
 </template>

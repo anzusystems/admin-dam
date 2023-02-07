@@ -20,8 +20,8 @@ const { getAuthorTypeOption } = useAuthorType()
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.author.model.name')" :value="author.name"/>
-        <ARow :title="t('coreDam.author.model.identifier')" :value="author.identifier"/>
+        <ARow :title="t('coreDam.author.model.name')" :value="author.name" />
+        <ARow :title="t('coreDam.author.model.identifier')" :value="author.identifier" />
         <ARow :title="t('coreDam.author.model.type')">
           <VChip size="small">{{ getAuthorTypeOption(author.type)?.title }}</VChip>
         </ARow>
@@ -30,12 +30,12 @@ const { getAuthorTypeOption } = useAuthorType()
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.author.model.id')">
-          <ACopyText :value="author.id"/>
+          <ACopyText :value="author.id" />
         </ARow>
         <ARow :title="t('coreDam.author.model.flags.reviewed')">
-          <ABooleanValue chip :value="author.flags.reviewed"/>
+          <ABooleanValue chip :value="author.flags.reviewed" />
         </ARow>
-        <AUserAndTimeTrackingFields :data="author"/>
+        <AUserAndTimeTrackingFields :data="author" />
       </ACard>
     </VCol>
   </VRow>

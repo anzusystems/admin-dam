@@ -23,8 +23,8 @@ const valueComputed = computed(() => {
 </script>
 
 <template>
-  <div class="d-inline-flex" v-if="isBooleanComputed">
+  <div v-if="isBooleanComputed" class="d-inline-flex">
     <ABooleanValue :value="value" />
   </div>
-  <div class="d-inline-flex" v-else v-html="valueComputed" />
+  <div v-else class="d-inline-flex" v-html="valueComputed" />
 </template>

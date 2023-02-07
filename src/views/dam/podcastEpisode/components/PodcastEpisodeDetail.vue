@@ -49,7 +49,7 @@ const imageSrc = computed(() => {
         <ARow :title="t('coreDam.podcastEpisode.model.id')">
           <ACopyText :value="podcastEpisode.id" />
         </ARow>
-        <ARow title="Image" v-if="imageSrc">
+        <ARow v-if="imageSrc" title="Image">
           <AssetImage :src="imageSrc" use-component />
         </ARow>
         <ARow :title="t('coreDam.podcastEpisode.model.asset')">

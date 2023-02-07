@@ -42,7 +42,7 @@ const { t } = useI18n({ useScope: 'global' })
         v-if="!detailLoading"
         :record-id="id"
         :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
-        buttonT="coreDam.user.button.editPermissions"
+        button-t="coreDam.user.button.editPermissions"
       />
     </Acl>
     <ACloseButton :route-name="ROUTE.DAM.USER.LIST" />

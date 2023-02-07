@@ -54,30 +54,30 @@ const typeHasDistributions = computed(() => {
     <div class="w-100 d-flex flex-column">
       <VTabs v-model="activeTab" class="sidebar-info__tabs">
         <VTab :value="AssetDetailTab.Info">{{ t('coreDam.asset.detail.tabs.info') }}</VTab>
-        <VTab :value="AssetDetailTab.ROI" v-if="isImage">{{ t('coreDam.asset.detail.tabs.roi') }}</VTab>
-        <VTab :value="AssetDetailTab.Distribution" v-if="typeHasDistributions">
+        <VTab v-if="isImage" :value="AssetDetailTab.ROI">{{ t('coreDam.asset.detail.tabs.roi') }}</VTab>
+        <VTab v-if="typeHasDistributions" :value="AssetDetailTab.Distribution">
           {{ t('coreDam.asset.detail.tabs.distribution') }}
         </VTab>
-        <VTab :value="AssetDetailTab.Podcast" v-if="isAudio">{{ t('coreDam.asset.detail.tabs.podcast') }}</VTab>
+        <VTab v-if="isAudio" :value="AssetDetailTab.Podcast">{{ t('coreDam.asset.detail.tabs.podcast') }}</VTab>
         <VTab :value="AssetDetailTab.Slots">{{ t('coreDam.asset.detail.tabs.slots') }}</VTab>
-        <VTab :value="AssetDetailTab.ImagePreview" v-if="isVideo">{{
+        <VTab v-if="isVideo" :value="AssetDetailTab.ImagePreview">{{
           t('coreDam.asset.detail.tabs.imagePreview')
         }}</VTab>
       </VTabs>
 
       <div class="sidebar-info__content">
         <AssetInfobox :asset-status="assetStatus" />
-        <div class="py-2" v-if="activeTab === AssetDetailTab.Info">
+        <div v-if="activeTab === AssetDetailTab.Info" class="py-2">
           <AssetDetailSidebarMetadata
             :is-active="activeTab === AssetDetailTab.Info"
-            @post-delete="postDelete"
             :asset-type="assetType"
+            @post-delete="postDelete"
           />
         </div>
-        <div class="py-2" v-if="isImage && activeTab === AssetDetailTab.ROI">
+        <div v-if="isImage && activeTab === AssetDetailTab.ROI" class="py-2">
           <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
         </div>
-        <div class="py-2" v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution">
+        <div v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution" class="py-2">
           <DistributionCategoryWidget class="px-4 mb-4" />
           <AssetDetailSidebarDistribution
             :asset-id="assetId"
@@ -85,17 +85,17 @@ const typeHasDistributions = computed(() => {
             :asset-type="assetType"
           />
         </div>
-        <div class="py-2" v-if="isAudio && activeTab === AssetDetailTab.Podcast">
+        <div v-if="isAudio && activeTab === AssetDetailTab.Podcast" class="py-2">
           <AssetDetailSidebarPodcast :asset-id="assetId" :is-active="activeTab === AssetDetailTab.Podcast" />
         </div>
-        <div class="py-2" v-if="activeTab === AssetDetailTab.Slots">
+        <div v-if="activeTab === AssetDetailTab.Slots" class="py-2">
           <AssetDetailSidebarSlots
             :asset-id="assetId"
             :is-active="activeTab === AssetDetailTab.Slots"
             :asset-type="assetType"
           />
         </div>
-        <div class="py-2" v-if="isVideo && activeTab === AssetDetailTab.ImagePreview">
+        <div v-if="isVideo && activeTab === AssetDetailTab.ImagePreview" class="py-2">
           <AssetDetailSidebarImagePreview :is-active="activeTab === AssetDetailTab.ImagePreview" />
         </div>
       </div>
