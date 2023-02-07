@@ -44,7 +44,7 @@ const { t } = useI18n({ useScope: 'global' })
             :id="userToExtSystem"
             :key="userToExtSystem"
             v-for="userToExtSystem in user.userToExtSystems"
-          ></LazyExtSystemChip>
+          />
         </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <ExternalProviderAssetChip
@@ -69,7 +69,7 @@ const { t } = useI18n({ useScope: 'global' })
         <ARow :title="t('coreDam.user.model.id')">
           <ACopyText :value="user.id" />
         </ARow>
-        <ARow :title="t('coreDam.user.model.email')" :value="user.email"></ARow>
+        <ARow :title="t('coreDam.user.model.email')" :value="user.email" />
         <AUserAndTimeTrackingFields :data="user" />
       </ACard>
     </VCol>
