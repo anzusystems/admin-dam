@@ -69,13 +69,13 @@ defineExpose({
         <VChip size="small">{{ getAuthorTypeOption(data)?.title }}</VChip>
       </template>
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.AUTHOR.DETAIL"/>
-        <ACopyIdButton :id="data.id"/>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.AUTHOR.DETAIL" />
+        <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.AUTHOR.EDIT"/>
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.AUTHOR.EDIT" />
         </Acl>
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"/>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

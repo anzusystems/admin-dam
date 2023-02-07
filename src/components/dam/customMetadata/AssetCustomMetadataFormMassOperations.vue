@@ -40,7 +40,7 @@ const elements = computed(() => {
 
 <template>
   <div class="w-100">
-    <VRow dense class="mt-1" v-for="element in elements" :key="element.id">
+    <VRow v-for="element in elements" :key="element.id" dense class="mt-1">
       <VCol>
         <div class="d-flex">
           <AssetCustomMetadataElement

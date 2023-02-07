@@ -22,16 +22,16 @@ const { t } = useI18n({ useScope: 'global' })
       <VCol cols="12" md="8">
         <ARow>
           <ATextField
-            :label="t('coreDam.keyword.model.name')"
             v-model="keyword.name"
+            :label="t('coreDam.keyword.model.name')"
             :v="v$.keyword.name"
             data-cy="keyword-name"
           />
         </ARow>
         <ARow>
           <ABooleanToggle
-            :label="t('coreDam.keyword.model.flags.reviewed')"
             v-model="keyword.flags.reviewed"
+            :label="t('coreDam.keyword.model.flags.reviewed')"
             data-cy="keyword-flags-reviewed"
           />
         </ARow>

@@ -50,7 +50,7 @@ const { t } = useI18n({ useScope: 'global' })
   <VTable class="anzu-data-table">
     <thead>
       <tr>
-        <th class="text-left" v-for="column in availableColumns" :key="column.name">
+        <th v-for="column in availableColumns" :key="column.name" class="text-left">
           {{ column.getLabel(system, subject) }}
         </th>
         <th v-if="actions" />
@@ -60,8 +60,8 @@ const { t } = useI18n({ useScope: 'global' })
       <template v-if="isNotEmpty">
         <tr v-for="(rowData, index) in props.data" :key="index" @click="onRowClick(rowData)">
           <ADatatableColumn v-for="column in availableColumns" :key="column.name" :row-data="rowData" :column="column">
-            <template v-slot:[normalizeForSlotName(column.name)]="{ data }">
-              <slot :name="normalizeForSlotName(column.name)" :data="data" :row-data="rowData" />
+            <template #[normalizeForSlotName(column.name)]="{ data: slotData }">
+              <slot :name="normalizeForSlotName(column.name)" :data="slotData" :row-data="rowData" />
             </template>
           </ADatatableColumn>
           <td v-if="actions">

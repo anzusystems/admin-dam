@@ -26,19 +26,19 @@ const onImport = () => {
 
 <template>
   <VNavigationDrawer v-model="sidebarRight" permanent location="right" :width="300">
-    <div class="d-flex w-100 h-100 align-center justify-center" v-if="loader">
+    <div v-if="loader" class="d-flex w-100 h-100 align-center justify-center">
       <VProgressCircular indeterminate color="primary" />
     </div>
-    <div class="d-flex w-100 h-100 align-center justify-center" v-else-if="!asset">
+    <div v-else-if="!asset" class="d-flex w-100 h-100 align-center justify-center">
       {{ t('coreDam.asset.detail.noAssetSelected') }}
     </div>
     <div v-else>
       <ExternalProviderAssetMetadata />
     </div>
-    <template v-slot:append v-if="!loader && asset">
+    <template v-if="!loader && asset" #append>
       <div class="pa-2 d-flex align-center justify-center">
-        <VBtn color="secondary" variant="flat" @click.stop="onImport" class="mr-2" size="small">Import to DAM</VBtn>
-        <VBtn color="secondary" variant="flat" @click.stop="onEditMore" class="mr-2" size="small"> View detail </VBtn>
+        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onImport">Import to DAM</VBtn>
+        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onEditMore"> View detail </VBtn>
       </div>
     </template>
   </VNavigationDrawer>

@@ -134,15 +134,15 @@ onMounted(() => {
       :data-cy="dataCy"
       @search-change="searchChange"
     >
-      <template #chip="{ props, item }">
-        <VChip v-bind="props">
+      <template #chip="{ props: chipProps, item }">
+        <VChip v-bind="chipProps">
           <VIcon
             v-if="loadedAll && suggestionsDefined && !existingAuthorsIds.includes(item.value)"
             start
             icon="mdi-new-box"
           />
           <span v-if="loadedAll">{{ item.title }}</span>
-          <VProgressCircular v-else indeterminate size="15"/>
+          <VProgressCircular v-else indeterminate size="15" />
         </VChip>
       </template>
     </ARemoteSelect>
@@ -151,8 +151,8 @@ onMounted(() => {
         variant="icon"
         :initial-value="addNewAuthorText"
         disable-redirect
-        @after-create="afterCreate"
         :disabled="disabled"
+        @after-create="afterCreate"
       />
     </div>
   </div>
@@ -162,10 +162,10 @@ onMounted(() => {
     </div>
     <div>
       <LazyAuthorChip
-        title=""
-        :id="authorId"
         v-for="authorId in duplicateAuthorsIds"
+        :id="authorId"
         :key="authorId"
+        title=""
         class="mr-1 mt-1"
         close-icon="mdi-plus-circle"
         :allow-click="false"

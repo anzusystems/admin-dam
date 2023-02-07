@@ -159,8 +159,8 @@ onMounted(async () => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
@@ -180,7 +180,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol>
-              <VTextField v-model="selectedExtSystem" hide-details label="Ext system ID"/>
+              <VTextField v-model="selectedExtSystem" hide-details label="Ext system ID" />
             </VCol>
           </VRow>
           <VRow>
@@ -194,7 +194,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol>
-              <VTextField v-model="selectedLicence" hide-details label="Licence ID"/>
+              <VTextField v-model="selectedLicence" hide-details label="Licence ID" />
             </VCol>
           </VRow>
           <div class="mb-4 text-caption font-weight-bold">Change to licence ID: {{ selectedLicence }}</div>
@@ -203,26 +203,26 @@ onMounted(async () => {
       <VCardText v-else-if="allowSelect">
         <div class="mb-4">{{ t('system.mainBar.extSystemLicenceSwitch.description') }}</div>
         <VSelect
-          :items="extSystemsItems"
           v-model="selectedExtSystem"
+          :items="extSystemsItems"
           :label="t('system.mainBar.extSystemLicenceSwitch.extSystem')"
-          @blur="validateExtSystem.$touch()"
           :error-messages="errorMessageExtSystem"
+          @blur="validateExtSystem.$touch()"
           @update:model-value="selectedLicence = undefined"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required"/></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required" /></span>
           </template>
         </VSelect>
         <VSelect
-          :items="licenceItems"
           v-model="selectedLicence"
+          :items="licenceItems"
           :label="t('system.mainBar.extSystemLicenceSwitch.licence')"
-          @blur="validateLicence.$touch()"
           :error-messages="errorMessageLicence"
+          @blur="validateLicence.$touch()"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="required"/></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="required" /></span>
           </template>
         </VSelect>
       </VCardText>
@@ -238,10 +238,10 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn text data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="warning" @click.stop="onConfirm" data-cy="button-confirm" v-if="allowSelect">
+        <VBtn v-if="allowSelect" color="warning" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t('system.mainBar.extSystemLicenceSwitch.confirm') }}
         </VBtn>
       </VCardActions>

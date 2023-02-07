@@ -36,9 +36,9 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.edit')" icon="mdi-account-edit-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton @save-record="updateAnzuUser" :loading="loadingAnzuUser"/>
-    <ASaveAndCloseButton @save-record-and-close="updateAnzuUser(true)" :loading="loadingAnzuUser"/>
-    <ACloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST"/>
+    <ASaveButton :loading="loadingAnzuUser" @save-record="updateAnzuUser" />
+    <ASaveAndCloseButton :loading="loadingAnzuUser" @save-record-and-close="updateAnzuUser(true)" />
+    <ACloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST" />
   </ActionbarButtonsWrapper>
   <AnzuUserEditForm :client="damClient" />
 </template>

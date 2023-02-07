@@ -100,30 +100,30 @@ const onConfirm = async () => {
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.podcastEpisode.meta.create') }}</span>
         <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel" data-cy="button-close" />
+        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
             <ATextField
-              :label="t('coreDam.podcastEpisode.model.texts.title')"
               v-model="podcastEpisode.texts.title"
+              :label="t('coreDam.podcastEpisode.model.texts.title')"
               :v="v$.podcastEpisode.texts.title"
               data-cy="episode-title"
             />
           </ARow>
           <ARow>
             <ATextField
-              :label="t('coreDam.podcastEpisode.model.texts.description')"
               v-model="podcastEpisode.texts.description"
+              :label="t('coreDam.podcastEpisode.model.texts.description')"
               :v="v$.podcastEpisode.texts.description"
               data-cy="episode-description"
             />
           </ARow>
           <ARow>
             <ATextField
-              :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
               v-model="podcastEpisode.attributes.seasonNumber"
+              :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
               :v="v$.podcastEpisode.attributes.seasonNumber"
               type="number"
               :step="1"
@@ -132,8 +132,8 @@ const onConfirm = async () => {
           </ARow>
           <ARow>
             <ATextField
-              :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
               v-model="podcastEpisode.attributes.episodeNumber"
+              :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
               :v="v$.podcastEpisode.attributes.episodeNumber"
               type="number"
               :step="1"
@@ -144,10 +144,10 @@ const onConfirm = async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" :loading="buttonLoading" data-cy="button-confirm">
+        <VBtn color="success" :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

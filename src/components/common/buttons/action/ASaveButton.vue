@@ -40,9 +40,9 @@ const { t } = useI18n({ useScope: 'global' })
     icon
     size="small"
     variant="outlined"
-    @click.stop="onClick"
     :loading="loading"
     :disabled="disabled"
+    @click.stop="onClick"
   >
     <VIcon icon="mdi-content-save" />
     <VTooltip activator="parent" location="bottom">{{ t(buttonT) }}</VTooltip>
@@ -53,9 +53,9 @@ const { t } = useI18n({ useScope: 'global' })
     :data-cy="dataCy"
     color="primary"
     rounded="pill"
-    @click.stop="onClick"
     :loading="loading"
     :disabled="disabled"
+    @click.stop="onClick"
   >
     {{ t(buttonT) }}
   </VBtn>

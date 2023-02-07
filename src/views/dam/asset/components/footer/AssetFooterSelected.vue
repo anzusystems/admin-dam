@@ -68,43 +68,39 @@ const onClearConfirm = async () => {
         <div class="d-flex">
           <VBtn
             v-show="showFullSelected"
-            @click.stop="setFullSelected"
             color="primary"
             variant="flat"
             :height="26"
             class="mr-2"
+            @click.stop="setFullSelected"
           >
             {{ t('coreDam.asset.selected.edit') }}
           </VBtn>
-          <AssetFooterSelectedButtonClear
-            v-show="showFullSelected"
-            @confirm="onClearConfirm"
-            variant="small"
-          />
+          <AssetFooterSelectedButtonClear v-show="showFullSelected" variant="small" @confirm="onClearConfirm" />
           <VBtn
             v-show="showMinimalSelected"
             icon
-            @click.stop="setMinimalSelected"
             variant="flat"
             :height="26"
             :width="26"
             rounded="circle"
             class="mr-2"
+            @click.stop="setMinimalSelected"
           >
-            <VIcon icon="mdi-chevron-down"/>
+            <VIcon icon="mdi-chevron-down" />
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
             icon
-            @click.stop="setCompactSelected"
             variant="flat"
             :height="26"
             :width="26"
             rounded="circle"
             class="mr-2"
+            @click.stop="setCompactSelected"
           >
-            <VIcon icon="mdi-chevron-up"/>
+            <VIcon icon="mdi-chevron-up" />
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.show') }}</VTooltip>
           </VBtn>
         </div>

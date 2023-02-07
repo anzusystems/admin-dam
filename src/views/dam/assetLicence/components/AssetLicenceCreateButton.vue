@@ -87,21 +87,14 @@ const onConfirm = async () => {
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.assetLicence.meta.create') }}</span>
         <VSpacer />
-        <VBtn
-          class="ml-2"
-          icon="mdi-close"
-          size="small"
-          variant="text"
-          @click.stop="onCancel"
-          data-cy="button-close"
-        />
+        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
             <ATextField
-              :label="t('coreDam.assetLicence.model.name')"
               v-model="assetLicence.name"
+              :label="t('coreDam.assetLicence.model.name')"
               :v="v$.assetLicence.name"
               required
               data-cy="asset-licence-name"
@@ -109,8 +102,8 @@ const onConfirm = async () => {
           </ARow>
           <ARow>
             <ATextField
-              :label="t('coreDam.assetLicence.model.extId')"
               v-model="assetLicence.extId"
+              :label="t('coreDam.assetLicence.model.extId')"
               :v="v$.assetLicence.extId"
               required
               data-cy="asset-licence-ext-id"
@@ -118,8 +111,8 @@ const onConfirm = async () => {
           </ARow>
           <ARow>
             <ExtSystemSelect
-              :label="t('coreDam.assetLicence.model.extSystem')"
               v-model="assetLicence.extSystem"
+              :label="t('coreDam.assetLicence.model.extSystem')"
               required
               data-cy="asset-licence-ext-system"
             />
@@ -128,10 +121,10 @@ const onConfirm = async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" :loading="buttonLoading" data-cy="button-confirm">
+        <VBtn color="success" :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

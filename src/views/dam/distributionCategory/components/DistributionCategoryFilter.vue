@@ -29,13 +29,13 @@ const { assetTypeOptions } = useAssetType()
     <FilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="12">
-          <AFilterValueObject v-model="filter.type" :items="assetTypeOptions"/>
+          <AFilterValueObject v-model="filter.type" :items="assetTypeOptions" />
         </VCol>
         <VCol cols="1">
-          <AFilterInteger v-model="filter.id"/>
+          <AFilterInteger v-model="filter.id" />
         </VCol>
         <VCol cols="2">
-          <AFilterString v-model="filter.name"/>
+          <AFilterString v-model="filter.name" />
         </VCol>
       </VRow>
     </FilterWrapper>

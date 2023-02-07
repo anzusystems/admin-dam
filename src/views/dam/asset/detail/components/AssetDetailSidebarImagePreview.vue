@@ -66,11 +66,11 @@ onMounted(async () => {
     <VBtn
       color="success"
       type="submit"
-      @click.stop="onSave"
       variant="flat"
       class="ml-2"
       :loading="saving"
       :disabled="loading"
+      @click.stop="onSave"
     >
       {{ t('common.button.save') }}
     </VBtn>

@@ -96,23 +96,12 @@ const onConfirm = async () => {
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('common.permissionGroup.meta.create') }}</span>
         <VSpacer />
-        <VBtn
-          class="ml-2"
-          icon="mdi-close"
-          size="small"
-          variant="text"
-          @click.stop="onCancel"
-          data-cy="button-close"
-        />
+        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <ASystemEntityScope system="common" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField
-              v-model="permissionGroup.title"
-              :v="v$.permissionGroup.title"
-              data-cy="permissionGroup-title"
-            />
+            <ATextField v-model="permissionGroup.title" :v="v$.permissionGroup.title" data-cy="permissionGroup-title" />
           </ARow>
           <ARow>
             <ATextField
@@ -125,10 +114,10 @@ const onConfirm = async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" @click.stop="onCancel" data-cy="button-cancel">
+        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" :loading="buttonLoading" data-cy="button-create-podcast">
+        <VBtn color="success" :loading="buttonLoading" data-cy="button-create-podcast" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

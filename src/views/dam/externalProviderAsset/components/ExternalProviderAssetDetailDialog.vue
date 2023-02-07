@@ -92,14 +92,14 @@ const totalCountText = computed(() => {
 <template>
   <VDialog v-model="externalProviderAssetDetailStore.detail" fullscreen persistent no-click-animation>
     <AssetDetailDialogLoader v-if="externalProviderAssetDetailStore.loader" @close-dialog="closeDialog" />
-    <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }" v-else-if="asset">
+    <VCard v-else-if="asset" class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
       <div class="dam-image-detail__wrapper d-flex flex-column">
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div>
-            <VBtn icon variant="text" @click.stop="prevItem" class="mx-1" :width="36" :height="36">
+            <VBtn icon variant="text" class="mx-1" :width="36" :height="36" @click.stop="prevItem">
               <VIcon icon="mdi-chevron-left" />
             </VBtn>
-            <VBtn icon variant="text" @click.stop="nextItem" class="mr-2" :width="36" :height="36">
+            <VBtn icon variant="text" class="mr-2" :width="36" :height="36" @click.stop="nextItem">
               <VIcon icon="mdi-chevron-right" />
             </VBtn>
           </div>
@@ -114,14 +114,14 @@ const totalCountText = computed(() => {
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
               icon
-              @click.stop="toggleSidebar"
               class="mr-1"
               :width="36"
               :height="36"
+              @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
             </VBtn>
-            <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
+            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
               <VIcon icon="mdi-close" />
             </VBtn>
           </div>
@@ -135,7 +135,7 @@ const totalCountText = computed(() => {
               <div v-if="imageLoading && isTypeImage" class="d-flex w-100 h-100 align-center justify-center">
                 <VProgressCircular indeterminate color="white" />
               </div>
-              <AssetImage :src="imageSrc" @load="onImageLoad" @error="onImageLoad" use-component />
+              <AssetImage :src="imageSrc" use-component @load="onImageLoad" @error="onImageLoad" />
             </div>
           </div>
           <div class="h-100 d-flex dam-image-detail__sidebar system-border-l">

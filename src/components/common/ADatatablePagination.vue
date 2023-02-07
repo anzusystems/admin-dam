@@ -100,7 +100,7 @@ const onClickNext = () => {
 
 <template>
   <div class="anzu-data-footer">
-    <div class="anzu-data-footer__page-limit" v-if="!hideRecordsPerPage">
+    <div v-if="!hideRecordsPerPage" class="anzu-data-footer__page-limit">
       {{ t('common.datatable.itemsPerPage') }}:
       <VBtnToggle v-model="modelValue.rowsPerPage" class="ml-2" density="compact" mandatory data-cy="table-size">
         <VBtn

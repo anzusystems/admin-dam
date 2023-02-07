@@ -116,8 +116,8 @@ onMounted(async () => {
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="closeDialog(false)"
             data-cy="button-close"
+            @click.stop="closeDialog(false)"
           />
         </VToolbarItems>
       </VToolbar>
@@ -136,22 +136,22 @@ onMounted(async () => {
           <template v-if="podcastEpisode.podcast && !loadingFormData">
             <ARow>
               <ATextarea
-                :label="t('coreDam.podcastEpisode.model.texts.title')"
                 v-model="podcastEpisode.texts.title"
+                :label="t('coreDam.podcastEpisode.model.texts.title')"
                 :v="v$.podcastEpisode.texts.title"
               />
             </ARow>
             <ARow>
               <ATextarea
-                :label="t('coreDam.podcastEpisode.model.texts.description')"
                 v-model="podcastEpisode.texts.description"
+                :label="t('coreDam.podcastEpisode.model.texts.description')"
                 :v="v$.podcastEpisode.texts.description"
               />
             </ARow>
             <ARow>
               <ATextField
-                :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
                 v-model="podcastEpisode.attributes.seasonNumber"
+                :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
                 :v="v$.podcastEpisode.attributes.seasonNumber"
                 type="number"
                 :step="1"
@@ -159,8 +159,8 @@ onMounted(async () => {
             </ARow>
             <ARow>
               <ATextField
-                :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
                 v-model="podcastEpisode.attributes.episodeNumber"
+                :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
                 :v="v$.podcastEpisode.attributes.episodeNumber"
                 type="number"
                 :step="1"
@@ -171,7 +171,7 @@ onMounted(async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="success" @click.stop="submit" :loading="saving">Add</VBtn>
+        <VBtn color="success" :loading="saving" @click.stop="submit">Add</VBtn>
         <VBtn text @click.stop="closeDialog(false)">Cancel</VBtn>
       </VCardActions>
     </VCard>

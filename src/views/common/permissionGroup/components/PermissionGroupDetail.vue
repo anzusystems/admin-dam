@@ -25,24 +25,24 @@ const { t } = useI18n({ useScope: 'global' })
         <VCol cols="12">
           <ACard :loading="loadingPermissionGroup">
             <VCardText>
-              <ARow :title="t('common.permissionGroup.model.title')" :value="permissionGroup.title"/>
-              <ARow :title="t('common.permissionGroup.model.description')" :value="permissionGroup.description"/>
+              <ARow :title="t('common.permissionGroup.model.title')" :value="permissionGroup.title" />
+              <ARow :title="t('common.permissionGroup.model.description')" :value="permissionGroup.description" />
             </VCardText>
           </ACard>
         </VCol>
       </VRow>
       <VRow>
         <VCol cols="12">
-          <PermissionEditor v-model="permissionGroup.permissions" :client="client"/>
+          <PermissionEditor v-model="permissionGroup.permissions" :client="client" />
         </VCol>
       </VRow>
     </VCol>
     <VCol cols="12" sm="4">
       <ACard loader="detail">
         <ARow :title="t('common.permissionGroup.model.id')">
-          <ACopyText :value="permissionGroup.id"/>
+          <ACopyText :value="permissionGroup.id" />
         </ARow>
-        <AUserAndTimeTrackingFields :data="permissionGroup"/>
+        <AUserAndTimeTrackingFields :data="permissionGroup" />
       </ACard>
     </VCol>
   </VRow>

@@ -134,8 +134,8 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div>{{ fileTitle }}</div>
         <ImageFile
-          :model-value="item.assetFile.id"
           v-if="assetType === AssetType.Image && item.assetFile"
+          :model-value="item.assetFile.id"
           :height="200"
         />
       </VCol>
@@ -157,16 +157,16 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :multiple="false"
           :asset-type="assetType"
         />
-        <VBtn variant="text" icon size="small" class="mx-1" v-if="itemHasFile">
+        <VBtn v-if="itemHasFile" variant="text" icon size="small" class="mx-1">
           <VIcon icon="mdi-dots-horizontal" />
           <VMenu activator="parent">
             <VCard min-width="300">
               <VList>
-                <VListItem @click.stop="downloadFile" :title="t('coreDam.asset.slots.actions.download')" />
+                <VListItem :title="t('coreDam.asset.slots.actions.download')" @click.stop="downloadFile" />
                 <VListItem
                   v-if="totalSlotCount > 1 && !item.main"
-                  @click.stop="makeMainFile"
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
+                  @click.stop="makeMainFile"
                 />
                 <AssetSlotListItemDuplicate
                   v-if="totalSlotCount > 1"

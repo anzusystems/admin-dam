@@ -118,24 +118,23 @@ const onSaveAndClose = async () => {
       <VToolbar class="w-100 system-border-b" :color="toolbarColor" density="compact" :height="64">
         <div class="d-flex align-center px-2">
           <div>
-            <div class="text-subtitle-2 d-flex align-center" v-if="isUploading">
+            <div v-if="isUploading" class="text-subtitle-2 d-flex align-center">
               {{ t('coreDam.asset.upload.title') }}
             </div>
-            <div class="text-subtitle-2 d-flex align-center text-green-darken-3 font-weight-bold" v-else>
+            <div v-else class="text-subtitle-2 d-flex align-center text-green-darken-3 font-weight-bold">
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
           </div>
         </div>
         <VSpacer />
-        <div class="text-caption d-flex align-center" v-if="isUploading">
-          <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1"/>
+        <div v-if="isUploading" class="text-caption d-flex align-center">
+          <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1" />
           <div>{{ t('coreDam.asset.upload.uploading') }} {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
         </div>
         <div class="d-flex align-center">
           <VDivider v-show="isUploading" vertical class="mx-4 my-2" />
           <VBtn
             v-if="isFinished"
-            @click.stop="onSaveAndClose"
             color="success"
             variant="flat"
             :height="36"
@@ -143,11 +142,11 @@ const onSaveAndClose = async () => {
             rounded="pill"
             :loading="saveAndCloseButtonLoading"
             :disabled="saveButtonLoading"
+            @click.stop="onSaveAndClose"
           >
             {{ t('coreDam.asset.upload.saveAndClose') }}
           </VBtn>
           <VBtn
-            @click.stop="onSave"
             variant="flat"
             :height="36"
             :width="36"
@@ -156,6 +155,7 @@ const onSaveAndClose = async () => {
             color="secondary"
             :loading="saveButtonLoading"
             :disabled="saveAndCloseButtonLoading"
+            @click.stop="onSave"
           >
             <VIcon icon="mdi-content-save" />
             <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.upload.save') }}</VTooltip>
@@ -163,7 +163,6 @@ const onSaveAndClose = async () => {
           <AssetUpload :height="36" variant="icon" />
           <VDivider vertical class="mx-4 my-2" />
           <VBtn
-            @click.stop="toggleMassOperations"
             :height="36"
             :width="36"
             :active="massOperations"
@@ -171,6 +170,7 @@ const onSaveAndClose = async () => {
             :color="massOperations ? 'secondary' : ''"
             class="mr-2"
             icon
+            @click.stop="toggleMassOperations"
           >
             <VIcon icon="mdi-tag-text-outline" />
             <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.title') }}</VTooltip>
@@ -178,20 +178,20 @@ const onSaveAndClose = async () => {
           <VBtn
             v-show="showMinimalUpload"
             icon
-            @click.stop="setMinimalUpload"
             variant="flat"
             :height="36"
             :width="36"
             rounded="circle"
             class="mr-2"
+            @click.stop="setMinimalUpload"
           >
-            <VIcon icon="mdi-chevron-down"/>
+            <VIcon icon="mdi-chevron-down" />
             <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
           </VBtn>
-          <AssetFooterUploadButtonStop @confirm="onStopConfirm" :button-size="36" :is-uploading="isUploading" />
+          <AssetFooterUploadButtonStop :button-size="36" :is-uploading="isUploading" @confirm="onStopConfirm" />
         </div>
       </VToolbar>
-      <AssetQueueEditable :queue-id="QUEUE_ID_UPLOAD_GLOBAL" :mass-operations="massOperations"/>
+      <AssetQueueEditable :queue-id="QUEUE_ID_UPLOAD_GLOBAL" :mass-operations="massOperations" />
     </div>
     <AssetUpload />
   </div>

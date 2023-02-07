@@ -24,42 +24,42 @@ const { t } = useI18n({ useScope: 'global' })
         <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName" />
         <ARow :title="t('coreDam.user.model.assetLicences')">
           <LazyAssetLicenceChip
-            class="mr-1"
             v-for="assetLicenceId in user.assetLicences"
             :id="assetLicenceId"
             :key="assetLicenceId"
+            class="mr-1"
           />
         </ARow>
         <ARow :title="t('coreDam.user.model.adminToExtSystems')">
           <LazyExtSystemChip
-            class="mr-1"
+            v-for="adminToExtSystem in user.adminToExtSystems"
             :id="adminToExtSystem"
             :key="adminToExtSystem"
-            v-for="adminToExtSystem in user.adminToExtSystems"
+            class="mr-1"
           />
         </ARow>
         <ARow :title="t('coreDam.user.model.userToExtSystems')">
           <LazyExtSystemChip
-            class="mr-1"
+            v-for="userToExtSystem in user.userToExtSystems"
             :id="userToExtSystem"
             :key="userToExtSystem"
-            v-for="userToExtSystem in user.userToExtSystems"
+            class="mr-1"
           />
         </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <ExternalProviderAssetChip
+            v-for="allowedAssetExternalProvider in user.allowedAssetExternalProviders"
+            :key="allowedAssetExternalProvider"
             class="mr-1"
             :provider-name="allowedAssetExternalProvider"
-            :key="allowedAssetExternalProvider"
-            v-for="allowedAssetExternalProvider in user.allowedAssetExternalProviders"
           />
         </ARow>
         <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
           <DistributionServiceChip
+            v-for="allowedDistributionService in user.allowedDistributionServices"
+            :key="allowedDistributionService"
             class="mr-1"
             :service-name="allowedDistributionService"
-            :key="allowedDistributionService"
-            v-for="allowedDistributionService in user.allowedDistributionServices"
           />
         </ARow>
       </ACard>

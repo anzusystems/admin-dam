@@ -32,7 +32,6 @@ const innerFilter = useDistributionCategoryFilter()
 <template>
   <ARemoteSelect
     :model-value="modelValue"
-    @update:model-value="emit('update:modelValue', $event)"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
@@ -42,5 +41,6 @@ const innerFilter = useDistributionCategoryFilter()
     :clearable="clearable"
     filter-by-field="name"
     :data-cy="dataCy"
+    @update:model-value="emit('update:modelValue', $event)"
   />
 </template>

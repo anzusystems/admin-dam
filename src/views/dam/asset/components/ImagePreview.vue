@@ -77,8 +77,8 @@ watch(
 
 <template>
   <VImg v-if="loading" :width="width" :height="height" class="asset-image asset-image--loading-bg">
-    <template v-slot:placeholder/>
-    <template v-slot:default>
+    <template #placeholder />
+    <template #default>
       <div class="d-flex w-100 h-100 align-center justify-center">
         <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />
       </div>
@@ -104,18 +104,18 @@ watch(
             icon="mdi-close"
             size="small"
             variant="text"
-            @click.stop="onCancel"
             data-cy="button-close"
+            @click.stop="onCancel"
           />
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <VTextField label="Image File ID" v-model="newFileId" />
+        <VTextField v-model="newFileId" label="Image File ID" />
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text @click.stop="onCancel" data-cy="button-cancel"> Cancel </VBtn>
-        <VBtn color="success" @click.stop="onConfirm" data-cy="button-confirm"> Confirm </VBtn>
+        <VBtn text data-cy="button-cancel" @click.stop="onCancel"> Cancel </VBtn>
+        <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm"> Confirm </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

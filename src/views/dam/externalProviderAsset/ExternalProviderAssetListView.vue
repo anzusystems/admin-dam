@@ -78,7 +78,7 @@ onUnmounted(() => {
 <template>
   <MainWrapper>
     <template #default>
-      <div class="d-flex w-100 h-100 align-center justify-center" v-if="loader.hard">
+      <div v-if="loader.hard" class="d-flex w-100 h-100 align-center justify-center">
         <VProgressCircular indeterminate color="primary" />
       </div>
       <div v-else-if="items.length">
@@ -96,11 +96,11 @@ onUnmounted(() => {
           <div v-if="loader.soft" class="w-100 d-flex align-center justify-center pa-4">
             <VProgressCircular indeterminate color="primary" />
           </div>
-          <div class="w-100" v-if="loadOnScroll" v-intersect="autoloadOnIntersect" />
+          <div v-if="loadOnScroll" v-intersect="autoloadOnIntersect" class="w-100" />
         </div>
         <ExternalProviderAssetDetailDialog @prev-item="prevItem" @next-item="nextItem" />
       </div>
-      <div class="text-h6 text-medium-emphasis d-flex w-100 h-100 align-center justify-center" v-else>
+      <div v-else class="text-h6 text-medium-emphasis d-flex w-100 h-100 align-center justify-center">
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
     </template>
@@ -110,7 +110,7 @@ onUnmounted(() => {
     </template>
     <template #second-bar-right>
       <div class="text-caption">{{ t('coreDam.asset.list.foundItems') }}: {{ totalCountText }}</div>
-      <VBtn variant="text" icon @click.stop="fetchAssetList" size="x-small" class="ml-1">
+      <VBtn variant="text" icon size="x-small" class="ml-1" @click.stop="fetchAssetList">
         <VIcon icon="mdi-refresh" />
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
       </VBtn>

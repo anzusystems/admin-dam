@@ -112,15 +112,15 @@ onMounted(() => {
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
               icon
-              @click.stop="toggleSidebar"
               class="mr-1"
               :width="36"
               :height="36"
+              @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
               <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
-            <VBtn icon variant="text" @click.stop="closeDialog" :width="36" :height="36" class="mr-1">
+            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
               <VIcon icon="mdi-close" />
               <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
             </VBtn>
@@ -139,9 +139,9 @@ onMounted(() => {
                 :background-color="imageProperties.bgColor"
                 :width="imageProperties.width"
                 :height="imageProperties.height"
+                use-component
                 @load="onImageLoad"
                 @error="onImageLoad"
-                use-component
               />
             </div>
           </div>

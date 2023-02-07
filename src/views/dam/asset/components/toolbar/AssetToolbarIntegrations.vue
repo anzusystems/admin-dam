@@ -37,8 +37,8 @@ const activeDisplayText = computed(() => {
 </script>
 
 <template>
-  <VMenu location="bottom" v-if="show">
-    <template v-slot:activator="{ props }">
+  <VMenu v-if="show" location="bottom">
+    <template #activator="{ props }">
       <VBtn variant="text" size="small" class="mx-1" rounded="pill" :height="34" v-bind="props">
         {{ activeDisplayText }}
         <VIcon icon="mdi-chevron-down" />
@@ -48,10 +48,10 @@ const activeDisplayText = computed(() => {
     <VList>
       <VListItem :title="t('system.mainBar.customIntegrations.assets')" @click="backToDam" />
       <VListItem
-        @click.stop="goToExternalProvider(key)"
         v-for="(value, key) in externalProviders"
         :key="key"
         :title="value.title"
+        @click.stop="goToExternalProvider(key)"
       />
     </VList>
   </VMenu>
