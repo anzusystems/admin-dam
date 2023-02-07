@@ -4,14 +4,17 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import { useI18n } from 'vue-i18n'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import DistributionCategorySelectDatatable from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectDatatable.vue'
+import { useDistributionCategorySelectListActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 
 const { t } = useI18n({ useScope: 'global' })
+
+const { listLoading } = useDistributionCategorySelectListActions()
 </script>
 
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.distributionCategorySelect.meta.list')" icon="mdi-form-down" />
-  <ActionbarButtonsWrapper></ActionbarButtonsWrapper>
-  <ACard loader="list">
-    <DistributionCategorySelectDatatable></DistributionCategorySelectDatatable>
+  <ActionbarButtonsWrapper />
+  <ACard :loading="listLoading">
+    <DistributionCategorySelectDatatable />
   </ACard>
 </template>

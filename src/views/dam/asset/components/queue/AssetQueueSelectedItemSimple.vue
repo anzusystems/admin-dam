@@ -64,7 +64,7 @@ const status = computed(() => {
         </div>
       </div>
       <div class="d-flex align-center w-100">
-        <div></div>
+        <div/>
         <div class="text-caption line-clamp-1">{{ item.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
       </div>
     </div>

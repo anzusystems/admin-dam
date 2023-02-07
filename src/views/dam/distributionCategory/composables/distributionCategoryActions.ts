@@ -1,4 +1,3 @@
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { ref } from 'vue'
@@ -28,9 +27,15 @@ import { useDistributionCategoryFactory } from '@/model/dam/factory/Distribution
 import type { ValueObjectOption } from '@/types/ValueObject'
 import type { DocId } from '@anzusystems/common-admin'
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
+
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
+const createButtonLoading = ref(false)
+const createFormDataLoaded = ref(false)
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -38,17 +43,18 @@ export const useDistributionCategoryListActions = () => {
   const listItems = ref<DistributionCategory[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchDistributionCategoryList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -56,29 +62,28 @@ export const useDistributionCategoryListActions = () => {
 
 export const useDistributionCategoryDetailActions = () => {
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
-  const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions, loaded } =
+  const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
   const fetchData = async (id: string) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const distributionCategory = await fetchDistributionCategory(id)
       const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
-      distributionCategoryOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
+    detailLoading,
     distributionCategory,
     distributionCategorySelects,
     distributionCategorySelectedOptions,
-    loaded,
     fetchData,
     resetStore: distributionCategoryOneStore.reset,
   }
@@ -113,18 +118,18 @@ export const useDistributionCategoryCreateActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
-  const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions, loaded } =
+  const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
   const prepareData = async (assetType: AssetType) => {
     try {
-      distributionCategoryOneStore.setLoaded(false)
+      createFormDataLoaded.value = false
       const { createDefault } = useDistributionCategoryFactory()
       const distributionCategory = createDefault(currentExtSystemId.value, assetType)
       const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
-      distributionCategoryOneStore.setLoaded(true)
+      createFormDataLoaded.value = true
     } catch (error) {
       handleError(error)
     }
@@ -132,14 +137,13 @@ export const useDistributionCategoryCreateActions = () => {
 
   const onCreate = async (successCallbackAction?: () => void) => {
     try {
-      btnDisable('create')
+      createButtonLoading.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('create')
+        createButtonLoading.value = false
         return
       }
-      btnLoadingOn('create')
       distributionCategory.value.selectedOptions = Object.values(distributionCategorySelectedOptions.value)
         .map((option) => option?.id)
         .filter((id) => !!id) as string[]
@@ -150,12 +154,13 @@ export const useDistributionCategoryCreateActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('create')
+      createButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    createFormDataLoaded,
+    createButtonLoading,
     distributionCategory,
     distributionCategorySelects,
     distributionCategorySelectedOptions,
@@ -169,35 +174,33 @@ export const useDistributionCategoryEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
-  const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions, loaded } =
+  const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
   const fetchData = async (id: string) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const distributionCategory = await fetchDistributionCategory(id)
       const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
-      distributionCategoryOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       distributionCategory.value.selectedOptions = Object.values(distributionCategorySelectedOptions.value)
         .map((option) => option?.id)
         .filter((id) => !!id) as string[]
@@ -208,12 +211,15 @@ export const useDistributionCategoryEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     distributionCategory,
     distributionCategorySelects,
     distributionCategorySelectedOptions,

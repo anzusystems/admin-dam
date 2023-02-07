@@ -43,5 +43,5 @@ const { t } = useI18n({ useScope: 'global' })
     closable-chips
     clearable
     hide-details
-  ></VAutocomplete>
+  />
 </template>

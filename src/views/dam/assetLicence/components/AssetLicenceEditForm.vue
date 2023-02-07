@@ -26,7 +26,7 @@ const { t } = useI18n({ useScope: 'global' })
             v-model="assetLicence.name"
             :v="v$.assetLicence.name"
             data-cy="asset-licence-name"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ATextField
@@ -34,7 +34,7 @@ const { t } = useI18n({ useScope: 'global' })
             v-model="assetLicence.extId"
             :v="v$.assetLicence.extId"
             data-cy="asset-licence-ext-id"
-          ></ATextField>
+          />
         </ARow>
         <ARow>
           <ExtSystemSelect
@@ -42,7 +42,7 @@ const { t } = useI18n({ useScope: 'global' })
             v-model="assetLicence.extSystem"
             :v="v$.assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
-          ></ExtSystemSelect>
+          />
         </ARow>
       </VCol>
     </VRow>

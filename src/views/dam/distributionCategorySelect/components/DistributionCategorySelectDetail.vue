@@ -20,7 +20,7 @@ const { t } = useI18n({ useScope: 'global' })
           <VListItem class="mt-2 pl-0" two-line v-for="option in distributionCategorySelect.options" :key="option.id">
             <VListItemTitle>{{ option.name }}</VListItemTitle>
             <VListItemSubtitle>{{ option.value }}</VListItemSubtitle>
-            <v-divider></v-divider>
+            <VDivider/>
           </VListItem>
         </ARow>
       </ACard>
@@ -28,9 +28,9 @@ const { t } = useI18n({ useScope: 'global' })
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.distributionCategorySelect.model.id')">
-          <ACopyText :value="distributionCategorySelect.id"></ACopyText>
+          <ACopyText :value="distributionCategorySelect.id"/>
         </ARow>
-        <AUserAndTimeTrackingFields :data="distributionCategorySelect"></AUserAndTimeTrackingFields>
+        <AUserAndTimeTrackingFields :data="distributionCategorySelect"/>
       </ACard>
     </VCol>
   </VRow>

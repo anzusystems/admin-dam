@@ -25,13 +25,13 @@ const resetFilter = () => {
     <FilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="2">
-          <AFilterString v-model="filter.id"></AFilterString>
+          <AFilterString v-model="filter.id" />
         </VCol>
         <VCol cols="2">
-          <AFilterString v-model="filter.text"></AFilterString>
+          <AFilterString v-model="filter.text" />
         </VCol>
         <VCol cols="2">
-          <AFilterBooleanGroup v-model="filter.reviewed"></AFilterBooleanGroup>
+          <AFilterBooleanGroup v-model="filter.reviewed" />
         </VCol>
       </VRow>
     </FilterWrapper>

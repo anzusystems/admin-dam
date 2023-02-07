@@ -24,12 +24,12 @@ const imageSrc = computed(() => {
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.podcast.model.texts.title')" :value="podcast.texts.title"></ARow>
-        <ARow :title="t('coreDam.podcast.model.texts.description')" :value="podcast.texts.description"></ARow>
+        <ARow :title="t('coreDam.podcast.model.texts.title')" :value="podcast.texts.title" />
+        <ARow :title="t('coreDam.podcast.model.texts.description')" :value="podcast.texts.description" />
         <ARow :title="t('coreDam.podcast.model.attributes.mode')">
           <PodcastModeChip :mode="podcast.attributes.mode" />
         </ARow>
-        <ARow :title="t('coreDam.podcast.model.attributes.rssUrl')" :value="podcast.attributes.rssUrl"></ARow>
+        <ARow :title="t('coreDam.podcast.model.attributes.rssUrl')" :value="podcast.attributes.rssUrl" />
         <ARow :title="t('coreDam.podcast.model.attributes.lastImportStatus')">
           <PodcastLastImportStatusChip :status="podcast.attributes.lastImportStatus" />
         </ARow>
@@ -38,12 +38,12 @@ const imageSrc = computed(() => {
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.podcast.model.id')">
-          <ACopyText :value="podcast.id" data-cy="podcast-id"></ACopyText>
+          <ACopyText :value="podcast.id" data-cy="podcast-id" />
         </ARow>
         <ARow title="Image" v-if="imageSrc">
           <AssetImage :src="imageSrc" use-component />
         </ARow>
-        <AUserAndTimeTrackingFields :data="podcast"></AUserAndTimeTrackingFields>
+        <AUserAndTimeTrackingFields :data="podcast" />
       </ACard>
     </VCol>
   </VRow>

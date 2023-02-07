@@ -25,10 +25,10 @@ const resetFilter = () => {
     <FilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="1">
-          <AFilterInteger v-model="userFilter.id"></AFilterInteger>
+          <AFilterInteger v-model="userFilter.id" />
         </VCol>
         <VCol cols="2">
-          <AFilterString v-model="userFilter.email"></AFilterString>
+          <AFilterString v-model="userFilter.email" />
         </VCol>
       </VRow>
     </FilterWrapper>

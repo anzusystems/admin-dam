@@ -16,7 +16,8 @@ const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { loaded, fetchData, resetStore, onUpdate, podcastEpisode } = usePodcastEpisodeEditActions()
+const { detailLoading, fetchData, resetStore, onUpdate, podcastEpisode, saveButtonLoading, saveAndCloseButtonLoading } =
+  usePodcastEpisodeEditActions()
 
 const getData = () => {
   fetchData(id)
@@ -41,19 +42,21 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.edit')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton v-if="loaded" @save-record="onUpdate"></ASaveButton>
-    <ASaveAndCloseButton v-if="loaded" @save-record-and-close="onUpdate(true)"></ASaveAndCloseButton>
-    <VBtn
-      class="ml-2"
-      :to="closeRoute"
-      icon="mdi-close"
-      size="small"
-      variant="outlined"
-      :width="36"
-      :height="36"
-    ></VBtn>
+    <ASaveButton
+      v-if="!detailLoading"
+      @save-record="onUpdate"
+      :loading="saveButtonLoading"
+      :disabled="saveAndCloseButtonLoading"
+    />
+    <ASaveAndCloseButton
+      v-if="!detailLoading"
+      @save-record-and-close="onUpdate(true)"
+      :loading="saveAndCloseButtonLoading"
+      :disabled="saveButtonLoading"
+    />
+    <VBtn class="ml-2" :to="closeRoute" icon="mdi-close" size="small" variant="outlined" :width="36" :height="36" />
   </ActionbarButtonsWrapper>
-  <ACard loader="edit">
-    <PodcastEpisodeEditForm></PodcastEpisodeEditForm>
+  <ACard :loading="detailLoading">
+    <PodcastEpisodeEditForm />
   </ACard>
 </template>

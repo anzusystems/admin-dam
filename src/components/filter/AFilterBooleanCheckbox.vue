@@ -32,5 +32,5 @@ const labelComputed = computed(() => {
     false-icon="mdi-close-box"
     hide-details
     indeterminate-icon="mdi-checkbox-blank-outline"
-  ></VCheckbox>
+  />
 </template>

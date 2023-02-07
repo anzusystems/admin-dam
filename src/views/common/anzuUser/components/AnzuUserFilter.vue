@@ -26,13 +26,13 @@ const resetFilter = () => {
     <FilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="12" sm="2">
-          <AFilterInteger v-model="filter.id"></AFilterInteger>
+          <AFilterInteger v-model="filter.id"/>
         </VCol>
         <VCol cols="12" sm="5">
-          <AFilterString v-model="filter.email"></AFilterString>
+          <AFilterString v-model="filter.email"/>
         </VCol>
         <VCol cols="12" sm="5">
-          <AFilterBooleanGroup v-model="filter.enabled"></AFilterBooleanGroup>
+          <AFilterBooleanGroup v-model="filter.enabled"/>
         </VCol>
       </VRow>
     </FilterWrapper>

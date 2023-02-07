@@ -21,5 +21,5 @@ const { modelValue } = useVModels(props, emit)
     :clearable="!modelValue.mandatory"
     :default-value="modelValue.default"
     :label="modelValue.title"
-  ></ADatetimePicker>
+  />
 </template>

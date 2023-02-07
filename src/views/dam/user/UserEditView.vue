@@ -18,7 +18,8 @@ const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const id = toInt(route.params.id)
 
-const { loaded, fetchData, resetStore, onUpdate } = useUserEditActions()
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
+  useUserEditActions()
 
 const getData = () => {
   fetchData(id)
@@ -36,11 +37,21 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.user.meta.edit')" icon="mdi-account" />
   <ActionbarButtonsWrapper>
-    <ASaveButton v-if="loaded" @save-record="onUpdate"></ASaveButton>
-    <ASaveAndCloseButton v-if="loaded" @save-record-and-close="onUpdate(true)"></ASaveAndCloseButton>
-    <ACloseButton :route-name="ROUTE.DAM.USER.LIST"></ACloseButton>
+    <ASaveButton
+      v-if="!detailLoading"
+      @save-record="onUpdate"
+      :loading="saveButtonLoading"
+      :disabled="saveAndCloseButtonLoading"
+    />
+    <ASaveAndCloseButton
+      v-if="!detailLoading"
+      @save-record-and-close="onUpdate(true)"
+      :loading="saveAndCloseButtonLoading"
+      :disabled="saveButtonLoading"
+    />
+    <ACloseButton :route-name="ROUTE.DAM.USER.LIST" />
   </ActionbarButtonsWrapper>
-  <ACard loader="edit">
-    <UserEditForm></UserEditForm>
+  <ACard :loading="detailLoading">
+    <UserEditForm />
   </ACard>
 </template>

@@ -17,18 +17,18 @@ const { t } = useI18n({ useScope: 'global' })
   <VRow>
     <VCol cols="8">
       <ACard loader="detail">
-        <ARow :title="t('coreDam.keyword.model.name')" :value="keyword.name"></ARow>
+        <ARow :title="t('coreDam.keyword.model.name')" :value="keyword.name" />
       </ACard>
     </VCol>
     <VCol cols="4">
       <ACard loader="detail">
         <ARow :title="t('coreDam.keyword.model.id')">
-          <ACopyText :value="keyword.id"></ACopyText>
+          <ACopyText :value="keyword.id" />
         </ARow>
         <ARow :title="t('coreDam.keyword.model.flags.reviewed')">
-          <ABooleanValue chip :value="keyword.flags.reviewed"></ABooleanValue>
+          <ABooleanValue chip :value="keyword.flags.reviewed" />
         </ARow>
-        <AUserAndTimeTrackingFields :data="keyword"></AUserAndTimeTrackingFields>
+        <AUserAndTimeTrackingFields :data="keyword" />
       </ACard>
     </VCol>
   </VRow>

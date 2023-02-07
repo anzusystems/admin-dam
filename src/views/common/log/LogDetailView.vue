@@ -12,7 +12,7 @@ const id = route.params.id as string
 const system = route.params.system as string
 const type = route.params.type as string
 
-const { fetchData, resetStore } = useLogDetailActions()
+const { detailLoading, fetchData, resetStore } = useLogDetailActions()
 
 const getDetail = () => {
   fetchData(id, system, type)
@@ -29,7 +29,9 @@ onBeforeUnmount(() => {
 
 <template>
   <ActionbarTitleWrapper>
-    <ACloseButton :route-name="ROUTE.COMMON.LOG.LIST"></ACloseButton>
+    <ACloseButton :route-name="ROUTE.COMMON.LOG.LIST" />
   </ActionbarTitleWrapper>
-  <LogDetail></LogDetail>
+  <ACard :loading="detailLoading">
+    <LogDetail />
+  </ACard>
 </template>

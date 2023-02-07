@@ -6,24 +6,18 @@ const { createDefault } = useKeywordFactory()
 
 interface State {
   keyword: Keyword
-  loaded: boolean
 }
 
 export const useKeywordOneStore = defineStore('keywordOneStore', {
   state: (): State => ({
     keyword: createDefault(0),
-    loaded: false,
   }),
   actions: {
     setKeyword(keyword: Keyword) {
       this.keyword = keyword
     },
-    setLoaded(loaded: boolean) {
-      this.loaded = loaded
-    },
     reset() {
       this.keyword = createDefault(0)
-      this.loaded = false
     },
   },
 })

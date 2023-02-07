@@ -2,7 +2,6 @@ import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import {
@@ -19,27 +18,32 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
 
-const { loaderOn, loaderOff, btnDisable, btnEnable, btnLoadingOn, btnReset } = useUiHelper()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
 
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
+
 export const useExtSystemListActions = () => {
   const listItems = ref<ExtSystem[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loaderOn('list')
+    listLoading.value = true
     try {
       listItems.value = await fetchExtSystemList(pagination, filterBag)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('list')
+      listLoading.value = false
     }
   }
 
   return {
+    listLoading,
     listItems,
     fetchList,
   }
@@ -47,26 +51,25 @@ export const useExtSystemListActions = () => {
 
 export const useExtSystemDetailActions = () => {
   const extSystemOneStore = useExtSystemOneStore()
-  const { extSystem, loaded } = storeToRefs(extSystemOneStore)
+  const { extSystem } = storeToRefs(extSystemOneStore)
 
   const fetchData = async (id: number) => {
-    loaderOn('detail')
+    detailLoading.value = true
     try {
       const extSystem = await fetchExtSystem(id)
       extSystem.adminUsers.forEach((id) => addToLazyUserBuffer(id))
       fetchLazyUser()
       extSystemOneStore.setExtSystem(extSystem)
-      extSystemOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('detail')
+      detailLoading.value = false
     }
   }
 
   return {
     extSystem,
-    loaded,
+    detailLoading,
     fetchData,
     resetStore: extSystemOneStore.reset,
   }
@@ -101,34 +104,32 @@ export const useExtSystemEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const extSystemOneStore = useExtSystemOneStore()
-  const { extSystem, loaded } = storeToRefs(extSystemOneStore)
+  const { extSystem } = storeToRefs(extSystemOneStore)
 
   const fetchData = async (id: number) => {
-    loaderOn('edit')
+    detailLoading.value = true
     try {
       const extSystem = await fetchExtSystem(id)
       extSystem.adminUsers.forEach((id) => addToLazyUserBuffer(id))
       fetchLazyUser()
       extSystemOneStore.setExtSystem(extSystem)
-      extSystemOneStore.setLoaded(true)
     } catch (error) {
       handleError(error)
     } finally {
-      loaderOff('edit')
+      detailLoading.value = false
     }
   }
 
   const onUpdate = async (close = false) => {
     try {
-      btnDisable('save', 'saveAndClose', 'delete')
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
-        btnEnable('save', 'saveAndClose', 'delete')
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
         return
       }
-      btnDisable(close ? 'save' : 'saveAndClose', 'delete')
-      btnLoadingOn(close ? 'saveAndClose' : 'save')
       await updateExtSystem(extSystemOneStore.extSystem.id, extSystem.value)
       showRecordWas('updated')
       if (!close) return
@@ -136,12 +137,15 @@ export const useExtSystemEditActions = () => {
     } catch (error) {
       handleError(error)
     } finally {
-      btnReset('save', 'saveAndClose', 'delete')
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
-    loaded,
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
     extSystem,
     fetchData,
     onUpdate,

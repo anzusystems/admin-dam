@@ -31,7 +31,7 @@ const validData = computed(() => {
 
 <template>
   <VAvatar v-if="validData" :class="classes" :color="data.avatarColor" :left="left" :right="right" :size="size">
-    <VImg v-if="data.avatarImage && data.avatarImage.length > 0" :src="data.avatarImage"></VImg>
+    <VImg v-if="data.avatarImage && data.avatarImage.length > 0" :src="data.avatarImage" />
     <span
       v-else-if="data.avatarText && data.avatarText.length > 0"
       :style="`font-size: ${fontSize}px`"

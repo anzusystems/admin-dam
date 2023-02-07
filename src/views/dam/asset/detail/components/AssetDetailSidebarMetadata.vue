@@ -4,7 +4,6 @@ import { deleteAsset, updateAssetMetadata } from '@/services/api/dam/assetApi'
 import { isNull } from '@/utils/common'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
-import { useUiHelper } from '@/composables/system/uiHelper'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
@@ -14,6 +13,7 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import AssetDownloadButton from '@/views/dam/asset/detail/components/AssetDownloadButton.vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
+import { ref } from 'vue'
 
 withDefaults(
   defineProps<{
@@ -30,29 +30,29 @@ const { t } = useI18n({ useScope: 'global' })
 
 const { asset } = useAssetDetailActions()
 
+const saveButtonLoading = ref(false)
+
 const { showRecordWas, showValidationError } = useAlerts()
 const { handleError } = useErrorHandler()
-const { btn, btnReset, btnLoadingOn, btnDisable, btnEnable } = useUiHelper()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
 const onSave = async () => {
   if (isNull(asset.value)) return
-  btnDisable('save')
+  saveButtonLoading.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
     showValidationError()
-    btnEnable('save')
+    saveButtonLoading.value = false
     return
   }
   try {
-    btnLoadingOn('save')
     await updateAssetMetadata(asset.value)
     showRecordWas('updated')
   } catch (error) {
     handleError(error)
   } finally {
-    btnReset('save')
+    saveButtonLoading.value = false
   }
 }
 
@@ -72,15 +72,7 @@ const onDelete = async () => {
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <AssetDownloadButton :asset-type="assetType" />
     <ADeleteButton @delete-record="onDelete" />
-    <VBtn
-      color="success"
-      type="submit"
-      @click.stop="onSave"
-      variant="flat"
-      class="ml-2"
-      :loading="btn.save.loading"
-      :disabled="btn.save.disabled"
-    >
+    <VBtn color="success" type="submit" @click.stop="onSave" variant="flat" class="ml-2" :loading="saveButtonLoading">
       {{ t('common.button.save') }}
     </VBtn>
   </AssetDetailSidebarActionsWrapper>

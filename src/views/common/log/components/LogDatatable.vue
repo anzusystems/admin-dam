@@ -90,19 +90,19 @@ defineExpose({
     <ASystemEntityScope system="common" :subject="ENTITY">
       <ADatatable :columns="columns" :data="listItems" @row-click="onRowClick">
         <template #levelName="{ data }">
-          <LogLevelChip :level="data"></LogLevelChip>
+          <LogLevelChip :level="data" />
         </template>
         <template #message="{ data }">
           <div class="line-clamp-2">{{ data }}</div>
         </template>
         <template #context-contextId="{ data }">
-          <ACopyText v-if="!isNull(data)" :value="data"></ACopyText>
+          <ACopyText v-if="!isNull(data)" :value="data" />
         </template>
         <template #context-userId="{ data }">
-          <ACopyText v-if="!isNull(data)" :value="data"></ACopyText>
+          <ACopyText v-if="!isNull(data)" :value="data" />
         </template>
       </ADatatable>
-      <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+      <ADatatablePagination v-model="pagination" @change="getList" />
     </ASystemEntityScope>
   </div>
 </template>

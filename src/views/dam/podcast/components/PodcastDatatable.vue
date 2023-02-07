@@ -56,11 +56,11 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST.DETAIL"></ADetailButton>
-        <ACopyIdButton :id="data.id"></ACopyIdButton>
-        <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST.EDIT"></AEditButton>
+        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST.DETAIL" />
+        <ACopyIdButton :id="data.id" />
+        <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST.EDIT" />
       </template>
     </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList"></ADatatablePagination>
+    <ADatatablePagination v-model="pagination" @change="getList" />
   </ASystemEntityScope>
 </template>

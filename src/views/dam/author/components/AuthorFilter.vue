@@ -32,22 +32,22 @@ const { authorTypeOptions } = useAuthorType()
     <FilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="2">
-          <AFilterString v-model="filter.id"></AFilterString>
+          <AFilterString v-model="filter.id"/>
         </VCol>
         <VCol cols="2">
-          <AFilterString v-model="filter.text"></AFilterString>
+          <AFilterString v-model="filter.text"/>
         </VCol>
         <VCol cols="2">
-          <AFilterString v-model="filter.identifier"></AFilterString>
+          <AFilterString v-model="filter.identifier"/>
         </VCol>
         <VCol cols="3">
-          <AFilterValueObject v-model="filter.type" :items="authorTypeOptions"></AFilterValueObject>
+          <AFilterValueObject v-model="filter.type" :items="authorTypeOptions"/>
         </VCol>
         <VCol cols="2">
           <AFilterBooleanGroup
             :label="t('coreDam.author.filter.reviewed')"
             v-model="filter.reviewed"
-          ></AFilterBooleanGroup>
+          />
         </VCol>
       </VRow>
     </FilterWrapper>

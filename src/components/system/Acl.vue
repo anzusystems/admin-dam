@@ -22,5 +22,5 @@ watch(currentUser, () => {
 </script>
 
 <template>
-  <slot v-if="allowed"></slot>
+  <slot v-if="allowed"/>
 </template>

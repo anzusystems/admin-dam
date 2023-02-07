@@ -2,7 +2,6 @@
 import { useRouter } from 'vue-router'
 import { clickBlur } from '@/utils/event'
 import { useI18n } from 'vue-i18n'
-import ABtn from '@/components/common/buttons/ABtn.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -11,11 +10,13 @@ const props = withDefaults(
     buttonT?: string
     buttonClass?: string
     dataCy?: string
+    loading?: boolean
   }>(),
   {
     buttonT: 'common.button.edit',
     buttonClass: 'ml-2',
     dataCy: 'button-edit',
+    loading: false,
   }
 )
 const emit = defineEmits<{
@@ -34,7 +35,7 @@ const onClick = (event: Event) => {
 </script>
 
 <template>
-  <ABtn :class="buttonClass" :data-cy="dataCy" btn-helper="edit" color="primary" rounded="pill" @click.stop="onClick">
+  <VBtn :class="buttonClass" :data-cy="dataCy" :loading="loading" color="primary" rounded="pill" @click.stop="onClick">
     <span>{{ t(buttonT) }}</span>
-  </ABtn>
+  </VBtn>
 </template>
