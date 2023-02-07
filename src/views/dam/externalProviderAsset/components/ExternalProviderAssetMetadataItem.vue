@@ -16,9 +16,9 @@ const isBooleanComputed = computed(() => {
 
 const valueComputed = computed(() => {
   if (isArray(props.value)) {
-    return props.value.join('<br>')
+    return props.value
   }
-  return props.value
+  return [props.value]
 })
 </script>
 
@@ -26,5 +26,7 @@ const valueComputed = computed(() => {
   <div v-if="isBooleanComputed" class="d-inline-flex">
     <ABooleanValue :value="value" />
   </div>
-  <div v-else class="d-inline-flex" v-html="valueComputed" />
+  <div v-for="item in valueComputed" v-else :key="item" class="d-inline-flex">
+    <span>{{ item }}<br /></span>
+  </div>
 </template>

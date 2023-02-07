@@ -180,7 +180,7 @@ const showCancel = computed(() => {
           >
             <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
             <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
-            <div v-if="item.error.message.length" class="text-caption" v-html="item.error.message" />
+            <div v-if="item.error.message.length" class="text-caption" v-text="item.error.message" />
             <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
           </div>
         </div>

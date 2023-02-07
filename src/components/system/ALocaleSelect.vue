@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { useFlagsSvg } from '@/composables/system/useFlagsSvg'
 import type { Locale, LocaleCode } from '@/composables/system/localeSettings'
 import { defaultLocale, useLocaleSettings } from '@/composables/system/localeSettings'
 import { computed } from 'vue'
 import { isUndefined } from '@/utils/common'
 import { useCurrentUser } from '@/composables/system/currentUser'
+import FlagCountry from '@/components/common/flags/FlagCountry.vue'
 
 const { allLocales, currentLocaleCode, setLocale } = useLocaleSettings()
 const { currentUserIsSuperAdmin } = useCurrentUser()
@@ -12,8 +12,6 @@ const { currentUserIsSuperAdmin } = useCurrentUser()
 const onLocaleChange = (code: LocaleCode) => {
   setLocale(code)
 }
-
-const { getLocaleFlag } = useFlagsSvg()
 
 const currentLocale = computed(() => {
   const found = allLocales.find((item) => item.code === currentLocaleCode.value)
@@ -33,7 +31,7 @@ const availableLocales = computed(() => {
     <template #activator="{ props }">
       <VBtn class="pl-1" rounded="pill" v-bind="props" variant="text" data-cy="settings-language">
         <VAvatar class="mr-1" size="30">
-          <div class="flag" v-html="getLocaleFlag(currentLocale?.code)" />
+          <FlagCountry :code="currentLocale?.code" />
         </VAvatar>
         {{ currentLocale.title }}
       </VBtn>
@@ -43,7 +41,7 @@ const availableLocales = computed(() => {
         <VListItem v-for="locale in availableLocales" :key="locale.code" @click.stop="onLocaleChange(locale.code)">
           <VListItemTitle>
             <VAvatar class="mr-1" size="30">
-              <div class="flag" v-html="getLocaleFlag(locale.code)" />
+              <FlagCountry :code="locale.code" />
             </VAvatar>
             {{ locale.title }}
           </VListItemTitle>
