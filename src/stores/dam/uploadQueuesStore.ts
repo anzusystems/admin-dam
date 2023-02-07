@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DocId } from '@anzusystems/common-admin'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/dam/assetApi'
@@ -149,6 +149,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: null,
         }
 
@@ -203,6 +204,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: slotName,
         }
 
@@ -255,6 +257,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: null,
         }
 
@@ -315,6 +318,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             message: '',
           },
           notificationFallbackTimer: undefined,
+          notificationFallbackTry: 1,
           slotName: null,
         }
         this.createQueue(queueId)
@@ -443,6 +447,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
           if (item.assetId === asset.id && asset.mainFile) {
+            clearTimeout(item.notificationFallbackTimer)
             item.status = QueueItemStatus.Uploaded
             item.assetStatus = asset.attributes.assetStatus
             if (asset.mainFile.links?.image_detail) {
@@ -459,6 +464,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
           if (item.assetId === asset.id) {
+            clearTimeout(item.notificationFallbackTimer)
             item.error.hasError = true
             item.status = QueueItemStatus.Failed
             item.canEditMetadata = false
@@ -490,29 +496,36 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       fetchLazyKeyword()
       fetchLazyAuthor()
     },
-    async queueItemDuplicate(assetId: DocId, originAssetFile: DocId, assetType: AssetType) {
-      // @todo if is duplicate metadata are empty, what to do because we load image file and not asset, product question
+    async queueItemDuplicate(
+      assetId: DocId,
+      originAssetFile: DocIdNullable = null,
+      assetType: AssetType | null = null
+    ) {
+      // @todo product question what to do with duplicate file display
       let file: null | AssetFileNullable = null
-      switch (assetType) {
-        case AssetType.Image:
-          file = await fetchImageFile(originAssetFile)
-          break
-        case AssetType.Audio:
-          file = await fetchAudioFile(originAssetFile)
-          break
-        case AssetType.Video:
-          file = await fetchVideoFile(originAssetFile)
-          break
-        case AssetType.Document:
-          file = await fetchDocumentFile(originAssetFile)
-          break
+      if (originAssetFile && assetType) {
+        switch (assetType) {
+          case AssetType.Image:
+            file = await fetchImageFile(originAssetFile)
+            break
+          case AssetType.Audio:
+            file = await fetchAudioFile(originAssetFile)
+            break
+          case AssetType.Video:
+            file = await fetchVideoFile(originAssetFile)
+            break
+          case AssetType.Document:
+            file = await fetchDocumentFile(originAssetFile)
+            break
+        }
       }
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
           if (item.assetId === assetId) {
+            clearTimeout(item.notificationFallbackTimer)
             item.isDuplicate = true
             item.status = QueueItemStatus.Uploaded
-            item.canEditMetadata = true
+            item.canEditMetadata = false // todo check with product
             if (file) {
               item.fileId = file.id
               item.duplicateAssetId = file.asset

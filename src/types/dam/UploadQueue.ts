@@ -62,6 +62,7 @@ export interface UploadQueueItem {
     message: string
   }
   notificationFallbackTimer: ReturnType<typeof setTimeout> | undefined
+  notificationFallbackTry: number
   slotName: string | null
 }
 
