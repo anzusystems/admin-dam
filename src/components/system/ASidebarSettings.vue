@@ -6,6 +6,7 @@ import { ACL } from '@/types/Permission'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import { useAcl } from '@/composables/system/ability'
 import { ref } from 'vue'
+import logo from '@/assets/logo-adam.svg'
 
 const { t } = useI18n({ useScope: 'global' })
 const { can } = useAcl()
@@ -15,11 +16,9 @@ const opened = ref([])
 </script>
 
 <template>
-  <VList>
-    <VListItem>
-      <VListItemTitle class="text-h6">ADAM</VListItemTitle>
-    </VListItem>
-  </VList>
+  <div class="main-logo ml-2 mt-1">
+    <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img :src="logo" alt="ADAM" /></RouterLink>
+  </div>
   <VList v-model:opened="opened" density="compact" nav>
     <VListItem
       :to="{ name: ROUTE.SYSTEM.SETTINGS }"
