@@ -17,7 +17,7 @@ const opened = ref([])
 
 <template>
   <div class="main-logo ml-2 mt-1">
-    <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img :src="logo" alt="ADAM" /></RouterLink>
+    <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img width="104" height="42" :src="logo" alt="ADAM" /></RouterLink>
   </div>
   <VList v-model:opened="opened" density="compact" nav>
     <VListItem
