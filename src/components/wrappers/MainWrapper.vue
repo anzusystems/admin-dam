@@ -27,7 +27,9 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         <div class="d-flex align-center">
           <!--          <div class="mx-2 font-weight-bold">ADAM</div>-->
           <div class="main-logo mr-2">
-            <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img :src="logo" alt="ADAM" /></RouterLink>
+            <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
+              <img width="104" height="42" :src="logo" alt="ADAM" />
+            </RouterLink>
           </div>
           <AssetToolbarIntegrations />
           <slot name="main-bar-left" />
