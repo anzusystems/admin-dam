@@ -42,6 +42,5 @@ const { allExternalProviderAssetTypeOptions } = useExternalProviderAssetType()
     no-filter
     :data-cy="dataCy"
     @blur="onBlur"
-  >
-  </VSelect>
+  />
 </template>

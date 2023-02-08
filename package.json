@@ -40,7 +40,7 @@
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6",
     "vuedraggable": "^4.1.0",
-    "vuetify": "^3.1.3",
+    "vuetify": "^3.1.4",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
@@ -64,7 +64,7 @@
     "eslint-plugin-vue": "^9.9.0",
     "postcss": "^8.4.21",
     "postcss-html": "^1.5.0",
-    "prettier": "^2.8.3",
+    "prettier": "^2.8.4",
     "sass": "^1.58.0",
     "stylelint": "^14.16.1",
     "stylelint-config-recommended-vue": "^1.4.0",
