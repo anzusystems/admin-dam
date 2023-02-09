@@ -4,6 +4,7 @@
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
 RUN_YARN_INSTALL=true
+CLEAR_VITE_DEPS=false
 
 cd "${PROJECT_ROOT}" || exit 1
 
@@ -24,6 +25,7 @@ while [ "$#" -gt 0 ]; do
     case $1 in
     -ni | --no-install)
         RUN_YARN_INSTALL=false
+        CLEAR_VITE_DEPS=true
         shift 1
         continue
         ;;
@@ -43,6 +45,10 @@ if [ -f /.dockerenv ]; then
 
     if ${RUN_YARN_INSTALL}; then
         yarn install
+    fi
+
+    if ${CLEAR_VITE_DEPS}; then
+         rm -rf node_modules/.vite/deps/
     fi
 
     yarn dev --host "$(hostname)" --port "${DOCKER_VUE_DEV_PORT}"

@@ -69,9 +69,10 @@ export interface Link {
   requestedHeight: number
   url: string
   title: string
+  type: string
 }
 
-export type Links = Record<'image_list' | 'image_detail', Link> | Record<string, never>
+export type Links = Record<'image_list' | 'image_detail' | 'audio', Link> | Record<string, never>
 
 export interface ImageFile extends UserAndTimeTrackingFields {
   id: DocId

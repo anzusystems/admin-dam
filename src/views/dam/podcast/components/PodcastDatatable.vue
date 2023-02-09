@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
-import { useTableColumns } from '@/composables/system/tableColumns'
-import ADatatable from '@/components/common/ADatatable.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/podcastApi'
 import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
@@ -11,12 +7,18 @@ import { ROUTE } from '@/router/routes'
 import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import type { Author } from '@/types/dam/Author'
 import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastActions'
 import PodcastFilter from '@/views/dam/podcast/components/PodcastFilter.vue'
-import { usePagination } from '@/composables/system/pagination'
 import { usePodcastListFilter } from '@/model/dam/filter/PodcastFilter'
+import {
+  useTableColumns,
+  ASystemEntityScope,
+  ADatatable,
+  usePagination,
+  useFilterHelpers,
+  ADatatablePagination,
+} from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()
