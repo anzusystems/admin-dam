@@ -84,6 +84,7 @@ onMounted(async () => {
         </template>
       </ImagePreview>
       <AssetDetailSidebarImagePreviewFromDistributionDialog
+        v-if="chooseImagePreviewFromDistributionDialog"
         v-model="chooseImagePreviewFromDistributionDialog"
         :file-id="videoFile.id"
       />
