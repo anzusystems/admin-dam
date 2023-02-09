@@ -5,10 +5,38 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@anzusystems/common-admin@npm:^0.0.5":
-  version: 0.0.5
-  resolution: "@anzusystems/common-admin@npm:0.0.5"
-  checksum: 8a95ecc90b67d204e6125a3862d42d6b6c94bbb21bdd7c8baa6121a7bbab0826814a233dd05dcde67d49a31b0c3c49c8fb0b5eaf9eac5abcf99e65c41730295b
+"@anzusystems/common-admin@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@anzusystems/common-admin@npm:0.0.6"
+  peerDependencies:
+    "@vuelidate/core": ^2.0.0
+    "@vuelidate/validators": ^2.0.0
+    "@vueuse/core": ^9.12.0
+    "@vueuse/integrations": ^9.12.0
+    axios: ^1.3.2
+    dayjs: ^1.11.7
+    flatpickr: ^4.6.13
+    pinia: ^2.0.30
+    vue: ^3.2.47
+    vue-i18n: ^9.2.2
+    vue-router: ^4.1.6
+    vuetify: ^3.1.4
+  peerDependenciesMeta:
+    "@vueuse/core":
+      optional: true
+    "@vueuse/integrations":
+      optional: true
+    axios:
+      optional: true
+    dayjs:
+      optional: true
+    flatpickr:
+      optional: true
+    pinia:
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 5a375b93ded7146a963b1258a42273f59e3f1091358a26d01809c066a320e8781c46e3ff324e6f6ce4ae4e4f06a75fdf0b420a8efd4d9070bbd041929bcb4575
   languageName: node
   linkType: hard
 
@@ -344,9 +372,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@intlify/bundle-utils@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@intlify/bundle-utils@npm:3.4.0"
+"@intlify/bundle-utils@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@intlify/bundle-utils@npm:4.0.0"
   dependencies:
     "@intlify/message-compiler": next
     "@intlify/shared": next
@@ -358,7 +386,7 @@ __metadata:
       optional: true
     vue-i18n:
       optional: true
-  checksum: eb8bcec99fea495ac1011867f23e7a05aa2ba9b89366c6a1a8b7ecb0f1c4ef551e68aeabeb43bb01353a36a87791805c48290d0b847989cfb0c8fc07e2969b2e
+  checksum: 765cd8d599635dd2dee163e4bf0914cf6351603a5e2c6f679a06f93fe5ef14ada84b45cf2f9bc2c0f83e620cf3d394f71b2d9c9eb7ee374d1fea764062da6184
   languageName: node
   linkType: hard
 
@@ -417,11 +445,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@intlify/unplugin-vue-i18n@npm:^0.8.1":
-  version: 0.8.1
-  resolution: "@intlify/unplugin-vue-i18n@npm:0.8.1"
+"@intlify/unplugin-vue-i18n@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "@intlify/unplugin-vue-i18n@npm:0.8.2"
   dependencies:
-    "@intlify/bundle-utils": ^3.4.0
+    "@intlify/bundle-utils": ^4.0.0
     "@intlify/shared": next
     "@rollup/pluginutils": ^4.2.0
     "@vue/compiler-sfc": ^3.2.45
@@ -444,7 +472,7 @@ __metadata:
       optional: true
     vue-i18n-bridge:
       optional: true
-  checksum: 62769893d8db970eb4cb9706daa8eb9af6342d0f0be8e606b8df0dcecfc69f5b8864c925dea1f7dabd1e18879ad194bf23ab363b58b4a97d69982be5814c876f
+  checksum: b25f825d0d194b5fb4689ea0b06c8565c6fdd044e2dd2bb49ab684c874054b01cb479bdde75eb5806c40a13cf3df05e662956d4a13a314ebf3de4f456e2f1eb3
   languageName: node
   linkType: hard
 
@@ -1366,9 +1394,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": ^0.0.5
+    "@anzusystems/common-admin": ^0.0.6
     "@cypress/grep": ^3.1.4
-    "@intlify/unplugin-vue-i18n": ^0.8.1
+    "@intlify/unplugin-vue-i18n": ^0.8.2
     "@kyvg/vue3-notification": ^2.8.0
     "@mdi/font": 7.1.96
     "@rushstack/eslint-patch": ^1.2.0
