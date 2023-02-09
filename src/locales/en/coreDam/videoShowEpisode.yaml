@@ -1,0 +1,17 @@
+model:
+  id: ID
+  videoShow: Video show
+  asset: Asset
+  position: Position
+  texts:
+    title: Title
+filter:
+  id: ID
+  title: Title
+button:
+  create: Add Episode
+meta:
+  create: Add Episode
+  edit: Video show Episode Edit
+  detail: Video show Episode Detail
+
