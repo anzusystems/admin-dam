@@ -22,6 +22,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: ImagePreviewNullable): void
+  (e: 'changed', data: ImagePreviewNullable): void
 }>()
 
 const loading = ref(false)
@@ -49,14 +50,16 @@ const src = computed(() => {
   return placeholder16x9
 })
 
-const removeImage = () => {
+const unassignImage = () => {
   imagePreviewModel.value = null
   imageFile.value = null
+  emit('changed', null)
 }
 
 const onConfirm = () => {
   if (newFileId.value.length === 0) return
   imagePreviewModel.value = { imageFile: newFileId.value, position: 0 }
+  emit('changed', { imageFile: newFileId.value, position: 0 })
   dialog.value = false
 }
 
@@ -86,10 +89,12 @@ watch(
   </VImg>
   <VImg v-else :width="width" :height="width" :src="src" contain />
   <div v-if="showActions">
+    <slot name="actions-start" />
     <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">Replace by image file ID</VBtn>
-    <VBtn v-if="imagePreviewModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="removeImage">
+    <VBtn v-if="imagePreviewModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="unassignImage">
       Unassign image
     </VBtn>
+    <slot name="actions-end" />
   </div>
   <VDialog v-model="dialog" persistent :width="500" no-click-animation>
     <VCard v-if="dialog" data-cy="delete-panel">

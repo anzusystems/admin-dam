@@ -2,7 +2,7 @@ settings:
   settings: Personal
   users: Users
   podcasts: Podcasts
-  podcastEpisodes: Podcast episodes
+  videoShows: Video shows
   permissionGroups: Permission Groups
   anzuUser: Permission Users
   extSystems: External Systems
