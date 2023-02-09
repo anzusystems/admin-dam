@@ -1,13 +1,15 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { HTTP_STATUS_CREATED, HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { DocId } from '@anzusystems/common-admin'
-import { apiFetchOne } from '@/services/api/anzuApi'
+import { apiAnyRequest, apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
-import type { FileDownloadLink, VideoFile } from '@/types/dam/File'
 import { QueueItemType } from '@/types/dam/UploadQueue'
+import type { FileDownloadLink, VideoFile } from '@/types/dam/File'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
+import type { Pagination } from '@/types/Pagination'
+import type { FilterBag } from '@/types/Filter'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -265,3 +267,25 @@ export const updatePreviewImage = (fileId: DocId, imagePreview: ImagePreviewNull
       })
   })
 }
+
+export const fetchVideoFileDistributionPreviewList = (fileId: DocId, pagination: Pagination, filterBag: FilterBag) =>
+  apiFetchList<any[]>(
+    damClient,
+    END_POINT + '/:fileId/distribution-preview',
+    { fileId },
+    pagination,
+    filterBag,
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
+
+export const setVideoFileDistributionPreview = (fileId: DocId, distributionId: DocId) =>
+  apiAnyRequest<null, any>(
+    damClient,
+    'PATCH',
+    END_POINT + '/:fileId/distribution-preview/:distributionId',
+    { fileId, distributionId },
+    null,
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
