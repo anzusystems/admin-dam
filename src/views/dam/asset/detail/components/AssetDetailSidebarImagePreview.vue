@@ -77,6 +77,7 @@ onMounted(async () => {
             variant="flat"
             class="my-2 mr-2"
             color="secondary"
+            size="small"
             @click.stop="chooseImagePreviewFromDistributionDialog = true"
           >
             Choose from distribution
