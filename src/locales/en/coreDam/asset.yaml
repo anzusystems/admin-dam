@@ -72,6 +72,7 @@ detail:
     distribution: Distribution
     slots: Slots
     podcast: Podcast
+    videoShow: Video show
     imagePreview: Image preview
   info:
     status:

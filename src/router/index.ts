@@ -17,6 +17,8 @@ import { commonLogRoutes } from '@/router/common/log'
 import { podcastRoutes } from '@/router/routes/dam/podcast'
 import { podcastEpisodeRoutes } from '@/router/routes/dam/podcastEpisode'
 import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
+import { videoShowRoutes } from '@/router/routes/dam/videoShow'
+import { videoShowEpisodeRoutes } from '@/router/routes/dam/videoShowEpisode'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -34,6 +36,8 @@ const vueRouter = createRouter({
     ...distributionCategorySelectRoutes,
     ...podcastRoutes,
     ...podcastEpisodeRoutes,
+    ...videoShowRoutes,
+    ...videoShowEpisodeRoutes,
     ...commonLogRoutes,
     ...systemRoutes,
     {

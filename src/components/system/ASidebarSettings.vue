@@ -34,6 +34,12 @@ const opened = ref([])
       data-cy="podcast-settings"
     />
     <VListItem
+      :to="{ name: ROUTE.DAM.VIDEO_SHOW.LIST }"
+      prepend-icon="mdi-video-box"
+      :title="t('sidebar.settings.videoShows')"
+      data-cy="video-show-settings"
+    />
+    <VListItem
       v-if="can(ACL.DAM_USER_UI)"
       :to="{ name: ROUTE.DAM.USER.LIST }"
       prepend-icon="mdi-account-multiple"

@@ -5,6 +5,7 @@ export enum AssetDetailTab {
   ROI = 'roi',
   Distribution = 'distribution',
   Podcast = 'podcast',
+  VideoShow = 'videoShow',
   Slots = 'slots',
   ImagePreview = 'imagePreview',
   Default = Info,
