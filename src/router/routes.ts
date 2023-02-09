@@ -71,6 +71,15 @@ const routes = {
       DETAIL: 'podcastEpisode_detail',
       EDIT: 'podcastEpisode_edit',
     },
+    VIDEO_SHOW: {
+      LIST: 'videoShow_list',
+      DETAIL: 'videoShow_detail',
+      EDIT: 'videoShow_edit',
+    },
+    VIDEO_SHOW_EPISODE: {
+      DETAIL: 'videoShowEpisode_detail',
+      EDIT: 'videoShowEpisode_edit',
+    },
   },
   SYSTEM: {
     HOMEPAGE: 'homepage',
