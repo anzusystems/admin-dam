@@ -41,7 +41,7 @@ onMounted(async () => {
 
 <template>
   <VDialog :model-value="modelValue" persistent no-click-animation :width="500">
-    <VCard v-if="modelValue">
+    <VCard>
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
           <div class="text-h6">Choose as preview image</div>
