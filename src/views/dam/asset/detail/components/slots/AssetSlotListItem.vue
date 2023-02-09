@@ -172,6 +172,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div>{{ fileTitle }}</div>
         <AssetFilePublicLink
+          v-if="assetType === AssetType.Audio && item.assetFile"
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"
           @open-make-public-dialog="openMakeFilePrivateDialog"
