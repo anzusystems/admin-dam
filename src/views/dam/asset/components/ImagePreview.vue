@@ -90,8 +90,17 @@ watch(
   <VImg v-else :width="width" :height="width" :src="src" contain />
   <div v-if="showActions">
     <slot name="actions-start" />
-    <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">Replace by image file ID</VBtn>
-    <VBtn v-if="imagePreviewModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="unassignImage">
+    <VBtn variant="flat" class="my-2 mr-2" color="secondary" size="small" @click.stop="dialog = true"
+      >Replace by image file ID</VBtn
+    >
+    <VBtn
+      v-if="imagePreviewModel !== null"
+      variant="flat"
+      class="my-2 mr-2"
+      color="secondary"
+      size="small"
+      @click.stop="unassignImage"
+    >
       Unassign image
     </VBtn>
     <slot name="actions-end" />
