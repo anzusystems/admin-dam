@@ -15,6 +15,9 @@ import { isUndefined } from '@/utils/common'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 import ImageFile from '@/views/dam/asset/components/ImageFile.vue'
+import { useClipboard } from '@vueuse/core'
+import { useAlerts } from '@/composables/system/alerts'
+import AssetFilePublicLink from '@/views/dam/asset/detail/components/AssetFilePublicLink.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -34,6 +37,8 @@ const emit = defineEmits<{
   (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
   (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
   (e: 'refreshList'): void
+  (e: 'makeFilePrivate', fileId: DocId): void
+  (e: 'openMakeFilePrivateDialog', fileId: DocId): void
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
@@ -67,6 +72,19 @@ const uploadQueueItemInAnyProgressIndex = computed(() => {
     )
 })
 
+const filePublicLink = computed(() => {
+  if (
+    props.assetType !== AssetType.Audio ||
+    !props.item ||
+    !props.item.assetFile ||
+    !props.item.assetFile.links ||
+    !props.item.assetFile.links.audio ||
+    props.item.assetFile.links.audio.url.length === 0
+  )
+    return null
+  return props.item.assetFile.links.audio.url
+})
+
 watch(uploadQueueItemInAnyProgress, async (newValue, oldValue) => {
   if (isUndefined(newValue) && !isUndefined(oldValue)) {
     emit('refreshList')
@@ -82,6 +100,26 @@ const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
   const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
   window.open(res.link)
+}
+
+const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
+const { showSuccess } = useAlerts()
+
+const copyFileId = async () => {
+  if (!props.item || !props.item.assetFile) return
+  copy(props.item.assetFile.id).then(() => {
+    showSuccess(t('common.alerts.idWasCopied'))
+  })
+}
+
+const makeFilePrivate = () => {
+  if (!props.item || !props.item.assetFile) return
+  emit('makeFilePrivate', props.item.assetFile.id)
+}
+
+const openMakeFilePrivateDialog = () => {
+  if (!props.item || !props.item.assetFile) return
+  emit('openMakeFilePrivateDialog', props.item.assetFile.id)
 }
 
 const makeMainFile = () => {
@@ -133,6 +171,11 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           {{ slotName }} <span v-if="item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
         </div>
         <div>{{ fileTitle }}</div>
+        <AssetFilePublicLink
+          :preview-link="filePublicLink"
+          @make-private="makeFilePrivate"
+          @open-make-public-dialog="openMakeFilePrivateDialog"
+        />
         <ImageFile
           v-if="assetType === AssetType.Image && item.assetFile"
           :model-value="item.assetFile.id"
@@ -162,6 +205,11 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           <VMenu activator="parent">
             <VCard min-width="300">
               <VList>
+                <VListItem
+                  v-if="clipboardCopyIsSupported"
+                  :title="t('coreDam.asset.slots.actions.copyFileId')"
+                  @click.stop="copyFileId"
+                />
                 <VListItem :title="t('coreDam.asset.slots.actions.download')" @click.stop="downloadFile" />
                 <VListItem
                   v-if="totalSlotCount > 1 && !item.main"

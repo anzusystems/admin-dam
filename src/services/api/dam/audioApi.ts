@@ -239,3 +239,48 @@ export const downloadLink = (audioId: DocId) => {
       })
   })
 }
+
+export const makePublic = (audioId: DocId, slug: string) => {
+  return new Promise<AudioFile>((resolve, reject) => {
+    const url = END_POINT + '/' + audioId + '/make-public'
+    damClient()
+      .patch(
+        url,
+        JSON.stringify({
+          slug,
+        })
+      )
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makePrivate = (audioId: DocId) => {
+  return new Promise<AudioFile>((resolve, reject) => {
+    const url = END_POINT + '/' + audioId + '/make-private'
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
