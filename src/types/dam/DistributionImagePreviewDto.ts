@@ -6,4 +6,5 @@ export interface DistributionImagePreviewDto extends UserAndTimeTrackingFields, 
   id: DocId
   service: string
   url: string
+  selected?: boolean
 }
