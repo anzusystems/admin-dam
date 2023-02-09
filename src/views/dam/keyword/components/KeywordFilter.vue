@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
 import AFilterString from '@/components/filter/AFilterString.vue'
-import AFilterBooleanGroup from '@/components/filter/AFilterBooleanGroup.vue'
+import { AFilterBooleanGroup } from '@anzusystems/common-admin'
 import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 
 const emit = defineEmits<{

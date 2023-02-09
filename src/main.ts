@@ -14,11 +14,11 @@ import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import Notification from '@kyvg/vue3-notification'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-// @ts-ignore
-// import VirtualScroller from 'vue-virtual-scroller'
-// import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { createCommonAdmin } from '@anzusystems/common-admin'
 
 loadFonts()
+// @ts-ignore
+createCommonAdmin({ i18nInstance: i18n })
 
 loadEnvConfig(() => {
   const app = createApp(App)

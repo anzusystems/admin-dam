@@ -148,6 +148,7 @@ slots:
     switchSlots: Switch with another slot
     remove: Remove
     download: Download
+    copyFileId: Copy file ID
   remove:
     descriptionBothOptions: Asset file is used in several slots. Do you want to unset file only from selected slot or remove file permanently?
     descriptionOnlyRemove: Do you want to permanently remove file from system?

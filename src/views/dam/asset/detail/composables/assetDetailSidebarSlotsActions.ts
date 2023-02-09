@@ -11,6 +11,7 @@ import {
 } from '@/services/api/dam/fileApi'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { useErrorHandler } from '@/composables/system/error'
+import { makePrivate, makePublic } from '@/services/api/dam/audioApi'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: AssetType) {
   const assetSlotsStore = useAssetSlotsStore()
@@ -45,6 +46,17 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
     try {
       assetSlotsStore.showLoader()
       await apiMakeMainFile(assetType, fileId, assetId)
+    } catch (e) {
+      handleError(e)
+    } finally {
+      getList()
+    }
+  }
+
+  const makeFilePrivate = async (fileId: DocId) => {
+    try {
+      assetSlotsStore.showLoader()
+      await makePrivate(fileId)
     } catch (e) {
       handleError(e)
     } finally {
@@ -163,5 +175,6 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
     makeMainFile,
     duplicateSlot,
     switchSlot,
+    makeFilePrivate,
   }
 }
