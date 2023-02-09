@@ -4,8 +4,18 @@ import { createLog } from '@/services/ErrorHandlerApiService'
 import { LogLevel } from '@/model/common/valueObject/LogLevel'
 import { messages } from '@/locales'
 import { envConfig } from '@/services/EnvConfigService'
+import { commonMessages } from '@anzusystems/common-admin'
 
 const DO_NOT_LOG_LOCALES = ['en']
+
+const finalMessages = {
+  // @ts-ignore
+  sk: { ...commonMessages.sk, ...messages.sk },
+  // @ts-ignore
+  en: { ...commonMessages.en, ...messages.en },
+  // @ts-ignore
+  xx: { ...messages.xx },
+}
 
 export const i18n = createI18n({
   globalInjection: false,
@@ -20,5 +30,5 @@ export const i18n = createI18n({
     createLog(`Missing ${locale} translation`, key, LogLevel.Warning)
   },
   fallbackWarn: false,
-  messages,
+  messages: finalMessages,
 })
