@@ -10,6 +10,7 @@ import type { FileDownloadLink, VideoFile } from '@/types/dam/File'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
+import type { DistributionImagePreviewDto } from '@/types/dam/DistributionImagePreviewDto'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -269,7 +270,7 @@ export const updatePreviewImage = (fileId: DocId, imagePreview: ImagePreviewNull
 }
 
 export const fetchVideoFileDistributionPreviewList = (fileId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<any[]>(
+  apiFetchList<DistributionImagePreviewDto[]>(
     damClient,
     END_POINT + '/:fileId/distribution-preview',
     { fileId },

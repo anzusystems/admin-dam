@@ -11,6 +11,7 @@ import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 import { useI18n } from 'vue-i18n'
 import { useErrorHandler } from '@/composables/system/error'
 import { useAlerts } from '@/composables/system/alerts'
+import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/dam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
 
 withDefaults(
   defineProps<{
@@ -24,6 +25,7 @@ const { t } = useI18n({ useScope: 'global' })
 const loading = ref(true)
 const saving = ref(false)
 const videoFile = ref<VideoFile | null>(null)
+const chooseImagePreviewFromDistributionDialog = ref(false)
 
 const assetDetailStore = useAssetDetailStore()
 const { handleError } = useErrorHandler()
@@ -62,26 +64,29 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn
-      color="success"
-      type="submit"
-      variant="flat"
-      class="ml-2"
-      :loading="saving"
-      :disabled="loading"
-      @click.stop="onSave"
-    >
-      {{ t('common.button.save') }}
-    </VBtn>
-  </AssetDetailSidebarActionsWrapper>
+  <AssetDetailSidebarActionsWrapper v-if="isActive"></AssetDetailSidebarActionsWrapper>
   <div class="px-3">
     <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
     <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
       <VProgressCircular indeterminate color="primary" />
     </div>
     <div v-else-if="videoFile">
-      <ImagePreview v-model="videoFile.imagePreview" show-actions />
+      <ImagePreview v-model="videoFile.imagePreview" show-actions @changed="onSave">
+        <template #actions-end>
+          <VBtn
+            variant="flat"
+            class="my-2 mr-2"
+            color="secondary"
+            @click.stop="chooseImagePreviewFromDistributionDialog = true"
+          >
+            Choose from distribution
+          </VBtn>
+        </template>
+      </ImagePreview>
+      <AssetDetailSidebarImagePreviewFromDistributionDialog
+        v-model="chooseImagePreviewFromDistributionDialog"
+        :file-id="videoFile.id"
+      />
     </div>
   </div>
 </template>
