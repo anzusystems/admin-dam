@@ -16,6 +16,7 @@ import AssetDetailSidebarSlots from '@/views/dam/asset/detail/components/slots/A
 import DistributionCategoryWidget from '@/views/dam/distributionCategory/components/DistributionCategoryWidget.vue'
 import { AssetFileProcessStatus } from '@/types/dam/File'
 import AssetDetailSidebarImagePreview from '@/views/dam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
+import AssetDetailSidebarVideoShow from '@/views/dam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -59,6 +60,7 @@ const typeHasDistributions = computed(() => {
           {{ t('coreDam.asset.detail.tabs.distribution') }}
         </VTab>
         <VTab v-if="isAudio" :value="AssetDetailTab.Podcast">{{ t('coreDam.asset.detail.tabs.podcast') }}</VTab>
+        <VTab v-if="isVideo" :value="AssetDetailTab.VideoShow">{{ t('coreDam.asset.detail.tabs.videoShow') }}</VTab>
         <VTab :value="AssetDetailTab.Slots">{{ t('coreDam.asset.detail.tabs.slots') }}</VTab>
         <VTab v-if="isVideo" :value="AssetDetailTab.ImagePreview">{{
           t('coreDam.asset.detail.tabs.imagePreview')
@@ -87,6 +89,9 @@ const typeHasDistributions = computed(() => {
         </div>
         <div v-if="isAudio && activeTab === AssetDetailTab.Podcast" class="py-2">
           <AssetDetailSidebarPodcast :asset-id="assetId" :is-active="activeTab === AssetDetailTab.Podcast" />
+        </div>
+        <div v-if="isVideo && activeTab === AssetDetailTab.VideoShow" class="py-2">
+          <AssetDetailSidebarVideoShow :asset-id="assetId" :is-active="activeTab === AssetDetailTab.VideoShow" />
         </div>
         <div v-if="activeTab === AssetDetailTab.Slots" class="py-2">
           <AssetDetailSidebarSlots
