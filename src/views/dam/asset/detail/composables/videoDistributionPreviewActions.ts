@@ -5,6 +5,7 @@ import type { FilterBag } from '@/types/Filter'
 import { fetchVideoFileDistributionPreviewList } from '@/services/api/dam/videoApi'
 import type { DocId } from '@anzusystems/common-admin'
 import type { DistributionImagePreviewDto } from '@/types/dam/DistributionImagePreviewDto'
+import { isNull } from '@anzusystems/common-admin'
 
 const { handleError } = useErrorHandler()
 
@@ -12,6 +13,7 @@ const listLoading = ref(false)
 
 export const useVideoDistributionPreviewListActions = () => {
   const listItems = ref<DistributionImagePreviewDto[]>([])
+  const lastSelectedItem = ref<DistributionImagePreviewDto | null>(null)
 
   const fetchList = async (fileId: DocId, pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
@@ -25,7 +27,24 @@ export const useVideoDistributionPreviewListActions = () => {
     }
   }
 
+  const toggleSelectedItem = (index: number) => {
+    if (listItems.value[index] && listItems.value[index].selected) {
+      listItems.value[index].selected = false
+      lastSelectedItem.value = null
+      return
+    }
+    if (!isNull(lastSelectedItem.value)) {
+      for (let i = 0; i < listItems.value.length; i++) {
+        listItems.value[i].selected = false
+      }
+    }
+    listItems.value[index].selected = true
+    lastSelectedItem.value = listItems.value[index]
+  }
+
   return {
+    lastSelectedItem,
+    toggleSelectedItem,
     listLoading,
     listItems,
     fetchList,
