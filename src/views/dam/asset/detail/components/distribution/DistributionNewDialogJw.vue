@@ -56,6 +56,7 @@ const filter = useDistributionFilter()
 const loadFormData = async () => {
   canDisplayForm.value = false
   if (!assetFileId.value) return
+  filter.distributionService.model = props.distributionServiceName
   existingDistributions.value = await fetchAssetFileDistributionList(assetFileId.value, pagination, filter)
   if (existingDistributions.value.length > 0) return
   const res = await prepareFormDataJwDistribution(assetFileId.value, props.distributionServiceName)
