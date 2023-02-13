@@ -199,7 +199,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.setActiveNext()
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()
-    const res = await fetchAsset(assetListStore.list[assetListStore.activeItemIndex].asset.id)
+    const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
+    replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    const res = await fetchAsset(newAssetId)
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
   }
@@ -208,7 +210,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.setActivePrev()
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()
-    const res = await fetchAsset(assetListStore.list[assetListStore.activeItemIndex].asset.id)
+    const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
+    replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    const res = await fetchAsset(newAssetId)
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
   }
