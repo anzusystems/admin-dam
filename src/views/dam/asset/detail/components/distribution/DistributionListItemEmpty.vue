@@ -14,5 +14,5 @@ withDefaults(
 </script>
 
 <template>
-  <div class="pa-4 pb-8 text-body-2">Unsupported distribution</div>
+  <div class="text-body-2">Unsupported distribution</div>
 </template>

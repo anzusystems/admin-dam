@@ -24,7 +24,10 @@ const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
 
 const handleValidationErrorMessage = (error: Error | any) => {
   const { t } = i18n.global || i18n
-  if (!error || !error.response || !error.response.data) return t('system.uploadErrors.unknownError')
+  if (!error || !error.response || !error.response.data) {
+    // @ts-ignore
+    return t('system.uploadErrors.unknownError')
+  }
   const data = error.response.data as ValidationResponseData
   const errorMessages: string[] = []
   for (const [key, values] of Object.entries(data.fields)) {
