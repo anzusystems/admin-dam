@@ -19,7 +19,6 @@ export const useVideoDistributionPreviewListActions = () => {
     listLoading.value = true
     try {
       listItems.value = await fetchVideoFileDistributionPreviewList(fileId, pagination, filterBag)
-      console.log(listItems.value)
     } catch (error) {
       handleError(error)
     } finally {
