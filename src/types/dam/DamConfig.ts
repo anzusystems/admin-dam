@@ -1,4 +1,5 @@
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 
 export enum DistributionServiceType {
   Youtube = 'youtubeDistribution',
@@ -11,7 +12,11 @@ export interface DamConfig {
     [key: string]: { title: string }
   }
   distributionServices: {
-    [key: string]: { title: string; type: DistributionServiceType }
+    [key: string]: {
+      title: string
+      type: DistributionServiceType
+      allowedRedistributeStatuses: Array<DistributionStatus>
+    }
   }
   colorSet: {
     [key: string]: string

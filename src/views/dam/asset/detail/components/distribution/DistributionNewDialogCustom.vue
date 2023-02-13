@@ -4,13 +4,12 @@ import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
 import { ENTITY } from '@/services/api/dam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { DocIdNullable } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { simpleCloneObject } from '@anzusystems/common-admin'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateDto } from '@/types/dam/Distribution'
-import { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
+import { DistributionCustomItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
@@ -20,13 +19,18 @@ import { usePagination } from '@/composables/system/pagination'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import { AssetSlot } from '@/types/dam/AssetSlot'
-import { createCustomDistribution, prepareFormDataCustomDistribution } from '@/services/api/dam/distributionCustomApi'
+import {
+  createCustomDistribution,
+  prepareFormDataCustomDistribution,
+  redistributeCustomDistribution,
+} from '@/services/api/dam/distributionCustomApi'
 import { useDistributionCustomFactory } from '@/model/dam/factory/DistributionCustom'
 import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,
 } from '@/services/DamConfigDistributionCustomFormService'
 import DistributionCustomMetadataForm from '@/views/dam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{
@@ -41,18 +45,17 @@ const emit = defineEmits<{
   (e: 'closeDialog', reloadList: boolean): void
 }>()
 
-const assetFileId = ref<DocIdNullable>(null)
-const existingDistributions = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
+const existingDistributions = ref<Array<DistributionCustomItem>>([])
 
 const { t } = useI18n({ useScope: 'global' })
 
 const { createCreateDto } = useDistributionCustomFactory()
 const distribution = ref<DistributionCustomCreateDto>(createCreateDto())
+const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
 
-const assetDetailStore = useAssetDetailStore()
 const pagination = usePagination()
 const filter = useDistributionFilter()
 
@@ -62,8 +65,20 @@ const loadFormData = async () => {
   if (!damConfigDistributionCustomFormElements.value[props.distributionServiceName]) return
   if (!assetFileId.value) return
   filter.distributionService.model = props.distributionServiceName
-  existingDistributions.value = await fetchAssetFileDistributionList(assetFileId.value, pagination, filter)
-  if (existingDistributions.value.length > 0) return
+  existingDistributions.value = await fetchAssetFileDistributionList<DistributionCustomItem>(
+    assetFileId.value,
+    pagination,
+    filter
+  )
+  if (!redistributeMode.value && existingDistributions.value.length > 0) return
+  if (redistributeMode.value && existingDistributions.value[0]) {
+    distribution.value = {
+      distributionService: props.distributionServiceName,
+      customData: simpleCloneObject(existingDistributions.value[0].customData),
+    }
+    canDisplayForm.value = true
+    return
+  }
   const res = await prepareFormDataCustomDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
     distributionService: props.distributionServiceName,
@@ -81,12 +96,32 @@ const { handleError } = useErrorHandler()
 
 const rules = computed(() => ({
   distribution: {
-    distributionService: '',
+    distributionService: {},
   },
 }))
 const v$ = useVuelidate(rules, { distribution })
 
-const submit = async () => {
+const submitRedistribute = async () => {
+  if (!existingDistributions.value[0]?.id) return
+  saving.value = true
+  v$.value.$touch()
+  if (v$.value.$invalid) {
+    showValidationError()
+    saving.value = false
+    return
+  }
+  try {
+    await redistributeCustomDistribution(existingDistributions.value[0].id, distribution.value)
+    showRecordWas('updated')
+    closeDialog(true)
+  } catch (error) {
+    handleError(error)
+  } finally {
+    saving.value = false
+  }
+}
+
+const submitCreateNew = async () => {
   if (!assetFileId.value) return
   saving.value = true
   v$.value.$touch()
@@ -106,6 +141,14 @@ const submit = async () => {
   }
 }
 
+const submit = () => {
+  if (redistributeMode.value) {
+    submitRedistribute()
+    return
+  }
+  submitCreateNew()
+}
+
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
   assetFileId.value = slot.assetFile.id
@@ -114,21 +157,18 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 }
 
 onMounted(async () => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile) {
-    assetFileId.value = assetDetailStore.asset.mainFile.id
-  }
   await loadFormData()
 })
 </script>
 
 <template>
   <VCardText>
-    <VRow class="mb-6">
+    <VRow v-if="!redistributeMode" class="mb-6">
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
     </VRow>
-    <div v-if="existingDistributions.length > 0">
+    <div v-if="!redistributeMode && existingDistributions.length > 0">
       <DistributionListItem v-for="item in existingDistributions" :key="item.id" :item="item" :asset-type="assetType" />
     </div>
     <div v-else-if="canDisplayForm" class="pa-4">
@@ -146,7 +186,8 @@ onMounted(async () => {
   <VCardActions>
     <VSpacer />
     <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
-      {{ t('common.button.add') }}
+      <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
+      <span v-else>{{ t('common.button.add') }}</span>
     </VBtn>
     <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
   </VCardActions>
