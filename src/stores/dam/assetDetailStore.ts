@@ -4,7 +4,7 @@ import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { getValues } from '@/utils/object'
 import { loadLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import { loadLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
-import type { DocIdNullable } from '@anzusystems/common-admin'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 
 interface State {
   asset: AssetDetailItemDto | null
@@ -13,6 +13,8 @@ interface State {
   view: 'list' | 'queue'
   metadataAreTouched: boolean
   directDetailLoad: boolean
+  lastFetched: number
+  lastFetchedId: DocId
 }
 
 export const useAssetDetailStore = defineStore('damAssetDetailStore', {
@@ -23,8 +25,14 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     view: 'list',
     metadataAreTouched: false,
     directDetailLoad: false,
+    lastFetched: Date.now(),
+    lastFetchedId: '',
   }),
   actions: {
+    updateLastFetched(id: DocId) {
+      this.lastFetchedId = id
+      this.lastFetched = Date.now()
+    },
     showDetail() {
       this.detail = true
     },
