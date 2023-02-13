@@ -66,6 +66,11 @@ export interface DistributionJwCreateDto {
   distributionService: DistributionServiceName
 }
 
+export interface DistributionCustomCreateDto {
+  customData: Record<string, any>
+  distributionService: DistributionServiceName
+}
+
 export interface DistributionYoutubeCreateDto {
   publishAt: DatetimeUTCNullable
   texts: TextsYoutube
@@ -94,5 +99,6 @@ export interface DistributionYoutubeItem extends DistributionItem {
 
 //todo
 export interface DistributionCustomItem extends DistributionItem {
+  customData: Record<string, any>
   _resourceName: DistributionServiceResourceName.Custom
 }

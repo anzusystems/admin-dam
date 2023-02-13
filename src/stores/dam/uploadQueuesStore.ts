@@ -6,6 +6,7 @@ import { fetchAsset, fetchAssetListByIds } from '@/services/api/dam/assetApi'
 import type { UploadQueue, UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus, QueueItemType } from '@/types/dam/UploadQueue'
 import type { AssetFileNullable } from '@/types/dam/File'
+import { LinkType } from '@/types/dam/File'
 import type { AssetSearchListItemDto } from '@/types/dam/Asset'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { getAssetTypeByMimeType } from '@/services/upload/mimeTypeService'
@@ -307,6 +308,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             requestedHeight: 0,
             url: asset.url,
             title: '',
+            type: LinkType.Image,
           },
           progress: {
             remainingTime: null,

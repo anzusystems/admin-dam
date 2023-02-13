@@ -59,6 +59,12 @@ interface FileAttributes {
   failReason: string
 }
 
+export enum LinkType {
+  Image = 'image',
+  Audio = 'audio',
+  Default = Image,
+}
+
 export interface Link {
   width: number
   height: number
@@ -66,7 +72,7 @@ export interface Link {
   requestedHeight: number
   url: string
   title: string
-  type: string
+  type: LinkType
 }
 
 export type Links = Record<'image_list' | 'image_detail' | 'audio', Link> | Record<string, never>
