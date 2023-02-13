@@ -158,3 +158,6 @@ slots:
   duplicate:
     to: Duplicate to slot
     onlyToEmptyWarning: Slot file can be duplicated only to empty slot
+  switch:
+    to: Switch with slot
+    noTargetSlots: No target slots available
