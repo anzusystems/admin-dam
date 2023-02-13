@@ -45,6 +45,10 @@ const initLoad = async () => {
   loading.value = false
 }
 
+const afterSuccessfulConfirmFromDistribution = () => {
+  initLoad()
+}
+
 const onSave = async () => {
   if (!videoFile.value) return
   saving.value = true
@@ -88,6 +92,7 @@ onMounted(async () => {
         v-if="chooseImagePreviewFromDistributionDialog"
         v-model="chooseImagePreviewFromDistributionDialog"
         :file-id="videoFile.id"
+        @after-successful-confirm="afterSuccessfulConfirmFromDistribution"
       />
     </div>
   </div>
