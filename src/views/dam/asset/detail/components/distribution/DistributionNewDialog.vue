@@ -6,10 +6,11 @@ import DistributionNewDialogYoutube from '@/views/dam/asset/detail/components/di
 import DistributionNewDialogJw from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
-import { type DistributionServiceName, DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import { type DistributionServiceName, DistributionServiceType } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
 import { isNull } from '@/utils/common'
 import { useI18n } from 'vue-i18n'
+import { damConfig } from '@/services/DamConfigService'
 
 const props = withDefaults(
   defineProps<{
@@ -50,18 +51,21 @@ const activeConfig = computed(() => {
   return serviceRequirements.value[activeDistributionName.value]
 })
 
-const activeDistributionResource = computed(() => {
-  if (isNull(activeConfig.value)) return null
-  return activeConfig.value.distributionService.resourceName
+const activeDistributionType = computed(() => {
+  if (isNull(activeDistributionName.value)) return null
+  if (damConfig.distributionServices[activeDistributionName.value]) {
+    return damConfig.distributionServices[activeDistributionName.value].type
+  }
+  return null
 })
 
 const componentComputed = computed(() => {
-  switch (activeDistributionResource.value) {
-    case DistributionServiceResourceName.Youtube:
+  switch (activeDistributionType.value) {
+    case DistributionServiceType.Youtube:
       return DistributionNewDialogYoutube
-    case DistributionServiceResourceName.Jw:
+    case DistributionServiceType.Jw:
       return DistributionNewDialogJw
-    case DistributionServiceResourceName.Custom:
+    case DistributionServiceType.Custom:
       return DistributionNewDialogCustom
     default:
       return DistributionNewDialogEmpty

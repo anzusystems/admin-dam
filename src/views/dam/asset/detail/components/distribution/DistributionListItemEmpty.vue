@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
-import type { DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import { DistributionServiceType } from '@/types/dam/DamConfig'
 
 withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
     assetType: AssetType
-    resourceName: DistributionServiceResourceName
+    distributionType: DistributionServiceType | null
   }>(),
   {}
 )
