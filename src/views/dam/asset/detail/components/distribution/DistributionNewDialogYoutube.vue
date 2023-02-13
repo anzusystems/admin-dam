@@ -2,13 +2,13 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
-import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { maxLength, minLength, required, requiredIf } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionYoutubeCreateDto } from '@/types/dam/Distribution'
+import { DistributionYoutubeItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
@@ -17,6 +17,7 @@ import {
   ENTITY,
   getYoutubeAuthUrl,
   prepareFormDataYoutubeDistribution,
+  redistributeYoutubeDistribution,
 } from '@/services/api/dam/distributionYoutubeApi'
 import { useDistributionYoutubeFactory } from '@/model/dam/factory/DistributionYoutube'
 import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/services/api/dam/distributionApi'
@@ -33,11 +34,11 @@ import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
 import ATextarea from '@/components/form/ATextarea.vue'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
 import { usePagination } from '@/composables/system/pagination'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import { AssetSlot } from '@/types/dam/AssetSlot'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
+import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{
@@ -52,20 +53,19 @@ const emit = defineEmits<{
   (e: 'closeDialog', reloadList: boolean): void
 }>()
 
-const assetFileId = ref<DocIdNullable>(null)
-const existingDistributions = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
+const existingDistributions = ref<Array<DistributionYoutubeItem>>([])
 
 const { t } = useI18n({ useScope: 'global' })
 
 const { createCreateDto } = useDistributionYoutubeFactory()
 const distribution = ref<DistributionYoutubeCreateDto>(createCreateDto())
+const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
 
 const authUrl = ref('')
 
-const assetDetailStore = useAssetDetailStore()
 const pagination = usePagination()
 const filter = useDistributionFilter()
 const distributionListStore = useDistributionListStore()
@@ -74,8 +74,33 @@ const loadFormData = async () => {
   canDisplayForm.value = false
   if (!assetFileId.value) return
   filter.distributionService.model = props.distributionServiceName
-  existingDistributions.value = await fetchAssetFileDistributionList(assetFileId.value, pagination, filter)
-  if (existingDistributions.value.length > 0) return
+  existingDistributions.value = await fetchAssetFileDistributionList<DistributionYoutubeItem>(
+    assetFileId.value,
+    pagination,
+    filter
+  )
+  if (!redistributeMode.value && existingDistributions.value.length > 0) return
+  if (redistributeMode.value && existingDistributions.value[0]) {
+    distribution.value = {
+      publishAt: existingDistributions.value[0].publishAt,
+      distributionService: props.distributionServiceName,
+      texts: {
+        title: existingDistributions.value[0].texts.title,
+        description: existingDistributions.value[0].texts.description,
+        keywords: existingDistributions.value[0].texts.keywords,
+      },
+      privacy: existingDistributions.value[0].privacy,
+      language: existingDistributions.value[0].language,
+      playlist: existingDistributions.value[0].playlist,
+      flags: {
+        embeddable: existingDistributions.value[0].flags.embeddable,
+        forKids: existingDistributions.value[0].flags.forKids,
+        notifySubscribers: existingDistributions.value[0].flags.notifySubscribers,
+      },
+    }
+    canDisplayForm.value = true
+    return
+  }
   const res = await prepareFormDataYoutubeDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
     publishAt: res.publishAt,
@@ -122,6 +147,7 @@ const rules = computed(() => ({
     publishAt: {
       required: requiredIf(distribution.value.privacy === DistributionYoutubePrivacy.Dynamic),
     },
+    distributionService: {},
   },
 }))
 const v$ = useVuelidate(rules, { distribution })
@@ -140,7 +166,27 @@ const checkAuthorized = async () => {
   // YouTube always requires auth for now
 }
 
-const submit = async () => {
+const submitRedistribute = async () => {
+  if (!existingDistributions.value[0]?.id) return
+  saving.value = true
+  v$.value.$touch()
+  if (v$.value.$invalid) {
+    showValidationError()
+    saving.value = false
+    return
+  }
+  try {
+    await redistributeYoutubeDistribution(existingDistributions.value[0].id, distribution.value)
+    showRecordWas('updated')
+    closeDialog(true)
+  } catch (error) {
+    handleError(error)
+  } finally {
+    saving.value = false
+  }
+}
+
+const submitCreateNew = async () => {
   if (!assetFileId.value) return
   saving.value = true
   v$.value.$touch()
@@ -158,6 +204,14 @@ const submit = async () => {
   } finally {
     saving.value = false
   }
+}
+
+const submit = () => {
+  if (redistributeMode.value) {
+    submitRedistribute()
+    return
+  }
+  submitCreateNew()
 }
 
 const distributionAuthStatus = computed(() => {
@@ -180,9 +234,6 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 }
 
 onMounted(async () => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile) {
-    assetFileId.value = assetDetailStore.asset.mainFile.id
-  }
   distributionListStore.setAuthStatus(props.distributionServiceName)
   await checkAuthorized()
 })
@@ -194,13 +245,13 @@ onUnmounted(async () => {
 
 <template>
   <VCardText>
-    <VRow v-if="distributionAuthStatus === DistributionAuthStatus.Success" class="mb-6">
+    <VRow v-if="!redistributeMode && distributionAuthStatus === DistributionAuthStatus.Success" class="mb-6">
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
     </VRow>
     <div>
-      <div v-if="existingDistributions.length > 0">
+      <div v-if="!redistributeMode && existingDistributions.length > 0">
         <DistributionListItem
           v-for="item in existingDistributions"
           :key="item.id"
@@ -323,7 +374,8 @@ onUnmounted(async () => {
   <VCardActions>
     <VSpacer />
     <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
-      {{ t('common.button.add') }}
+      <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
+      <span v-else>{{ t('common.button.add') }}</span>
     </VBtn>
     <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
   </VCardActions>

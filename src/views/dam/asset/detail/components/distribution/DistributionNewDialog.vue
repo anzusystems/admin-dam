@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import DistributionNewDialogYoutube from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
-import { type DistributionServiceName, DistributionServiceType } from '@/types/dam/DamConfig'
+import { DistributionServiceType } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
 import { isNull } from '@/utils/common'
 import { useI18n } from 'vue-i18n'
 import { damConfig } from '@/services/DamConfigService'
+import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{
@@ -35,7 +36,7 @@ const value = computed({
 
 const { t } = useI18n({ useScope: 'global' })
 
-const activeDistributionName = ref<DistributionServiceName | null>(null)
+const { activeDistributionName, showTabs, redistributeMode } = useAssetDetailDistributionDialog()
 
 const closeDialog = (reloadList = false) => {
   value.value = false
@@ -78,7 +79,8 @@ const componentComputed = computed(() => {
     <VCard v-if="value">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('coreDam.distribution.common.addTitle') }}</div>
+          <div v-if="redistributeMode" class="text-h6">{{ t('coreDam.distribution.common.redistributeTitle') }}</div>
+          <div v-else class="text-h6">{{ t('coreDam.distribution.common.addTitle') }}</div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -92,7 +94,7 @@ const componentComputed = computed(() => {
           />
         </VToolbarItems>
       </VToolbar>
-      <div>
+      <div v-if="showTabs">
         <VTabs v-model="activeDistributionName" density="compact" class="sidebar-info__tabs">
           <VTab v-for="(requirement, key) in serviceRequirements" :key="key" :value="key">{{ requirement.title }}</VTab>
         </VTabs>

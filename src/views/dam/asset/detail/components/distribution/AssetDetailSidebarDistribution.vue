@@ -11,6 +11,7 @@ import DistributionListItem from '@/views/dam/asset/detail/components/distributi
 import DistributionNewDialog from '@/views/dam/asset/detail/components/distribution/DistributionNewDialog.vue'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import { useI18n } from 'vue-i18n'
+import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{
@@ -29,7 +30,7 @@ const filter = useDistributionFilter()
 
 const { showPagination } = usePaginationAutoHide(pagination)
 
-const dialogNew = ref(false)
+const { dialogNew, openNew, dialogKey } = useAssetDetailDistributionDialog()
 
 const getList = async () => {
   distributionListStore.showLoader()
@@ -42,8 +43,8 @@ const reloadList = () => {
   getList()
 }
 
-const addNew = async () => {
-  dialogNew.value = true
+const addNew = () => {
+  openNew()
 }
 
 onMounted(async () => {
@@ -65,7 +66,7 @@ onMounted(async () => {
     <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-caption">
       {{ t('coreDam.distribution.common.noEntries') }}
     </div>
-    <div v-else>
+    <div v-else class="mx-4">
       <DistributionListItem
         v-for="item in distributionListStore.list"
         :key="item.id"
@@ -74,6 +75,12 @@ onMounted(async () => {
       />
       <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
     </div>
-    <DistributionNewDialog v-model="dialogNew" :asset-type="assetType" :asset-id="assetId" @reload-list="reloadList" />
+    <DistributionNewDialog
+      :key="dialogKey"
+      v-model="dialogNew"
+      :asset-type="assetType"
+      :asset-id="assetId"
+      @reload-list="reloadList"
+    />
   </div>
 </template>
