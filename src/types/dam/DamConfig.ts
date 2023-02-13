@@ -40,7 +40,7 @@ export type DistributionServiceName = string
 export enum DistributionServiceResourceName {
   Youtube = 'youtubeDistribution',
   Jw = 'jwDistribution',
-  Custom = 'customDistribution',
+  Custom = 'distribution',
 }
 
 export type ExternalProviderAssetName = string
