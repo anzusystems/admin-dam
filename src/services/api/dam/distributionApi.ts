@@ -13,7 +13,7 @@ import type {
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
 
 const END_POINT = '/adm/v1/distribution'
-const ENTITY = 'distribution'
+export const ENTITY = 'distribution'
 
 export const fetchDistribution = (id: DocId) =>
   apiFetchOne<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>(

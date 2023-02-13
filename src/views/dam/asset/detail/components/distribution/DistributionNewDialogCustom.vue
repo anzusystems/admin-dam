@@ -61,6 +61,7 @@ const loadFormData = async () => {
   await loadDamConfigDistributionCustomFormElements(props.distributionServiceName)
   if (!damConfigDistributionCustomFormElements.value[props.distributionServiceName]) return
   if (!assetFileId.value) return
+  filter.distributionService.model = props.distributionServiceName
   existingDistributions.value = await fetchAssetFileDistributionList(assetFileId.value, pagination, filter)
   if (existingDistributions.value.length > 0) return
   const res = await prepareFormDataCustomDistribution(assetFileId.value, props.distributionServiceName)
