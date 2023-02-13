@@ -77,10 +77,10 @@ const onSwitch = () => {
           {{ fileTitle }}
         </div>
         <div v-if="targetOptions.length === 0" class="my-2 text-warning">
-          {{ t('coreDam.asset.slots.duplicate.onlyToEmptyWarning') }}
+          {{ t('coreDam.asset.slots.switch.noTargetSlots') }}
         </div>
         <div v-else class="my-2">
-          <VSelect v-model="targetSlot" :label="t('coreDam.asset.slots.duplicate.to')" :items="targetOptions" />
+          <VSelect v-model="targetSlot" :label="t('coreDam.asset.slots.switch.to')" :items="targetOptions" />
         </div>
       </VCardText>
       <VCardActions>
