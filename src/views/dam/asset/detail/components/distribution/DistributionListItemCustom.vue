@@ -25,7 +25,7 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div class="pa-4 pb-8 text-body-2">
+  <div class="text-body-2">
     <VRow>
       <VCol>
         <div class="font-weight-bold">{{ serviceRequirements.title }}</div>

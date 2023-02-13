@@ -8,6 +8,7 @@ import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
 import { DistributionServiceType } from '@/types/dam/DamConfig'
 import { damConfig } from '@/services/DamConfigService'
+import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{
@@ -24,6 +25,12 @@ const distributionType = computed(() => {
   return null
 })
 
+const showRedistribute = computed(() => {
+  return damConfig.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
+    props.item.status
+  )
+})
+
 const componentComputed = computed(() => {
   switch (distributionType.value) {
     case DistributionServiceType.Jw:
@@ -36,8 +43,15 @@ const componentComputed = computed(() => {
       return DistributionListItemEmpty
   }
 })
+
+const { openRedistribute } = useAssetDetailDistributionDialog()
 </script>
 
 <template>
-  <component :is="componentComputed" :item="item" :asset-type="assetType" :distribution-type="distributionType" />
+  <div class="d-flex flex-column mb-8">
+    <component :is="componentComputed" :item="item" :asset-type="assetType" :distribution-type="distributionType" />
+    <div v-if="showRedistribute">
+      <VBtn variant="flat" color="secondary" size="small" @click.stop="openRedistribute(item)">Redistribute</VBtn>
+    </div>
+  </div>
 </template>

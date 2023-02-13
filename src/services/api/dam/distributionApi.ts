@@ -24,8 +24,12 @@ export const fetchDistribution = (id: DocId) =>
     ENTITY
   )
 
-export const fetchAssetDistributionList = (assetId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>(
+export const fetchAssetDistributionList = <T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>(
+  assetId: DocId,
+  pagination: Pagination,
+  filterBag: FilterBag
+) =>
+  apiFetchList<Array<T>>(
     damClient,
     END_POINT + '/asset/:assetId',
     { assetId },
@@ -35,8 +39,14 @@ export const fetchAssetDistributionList = (assetId: DocId, pagination: Paginatio
     ENTITY
   )
 
-export const fetchAssetFileDistributionList = (assetFileId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>(
+export const fetchAssetFileDistributionList = <
+  T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
+>(
+  assetFileId: DocId,
+  pagination: Pagination,
+  filterBag: FilterBag
+) =>
+  apiFetchList<Array<T>>(
     damClient,
     END_POINT + '/asset-file/:assetFileId',
     { assetFileId },
