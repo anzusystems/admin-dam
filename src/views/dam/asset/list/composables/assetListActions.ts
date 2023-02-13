@@ -1,6 +1,6 @@
 import { usePagination } from '@/composables/system/pagination'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
-import { fetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/dam/assetApi'
+import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/dam/assetApi'
 import { useAssetListFilter } from '@/model/dam/filter/AssetFilter'
 import { storeToRefs } from 'pinia'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
@@ -23,6 +23,8 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { replaceBrowserHistoryURLByRouter } from '@/utils/history'
 
+const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
+
 const { handleError } = useErrorHandler()
 const { showWarning } = useAlerts()
 
@@ -44,6 +46,18 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
   const { maxSelectedItems } = useBetaTestFeatures()
+
+  const checkQuickDetailReFetch = (assetId: DocId) => {
+    return (
+      assetDetailStore.lastFetchedId === assetId &&
+      Date.now() - assetDetailStore.lastFetched <= DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME
+    )
+  }
+
+  const fetchAsset = async (assetId: DocId) => {
+    assetDetailStore.updateLastFetched(assetId)
+    return await apiFetchAsset(assetId)
+  }
 
   const fetchAssetList = async () => {
     pagination.page = 1
@@ -124,6 +138,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
     replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: data.assetId } })
+    if (checkQuickDetailReFetch(data.assetId)) {
+      assetDetailStore.hideLoader()
+      return
+    }
     const res = await fetchAsset(data.assetId)
     assetDetailStore.setAsset(res)
     if (assetDetailStore.asset?.createdBy) {
@@ -140,6 +158,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     if (sidebarRight) sidebarRight.value = true
+    if (checkQuickDetailReFetch(data.assetId)) {
+      assetDetailStore.hideLoader()
+      return
+    }
     const res = await fetchAsset(data.assetId)
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
@@ -201,6 +223,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.showLoader()
     const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
     replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    if (checkQuickDetailReFetch(newAssetId)) {
+      assetDetailStore.hideLoader()
+      return
+    }
     const res = await fetchAsset(newAssetId)
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
@@ -212,6 +238,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.showLoader()
     const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
     replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    if (checkQuickDetailReFetch(newAssetId)) {
+      assetDetailStore.hideLoader()
+      return
+    }
     const res = await fetchAsset(newAssetId)
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
