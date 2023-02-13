@@ -5,11 +5,8 @@ import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 export enum AssetFileProcessStatus {
   Uploading = 'uploading', // file entity created and ready to receive chunks
   Uploaded = 'uploaded', // all chunks were sent
-  Downloading = 'downloading', // file is uploaded from external provider
-  Storing = 'storing', // validate size|mime and store final file to disk
   Stored = 'stored', // File is stored and ready to processing
   Duplicate = 'duplicate', // AssetFile is duplicate of another asset
-  Processing = 'processing', // processing file attributes (length, size, colors, ...)
   Processed = 'processed', // file processed and ready to serve
   Failed = 'failed',
 }

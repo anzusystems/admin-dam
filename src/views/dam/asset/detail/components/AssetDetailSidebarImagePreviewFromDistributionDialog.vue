@@ -19,6 +19,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: boolean): void
+  (e: 'afterSuccessfulConfirm'): void
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
@@ -52,6 +53,7 @@ const onConfirm = async () => {
     await setVideoFileDistributionPreview(props.fileId, lastSelectedItem.value.id)
     closeDialog()
     showRecordWas('updated')
+    emit('afterSuccessfulConfirm')
   } catch (e) {
     handleError(e)
   } finally {

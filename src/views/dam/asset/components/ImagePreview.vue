@@ -6,6 +6,7 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 import type { ImageFile } from '@/types/dam/File'
 import { fetchImageFile } from '@/services/api/dam/imageApi'
+import { AssetFileProcessStatus } from '@/types/dam/File'
 
 const props = withDefaults(
   defineProps<{
@@ -50,6 +51,11 @@ const src = computed(() => {
   return placeholder16x9
 })
 
+const showIsProcessing = computed(() => {
+  if (imageFile.value && imageFile.value.fileAttributes?.status !== AssetFileProcessStatus.Processed) return true
+  return false
+})
+
 const unassignImage = () => {
   imagePreviewModel.value = null
   imageFile.value = null
@@ -79,49 +85,61 @@ watch(
 </script>
 
 <template>
-  <VImg v-if="loading" :width="width" :height="height" class="asset-image asset-image--loading-bg">
-    <template #placeholder />
-    <template #default>
-      <div class="d-flex w-100 h-100 align-center justify-center">
-        <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />
-      </div>
-    </template>
-  </VImg>
-  <VImg v-else :width="width" :height="width" :src="src" contain />
-  <div v-if="showActions">
-    <slot name="actions-start" />
-    <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">Replace by image file ID</VBtn>
-    <VBtn v-if="imagePreviewModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="unassignImage">
-      Unassign image
-    </VBtn>
-    <slot name="actions-end" />
-  </div>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
-    <VCard v-if="dialog" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">Replace by image file ID</div>
+  <div v-if="showIsProcessing" class="text-caption">Image is processing, please check again later.</div>
+  <div v-else>
+    <VImg v-if="loading" :width="width" :height="height" class="asset-image asset-image--loading-bg">
+      <template #placeholder />
+      <template #default>
+        <div class="d-flex w-100 h-100 align-center justify-center">
+          <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />
         </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
-      <VCardText>
-        <VTextField v-model="newFileId" label="Image File ID" />
-      </VCardText>
-      <VCardActions>
-        <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel"> Cancel </VBtn>
-        <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm"> Confirm </VBtn>
-      </VCardActions>
-    </VCard>
-  </VDialog>
+      </template>
+    </VImg>
+    <VImg v-else :width="width" :height="width" :src="src" contain />
+    <div v-if="showActions">
+      <slot name="actions-start" />
+      <VBtn variant="flat" class="my-2 mr-2" color="secondary" size="small" @click.stop="dialog = true"
+        >Replace by image file ID</VBtn
+      >
+      <VBtn
+        v-if="imagePreviewModel !== null"
+        variant="flat"
+        class="my-2 mr-2"
+        color="secondary"
+        size="small"
+        @click.stop="unassignImage"
+      >
+        Unassign image
+      </VBtn>
+      <slot name="actions-end" />
+    </div>
+    <VDialog v-model="dialog" persistent :width="500" no-click-animation>
+      <VCard v-if="dialog" data-cy="delete-panel">
+        <VToolbar class="pl-2" density="compact">
+          <div class="d-block pl-0 w-100">
+            <div class="text-h6">Replace by image file ID</div>
+          </div>
+          <VSpacer />
+          <VToolbarItems>
+            <VBtn
+              class="ml-2"
+              icon="mdi-close"
+              size="small"
+              variant="text"
+              data-cy="button-close"
+              @click.stop="onCancel"
+            />
+          </VToolbarItems>
+        </VToolbar>
+        <VCardText>
+          <VTextField v-model="newFileId" label="Image File ID" />
+        </VCardText>
+        <VCardActions>
+          <VSpacer />
+          <VBtn text data-cy="button-cancel" @click.stop="onCancel"> Cancel </VBtn>
+          <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm"> Confirm </VBtn>
+        </VCardActions>
+      </VCard>
+    </VDialog>
+  </div>
 </template>
