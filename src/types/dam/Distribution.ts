@@ -1,4 +1,4 @@
-import type { DistributionServiceName, DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import type { DistributionServiceName } from '@/types/dam/DamConfig'
 import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
 import type { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 import type { DistributionYoutubePrivacy } from '@/model/dam/valueObject/DistributionYoutubePrivacy'
@@ -59,6 +59,7 @@ export interface DistributionItem {
   distributionService: DistributionServiceName
   status: DistributionStatus
   failReason: DistributionFailReason
+  _resourceName: string
 }
 
 export interface DistributionJwCreateDto {
@@ -83,7 +84,6 @@ export interface DistributionYoutubeCreateDto {
 
 export interface DistributionJwItem extends DistributionItem {
   texts: TextsJw
-  _resourceName: DistributionServiceResourceName.Jw
 }
 
 export interface DistributionYoutubeItem extends DistributionItem {
@@ -94,11 +94,8 @@ export interface DistributionYoutubeItem extends DistributionItem {
   privacy: DistributionYoutubePrivacy
   flags: FlagsYoutube
   texts: TextsYoutube
-  _resourceName: DistributionServiceResourceName.Youtube
 }
 
-//todo
 export interface DistributionCustomItem extends DistributionItem {
   customData: Record<string, any>
-  _resourceName: DistributionServiceResourceName.Custom
 }
