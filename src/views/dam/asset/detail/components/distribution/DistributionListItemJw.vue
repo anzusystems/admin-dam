@@ -4,15 +4,15 @@ import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import DistributionStatusChip from '@/views/dam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
-import type { DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
-import type { DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
+import { DistributionServiceType } from '@/types/dam/DamConfig'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    item: DistributionJwItem | DistributionYoutubeItem
+    item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
     assetType: AssetType
-    resourceName: DistributionServiceResourceName
+    distributionType: DistributionServiceType | null
   }>(),
   {}
 )

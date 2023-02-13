@@ -1,11 +1,17 @@
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 
+export enum DistributionServiceType {
+  Youtube = 'youtubeDistribution',
+  Jw = 'jwDistribution',
+  Custom = 'customDistribution',
+}
+
 export interface DamConfig {
   assetExternalProviders: {
     [key: string]: { title: string }
   }
   distributionServices: {
-    [key: string]: { title: string }
+    [key: string]: { title: string; type: DistributionServiceType }
   }
   colorSet: {
     [key: string]: string
@@ -37,12 +43,6 @@ export enum UserAuthType {
 
 export type DistributionServiceName = string
 
-export enum DistributionServiceResourceName {
-  Youtube = 'youtubeDistribution',
-  Jw = 'jwDistribution',
-  Custom = 'customDistribution',
-}
-
 export type ExternalProviderAssetName = string
 
 export type ExternalProviderAssetConfig = Record<ExternalProviderAssetName, { listingLimit: number; title: string }>
@@ -68,12 +68,9 @@ export enum DistributionRequirementStrategy {
 export interface DistributionRequirementsConfig {
   title: string
   requiredAuth: boolean
-  blockedBy: Array<DistributionServiceResourceName>
+  blockedBy: Array<DistributionServiceName>
   categorySelect: DistributionRequirementsCategorySelectConfig
   strategy: DistributionRequirementStrategy
-  distributionService: {
-    resourceName: DistributionServiceResourceName
-  }
 }
 
 export interface DistributionConfig {

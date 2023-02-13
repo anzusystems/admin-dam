@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import type { DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
-import type { DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
+import { DistributionServiceType } from '@/types/dam/DamConfig'
 
 withDefaults(
   defineProps<{
-    item: DistributionJwItem | DistributionYoutubeItem
+    item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
     assetType: AssetType
-    resourceName: DistributionServiceResourceName
+    distributionType: DistributionServiceType | null
   }>(),
   {}
 )
 </script>
 
 <template>
-  <div />
+  <div class="pa-4 pb-8 text-body-2">Unsupported distribution</div>
 </template>
