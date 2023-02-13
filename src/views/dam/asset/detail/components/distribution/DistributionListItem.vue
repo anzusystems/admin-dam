@@ -6,7 +6,8 @@ import DistributionListItemCustom from '@/views/dam/asset/detail/components/dist
 import DistributionListItemEmpty from '@/views/dam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
-import { DistributionServiceResourceName } from '@/types/dam/DamConfig'
+import { DistributionServiceType } from '@/types/dam/DamConfig'
+import { damConfig } from '@/services/DamConfigService'
 
 const props = withDefaults(
   defineProps<{
@@ -16,13 +17,20 @@ const props = withDefaults(
   {}
 )
 
+const distributionType = computed(() => {
+  if (damConfig.distributionServices[props.item.distributionService]) {
+    return damConfig.distributionServices[props.item.distributionService].type
+  }
+  return null
+})
+
 const componentComputed = computed(() => {
-  switch (props.item._resourceName) {
-    case DistributionServiceResourceName.Jw:
+  switch (distributionType.value) {
+    case DistributionServiceType.Jw:
       return DistributionListItemJw
-    case DistributionServiceResourceName.Youtube:
+    case DistributionServiceType.Youtube:
       return DistributionListItemYoutube
-    case DistributionServiceResourceName.Custom:
+    case DistributionServiceType.Custom:
       return DistributionListItemCustom
     default:
       return DistributionListItemEmpty
@@ -31,5 +39,5 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <component :is="componentComputed" :item="item" :asset-type="assetType" :resource-name="item._resourceName" />
+  <component :is="componentComputed" :item="item" :asset-type="assetType" :distribution-type="distributionType" />
 </template>
