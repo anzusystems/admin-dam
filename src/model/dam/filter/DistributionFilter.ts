@@ -10,5 +10,11 @@ export function useDistributionFilter() {
     distributionService: {
       ...makeFilter({ name: 'distributionService' }),
     },
+    distributionServicesIn: {
+      ...makeFilter({ name: 'distributionServicesIn', field: 'distributionService', variant: 'in', default: [] }),
+    },
+    distributionServicesNotIn: {
+      ...makeFilter({ name: 'distributionServicesNotIn', field: 'distributionService', variant: 'notIn', default: [] }),
+    },
   })
 }

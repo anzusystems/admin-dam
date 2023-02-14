@@ -39,6 +39,7 @@ import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import { AssetSlot } from '@/types/dam/AssetSlot'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionBlockedBy from '@/views/dam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -97,6 +98,7 @@ const loadFormData = async () => {
         forKids: existingDistributions.value[0].flags.forKids,
         notifySubscribers: existingDistributions.value[0].flags.notifySubscribers,
       },
+      blockedBy: existingDistributions.value[0].blockedBy,
     }
     canDisplayForm.value = true
     return
@@ -118,6 +120,7 @@ const loadFormData = async () => {
       forKids: res.flags.forKids,
       notifySubscribers: res.flags.notifySubscribers,
     },
+    blockedBy: res.blockedBy,
   }
   canDisplayForm.value = true
 }
@@ -346,6 +349,17 @@ onUnmounted(async () => {
                   />
                 </VCol>
               </VRow>
+            </VCol>
+          </VRow>
+          <VRow class="mb-2">
+            <VCol>
+              <DistributionBlockedBy
+                v-model="distribution.blockedBy"
+                :config="config"
+                :distribution-service-name="distributionServiceName"
+                :asset-file-id="assetFileId"
+                :asset-type="assetType"
+              />
             </VCol>
           </VRow>
         </ASystemEntityScope>
