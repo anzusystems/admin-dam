@@ -59,17 +59,20 @@ export interface DistributionItem {
   distributionService: DistributionServiceName
   status: DistributionStatus
   failReason: DistributionFailReason
+  blockedBy: DocId[]
   _resourceName: string
 }
 
 export interface DistributionJwCreateDto {
   texts: TextsJw
   distributionService: DistributionServiceName
+  blockedBy: DocId[]
 }
 
 export interface DistributionCustomCreateDto {
   customData: Record<string, any>
   distributionService: DistributionServiceName
+  blockedBy: DocId[]
 }
 
 export interface DistributionYoutubeCreateDto {
@@ -80,6 +83,7 @@ export interface DistributionYoutubeCreateDto {
   language: string
   playlist: string
   flags: FlagsYoutube
+  blockedBy: DocId[]
 }
 
 export interface DistributionJwItem extends DistributionItem {

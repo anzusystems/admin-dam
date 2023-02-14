@@ -28,6 +28,7 @@ import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import { AssetSlot } from '@/types/dam/AssetSlot'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionBlockedBy from '@/views/dam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -75,6 +76,7 @@ const loadFormData = async () => {
         author: existingDistributions.value[0].texts.author,
         keywords: existingDistributions.value[0].texts.keywords,
       },
+      blockedBy: existingDistributions.value[0].blockedBy,
     }
     canDisplayForm.value = true
     return
@@ -88,6 +90,7 @@ const loadFormData = async () => {
       author: res.texts.author,
       keywords: res.texts.keywords,
     },
+    blockedBy: res.blockedBy,
   }
   canDisplayForm.value = true
 }
@@ -219,6 +222,17 @@ onMounted(async () => {
               multiple
               chips
               closable-chips
+            />
+          </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <DistributionBlockedBy
+              v-model="distribution.blockedBy"
+              :config="config"
+              :distribution-service-name="distributionServiceName"
+              :asset-file-id="assetFileId"
+              :asset-type="assetType"
             />
           </VCol>
         </VRow>
