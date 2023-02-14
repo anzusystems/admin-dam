@@ -31,6 +31,7 @@ import {
 } from '@/services/DamConfigDistributionCustomFormService'
 import DistributionCustomMetadataForm from '@/views/dam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionBlockedBy from '@/views/dam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -75,6 +76,7 @@ const loadFormData = async () => {
     distribution.value = {
       distributionService: props.distributionServiceName,
       customData: simpleCloneObject(existingDistributions.value[0].customData),
+      blockedBy: existingDistributions.value[0].blockedBy,
     }
     canDisplayForm.value = true
     return
@@ -83,6 +85,7 @@ const loadFormData = async () => {
   distribution.value = {
     distributionService: props.distributionServiceName,
     customData: res.customData,
+    blockedBy: res.blockedBy,
   }
   canDisplayForm.value = true
 }
@@ -177,6 +180,17 @@ onMounted(async () => {
           v-model="distribution.customData"
           :distribution-service-name="distributionServiceName"
         />
+        <VRow class="mb-2">
+          <VCol>
+            <DistributionBlockedBy
+              v-model="distribution.blockedBy"
+              :config="config"
+              :distribution-service-name="distributionServiceName"
+              :asset-file-id="assetFileId"
+              :asset-type="assetType"
+            />
+          </VCol>
+        </VRow>
       </ASystemEntityScope>
     </div>
     <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
