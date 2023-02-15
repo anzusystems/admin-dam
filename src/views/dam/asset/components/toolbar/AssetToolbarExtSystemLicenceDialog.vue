@@ -13,6 +13,7 @@ import { useErrorHandler } from '@/composables/system/error'
 import { damConfig } from '@/services/DamConfigService'
 import ExtSystemSelect from '@/views/dam/extSystem/components/ExtSystemSelect.vue'
 import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicenceSelect.vue'
+import AssetLicenceByExtIdSelect from '@/views/dam/assetLicence/components/AssetLicenceByExtIdSelect.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/extSystemApi'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
@@ -171,33 +172,51 @@ onMounted(async () => {
         </div>
         <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <VRow>
+            <VCol class="text-caption font-weight-bold mb-4">
+              {{ t('system.mainBar.extSystemLicenceSwitch.filters') }}
+            </VCol>
+          </VRow>
+          <VRow>
             <VCol class="pt-2">
               <ExtSystemSelect
                 v-model="selectedExtSystemSearch"
-                label="Filter ext system"
+                :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
                 hide-details
                 @update:model-value="onSelectedExtSystemSearchChange"
               />
             </VCol>
             <VCol>
-              <VTextField v-model="selectedExtSystem" hide-details label="Ext system ID" />
+              <VTextField
+                v-model="selectedExtSystem"
+                hide-details
+                :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemId')"
+              />
             </VCol>
           </VRow>
           <VRow>
-            <VCol class="pt-2">
+            <VCol>
               <AssetLicenceSelect
                 v-model="selectedLicenceSearch"
-                label="Filter licence"
+                :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
                 :ext-system-id="selectedExtSystem"
                 hide-details
                 @update:model-value="onSelectedLicenceSearchChange"
               />
             </VCol>
             <VCol>
-              <VTextField v-model="selectedLicence" hide-details label="Licence ID" />
+              <AssetLicenceByExtIdSelect
+                v-model="selectedLicenceSearch"
+                :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
+                :ext-system-id="selectedExtSystem"
+                hide-details
+                @update:model-value="onSelectedLicenceSearchChange"
+              />
             </VCol>
           </VRow>
-          <div class="mb-4 text-caption font-weight-bold">Change to licence ID: {{ selectedLicence }}</div>
+          <div class="d-flex align-center w-100">
+            <div class="text-caption font-weight-bold">Change to licence ID: <span class="text-error">*</span></div>
+            <div class="w-100"><VTextField v-model="selectedLicence" hide-details /></div>
+          </div>
         </ASystemEntityScope>
       </VCardText>
       <VCardText v-else-if="allowSelect">
@@ -206,8 +225,6 @@ onMounted(async () => {
           v-model="selectedExtSystem"
           :items="extSystemsItems"
           :label="t('system.mainBar.extSystemLicenceSwitch.extSystem')"
-          :error-messages="errorMessageExtSystem"
-          @blur="validateExtSystem.$touch()"
           @update:model-value="selectedLicence = undefined"
         >
           <template #label>
