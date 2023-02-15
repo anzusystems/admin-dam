@@ -10,6 +10,7 @@ import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
 import PodcastEpisodeListItem from '@/views/dam/asset/detail/components/podcast/PodcastEpisodeListItem.vue'
 import { loadLazyPodcast } from '@/views/dam/podcast/composables/lazyPodcast'
 import PodcastEpisodeNewDialog from '@/views/dam/asset/detail/components/podcast/PodcastEpisodeNewDialog.vue'
+import { usePodcastEpisodeRemoveActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 
 const props = withDefaults(
   defineProps<{
@@ -39,6 +40,11 @@ const addNew = async () => {
 }
 
 const { addToLazyPodcastBuffer, fetchLazyPodcast } = loadLazyPodcast()
+const { deletePodcast } = usePodcastEpisodeRemoveActions()
+
+const deletePodcastEpisode = (id: DocId) => {
+  deletePodcast(id, reloadList)
+}
 
 const getList = async () => {
   loading.value = true
@@ -69,7 +75,12 @@ onMounted(async () => {
   </div>
   <div v-else-if="listItems.length === 0" class="pa-4 text-caption">Nothing to show</div>
   <div v-else>
-    <PodcastEpisodeListItem v-for="item in listItems" :key="item.id" :item="item" />
+    <PodcastEpisodeListItem
+      v-for="item in listItems"
+      :key="item.id"
+      :item="item"
+      @delete-record="deletePodcastEpisode"
+    />
     <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
   </div>
   <PodcastEpisodeNewDialog v-model="dialogNew" :asset-id="assetId" @reload-list="reloadList" />

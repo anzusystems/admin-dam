@@ -19,6 +19,9 @@ const props = withDefaults(
     disabled?: boolean
     disableCloseAfterConfirm?: boolean
     loading?: boolean
+    color?: string
+    width?: number
+    height?: number
   }>(),
   {
     variant: 'text',
@@ -34,6 +37,9 @@ const props = withDefaults(
     dataCy: 'button-delete',
     disabled: false,
     disableCloseAfterConfirm: false,
+    color: undefined,
+    width: undefined,
+    height: undefined,
   }
 )
 const emit = defineEmits<{
@@ -74,7 +80,10 @@ defineExpose({
     size="small"
     :variant="variant"
     :disabled="disabled"
+    :color="color"
     :loading="loading"
+    :width="width"
+    :height="height"
     @click.stop="onClick"
   >
     <VIcon icon="mdi-trash-can-outline" />
