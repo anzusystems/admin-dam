@@ -5,6 +5,10 @@ import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImageFile } from '@/types/dam/File'
 import { fetchImageFile } from '@/services/api/dam/imageApi'
+import { AssetFileProcessStatus } from '@/types/dam/File'
+import { useI18n } from 'vue-i18n'
+import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
+import AssetByImageIdLink from '@/views/dam/asset/components/AssetByImageIdLink.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -23,6 +27,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: DocIdNullable): void
 }>()
 
+const { t } = useI18n({ useScope: 'global' })
+
 const loading = ref(false)
 const dialog = ref(false)
 const newFileId = ref<DocId>('')
@@ -31,6 +37,7 @@ const imageFile = ref<null | ImageFile>(null)
 const fetchImage = async (id: DocId) => {
   loading.value = true
   imageFile.value = await fetchImageFile(id)
+  console.log(imageFile.value)
   loading.value = false
 }
 
@@ -46,6 +53,11 @@ const fileIdModel = computed({
 const src = computed(() => {
   if (imageFile.value && imageFile.value.links?.image_detail) return imageFile.value.links.image_detail.url
   return placeholder16x9
+})
+
+const isDuplicate = computed(() => {
+  if (imageFile.value && imageFile.value.fileAttributes.status === AssetFileProcessStatus.Duplicate) return true
+  return false
 })
 
 const removeImage = () => {
@@ -83,7 +95,20 @@ watch(
       </div>
     </template>
   </VImg>
-  <VImg v-else :width="width" :height="width" :src="src" contain />
+  <VImg v-else :width="width" :height="width" :src="src" contain>
+    <template #placeholder />
+    <template v-if="isDuplicate" #default>
+      <div
+        class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
+      >
+        <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
+        <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
+        <AssetByImageIdLink v-if="imageFile" variant="text" size="small" :image-id="imageFile.id">
+          {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
+        </AssetByImageIdLink>
+      </div>
+    </template>
+  </VImg>
   <div v-if="showActions">
     <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">
       WIP Replace by image file ID

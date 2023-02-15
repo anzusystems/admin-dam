@@ -23,7 +23,6 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import { prettyBytes } from '@/utils/file'
-import { useRouter } from 'vue-router'
 import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
