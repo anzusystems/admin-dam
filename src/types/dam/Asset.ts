@@ -34,8 +34,8 @@ export interface AssetFileProperties {
   distributesInServices: DistributionServiceName[]
   slotNames: string[]
   fromRss: boolean
-  pixels: number
-  shortestDimension: number
+  width: number
+  height: number
 }
 
 export interface AssetSearchListItemDto extends UserAndTimeTrackingFields, System {

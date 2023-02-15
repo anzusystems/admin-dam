@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { AssetListItem } from '@/stores/dam/assetListStore'
-import type { AssetSearchListItemDto } from '@/types/dam/Asset'
+import type { AssetFileProperties, AssetSearchListItemDto } from '@/types/dam/Asset'
 import type { DocId } from '@anzusystems/common-admin'
 import { isImageFile } from '@/types/dam/File'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
-import AssetListItemIcons from '@/views/dam/asset/components/AssetImageIcons.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -79,6 +78,14 @@ const imageProperties = computed(() => {
     bgColor: IMAGE_BG_COLOR_DEFAULT,
   }
 })
+
+const testMetaIconData: AssetFileProperties = {
+  distributesInServices: [],
+  slotNames: ['default', 'bonus'],
+  fromRss: true,
+  width: 1920,
+  height: 1080,
+}
 </script>
 
 <template>
@@ -103,7 +110,7 @@ const imageProperties = computed(() => {
         :width="imageProperties.width"
         :height="imageProperties.height"
         :fallback-height="IMAGE_HEIGHT"
-        :asset-file-properties="item.asset.assetFileProperties"
+        :asset-file-properties="testMetaIconData"
         :show-meta-icons="showMetaIcons"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">

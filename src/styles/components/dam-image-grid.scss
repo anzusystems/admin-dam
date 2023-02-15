@@ -27,7 +27,7 @@ $bg-color-actions-dark: #1a1a1a;
       border-radius: 5px;
       overflow: hidden;
 
-      img {
+      img:not(.img-svg) {
         display: block;
         height: 200px;
         min-width: 100%;
@@ -64,7 +64,7 @@ $bg-color-actions-dark: #1a1a1a;
     grid-template-columns: repeat(6, auto);
 
     .#{$class-name-root}__item {
-      img {
+      img:not(.img-svg) {
         object-fit: contain;
         padding-left: 6px;
         padding-right: 6px;
