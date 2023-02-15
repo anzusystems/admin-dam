@@ -5,6 +5,8 @@ import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { useI18n } from 'vue-i18n'
 import { isUndefined } from '@/utils/common'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
+import AssetImageIcons from '@/views/dam/asset/components/AssetImageIcons.vue'
+import type { AssetFileProperties } from '@/types/dam/Asset'
 
 const props = withDefaults(
   defineProps<{
@@ -28,6 +30,8 @@ const props = withDefaults(
     disableProcessingText?: boolean
     uploadingProgress?: number | null
     hideIcon?: boolean
+    showMetaIcons?: boolean
+    assetFileProperties?: AssetFileProperties
   }>(),
   {
     assetType: AssetType.Image,
@@ -50,6 +54,8 @@ const props = withDefaults(
     disableProcessingText: false,
     uploadingProgress: null,
     hideIcon: false,
+    showMetaIcons: false,
+    assetFileProperties: undefined,
   }
 )
 const emit = defineEmits<{
@@ -171,6 +177,11 @@ const showIconComputed = computed(() => {
         <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
         <div class="text-caption text-center">{{ t('common.upload.done') }}</div>
       </div>
+      <AssetImageIcons
+        v-if="showMetaIcons && assetFileProperties"
+        :asset-file-properties="assetFileProperties"
+        :asset-type="assetType"
+      />
     </template>
   </VImg>
   <div v-else-if="assetStatus === AssetStatus.WithFile && src" class="asset-image asset-image--img position-relative">
@@ -186,6 +197,11 @@ const showIconComputed = computed(() => {
         <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" class="asset-image__icon" />
       </div>
     </div>
+    <AssetImageIcons
+      v-if="showMetaIcons && assetFileProperties"
+      :asset-file-properties="assetFileProperties"
+      :asset-type="assetType"
+    />
   </div>
   <div
     v-else
