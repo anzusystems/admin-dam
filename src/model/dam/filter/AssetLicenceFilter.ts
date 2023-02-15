@@ -26,5 +26,8 @@ export function useAssetLicenceFilter() {
     extSystem: {
       ...makeFilter({ name: 'extSystem', default: null }),
     },
+    extId: {
+      ...makeFilter({ name: 'extId', default: null }),
+    },
   })
 }
