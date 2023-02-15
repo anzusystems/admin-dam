@@ -4,6 +4,7 @@ import type { System } from '@/types/System'
 import type { AssetFile } from '@/types/dam/File'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
+import type { DistributionServiceName } from '@/types/dam/DamConfig'
 
 interface Texts {
   displayTitle: string
@@ -29,6 +30,14 @@ interface Metadata {
   customData: any
 }
 
+export interface AssetFileProperties {
+  distributesInServices: DistributionServiceName[]
+  slotNames: string[]
+  fromRss: boolean
+  width: number
+  height: number
+}
+
 export interface AssetSearchListItemDto extends UserAndTimeTrackingFields, System {
   id: DocId
   texts: Texts
@@ -39,6 +48,7 @@ export interface AssetSearchListItemDto extends UserAndTimeTrackingFields, Syste
   keywords: DocId[]
   authors: DocId[]
   metadata: Metadata
+  assetFileProperties: AssetFileProperties
 }
 
 export interface AssetDetailItemDto extends UserAndTimeTrackingFields, System {
@@ -53,6 +63,7 @@ export interface AssetDetailItemDto extends UserAndTimeTrackingFields, System {
   podcasts: DocId[]
   metadata: Metadata
   distributionCategory: DocIdNullable
+  assetFileProperties: AssetFileProperties
 }
 
 export interface AssetMetadataDto extends UserAndTimeTrackingFields, System, Metadata {

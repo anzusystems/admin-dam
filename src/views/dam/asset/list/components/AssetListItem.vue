@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { AssetListItem } from '@/stores/dam/assetListStore'
-import type { AssetSearchListItemDto } from '@/types/dam/Asset'
+import type { AssetFileProperties, AssetSearchListItemDto } from '@/types/dam/Asset'
 import type { DocId } from '@anzusystems/common-admin'
 import { isImageFile } from '@/types/dam/File'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
@@ -16,8 +16,11 @@ const props = withDefaults(
   defineProps<{
     index: number
     item: AssetListItem
+    showMetaIcons?: boolean
   }>(),
-  {}
+  {
+    showMetaIcons: false,
+  }
 )
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
@@ -75,6 +78,14 @@ const imageProperties = computed(() => {
     bgColor: IMAGE_BG_COLOR_DEFAULT,
   }
 })
+
+const testMetaIconData: AssetFileProperties = {
+  distributesInServices: [],
+  slotNames: ['default', 'bonus'],
+  fromRss: true,
+  width: 1920,
+  height: 1080,
+}
 </script>
 
 <template>
@@ -99,6 +110,8 @@ const imageProperties = computed(() => {
         :width="imageProperties.width"
         :height="imageProperties.height"
         :fallback-height="IMAGE_HEIGHT"
+        :asset-file-properties="testMetaIconData"
+        :show-meta-icons="showMetaIcons"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
