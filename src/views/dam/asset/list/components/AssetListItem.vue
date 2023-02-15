@@ -6,6 +6,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import { isImageFile } from '@/types/dam/File'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
+import AssetListItemIcons from '@/views/dam/asset/components/AssetImageIcons.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -16,8 +17,11 @@ const props = withDefaults(
   defineProps<{
     index: number
     item: AssetListItem
+    showMetaIcons?: boolean
   }>(),
-  {}
+  {
+    showMetaIcons: false,
+  }
 )
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
@@ -99,6 +103,8 @@ const imageProperties = computed(() => {
         :width="imageProperties.width"
         :height="imageProperties.height"
         :fallback-height="IMAGE_HEIGHT"
+        :asset-file-properties="item.asset.assetFileProperties"
+        :show-meta-icons="showMetaIcons"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">

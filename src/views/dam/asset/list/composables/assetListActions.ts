@@ -46,6 +46,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
   const { maxSelectedItems } = useBetaTestFeatures()
+  const showMetaIcons = ref(false)
+
+  const toggleShowMetaIcons = () => {
+    showMetaIcons.value = !showMetaIcons.value
+  }
 
   const checkQuickDetailReFetch = (assetId: DocId) => {
     return (
@@ -275,6 +280,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   })
 
   return {
+    showMetaIcons: readonly(showMetaIcons),
+    toggleShowMetaIcons,
     activeItemIndex,
     loader,
     items: list,

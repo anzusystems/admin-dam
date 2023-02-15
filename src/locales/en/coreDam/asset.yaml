@@ -51,6 +51,7 @@ list:
     masonry: Masonry
     thumbnail: Grid
   infoToggle: Toggle info
+  metaIconsToggle: Toggle icons
   filterToggle: Toggle filters
   filters: Filters
   allTypes: All types

@@ -44,6 +44,8 @@ const {
   totalCountText,
   onArrowRight,
   onArrowLeft,
+  showMetaIcons,
+  toggleShowMetaIcons,
 } = useAssetListActions(sidebarRight)
 
 const { footerViewSelected } = useAssetFooterSelectedView()
@@ -85,6 +87,7 @@ onUnmounted(() => {
             :key="item.asset.id"
             :index="index"
             :item="item"
+            :show-meta-icons="showMetaIcons"
             @show-detail="showDetail"
             @item-click="onItemClick"
             @toggle-selected="toggleSelected"
@@ -117,6 +120,19 @@ onUnmounted(() => {
       </VBtn>
       <VDivider vertical class="mx-1 my-2" />
       <DGridViewToggle />
+      <VDivider vertical class="mx-1 my-2" />
+      <VBtn
+        :active="showMetaIcons"
+        icon
+        :width="30"
+        :height="30"
+        :variant="showMetaIcons ? 'flat' : 'text'"
+        :color="showMetaIcons ? 'secondary' : undefined"
+        @click.stop="toggleShowMetaIcons"
+      >
+        <VIcon icon="mdi-label-multiple-outline" :size="16" />
+        <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.metaIconsToggle') }}</VTooltip>
+      </VBtn>
       <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>
