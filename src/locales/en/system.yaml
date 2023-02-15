@@ -17,6 +17,12 @@ mainBar:
     assets: Assets
   podcasts: Podcasts
   extSystemLicenceSwitch:
+    filters: Filters
+    filter:
+      extSystemName: External system name
+      extSystemId: External system ID
+      licenceName: Licence name
+      licenceExtId: Licence Ext ID
     extSystem: External system
     licence: Licence
     title: Switch DAM ext system and asset licence
