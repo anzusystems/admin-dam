@@ -23,6 +23,7 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import { prettyBytes } from '@/utils/file'
+import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -99,10 +100,6 @@ const uploadProgress = computed(() => {
   return props.item.progress.progressPercent
 })
 
-const viewOriginal = async () => {
-  // todo
-}
-
 const showDetail = async () => {
   if (isNull(props.item.assetId)) return
   assetDetailStore.setView('queue')
@@ -170,9 +167,9 @@ const showCancel = computed(() => {
           >
             <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
             <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
-            <VBtn v-if="item.duplicateAssetId" variant="text" size="small" @click.stop="viewOriginal">
-              {{ t('coreDam.asset.queueItem.viewOriginal') }}
-            </VBtn>
+            <AssetLink v-if="item.duplicateAssetId" :asset-id="item.duplicateAssetId" variant="text" size="small">
+              {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
+            </AssetLink>
           </div>
           <div
             v-if="item.error.hasError"
@@ -212,7 +209,7 @@ const showCancel = computed(() => {
                 </VBtn>
                 <ADeleteButton
                   variant="text"
-                  :disabled="!item.canEditMetadata"
+                  :disabled="!item.canEditMetadata && !item.isDuplicate"
                   button-class=""
                   @delete-record="remove"
                 />

@@ -153,3 +153,25 @@ export const useAssetLicenceSelectActions = () => {
     fetchItemsByIds,
   }
 }
+
+export const useAssetLicenceByExtIdSelectActions = () => {
+  const mapToValueObjectOption = (assetLicences: AssetLicence[]): ValueObjectOption<number>[] => {
+    return assetLicences.map((assetLicence: AssetLicence) => ({
+      title: assetLicence.extId,
+      value: assetLicence.id,
+    }))
+  }
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToValueObjectOption(await fetchAssetLicenceList(pagination, filterBag))
+  }
+
+  const fetchItemsByIds = async (ids: number[]) => {
+    return mapToValueObjectOption(await fetchAssetLicenceListByIds(ids))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
+  }
+}

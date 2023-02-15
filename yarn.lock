@@ -512,12 +512,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kyvg/vue3-notification@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "@kyvg/vue3-notification@npm:2.8.0"
+"@kyvg/vue3-notification@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "@kyvg/vue3-notification@npm:2.9.0"
   peerDependencies:
     vue: ^3.0.0
-  checksum: c46350f4fcf92657ffbbfcec644d5552634c5e02f7346d41551ef421feea53f15d202302ce939f03ad54bb7a891fbcef9f9e62af8068ca82b545933dfb6799ff
+  checksum: a6fba14472d41e3a010ffb3873a87041d8948e13d3d7b7b10cfe60f05a24b15b08eaf55b46a5220a123428bf876998e6c2ab964fd4817e0d3a6637e5b245d02a
   languageName: node
   linkType: hard
 
@@ -791,20 +791,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.51.0":
-  version: 5.51.0
-  resolution: "@typescript-eslint/parser@npm:5.51.0"
+"@typescript-eslint/parser@npm:^5.52.0":
+  version: 5.52.0
+  resolution: "@typescript-eslint/parser@npm:5.52.0"
   dependencies:
-    "@typescript-eslint/scope-manager": 5.51.0
-    "@typescript-eslint/types": 5.51.0
-    "@typescript-eslint/typescript-estree": 5.51.0
+    "@typescript-eslint/scope-manager": 5.52.0
+    "@typescript-eslint/types": 5.52.0
+    "@typescript-eslint/typescript-estree": 5.52.0
     debug: ^4.3.4
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 096ec819132839febd4f390c4bbf31687e06191092c244dbd189a64cd7383fbaba728f2765e8809cd9834c0069163ab38b0e5f0f6360157d831647d4c295f8cd
+  checksum: 1d8ff6e932f9c9db8d24b16ce89fd963f0982c38559e500aa1f8dc5cd66abd02f1659dd1a1361ce550def05331803caa69a69a039b54c94fc0f22919a2305c12
   languageName: node
   linkType: hard
 
@@ -818,13 +818,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:5.51.0":
-  version: 5.51.0
-  resolution: "@typescript-eslint/scope-manager@npm:5.51.0"
+"@typescript-eslint/scope-manager@npm:5.52.0":
+  version: 5.52.0
+  resolution: "@typescript-eslint/scope-manager@npm:5.52.0"
   dependencies:
-    "@typescript-eslint/types": 5.51.0
-    "@typescript-eslint/visitor-keys": 5.51.0
-  checksum: b3c9f48b6b7a7ae2ebcad4745ef91e4727776b2cf56d31be6456b1aa063aa649539e20f9fffa83cad9ccaaa9c492f2354a1c15526a2b789e235ec58b3a82d22c
+    "@typescript-eslint/types": 5.52.0
+    "@typescript-eslint/visitor-keys": 5.52.0
+  checksum: 9a03fe30f8e90a5106c482478f213eefdd09f2f74e24d9dc59b453885466a758fe6d1cd24d706aed6188fb03c84b16ca6491cf20da6b16b8fc53cad8b8c327f2
   languageName: node
   linkType: hard
 
@@ -851,10 +851,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:5.51.0":
-  version: 5.51.0
-  resolution: "@typescript-eslint/types@npm:5.51.0"
-  checksum: b31021a0866f41ba5d71b6c4c7e20cc9b99d49c93bb7db63b55b2e51542fb75b4e27662ee86350da3c1318029e278a5a807facaf4cb5aeea724be8b0e021e836
+"@typescript-eslint/types@npm:5.52.0":
+  version: 5.52.0
+  resolution: "@typescript-eslint/types@npm:5.52.0"
+  checksum: 018940d61aebf7cf3f7de1b9957446e2ea01f08fe950bef4788c716a3a88f7c42765fe7d80152b0d0428fcd4bd3ace2dfa8c459ba1c59d9a84e951642180f869
   languageName: node
   linkType: hard
 
@@ -876,12 +876,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:5.51.0":
-  version: 5.51.0
-  resolution: "@typescript-eslint/typescript-estree@npm:5.51.0"
+"@typescript-eslint/typescript-estree@npm:5.52.0":
+  version: 5.52.0
+  resolution: "@typescript-eslint/typescript-estree@npm:5.52.0"
   dependencies:
-    "@typescript-eslint/types": 5.51.0
-    "@typescript-eslint/visitor-keys": 5.51.0
+    "@typescript-eslint/types": 5.52.0
+    "@typescript-eslint/visitor-keys": 5.52.0
     debug: ^4.3.4
     globby: ^11.1.0
     is-glob: ^4.0.3
@@ -890,7 +890,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: aec23e5cab48ee72fefa6d1ac266639ebabf6cebec1e0207ad47011d3a48186ac9a632c8e34c3bac896155f54895a497230c11d789fd81263b08eb267d7113ce
+  checksum: 67d396907fee3d6894e26411a5098a37f07e5d50343189e6361ff7db91c74a7ffe2abd630d11f14c2bda1f4af13edf52b80b11cbccb55b44079c7cec14c9e108
   languageName: node
   linkType: hard
 
@@ -920,13 +920,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/visitor-keys@npm:5.51.0":
-  version: 5.51.0
-  resolution: "@typescript-eslint/visitor-keys@npm:5.51.0"
+"@typescript-eslint/visitor-keys@npm:5.52.0":
+  version: 5.52.0
+  resolution: "@typescript-eslint/visitor-keys@npm:5.52.0"
   dependencies:
-    "@typescript-eslint/types": 5.51.0
+    "@typescript-eslint/types": 5.52.0
     eslint-visitor-keys: ^3.3.0
-  checksum: b49710f3c6b3b62a846a163afffd81be5eb2b1f44e25bec51ff3c9f4c3b579d74aa4cbd3753b4fc09ea3dbc64a7062f9c658c08d22bb2740a599cb703d876220
+  checksum: 33b44f0cd35b7b47f34e89d52e47b8d8200f55af306b22db4de104d79f65907458ea022e548f50d966e32fea150432ac9c1ae65b3001b0ad2ac8a17c0211f370
   languageName: node
   linkType: hard
 
@@ -1416,7 +1416,7 @@ __metadata:
     "@anzusystems/common-admin": ^0.0.6
     "@cypress/grep": ^3.1.4
     "@intlify/unplugin-vue-i18n": ^0.8.2
-    "@kyvg/vue3-notification": ^2.8.0
+    "@kyvg/vue3-notification": ^2.9.0
     "@mdi/font": 7.1.96
     "@rushstack/eslint-patch": ^1.2.0
     "@types/crypto-js": ^4.1.1
@@ -1424,7 +1424,7 @@ __metadata:
     "@types/node": ^16.18.12
     "@types/uuid": ^9.0.0
     "@types/webfontloader": ^1.6.35
-    "@typescript-eslint/parser": ^5.51.0
+    "@typescript-eslint/parser": ^5.52.0
     "@vitejs/plugin-vue": ^4.0.0
     "@vue/eslint-config-prettier": ^7.0.0
     "@vue/eslint-config-typescript": ^11.0.2
@@ -1433,8 +1433,8 @@ __metadata:
     "@vuelidate/validators": ^2.0.0
     "@vueuse/core": 9.12.0
     "@vueuse/integrations": 9.12.0
-    axios: ^1.3.2
-    core-js: ^3.27.2
+    axios: ^1.3.3
+    core-js: ^3.28.0
     cypress: ^12.5.1
     cypress-mochawesome-reporter: ^3.3.0
     dayjs: ^1.11.7
@@ -1449,11 +1449,11 @@ __metadata:
     postcss-html: ^1.5.0
     prettier: ^2.8.4
     roboto-fontface: ^0.10.0
-    sass: ^1.58.0
+    sass: ^1.58.1
     shortcut-buttons-flatpickr: ^0.4.0
     stylelint: ^15.1.0
     stylelint-config-recommended-vue: ^1.4.0
-    stylelint-config-standard-scss: ^7.0.0
+    stylelint-config-standard-scss: ^7.0.1
     typescript: ^4.9.5
     universal-cookie: ^4.0.4
     uuid: ^9.0.0
@@ -1461,12 +1461,12 @@ __metadata:
     vite-plugin-vuetify: ^1.0.2
     vue: ^3.2.47
     vue-cropperjs: ^5.0.0
-    vue-flatpickr-component: ^11.0.1
+    vue-flatpickr-component: ^11.0.2
     vue-i18n: ^9.2.2
     vue-router: ^4.1.6
     vue-tsc: ^1.0.24
     vuedraggable: ^4.1.0
-    vuetify: ^3.1.4
+    vuetify: ^3.1.5
     webfontloader: ^1.6.28
   languageName: unknown
   linkType: soft
@@ -1688,14 +1688,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.3.2":
-  version: 1.3.2
-  resolution: "axios@npm:1.3.2"
+"axios@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "axios@npm:1.3.3"
   dependencies:
     follow-redirects: ^1.15.0
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 9791af75a6df137b15ef45d13ad11eb357b3860d2496347ee18778db9d0abc2320362a4452f1e070e3160f1dbcc518fcefdc9e005be097e7db39acb22cf608e5
+  checksum: b734a4bc348e2fa27150a7d4289d783fa405feb3f79f8daf28fd05813a12c8525ae9d3854aafe7ba041b005a4a751a0ba3b923331ceed41296ae14c7e54e2f26
   languageName: node
   linkType: hard
 
@@ -2170,10 +2170,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.27.2":
-  version: 3.27.2
-  resolution: "core-js@npm:3.27.2"
-  checksum: 718debd426f55a6b97cf9b757c936be258afd6d4f7052f89d0f96c982d7013e9000b0b006df42831a0cf32adad298e34d6a19052dce9ae1c7ab87162c0c665e0
+"core-js@npm:^3.28.0":
+  version: 3.28.0
+  resolution: "core-js@npm:3.28.0"
+  checksum: 3155fd0ec16d0089106b145e9595280a4ea4bde0d7ff26aa14364cd4f1c203baf6620c3025acd284f363d08b9f21104101692766ca9a36ffeee7307bdf3e1881
   languageName: node
   linkType: hard
 
@@ -5586,16 +5586,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.58.0":
-  version: 1.58.0
-  resolution: "sass@npm:1.58.0"
+"sass@npm:^1.58.1":
+  version: 1.58.1
+  resolution: "sass@npm:1.58.1"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: a7219634881d2de6441fb619787fb1a02e3fa0333fb715be26aa335ba49d6bdb4f1105d9df70a80a67200893022b08346745783dc49046095d94fc6e044492d6
+  checksum: ff079887d906b5c0dde99084d14ac36336d238c0c07935ff6381bad68f05de212c1ff12657ac1e8a0533523cd7a393126facdc2508d758e7d5700344a0e6ea51
   languageName: node
   linkType: hard
 
@@ -5959,9 +5959,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stylelint-config-standard-scss@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "stylelint-config-standard-scss@npm:7.0.0"
+"stylelint-config-standard-scss@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "stylelint-config-standard-scss@npm:7.0.1"
   dependencies:
     stylelint-config-recommended-scss: ^9.0.0
     stylelint-config-standard: ^30.0.1
@@ -5971,7 +5971,7 @@ __metadata:
   peerDependenciesMeta:
     postcss:
       optional: true
-  checksum: ac386e7ef17cf6e99931e00e10f59231f656ff8a5665bb3bf8e95016a131dfde57102771f1ca00fce0de46f9b5e3ea7759f1a5d643dea6cb22506ea8c6cfb40d
+  checksum: 99aa0241c1ec07a36975489746f1eb15268df03ddcc5ec3370c72f507872135a1214360df7ad4f60162145b910700ee4e8b4604ee4a1c158f69eda2fd07eede4
   languageName: node
   linkType: hard
 
@@ -6620,14 +6620,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-flatpickr-component@npm:^11.0.1":
-  version: 11.0.1
-  resolution: "vue-flatpickr-component@npm:11.0.1"
+"vue-flatpickr-component@npm:^11.0.2":
+  version: 11.0.2
+  resolution: "vue-flatpickr-component@npm:11.0.2"
   dependencies:
     flatpickr: ^4.6.13
   peerDependencies:
     vue: ^3.2.0
-  checksum: 91008bb6f0dec07c889966ac42f982cd6d73f5edef35bf657447f46997fbb94888a4012313e812719bfadd6a9c63f8fb2f392140c757fb2b95688f771d546bea
+  checksum: 1bc8da69d7b1c766fcd5900438d14c4f9ac5da13d6016c509f415b9cecf344e438cd7d0fbd7e82ea58a766b3b282668eabd364f2c631aacc9503b035140bf341
   languageName: node
   linkType: hard
 
@@ -6704,9 +6704,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.1.4":
-  version: 3.1.4
-  resolution: "vuetify@npm:3.1.4"
+"vuetify@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "vuetify@npm:3.1.5"
   peerDependencies:
     vite-plugin-vuetify: ^1.0.0-alpha.12
     vue: ^3.2.0
@@ -6719,7 +6719,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 2ff93e0467204006b6466a5d43a9017810b2c69ff0bb597886d1a5445722e5339ab9d6247ee1202478ac4b92b4110428171e3aa5d737ecc50ec82053305f2421
+  checksum: b695f8c4ec51d9f6af4037deea06ed9b2853bb8bd9113f874f7795cb26916a60fc5a4e758700218a4f59a1a1ce7da101b2ad01d02c252bf0c3882c4f4de0b634
   languageName: node
   linkType: hard
 

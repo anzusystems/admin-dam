@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
 import {
+  deletePodcastEpisode,
   fetchPodcastEpisode,
   fetchPodcastEpisodeListByPodcast,
   updatePodcastEpisode,
@@ -45,11 +46,28 @@ export const usePodcastEpisodeListActions = () => {
   }
 }
 
+export const usePodcastEpisodeRemoveActions = () => {
+  const deletePodcast = async (id: DocId, onSuccessfulCallback: () => void) => {
+    try {
+      await deletePodcastEpisode(id)
+      onSuccessfulCallback()
+    } catch (error) {
+      handleError(error)
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  return {
+    deletePodcast,
+  }
+}
+
 export const usePodcastEpisodeDetailActions = () => {
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: DocId) => {
     detailLoading.value = true
     try {
       const podcastEpisode = await fetchPodcastEpisode(id)
