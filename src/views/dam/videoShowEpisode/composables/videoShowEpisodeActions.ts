@@ -101,7 +101,7 @@ export const useVideoShowEpisodeEditActions = () => {
       showRecordWas('updated')
       if (!close || !videoShowEpisodeOneStore.videoShowEpisode.videoShow) return
       router.push({
-        name: ROUTE.DAM.VideoShow.DETAIL,
+        name: ROUTE.DAM.VIDEO_SHOW.DETAIL,
         params: { id: videoShowEpisodeOneStore.videoShowEpisode.videoShow },
       })
     } catch (error) {
