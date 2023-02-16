@@ -53,6 +53,8 @@ const acls = {
   DAM_KEYWORD_CREATE: 'dam_keyword_create',
   DAM_KEYWORD_UPDATE: 'dam_keyword_update',
   DAM_KEYWORD_DELETE: 'dam_keyword_delete',
+  DAM_JOB_CREATE: 'dam_job_create',
+  DAM_JOB_DELETE: 'dam_job_delete',
   DAM_DISTRIBUTION_CATEGORY_VIEW: 'dam_distributionCategory_view',
   DAM_DISTRIBUTION_CATEGORY_CREATE: 'dam_distributionCategory_create',
   DAM_DISTRIBUTION_CATEGORY_UPDATE: 'dam_distributionCategory_update',
@@ -80,6 +82,7 @@ const acls = {
   DAM_PODCAST_UI: 'dam_podcast_ui',
   DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
   DAM_LOG_UI: 'dam_log_ui',
+  DAM_JOB_UI: 'dam_job_ui',
 } as const
 
 export const ACL: Immutable<typeof acls> = deepFreeze(acls)
