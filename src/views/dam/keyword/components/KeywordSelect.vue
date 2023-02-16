@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useKeywordSelectActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/dam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
@@ -23,6 +23,7 @@ const props = withDefaults(
     clearable?: boolean
     suggestions?: Suggestions
     chips?: boolean
+    disableInitFetch?: boolean
     dataCy?: string
     validationScope?: ValidationScope
   }>(),
@@ -36,6 +37,7 @@ const props = withDefaults(
       return {}
     },
     chips: false,
+    disableInitFetch: false,
     dataCy: '',
     validationScope: undefined,
   }
@@ -107,7 +109,7 @@ const afterCreate = (keyword: Keyword) => {
 
 <template>
   <div class="d-flex">
-    <ARemoteSelect
+    <ARemoteAutocomplete
       v-model="modelValueComputed"
       :v="v$"
       :required="requiredComputed"
@@ -120,7 +122,7 @@ const afterCreate = (keyword: Keyword) => {
       :chips="chips"
       filter-by-field="text"
       :data-cy="dataCy"
-      :fetch-few-on-init="false"
+      :disable-init-fetch="disableInitFetch"
       :lazy-loader="useLazyKeyword"
       @search-change="searchChange"
     >
@@ -131,7 +133,7 @@ const afterCreate = (keyword: Keyword) => {
           <VProgressCircular v-else indeterminate size="15" />
         </VChip>
       </template>
-    </ARemoteSelect>
+    </ARemoteAutocomplete>
     <div>
       <KeywordCreateButton
         variant="icon"

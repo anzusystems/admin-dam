@@ -136,6 +136,7 @@ onMounted(() => {
                           clearable
                           multiple
                           :validation-scope="false"
+                          disable-init-fetch
                         />
                       </div>
                       <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyKeywords">
@@ -165,6 +166,7 @@ onMounted(() => {
                           chips
                           clearable
                           multiple
+                          disable-init-fetch
                           :validation-scope="false"
                         />
                       </div>

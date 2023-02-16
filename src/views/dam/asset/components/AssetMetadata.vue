@@ -64,6 +64,7 @@ const onAnyMetadataChange = () => {
                     chips
                     clearable
                     multiple
+                    disable-init-fetch
                     :required="keywordRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -81,6 +82,7 @@ const onAnyMetadataChange = () => {
                     chips
                     clearable
                     multiple
+                    disable-init-fetch
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"

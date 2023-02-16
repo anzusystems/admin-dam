@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useExtSystemSelectActions } from '@/views/dam/extSystem/composables/extSystemActions'
 import { useExtSystemFilter } from '@/model/dam/filter/ExtSystemFilter'
 
@@ -13,7 +13,7 @@ const props = withDefaults(
     clearable?: boolean
     dataCy?: string
     hideDetails?: boolean
-    fetchFewOnInit?: boolean
+    disableInitFetch?: boolean
   }>(),
   {
     label: null,
@@ -22,7 +22,7 @@ const props = withDefaults(
     clearable: false,
     dataCy: '',
     hideDetails: undefined,
-    fetchFewOnInit: true,
+    disableInitFetch: false,
   }
 )
 const emit = defineEmits<{
@@ -36,7 +36,7 @@ const innerFilter = useExtSystemFilter()
 </script>
 
 <template>
-  <ARemoteSelect
+  <ARemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"
@@ -48,6 +48,6 @@ const innerFilter = useExtSystemFilter()
     filter-by-field="name"
     :data-cy="dataCy"
     :hide-details="hideDetails"
-    :fetch-few-on-init="fetchFewOnInit"
+    :disable-init-fetch="disableInitFetch"
   />
 </template>
