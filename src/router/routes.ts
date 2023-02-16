@@ -37,6 +37,10 @@ const routes = {
       DETAIL: 'extSystem_detail',
       EDIT: 'extSystem_edit',
     },
+    JOB: {
+      LIST: 'job_list',
+      DETAIL: 'job_detail',
+    },
     ASSET_LICENCE: {
       LIST: 'assetLicence_list',
       DETAIL: 'assetLicence_detail',
