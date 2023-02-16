@@ -30,6 +30,7 @@ export function useAlerts() {
   }
 
   const showSuccessT = (translation: string, duration = DEFAULT_DURATION_SECONDS) => {
+    // @ts-ignore
     const { t } = i18n.global || i18n
     showSuccess(t(translation), duration)
   }

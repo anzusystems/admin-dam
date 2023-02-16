@@ -9,7 +9,7 @@ import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateDto } from '@/types/dam/Distribution'
-import { DistributionCustomItem } from '@/types/dam/Distribution'
+import type { DistributionCustomItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
@@ -18,7 +18,7 @@ import { fetchAssetFileDistributionList } from '@/services/api/dam/distributionA
 import { usePagination } from '@/composables/system/pagination'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
-import { AssetSlot } from '@/types/dam/AssetSlot'
+import type { AssetSlot } from '@/types/dam/AssetSlot'
 import {
   createCustomDistribution,
   prepareFormDataCustomDistribution,

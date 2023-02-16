@@ -7,7 +7,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import KeywordCreateButton from '@/views/dam/keyword/components/KeywordCreateButton.vue'
 import KeywordDatatable from '@/views/dam/keyword/components/KeywordDatatable.vue'
 import { ref } from 'vue'
-import AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
+import type AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useKeywordListActions } from '@/views/dam/keyword/composables/keywordActions'
 
 const { t } = useI18n({ useScope: 'global' })

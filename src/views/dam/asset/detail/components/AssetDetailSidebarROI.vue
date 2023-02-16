@@ -10,7 +10,7 @@ import { fetchImageRoiList, fetchRoi } from '@/services/api/dam/imageRoiApi'
 import { useImageRoiFilter } from '@/model/dam/filter/ImageRoiFilter'
 import { usePagination } from '@/composables/system/pagination'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { AssetSlot } from '@/types/dam/AssetSlot'
+import type { AssetSlot } from '@/types/dam/AssetSlot'
 import { simpleCloneObject } from '@anzusystems/common-admin'
 import { fetchImageFile } from '@/services/api/dam/imageApi'
 

@@ -47,18 +47,15 @@ onMounted(() => {
   getList()
 })
 
-const columns = useTableColumns(
-  [
-    { name: 'id' },
-    { name: 'email' },
-    { name: 'enabled' },
-    { name: 'roles' },
-    { name: 'permissionGroups' },
-    { name: 'permissions' },
-    { name: 'modifiedAt' },
-  ],
-  []
-)
+const columns = useTableColumns([
+  { name: 'id' },
+  { name: 'email' },
+  { name: 'enabled' },
+  { name: 'roles' },
+  { name: 'permissionGroups' },
+  { name: 'permissions' },
+  { name: 'modifiedAt' },
+])
 
 const refresh = () => {
   getList()

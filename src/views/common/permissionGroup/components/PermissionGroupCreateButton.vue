@@ -11,8 +11,8 @@ import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
-import { PermissionGroup, usePermissionGroupFactory } from '@anzusystems/common-admin'
-import { AxiosInstance } from 'axios'
+import { type PermissionGroup, usePermissionGroupFactory } from '@anzusystems/common-admin'
+import type { AxiosInstance } from 'axios'
 
 const props = withDefaults(
   defineProps<{

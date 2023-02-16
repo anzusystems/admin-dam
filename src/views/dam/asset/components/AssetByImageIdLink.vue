@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import type { DocId } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { fetchAsset } from '@/services/api/dam/assetApi'
-import { AssetDetailItemDto } from '@/types/dam/Asset'
+import type { AssetDetailItemDto } from '@/types/dam/Asset'
 
 const props = withDefaults(
   defineProps<{
