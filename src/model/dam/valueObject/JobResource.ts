@@ -1,4 +1,4 @@
-import { useJobResource as useBaseJobResource, type JobResource as BaseJobResource } from '@anzusystems/common-admin'
+import { type JobResource as BaseJobResource, useJobResource as useBaseJobResource } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 export type JobResource = 'jobPodcastSynchronizer' | BaseJobResource

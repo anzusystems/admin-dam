@@ -1,10 +1,10 @@
 import {
   apiCreateOne,
+  apiDeleteOne,
   apiFetchByIds,
   apiFetchList,
   apiFetchOne,
   apiUpdateOne,
-  apiDeleteOne,
 } from '@/services/api/anzuApi'
 import type { FilterBag } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'

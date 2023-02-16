@@ -1,7 +1,7 @@
 import type { DamConfig, DamPubConfig } from '@/types/dam/DamConfig'
+import { UserAuthType } from '@/types/dam/DamConfig'
 import { fetchConfiguration, fetchPubConfiguration } from '@/services/api/dam/configurationApi'
 import { ref } from 'vue'
-import { UserAuthType } from '@/types/dam/DamConfig'
 
 export const damConfigInitialized = ref(false)
 export const damPubConfigInitialized = ref(false)

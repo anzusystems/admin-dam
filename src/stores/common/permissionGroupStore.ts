@@ -1,4 +1,4 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import { usePermissionGroupFactory } from '@anzusystems/common-admin'
 

@@ -5,8 +5,8 @@ import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 import type { ImageFile } from '@/types/dam/File'
-import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { AssetFileProcessStatus } from '@/types/dam/File'
+import { fetchImageFile } from '@/services/api/dam/imageApi'
 
 const props = withDefaults(
   defineProps<{

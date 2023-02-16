@@ -1,4 +1,4 @@
-import { maxLength, email, required } from '@/plugins/validators'
+import { email, maxLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Ref } from 'vue'
 import type { AnzuUser } from '@anzusystems/common-admin'

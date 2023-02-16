@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
-import { minLength, required, maxLength, minValue, maxValue } from '@/plugins/validators'
+import { maxLength, maxValue, minLength, minValue, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 
