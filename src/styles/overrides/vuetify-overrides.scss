@@ -12,6 +12,10 @@
     }
   }
 
+  .v-overlay__content.v-autocomplete__content .v-list-item .v-list-item__prepend input[type=checkbox] {
+    pointer-events: none; // fix for autocomplete checkboxes
+  }
+
   .v-btn {
     font-stretch: normal;
     font-weight: 500;
