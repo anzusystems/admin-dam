@@ -5,8 +5,8 @@ import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
-import type { DocumentFile, FileDownloadLink } from '@/types/dam/File'
 import { QueueItemType } from '@/types/dam/UploadQueue'
+import type { DocumentFile, FileDownloadLink } from '@/types/dam/File'
 
 const END_POINT = '/adm/v1/document'
 const CHUNK_UPLOAD_TIMEOUT = 420

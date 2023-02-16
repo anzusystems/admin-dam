@@ -1,6 +1,6 @@
 import { useLogFactory } from '@/model/common/factory/LogFactory'
 import type { Log } from '@/types/common/Log'
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 
 interface State {
   log: Log

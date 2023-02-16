@@ -11,7 +11,7 @@ import {
 } from '@/services/api/dam/fileApi'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { useErrorHandler } from '@/composables/system/error'
-import { makePrivate, makePublic } from '@/services/api/dam/audioApi'
+import { makePrivate } from '@/services/api/dam/audioApi'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: AssetType) {
   const assetSlotsStore = useAssetSlotsStore()

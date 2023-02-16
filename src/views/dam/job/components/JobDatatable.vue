@@ -7,8 +7,15 @@ import type { Job } from '@/types/dam/Job'
 import { onMounted } from 'vue'
 import JobFilter from '@/views/dam/job/components/JobFilter.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { useFilterHelpers, usePagination, useTableColumns } from '@anzusystems/common-admin'
-import { ADatatable, ASystemEntityScope, ADatatablePagination, JobStatusChip } from '@anzusystems/common-admin'
+import {
+  ADatatable,
+  ADatatablePagination,
+  ASystemEntityScope,
+  JobStatusChip,
+  useFilterHelpers,
+  usePagination,
+  useTableColumns,
+} from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/dam/job/components/JobResourceChip.vue'
 import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
 import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
