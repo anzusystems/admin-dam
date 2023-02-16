@@ -66,6 +66,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'update:modelValue', data: string | number | string[] | number[] | null): void
   (e: 'blur', data: string | number | string[] | number[] | null): void
+  (e: 'focus', data: string | number | string[] | number[] | null): void
   (e: 'searchChange', data: string): void
   (e: 'searchChangeDebounced', data: string): void
 }>()
@@ -92,7 +93,15 @@ const { t } = useI18n()
 const system = inject<string | undefined>(SystemScopeSymbol, undefined)
 const subject = inject<string | undefined>(SubjectScopeSymbol, undefined)
 
+const isFocused = ref(false)
+
+const onFocus = () => {
+  isFocused.value = true
+  emit('focus', modelValue.value)
+}
+
 const onBlur = () => {
+  isFocused.value = false
   props.v?.$touch()
   emit('blur', modelValue.value)
 }
@@ -139,6 +148,7 @@ const allItems = computed<ValueObjectOption<string | number>[]>(() => {
 })
 
 const apiSearch = async (query: string) => {
+  console.log('apiSearch', query)
   // if (query.length > 0) {
   loading.value = true
   const filterField = innerFilter.value[props.filterByField]
@@ -188,6 +198,7 @@ const tryToLoadFromLazyLoader = (values: Array<string | number>) => {
 }
 
 const fetchOnInit = async (model: string | number | string[] | number[] | null) => {
+  console.log('fetchOnInit')
   if (!props.disableInitFetch && (isEmptyArray(model) || isNull(model))) {
     loading.value = true
     fetchedItems.value = await props.fetchItems(pagination, innerFilter.value)
@@ -198,8 +209,8 @@ const fetchOnInit = async (model: string | number | string[] | number[] | null) 
 watch(
   modelValue,
   async (newValue, oldValue) => {
-    console.log(oldValue, newValue)
     if (newValue === oldValue) return
+    console.log('modelValue watch', oldValue, newValue)
     if (isNull(newValue) || isUndefined(newValue) || (isArray(newValue) && newValue.length === 0)) {
       selectedItemsCache.value = []
       await fetchOnInit(newValue)
@@ -216,10 +227,17 @@ watch(
 )
 
 const search = ref('')
+
+const onSearchUpdate = (query: string) => {
+  if (!props.multiple && !isFocused.value && query.length === 0) return // vuetify fix
+  search.value = query
+}
+
 watchDebounced(
   search,
   (newValue, oldValue) => {
     if (newValue !== oldValue) {
+      console.log('search watchDebounced', newValue, oldValue)
       apiSearch(newValue)
       emit('searchChangeDebounced', newValue)
     }
@@ -237,7 +255,6 @@ watch(search, (newValue, oldValue) => {
 <template>
   <VAutocomplete
     v-model="modelValueVuetifyTypeFix"
-    v-model:search="search"
     :chips="chips"
     :items="allItems"
     item-title="title"
@@ -249,6 +266,8 @@ watch(search, (newValue, oldValue) => {
     :loading="loading"
     dirty
     @blur="onBlur"
+    @focus="onFocus"
+    @update:search="onSearchUpdate"
   >
     <template #label>
       <span v-if="!hideLabel" :key="requiredComputed + ''">
