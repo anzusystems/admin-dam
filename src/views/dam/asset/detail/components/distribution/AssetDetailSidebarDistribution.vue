@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { fetchAssetDistributionList } from '@/services/api/dam/distributionApi'

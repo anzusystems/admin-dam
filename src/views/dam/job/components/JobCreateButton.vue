@@ -9,13 +9,13 @@ import { useJobFactory } from '@/model/dam/factory/JobFactory'
 import type { Job } from '@/types/dam/Job'
 import { useJobValidation } from '@/views/dam/job/composables/jobValidations'
 import {
-  ARow,
-  ATextField,
-  ASystemEntityScope,
   ABooleanToggle,
-  useJobApi,
-  useErrorHandler,
+  ARow,
+  ASystemEntityScope,
+  ATextField,
   useAlerts,
+  useErrorHandler,
+  useJobApi,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { JobResource, useJobResource } from '@/model/dam/valueObject/JobResource'

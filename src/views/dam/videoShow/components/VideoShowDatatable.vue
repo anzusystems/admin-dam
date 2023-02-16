@@ -12,12 +12,12 @@ import { useVideoShowListActions } from '@/views/dam/videoShow/composables/video
 import VideoShowFilter from '@/views/dam/videoShow/components/VideoShowFilter.vue'
 import { useVideoShowListFilter } from '@/model/dam/filter/VideoShowFilter'
 import {
-  useTableColumns,
-  ASystemEntityScope,
   ADatatable,
-  usePagination,
-  useFilterHelpers,
   ADatatablePagination,
+  ASystemEntityScope,
+  useFilterHelpers,
+  usePagination,
+  useTableColumns,
 } from '@anzusystems/common-admin'
 
 const router = useRouter()

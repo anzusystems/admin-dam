@@ -1,8 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { isNull } from '@/utils/common'
-import type { AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
+import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
 import type { ListLoader } from '@/stores/dam/assetListStore'
-import type { AssetExternalProviderId } from '@/types/dam/AssetExternalProvider'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemType } from '@/types/dam/UploadQueue'
 

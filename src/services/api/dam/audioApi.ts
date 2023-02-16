@@ -5,8 +5,8 @@ import { apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetApi'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
-import type { AudioFile, FileDownloadLink } from '@/types/dam/File'
 import { QueueItemType } from '@/types/dam/UploadQueue'
+import type { AudioFile, FileDownloadLink } from '@/types/dam/File'
 
 const END_POINT = '/adm/v1/audio'
 const CHUNK_UPLOAD_TIMEOUT = 420
