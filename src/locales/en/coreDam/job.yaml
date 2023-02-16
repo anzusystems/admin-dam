@@ -1,0 +1,10 @@
+filter:
+  id: Id
+  status: Status
+  startedAtFrom: Started at from
+  startedAtUntil: Started at until
+model:
+  podcastId: Podcast Id
+  fullSync: Full synchronization
+jobResource:
+  jobPodcastSynchronizer: Podcast synchronizer

@@ -104,6 +104,13 @@ const opened = ref([])
       data-cy="user-permissions"
     />
     <VListItem
+      v-if="can(ACL.DAM_JOB_UI)"
+      :to="{ name: ROUTE.DAM.JOB.LIST }"
+      prepend-icon="mdi-file-cabinet"
+      :title="t('sidebar.settings.job')"
+      data-cy="job-settings"
+    />
+    <VListItem
       v-if="can(ACL.DAM_LOG_UI)"
       :to="{ name: ROUTE.COMMON.LOG.LIST }"
       prepend-icon="mdi-math-log"
