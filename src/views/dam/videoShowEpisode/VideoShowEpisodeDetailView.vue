@@ -8,7 +8,7 @@ import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useVideoShowEpisodeDetailActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore, videoShowEpisode } = useVideoShowEpisodeDetailActions()
 

@@ -11,7 +11,7 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useAssetLicenceDetailActions()
 

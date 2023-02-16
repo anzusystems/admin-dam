@@ -10,7 +10,7 @@ import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useAuthorDetailActions } from '@/views/dam/author/composables/authorActions'
 import AuthorDetail from '@/views/dam/author/components/AuthorDetail.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useAuthorDetailActions()
 
