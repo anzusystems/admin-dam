@@ -2,14 +2,13 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
+import { slugify } from '@anzusystems/common-admin'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { makePublic } from '@/services/api/dam/audioApi'
 import ATextField from '@/components/form/ATextField.vue'
-import { slugify } from '@anzusystems/common-admin'
-import { minLength, required, maxLength } from '@/plugins/validators'
+import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
-import { isArray, isNull } from '@/utils/common'
 
 const props = withDefaults(
   defineProps<{

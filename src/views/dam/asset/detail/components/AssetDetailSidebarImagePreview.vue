@@ -8,7 +8,6 @@ import type { VideoFile } from '@/types/dam/File'
 import { isVideoFile } from '@/types/dam/File'
 import { fetchVideoFile, updatePreviewImage } from '@/services/api/dam/videoApi'
 import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
-import { useI18n } from 'vue-i18n'
 import { useErrorHandler } from '@/composables/system/error'
 import { useAlerts } from '@/composables/system/alerts'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/dam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
@@ -19,8 +18,6 @@ withDefaults(
   }>(),
   {}
 )
-
-const { t } = useI18n({ useScope: 'global' })
 
 const loading = ref(true)
 const saving = ref(false)

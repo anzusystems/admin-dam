@@ -4,10 +4,9 @@ import { isNull } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImageFile } from '@/types/dam/File'
-import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { AssetFileProcessStatus } from '@/types/dam/File'
+import { fetchImageFile } from '@/services/api/dam/imageApi'
 import { useI18n } from 'vue-i18n'
-import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
 import AssetByImageIdLink from '@/views/dam/asset/components/AssetByImageIdLink.vue'
 
 const props = withDefaults(

@@ -4,8 +4,8 @@ import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
 import { fetchVideoFileDistributionPreviewList } from '@/services/api/dam/videoApi'
 import type { DocId } from '@anzusystems/common-admin'
-import type { DistributionImagePreviewDto } from '@/types/dam/DistributionImagePreviewDto'
 import { isNull } from '@anzusystems/common-admin'
+import type { DistributionImagePreviewDto } from '@/types/dam/DistributionImagePreviewDto'
 
 const { handleError } = useErrorHandler()
 

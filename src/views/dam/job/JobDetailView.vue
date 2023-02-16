@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { toInt } from '@anzusystems/common-admin'
+import { ACard, toInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-import { ACard } from '@anzusystems/common-admin'
 import { useJobDetailActions } from '@/views/dam/job/composables/jobActions'
 import JobDetail from '@/views/dam/job/components/JobDetail.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'

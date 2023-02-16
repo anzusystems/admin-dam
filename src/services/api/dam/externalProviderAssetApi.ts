@@ -3,8 +3,11 @@ import type { FilterBag } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'
 import { apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { AssetExternalProviderDetailDto, AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
-import type { AssetExternalProviderId } from '@/types/dam/AssetExternalProvider'
+import type {
+  AssetExternalProviderDetailDto,
+  AssetExternalProviderId,
+  AssetExternalProviderListDto,
+} from '@/types/dam/AssetExternalProvider'
 
 const END_POINT = '/adm/v1/asset-external-provider'
 export const ENTITY = 'asset'

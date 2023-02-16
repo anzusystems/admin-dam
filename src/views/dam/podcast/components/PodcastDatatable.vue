@@ -12,12 +12,12 @@ import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastAc
 import PodcastFilter from '@/views/dam/podcast/components/PodcastFilter.vue'
 import { usePodcastListFilter } from '@/model/dam/filter/PodcastFilter'
 import {
-  useTableColumns,
-  ASystemEntityScope,
   ADatatable,
-  usePagination,
-  useFilterHelpers,
   ADatatablePagination,
+  ASystemEntityScope,
+  useFilterHelpers,
+  usePagination,
+  useTableColumns,
 } from '@anzusystems/common-admin'
 
 const router = useRouter()
