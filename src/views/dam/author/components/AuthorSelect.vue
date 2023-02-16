@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useAuthorSelectActions } from '@/views/dam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/dam/filter/AuthorFilter'
 import LazyAuthorChip from '@/views/dam/author/components/LazyAuthorChip.vue'
@@ -24,6 +24,7 @@ const props = withDefaults(
     clearable?: boolean
     suggestions?: Suggestions
     chips?: boolean
+    disableInitFetch?: boolean
     dataCy?: string
     validationScope?: ValidationScope
   }>(),
@@ -37,6 +38,7 @@ const props = withDefaults(
       return {}
     },
     chips: false,
+    disableInitFetch: false,
     dataCy: '',
     validationScope: undefined,
   }
@@ -117,7 +119,7 @@ onMounted(() => {
 
 <template>
   <div class="d-flex">
-    <ARemoteSelect
+    <ARemoteAutocomplete
       v-model="modelValueComputed"
       :v="v$"
       :required="requiredComputed"
@@ -129,9 +131,9 @@ onMounted(() => {
       :clearable="clearable"
       :chips="chips"
       filter-by-field="text"
-      :fetch-few-on-init="false"
       :lazy-loader="useLazyAuthor"
       :data-cy="dataCy"
+      :disable-init-fetch="disableInitFetch"
       @search-change="searchChange"
     >
       <template #chip="{ props: chipProps, item }">
@@ -145,7 +147,7 @@ onMounted(() => {
           <VProgressCircular v-else indeterminate size="15" />
         </VChip>
       </template>
-    </ARemoteSelect>
+    </ARemoteAutocomplete>
     <div>
       <AuthorCreateButton
         variant="icon"

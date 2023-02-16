@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useVideoShowSelectActions } from '@/views/dam/videoShow/composables/videoShowActions'
 import { useVideoShowFilter } from '@/model/dam/filter/VideoShowFilter'
 
@@ -11,6 +11,7 @@ const props = withDefaults(
     required?: boolean | null
     multiple?: boolean
     clearable?: boolean
+    disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
@@ -18,6 +19,7 @@ const props = withDefaults(
     required: null,
     multiple: false,
     clearable: false,
+    disableInitFetch: false,
     dataCy: '',
   }
 )
@@ -32,7 +34,7 @@ const innerFilter = useVideoShowFilter()
 </script>
 
 <template>
-  <ARemoteSelect
+  <ARemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"
@@ -43,5 +45,6 @@ const innerFilter = useVideoShowFilter()
     :clearable="clearable"
     filter-by-field="title"
     :data-cy="dataCy"
+    :disable-init-fetch="disableInitFetch"
   />
 </template>

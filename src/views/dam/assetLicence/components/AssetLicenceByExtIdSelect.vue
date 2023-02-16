@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useAssetLicenceByExtIdSelectActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
 import { IntegerId } from '@anzusystems/common-admin'
@@ -16,7 +16,7 @@ const props = withDefaults(
     dataCy?: string
     extSystemId?: IntegerId | null
     hideDetails?: boolean
-    fetchFewOnInit?: boolean
+    disableInitFetch?: boolean
   }>(),
   {
     label: null,
@@ -26,7 +26,7 @@ const props = withDefaults(
     dataCy: '',
     extSystemId: null,
     hideDetails: undefined,
-    fetchFewOnInit: true,
+    disableInitFetch: false,
   }
 )
 const emit = defineEmits<{
@@ -58,7 +58,7 @@ watch(
 </script>
 
 <template>
-  <ARemoteSelect
+  <ARemoteAutocomplete
     :key="selectedExtSystemId + ''"
     v-model="modelValue"
     :required="required"
@@ -71,6 +71,6 @@ watch(
     filter-by-field="extId"
     :data-cy="dataCy"
     :hide-details="hideDetails"
-    :fetch-few-on-init="fetchFewOnInit"
+    :disable-init-fetch="disableInitFetch"
   />
 </template>

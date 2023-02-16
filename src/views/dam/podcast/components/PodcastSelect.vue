@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { usePodcastSelectActions } from '@/views/dam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/model/dam/filter/PodcastFilter'
 
@@ -11,6 +11,7 @@ const props = withDefaults(
     required?: boolean | null
     multiple?: boolean
     clearable?: boolean
+    disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
@@ -18,6 +19,7 @@ const props = withDefaults(
     required: null,
     multiple: false,
     clearable: false,
+    disableInitFetch: false,
     dataCy: '',
   }
 )
@@ -32,7 +34,7 @@ const innerFilter = usePodcastFilter()
 </script>
 
 <template>
-  <ARemoteSelect
+  <ARemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"
@@ -41,6 +43,7 @@ const innerFilter = usePodcastFilter()
     :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
+    :disable-init-fetch="disableInitFetch"
     filter-by-field="title"
     :data-cy="dataCy"
   />
