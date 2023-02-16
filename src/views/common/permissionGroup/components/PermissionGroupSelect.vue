@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupFilter } from '@/model/common/filter/PermissionGroupFilter'
 
@@ -13,6 +13,7 @@ const props = withDefaults(
     required?: boolean | null
     multiple?: boolean
     clearable?: boolean
+    disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
@@ -20,6 +21,7 @@ const props = withDefaults(
     required: null,
     multiple: false,
     clearable: false,
+    disableInitFetch: false,
     dataCy: 'permissionGroup-select',
   }
 )
@@ -33,7 +35,7 @@ const innerFilter = usePermissionGroupFilter()
 </script>
 
 <template>
-  <ARemoteSelect
+  <ARemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"
@@ -44,9 +46,8 @@ const innerFilter = usePermissionGroupFilter()
     :clearable="clearable"
     filter-by-field="title"
     :data-cy="dataCy"
-    init-fetch
     chips
-    closable-chips
     hide-details
+    :disable-init-fetch="disableInitFetch"
   />
 </template>
