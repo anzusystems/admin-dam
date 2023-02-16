@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { AssetSlot } from '@/types/dam/AssetSlot'
+import type { AssetSlot } from '@/types/dam/AssetSlot'
 import { onMounted, ref } from 'vue'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import type { VideoFile } from '@/types/dam/File'

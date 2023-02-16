@@ -3,7 +3,7 @@ import AssetQueueItemEditable from '@/views/dam/asset/components/queue/AssetQueu
 import { computed } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/views/dam/asset/components/queue/AssetQueueSelectedSidebar.vue'
-import { UploadQueueItem } from '@/types/dam/UploadQueue'
+import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 
 const props = withDefaults(
   defineProps<{

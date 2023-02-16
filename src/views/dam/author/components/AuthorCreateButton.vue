@@ -17,7 +17,7 @@ import { useAuthorValidation } from '@/views/dam/author/composables/authorValida
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { ValidationScope } from '@/types/Validation'
+import type { ValidationScope } from '@/types/Validation'
 import { AuthorCreateValidationScopeSymbol } from '@/components/validationScopes'
 
 const props = withDefaults(

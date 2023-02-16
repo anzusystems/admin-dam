@@ -19,6 +19,7 @@ export function useDistributionYoutubeFactory() {
         forKids: false,
         notifySubscribers: false,
       },
+      blockedBy: [],
     }
   }
 

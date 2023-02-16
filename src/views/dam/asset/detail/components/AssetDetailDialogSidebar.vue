@@ -14,7 +14,7 @@ import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/dam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
 import AssetDetailSidebarSlots from '@/views/dam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 import DistributionCategoryWidget from '@/views/dam/distributionCategory/components/DistributionCategoryWidget.vue'
-import { AssetFileProcessStatus } from '@/types/dam/File'
+import type { AssetFileProcessStatus } from '@/types/dam/File'
 import AssetDetailSidebarImagePreview from '@/views/dam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
 import AssetDetailSidebarVideoShow from '@/views/dam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 

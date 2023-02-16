@@ -18,7 +18,7 @@ import {
   useJobApi,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
-import { JobResource, useJobResource } from '@/model/dam/valueObject/JobResource'
+import { type JobResource, useJobResource } from '@/model/dam/valueObject/JobResource'
 import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 
 const props = withDefaults(

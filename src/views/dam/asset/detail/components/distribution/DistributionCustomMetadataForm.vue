@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCustomMetadataElement.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import { DistributionServiceName } from '@/types/dam/DamConfig'
+import type { DistributionServiceName } from '@/types/dam/DamConfig'
 import { damConfigDistributionCustomFormElements } from '@/services/DamConfigDistributionCustomFormService'
 
 // damConfigDistributionCustomFormElements must be loaded before using this component
