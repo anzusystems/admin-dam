@@ -12,7 +12,7 @@ import PodcastDetail from '@/views/dam/podcast/components/PodcastDetail.vue'
 import { PodcastDetailTab, usePodcastDetailTab } from '@/views/dam/podcast/composables/podcastDetailTab'
 import PodcastEpisodeDatatable from '@/views/dam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import PodcastEpisodeCreateButton from '@/views/dam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 
 const { detailLoading, fetchData, resetStore } = usePodcastDetailActions()

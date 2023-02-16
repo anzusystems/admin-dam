@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import ACopyText from '@/components/common/ACopyText.vue'
 import ARow from '@/components/common/ARow.vue'
 import { storeToRefs } from 'pinia'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import UserEditForm from '@/views/dam/user/components/UserEditForm.vue'
 import { toInt } from '@/utils/string'
 import { onBeforeUnmount, onMounted } from 'vue'
