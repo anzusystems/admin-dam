@@ -9,9 +9,9 @@ import { usePagination } from '@/composables/system/pagination'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import { useDistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { required } from '@/plugins/validators'
-import useVuelidate, { ErrorObject } from '@vuelidate/core'
+import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 
 // now only supports strategy AtLeastOne, as BE too
 

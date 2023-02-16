@@ -4,7 +4,7 @@ import { fetchDistributionCategory } from '@/services/api/dam/distributionCatego
 import { computed, ref, watch } from 'vue'
 import { isNull } from '@/utils/common'
 import type { DocId } from '@anzusystems/common-admin'
-import { DocIdNullable } from '@anzusystems/common-admin'
+import type { DocIdNullable } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/types/dam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'

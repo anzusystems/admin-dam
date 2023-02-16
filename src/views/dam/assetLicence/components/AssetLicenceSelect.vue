@@ -3,7 +3,7 @@ import { useVModels } from '@vueuse/core'
 import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useAssetLicenceSelectActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
-import { IntegerId } from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
 import { computed, watch } from 'vue'
 
 const props = withDefaults(

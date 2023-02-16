@@ -132,21 +132,21 @@ const onAnyMetadataChange = () => {
         <div v-if="assetMainFile && assetMainFile.imageAttributes && isTypeImage">
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.dominantColor') }}</VCol>
-            <VCol cols="9"><DColorBox :color="assetMainFile.imageAttributes.mostDominantColor" /></VCol>
+            <VCol cols="9"><DColorBox :color="assetMainFile?.imageAttributes.mostDominantColor" /></VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.width') }}</VCol>
-            <VCol cols="9">{{ assetMainFile.imageAttributes.width }} px</VCol>
+            <VCol cols="9">{{ assetMainFile?.imageAttributes.width }} px</VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.height') }}</VCol>
-            <VCol cols="9">{{ assetMainFile.imageAttributes.height }} px</VCol>
+            <VCol cols="9">{{ assetMainFile?.imageAttributes.height }} px</VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.ratio') }}</VCol>
             <VCol cols="9">
-              {{ assetMainFile.imageAttributes.ratioWidth }} /
-              {{ assetMainFile.imageAttributes.ratioHeight }}
+              {{ assetMainFile?.imageAttributes.ratioWidth }} /
+              {{ assetMainFile?.imageAttributes.ratioHeight }}
             </VCol>
           </VRow>
         </div>

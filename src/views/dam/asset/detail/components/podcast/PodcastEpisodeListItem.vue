@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import LazyPodcastChip from '@/views/dam/podcast/components/LazyPodcastChip.vue'
-import { DocId } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 
 withDefaults(

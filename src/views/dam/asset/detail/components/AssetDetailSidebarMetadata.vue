@@ -12,7 +12,7 @@ import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
 import AssetDownloadButton from '@/views/dam/asset/detail/components/AssetDownloadButton.vue'
-import { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { ref } from 'vue'
 
 withDefaults(

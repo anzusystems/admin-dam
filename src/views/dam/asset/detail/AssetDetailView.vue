@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
-import { DocId, isDocId, isString } from '@anzusystems/common-admin'
+import { type DocId, isDocId, isString } from '@anzusystems/common-admin'
 import { useAlerts } from '@/composables/system/alerts'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { storeToRefs } from 'pinia'

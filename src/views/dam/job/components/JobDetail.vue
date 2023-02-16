@@ -6,7 +6,7 @@ import { ABooleanValue, ACard, ADatetime, ARow, JobStatusChip } from '@anzusyste
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import ACopyText from '@/components/common/ACopyText.vue'
 import { computed } from 'vue'
-import { JobResource } from '@/model/dam/valueObject/JobResource'
+import type { JobResource } from '@/model/dam/valueObject/JobResource'
 
 const { job } = storeToRefs(useJobOneStore())
 

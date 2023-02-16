@@ -10,6 +10,7 @@ export function useDistributionJwFactory() {
         keywords: [],
       },
       distributionService: '',
+      blockedBy: [],
     }
   }
 

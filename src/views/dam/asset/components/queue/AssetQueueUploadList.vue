@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
-import { UploadQueueItem } from '@/types/dam/UploadQueue'
+import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 
 const props = withDefaults(
   defineProps<{
