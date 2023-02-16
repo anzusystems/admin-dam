@@ -9,7 +9,7 @@ import { ENTITY, fetchDistributionCategory } from '@/services/api/dam/distributi
 import ARow from '@/components/common/ARow.vue'
 import { useErrorHandler } from '@/composables/system/error'
 import { updateAssetCategory } from '@/services/api/dam/assetApi'
-import { DistributionCategory } from '@/types/dam/DistributionCategory'
+import type { DistributionCategory } from '@/types/dam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { isNull } from '@/utils/common'

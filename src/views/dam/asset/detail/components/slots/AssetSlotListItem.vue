@@ -6,11 +6,11 @@ import { computed, watch } from 'vue'
 import AssetSlotListItemRemove from '@/views/dam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemDuplicate from '@/views/dam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/dam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
-import { DocId } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
-import { QueueItemStatus, UploadQueueItem } from '@/types/dam/UploadQueue'
+import { QueueItemStatus, type UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isUndefined } from '@/utils/common'
 import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueItemList.vue'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
@@ -168,17 +168,17 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
     <VRow v-else>
       <VCol v-if="itemHasFile">
         <div class="font-weight-bold">
-          {{ slotName }} <span v-if="item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
+          {{ slotName }} <span v-if="item && item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
         </div>
         <div>{{ fileTitle }}</div>
         <AssetFilePublicLink
-          v-if="assetType === AssetType.Audio && item.assetFile"
+          v-if="assetType === AssetType.Audio && item && item.assetFile"
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"
           @open-make-public-dialog="openMakeFilePrivateDialog"
         />
         <ImageFile
-          v-if="assetType === AssetType.Image && item.assetFile"
+          v-if="assetType === AssetType.Image && item && item.assetFile"
           :model-value="item.assetFile.id"
           :height="200"
         />
@@ -213,7 +213,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                 />
                 <VListItem :title="t('coreDam.asset.slots.actions.download')" @click.stop="downloadFile" />
                 <VListItem
-                  v-if="totalSlotCount > 1 && !item.main"
+                  v-if="totalSlotCount > 1 && item && !item.main"
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
                   @click.stop="makeMainFile"
                 />

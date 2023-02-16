@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { clickBlur } from '@/utils/event'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { AssetSlot } from '@/types/dam/AssetSlot'
-import { AssetType } from '@/model/dam/valueObject/AssetType'
-import { DocId } from '@anzusystems/common-admin'
+import type { AssetSlot } from '@/types/dam/AssetSlot'
+import type { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { DocId } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 
 const props = withDefaults(

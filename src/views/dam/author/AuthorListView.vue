@@ -7,7 +7,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import AuthorDatatable from '@/views/dam/author/components/AuthorDatatable.vue'
 import AuthorCreateButton from '@/views/dam/author/components/AuthorCreateButton.vue'
 import { ref } from 'vue'
-import AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
+import type AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useAuthorListActions } from '@/views/dam/author/composables/authorActions'
 
 const { t } = useI18n({ useScope: 'global' })
