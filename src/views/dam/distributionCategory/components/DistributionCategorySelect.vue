@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ARemoteSelect from '@/components/form/ARemoteSelect.vue'
+import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
 import { useDistributionCategorySelectActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 
@@ -10,6 +10,7 @@ withDefaults(
     required?: boolean | null
     multiple?: boolean
     clearable?: boolean
+    disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
@@ -17,6 +18,7 @@ withDefaults(
     required: null,
     multiple: false,
     clearable: false,
+    disableInitFetch: false,
     dataCy: '',
   }
 )
@@ -30,7 +32,7 @@ const innerFilter = useDistributionCategoryFilter()
 </script>
 
 <template>
-  <ARemoteSelect
+  <ARemoteAutocomplete
     :model-value="modelValue"
     :required="required"
     :label="label"
@@ -41,6 +43,7 @@ const innerFilter = useDistributionCategoryFilter()
     :clearable="clearable"
     filter-by-field="name"
     :data-cy="dataCy"
+    :disable-init-fetch="disableInitFetch"
     @update:model-value="emit('update:modelValue', $event)"
   />
 </template>

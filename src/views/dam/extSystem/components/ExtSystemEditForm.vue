@@ -29,6 +29,7 @@ const { t } = useI18n({ useScope: 'global' })
             :label="t('coreDam.extSystem.model.adminUsers')"
             multiple
             data-cy="ext-system-admin-users"
+            disable-init-fetch
           />
         </ARow>
       </VCol>

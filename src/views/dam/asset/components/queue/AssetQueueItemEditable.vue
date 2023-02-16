@@ -236,6 +236,7 @@ const showCancel = computed(() => {
                       chips
                       clearable
                       multiple
+                      disable-init-fetch
                       :required="keywordRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
@@ -253,6 +254,7 @@ const showCancel = computed(() => {
                       chips
                       clearable
                       multiple
+                      disable-init-fetch
                       :required="authorRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
