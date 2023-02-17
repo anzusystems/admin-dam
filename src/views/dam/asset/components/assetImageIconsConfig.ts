@@ -1,35 +1,45 @@
+import svg2k from '@/assets/meta-icons/2k.svg'
+import svg4k from '@/assets/meta-icons/4k.svg'
+import svg8k from '@/assets/meta-icons/8k.svg'
+import svgqhd from '@/assets/meta-icons/qhd.svg'
+import svgfhd from '@/assets/meta-icons/fhd.svg'
+import svgslot from '@/assets/meta-icons/slot.svg'
+import svglow from '@/assets/meta-icons/low.svg'
+import svgrss from '@/assets/meta-icons/rss.svg'
+
 export const DIMENSIONS_CONFIG = [
   {
-    width: 1280,
-    height: 720,
-    svgSrc: 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg',
-  },
-  {
+    title: 'FullHD',
     width: 1920,
     height: 1080,
-    svgSrc: 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg',
+    svgSrc: svgfhd,
   },
   {
+    title: '2K',
     width: 2048,
     height: 1080,
-    svgSrc: 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg',
+    svgSrc: svg2k,
   },
   {
+    title: 'QHD',
     width: 2560,
     height: 1440,
-    svgSrc: 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg',
+    svgSrc: svgqhd,
   },
   {
+    title: '4K',
     width: 3840,
     height: 2160,
-    svgSrc: 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg',
+    svgSrc: svg4k,
   },
   {
+    title: '8K',
     width: 7680,
     height: 4320,
-    svgSrc: 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg',
+    svgSrc: svg8k,
   },
 ]
-export const ICON_SLOTS = 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg'
-export const ICON_LOW = 'https://web-static.smedata.sk/2.18.0/weather/images/weather-icons/clear_sky.svg'
+export const ICON_SLOTS = svgslot
+export const ICON_RSS = svgrss
+export const ICON_LOW = svglow
 export const LOW_DIMENSION = 600

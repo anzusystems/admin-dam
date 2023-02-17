@@ -46,7 +46,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
   const { maxSelectedItems } = useBetaTestFeatures()
-  const showMetaIcons = ref(false)
+  const showMetaIcons = ref(true)
 
   const toggleShowMetaIcons = () => {
     showMetaIcons.value = !showMetaIcons.value
