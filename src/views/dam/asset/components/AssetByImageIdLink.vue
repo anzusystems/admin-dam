@@ -3,8 +3,8 @@ import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import type { DocId } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { fetchAsset } from '@/services/api/dam/assetApi'
-import type { AssetDetailItemDto } from '@/types/dam/Asset'
+import { fetchImageFile } from '@/services/api/dam/imageApi'
+import type { ImageFile } from '@/types/dam/File'
 
 const props = withDefaults(
   defineProps<{
@@ -12,7 +12,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const asset = ref<AssetDetailItemDto | null>(null)
+const image = ref<ImageFile | null>(null)
 const loading = ref(false)
 
 const router = useRouter()
@@ -20,7 +20,7 @@ const router = useRouter()
 const loadAsset = async (id: DocId) => {
   loading.value = true
   try {
-    asset.value = await fetchAsset(id)
+    image.value = await fetchImageFile(id)
   } catch (error) {
     //
   } finally {
@@ -42,13 +42,13 @@ watch(
 )
 
 const href = computed(() => {
-  if (!asset.value) return undefined
-  return router.resolve({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: asset.value.id } }).href
+  if (!image.value) return undefined
+  return router.resolve({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: image.value.asset } }).href
 })
 </script>
 
 <template>
-  <VBtn :href="href" target="_blank" :loading="loading">
+  <VBtn v-if="href" :href="href" target="_blank" :loading="loading">
     <slot></slot>
   </VBtn>
 </template>
