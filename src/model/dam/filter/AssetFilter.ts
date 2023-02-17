@@ -49,7 +49,7 @@ const filter = reactive({
     ...makeFilter({ name: 'slotNames', default: [] }),
   },
   distributedInServices: {
-    ...makeFilter({ name: 'distributedInServices', default: [] }),
+    ...makeFilter({ name: 'distributedInServices', default: [], multiple: true }),
   },
   licences: {
     ...makeFilter({ name: 'licences', default: [] }),

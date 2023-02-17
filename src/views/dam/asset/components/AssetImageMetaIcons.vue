@@ -20,7 +20,6 @@ const props = withDefaults(
 )
 
 const checkDimensions = (icons: string[], titles: string[]) => {
-  console.log(props.assetFileProperties)
   if (props.assetFileProperties.width === 0 || props.assetFileProperties.height === 0) {
     return
   }

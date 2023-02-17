@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
 import ADatetimePicker from '@/components/common/ADatetimePicker.vue'
 import type { Filter } from '@/types/Filter'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -12,12 +12,20 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'update:modelValue', data: any): void
 }>()
-const { modelValue } = useVModels(props, emit)
+
+const value = computed({
+  get() {
+    return props.modelValue.model
+  },
+  set(newValue) {
+    emit('update:modelValue', { ...props.modelValue, ...{ model: newValue } })
+  },
+})
 </script>
 
 <template>
   <ADatetimePicker
-    v-model="modelValue.model"
+    v-model="value"
     :clearable="!modelValue.mandatory"
     :default-value="modelValue.default"
     :label="modelValue.title"
