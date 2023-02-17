@@ -27,19 +27,16 @@ const { jobStatusOptions } = useJobStatus()
     <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="12" sm="3">
-          <AFilterInteger v-model="filter.id"></AFilterInteger>
+          <AFilterInteger v-model="filter.id" />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.status"
-            :items="jobStatusOptions"
-          ></AFilterValueObjectOptionsSelect>
+          <AFilterValueObjectOptionsSelect v-model="filter.status" :items="jobStatusOptions" />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="filter.startedAtFrom"></AFilterDatetime>
+          <AFilterDatetime v-model="filter.startedAtFrom" />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="filter.startedAtUntil"></AFilterDatetime>
+          <AFilterDatetime v-model="filter.startedAtUntil" />
         </VCol>
       </VRow>
     </AFilterWrapper>

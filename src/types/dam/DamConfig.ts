@@ -14,6 +14,7 @@ export interface DamConfig {
   distributionServices: {
     [key: string]: {
       title: string
+      iconPath: string
       type: DistributionServiceType
       allowedRedistributeStatuses: Array<DistributionStatus>
     }
