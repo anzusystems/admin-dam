@@ -11,7 +11,7 @@ import { useImageRoiFilter } from '@/model/dam/filter/ImageRoiFilter'
 import { usePagination } from '@/composables/system/pagination'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
-import { simpleCloneObject } from '@anzusystems/common-admin'
+import { simpleCloneObject } from '@/utils/object'
 import { fetchImageFile } from '@/services/api/dam/imageApi'
 
 withDefaults(

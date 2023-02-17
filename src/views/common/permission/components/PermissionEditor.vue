@@ -8,14 +8,8 @@ import { isUndefined } from '@/utils/common'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
 import { useAcl } from '@/composables/system/ability'
-import {
-  deletePropertyByPath,
-  getValueByPath,
-  Grant,
-  GrantOrigin,
-  setValueByPath,
-  simpleCloneObject,
-} from '@anzusystems/common-admin'
+import { deletePropertyByPath, getValueByPath, Grant, GrantOrigin, setValueByPath } from '@anzusystems/common-admin'
+import { simpleCloneObject } from '@/utils/object'
 
 const props = defineProps<{
   modelValue: Permissions
