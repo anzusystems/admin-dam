@@ -1,4 +1,5 @@
 import { isUndefined } from '@/utils/common'
+import { isProxy, isRef, toRaw } from 'vue'
 
 export const deepFreeze = <T>(obj: T) => {
   const propNames = Object.getOwnPropertyNames(obj)
@@ -51,6 +52,12 @@ export const setValueByPath = (obj: any, path: string, value: any, splitChar = '
 export const simpleCloneObject = <T>(object: T) => {
   if (typeof structuredClone === 'function') {
     try {
+      if (isProxy(object)) {
+        return structuredClone(toRaw(object)) as T
+      }
+      if (isRef(object)) {
+        return structuredClone(object.value) as T
+      }
       return structuredClone(object) as T
     } catch (error) {
       console.error('simpleCloneObject error', object)
