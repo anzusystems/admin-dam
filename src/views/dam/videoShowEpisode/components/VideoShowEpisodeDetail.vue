@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import ARow from '@/components/common/ARow.vue'
 import ACopyText from '@/components/common/ACopyText.vue'

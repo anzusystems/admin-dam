@@ -10,7 +10,7 @@ import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useKeywordDetailActions } from '@/views/dam/keyword/composables/keywordActions'
 import KeywordDetail from '@/views/dam/keyword/components/KeywordDetail.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useKeywordDetailActions()
 

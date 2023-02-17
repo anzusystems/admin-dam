@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import ExtSystemDatatable from '@/views/dam/extSystem/components/ExtSystemDatatable.vue'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import { useI18n } from 'vue-i18n'

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import UserDatatable from '@/views/dam/user/components/UserDatatable.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { ref } from 'vue'

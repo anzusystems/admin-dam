@@ -12,7 +12,7 @@ import VideoShowDetail from '@/views/dam/videoShow/components/VideoShowDetail.vu
 import { useVideoShowDetailTab, VideoShowDetailTab } from '@/views/dam/videoShow/composables/videoShowDetailTab'
 import VideoShowEpisodeDatatable from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
 import VideoShowEpisodeCreateButton from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeListActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 
 const { detailLoading, fetchData, resetStore } = useVideoShowDetailActions()

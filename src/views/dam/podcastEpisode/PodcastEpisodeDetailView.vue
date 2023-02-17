@@ -12,7 +12,7 @@ import {
   usePodcastEpisodeRemoveActions,
 } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeDetail from '@/views/dam/podcastEpisode/components/PodcastEpisodeDetail.vue'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
