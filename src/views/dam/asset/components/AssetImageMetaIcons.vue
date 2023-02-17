@@ -20,6 +20,10 @@ const props = withDefaults(
 )
 
 const checkDimensions = (icons: string[], titles: string[]) => {
+  console.log(props.assetFileProperties)
+  if (props.assetFileProperties.width === 0 || props.assetFileProperties.height === 0) {
+    return
+  }
   if (props.assetFileProperties.width < LOW_DIMENSION || props.assetFileProperties.height < LOW_DIMENSION) {
     icons.push(ICON_LOW)
     titles.push('Low quality')
