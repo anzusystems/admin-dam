@@ -49,5 +49,14 @@ export const setValueByPath = (obj: any, path: string, value: any, splitChar = '
  * Use only for objects with some primitives like number, string, boolean, null. Not supported: function, undefined, symbol, ...
  */
 export const simpleCloneObject = <T>(object: T) => {
+  if (typeof structuredClone === 'function') {
+    try {
+      return structuredClone(object) as T
+    } catch (error) {
+      console.error('simpleCloneObject error', object)
+
+      return JSON.parse(JSON.stringify(object)) as T
+    }
+  }
   return JSON.parse(JSON.stringify(object)) as T
 }
