@@ -36,7 +36,6 @@ const imageFile = ref<null | ImageFile>(null)
 const fetchImage = async (id: DocId) => {
   loading.value = true
   imageFile.value = await fetchImageFile(id)
-  console.log(imageFile.value)
   loading.value = false
 }
 
