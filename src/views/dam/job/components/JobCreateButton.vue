@@ -9,6 +9,7 @@ import { useJobFactory } from '@/model/dam/factory/JobFactory'
 import type { Job } from '@/types/dam/Job'
 import { useJobValidation } from '@/views/dam/job/composables/jobValidations'
 import {
+  AValueObjectOptionsSelect,
   ABooleanToggle,
   ARow,
   ASystemEntityScope,
@@ -19,7 +20,6 @@ import {
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { type JobResource, useJobResource } from '@/model/dam/valueObject/JobResource'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 
 const props = withDefaults(
   defineProps<{
