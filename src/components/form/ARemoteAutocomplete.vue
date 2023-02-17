@@ -148,14 +148,11 @@ const allItems = computed<ValueObjectOption<string | number>[]>(() => {
 })
 
 const apiSearch = async (query: string) => {
-  console.log('apiSearch', query)
-  // if (query.length > 0) {
   loading.value = true
   const filterField = innerFilter.value[props.filterByField]
   filterField.model = query
   fetchedItems.value = await props.fetchItems(pagination, innerFilter.value)
   loading.value = false
-  // }
 }
 
 if (props.lazyLoader) {
@@ -198,7 +195,6 @@ const tryToLoadFromLazyLoader = (values: Array<string | number>) => {
 }
 
 const fetchOnInit = async (model: string | number | string[] | number[] | null) => {
-  console.log('fetchOnInit')
   if (!props.disableInitFetch && (isEmptyArray(model) || isNull(model))) {
     loading.value = true
     fetchedItems.value = await props.fetchItems(pagination, innerFilter.value)
@@ -210,7 +206,6 @@ watch(
   modelValue,
   async (newValue, oldValue) => {
     if (newValue === oldValue) return
-    console.log('modelValue watch', oldValue, newValue)
     if (isNull(newValue) || isUndefined(newValue) || (isArray(newValue) && newValue.length === 0)) {
       selectedItemsCache.value = []
       await fetchOnInit(newValue)
@@ -237,7 +232,6 @@ watchDebounced(
   search,
   (newValue, oldValue) => {
     if (newValue !== oldValue) {
-      console.log('search watchDebounced', newValue, oldValue)
       apiSearch(newValue)
       emit('searchChangeDebounced', newValue)
     }

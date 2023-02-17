@@ -78,14 +78,6 @@ const imageProperties = computed(() => {
     bgColor: IMAGE_BG_COLOR_DEFAULT,
   }
 })
-
-const testMetaIconData: AssetFileProperties = {
-  distributesInServices: [],
-  slotNames: ['default', 'bonus'],
-  fromRss: true,
-  width: 1920,
-  height: 1080,
-}
 </script>
 
 <template>
@@ -110,7 +102,7 @@ const testMetaIconData: AssetFileProperties = {
         :width="imageProperties.width"
         :height="imageProperties.height"
         :fallback-height="IMAGE_HEIGHT"
-        :asset-file-properties="testMetaIconData"
+        :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 import ALocaleSelect from '@/components/system/ALocaleSelect.vue'
 import AToggleTheme from '@/components/system/AThemeSelect.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'

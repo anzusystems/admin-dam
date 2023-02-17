@@ -4,7 +4,7 @@ import { useLogOneStore } from '@/stores/common/log'
 import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import ACard from '@/components/common/ACard.vue'
+import { ACard } from '@anzusystems/common-admin'
 
 const { log } = storeToRefs(useLogOneStore())
 
