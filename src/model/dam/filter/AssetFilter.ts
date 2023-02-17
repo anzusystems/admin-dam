@@ -15,18 +15,6 @@ const filter = reactive({
   type: {
     ...makeFilter({ name: 'type', default: [] }),
   },
-  described: {
-    ...makeFilter({ name: 'described', default: true }),
-  },
-  visible: {
-    ...makeFilter({ name: 'visible', default: true }),
-  },
-  inPodcast: {
-    ...makeFilter({ name: 'inPodcast', default: null }),
-  },
-  generatedBySystem: {
-    ...makeFilter({ name: 'generatedBySystem', default: false }),
-  },
   status: {
     ...makeFilter({ name: 'status', default: [] }),
   },
@@ -42,8 +30,35 @@ const filter = reactive({
   orientation: {
     ...makeFilter({ name: 'orientation', default: [] }),
   },
+  described: {
+    ...makeFilter({ name: 'described', default: true }),
+  },
+  visible: {
+    ...makeFilter({ name: 'visible', default: true }),
+  },
+  generatedBySystem: {
+    ...makeFilter({ name: 'generatedBySystem', default: false }),
+  },
+  inPodcast: {
+    ...makeFilter({ name: 'inPodcast', default: null }),
+  },
+  fromRss: {
+    ...makeFilter({ name: 'fromRss', default: null }),
+  },
+  slotNames: {
+    ...makeFilter({ name: 'slotNames', default: [] }),
+  },
+  distributedInServices: {
+    ...makeFilter({ name: 'distributedInServices', default: [] }),
+  },
   licences: {
     ...makeFilter({ name: 'licences', default: [] }),
+  },
+  shortestDimensionFrom: {
+    ...makeFilter({ name: 'shortestDimensionFrom', default: null }),
+  },
+  shortestDimensionUntil: {
+    ...makeFilter({ name: 'shortestDimensionUntil', default: null }),
   },
   pixelSizeFrom: {
     ...makeFilter({ name: 'pixelSizeFrom', default: null }),
@@ -92,6 +107,18 @@ const filter = reactive({
   },
   bitrateUntil: {
     ...makeFilter({ name: 'bitrateUntil', default: null }),
+  },
+  slotsCountFrom: {
+    ...makeFilter({ name: 'slotsCountFrom', default: null }),
+  },
+  slotsCountUntil: {
+    ...makeFilter({ name: 'slotsCountUntil', default: null }),
+  },
+  createdAtFrom: {
+    ...makeFilter({ name: 'createdAtFrom', default: null }),
+  },
+  createdAtUntil: {
+    ...makeFilter({ name: 'createdAtUntil', default: null }),
   },
 })
 
