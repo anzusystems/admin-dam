@@ -10,6 +10,9 @@ import { useImageOrientation } from '@/model/dam/valueObject/ImageOrientation'
 import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import ClosestColor from '@/components/filter/ClosestColor.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import AFilterDatetime from '@/components/filter/AFilterDatetime.vue'
+import DistributionServiceNameFilter from '@/views/dam/distribution/components/DistributionServiceNameFilter.vue'
+import AssetSlotsFilter from '@/views/dam/asset/components/AssetSlotsFilter.vue'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -68,6 +71,11 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
+            <AFilterBooleanGroup v-model="filter.fromRss" @update:model-value="onAnyFilterUpdate" />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
             <AFilterValueObject
               v-model="filter.status"
               :items="assetStatusOptions"
@@ -90,6 +98,20 @@ const onAnyFilterUpdate = () => {
         <VRow>
           <VCol>
             <AFilterBooleanGroup v-model="filter.generatedBySystem" @update:model-value="onAnyFilterUpdate" />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AssetSlotsFilter v-model="filter.slotNames" multiple @update:model-value="onAnyFilterUpdate" />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <DistributionServiceNameFilter
+              v-model="filter.distributedInServices"
+              multiple
+              @update:model-value="onAnyFilterUpdate"
+            />
           </VCol>
         </VRow>
         <VRow>
@@ -156,6 +178,22 @@ const onAnyFilterUpdate = () => {
           <VCol>
             <AFilterInteger
               v-model="filter.heightUntil"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AFilterInteger
+              v-model="filter.shortestDimensionFrom"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+          <VCol>
+            <AFilterInteger
+              v-model="filter.shortestDimensionUntil"
               @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
@@ -236,6 +274,38 @@ const onAnyFilterUpdate = () => {
           <VCol>
             <AFilterInteger
               v-model="filter.bitrateUntil"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AFilterInteger
+              v-model="filter.slotsCountFrom"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+          <VCol>
+            <AFilterInteger
+              v-model="filter.slotsCountFrom"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AFilterDatetime
+              v-model="filter.createdAtFrom"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+          <VCol>
+            <AFilterDatetime
+              v-model="filter.createdAtUntil"
               @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
