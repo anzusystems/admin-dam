@@ -8,6 +8,10 @@ export type AddToCachedArgs<T extends DocId | IntegerId> =
   | Array<T | null | undefined>
   | Array<Array<T | null | undefined> | T | null | undefined>
 
+export interface CachedItem {
+  _loaded: boolean
+}
+
 /**
  * @template I Identifier type
  * @template M Minimal type
@@ -48,7 +52,7 @@ export function useAddToLazyHelper<
   I extends DocId | IntegerId,
   T extends Record<string, any>,
   M extends Record<string | '_loaded', any>
->(cache: Ref<Map<I, M>>, blockFetch: Ref<boolean>, callAfterUnblocked: Ref<boolean>) {
+>(cache: Ref<Map<I, M>>) {
   const addToCache = (mapCallback: (id: I) => M, ...args: AddToCachedArgs<I>) => {
     const toFetch: Set<I> = new Set()
     for (let i = 0; i < args.length; i++) {

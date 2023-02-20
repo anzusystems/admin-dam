@@ -1,18 +1,18 @@
 import { ref } from 'vue'
-import { type AddToCachedArgs, useAddToLazyHelper, useAllHelper } from '@/composables/system/lazyFetchCachedHelpers'
+import {
+  type AddToCachedArgs,
+  type CachedItem,
+  useAddToLazyHelper,
+  useAllHelper,
+} from '@/composables/system/lazyFetchCachedHelpers'
 import type { User, UserMinimal } from '@/types/dam/User'
 import { fetchUserListByIds } from '@/services/api/dam/userApi'
 import type { IntegerId } from '@anzusystems/common-admin'
 
 // TODO: WIP version
-
-interface UserCacheItem extends UserMinimal {
-  _loaded: boolean
-}
+interface UserCacheItem extends UserMinimal, CachedItem {}
 
 const cache = ref<Map<IntegerId, UserCacheItem>>(new Map())
-const blockFetch = ref(false)
-const callAfterUnblocked = ref(false)
 
 const mapFullToMinimal = (source: User): UserMinimal => {
   return { id: source.id, email: source.email, firstName: source.firstName, lastName: source.lastName }
@@ -23,11 +23,7 @@ const mapIdToMinimal = (id: IntegerId): UserMinimal => {
 }
 
 export const loadCachedUsers = () => {
-  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(
-    cache,
-    blockFetch,
-    callAfterUnblocked
-  )
+  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(cache)
 
   const fetchCachedUsers = () => fetchNotLoaded(cache, 'id', mapFullToMinimal, fetchUserListByIds)
 
