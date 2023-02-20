@@ -6,6 +6,7 @@ export enum CustomFormType {
   String = 'string',
   Number = 'number', // integer
   StringArray = 'string_array',
+  Boolean = 'boolean', // integer
   Default = String,
 }
 
