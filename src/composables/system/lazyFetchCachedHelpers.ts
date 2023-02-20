@@ -1,13 +1,17 @@
 import type { Ref } from 'vue'
 import type { DocId, IntegerId } from '@/types/common'
+import { isArray, isNull, isUndefined } from '@anzusystems/common-admin'
 
 // TODO: WIP version
+export type AddToCachedArgs<T extends DocId | IntegerId> =
+  | Array<T | null | undefined>
+  | Array<Array<T | null | undefined> | T | null | undefined>
 
 /**
- * @template M Minimal type
  * @template I Identifier type
+ * @template M Minimal type
  */
-export function useAllHelper<M extends Record<string | '_loaded', any>, I extends DocId | IntegerId = IntegerId>(
+export function useAllHelper<I extends DocId | IntegerId, M extends Record<string | '_loaded', any>>(
   cache: Ref<Map<I, M>>
 ) {
   const get = (id: I | null | undefined): M | undefined => {
@@ -35,18 +39,33 @@ export function useAllHelper<M extends Record<string | '_loaded', any>, I extend
 }
 
 /**
+ * @template I Identifier type
  * @template T Source type
  * @template M Minimal type
- * @template I Identifier type
  */
 export function useAddToLazyHelper<
+  I extends DocId | IntegerId,
   T extends Record<string, any>,
-  M extends Record<string | '_loaded', any>,
-  I extends DocId | IntegerId = IntegerId
+  M extends Record<string | '_loaded', any>
 >(cache: Ref<Map<I, M>>) {
-  const addToCache = (id: I, mapCallback: (id: I) => M) => {
-    if (cache.value.has(id)) return
-    cache.value.set(id, { ...mapCallback(id), ...{ _loaded: false } })
+  const addToCache = (mapCallback: (id: I) => M, ...args: AddToCachedArgs<I>) => {
+    const toFetch: Set<I> = new Set()
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i]
+      if (isNull(arg) || isUndefined(arg)) continue
+      if (isArray(arg)) {
+        for (let j = 0; j < arg.length; j++) {
+          const item = arg[j]
+          if (isNull(item) || isUndefined(item)) continue
+          if (!cache.value.has(item)) toFetch.add(item)
+        }
+        continue
+      }
+      if (!cache.value.has(arg)) toFetch.add(arg)
+    }
+    toFetch.forEach((item) => {
+      cache.value.set(item, { ...mapCallback(item), ...{ _loaded: false } })
+    })
   }
 
   const updateMap = (cache: Ref<Map<I, M>>, data: T[], propId = 'id', mapCallback: (source: T) => M) => {

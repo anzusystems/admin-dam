@@ -1,8 +1,8 @@
 import { ref } from 'vue'
-import { useAddToLazyHelper, useAllHelper } from '@/composables/system/lazyFetchCachedHelpers'
+import { type AddToCachedArgs, useAddToLazyHelper, useAllHelper } from '@/composables/system/lazyFetchCachedHelpers'
 import type { User, UserMinimal } from '@/types/dam/User'
 import { fetchUserListByIds } from '@/services/api/dam/userApi'
-import type { IntegerId } from '@/types/common'
+import type { IntegerId } from '@anzusystems/common-admin'
 
 // TODO: WIP version
 
@@ -21,11 +21,11 @@ const mapIdToMinimal = (id: IntegerId): UserMinimal => {
 }
 
 export const loadCachedUsers = () => {
-  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<User, UserMinimal>(cache)
+  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(cache)
 
   const fetchCachedUsers = () => fetchNotLoaded(cache, 'id', mapFullToMinimal, fetchUserListByIds)
 
-  const addToCachedUsersLazy = (id: IntegerId) => addToCache(id, mapIdToMinimal)
+  const addToCachedUsersLazy = (...args: AddToCachedArgs<IntegerId>) => addToCache(mapIdToMinimal, ...args)
 
   const addToCachedUsersManual = (data: User) => manualAdd(cache, data, 'id', mapFullToMinimal)
 
@@ -37,7 +37,7 @@ export const loadCachedUsers = () => {
 }
 
 export const useCachedUsers = () => {
-  const { has, get, isLoaded } = useAllHelper<UserMinimal>(cache)
+  const { has, get, isLoaded } = useAllHelper<IntegerId, UserMinimal>(cache)
 
   return {
     hasCachedUser: has,
