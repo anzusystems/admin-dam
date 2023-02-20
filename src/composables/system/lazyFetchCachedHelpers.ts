@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 import type { DocId, IntegerId } from '@/types/common'
 import { isArray, isNull, isUndefined } from '@anzusystems/common-admin'
+import { useDebounceFn } from '@vueuse/core'
 
 // TODO: WIP version
 export type AddToCachedArgs<T extends DocId | IntegerId> =
@@ -47,7 +48,7 @@ export function useAddToLazyHelper<
   I extends DocId | IntegerId,
   T extends Record<string, any>,
   M extends Record<string | '_loaded', any>
->(cache: Ref<Map<I, M>>) {
+>(cache: Ref<Map<I, M>>, blockFetch: Ref<boolean>, callAfterUnblocked: Ref<boolean>) {
   const addToCache = (mapCallback: (id: I) => M, ...args: AddToCachedArgs<I>) => {
     const toFetch: Set<I> = new Set()
     for (let i = 0; i < args.length; i++) {
@@ -78,13 +79,12 @@ export function useAddToLazyHelper<
     all.value.set(data[propId], { ...mapCallback(data), ...{ _loaded: true } })
   }
 
-  // todo: block quick api calls
-  const fetchNotLoaded = async (
+  async function fetch(
     cache: Ref<Map<I, M>>,
     propId = 'id',
     mapCallback: (source: T) => M,
     fetchCallback: (ids: I[]) => Promise<T[]>
-  ) => {
+  ) {
     const idsToFetch: Array<I> = []
     cache.value.forEach((item) => {
       if (item._loaded === false && !idsToFetch.includes(item[propId])) idsToFetch.push(item[propId])
@@ -92,9 +92,22 @@ export function useAddToLazyHelper<
     if (idsToFetch.length > 0) {
       const res = await fetchCallback(idsToFetch)
       updateMap(cache, res, 'id', mapCallback)
-      return res
     }
-    return [] as T[]
+  }
+
+  const fetchNotLoaded = async (
+    cache: Ref<Map<I, M>>,
+    propId = 'id',
+    mapCallback: (source: T) => M,
+    fetchCallback: (ids: I[]) => Promise<T[]>
+  ) => {
+    return useDebounceFn(
+      async () => {
+        await fetch(cache, propId, mapCallback, fetchCallback)
+      },
+      1000,
+      { maxWait: 3000 }
+    )
   }
 
   return {

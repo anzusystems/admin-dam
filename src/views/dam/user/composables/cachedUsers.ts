@@ -11,6 +11,8 @@ interface UserCacheItem extends UserMinimal {
 }
 
 const cache = ref<Map<IntegerId, UserCacheItem>>(new Map())
+const blockFetch = ref(false)
+const callAfterUnblocked = ref(false)
 
 const mapFullToMinimal = (source: User): UserMinimal => {
   return { id: source.id, email: source.email, firstName: source.firstName, lastName: source.lastName }
@@ -21,7 +23,11 @@ const mapIdToMinimal = (id: IntegerId): UserMinimal => {
 }
 
 export const loadCachedUsers = () => {
-  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(cache)
+  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(
+    cache,
+    blockFetch,
+    callAfterUnblocked
+  )
 
   const fetchCachedUsers = () => fetchNotLoaded(cache, 'id', mapFullToMinimal, fetchUserListByIds)
 
