@@ -44,7 +44,6 @@ const {
   onArrowRight,
   onArrowLeft,
   showMetaIcons,
-  toggleShowMetaIcons,
 } = useAssetListActions(sidebarRight)
 
 const { footerViewSelected } = useAssetFooterSelectedView()
