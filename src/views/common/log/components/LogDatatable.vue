@@ -30,6 +30,7 @@ const emit = defineEmits<{
 const router = useRouter()
 
 const pagination = usePagination()
+pagination.sortBy = 'id'
 const filter = useLogFilter()
 const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers()
 const { fetchList, listItems } = useLogListActions()
