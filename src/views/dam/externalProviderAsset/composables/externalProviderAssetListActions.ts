@@ -197,11 +197,6 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     await prevItem()
   }
 
-  const totalCountText = computed(() => {
-    const count = externalProviderAssetListStore.list.length
-    return count > 0 ? count + (pagination.hasNextPage ? '+' : '') : '0'
-  })
-
   const route = useRoute()
   const router = useRouter()
   const validateRouteProvider = async () => {
@@ -245,7 +240,6 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     selectMultiple,
     prevItem,
     nextItem,
-    totalCountText,
     onArrowRight,
     onArrowLeft,
   }

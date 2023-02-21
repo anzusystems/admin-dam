@@ -14,7 +14,7 @@ import { useErrorHandler } from '@/composables/system/error'
 import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/dam/factory/DistributionJw'
-import type { DistributionJwCreateDto } from '@/types/dam/Distribution'
+import type { DistributionJwCreateRedistributeDto } from '@/types/dam/Distribution'
 import type { DistributionJwItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -48,7 +48,7 @@ const existingDistributions = ref<Array<DistributionJwItem>>([])
 const { t } = useI18n({ useScope: 'global' })
 
 const { createCreateDto } = useDistributionJwFactory()
-const distribution = ref<DistributionJwCreateDto>(createCreateDto())
+const distribution = ref<DistributionJwCreateRedistributeDto>(createCreateDto())
 const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
@@ -69,6 +69,7 @@ const loadFormData = async () => {
   if (!redistributeMode.value && existingDistributions.value.length > 0) return
   if (redistributeMode.value && existingDistributions.value[0]) {
     distribution.value = {
+      id: existingDistributions.value[0].id,
       distributionService: props.distributionServiceName,
       texts: {
         title: existingDistributions.value[0].texts.title,
@@ -83,6 +84,7 @@ const loadFormData = async () => {
   }
   const res = await prepareFormDataJwDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
+    id: '',
     distributionService: props.distributionServiceName,
     texts: {
       title: res.texts.title,

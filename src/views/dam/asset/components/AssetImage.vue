@@ -218,5 +218,10 @@ const showIconComputed = computed(() => {
       <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
       <div class="text-caption text-center">{{ t('common.upload.done') }}</div>
     </div>
+    <AssetImageMetaIcons
+      v-if="showMetaIcons && assetFileProperties"
+      :asset-file-properties="assetFileProperties"
+      :asset-type="assetType"
+    />
   </div>
 </template>

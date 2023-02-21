@@ -7,7 +7,7 @@ import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { maxLength, minLength, required, requiredIf } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
-import type { DistributionYoutubeCreateDto } from '@/types/dam/Distribution'
+import type { DistributionYoutubeCreateRedistributeDto } from '@/types/dam/Distribution'
 import type { DistributionYoutubeItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -59,7 +59,7 @@ const existingDistributions = ref<Array<DistributionYoutubeItem>>([])
 const { t } = useI18n({ useScope: 'global' })
 
 const { createCreateDto } = useDistributionYoutubeFactory()
-const distribution = ref<DistributionYoutubeCreateDto>(createCreateDto())
+const distribution = ref<DistributionYoutubeCreateRedistributeDto>(createCreateDto())
 const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
@@ -83,6 +83,7 @@ const loadFormData = async () => {
   if (!redistributeMode.value && existingDistributions.value.length > 0) return
   if (redistributeMode.value && existingDistributions.value[0]) {
     distribution.value = {
+      id: existingDistributions.value[0].id,
       publishAt: existingDistributions.value[0].publishAt,
       distributionService: props.distributionServiceName,
       texts: {
@@ -105,6 +106,7 @@ const loadFormData = async () => {
   }
   const res = await prepareFormDataYoutubeDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
+    id: '',
     publishAt: res.publishAt,
     distributionService: props.distributionServiceName,
     texts: {

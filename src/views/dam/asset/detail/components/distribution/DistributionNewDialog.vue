@@ -75,7 +75,7 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation scrollable :max-width="1400">
+  <VDialog v-model="value" persistent no-click-animation scrollable :max-width="1400" class="dialog-distribution">
     <VCard v-if="value">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
@@ -112,3 +112,13 @@ const componentComputed = computed(() => {
     </VCard>
   </VDialog>
 </template>
+
+<style lang="scss">
+.v-dialog.dialog-distribution {
+  align-items: start;
+
+  .v-overlay__content {
+    margin-top: 50px;
+  }
+}
+</style>

@@ -8,6 +8,7 @@ withDefaults(
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
     assetType: AssetType
     distributionType: DistributionServiceType | null
+    showRedistribute: boolean
   }>(),
   {}
 )

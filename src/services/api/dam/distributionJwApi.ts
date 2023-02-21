@@ -3,13 +3,13 @@ import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { DocId } from '@anzusystems/common-admin'
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
-import type { DistributionJwCreateDto, DistributionJwItem } from '@/types/dam/Distribution'
+import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/dam/Distribution'
 
 const END_POINT = '/adm/v1/jw-distribution'
 export const ENTITY = 'jwDistribution'
 
-export const createJwDistribution = (assetFileId: DocId, data: DistributionJwCreateDto) =>
-  apiCreateOne<DistributionJwCreateDto>(
+export const createJwDistribution = (assetFileId: DocId, data: DistributionJwCreateRedistributeDto) =>
+  apiCreateOne<DistributionJwCreateRedistributeDto>(
     damClient,
     data,
     END_POINT + '/asset-file/:assetFileId/distribute',
@@ -18,8 +18,8 @@ export const createJwDistribution = (assetFileId: DocId, data: DistributionJwCre
     ENTITY
   )
 
-export const redistributeJwDistribution = (distributionId: DocId, data: DistributionJwCreateDto) =>
-  apiUpdateOne<DistributionJwCreateDto>(
+export const redistributeJwDistribution = (distributionId: DocId, data: DistributionJwCreateRedistributeDto) =>
+  apiUpdateOne<DistributionJwCreateRedistributeDto>(
     damClient,
     data,
     END_POINT + '/:distributionId/redistribute',

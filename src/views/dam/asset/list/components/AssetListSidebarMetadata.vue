@@ -14,8 +14,12 @@ import AssetInfobox from '@/views/dam/asset/components/AssetInfobox.vue'
 import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
+import { replaceBrowserHistoryURLByRouter } from '@/utils/history'
+import { ROUTE } from '@/router/routes'
+import { useRouter } from 'vue-router'
 
 const { sidebarRight } = useMainWrapper()
+const router = useRouter()
 
 const saveButtonLoading = ref(false)
 
@@ -32,6 +36,8 @@ const { handleError } = useErrorHandler()
 
 const onEditMore = async () => {
   assetDetailStore.showDetail()
+  if (!assetDetailStore.asset) return
+  replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: assetDetailStore.asset.id } })
 }
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
