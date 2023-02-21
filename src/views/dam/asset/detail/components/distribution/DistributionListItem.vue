@@ -49,9 +49,13 @@ const { openRedistribute } = useAssetDetailDistributionDialog()
 
 <template>
   <div class="d-flex flex-column mb-8">
-    <component :is="componentComputed" :item="item" :asset-type="assetType" :distribution-type="distributionType" />
-    <div v-if="showRedistribute">
-      <VBtn variant="flat" color="secondary" size="small" @click.stop="openRedistribute(item)">Redistribute</VBtn>
-    </div>
+    <component
+      :is="componentComputed"
+      :item="item"
+      :asset-type="assetType"
+      :distribution-type="distributionType"
+      :show-redistribute="showRedistribute"
+      @open-redistribute="openRedistribute(item)"
+    />
   </div>
 </template>
