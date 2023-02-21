@@ -8,7 +8,7 @@ import { simpleCloneObject } from '@/utils/object'
 import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import useVuelidate from '@vuelidate/core'
-import type { DistributionCustomCreateDto } from '@/types/dam/Distribution'
+import type { DistributionCustomCreateRedistributeDto } from '@/types/dam/Distribution'
 import type { DistributionCustomItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -51,7 +51,7 @@ const existingDistributions = ref<Array<DistributionCustomItem>>([])
 const { t } = useI18n({ useScope: 'global' })
 
 const { createCreateDto } = useDistributionCustomFactory()
-const distribution = ref<DistributionCustomCreateDto>(createCreateDto())
+const distribution = ref<DistributionCustomCreateRedistributeDto>(createCreateDto())
 const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
@@ -74,6 +74,7 @@ const loadFormData = async () => {
   if (!redistributeMode.value && existingDistributions.value.length > 0) return
   if (redistributeMode.value && existingDistributions.value[0]) {
     distribution.value = {
+      id: existingDistributions.value[0].id,
       distributionService: props.distributionServiceName,
       customData: simpleCloneObject(existingDistributions.value[0].customData),
       blockedBy: existingDistributions.value[0].blockedBy,
@@ -83,6 +84,7 @@ const loadFormData = async () => {
   }
   const res = await prepareFormDataCustomDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
+    id: '',
     distributionService: props.distributionServiceName,
     customData: res.customData,
     blockedBy: res.blockedBy,

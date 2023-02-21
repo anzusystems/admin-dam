@@ -7,7 +7,7 @@ import { AssetType } from '@/model/dam/valueObject/AssetType'
 import { isNull } from '@/utils/common'
 import { toggleArrayItem } from '@/utils/array'
 import { useErrorHandler } from '@/composables/system/error'
-import { computed, readonly, type Ref, ref } from 'vue'
+import { readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
@@ -274,11 +274,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     await prevItem()
   }
 
-  const totalCountText = computed(() => {
-    const count = assetListStore.list.length
-    return count > 0 ? count + (pagination.hasNextPage ? '+' : '') : '0'
-  })
-
   return {
     showMetaIcons: readonly(showMetaIcons),
     toggleShowMetaIcons,
@@ -299,7 +294,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     filterUnTouch,
     listMounted,
     listUnmounted,
-    totalCountText,
     showDetail,
     onItemClick,
     prevItem,

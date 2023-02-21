@@ -1,8 +1,9 @@
-import type { DistributionJwCreateDto } from '@/types/dam/Distribution'
+import type { DistributionJwCreateRedistributeDto } from '@/types/dam/Distribution'
 
 export function useDistributionJwFactory() {
-  const createCreateDto = (): DistributionJwCreateDto => {
+  const createCreateDto = (): DistributionJwCreateRedistributeDto => {
     return {
+      id: '',
       texts: {
         title: '',
         description: '',

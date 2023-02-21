@@ -5,7 +5,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
 import type {
   DistributionAuthUrl,
-  DistributionYoutubeCreateDto,
+  DistributionYoutubeCreateRedistributeDto,
   DistributionYoutubeItem,
   YoutubeLanguage,
   YoutubePlaylist,
@@ -16,8 +16,8 @@ import { usePagination } from '@/composables/system/pagination'
 const END_POINT = '/adm/v1/youtube-distribution'
 export const ENTITY = 'youtubeDistribution'
 
-export const createYoutubeDistribution = (assetFileId: DocId, data: DistributionYoutubeCreateDto) =>
-  apiCreateOne<DistributionYoutubeCreateDto>(
+export const createYoutubeDistribution = (assetFileId: DocId, data: DistributionYoutubeCreateRedistributeDto) =>
+  apiCreateOne<DistributionYoutubeCreateRedistributeDto>(
     damClient,
     data,
     END_POINT + '/asset-file/:assetFileId/distribute',
@@ -26,8 +26,11 @@ export const createYoutubeDistribution = (assetFileId: DocId, data: Distribution
     ENTITY
   )
 
-export const redistributeYoutubeDistribution = (distributionId: DocId, data: DistributionYoutubeCreateDto) =>
-  apiUpdateOne<DistributionYoutubeCreateDto>(
+export const redistributeYoutubeDistribution = (
+  distributionId: DocId,
+  data: DistributionYoutubeCreateRedistributeDto
+) =>
+  apiUpdateOne<DistributionYoutubeCreateRedistributeDto>(
     damClient,
     data,
     END_POINT + '/:distributionId/redistribute',

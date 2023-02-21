@@ -1,9 +1,10 @@
-import type { DistributionYoutubeCreateDto } from '@/types/dam/Distribution'
+import type { DistributionYoutubeCreateRedistributeDto } from '@/types/dam/Distribution'
 import { DistributionYoutubePrivacy } from '@/model/dam/valueObject/DistributionYoutubePrivacy'
 
 export function useDistributionYoutubeFactory() {
-  const createCreateDto = (): DistributionYoutubeCreateDto => {
+  const createCreateDto = (): DistributionYoutubeCreateRedistributeDto => {
     return {
+      id: '',
       publishAt: null,
       texts: {
         title: '',

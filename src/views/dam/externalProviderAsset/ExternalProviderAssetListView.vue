@@ -44,7 +44,6 @@ const {
   selectMultiple,
   prevItem,
   nextItem,
-  totalCountText,
   onArrowRight,
   onArrowLeft,
 } = useExternalProviderAssetListActions(sidebarRight)
@@ -109,7 +108,6 @@ onUnmounted(() => {
       <AssetUpload variant="button" :button-text="t('system.mainBar.upload')" />
     </template>
     <template #second-bar-right>
-      <div class="text-caption">{{ t('coreDam.asset.list.foundItems') }}: {{ totalCountText }}</div>
       <VBtn variant="text" icon size="x-small" class="ml-1" @click.stop="fetchAssetList">
         <VIcon icon="mdi-refresh" />
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
