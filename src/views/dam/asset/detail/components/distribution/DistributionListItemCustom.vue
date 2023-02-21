@@ -28,7 +28,7 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div class="text-body-2">
+  <div v-if="serviceRequirements" class="text-body-2">
     <VRow>
       <VCol>
         <div class="font-weight-bold">{{ serviceRequirements.title }}</div>

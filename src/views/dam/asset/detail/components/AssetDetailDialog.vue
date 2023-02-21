@@ -187,6 +187,7 @@ const assetMainFile = computed(() => {
           <div class="h-100 d-flex dam-image-detail__sidebar system-border-l">
             <AssetDetailDialogSidebar
               v-if="asset"
+              :key="asset.id"
               :asset-id="asset.id"
               :is-video="isTypeVideo"
               :is-audio="isTypeAudio"
