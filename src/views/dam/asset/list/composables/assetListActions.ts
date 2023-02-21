@@ -274,11 +274,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     await prevItem()
   }
 
-  const totalCountText = computed(() => {
-    const count = assetListStore.list.length
-    return count > 0 ? count + (pagination.hasNextPage ? '+' : '') : '0'
-  })
-
   return {
     showMetaIcons: readonly(showMetaIcons),
     toggleShowMetaIcons,
@@ -299,7 +294,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     filterUnTouch,
     listMounted,
     listUnmounted,
-    totalCountText,
     showDetail,
     onItemClick,
     prevItem,

@@ -68,6 +68,7 @@ const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const onConfirm = async () => {
+  if (buttonLoading.value) return
   try {
     buttonLoading.value = true
     v$.value.$touch()
@@ -132,6 +133,7 @@ const onConfirm = async () => {
               :v="v$.keyword.name"
               required
               data-cy="keyword-name"
+              @keyup.enter="onConfirm"
             />
           </ARow>
         </VContainer>
