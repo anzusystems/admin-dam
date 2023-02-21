@@ -8,8 +8,6 @@ import { maxLength, maxValue, minLength, minValue, requiredIf, stringArrayItemLe
 import type { ValidationScope } from '@/types/Validation'
 import ABooleanToggle from '@/components/form/ABooleanToggle.vue'
 
-// todo: only string type si completely implemented, check other types
-
 const props = withDefaults(
   defineProps<{
     modelValue: any

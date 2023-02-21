@@ -87,7 +87,7 @@ watch(
 <template>
   <div v-if="showIsProcessing" class="text-caption">Image is processing, please check again later.</div>
   <div v-else>
-    <VImg v-if="loading" :width="width" :height="height" class="asset-image asset-image--loading-bg">
+    <VImg v-if="loading" :width="width" :height="height" :max-height="300" class="asset-image asset-image--loading-bg">
       <template #placeholder />
       <template #default>
         <div class="d-flex w-100 h-100 align-center justify-center">
@@ -95,12 +95,12 @@ watch(
         </div>
       </template>
     </VImg>
-    <VImg v-else :width="width" :height="width" :src="src" contain />
+    <VImg v-else :width="width" :height="height" :max-height="300" :src="src" contain />
     <div v-if="showActions">
       <slot name="actions-start" />
-      <VBtn variant="flat" class="my-2 mr-2" color="secondary" size="small" @click.stop="dialog = true"
-        >Replace by image file ID</VBtn
-      >
+      <VBtn variant="flat" class="my-2 mr-2" color="secondary" size="small" @click.stop="dialog = true">
+        Replace by image file ID
+      </VBtn>
       <VBtn
         v-if="imagePreviewModel !== null"
         variant="flat"

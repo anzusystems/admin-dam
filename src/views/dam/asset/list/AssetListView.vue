@@ -41,7 +41,6 @@ const {
   selectMultiple,
   prevItem,
   nextItem,
-  totalCountText,
   onArrowRight,
   onArrowLeft,
   showMetaIcons,
@@ -113,26 +112,12 @@ onUnmounted(() => {
       <AssetToolbarTypeFilters />
     </template>
     <template #second-bar-right>
-      <div class="text-caption">{{ t('coreDam.asset.list.foundItems') }}: {{ totalCountText }}</div>
       <VBtn variant="text" icon size="x-small" class="ml-1" @click.stop="fetchAssetList">
         <VIcon icon="mdi-refresh" />
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
       </VBtn>
       <VDivider vertical class="mx-1 my-2" />
       <DGridViewToggle />
-      <VDivider vertical class="mx-1 my-2" />
-      <VBtn
-        :active="showMetaIcons"
-        icon
-        :width="30"
-        :height="30"
-        :variant="showMetaIcons ? 'flat' : 'text'"
-        :color="showMetaIcons ? 'secondary' : undefined"
-        @click.stop="toggleShowMetaIcons"
-      >
-        <VIcon icon="mdi-label-multiple-outline" :size="16" />
-        <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.metaIconsToggle') }}</VTooltip>
-      </VBtn>
       <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>

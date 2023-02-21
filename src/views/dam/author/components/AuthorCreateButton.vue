@@ -70,6 +70,7 @@ const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
 const onConfirm = async () => {
+  if (buttonLoading.value) return
   try {
     buttonLoading.value = true
     v$.value.$touch()
@@ -136,6 +137,7 @@ const { authorTypeOptions } = useAuthorType()
               :v="v$.author.name"
               required
               data-cy="author-name"
+              @keyup.enter="onConfirm"
             />
           </ARow>
           <ARow>
@@ -144,6 +146,7 @@ const { authorTypeOptions } = useAuthorType()
               :label="t('coreDam.author.model.identifier')"
               :v="v$.author.identifier"
               data-cy="author-identifier"
+              @keyup.enter="onConfirm"
             />
           </ARow>
           <ARow>
@@ -152,6 +155,7 @@ const { authorTypeOptions } = useAuthorType()
               :label="t('coreDam.author.model.type')"
               :items="authorTypeOptions"
               data-cy="author-type"
+              @keyup.enter="onConfirm"
             />
           </ARow>
         </VContainer>
