@@ -63,19 +63,24 @@ export interface DistributionItem {
   _resourceName: string
 }
 
-export interface DistributionJwCreateDto {
+export interface DistributionJwCreateRedistributeDto {
+  id: DocId
   texts: TextsJw
   distributionService: DistributionServiceName
   blockedBy: DocId[]
 }
 
-export interface DistributionCustomCreateDto {
+export interface DistributionJwRedistributeDto extends DistributionJwCreateRedistributeDto {}
+
+export interface DistributionCustomCreateRedistributeDto {
+  id: DocId
   customData: Record<string, any>
   distributionService: DistributionServiceName
   blockedBy: DocId[]
 }
 
-export interface DistributionYoutubeCreateDto {
+export interface DistributionYoutubeCreateRedistributeDto {
+  id: DocId
   publishAt: DatetimeUTCNullable
   texts: TextsYoutube
   distributionService: DistributionServiceName

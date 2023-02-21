@@ -1,8 +1,9 @@
-import type { DistributionCustomCreateDto } from '@/types/dam/Distribution'
+import type { DistributionCustomCreateRedistributeDto } from '@/types/dam/Distribution'
 
 export function useDistributionCustomFactory() {
-  const createCreateDto = (): DistributionCustomCreateDto => {
+  const createCreateDto = (): DistributionCustomCreateRedistributeDto => {
     return {
+      id: '',
       customData: {},
       distributionService: '',
       blockedBy: [],

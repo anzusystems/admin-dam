@@ -3,13 +3,13 @@ import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { DocId } from '@anzusystems/common-admin'
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
-import type { DistributionCustomCreateDto, DistributionCustomItem } from '@/types/dam/Distribution'
+import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/dam/Distribution'
 
 const END_POINT = '/adm/v1/custom-distribution'
 export const ENTITY = 'customDistribution'
 
-export const createCustomDistribution = (assetFileId: DocId, data: DistributionCustomCreateDto) =>
-  apiCreateOne<DistributionCustomCreateDto>(
+export const createCustomDistribution = (assetFileId: DocId, data: DistributionCustomCreateRedistributeDto) =>
+  apiCreateOne<DistributionCustomCreateRedistributeDto>(
     damClient,
     data,
     END_POINT + '/asset-file/:assetFileId/distribute',
@@ -18,8 +18,8 @@ export const createCustomDistribution = (assetFileId: DocId, data: DistributionC
     ENTITY
   )
 
-export const redistributeCustomDistribution = (distributionId: DocId, data: DistributionCustomCreateDto) =>
-  apiUpdateOne<DistributionCustomCreateDto>(
+export const redistributeCustomDistribution = (distributionId: DocId, data: DistributionCustomCreateRedistributeDto) =>
+  apiUpdateOne<DistributionCustomCreateRedistributeDto>(
     damClient,
     data,
     END_POINT + '/:distributionId/redistribute',
