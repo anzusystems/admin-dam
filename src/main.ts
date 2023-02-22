@@ -22,7 +22,6 @@ const { currentUser } = useCurrentUser()
 loadFonts()
 
 loadEnvConfig(() => {
-  // @ts-ignore
   const app = createApp(App)
     .use(i18n)
     .use(createPinia())
@@ -31,7 +30,6 @@ loadEnvConfig(() => {
     .use(Notification, { componentName: 'Notifications' })
     .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
       currentUser,
-      // @ts-ignore
       i18n,
     })
     .component('AppLayoutLoader', AppLayoutLoader)
