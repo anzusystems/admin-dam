@@ -2,11 +2,10 @@
 import { ROUTE } from '@/router/routes'
 import { envConfig } from '@/services/EnvConfigService'
 import { useI18n } from 'vue-i18n'
-import { ACL, AclValue } from '@/types/Permission'
+import { ACL } from '@/types/Permission'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import { ref } from 'vue'
 import logo from '@/assets/logo-adam.svg'
-import { useAcl } from '@anzusystems/common-admin'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -25,7 +24,7 @@ const opened = ref([])
       :title="t('sidebar.settings.settings')"
       data-cy="personal-settings"
     />
-    <Acl :permission="ACL.DAM_PODCAST_UI">
+    <Acl permission="dam">
       <VListItem
         :to="{ name: ROUTE.DAM.PODCAST.LIST }"
         prepend-icon="mdi-podcast"
@@ -41,7 +40,7 @@ const opened = ref([])
         data-cy="video-show-settings"
       />
     </Acl>
-    <Acl permission="sc">
+    <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
         :to="{ name: ROUTE.DAM.USER.LIST }"
         prepend-icon="mdi-account-multiple"
