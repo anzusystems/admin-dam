@@ -8,7 +8,7 @@ import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSele
 import { bulkUpdateAssetsMetadata } from '@/services/api/dam/assetApi'
 import { useTheme } from '@/composables/system/themeSettings'
 import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'

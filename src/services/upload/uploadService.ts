@@ -6,7 +6,7 @@ import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/serv
 import axios, { type CancelTokenSource } from 'axios'
 import { useErrorHandler, type ValidationResponseData } from '@/composables/system/error'
 import { i18n } from '@/plugins/i18n'
-import { NEW_LINE_MARK } from '@/composables/system/alerts'
+import { NEW_LINE_MARK } from '@anzusystems/common-admin'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4

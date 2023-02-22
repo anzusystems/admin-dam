@@ -512,15 +512,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kyvg/vue3-notification@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "@kyvg/vue3-notification@npm:2.9.0"
-  peerDependencies:
-    vue: ^3.0.0
-  checksum: a6fba14472d41e3a010ffb3873a87041d8948e13d3d7b7b10cfe60f05a24b15b08eaf55b46a5220a123428bf876998e6c2ab964fd4817e0d3a6637e5b245d02a
-  languageName: node
-  linkType: hard
-
 "@mdi/font@npm:7.1.96":
   version: 7.1.96
   resolution: "@mdi/font@npm:7.1.96"
@@ -1414,7 +1405,6 @@ __metadata:
     "@anzusystems/common-admin": ^0.0.9
     "@cypress/grep": ^3.1.4
     "@intlify/unplugin-vue-i18n": ^0.8.2
-    "@kyvg/vue3-notification": ^2.9.0
     "@mdi/font": 7.1.96
     "@rushstack/eslint-patch": ^1.2.0
     "@types/crypto-js": ^4.1.1
