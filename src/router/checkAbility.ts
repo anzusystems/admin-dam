@@ -1,14 +1,14 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { useAcl } from '@/composables/system/ability'
 import { isUndefined } from '@/utils/common'
 import type { AclValue } from '@/types/Permission'
+import { useAcl } from '@anzusystems/common-admin'
 
 export const checkAbility = async (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
-  const { canForAll } = useAcl()
+  const { canForAll } = useAcl<AclValue>()
 
   if (isUndefined(to.meta.requiredPermissions)) {
     next()
