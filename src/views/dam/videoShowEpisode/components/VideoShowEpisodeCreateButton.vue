@@ -2,7 +2,8 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
+import type { DocId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
@@ -15,7 +16,6 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/model/dam/factory/VideoShowEpisodeFactory'
 import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
 import { useVideoShowEpisodeValidation } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeValidation'
-import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

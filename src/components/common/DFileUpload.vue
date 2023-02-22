@@ -3,7 +3,7 @@ import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragW
 import { computed, ref, watch } from 'vue'
 import { flattenArray, fromArgs } from '@/utils/array'
 import { isArray, isUndefined } from '@/utils/common'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 type InputRef = null | HTMLInputElement

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
-import { type DocId, isDocId, isString } from '@anzusystems/common-admin'
-import { useAlerts } from '@/composables/system/alerts'
+import { type DocId, isDocId, isString, useAlerts } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import { useTheme } from '@/composables/system/themeSettings'

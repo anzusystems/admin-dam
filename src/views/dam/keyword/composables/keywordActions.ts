@@ -1,5 +1,5 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'

@@ -9,10 +9,10 @@ import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import type { IntegerId } from '@/types/common'
-import { useAlerts } from '@/composables/system/alerts'
+import type { PermissionGroup } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { ValueObjectOption } from '@/types/ValueObject'
-import type { PermissionGroup } from '@anzusystems/common-admin'
 import { loadLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
 
 const { handleError } = useErrorHandler()

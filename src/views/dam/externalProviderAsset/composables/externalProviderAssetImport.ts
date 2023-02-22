@@ -6,7 +6,7 @@ import { isNull } from '@/utils/common'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 
 export const useExternalProviderAssetImport = () => {
   const { maxUploadItems } = useBetaTestFeatures()
