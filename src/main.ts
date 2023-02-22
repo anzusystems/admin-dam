@@ -4,7 +4,6 @@ import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
 import AppLayoutSidebar from '@/layouts/AppLayoutSidebar.vue'
 import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
-import Acl from '@/components/system/Acl.vue'
 import { i18n } from '@/plugins/i18n'
 import { vuetify } from '@/plugins/vuetify'
 import { loadFonts } from '@/plugins/webfontloader'
@@ -14,7 +13,11 @@ import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import Notification from '@kyvg/vue3-notification'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { createCommonAdmin } from '@anzusystems/common-admin'
+import { AnzuSystemsCommonAdmin, createCommonAdmin, type PluginOptions } from '@anzusystems/common-admin'
+import { useCurrentUser } from '@/composables/system/currentUser'
+import type { AclValue } from '@/types/Permission'
+
+const { currentUser } = useCurrentUser()
 
 loadFonts()
 // @ts-ignore
@@ -27,8 +30,9 @@ loadEnvConfig(() => {
     .use(vuetify)
     .use(router)
     .use(Notification, { componentName: 'Notifications' })
-    // .use(VirtualScroller)
-    .component('Acl', Acl)
+    .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
+      currentUser,
+    })
     .component('AppLayoutLoader', AppLayoutLoader)
     .component('AppLayoutMain', AppLayoutMain)
     .component('AppLayoutSidebar', AppLayoutSidebar)
