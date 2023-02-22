@@ -2,7 +2,7 @@ import { fetchCurrentUser } from '@/services/api/dam/userApi'
 import { envConfig } from '@/services/EnvConfigService'
 import { readonly, ref } from 'vue'
 import type { CurrentUserDto } from '@/types/dam/CurrentUser'
-import { isUndefined, ROLE_SUPER_ADMIN } from '@anzusystems/common-admin'
+import { ROLE_SUPER_ADMIN } from '@anzusystems/common-admin'
 
 const currentUser = ref<CurrentUserDto | undefined>(undefined)
 const currentUserIsSuperAdmin = ref(false)
@@ -29,12 +29,9 @@ export function updateCurrentUser() {
 }
 
 export function useCurrentUser() {
-  const hasCurrentUser = () => isUndefined(currentUser.value)
-
   return {
     currentUser: readonly(currentUser),
     currentUserIsSuperAdmin: readonly(currentUserIsSuperAdmin),
-    hasCurrentUser,
     showDevFeature,
   }
 }

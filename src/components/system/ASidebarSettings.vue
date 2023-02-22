@@ -40,6 +40,7 @@ const opened = ref([])
         :title="t('sidebar.settings.videoShows')"
         data-cy="video-show-settings"
       />
+    </Acl>
     <Acl permission="sc">
       <VListItem
         :to="{ name: ROUTE.DAM.USER.LIST }"
@@ -56,7 +57,7 @@ const opened = ref([])
         data-cy="ext-system-settings"
       />
     </Acl>
-    <Acl permission="sdsa">
+    <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
       <VListItem
         :to="{ name: ROUTE.DAM.ASSET_LICENCE.LIST }"
         prepend-icon="mdi-account-key"

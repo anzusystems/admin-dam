@@ -13,17 +13,16 @@ import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import Notification from '@kyvg/vue3-notification'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { AnzuSystemsCommonAdmin, createCommonAdmin, type PluginOptions } from '@anzusystems/common-admin'
+import { AnzuSystemsCommonAdmin, type PluginOptions } from '@anzusystems/common-admin'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { AclValue } from '@/types/Permission'
 
 const { currentUser } = useCurrentUser()
 
 loadFonts()
-// @ts-ignore
-createCommonAdmin({ i18nInstance: i18n })
 
 loadEnvConfig(() => {
+  // @ts-ignore
   const app = createApp(App)
     .use(i18n)
     .use(createPinia())
@@ -32,6 +31,8 @@ loadEnvConfig(() => {
     .use(Notification, { componentName: 'Notifications' })
     .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
       currentUser,
+      // @ts-ignore
+      i18n,
     })
     .component('AppLayoutLoader', AppLayoutLoader)
     .component('AppLayoutMain', AppLayoutMain)
