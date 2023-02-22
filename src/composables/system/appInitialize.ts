@@ -12,6 +12,7 @@ import { loadDamConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { loadDamConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
 import { useLoginStatus } from '@/composables/system/loginStatus'
+import { isUndefined } from '@anzusystems/common-admin'
 
 const initialized = ref<boolean>(false)
 
@@ -48,11 +49,11 @@ export async function createAppInitialize(
     return
   }
 
-  const { hasCurrentUser } = useCurrentUser()
+  const { currentUser } = useCurrentUser()
 
   if (
     (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
-    !hasCurrentUser()
+    isUndefined(currentUser.value)
   ) {
     next({ name: ROUTE.SYSTEM.LOGIN })
   } else if (isStatusUnauthorized()) {
