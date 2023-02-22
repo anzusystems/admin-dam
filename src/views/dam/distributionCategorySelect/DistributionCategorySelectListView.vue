@@ -6,7 +6,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import DistributionCategorySelectDatatable from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectDatatable.vue'
 import { useDistributionCategorySelectListActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { listLoading } = useDistributionCategorySelectListActions()
 </script>

@@ -23,7 +23,7 @@ const emit = defineEmits<{
   (e: 'editRecord'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const router = useRouter()
 

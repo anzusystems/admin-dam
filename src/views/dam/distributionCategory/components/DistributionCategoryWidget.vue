@@ -11,7 +11,7 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useI18n } from 'vue-i18n'
 import DistributionCategoryWidgetDialog from '@/views/dam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const assetDetailStore = useAssetDetailStore()
 const { createDefault } = useDistributionCategoryFactory()

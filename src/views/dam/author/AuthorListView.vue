@@ -10,7 +10,7 @@ import { ref } from 'vue'
 import type AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useAuthorListActions } from '@/views/dam/author/composables/authorActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { listLoading } = useAuthorListActions()
 

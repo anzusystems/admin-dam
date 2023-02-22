@@ -21,7 +21,7 @@ withDefaults(
   {}
 )
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const imageRoiStore = useImageRoiStore()
 const assetDetailStore = useAssetDetailStore()

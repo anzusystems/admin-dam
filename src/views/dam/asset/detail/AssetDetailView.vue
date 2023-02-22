@@ -17,7 +17,7 @@ import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/dam/asset/detail/composables/assetDetailActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showErrorT } = useAlerts()
 const route = useRoute()
 const router = useRouter()

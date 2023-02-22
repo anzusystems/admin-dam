@@ -26,7 +26,7 @@ const emit = defineEmits<{
   (e: 'postDelete', data: DocId): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { asset } = useAssetDetailActions()
 

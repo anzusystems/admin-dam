@@ -20,7 +20,7 @@ const emit = defineEmits<{
   (e: 'openRedistribute'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const serviceRequirements = computed(() => {
   return damConfigExtSystem[props.assetType].distribution.distributionRequirements[props.item.distributionService]

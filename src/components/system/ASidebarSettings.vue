@@ -7,7 +7,7 @@ import { useCurrentUser } from '@/composables/system/currentUser'
 import { ref } from 'vue'
 import logo from '@/assets/logo-adam.svg'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { showDevFeature } = useCurrentUser()
 const opened = ref([])

@@ -45,7 +45,7 @@ const emit = defineEmits<{
 
 const existingDistributions = ref<Array<DistributionJwItem>>([])
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { createCreateDto } = useDistributionJwFactory()
 const distribution = ref<DistributionJwCreateRedistributeDto>(createCreateDto())

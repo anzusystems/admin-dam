@@ -16,7 +16,7 @@ const emit = defineEmits<{
   (e: 'removeFile'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const dialog = ref(false)
 const showUnset = ref(false)

@@ -17,7 +17,7 @@ import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorC
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import ACopyText from '@/components/common/ACopyText.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const panels = ref(['metadata', 'file'])
 

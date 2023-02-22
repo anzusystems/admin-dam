@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 export type JobResource = 'jobPodcastSynchronizer' | BaseJobResource
 
 export function useJobResource() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   return useBaseJobResource<JobResource>([
     {

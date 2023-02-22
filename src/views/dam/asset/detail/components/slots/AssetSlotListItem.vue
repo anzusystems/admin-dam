@@ -41,7 +41,7 @@ const emit = defineEmits<{
   (e: 'openMakeFilePrivateDialog', fileId: DocId): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const uploadQueuesStore = useUploadQueuesStore()
 
 const itemHasFile = computed(() => {

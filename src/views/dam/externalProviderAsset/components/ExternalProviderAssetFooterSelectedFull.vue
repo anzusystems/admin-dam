@@ -10,7 +10,7 @@ import { useExternalProviderAssetImport } from '@/views/dam/externalProviderAsse
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

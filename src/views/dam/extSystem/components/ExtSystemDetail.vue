@@ -10,7 +10,7 @@ import LazyUserChip from '@/views/dam/user/components/LazyUserChip.vue'
 
 const { extSystem } = storeToRefs(useExtSystemOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

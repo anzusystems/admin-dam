@@ -41,7 +41,7 @@ const postDelete = (data: DocId) => {
   emit('postDelete', data)
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { activeTab } = useAssetDetailTab()
 

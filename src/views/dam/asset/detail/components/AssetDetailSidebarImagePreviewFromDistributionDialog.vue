@@ -22,7 +22,7 @@ const emit = defineEmits<{
   (e: 'afterSuccessfulConfirm'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const saving = ref(false)
 

@@ -17,7 +17,7 @@ const emit = defineEmits<{
   (e: 'toggleSelected', index: number): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const toggleSelected = () => {
   emit('toggleSelected', props.index)

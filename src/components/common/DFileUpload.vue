@@ -10,7 +10,7 @@ type InputRef = null | HTMLInputElement
 
 const BLOCK_DOUBLE_CLICK_MS = 200
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{

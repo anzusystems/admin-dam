@@ -43,7 +43,7 @@ const totalColumnsCount = computed(() => {
   return count
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

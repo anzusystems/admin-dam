@@ -20,7 +20,7 @@ const { listLoading } = useDistributionCategoryListActions()
 
 const assetType = computed(() => filter.type.model as AssetType)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof DistributionCategoryDatatable> | null>(null)
 

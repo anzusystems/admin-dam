@@ -8,7 +8,7 @@ import { ACard } from '@anzusystems/common-admin'
 
 const { log } = storeToRefs(useLogOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const formatDatetime = useFriendlyDateTime()
 

@@ -12,7 +12,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useKeywordEditActions } from '@/views/dam/keyword/composables/keywordActions'
 import KeywordEditForm from '@/views/dam/keyword/components/KeywordEditForm.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = route.params.id.toString()

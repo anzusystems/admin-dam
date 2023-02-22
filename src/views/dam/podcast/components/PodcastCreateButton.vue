@@ -59,7 +59,7 @@ const { podcastModeOptions } = usePodcastMode()
 
 const router = useRouter()
 const { v$ } = usePodcastValidation(podcast)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 

@@ -82,7 +82,7 @@ const getGrantOrigin = (subject: string, action: string) => {
 
   return GrantOrigin.DefaultGrant
 }
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 // import { useI18n } from 'vue-i18n'
 import { clickBlur } from '@/utils/event'
 
-// const { t } = useI18n({ useScope: 'global' })
+// const { t } = useI18n()
 
 withDefaults(
   defineProps<{

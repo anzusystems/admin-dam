@@ -9,7 +9,7 @@ import { ACL } from '@/types/Permission'
 import { ref } from 'vue'
 import JobCreateButton from '@/views/dam/job/components/JobCreateButton.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof JobDatatable> | null>(null)
 

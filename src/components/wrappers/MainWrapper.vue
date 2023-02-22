@@ -12,7 +12,7 @@ import logo from '@/assets/logo-adam.svg'
 import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/dam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainWrapper()
 </script>

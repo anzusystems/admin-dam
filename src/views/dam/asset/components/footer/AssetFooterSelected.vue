@@ -9,7 +9,7 @@ import { useTheme } from '@/composables/system/themeSettings'
 import { useI18n } from 'vue-i18n'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

@@ -56,7 +56,7 @@ const emit = defineEmits<{
 
 const existingDistributions = ref<Array<DistributionYoutubeItem>>([])
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { createCreateDto } = useDistributionYoutubeFactory()
 const distribution = ref<DistributionYoutubeCreateRedistributeDto>(createCreateDto())

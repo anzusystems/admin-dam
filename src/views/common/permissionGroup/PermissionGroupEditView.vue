@@ -13,7 +13,7 @@ import { damClient } from '@/services/api/clients/damClient'
 import { toInt } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = toInt(route.params.id)

@@ -8,7 +8,7 @@ import { damClient } from '@/services/api/clients/damClient'
 import AnzuUserDatatable from '@/views/common/anzuUser/components/AnzuUserDatatable.vue'
 import AnzuUserCreateButton from '@/views/common/anzuUser/components/AnzuUserCreateButton.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)
 

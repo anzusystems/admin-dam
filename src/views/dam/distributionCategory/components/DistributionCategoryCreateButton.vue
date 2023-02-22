@@ -63,7 +63,7 @@ const onConfirm = () => {
 const assetTypeComputed = computed(() => distributionCategory.value.type)
 
 const { v$ } = useDistributionCategoryValidation(distributionCategory)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 watch(assetTypeComputed, (newValue) => {
   prepareData(newValue)
