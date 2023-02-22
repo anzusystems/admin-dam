@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { USER_FIRST_NAME } from './support/constants'
+import { USER_FIRST_NAME } from './var/constants'
 
-describe(`Test keyword function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test keyword function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create keyword', () => {
     cy.visit('/settings')
     cy.verifySubPage('keyword-settings', 'keyword/list', 'Keywords List')

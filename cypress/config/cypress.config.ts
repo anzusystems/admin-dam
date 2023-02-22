@@ -12,7 +12,7 @@ export default defineConfig({
     quiet: true,
     showPending: 'false',
   },
-  trashAssetsBeforeRuns: true,
+  trashAssetsBeforeRuns: false,
   videoUploadOnPasses: false,
   watchForFileChanges: false,
   viewportHeight: 1080,
@@ -21,14 +21,13 @@ export default defineConfig({
     runMode: 1,
   },
   env: {
+    cfg: 'local',
+    loginUser: 'admin',
+    failOnUncaughtException: false,
+    visitBaseUrl: true,
     grepFilterSpecs: true,
     grepOmitFiltered: true,
-    credentials: {
-      admin: {
-        username: 'dam_admin@anzusystems.dev',
-        password: 'root',
-      },
-    },
+    grepIntegrationFolder: '../../',
   },
   e2e: {
     baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
@@ -36,10 +35,11 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
-      config.reporterOptions.reportDir = `cypress/report/${config.env.env}/html`
-      config.videosFolder = `cypress/report/${config.env.env}/video`
-      if (fs.existsSync(`./${config.env.env}.ts`)) {
-        require(`./${config.env.env}.ts`)(config)
+      config.reporterOptions.reportDir = `cypress/report/${config.env.cfg}/html`
+      config.videosFolder = `cypress/report/${config.env.cfg}/video`
+      config.screenshotsFolder = `cypress/report/${config.env.cfg}/html/screenshots`
+      if (fs.existsSync(`./${config.env.cfg}.ts`)) {
+        require(`./${config.env.cfg}.ts`)(config)
       }
       return config
     },

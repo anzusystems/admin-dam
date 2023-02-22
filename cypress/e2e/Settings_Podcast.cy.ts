@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { PODCAST_TITLE } from './support/constants'
+import { PODCAST_TITLE } from './var/constants'
 
-describe(`Test Podcast function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test Podcast function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create podcast', () => {
     cy.visit('/settings')
     cy.getCyVisibleClick('podcast-settings')

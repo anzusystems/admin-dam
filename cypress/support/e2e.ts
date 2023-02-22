@@ -5,19 +5,20 @@ import '@cypress/grep'
 import 'cypress-mochawesome-reporter/register'
 
 beforeEach(function () {
+  //Prevent  cypress to fail on uncaught err.
+  cy.failOnUncaughtException(Cypress.env('failOnUncaughtException'))
+  //Cache session
   cy.session(
-    'login',
+    `${Cypress.env('loginUser')}`,
     () => {
       //Setup protection cookie based on env
       cy.protectionCookie()
-      //Prevent  cypress to fail on uncaught err.
-      Cypress.on('uncaught:exception', () => {
-        return false
-      })
+      //Login with provided user
       cy.login('admin', 20000)
     },
     {
       cacheAcrossSpecs: true,
     }
   )
+  cy.visitBaseUrl('/', 10000, Cypress.env('visitBaseUrl'))
 })

@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { RAND_NUM, USER_FIRST_NAME } from './support/constants'
+import { RAND_NUM, USER_FIRST_NAME } from './var/constants'
 
-describe(`Test authors function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test authors function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create author', () => {
     cy.visit('/settings')
     cy.verifySubPage('author-settings', 'author/list', 'Authors List')

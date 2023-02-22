@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { PERMISSION_GROUP } from './support/constants'
+import { PERMISSION_GROUP } from './var/constants'
 
-describe(`Test permission groups function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test permission groups function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create permission group', () => {
     cy.visit('/settings')
     cy.verifySubPage('permission-group-settings', 'permission-group/list', 'List of Permission Groups')

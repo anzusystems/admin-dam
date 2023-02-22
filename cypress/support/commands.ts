@@ -61,6 +61,20 @@ declare namespace Cypress {
      */
     getCyVisibleClick(selector: string, timeout?: number): Chainable<Element>
     verifySubPage(selector: string, url: string, title: string): Chainable<Element>
+
+    /**
+     * Decide if cypress fails on uncaught exception in console.
+     * @param option - true or false
+     */
+    failOnUncaughtException(option: boolean): Chainable<Element>
+
+    /**
+     * Visit base URL
+     * @param URL
+     * @param timeout
+     * @param value - [true/false] if true visit base url
+     */
+    visitBaseUrl(URL: string, timeout?: number, value?: boolean): Chainable<Element>
   }
 }
 
@@ -88,16 +102,17 @@ Cypress.Commands.add('getCy', (selector: string, timeout?: number) => {
 })
 
 Cypress.Commands.add('login', (user: string, timeout?: number) => {
-  if ('forceLoginLink' in Cypress.env('credentials')[user]) {
-    cy.visit(Cypress.env('credentials')[user].forceLoginLink)
-  } else {
-    cy.visit('/')
-    cy.getCy('login-form').should('be.visible')
-    cy.getCy('username').type(Cypress.env('credentials')[user].username)
-    cy.getCy('password').type(Cypress.env('credentials')[user].password)
-    cy.getCyVisibleClick('button-login')
+  if (user != 'anonym') {
+    if ('forceLoginLink' in Cypress.env('credentials')[user]) {
+      cy.request(Cypress.env('credentials')[user].forceLoginLink, { timeout: timeout })
+    } else {
+      cy.visit('/')
+      cy.getCy('login-form').should('be.visible')
+      cy.getCy('username').type(Cypress.env('credentials')[user].username)
+      cy.getCy('password').type(Cypress.env('credentials')[user].password)
+      cy.getCyVisibleClick('button-login')
+    }
   }
-  cy.urlContains('asset/list', timeout)
 })
 Cypress.Commands.add('urlContains', (string: string, timeout?: number) => {
   cy.url({ timeout: timeout }).should('contain', string)
@@ -112,4 +127,16 @@ Cypress.Commands.add('waitResponse', (request: string, timeout?: number) => {
 Cypress.Commands.add('alertMessage', (message: string) => {
   cy.get('.v-alert').should('be.visible').and('contain.text', `${message}`)
   cy.get('.v-alert__close').click()
+})
+
+Cypress.Commands.add('failOnUncaughtException', (option) => {
+  Cypress.on('uncaught:exception', () => {
+    return option
+  })
+})
+
+Cypress.Commands.add('visitBaseUrl', (URL: string, timeout?: number, value?: boolean) => {
+  if (value) {
+    cy.visit(URL, { timeout: timeout })
+  }
 })

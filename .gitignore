@@ -23,8 +23,9 @@ coverage
 .scannerwork
 cypress/report
 cypress/config
+cypress/downloads
+cypress/e2e/fixtures
 !cypress/config/cypress.config.ts
-cypress/screenshots
 
 # Managed by yarn
 .yarn/*

@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { LENGUAGE_SK, LENGUAGE_EN, THEME_LIGHT, THEME_DARK, THEME_AUTO } from './support/constants'
+import { LENGUAGE_SK, LENGUAGE_EN, THEME_LIGHT, THEME_DARK, THEME_AUTO } from './var/constants'
 
-describe(`Test user settings, Env: ${Cypress.env('env')}`, () => {
+describe(`Test user settings, Env: ${Cypress.env('cfg')}`, () => {
   it('Test user settings', () => {
     cy.visit('/')
     cy.getCyVisibleClick('button-user')

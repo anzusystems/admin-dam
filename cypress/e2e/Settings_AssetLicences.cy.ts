@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { EXTERNAL_SYS, RAND_NUM } from './support/constants'
+import { EXTERNAL_SYS, RAND_NUM } from './var/constants'
 
-describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'test' }, () => {
+describe(`Test asset licences function, Env: ${Cypress.env('cfg')}`, { tags: 'test' }, () => {
   it('Create asset licence', () => {
     cy.visit('/settings')
     cy.verifySubPage('asset-licence-settings', 'asset-licence/list', 'List of Licenses')

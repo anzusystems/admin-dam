@@ -10,9 +10,9 @@ import {
   DISTRIBUTION_SERVICE,
   EXTERNAL_SYS,
   RAND_NUM,
-} from './support/constants'
+} from './var/constants'
 
-describe(`Test user function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test user function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create User', () => {
     cy.visit('/settings')
     cy.getCyVisibleClick('user-settings')

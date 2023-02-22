@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-describe(`Test Log-out function, Env: ${Cypress.env('env')}`, () => {
+describe(`Test Log-out function, Env: ${Cypress.env('cfg')}`, () => {
   it('Log-out', () => {
     cy.visit('/')
     cy.getCyVisibleClick('button-user')
