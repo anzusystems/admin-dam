@@ -14,7 +14,7 @@ export const checkAbility = async (
 
   if (isUndefined(to.meta.requiredPermissions)) {
     next()
-  } else if (canForAll(to.meta.requiredPermissions as AclValue[])) {
+  } else if (canForAll(to.meta.requiredPermissions)) {
     next()
   } else {
     // todo show error?

@@ -4,8 +4,8 @@ import type { AclValue as CustomAclValue } from '@/types/Permission'
 declare module 'vue-router' {
   interface RouteMeta {
     layout?: string
-    transition?: string
-    public?: boolean
+    requiresAuth?: boolean
+    requiredPermissions?: Array<CustomAclValue>
   }
 }
 
@@ -19,6 +19,6 @@ declare module '@vue/runtime-core' {
 }
 
 declare module '@anzusystems/common-admin' {
-  export declare type AclValue = CustomAclValue
+  export type AclValue = CustomAclValue
   export function can(acl: CustomAclValue, subject?: object): boolean
 }
