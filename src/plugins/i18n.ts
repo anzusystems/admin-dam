@@ -1,4 +1,4 @@
-import type { Locale, Path } from 'vue-i18n'
+import type { Locale, LocaleMessageObject, LocaleMessages, Path } from 'vue-i18n'
 import { createI18n } from 'vue-i18n'
 import { createLog } from '@/services/ErrorHandlerApiService'
 import { LogLevel } from '@/model/common/valueObject/LogLevel'
@@ -8,12 +8,9 @@ import { commonMessages } from '@anzusystems/common-admin'
 
 const DO_NOT_LOG_LOCALES = ['en']
 
-const finalMessages = {
-  // @ts-ignore
+const finalMessages: LocaleMessages<Record<string, LocaleMessageObject>> = {
   sk: { ...commonMessages.sk, ...messages.sk },
-  // @ts-ignore
   en: { ...commonMessages.en, ...messages.en },
-  // @ts-ignore
   xx: { ...messages.xx },
 }
 
