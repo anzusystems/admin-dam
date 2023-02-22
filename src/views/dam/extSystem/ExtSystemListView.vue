@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useExtSystemListActions } from '@/views/dam/extSystem/composables/extSystemActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { listLoading } = useExtSystemListActions()
 </script>

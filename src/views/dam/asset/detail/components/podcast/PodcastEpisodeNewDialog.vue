@@ -37,7 +37,7 @@ const value = computed({
   },
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()

@@ -14,7 +14,7 @@ import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

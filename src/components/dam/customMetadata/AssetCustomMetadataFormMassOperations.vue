@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCustomMetadataElement.vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{

@@ -23,7 +23,7 @@ const onClick = (event: Event) => {
   emit('submit')
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

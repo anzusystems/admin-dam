@@ -10,7 +10,7 @@ export const checkAbility = async (
   next: NavigationGuardNext
 ) => {
   const { currentUser } = useCurrentUser()
-  const { canForAll } = useAcl<AclValue>({ currentUser })
+  const { canForAll } = useAcl<AclValue>({ currentUser, disableInject: true })
 
   if (isUndefined(to.meta.requiredPermissions)) {
     next()

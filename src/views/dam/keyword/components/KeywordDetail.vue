@@ -10,7 +10,7 @@ import { useKeywordOneStore } from '@/stores/dam/keywordStore'
 
 const { keyword } = storeToRefs(useKeywordOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

@@ -11,7 +11,7 @@ export enum DistributionYoutubePrivacy {
 }
 
 export function useDistributionYoutubePrivacy() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const distributionYoutubePrivacyOptions = ref<ValueObjectOption<DistributionYoutubePrivacy>[]>([
     {

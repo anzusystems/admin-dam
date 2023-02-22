@@ -20,7 +20,7 @@ const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const { createCreateDto } = useAssetFactory()

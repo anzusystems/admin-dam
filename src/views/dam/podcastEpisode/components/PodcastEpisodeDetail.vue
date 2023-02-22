@@ -12,7 +12,7 @@ import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const imageSrc = computed(() => {
   return podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined

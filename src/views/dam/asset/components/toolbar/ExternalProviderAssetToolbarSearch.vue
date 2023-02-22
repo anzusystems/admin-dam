@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { filter, fetchAssetList } = useExternalProviderAssetListActions()
 

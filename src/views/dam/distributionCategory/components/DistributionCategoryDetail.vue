@@ -8,7 +8,7 @@ import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTracking
 import { useDistributionCategoryOneStore } from '@/stores/dam/distributionCategoryStore'
 
 const { distributionCategory, distributionCategorySelectedOptions } = storeToRefs(useDistributionCategoryOneStore())
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

@@ -9,7 +9,7 @@ import { useVideoShowOneStore } from '@/stores/dam/videoShowStore'
 
 const { videoShow } = storeToRefs(useVideoShowOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 // const imageSrc = computed(() => {
 //   return videoShow.value.links ? videoShow.value.links.image_list.url : undefined

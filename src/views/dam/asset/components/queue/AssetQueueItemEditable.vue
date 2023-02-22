@@ -76,7 +76,7 @@ const authors = computed({
   },
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()

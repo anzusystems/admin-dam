@@ -16,7 +16,7 @@ const { podcast } = usePodcastEditActions()
 
 const { v$ } = usePodcastValidation(podcast)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { podcastModeOptions } = usePodcastMode()
 </script>

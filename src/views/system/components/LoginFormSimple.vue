@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { useSimpleLoginActions } from '@/views/system/composables/loginActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { simpleLoginForm, onLogin, loginButtonLoading } = useSimpleLoginActions()
 

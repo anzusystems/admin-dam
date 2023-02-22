@@ -30,7 +30,7 @@ const emit = defineEmits<{
   (e: 'afterSave', data: DocIdNullable): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { createDefault } = useDistributionCategoryFactory()
 const { currentExtSystemId } = useCurrentExtSystem()

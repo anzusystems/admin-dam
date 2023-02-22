@@ -8,7 +8,7 @@ import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget
 import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const drawer = ref<boolean>(true)
 

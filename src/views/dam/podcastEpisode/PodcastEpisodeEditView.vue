@@ -11,7 +11,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { usePodcastEpisodeEditActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeEditForm from '@/views/dam/podcastEpisode/components/PodcastEpisodeEditForm.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = route.params.id.toString()

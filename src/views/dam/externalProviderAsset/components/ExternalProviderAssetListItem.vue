@@ -23,7 +23,7 @@ const emit = defineEmits<{
   (e: 'selectMultiple', data: { assetId: AssetExternalProviderId; index: number }): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const asset = computed<AssetExternalProviderListDto>(() => {
   return props.item.asset

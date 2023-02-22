@@ -16,7 +16,7 @@ const props = defineProps<{
 const { anzuUser, loadingAnzuUser } = storeToRefs(useAnzuUserOneStore())
 const { translatePermission } = usePermissionConfigActions(props.client)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

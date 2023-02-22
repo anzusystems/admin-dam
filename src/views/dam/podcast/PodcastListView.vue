@@ -8,7 +8,7 @@ import PodcastDatatable from '@/views/dam/podcast/components/PodcastDatatable.vu
 import { ref } from 'vue'
 import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { listLoading } = usePodcastListActions()
 
 const datatable = ref<InstanceType<typeof PodcastDatatable> | null>(null)

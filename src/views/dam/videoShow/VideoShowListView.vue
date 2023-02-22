@@ -8,7 +8,7 @@ import VideoShowDatatable from '@/views/dam/videoShow/components/VideoShowDatata
 import { ref } from 'vue'
 import { useVideoShowListActions } from '@/views/dam/videoShow/composables/videoShowActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { listLoading } = useVideoShowListActions()
 
 const datatable = ref<InstanceType<typeof VideoShowDatatable> | null>(null)

@@ -11,7 +11,7 @@ export enum AuthorType {
 }
 
 export function useAuthorType() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const authorTypeOptions = ref<ValueObjectOption<AuthorType>[]>([
     {

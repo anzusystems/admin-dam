@@ -23,7 +23,7 @@ const router = useRouter()
 
 const saveButtonLoading = ref(false)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
 

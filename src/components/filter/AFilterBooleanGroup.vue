@@ -14,7 +14,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: any): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const value = computed({
   get() {

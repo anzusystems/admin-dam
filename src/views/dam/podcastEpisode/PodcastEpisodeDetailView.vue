@@ -25,7 +25,7 @@ const getDetail = () => {
   fetchData(id)
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const closeRoute = computed(() => {
   if (podcastEpisode.value.podcast) {

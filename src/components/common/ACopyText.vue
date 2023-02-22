@@ -20,7 +20,7 @@ const props = withDefaults(
 
 const { copy, isSupported } = useClipboard()
 const { showSuccess } = useAlerts()
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const onClick = (event: Event) => {
   clickBlur(event)

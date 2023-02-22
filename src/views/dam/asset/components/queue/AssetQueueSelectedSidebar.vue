@@ -19,7 +19,7 @@ const massOperationsData = ref({ image: {}, video: {}, audio: {}, document: {} }
 const massOperationsKeywords = ref([])
 const massOperationsAuthors = ref([])
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const panels = ref<Array<string>>(['general'])
 

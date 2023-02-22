@@ -8,7 +8,7 @@ import { UserAuthType } from '@/types/dam/DamConfig'
 
 const userAuthType = damPubConfig.userAuthType
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

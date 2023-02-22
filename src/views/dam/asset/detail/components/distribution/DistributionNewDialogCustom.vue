@@ -48,7 +48,7 @@ const emit = defineEmits<{
 
 const existingDistributions = ref<Array<DistributionCustomItem>>([])
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { createCreateDto } = useDistributionCustomFactory()
 const distribution = ref<DistributionCustomCreateRedistributeDto>(createCreateDto())

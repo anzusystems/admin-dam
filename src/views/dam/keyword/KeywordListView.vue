@@ -10,7 +10,7 @@ import { ref } from 'vue'
 import type AssetLicenceDatatable from '@/views/dam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useKeywordListActions } from '@/views/dam/keyword/composables/keywordActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 

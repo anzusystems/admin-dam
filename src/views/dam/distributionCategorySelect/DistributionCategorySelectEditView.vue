@@ -12,7 +12,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useDistributionCategorySelectEditActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import DistributionCategorySelectEditForm from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = route.params.id.toString()

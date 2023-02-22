@@ -15,7 +15,7 @@ const { author } = useAuthorEditActions()
 
 const { v$ } = useAuthorValidation(author)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { authorTypeOptions } = useAuthorType()
 </script>

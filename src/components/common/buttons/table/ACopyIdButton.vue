@@ -27,7 +27,7 @@ const props = withDefaults(
   }
 )
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { copy, isSupported } = useClipboard()
 const { showSuccess } = useAlerts()
 

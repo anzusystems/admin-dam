@@ -14,7 +14,7 @@ withDefaults(
     dataCy: 'button-create',
   }
 )
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

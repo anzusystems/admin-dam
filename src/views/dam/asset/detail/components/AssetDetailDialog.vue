@@ -20,7 +20,7 @@ import { replaceBrowserHistoryURLByRouter } from '@/utils/history'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const emit = defineEmits<{
   (e: 'nextItem'): void

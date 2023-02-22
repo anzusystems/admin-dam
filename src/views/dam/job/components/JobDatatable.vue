@@ -28,7 +28,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useJobListActions()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const columns = useTableColumns([
   { name: 'id', label: t('job.model.id') },

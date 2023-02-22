@@ -9,7 +9,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { ref } from 'vue'
 import { useAssetLicenceListActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { listLoading } = useAssetLicenceListActions()
 

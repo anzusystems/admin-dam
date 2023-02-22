@@ -13,7 +13,7 @@ import ExtSystemEditForm from '@/views/dam/extSystem/components/ExtSystemEditFor
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = toInt(route.params.id)

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { currentExtSystem } = useCurrentExtSystem()
 const { currentAssetLicence } = useCurrentAssetLicence()

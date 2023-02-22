@@ -11,7 +11,7 @@ export enum AssetType {
 }
 
 export function useAssetType() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const assetTypeOptions = ref<ValueObjectOption<AssetType>[]>([
     {

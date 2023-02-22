@@ -20,7 +20,7 @@ import { FooterViewSelected, useAssetFooterSelectedView } from '@/composables/sy
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { onKeyUp } from '@vueuse/core'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const loadOnScroll = true
 
