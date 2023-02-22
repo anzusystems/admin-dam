@@ -7,9 +7,9 @@ import PermissionGrantEditor from '@/views/common/permission/components/Permissi
 import { isUndefined } from '@/utils/common'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
-import { useAcl } from '@/composables/system/ability'
 import { deletePropertyByPath, getValueByPath, Grant, GrantOrigin, setValueByPath } from '@anzusystems/common-admin'
 import { simpleCloneObject } from '@/utils/object'
+import { useCurrentUser } from '@/composables/system/currentUser'
 
 const props = defineProps<{
   modelValue: Permissions
@@ -45,9 +45,9 @@ const getAvailableGrants = (subject: string, action: string) => {
   }
   return grants
 }
-const { hasSuperAdminRole } = useAcl()
+const { currentUserIsSuperAdmin } = useCurrentUser()
 const getResolvedGrant = (subject: string, action: string) => {
-  if (hasSuperAdminRole(props.roles)) {
+  if (currentUserIsSuperAdmin.value) {
     return Grant.Allow
   }
   const permissionName = subject + '_' + action
