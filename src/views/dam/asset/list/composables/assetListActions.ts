@@ -1,4 +1,4 @@
-import { usePagination } from '@/composables/system/pagination'
+import { usePagination } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/dam/assetApi'
 import { useAssetListFilter } from '@/model/dam/filter/AssetFilter'

@@ -2,7 +2,7 @@
 import { computed, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
 import ExternalProviderAssetQueueReadonly from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetQueueReadonly.vue'

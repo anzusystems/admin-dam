@@ -2,9 +2,9 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetLicenceApi'
 import { useI18n } from 'vue-i18n'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/views/dam/assetLicence/composables/assetLicenceValidation'
 import ExtSystemSelect from '@/views/dam/extSystem/components/ExtSystemSelect.vue'
@@ -21,7 +21,7 @@ const { t } = useI18n()
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="assetLicence.name"
             :label="t('coreDam.assetLicence.model.name')"
             :v="v$.assetLicence.name"
@@ -29,7 +29,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="assetLicence.extId"
             :label="t('coreDam.assetLicence.model.extId')"
             :v="v$.assetLicence.extId"

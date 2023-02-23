@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/authorApi'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { useAssetFactory } from '@/model/dam/factory/AssetFactory'
 import { useAssetType } from '@/model/dam/valueObject/AssetType'
 import { useI18n } from 'vue-i18n'
@@ -88,7 +87,7 @@ const { assetTypeOptions } = useAssetType()
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <AValueObjectOptionsSelect
+            <AFormValueObjectOptionsSelect
               v-model="asset.type"
               :label="t('coreDam.author.model.type')"
               :items="assetTypeOptions"

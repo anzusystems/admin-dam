@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useUserSelectActions } from '@/views/dam/user/composables/userActions'
 import { useUserFilter } from '@/model/dam/filter/UserFilter'
 
@@ -34,7 +34,7 @@ const innerFilter = useUserFilter()
 </script>
 
 <template>
-  <ARemoteAutocomplete
+  <AFormRemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"

@@ -16,7 +16,7 @@ import AssetLicenceSelect from '@/views/dam/assetLicence/components/AssetLicence
 import AssetLicenceByExtIdSelect from '@/views/dam/assetLicence/components/AssetLicenceByExtIdSelect.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/extSystemApi'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { fetchAssetLicence } from '@/services/api/dam/assetLicenceApi'
 
 const props = withDefaults(

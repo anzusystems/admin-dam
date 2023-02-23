@@ -4,7 +4,7 @@ import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { computed, watch } from 'vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueUploadList from '@/views/dam/asset/components/queue/AssetQueueUploadList.vue'
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

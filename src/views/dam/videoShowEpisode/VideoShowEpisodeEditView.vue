@@ -3,8 +3,8 @@ import { ACard } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import ASaveButton from '@/components/common/buttons/action/ASaveButton.vue'
-import ASaveAndCloseButton from '@/components/common/buttons/action/ASaveAndCloseButton.vue'
+import { AActionSaveButton } from '@anzusystems/common-admin'
+import { AActionSaveAndCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
@@ -49,13 +49,13 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.edit')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton
+    <AActionSaveButton
       v-if="!detailLoading"
       :loading="saveButtonLoading"
       :disabled="saveAndCloseButtonLoading"
       @save-record="onUpdate"
     />
-    <ASaveAndCloseButton
+    <AActionSaveAndCloseButton
       v-if="!detailLoading"
       :loading="saveAndCloseButtonLoading"
       :disabled="saveButtonLoading"

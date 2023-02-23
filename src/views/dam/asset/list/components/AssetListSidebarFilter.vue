@@ -1,18 +1,20 @@
 <script lang="ts" setup>
-import AFilterString from '@/components/filter/AFilterString.vue'
-import AFilterBooleanGroup from '@/components/filter/AFilterBooleanGroup.vue'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
-import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useAssetType } from '@/model/dam/valueObject/AssetType'
 import { useAssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import { useI18n } from 'vue-i18n'
 import { useImageOrientation } from '@/model/dam/valueObject/ImageOrientation'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import ClosestColor from '@/components/filter/ClosestColor.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
-import AFilterDatetime from '@/components/filter/AFilterDatetime.vue'
 import DistributionServiceNameFilter from '@/views/dam/distribution/components/DistributionServiceNameFilter.vue'
 import AssetSlotsFilter from '@/views/dam/asset/components/AssetSlotsFilter.vue'
+import {
+  AFilterInteger,
+  AFilterDatetimePicker,
+  AFilterBooleanGroup,
+  AFilterString,
+  AFilterValueObjectOptionsSelect,
+} from '@anzusystems/common-admin'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -55,7 +57,7 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
-            <AFilterValueObject
+            <AFilterValueObjectOptionsSelect
               v-model="filter.type"
               :items="assetTypeOptions"
               multiple
@@ -76,7 +78,7 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
-            <AFilterValueObject
+            <AFilterValueObjectOptionsSelect
               v-model="filter.status"
               :items="assetStatusOptions"
               multiple
@@ -126,7 +128,7 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
-            <AFilterValueObject
+            <AFilterValueObjectOptionsSelect
               v-model="filter.orientation"
               :items="imageOrientationOptions"
               multiple
@@ -297,14 +299,14 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
-            <AFilterDatetime
+            <AFilterDatetimePicker
               v-model="filter.createdAtFrom"
               @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
           </VCol>
           <VCol>
-            <AFilterDatetime
+            <AFilterDatetimePicker
               v-model="filter.createdAtUntil"
               @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"

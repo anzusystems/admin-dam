@@ -7,9 +7,9 @@ import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createPodcastEpisode, ENTITY } from '@/services/api/dam/podcastEpisodeApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -105,7 +105,7 @@ const onConfirm = async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="podcastEpisode.texts.title"
               :label="t('coreDam.podcastEpisode.model.texts.title')"
               :v="v$.podcastEpisode.texts.title"
@@ -113,7 +113,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="podcastEpisode.texts.description"
               :label="t('coreDam.podcastEpisode.model.texts.description')"
               :v="v$.podcastEpisode.texts.description"
@@ -121,7 +121,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="podcastEpisode.attributes.seasonNumber"
               :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
               :v="v$.podcastEpisode.attributes.seasonNumber"
@@ -131,7 +131,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="podcastEpisode.attributes.episodeNumber"
               :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
               :v="v$.podcastEpisode.attributes.episodeNumber"

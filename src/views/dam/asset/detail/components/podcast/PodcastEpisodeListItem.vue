@@ -2,7 +2,7 @@
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import LazyPodcastChip from '@/views/dam/podcast/components/LazyPodcastChip.vue'
 import type { DocId } from '@anzusystems/common-admin'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
@@ -22,7 +22,7 @@ const emit = defineEmits<{
       <div>Podcast: <LazyPodcastChip :id="item.podcast" /></div>
     </div>
     <div>
-      <ADeleteButton @delete-record="emit('deleteRecord', item.id)" />
+      <AActionDeleteButton @delete-record="emit('deleteRecord', item.id)" />
     </div>
   </div>
 </template>

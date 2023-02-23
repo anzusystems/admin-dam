@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { useJobListFilter } from '@/model/dam/filter/JobFilter'
-import { AFilterValueObjectOptionsSelect, AFilterWrapper, useJobStatus } from '@anzusystems/common-admin'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
-import AFilterDatetime from '@/components/filter/AFilterDatetime.vue'
+import {
+  AFilterInteger,
+  AFilterValueObjectOptionsSelect,
+  AFilterWrapper,
+  useJobStatus,
+  AFilterDatetimePicker,
+} from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -33,10 +37,10 @@ const { jobStatusOptions } = useJobStatus()
           <AFilterValueObjectOptionsSelect v-model="filter.status" :items="jobStatusOptions" />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="filter.startedAtFrom" />
+          <AFilterDatetimePicker v-model="filter.startedAtFrom" />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="filter.startedAtUntil" />
+          <AFilterDatetimePicker v-model="filter.startedAtUntil" />
         </VCol>
       </VRow>
     </AFilterWrapper>

@@ -2,9 +2,9 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import ASaveButton from '@/components/common/buttons/action/ASaveButton.vue'
-import ASaveAndCloseButton from '@/components/common/buttons/action/ASaveAndCloseButton.vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionSaveButton } from '@anzusystems/common-admin'
+import { AActionSaveAndCloseButton } from '@anzusystems/common-admin'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
@@ -36,9 +36,9 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.edit')" icon="mdi-account-edit-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton :loading="loadingAnzuUser" @save-record="updateAnzuUser" />
-    <ASaveAndCloseButton :loading="loadingAnzuUser" @save-record-and-close="updateAnzuUser(true)" />
-    <ACloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST" />
+    <AActionSaveButton :loading="loadingAnzuUser" @save-record="updateAnzuUser" />
+    <AActionSaveAndCloseButton :loading="loadingAnzuUser" @save-record-and-close="updateAnzuUser(true)" />
+    <AActionCloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST" />
   </ActionbarButtonsWrapper>
   <AnzuUserEditForm :client="damClient" />
 </template>

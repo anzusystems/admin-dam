@@ -125,7 +125,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
             />
           </ARow>
           <ARow v-if="hasTargetUserId">
-            <ATextField
+            <AFormTextField
               v-model.number="job.targetUserId"
               :label="t('job.model.targetUserId')"
               :v="v$.job.targetUserId"
@@ -136,7 +136,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
             <ABooleanToggle v-model="job.anonymizeUser" :label="t('job.model.anonymizeUser')" data-cy="anonymizeUser" />
           </ARow>
           <ARow v-if="hasPodcastFields">
-            <ATextField
+            <AFormTextField
               v-model="job.podcastId"
               :label="t('coreDam.job.model.podcastId')"
               :v="v$.job.podcastId"

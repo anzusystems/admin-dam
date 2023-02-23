@@ -8,13 +8,12 @@ import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFact
 import { createPodcastEpisode, ENTITY, prepareFormDataPodcastEpisode } from '@/services/api/dam/podcastEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { usePodcastEpisodeValidation } from '@/views/dam/podcastEpisode/composables/podcastEpisodeValidation'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ARow from '@/components/common/ARow.vue'
-import ATextField from '@/components/form/ATextField.vue'
+import { ASystemEntityScope, AFormTextarea } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useErrorHandler } from '@/composables/system/error'
 import PodcastSelect from '@/views/dam/podcast/components/PodcastSelect.vue'
-import ATextarea from '@/components/form/ATextarea.vue'
 import { isNull } from '@/utils/common'
 
 const props = withDefaults(
@@ -135,21 +134,21 @@ onMounted(async () => {
           </div>
           <template v-if="podcastEpisode.podcast && !loadingFormData">
             <ARow>
-              <ATextarea
+              <AFormTextarea
                 v-model="podcastEpisode.texts.title"
                 :label="t('coreDam.podcastEpisode.model.texts.title')"
                 :v="v$.podcastEpisode.texts.title"
               />
             </ARow>
             <ARow>
-              <ATextarea
+              <AFormTextarea
                 v-model="podcastEpisode.texts.description"
                 :label="t('coreDam.podcastEpisode.model.texts.description')"
                 :v="v$.podcastEpisode.texts.description"
               />
             </ARow>
             <ARow>
-              <ATextField
+              <AFormTextField
                 v-model="podcastEpisode.attributes.seasonNumber"
                 :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
                 :v="v$.podcastEpisode.attributes.seasonNumber"
@@ -158,7 +157,7 @@ onMounted(async () => {
               />
             </ARow>
             <ARow>
-              <ATextField
+              <AFormTextField
                 v-model="podcastEpisode.attributes.episodeNumber"
                 :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
                 :v="v$.podcastEpisode.attributes.episodeNumber"

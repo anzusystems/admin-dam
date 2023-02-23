@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import ATextField from '@/components/form/ATextField.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
 import { useDistributionCategoryOptionValidation } from '@/views/dam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/types/dam/DistributionCategoryOption'
 import { useVModel } from '@vueuse/core'
 import { onMounted } from 'vue'
-import ABooleanToggle from '@/components/form/ABooleanToggle.vue'
 import { useI18n } from 'vue-i18n'
+import { AFormBooleanToggle } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -33,7 +33,7 @@ const { t } = useI18n()
 <template>
   <VRow class="mt-5">
     <VCol cols="12" sm="5">
-      <ATextField
+      <AFormTextField
         v-model="modelValue.name"
         prepend-icon="mdi-drag"
         :v="v$.distributionCategoryOption.name"
@@ -41,13 +41,13 @@ const { t } = useI18n()
       />
     </VCol>
     <VCol cols="12" sm="1">
-      <ABooleanToggle
+      <AFormBooleanToggle
         v-model="modelValue.assignable"
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
       />
     </VCol>
     <VCol cols="12" sm="6">
-      <ATextField
+      <AFormTextField
         v-model="modelValue.value"
         append-icon="mdi-trash-can-outline"
         :v="v$.distributionCategoryOption.value"

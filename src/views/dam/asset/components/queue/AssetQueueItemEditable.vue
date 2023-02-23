@@ -10,7 +10,7 @@ import { useErrorHandler } from '@/composables/system/error'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import KeywordSelect from '@/views/dam/keyword/components/KeywordSelect.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import AuthorSelect from '@/views/dam/author/components/AuthorSelect.vue'
 import { useI18n } from 'vue-i18n'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
@@ -20,8 +20,8 @@ import type { AssetCustomData } from '@/types/dam/Asset'
 import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
-import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
+import { ATableCopyIdButton } from '@anzusystems/common-admin'
 import { prettyBytes } from '@/utils/file'
 import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
 
@@ -197,7 +197,7 @@ const showCancel = computed(() => {
                 </VBtn>
               </div>
               <div>
-                <ACopyIdButton
+                <ATableCopyIdButton
                   v-if="item.assetId"
                   :id="item.assetId"
                   button-t="coreDam.asset.queueItem.copyAssetId"
@@ -207,7 +207,7 @@ const showCancel = computed(() => {
                   <VIcon icon="mdi-close-circle-outline" />
                   <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
                 </VBtn>
-                <ADeleteButton
+                <AActionDeleteButton
                   variant="text"
                   :disabled="!item.canEditMetadata && !item.isDuplicate"
                   button-class=""

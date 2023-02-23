@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
-import AFilterBooleanGroup from '@/components/filter/AFilterBooleanGroup.vue'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
+import { AFilterInteger, AFilterBooleanGroup, AFilterWrapper, AFilterString } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -23,7 +20,7 @@ const resetFilter = () => {
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper @reset-filter="resetFilter">
+    <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="12" sm="2">
           <AFilterInteger v-model="filter.id" />
@@ -35,6 +32,6 @@ const resetFilter = () => {
           <AFilterBooleanGroup v-model="filter.enabled" />
         </VCol>
       </VRow>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

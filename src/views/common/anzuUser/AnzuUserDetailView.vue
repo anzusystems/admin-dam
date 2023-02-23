@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { toInt } from '@anzusystems/common-admin'
@@ -37,9 +37,9 @@ const { t } = useI18n()
   <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.detail')" icon="mdi-account-edit-outline" />
   <ActionbarButtonsWrapper>
     <Acl v-if="!loadingAnzuUser" :permission="ACL.DAM_USER_UPDATE">
-      <AEditButton :record-id="id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" :loading="loadingAnzuUser" />
+      <AActionEditButton :record-id="id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" :loading="loadingAnzuUser" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST" />
+    <AActionCloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST" />
   </ActionbarButtonsWrapper>
   <AnzuUserDetail :client="damClient" />
 </template>

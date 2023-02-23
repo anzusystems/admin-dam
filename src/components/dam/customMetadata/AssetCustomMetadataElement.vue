@@ -6,7 +6,7 @@ import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import { maxLength, maxValue, minLength, minValue, requiredIf, stringArrayItemLength } from '@/plugins/validators'
 import type { ValidationScope } from '@/types/Validation'
-import ABooleanToggle from '@/components/form/ABooleanToggle.vue'
+import { AFormBooleanToggle } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -121,7 +121,7 @@ const onBlur = () => {
   >
     <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
   </VCombobox>
-  <ABooleanToggle
+  <AFormBooleanToggle
     v-if="config.attributes.type === CustomFormType.Boolean"
     :label="config.name"
     :model-value="modelValue"

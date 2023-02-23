@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Filter } from '@/types/Filter'
 import { computed } from 'vue'
-import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
+import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
 const props = withDefaults(
@@ -36,5 +36,5 @@ const items = computed(() => {
 </script>
 
 <template>
-  <AFilterValueObject v-model="value" :label="modelValue.title" :items="items" />
+  <AFilterValueObjectOptionsSelect v-model="value" :label="modelValue.title" :items="items" />
 </template>

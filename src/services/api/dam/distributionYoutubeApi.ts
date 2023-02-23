@@ -11,7 +11,7 @@ import type {
   YoutubePlaylist,
 } from '@/types/dam/Distribution'
 import { booleanToInteger } from '@/utils/bool'
-import { usePagination } from '@/composables/system/pagination'
+import { usePagination } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/youtube-distribution'
 export const ENTITY = 'youtubeDistribution'

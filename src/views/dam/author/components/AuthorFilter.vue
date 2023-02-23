@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
 import { useAuthorListFilter } from '@/model/dam/filter/AuthorFilter'
-import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useI18n } from 'vue-i18n'
-import AFilterBooleanGroup from '@/components/filter/AFilterBooleanGroup.vue'
+import {
+  AFilterWrapper,
+  AFilterString,
+  AFilterBooleanGroup,
+  AFilterValueObjectOptionsSelect,
+} from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -29,7 +31,7 @@ const { authorTypeOptions } = useAuthorType()
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper @reset-filter="resetFilter">
+    <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="2">
           <AFilterString v-model="filter.id" />
@@ -41,12 +43,12 @@ const { authorTypeOptions } = useAuthorType()
           <AFilterString v-model="filter.identifier" />
         </VCol>
         <VCol cols="3">
-          <AFilterValueObject v-model="filter.type" :items="authorTypeOptions" />
+          <AFilterValueObjectOptionsSelect v-model="filter.type" :items="authorTypeOptions" />
         </VCol>
         <VCol cols="2">
           <AFilterBooleanGroup v-model="filter.reviewed" :label="t('coreDam.author.filter.reviewed')" />
         </VCol>
       </VRow>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

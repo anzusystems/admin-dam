@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n'
 import AssetMetadata from '@/views/dam/asset/components/AssetMetadata.vue'
 import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
 import AssetDownloadButton from '@/views/dam/asset/detail/components/AssetDownloadButton.vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import { ref } from 'vue'
@@ -71,7 +71,7 @@ const onDelete = async () => {
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <AssetDownloadButton :asset-type="assetType" />
-    <ADeleteButton @delete-record="onDelete" />
+    <AActionDeleteButton @delete-record="onDelete" />
     <VBtn color="success" type="submit" variant="flat" class="ml-2" :loading="saveButtonLoading" @click.stop="onSave">
       {{ t('common.button.save') }}
     </VBtn>

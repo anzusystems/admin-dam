@@ -15,14 +15,13 @@ import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/dam/factory/DistributionJw'
 import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/dam/Distribution'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope, AFormTextarea } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import ATextField from '@/components/form/ATextField.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import ATextarea from '@/components/form/ATextarea.vue'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { fetchAssetFileDistributionList } from '@/services/api/dam/distributionApi'
-import { usePagination } from '@/composables/system/pagination'
+import { usePagination } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
@@ -201,17 +200,17 @@ onMounted(async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VRow class="mb-2">
           <VCol>
-            <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
+            <AFormTextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextarea v-model="distribution.texts.description" :v="v$.distribution.texts.description" required />
+            <AFormTextarea v-model="distribution.texts.description" :v="v$.distribution.texts.description" required />
           </VCol>
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <ATextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required />
+            <AFormTextField v-model="distribution.texts.author" :v="v$.distribution.texts.author" required />
           </VCol>
         </VRow>
         <VRow class="mb-2">

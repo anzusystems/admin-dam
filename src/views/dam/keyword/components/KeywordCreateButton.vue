@@ -6,9 +6,9 @@ import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createKeyword, ENTITY } from '@/services/api/dam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -127,7 +127,7 @@ const onConfirm = async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="keyword.name"
               :label="t('coreDam.keyword.model.name')"
               :v="v$.keyword.name"

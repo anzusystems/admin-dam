@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import ARow from '@/components/common/ARow.vue'
-import ACopyText from '@/components/common/ACopyText.vue'
+import { ARow } from '@anzusystems/common-admin'
+import { ACopyText } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
+import { AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeOneStore } from '@/stores/dam/videoShowEpisodeStore'
 
 const { videoShowEpisode } = storeToRefs(useVideoShowEpisodeOneStore())

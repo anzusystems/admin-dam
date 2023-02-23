@@ -6,7 +6,7 @@ import { usePagination, usePaginationAutoHide } from '@/composables/system/pagin
 import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
 import { useVideoShowEpisodeListFilter } from '@/model/dam/filter/VideoShowEpisodeFilter'
 import { fetchVideoShowEpisodeListByAsset } from '@/services/api/dam/videoShowEpisodeApi'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
+import { ADatatablePagination } from '@anzusystems/common-admin'
 import VideoShowEpisodeListItem from '@/views/dam/asset/detail/components/videoShow/VideoShowEpisodeListItem.vue'
 import { loadLazyVideoShow } from '@/views/dam/videoShow/composables/lazyVideoShow'
 import VideoShowEpisodeNewDialog from '@/views/dam/asset/detail/components/videoShow/VideoShowEpisodeNewDialog.vue'

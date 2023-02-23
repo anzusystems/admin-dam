@@ -5,7 +5,7 @@ import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import AssetQueueMassEditSimple from '@/views/dam/asset/components/queue/AssetQueueSelectedSimple.vue'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 

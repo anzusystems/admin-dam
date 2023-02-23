@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/composables/system/actionbar'
-import APageTitle from '@/components/common/APageTitle.vue'
+import { APageTitle } from '@anzusystems/common-admin'
 
 const { canTeleport } = useActionbar()
 

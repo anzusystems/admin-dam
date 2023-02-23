@@ -5,7 +5,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import { slugify, useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { makePublic } from '@/services/api/dam/audioApi'
-import ATextField from '@/components/form/ATextField.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
 import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 
@@ -86,7 +86,7 @@ const onConfirm = async () => {
         <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <VCardText>
-        <ATextField v-model="slug" :v="v$" />
+        <AFormTextField v-model="slug" :v="v$" />
       </VCardText>
       <VCardActions>
         <VSpacer />

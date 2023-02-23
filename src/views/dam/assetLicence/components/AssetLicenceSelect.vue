@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAssetLicenceSelectActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
 import type { IntegerId } from '@anzusystems/common-admin'
@@ -58,7 +58,7 @@ watch(
 </script>
 
 <template>
-  <ARemoteAutocomplete
+  <AFormRemoteAutocomplete
     :key="selectedExtSystemId + ''"
     v-model="modelValue"
     :required="required"

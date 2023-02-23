@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import AFilterString from '@/components/filter/AFilterString.vue'
 import { useI18n } from 'vue-i18n'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { AFilterString } from '@anzusystems/common-admin'
 
 const { sidebarLeft } = useMainWrapper()
 

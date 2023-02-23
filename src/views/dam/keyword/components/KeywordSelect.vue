@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/dam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
@@ -109,7 +109,7 @@ const afterCreate = (keyword: Keyword) => {
 
 <template>
   <div class="d-flex">
-    <ARemoteAutocomplete
+    <AFormRemoteAutocomplete
       v-model="modelValueComputed"
       :v="v$"
       :required="requiredComputed"
@@ -133,7 +133,7 @@ const afterCreate = (keyword: Keyword) => {
           <VProgressCircular v-else indeterminate size="15" />
         </VChip>
       </template>
-    </ARemoteAutocomplete>
+    </AFormRemoteAutocomplete>
     <div>
       <KeywordCreateButton
         variant="icon"

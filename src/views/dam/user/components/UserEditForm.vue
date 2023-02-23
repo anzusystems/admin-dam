@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/userApi'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { useUserEditActions } from '@/views/dam/user/composables/userActions'
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/dam/user/composables/userValidation'
-import ARow from '@/components/common/ARow.vue'
-import ATextField from '@/components/form/ATextField.vue'
+import { ARow } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
 import ExtSystemSelect from '@/views/dam/extSystem/components/ExtSystemSelect.vue'
 import DistributionServiceSelect from '@/views/dam/distribution/components/DistributionServiceSelect.vue'
 import ExternalProviderAssetSelect from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
@@ -26,13 +26,13 @@ const { t } = useI18n()
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField v-model="userUpdate.firstName" :v="v$.userUpdate.firstName" />
+          <AFormTextField v-model="userUpdate.firstName" :v="v$.userUpdate.firstName" />
         </ARow>
         <ARow>
-          <ATextField v-model="userUpdate.lastName" :v="v$.userUpdate.lastName" />
+          <AFormTextField v-model="userUpdate.lastName" :v="v$.userUpdate.lastName" />
         </ARow>
         <ARow v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials">
-          <ATextField
+          <AFormTextField
             v-model="userUpdate.plainPassword"
             :v="v$.userUpdate.plainPassword"
             type="password"

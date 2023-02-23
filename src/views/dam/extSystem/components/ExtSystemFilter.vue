@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
 import { useExtSystemListFilter } from '@/model/dam/filter/ExtSystemFilter'
+import { AFilterWrapper, AFilterInteger, AFilterString } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -22,7 +20,7 @@ const resetFilter = () => {
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper @reset-filter="resetFilter">
+    <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="1">
           <AFilterInteger v-model="filter.id" />
@@ -34,6 +32,6 @@ const resetFilter = () => {
           <AFilterString v-model="filter.name" />
         </VCol>
       </VRow>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

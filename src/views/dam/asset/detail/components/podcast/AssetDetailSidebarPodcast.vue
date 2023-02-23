@@ -6,7 +6,7 @@ import { usePagination, usePaginationAutoHide } from '@/composables/system/pagin
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import { fetchPodcastEpisodeListByAsset } from '@/services/api/dam/podcastEpisodeApi'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
+import { ADatatablePagination } from '@anzusystems/common-admin'
 import PodcastEpisodeListItem from '@/views/dam/asset/detail/components/podcast/PodcastEpisodeListItem.vue'
 import { loadLazyPodcast } from '@/views/dam/podcast/composables/lazyPodcast'
 import PodcastEpisodeNewDialog from '@/views/dam/asset/detail/components/podcast/PodcastEpisodeNewDialog.vue'

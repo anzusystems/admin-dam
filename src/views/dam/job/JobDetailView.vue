@@ -8,7 +8,7 @@ import { useJobDetailActions } from '@/views/dam/job/composables/jobActions'
 import JobDetail from '@/views/dam/job/components/JobDetail.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useJobDetailActions()
 
@@ -33,7 +33,7 @@ const { t } = useI18n()
 <template>
   <ActionbarTitleWrapper :heading="t('job.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
-    <ACloseButton :route-name="ROUTE.DAM.JOB.LIST" />
+    <AActionCloseButton :route-name="ROUTE.DAM.JOB.LIST" />
   </ActionbarButtonsWrapper>
   <ACard :loading="detailLoading">
     <JobDetail />

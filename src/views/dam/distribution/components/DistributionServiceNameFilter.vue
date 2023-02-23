@@ -2,7 +2,7 @@
 import type { Filter } from '@/types/Filter'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
-import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
+import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -34,5 +34,5 @@ const items = computed(() => {
 </script>
 
 <template>
-  <AFilterValueObject v-model="value" :label="modelValue.title" :items="items" />
+  <AFilterValueObjectOptionsSelect v-model="value" :label="modelValue.title" :items="items" />
 </template>

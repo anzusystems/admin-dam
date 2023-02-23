@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import ACopyText from '@/components/common/ACopyText.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ACopyText } from '@anzusystems/common-admin'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { usePagination } from '@/composables/system/pagination'
+import { usePagination } from '@anzusystems/common-admin'
 import { useTableColumns } from '@/composables/system/tableColumns'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'
@@ -13,8 +13,8 @@ import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
-import ADatatable from '@/components/common/ADatatable.vue'
+import { ADatatablePagination } from '@anzusystems/common-admin'
+import { ADatatable } from '@anzusystems/common-admin'
 import type { LogSystem } from '@/model/common/valueObject/LogSystem'
 
 const props = withDefaults(

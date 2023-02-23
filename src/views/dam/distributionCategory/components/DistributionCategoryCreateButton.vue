@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
 import { useDistributionCategoryValidation } from '@/views/dam/distributionCategory/composables/distributionCategoryValidation'
 import { useDistributionCategoryCreateActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import { AssetType, useAssetType } from '@/model/dam/valueObject/AssetType'
 import DistributionCategorySelectOptionSelect from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -93,14 +92,18 @@ const { assetTypeOptions } = useAssetType()
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <AValueObjectOptionsSelect
+            <AFormValueObjectOptionsSelect
               v-model="distributionCategory.type"
               :items="assetTypeOptions"
               data-cy="category-type"
             />
           </ARow>
           <ARow>
-            <ATextField v-model="distributionCategory.name" :v="v$.distributionCategory.name" data-cy="category-name" />
+            <AFormTextField
+              v-model="distributionCategory.name"
+              :v="v$.distributionCategory.name"
+              data-cy="category-name"
+            />
           </ARow>
           <ARow
             v-for="distributionCategorySelect in distributionCategorySelects"

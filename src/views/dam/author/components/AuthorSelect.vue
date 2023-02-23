@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/dam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/dam/filter/AuthorFilter'
 import LazyAuthorChip from '@/views/dam/author/components/LazyAuthorChip.vue'
@@ -119,7 +119,7 @@ onMounted(() => {
 
 <template>
   <div class="d-flex">
-    <ARemoteAutocomplete
+    <AFormRemoteAutocomplete
       v-model="modelValueComputed"
       :v="v$"
       :required="requiredComputed"
@@ -147,7 +147,7 @@ onMounted(() => {
           <VProgressCircular v-else indeterminate size="15" />
         </VChip>
       </template>
-    </ARemoteAutocomplete>
+    </AFormRemoteAutocomplete>
     <div>
       <AuthorCreateButton
         variant="icon"

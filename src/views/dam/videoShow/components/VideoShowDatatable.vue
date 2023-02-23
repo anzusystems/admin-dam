@@ -2,10 +2,10 @@
 import { onMounted } from 'vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/videoShowApi'
-import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
+import { ATableDetailButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
-import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
+import { ATableCopyIdButton } from '@anzusystems/common-admin'
+import { ATableEditButton } from '@anzusystems/common-admin'
 import { useRouter } from 'vue-router'
 import type { Author } from '@/types/dam/Author'
 import { useVideoShowListActions } from '@/views/dam/videoShow/composables/videoShowActions'
@@ -58,9 +58,9 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL" />
-        <ACopyIdButton :id="data.id" />
-        <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
+        <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL" />
+        <ATableCopyIdButton :id="data.id" />
+        <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
       </template>
     </ADatatable>
     <ADatatablePagination v-model="pagination" @change="getList" />

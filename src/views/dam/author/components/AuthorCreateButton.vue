@@ -6,15 +6,14 @@ import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthor, ENTITY } from '@/services/api/dam/authorApi'
 import { useAuthorFactory } from '@/model/dam/factory/AuthorFactory'
 import type { Author } from '@/types/dam/Author'
 import { useAuthorValidation } from '@/views/dam/author/composables/authorValidation'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import type { ValidationScope } from '@/types/Validation'
@@ -131,7 +130,7 @@ const { authorTypeOptions } = useAuthorType()
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="author.name"
               :label="t('coreDam.author.model.name')"
               :v="v$.author.name"
@@ -141,7 +140,7 @@ const { authorTypeOptions } = useAuthorType()
             />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="author.identifier"
               :label="t('coreDam.author.model.identifier')"
               :v="v$.author.identifier"
@@ -150,7 +149,7 @@ const { authorTypeOptions } = useAuthorType()
             />
           </ARow>
           <ARow>
-            <AValueObjectOptionsSelect
+            <AFormValueObjectOptionsSelect
               v-model="author.type"
               :label="t('coreDam.author.model.type')"
               :items="authorTypeOptions"

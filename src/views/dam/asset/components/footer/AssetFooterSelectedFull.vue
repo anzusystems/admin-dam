@@ -6,7 +6,7 @@ import AssetQueueMassEditEditable from '@/views/dam/asset/components/queue/Asset
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { bulkUpdateAssetsMetadata } from '@/services/api/dam/assetApi'
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'

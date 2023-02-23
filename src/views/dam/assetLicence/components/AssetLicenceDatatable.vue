@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { usePagination } from '@/composables/system/pagination'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
+import { usePagination } from '@anzusystems/common-admin'
+import { ADatatablePagination } from '@anzusystems/common-admin'
 import { useTableColumns } from '@/composables/system/tableColumns'
-import ADatatable from '@/components/common/ADatatable.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ADatatable } from '@anzusystems/common-admin'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/assetLicenceApi'
-import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
+import { ATableDetailButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
-import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
+import { ATableCopyIdButton } from '@anzusystems/common-admin'
+import { ATableEditButton } from '@anzusystems/common-admin'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { useAssetLicenceListActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
@@ -66,10 +66,10 @@ defineExpose({
         <LazyExtSystemChip :id="data" variant="text" />
       </template>
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL" />
-        <ACopyIdButton :id="data.id" />
+        <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL" />
+        <ATableCopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
-          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />
+          <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />
         </Acl>
       </template>
     </ADatatable>

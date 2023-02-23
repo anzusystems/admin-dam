@@ -4,9 +4,9 @@ import { toInt } from '@/utils/string'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import ASaveButton from '@/components/common/buttons/action/ASaveButton.vue'
-import ASaveAndCloseButton from '@/components/common/buttons/action/ASaveAndCloseButton.vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionSaveButton } from '@anzusystems/common-admin'
+import { AActionSaveAndCloseButton } from '@anzusystems/common-admin'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useExtSystemEditActions } from '@/views/dam/extSystem/composables/extSystemActions'
 import ExtSystemEditForm from '@/views/dam/extSystem/components/ExtSystemEditForm.vue'
@@ -37,19 +37,19 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.edit')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
-    <ASaveButton
+    <AActionSaveButton
       v-if="!detailLoading"
       :loading="saveButtonLoading"
       :disabled="saveAndCloseButtonLoading"
       @save-record="onUpdate"
     />
-    <ASaveAndCloseButton
+    <AActionSaveAndCloseButton
       v-if="!detailLoading"
       :loading="saveAndCloseButtonLoading"
       :disabled="saveButtonLoading"
       @save-record-and-close="onUpdate(true)"
     />
-    <ACloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
+    <AActionCloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
   </ActionbarButtonsWrapper>
   <ACard :loading="detailLoading">
     <ExtSystemEditForm />
