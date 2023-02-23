@@ -12,7 +12,7 @@ import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import type { AxiosInstance } from 'axios'
 import type { AnzuUser } from '@anzusystems/common-admin'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
@@ -21,6 +21,7 @@ import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vu
 import ABooleanValue from '@/components/common/ABooleanValue.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import PermissionGroupLazyChip from '@/views/common/permissionGroup/components/PermissionGroupLazyChip.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -32,9 +33,10 @@ const pagination = usePagination()
 const filter = useAnzuUserFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchAnzuUserList, anzuUserList, loadingAnzuUserList } = useAnzuUserActions(props.client)
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: AnzuUser) => {
-  if (row.id) {
+  if (row.id && can(ACL.DAM_USER_VIEW)) {
     router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: row.id } })
   }
 }
@@ -97,7 +99,9 @@ const { translatePermission } = usePermissionConfigActions(props.client)
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
+              <Acl :permission="ACL.DAM_USER_VIEW">
+                <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
+              </Acl>
               <ACopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_USER_UPDATE">
                 <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" />

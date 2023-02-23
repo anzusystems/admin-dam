@@ -1,15 +1,17 @@
 import { ROUTE } from '@/router/routes'
+import { ACL } from '@/types/Permission'
+import type { RouteRecordRaw } from 'vue-router'
 
 const PATH = '/podcast-episode'
 
-export const podcastEpisodeRoutes = [
+export const podcastEpisodeRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.PODCAST_EPISODE.DETAIL,
     component: () => import('@/views/dam/podcastEpisode/PodcastEpisodeDetailView.vue'),
     meta: {
       requiresAuth: true,
-      requiredPermissions: [],
+      requiredPermissions: [ACL.DAM_PODCAST_EPISODE_VIEW],
       layout: 'AppLayoutSidebar',
     },
   },
@@ -19,7 +21,7 @@ export const podcastEpisodeRoutes = [
     component: () => import('@/views/dam/podcastEpisode/PodcastEpisodeEditView.vue'),
     meta: {
       requiresAuth: true,
-      requiredPermissions: [],
+      requiredPermissions: [ACL.DAM_PODCAST_EPISODE_VIEW, ACL.DAM_PODCAST_EPISODE_UPDATE],
       layout: 'AppLayoutSidebar',
     },
   },

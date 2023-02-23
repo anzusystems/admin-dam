@@ -1,15 +1,17 @@
 import { ROUTE } from '@/router/routes'
+import type { RouteRecordRaw } from 'vue-router'
+import { ACL } from '@/types/Permission'
 
 const PATH = '/video-show'
 
-export const videoShowRoutes = [
+export const videoShowRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.VIDEO_SHOW.LIST,
     component: () => import('@/views/dam/videoShow/VideoShowListView.vue'),
     meta: {
       requiresAuth: true,
-      requiredPermissions: [],
+      requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
       layout: 'AppLayoutSidebar',
     },
   },
@@ -19,7 +21,7 @@ export const videoShowRoutes = [
     component: () => import('@/views/dam/videoShow/VideoShowDetailView.vue'),
     meta: {
       requiresAuth: true,
-      requiredPermissions: [],
+      requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
       layout: 'AppLayoutSidebar',
     },
   },
@@ -29,7 +31,7 @@ export const videoShowRoutes = [
     component: () => import('@/views/dam/videoShow/VideoShowEditView.vue'),
     meta: {
       requiresAuth: true,
-      requiredPermissions: [],
+      requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW, ACL.DAM_VIDEO_SHOW_UPDATE],
       layout: 'AppLayoutSidebar',
     },
   },

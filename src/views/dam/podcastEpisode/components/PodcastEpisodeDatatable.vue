@@ -18,6 +18,7 @@ import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composa
 import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/dam/podcastEpisode/components/PodcastEpisodeFilter.vue'
 import type { DocId } from '@anzusystems/common-admin'
+import { ACL } from '@/types/Permission'
 
 const props = withDefaults(
   defineProps<{
@@ -57,9 +58,13 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL" />
+        <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
-        <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+        <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+        </Acl>
       </template>
     </ADatatable>
     <ADatatablePagination v-model="pagination" @change="getList" />

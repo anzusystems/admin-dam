@@ -9,6 +9,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useVideoShowEpisodeDetailActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
 import { ACard } from '@anzusystems/common-admin'
+import { ACL } from '@/types/Permission'
 
 const { detailLoading, fetchData, resetStore, videoShowEpisode } = useVideoShowEpisodeDetailActions()
 
@@ -40,7 +41,9 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.detail')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+    <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+    </Acl>
     <VBtn
       class="ml-2"
       :to="closeRoute"
