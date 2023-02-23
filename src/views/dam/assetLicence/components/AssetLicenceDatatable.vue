@@ -18,7 +18,8 @@ import type { AssetLicence } from '@/types/dam/AssetLicence'
 import AssetLicenceFilter from '@/views/dam/assetLicence/components/AssetLicenceFilter.vue'
 import { useAssetLicenceListFilter } from '@/model/dam/filter/AssetLicenceFilter'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
+import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -38,7 +39,10 @@ const columns = useTableColumns([
   { name: 'modifiedAt' },
 ])
 
+const { can } = useAcl<AclValue>()
+
 const onRowClick = (row: AssetLicence) => {
+  if (row.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
   router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: row.id } })
 }
 
@@ -66,7 +70,9 @@ defineExpose({
         <LazyExtSystemChip :id="data" variant="text" />
       </template>
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL" />
+        <Acl :permission="ACL.DAM_ASSET_LICENCE_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
           <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />

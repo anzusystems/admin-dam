@@ -50,7 +50,9 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.DETAIL" />
+        <Acl :permission="ACL.DAM_EXT_SYSTEM_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
           <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT" />
