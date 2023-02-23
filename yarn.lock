@@ -5,22 +5,22 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@anzusystems/common-admin@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "@anzusystems/common-admin@npm:0.0.9"
+"@anzusystems/common-admin@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "@anzusystems/common-admin@npm:0.0.10"
   peerDependencies:
     "@vuelidate/core": ^2.0.0
     "@vuelidate/validators": ^2.0.0
-    "@vueuse/core": ^9.12.0
-    "@vueuse/integrations": ^9.12.0
+    "@vueuse/core": ^9.13.0
+    "@vueuse/integrations": ^9.13.0
     axios: ^1.3.3
     dayjs: ^1.11.7
     flatpickr: ^4.6.13
-    pinia: ^2.0.30
+    pinia: ^2.0.32
     vue: ^3.2.47
     vue-i18n: ^9.2.2
     vue-router: ^4.1.6
-    vuetify: ^3.1.5
+    vuetify: ^3.1.6
   peerDependenciesMeta:
     "@vueuse/core":
       optional: true
@@ -36,7 +36,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: a0150621f3e023f0370accfd0b019c8d7760189836eee84b372539aefe43d4ed225da2def37cbc9a1d1a23aba6fcc40252d74b574ab12e11f7d77084ec67f06c
+  checksum: e5436f47776b1eff811fe7aa5d4f3f621c601742f1fc6ca987d21295dfad1e1f898260ea8db150c282032db73916ff92a30b33eb35b706850af4a7ab8ee5f5a3
   languageName: node
   linkType: hard
 
@@ -1402,7 +1402,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": ^0.0.9
+    "@anzusystems/common-admin": ^0.0.10
     "@cypress/grep": ^3.1.4
     "@intlify/unplugin-vue-i18n": ^0.8.2
     "@mdi/font": 7.1.96
