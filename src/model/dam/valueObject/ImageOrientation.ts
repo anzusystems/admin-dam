@@ -10,7 +10,7 @@ export enum ImageOrientation {
 }
 
 export function useImageOrientation() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const imageOrientationOptions = ref<ValueObjectOption<ImageOrientation>[]>([
     {

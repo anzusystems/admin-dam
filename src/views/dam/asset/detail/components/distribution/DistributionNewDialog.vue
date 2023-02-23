@@ -34,7 +34,7 @@ const value = computed({
   },
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { activeDistributionName, showTabs, redistributeMode } = useAssetDetailDistributionDialog()
 

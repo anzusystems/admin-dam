@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '@/services/api/statusCodes'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { AnzuApiValidationError } from '@/model/common/error/AnzuApiValidationError'
 
 interface ValidationResponseDataFields {

@@ -14,11 +14,12 @@ import { useVideoShowListFilter } from '@/model/dam/filter/VideoShowFilter'
 import {
   ADatatable,
   ADatatablePagination,
-  ASystemEntityScope,
+  ASystemEntityScope, useAcl,
   useFilterHelpers,
   usePagination,
   useTableColumns,
 } from '@anzusystems/common-admin'
+import { ACL, type AclValue } from '@/types/Permission'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -32,8 +33,12 @@ const getList = () => {
 
 const columns = useTableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
+const { can } = useAcl<AclValue>()
+
 const onRowClick = (row: Author) => {
-  router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_VIDEO_SHOW_VIEW)) {
+    router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: row.id } })
+  }
 }
 
 onMounted(() => {
@@ -58,9 +63,13 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL" />
+        <Acl :permission="ACL.DAM_VIDEO_SHOW_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
-        <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
+        <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
+        </Acl>
       </template>
     </ADatatable>
     <ADatatablePagination v-model="pagination" @change="getList" />

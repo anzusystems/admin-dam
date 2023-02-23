@@ -9,7 +9,7 @@ import { useDistributionCategorySelectOneStore } from '@/stores/dam/distribution
 
 const { distributionCategorySelect } = storeToRefs(useDistributionCategorySelectOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

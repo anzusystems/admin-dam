@@ -16,7 +16,7 @@ import AssetSlotsFilter from '@/views/dam/asset/components/AssetSlotsFilter.vue'
 
 const { sidebarLeft } = useMainWrapper()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { filter, fetchAssetList, resetAssetList, filterTouch, filterUnTouch, filterIsTouched } = useAssetListActions()
 

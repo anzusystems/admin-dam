@@ -7,7 +7,7 @@ import AssetQueueUploadList from '@/views/dam/asset/components/queue/AssetQueueU
 import { useTheme } from '@/composables/system/themeSettings'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

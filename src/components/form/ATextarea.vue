@@ -7,7 +7,7 @@ import { isNull, isUndefined } from '@/utils/common'
 import { SubjectScopeSymbol, SystemScopeSymbol } from '@/components/injectionKeys'
 import type { IconValue } from '@/types/Vuetify'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{

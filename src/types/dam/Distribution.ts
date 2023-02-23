@@ -107,4 +107,5 @@ export interface DistributionYoutubeItem extends DistributionItem {
 
 export interface DistributionCustomItem extends DistributionItem {
   customData: Record<string, any>
+  distributionData: Record<string, any>
 }

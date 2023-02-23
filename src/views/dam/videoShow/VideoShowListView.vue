@@ -7,8 +7,9 @@ import VideoShowCreateButton from '@/views/dam/videoShow/components/VideoShowCre
 import VideoShowDatatable from '@/views/dam/videoShow/components/VideoShowDatatable.vue'
 import { ref } from 'vue'
 import { useVideoShowListActions } from '@/views/dam/videoShow/composables/videoShowActions'
+import { ACL } from '@/types/Permission'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { listLoading } = useVideoShowListActions()
 
 const datatable = ref<InstanceType<typeof VideoShowDatatable> | null>(null)
@@ -21,7 +22,9 @@ const afterCreate = () => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.list')" icon="mdi-videoShow" />
   <ActionbarButtonsWrapper>
-    <VideoShowCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
+    <Acl :permission="ACL.DAM_VIDEO_SHOW_CREATE">
+      <VideoShowCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
+    </Acl>
   </ActionbarButtonsWrapper>
   <ACard :loading="listLoading">
     <VideoShowDatatable ref="datatable" />

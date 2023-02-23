@@ -5,7 +5,7 @@ import { ref } from 'vue'
 
 const { setThemeDark, setThemeAuto, setThemeLight, settings } = useTheme()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const isOpen = ref(false)
 </script>

@@ -14,7 +14,7 @@ const { podcastEpisode } = usePodcastEpisodeEditActions()
 
 const { v$ } = usePodcastEpisodeValidation(podcastEpisode)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFactory'
@@ -11,7 +12,6 @@ import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import ARow from '@/components/common/ARow.vue'
 import ATextField from '@/components/form/ATextField.vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import PodcastSelect from '@/views/dam/podcast/components/PodcastSelect.vue'
 import ATextarea from '@/components/form/ATextarea.vue'
@@ -37,7 +37,7 @@ const value = computed({
   },
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()

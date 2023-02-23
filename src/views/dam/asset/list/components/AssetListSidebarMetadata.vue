@@ -5,7 +5,7 @@ import { updateAssetMetadata } from '@/services/api/dam/assetApi'
 import { isNull } from '@/utils/common'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { useI18n } from 'vue-i18n'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
@@ -23,7 +23,7 @@ const router = useRouter()
 
 const saveButtonLoading = ref(false)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
 

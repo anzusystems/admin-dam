@@ -15,7 +15,7 @@ const emit = defineEmits<{
   (e: 'duplicateSlot', targetName: string): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const dialog = ref(false)
 const targetSlot = ref<string | null>(null)

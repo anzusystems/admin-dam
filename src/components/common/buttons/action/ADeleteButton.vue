@@ -65,7 +65,7 @@ const onCancel = () => {
   closeDialog()
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 defineExpose({
   closeDialog,

@@ -4,10 +4,10 @@ import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { isUndefined } from '@/utils/common'
 import { minValue, required } from '@/plugins/validators'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
-import { useAlerts } from '@/composables/system/alerts'
 import { updateCurrentUser } from '@/services/api/dam/userApi'
 import { useErrorHandler } from '@/composables/system/error'
 import { damConfig } from '@/services/DamConfigService'
@@ -40,7 +40,7 @@ const dialog = computed({
   },
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()

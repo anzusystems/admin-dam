@@ -24,7 +24,7 @@ const resolvedPermissions = computed(() => {
   return resolvePermissions(anzuUser.value)
 })
 const { v$ } = useAnzuUserValidation(anzuUser)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

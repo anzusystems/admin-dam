@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import ATextField from '@/components/form/ATextField.vue'
 import ARow from '@/components/common/ARow.vue'
@@ -54,7 +54,7 @@ const onCancel = () => {
 
 const router = useRouter()
 const { v$ } = useVideoShowValidation(videoShow)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 

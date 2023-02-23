@@ -6,7 +6,7 @@ import { ROUTE } from '@/router/routes'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { isEmptyObject } from '@anzusystems/common-admin'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const router = useRouter()
 const route = useRoute()

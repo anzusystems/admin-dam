@@ -8,7 +8,7 @@ import { updateRoi } from '@/services/api/dam/imageRoiApi'
 import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
 import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
 import { useErrorHandler } from '@/composables/system/error'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 
 const { handleError } = useErrorHandler()
 const { showRecordWas } = useAlerts()

@@ -12,7 +12,7 @@ export enum DistributionStatus {
 }
 
 export function useDistributionStatus() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const DistributionStatusOptions = ref<ValueObjectOption<DistributionStatus>[]>([
     {

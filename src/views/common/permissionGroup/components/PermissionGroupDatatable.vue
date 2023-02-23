@@ -12,12 +12,13 @@ import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -31,9 +32,10 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchPermissionGroupList, permissionGroupList, loadingPermissionGroupList } = usePermissionGroupActions(
   props.client
 )
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: PermissionGroup) => {
-  if (row.id) {
+  if (row.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
     router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: row.id } })
   }
 }
@@ -77,7 +79,9 @@ defineExpose({
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
+              <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
+                <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
+              </Acl>
               <ACopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
                 <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT" />

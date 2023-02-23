@@ -13,7 +13,7 @@ import LazyAssetLicenceChip from '@/views/dam/assetLicence/components/LazyAssetL
 
 const { user } = storeToRefs(useUserOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

@@ -7,6 +7,7 @@ import AssetSlotListItemRemove from '@/views/dam/asset/detail/components/slots/A
 import AssetSlotListItemDuplicate from '@/views/dam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/dam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
 import type { DocId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
@@ -16,7 +17,6 @@ import AssetQueueItemList from '@/views/dam/asset/components/queue/AssetQueueIte
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 import ImageFile from '@/views/dam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
-import { useAlerts } from '@/composables/system/alerts'
 import AssetFilePublicLink from '@/views/dam/asset/detail/components/AssetFilePublicLink.vue'
 
 const props = withDefaults(
@@ -41,7 +41,7 @@ const emit = defineEmits<{
   (e: 'openMakeFilePrivateDialog', fileId: DocId): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const uploadQueuesStore = useUploadQueuesStore()
 
 const itemHasFile = computed(() => {

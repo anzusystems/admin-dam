@@ -10,7 +10,7 @@ import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChi
 
 const { assetLicence } = storeToRefs(useAssetLicenceOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
+import { type PermissionGroup, useAlerts, usePermissionGroupFactory } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import ATextField from '@/components/form/ATextField.vue'
 import ARow from '@/components/common/ARow.vue'
@@ -11,7 +11,6 @@ import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
-import { type PermissionGroup, usePermissionGroupFactory } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 
 const props = withDefaults(
@@ -52,7 +51,7 @@ const onCancel = () => {
 
 const router = useRouter()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 

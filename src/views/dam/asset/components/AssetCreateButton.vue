@@ -10,7 +10,7 @@ import { useAssetType } from '@/model/dam/valueObject/AssetType'
 import { useI18n } from 'vue-i18n'
 import type { AssetCreateDto, AssetDetailItemDto } from '@/types/dam/Asset'
 import { createAsset } from '@/services/api/dam/assetApi'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
@@ -20,7 +20,7 @@ const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const { createCreateDto } = useAssetFactory()

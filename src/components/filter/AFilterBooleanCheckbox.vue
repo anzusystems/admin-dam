@@ -15,7 +15,7 @@ const emit = defineEmits<{
 }>()
 const { modelValue } = useVModels(props, emit)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const labelComputed = computed(() => {
   if (modelValue.value.model === null) return modelValue.value.title

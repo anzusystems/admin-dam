@@ -2,7 +2,8 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
+import type { DocId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
@@ -15,7 +16,6 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFactory'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { usePodcastEpisodeValidation } from '@/views/dam/podcastEpisode/composables/podcastEpisodeValidation'
-import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -56,7 +56,7 @@ const onCancel = () => {
 
 const router = useRouter()
 const { v$ } = usePodcastEpisodeValidation(podcastEpisode)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 

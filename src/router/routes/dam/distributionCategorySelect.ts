@@ -1,9 +1,10 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
+import type { RouteRecordRaw } from 'vue-router'
 
 const PATH = '/distribution-category/select'
 
-export const distributionCategorySelectRoutes = [
+export const distributionCategorySelectRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST,

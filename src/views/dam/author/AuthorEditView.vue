@@ -12,7 +12,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useAuthorEditActions } from '@/views/dam/author/composables/authorActions'
 import AuthorEditForm from '@/views/dam/author/components/AuthorEditForm.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = route.params.id.toString()

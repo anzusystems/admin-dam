@@ -14,6 +14,7 @@ import PodcastEpisodeDatatable from '@/views/dam/podcastEpisode/components/Podca
 import PodcastEpisodeCreateButton from '@/views/dam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
 import { ACard } from '@anzusystems/common-admin'
 import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
+import { ACL } from '@/types/Permission'
 
 const { detailLoading, fetchData, resetStore } = usePodcastDetailActions()
 const { listLoading } = usePodcastEpisodeListActions()
@@ -48,7 +49,7 @@ onBeforeUnmount(() => {
   resetStore()
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const afterPodcastEpisodeCreate = () => {
   if (activeTab.value === PodcastDetailTab.Episodes) {
@@ -63,29 +64,37 @@ const afterPodcastEpisodeCreate = () => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.detail')" icon="mdi-podcast" />
   <ActionbarButtonsWrapper>
-    <PodcastEpisodeCreateButton
-      v-if="!detailLoading"
-      data-cy="button-create"
-      button-t="coreDam.podcastEpisode.button.create"
-      :podcast-id="podcastId"
-      disable-redirect
-      @after-create="afterPodcastEpisodeCreate"
-    />
-    <AEditButton v-if="!detailLoading" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
+    <Acl :permission="ACL.DAM_PODCAST_EPISODE_CREATE">
+      <PodcastEpisodeCreateButton
+        v-if="!detailLoading"
+        data-cy="button-create"
+        button-t="coreDam.podcastEpisode.button.create"
+        :podcast-id="podcastId"
+        disable-redirect
+        @after-create="afterPodcastEpisodeCreate"
+      />
+    </Acl>
+    <Acl :permission="ACL.DAM_PODCAST_UPDATE">
+      <AEditButton v-if="!detailLoading" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
+    </Acl>
     <ACloseButton :route-name="ROUTE.DAM.PODCAST.LIST" />
   </ActionbarButtonsWrapper>
   <VTabs v-model="activeTab" class="mb-4">
     <VTab :value="PodcastDetailTab.Detail" data-cy="podcast-list">{{ t('coreDam.podcast.tabs.detail') }}</VTab>
-    <VTab :value="PodcastDetailTab.Episodes" data-cy="episode-list">{{ t('coreDam.podcast.tabs.episodes') }}</VTab>
+    <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
+      <VTab :value="PodcastDetailTab.Episodes" data-cy="episode-list">{{ t('coreDam.podcast.tabs.episodes') }}</VTab>
+    </Acl>
   </VTabs>
   <div v-show="activeTab === PodcastDetailTab.Detail">
     <ACard :loading="detailLoading">
       <PodcastDetail />
     </ACard>
   </div>
-  <div v-show="activeTab === PodcastDetailTab.Episodes">
-    <ACard :loading="listLoading">
-      <PodcastEpisodeDatatable v-if="loadPodcastEpisodeDatatable" :podcast-id="podcastId" />
-    </ACard>
-  </div>
+  <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
+    <div v-show="activeTab === PodcastDetailTab.Episodes">
+      <ACard :loading="listLoading">
+        <PodcastEpisodeDatatable v-if="loadPodcastEpisodeDatatable" :podcast-id="podcastId" />
+      </ACard>
+    </div>
+  </Acl>
 </template>

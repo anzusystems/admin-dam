@@ -3,7 +3,7 @@ import { toString } from '@/utils/number'
 import { useClipboard } from '@vueuse/core'
 import { clickBlur } from '@/utils/event'
 import { isNumber, isString } from '@/utils/common'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -20,7 +20,7 @@ const props = withDefaults(
 
 const { copy, isSupported } = useClipboard()
 const { showSuccess } = useAlerts()
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const onClick = (event: Event) => {
   clickBlur(event)

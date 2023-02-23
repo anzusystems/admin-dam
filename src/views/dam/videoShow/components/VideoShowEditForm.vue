@@ -12,7 +12,7 @@ const { videoShow } = useVideoShowEditActions()
 
 const { v$ } = useVideoShowValidation(videoShow)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

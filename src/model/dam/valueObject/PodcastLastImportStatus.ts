@@ -10,7 +10,7 @@ export enum PodcastLastImportStatus {
 }
 
 export function usePodcastLastImportStatus() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const podcastLastImportStatusOptions = ref<ValueObjectOption<PodcastLastImportStatus>[]>([
     {

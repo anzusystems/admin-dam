@@ -6,7 +6,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { ref } from 'vue'
 import { useUserListActions } from '@/views/dam/user/composables/userActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { listLoading } = useUserListActions()
 

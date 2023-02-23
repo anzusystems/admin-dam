@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
-import { type DocId, isNull, usePagination } from '@anzusystems/common-admin'
+import { ACard, type DocId, isNull, useAlerts, usePagination } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/dam/asset/detail/components/DistributionImagePreviewItem.vue'
-import { ACard } from '@anzusystems/common-admin'
 import { setVideoFileDistributionPreview } from '@/services/api/dam/videoApi'
-import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import { useI18n } from 'vue-i18n'
 
@@ -22,7 +20,7 @@ const emit = defineEmits<{
   (e: 'afterSuccessfulConfirm'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const saving = ref(false)
 

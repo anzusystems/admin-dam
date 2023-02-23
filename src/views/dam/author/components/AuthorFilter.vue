@@ -22,7 +22,7 @@ const resetFilter = () => {
   emit('resetFilter')
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { authorTypeOptions } = useAuthorType()
 </script>

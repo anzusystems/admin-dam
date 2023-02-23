@@ -6,13 +6,13 @@ import ACopyText from '@/components/common/ACopyText.vue'
 import { storeToRefs } from 'pinia'
 import AUserAndTimeTrackingFields from '@/components/common/AUserAndTimeTrackingFields.vue'
 import { usePodcastEpisodeOneStore } from '@/stores/dam/podcastEpisodeStore'
-import ADatetime from '@/components/common/ADatetime.vue'
+import { ADatetime } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const imageSrc = computed(() => {
   return podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined

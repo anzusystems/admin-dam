@@ -13,7 +13,7 @@ import { toInt } from '@anzusystems/common-admin'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserEditForm from '@/views/common/anzuUser/components/AnzuUserEditForm.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = toInt(route.params.id)

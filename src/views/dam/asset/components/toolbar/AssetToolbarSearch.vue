@@ -2,7 +2,7 @@
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { filter, fetchAssetList } = useAssetListActions()
 

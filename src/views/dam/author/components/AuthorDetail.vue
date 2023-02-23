@@ -11,7 +11,7 @@ import ABooleanValue from '@/components/common/ABooleanValue.vue'
 
 const { author } = storeToRefs(useAuthorOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { getAuthorTypeOption } = useAuthorType()
 </script>

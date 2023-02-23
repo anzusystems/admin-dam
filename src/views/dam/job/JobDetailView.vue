@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
   resetStore()
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

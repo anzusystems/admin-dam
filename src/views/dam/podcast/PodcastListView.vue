@@ -7,8 +7,9 @@ import PodcastCreateButton from '@/views/dam/podcast/components/PodcastCreateBut
 import PodcastDatatable from '@/views/dam/podcast/components/PodcastDatatable.vue'
 import { ref } from 'vue'
 import { usePodcastListActions } from '@/views/dam/podcast/composables/podcastActions'
+import { ACL } from '@/types/Permission'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { listLoading } = usePodcastListActions()
 
 const datatable = ref<InstanceType<typeof PodcastDatatable> | null>(null)
@@ -21,7 +22,9 @@ const afterCreate = () => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.list')" icon="mdi-podcast" />
   <ActionbarButtonsWrapper>
-    <PodcastCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
+    <Acl :permission="ACL.DAM_PODCAST_CREATE">
+      <PodcastCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
+    </Acl>
   </ActionbarButtonsWrapper>
   <ACard :loading="listLoading">
     <PodcastDatatable ref="datatable" />

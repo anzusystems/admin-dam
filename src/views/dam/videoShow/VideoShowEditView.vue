@@ -12,7 +12,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import { useVideoShowEditActions } from '@/views/dam/videoShow/composables/videoShowActions'
 import VideoShowEditForm from '@/views/dam/videoShow/components/VideoShowEditForm.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const route = useRoute()
 const id = route.params.id.toString()
