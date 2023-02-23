@@ -3,12 +3,11 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { maxLength, minLength, required, requiredIf } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
-import type { DistributionYoutubeCreateRedistributeDto } from '@/types/dam/Distribution'
-import type { DistributionYoutubeItem } from '@/types/dam/Distribution'
+import type { DistributionYoutubeCreateRedistributeDto, DistributionYoutubeItem } from '@/types/dam/Distribution'
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
@@ -56,7 +55,7 @@ const emit = defineEmits<{
 
 const existingDistributions = ref<Array<DistributionYoutubeItem>>([])
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { createCreateDto } = useDistributionYoutubeFactory()
 const distribution = ref<DistributionYoutubeCreateRedistributeDto>(createCreateDto())

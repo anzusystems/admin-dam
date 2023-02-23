@@ -9,7 +9,7 @@ export enum PodcastMode {
 }
 
 export function usePodcastMode() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const podcastModeOptions = ref<ValueObjectOption<PodcastMode>[]>([
     {

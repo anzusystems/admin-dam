@@ -8,7 +8,7 @@ import { useAssetCustomMetadataForm } from '@/components/dam/customMetadata/useA
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{

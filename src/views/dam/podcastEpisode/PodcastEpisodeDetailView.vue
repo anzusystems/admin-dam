@@ -13,6 +13,7 @@ import {
 } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeDetail from '@/views/dam/podcastEpisode/components/PodcastEpisodeDetail.vue'
 import { ACard } from '@anzusystems/common-admin'
+import { ACL } from '@/types/Permission'
 
 const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
@@ -25,7 +26,7 @@ const getDetail = () => {
   fetchData(id)
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const closeRoute = computed(() => {
   if (podcastEpisode.value.podcast) {
@@ -50,15 +51,19 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.detail')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
-    <ADeleteButton
-      v-if="!detailLoading"
-      variant="outlined"
-      color="error"
-      :width="36"
-      :height="36"
-      @delete-record="deletePodcast(id, onSuccessfulCallback)"
-    />
+    <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
+      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+    </Acl>
+    <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
+      <ADeleteButton
+        v-if="!detailLoading"
+        variant="outlined"
+        color="error"
+        :width="36"
+        :height="36"
+        @delete-record="deletePodcast(id, onSuccessfulCallback)"
+      />
+    </Acl>
     <VBtn
       class="ml-2"
       :to="closeRoute"

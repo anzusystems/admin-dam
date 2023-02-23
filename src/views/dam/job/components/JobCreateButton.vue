@@ -57,7 +57,7 @@ const onCancel = () => {
 
 const router = useRouter()
 const { v$ } = useJobValidation(job)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 

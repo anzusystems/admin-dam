@@ -1,31 +1,20 @@
-import type { IntegerId } from '@anzusystems/common-admin'
+import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 import type { User } from '@/types/dam/User'
 
-interface CurrentUserExtSystem {
+export interface CurrentUserExtSystem {
   id: IntegerId
   name: string
 }
 
-interface CurrentUserAssetLicence {
+export interface CurrentUserAssetLicence {
   id: IntegerId
   name: string
   extSystem: IntegerId
 }
 
 export interface CurrentUserDto
-  extends Pick<
-    User,
-    | 'id'
-    | 'email'
-    | 'firstName'
-    | 'lastName'
-    | 'enabled'
-    | 'permissions'
-    | 'resolvedPermissions'
-    | 'allowedAssetExternalProviders'
-    | 'allowedDistributionServices'
-  > {
-  roles: string[]
+  extends AnzuUser,
+    Pick<User, 'firstName' | 'lastName' | 'allowedAssetExternalProviders' | 'allowedDistributionServices'> {
   selectedLicence: CurrentUserAssetLicence | null
   adminToExtSystems: CurrentUserExtSystem[]
   userToExtSystems: CurrentUserExtSystem[]

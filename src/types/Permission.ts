@@ -1,7 +1,4 @@
-import type { Immutable } from '@/types/Immutable'
-import { deepFreeze } from '@/utils/object'
-
-const acls = {
+export const ACL = {
   DAM_ASSET_CREATE: 'dam_asset_create',
   DAM_ASSET_UPDATE: 'dam_asset_update',
   DAM_ASSET_VIEW: 'dam_asset_view',
@@ -54,6 +51,7 @@ const acls = {
   DAM_KEYWORD_UPDATE: 'dam_keyword_update',
   DAM_KEYWORD_DELETE: 'dam_keyword_delete',
   DAM_JOB_CREATE: 'dam_job_create',
+  DAM_JOB_VIEW: 'dam_job_view',
   DAM_JOB_DELETE: 'dam_job_delete',
   DAM_DISTRIBUTION_CATEGORY_VIEW: 'dam_distributionCategory_view',
   DAM_DISTRIBUTION_CATEGORY_CREATE: 'dam_distributionCategory_create',
@@ -61,6 +59,14 @@ const acls = {
   DAM_DISTRIBUTION_CATEGORY_DELETE: 'dam_distributionCategory_delete',
   DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW: 'dam_distributionCategorySelect_view',
   DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE: 'dam_distributionCategorySelect_update',
+  DAM_VIDEO_SHOW_CREATE: 'dam_videoShow_create',
+  DAM_VIDEO_SHOW_UPDATE: 'dam_videoShow_update',
+  DAM_VIDEO_SHOW_VIEW: 'dam_videoShow_view',
+  DAM_VIDEO_SHOW_DELETE: 'dam_videoShow_delete',
+  DAM_VIDEO_SHOW_EPISODE_CREATE: 'dam_videoShowEpisode_create',
+  DAM_VIDEO_SHOW_EPISODE_UPDATE: 'dam_videoShowEpisode_update',
+  DAM_VIDEO_SHOW_EPISODE_VIEW: 'dam_videoShowEpisode_view',
+  DAM_VIDEO_SHOW_EPISODE_DELETE: 'dam_videoShowEpisode_delete',
   DAM_PODCAST_CREATE: 'dam_podcast_create',
   DAM_PODCAST_UPDATE: 'dam_podcast_update',
   DAM_PODCAST_VIEW: 'dam_podcast_view',
@@ -79,13 +85,13 @@ const acls = {
   DAM_KEYWORD_UI: 'dam_keyword_ui',
   DAM_DISTRIBUTION_CATEGORY_UI: 'dam_distributionCategory_ui',
   DAM_DISTRIBUTION_CATEGORY_SELECT_UI: 'dam_distributionCategorySelect_ui',
+  DAM_VIDEO_SHOW_UI: 'dam_videoShow_ui',
+  DAM_VIDEO_SHOW_EPISODE_UI: 'dam_videoShowEpisode_ui',
   DAM_PODCAST_UI: 'dam_podcast_ui',
   DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
   DAM_LOG_UI: 'dam_log_ui',
   DAM_JOB_UI: 'dam_job_ui',
 } as const
-
-export const ACL: Immutable<typeof acls> = deepFreeze(acls)
 
 type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]

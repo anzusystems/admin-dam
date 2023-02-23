@@ -15,9 +15,10 @@ import type { User } from '@/types/dam/User'
 import { useRouter } from 'vue-router'
 import UserFilter from '@/views/dam/user/components/UserFilter.vue'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import { usePagination } from '@/composables/system/pagination'
 import { useUserListFilter } from '@/model/dam/filter/UserFilter'
+import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -37,8 +38,12 @@ const columns = useTableColumns([
   { name: 'modifiedAt' },
 ])
 
+const { can } = useAcl<AclValue>()
+
 const onRowClick = (row: User) => {
-  router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_USER_VIEW)) {
+    router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: row.id } })
+  }
 }
 
 onMounted(() => {
@@ -63,7 +68,9 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.USER.DETAIL" />
+        <Acl :permission="ACL.DAM_USER_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.USER.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_USER_UPDATE">
           <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.USER.EDIT" />

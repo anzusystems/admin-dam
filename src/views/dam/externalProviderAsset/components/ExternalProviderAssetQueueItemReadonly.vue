@@ -18,7 +18,7 @@ const emit = defineEmits<{
   (e: 'removeItem', index: number): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const remove = () => {
   emit('removeItem', props.index)

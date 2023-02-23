@@ -43,7 +43,7 @@ const { modelValue } = useVModels(props, emit)
 const system = inject<string>(SystemScopeSymbol, '')
 const subject = inject<string>(SubjectScopeSymbol, '')
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const onBlur = () => {
   emit('blur', props.modelValue)

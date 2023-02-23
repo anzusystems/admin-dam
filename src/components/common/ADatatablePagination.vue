@@ -23,7 +23,7 @@ const emit = defineEmits<{
 
 const { modelValue } = useVModels(props, emit)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const lastPage = computed(() => {
   return Math.ceil(modelValue.value.totalCount / modelValue.value.rowsPerPage)

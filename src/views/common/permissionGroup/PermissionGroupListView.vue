@@ -8,7 +8,7 @@ import PermissionGroupDatatable from '@/views/common/permissionGroup/components/
 import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupCreateButton from '@/views/common/permissionGroup/components/PermissionGroupCreateButton.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof PermissionGroupDatatable> | null>(null)
 

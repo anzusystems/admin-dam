@@ -18,6 +18,8 @@ import { useVideoShowEpisodeListActions } from '@/views/dam/videoShowEpisode/com
 import { useVideoShowEpisodeListFilter } from '@/model/dam/filter/VideoShowEpisodeFilter'
 import VideoShowEpisodeFilter from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
 import type { DocId } from '@anzusystems/common-admin'
+import { useAcl } from '@anzusystems/common-admin'
+import { ACL, type AclValue } from '@/types/Permission'
 
 const props = withDefaults(
   defineProps<{
@@ -36,8 +38,12 @@ const { fetchList, listItems } = useVideoShowEpisodeListActions()
 
 const columns = useTableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
+const { can } = useAcl<AclValue>()
+
 const onRowClick = (row: Author) => {
-  router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
+    router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: row.id } })
+  }
 }
 
 const getList = () => {
@@ -57,9 +63,13 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL" />
+        <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
-        <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+        <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE">
+          <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+        </Acl>
       </template>
     </ADatatable>
     <ADatatablePagination v-model="pagination" @change="getList" />

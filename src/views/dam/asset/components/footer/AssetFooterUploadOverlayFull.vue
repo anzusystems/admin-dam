@@ -8,13 +8,13 @@ import { bulkUpdateAssetsMetadata } from '@/services/api/dam/assetApi'
 import AssetFooterUploadButtonStop from '@/views/dam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import { useTheme } from '@/composables/system/themeSettings'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

@@ -7,7 +7,7 @@ import { isImageFile } from '@/types/dam/File'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'

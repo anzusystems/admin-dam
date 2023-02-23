@@ -1,4 +1,5 @@
 import { setValueByPath } from '@/utils/object'
+import type { LocaleMessageObject, LocaleMessages } from 'vue-i18n'
 
 // note: now import is not dynamic, so all language files are loaded at once
 const modules = import.meta.glob('./(sk|en|xx)/**/*.yaml', { eager: true })
@@ -8,7 +9,7 @@ const cleanupKey = (key: string) => {
   return key.substring(0, key.indexOf('.'))
 }
 
-const final = {}
+const final: LocaleMessages<Record<string, LocaleMessageObject>> = {}
 for (const key in modules) {
   const path = cleanupKey(key)
   // @ts-ignore

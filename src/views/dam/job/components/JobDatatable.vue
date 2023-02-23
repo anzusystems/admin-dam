@@ -12,6 +12,7 @@ import {
   ADatatablePagination,
   ASystemEntityScope,
   JobStatusChip,
+  useAcl,
   useFilterHelpers,
   usePagination,
   useTableColumns,
@@ -20,6 +21,7 @@ import JobResourceChip from '@/views/dam/job/components/JobResourceChip.vue'
 import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
 import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import { useI18n } from 'vue-i18n'
+import { ACL, type AclValue } from '@/types/Permission'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -28,20 +30,24 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useJobListActions()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const columns = useTableColumns([
   { name: 'id', label: t('job.model.id') },
   { name: '_resourceName', label: t('job.model._resourceName') },
   { name: 'status', label: t('job.model.status') },
-  { name: 'startedAt', label: t('job.model.startedAt') },
-  { name: 'finishedAt', label: t('job.model.finishedAt') },
+  { name: 'startedAt', label: t('job.model.startedAt'), type: 'datetime' },
+  { name: 'finishedAt', label: t('job.model.finishedAt'), type: 'datetime' },
   { name: 'result', label: t('job.model.result') },
   { name: 'createdAt', label: t('job.model.createdAt') },
 ])
 
+const { can } = useAcl<AclValue>()
+
 const onRowClick = (row: Job) => {
-  router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_JOB_VIEW)) {
+    router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: row.id } })
+  }
 }
 
 const getList = () => {
@@ -76,7 +82,9 @@ defineExpose({
         <JobStatusChip :value="data"></JobStatusChip>
       </template>
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.JOB.DETAIL" />
+        <Acl :permission="ACL.DAM_JOB_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.JOB.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
       </template>
     </ADatatable>

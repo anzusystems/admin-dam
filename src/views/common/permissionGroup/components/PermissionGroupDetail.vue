@@ -15,7 +15,7 @@ defineProps<{
 
 const { permissionGroup, loadingPermissionGroup } = storeToRefs(usePermissionGroupOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

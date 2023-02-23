@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/model/dam/factory/VideoShowEpisodeFactory'
@@ -10,7 +11,6 @@ import { useVideoShowEpisodeValidation } from '@/views/dam/videoShowEpisode/comp
 import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
 import ARow from '@/components/common/ARow.vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
 import { useErrorHandler } from '@/composables/system/error'
 import VideoShowSelect from '@/views/dam/videoShow/components/VideoShowSelect.vue'
 import ATextarea from '@/components/form/ATextarea.vue'
@@ -36,7 +36,7 @@ const value = computed({
   },
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()

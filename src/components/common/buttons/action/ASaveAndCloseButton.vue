@@ -28,7 +28,7 @@ const onClick = (event: Event) => {
   emit('saveRecordAndClose')
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

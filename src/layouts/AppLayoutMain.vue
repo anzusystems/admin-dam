@@ -1,20 +1,12 @@
 <script lang="ts" setup>
 import { useTheme } from '@/composables/system/themeSettings'
+import { AAlerts } from '@anzusystems/common-admin'
 
 const { theme } = useTheme()
 </script>
 
 <template>
-  <Notifications :max="5" group="alerts" position="top center" width="50%">
-    <template #body="props">
-      <VAlert :type="props.item.type" class="ma-1" density="compact">
-        <div class="white-space-pre">{{ props.item.text }}</div>
-        <template #close>
-          <VIcon icon="mdi-close" @click.stop="props.close" />
-        </template>
-      </VAlert>
-    </template>
-  </Notifications>
+  <AAlerts />
   <VApp :theme="theme">
     <slot />
   </VApp>

@@ -2,6 +2,7 @@
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import AssetCreateButton from '@/views/dam/asset/components/AssetCreateButton.vue'
+import { ACL } from '@/types/Permission'
 
 withDefaults(
   defineProps<{
@@ -12,7 +13,7 @@ withDefaults(
   }
 )
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>
@@ -21,12 +22,16 @@ const { t } = useI18n({ useScope: 'global' })
     <VMenu activator="parent">
       <VCard min-width="300">
         <VList>
-          <AssetCreateButton />
-          <VListItem
-            :to="{ name: ROUTE.DAM.PODCAST.LIST }"
-            :title="t('system.mainBar.podcasts')"
-            prepend-icon="mdi-podcast"
-          />
+          <Acl :permission="ACL.DAM_ASSET_CREATE">
+            <AssetCreateButton />
+          </Acl>
+          <Acl :permission="ACL.DAM_PODCAST_UI">
+            <VListItem
+              :to="{ name: ROUTE.DAM.PODCAST.LIST }"
+              :title="t('system.mainBar.podcasts')"
+              prepend-icon="mdi-podcast"
+            />
+          </Acl>
           <VDivider />
           <VListItem
             v-show="variant === 'main'"

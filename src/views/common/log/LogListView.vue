@@ -10,7 +10,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 import LogFilter from '@/views/common/log/components/LogFilter.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const logFilter = useLogFilter()
 const activeTab = ref<null | string>(null)

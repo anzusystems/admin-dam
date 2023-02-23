@@ -63,7 +63,7 @@ const emit = defineEmits<{
   (e: 'error'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const onLoad = () => {
   emit('load')

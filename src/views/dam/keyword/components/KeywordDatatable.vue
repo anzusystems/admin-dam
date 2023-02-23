@@ -13,11 +13,12 @@ import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
 import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import type { Author } from '@/types/dam/Author'
 import { useKeywordListActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 import KeywordFilter from '@/views/dam/keyword/components/KeywordFilter.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -36,8 +37,12 @@ const columns = useTableColumns([
   { name: 'modifiedAt' },
 ])
 
+const { can } = useAcl<AclValue>()
+
 const onRowClick = (row: Author) => {
-  router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_KEYWORD_VIEW)) {
+    router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: row.id } })
+  }
 }
 
 onMounted(() => {
@@ -61,7 +66,9 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.DETAIL" />
+        <Acl :permission="ACL.DAM_KEYWORD_VIEW">
+          <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.DETAIL" />
+        </Acl>
         <ACopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
           <AEditButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.EDIT" />

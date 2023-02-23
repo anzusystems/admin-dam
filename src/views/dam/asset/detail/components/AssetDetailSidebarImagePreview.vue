@@ -9,7 +9,7 @@ import { isVideoFile } from '@/types/dam/File'
 import { fetchVideoFile, updatePreviewImage } from '@/services/api/dam/videoApi'
 import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 import { useErrorHandler } from '@/composables/system/error'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/dam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
 
 withDefaults(

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import type { Author } from '@/types/dam/Author'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/dam/authorApi'

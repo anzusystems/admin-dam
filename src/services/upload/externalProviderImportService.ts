@@ -2,7 +2,7 @@ import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
 import { externalProviderUpload } from '@/services/api/dam/fileApi'
 import { useErrorHandler, type ValidationResponseData } from '@/composables/system/error'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 
 export function externalProviderImport(queueItem: UploadQueueItem) {
   const importInit = async () => {

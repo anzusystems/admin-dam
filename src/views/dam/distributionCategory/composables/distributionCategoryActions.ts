@@ -1,4 +1,5 @@
-import { useAlerts } from '@/composables/system/alerts'
+import type { DocId } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
 import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
@@ -25,7 +26,6 @@ import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/Dist
 import { simpleCloneObject } from '@/utils/object'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import type { ValueObjectOption } from '@/types/ValueObject'
-import type { DocId } from '@anzusystems/common-admin'
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()

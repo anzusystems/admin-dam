@@ -73,7 +73,7 @@ const lang = ref('sk')
 const textFieldValue = ref('')
 const flatpickrValue = ref<string | null>(null)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const fixFormat = (value: string) => {
   return value.replace('Z', '000Z')

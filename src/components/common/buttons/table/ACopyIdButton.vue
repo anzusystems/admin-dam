@@ -3,7 +3,7 @@ import { toString } from '@/utils/number'
 import { useClipboard } from '@vueuse/core'
 import AIconGroup from '@/components/common/AIconGroup.vue'
 import { clickBlur } from '@/utils/event'
-import { useAlerts } from '@/composables/system/alerts'
+import { useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { isNumber, isString } from '@/utils/common'
 
@@ -27,7 +27,7 @@ const props = withDefaults(
   }
 )
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { copy, isSupported } = useClipboard()
 const { showSuccess } = useAlerts()
 

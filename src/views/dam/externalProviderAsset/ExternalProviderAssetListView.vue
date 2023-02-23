@@ -22,7 +22,7 @@ import {
 } from '@/composables/system/externalProviderAssetFooterSelected'
 import { onKeyUp } from '@vueuse/core'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { sidebarRight } = useMainWrapper()
 

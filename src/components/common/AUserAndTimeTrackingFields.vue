@@ -30,7 +30,7 @@ const modifiedAt = computed(() => {
   return formatDatetime(props.data.modifiedAt)
 })
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

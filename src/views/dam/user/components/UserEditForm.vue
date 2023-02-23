@@ -18,7 +18,7 @@ const { userUpdate } = useUserEditActions()
 
 const { v$ } = useUpdateUserValidation(userUpdate, damPubConfig.userAuthType)
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

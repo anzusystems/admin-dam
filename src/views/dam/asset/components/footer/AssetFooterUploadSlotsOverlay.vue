@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n'
 import { useAssetFooterUploadSlotsView } from '@/composables/system/assetFooterUploadSlots'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

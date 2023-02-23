@@ -10,7 +10,7 @@ export enum AssetStatus {
 }
 
 export function useAssetStatus() {
-  const { t } = useI18n({ useScope: 'global' })
+  const { t } = useI18n()
 
   const assetStatusOptions = ref<ValueObjectOption<AssetStatus>[]>([
     {

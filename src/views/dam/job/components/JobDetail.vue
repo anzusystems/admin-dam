@@ -10,7 +10,7 @@ import type { JobResource } from '@/model/dam/valueObject/JobResource'
 
 const { job } = storeToRefs(useJobOneStore())
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const hasTargetUserId = computed(() => {
   const targetUserIdAwareJobs: JobResource[] = ['jobUserDataDelete']
