@@ -8,7 +8,7 @@ import { useErrorHandler } from '@/composables/system/error'
 import { maxLength, minLength, required, requiredIf } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionYoutubeCreateRedistributeDto, DistributionYoutubeItem } from '@/types/dam/Distribution'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope, AFormValueObjectOptionsSelect, AFormTextarea } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
 import {
@@ -20,20 +20,17 @@ import {
 } from '@/services/api/dam/distributionYoutubeApi'
 import { useDistributionYoutubeFactory } from '@/model/dam/factory/DistributionYoutube'
 import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/services/api/dam/distributionApi'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import {
   DistributionYoutubePrivacy,
   useDistributionYoutubePrivacy,
 } from '@/model/dam/valueObject/DistributionYoutubePrivacy'
-import ADatetimePicker from '@/components/common/ADatetimePicker.vue'
 import DistributionYoutubeLanguageSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
 import DistributionYoutubeTermOfUse from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
 import DistributionYoutubePlaylistSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
-import ATextarea from '@/components/form/ATextarea.vue'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { usePagination } from '@/composables/system/pagination'
+import { usePagination, AFormDatetimePicker } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
@@ -269,12 +266,16 @@ onUnmounted(async () => {
             <VCol cols="6">
               <VRow class="mb-2">
                 <VCol>
-                  <ATextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
+                  <AFormTextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
                 <VCol>
-                  <ATextarea v-model="distribution.texts.description" :v="v$.distribution.texts.description" required />
+                  <AFormTextarea
+                    v-model="distribution.texts.description"
+                    :v="v$.distribution.texts.description"
+                    required
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -291,7 +292,7 @@ onUnmounted(async () => {
               </VRow>
               <VRow class="mb-2">
                 <VCol>
-                  <AValueObjectOptionsSelect
+                  <AFormValueObjectOptionsSelect
                     v-model="distribution.privacy"
                     :items="distributionYoutubePrivacyOptions"
                     :label="t('coreDam.youtubeDistribution.model.privacy')"
@@ -300,7 +301,7 @@ onUnmounted(async () => {
               </VRow>
               <VRow v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic" class="mb-2">
                 <VCol>
-                  <ADatetimePicker v-model="distribution.publishAt" />
+                  <AFormDatetimePicker v-model="distribution.publishAt" />
                 </VCol>
               </VRow>
             </VCol>

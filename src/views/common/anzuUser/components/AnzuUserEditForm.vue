@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
 import { useI18n } from 'vue-i18n'
 import PermissionGroupSelect from '@/views/common/permissionGroup/components/PermissionGroupSelect.vue'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
-import ACopyText from '@/components/common/ACopyText.vue'
+import { ACopyText } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 
@@ -35,13 +35,13 @@ const { t } = useI18n()
           <VCardText>
             <VRow>
               <VCol cols="12" sm="3">
-                <ATextField v-if="!isEdit" v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
+                <AFormTextField v-if="!isEdit" v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
                 <ARow v-else :title="t('common.anzuUser.model.id')">
                   <ACopyText :value="anzuUser.id" />
                 </ARow>
               </VCol>
               <VCol cols="12" sm="7">
-                <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
+                <AFormTextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
               </VCol>
               <VCol cols="12" sm="2">
                 <VSwitch

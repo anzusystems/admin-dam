@@ -4,7 +4,7 @@ import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useVideoShowEpisodeDetailActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
@@ -40,7 +40,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.detail')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+    <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
     <VBtn
       class="ml-2"
       :to="closeRoute"

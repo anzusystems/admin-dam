@@ -15,6 +15,7 @@ import { createApp } from 'vue'
 import { AnzuSystemsCommonAdmin, type PluginOptions } from '@anzusystems/common-admin'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { AclValue } from '@/types/Permission'
+import '@anzusystems/common-admin/styles'
 
 const { currentUser } = useCurrentUser()
 
@@ -28,7 +29,12 @@ loadEnvConfig(() => {
     .use(router)
     .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
       currentUser,
+      // @ts-ignore
       i18n,
+      languages: {
+        available: ['en', 'sk'],
+        default: 'en',
+      },
     })
     .component('AppLayoutLoader', AppLayoutLoader)
     .component('AppLayoutMain', AppLayoutMain)

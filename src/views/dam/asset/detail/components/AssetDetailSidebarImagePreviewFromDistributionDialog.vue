@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
+import { ADatatablePagination } from '@anzusystems/common-admin'
 import { ACard, type DocId, isNull, useAlerts, usePagination } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/dam/asset/detail/components/DistributionImagePreviewItem.vue'

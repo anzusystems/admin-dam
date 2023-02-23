@@ -2,9 +2,9 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/videoShowEpisodeApi'
 import { useI18n } from 'vue-i18n'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeEditActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeValidation } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeValidation'
 
@@ -20,7 +20,7 @@ const { t } = useI18n()
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="videoShowEpisode.texts.title"
             :label="t('coreDam.videoShowEpisode.model.texts.title')"
             :v="v$.videoShowEpisode.texts.title"

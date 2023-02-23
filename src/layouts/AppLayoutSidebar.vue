@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import ASidebarSettings from '@/components/system/ASidebarSettings.vue'
 import ASystemBar from '@/components/system/ASystemBar.vue'

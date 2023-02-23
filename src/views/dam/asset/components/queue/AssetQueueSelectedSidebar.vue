@@ -4,7 +4,7 @@ import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { useI18n } from 'vue-i18n'
 import AssetCustomMetadataFormMassOperations from '@/components/dam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/dam/keyword/components/KeywordSelect.vue'
 import AuthorSelect from '@/views/dam/author/components/AuthorSelect.vue'
 

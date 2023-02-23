@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
 import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
-import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useAssetType } from '@/model/dam/valueObject/AssetType'
+import {
+  AFilterWrapper,
+  AFilterInteger,
+  AFilterString,
+  AFilterValueObjectOptionsSelect,
+} from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -26,10 +28,10 @@ const { assetTypeOptions } = useAssetType()
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper @reset-filter="resetFilter">
+    <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="12">
-          <AFilterValueObject v-model="filter.type" :items="assetTypeOptions" />
+          <AFilterValueObjectOptionsSelect v-model="filter.type" :items="assetTypeOptions" />
         </VCol>
         <VCol cols="1">
           <AFilterInteger v-model="filter.id" />
@@ -38,6 +40,6 @@ const { assetTypeOptions } = useAssetType()
           <AFilterString v-model="filter.name" />
         </VCol>
       </VRow>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

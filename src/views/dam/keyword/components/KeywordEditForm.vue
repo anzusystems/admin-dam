@@ -2,10 +2,10 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/keywordApi'
 import { useI18n } from 'vue-i18n'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ABooleanToggle from '@/components/form/ABooleanToggle.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { AFormBooleanToggle } from '@anzusystems/common-admin'
 import { useKeywordEditActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordValidation } from '@/views/dam/keyword/composables/keywordValidation'
 
@@ -21,7 +21,7 @@ const { t } = useI18n()
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="keyword.name"
             :label="t('coreDam.keyword.model.name')"
             :v="v$.keyword.name"
@@ -29,7 +29,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ABooleanToggle
+          <AFormBooleanToggle
             v-model="keyword.flags.reviewed"
             :label="t('coreDam.keyword.model.flags.reviewed')"
             data-cy="keyword-flags-reviewed"

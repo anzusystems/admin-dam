@@ -4,11 +4,11 @@ import { useUserDetailActions } from '@/views/dam/user/composables/userActions'
 import { useRoute } from 'vue-router'
 import { toInt } from '@/utils/string'
 import { onBeforeUnmount, onMounted } from 'vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { ACard } from '@anzusystems/common-admin'
@@ -37,15 +37,15 @@ const { t } = useI18n()
   <ActionbarTitleWrapper :heading="t('coreDam.user.meta.detail')" icon="mdi-account" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_UPDATE">
-      <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.USER.EDIT" />
-      <AEditButton
+      <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.USER.EDIT" />
+      <AActionEditButton
         v-if="!detailLoading"
         :record-id="id"
         :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
         button-t="coreDam.user.button.editPermissions"
       />
     </Acl>
-    <ACloseButton :route-name="ROUTE.DAM.USER.LIST" />
+    <AActionCloseButton :route-name="ROUTE.DAM.USER.LIST" />
   </ActionbarButtonsWrapper>
   <ACard :loading="detailLoading">
     <UserDetail />

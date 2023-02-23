@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
-import { AFilterBooleanGroup } from '@anzusystems/common-admin'
+import { AFilterWrapper, AFilterBooleanGroup, AFilterString } from '@anzusystems/common-admin'
 import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 
 const emit = defineEmits<{
@@ -22,7 +20,7 @@ const resetFilter = () => {
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper @reset-filter="resetFilter">
+    <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="2">
           <AFilterString v-model="filter.id" />
@@ -34,6 +32,6 @@ const resetFilter = () => {
           <AFilterBooleanGroup v-model="filter.reviewed" />
         </VCol>
       </VRow>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

@@ -3,17 +3,15 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope, AFormValueObjectOptionsSelect, AFormTextarea } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createPodcast, ENTITY } from '@/services/api/dam/podcastApi'
 import { usePodcastFactory } from '@/model/dam/factory/PodcastFactory'
 import type { Podcast } from '@/types/dam/Podcast'
 import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastValidation'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
-import ATextarea from '@/components/form/ATextarea.vue'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
@@ -108,7 +106,7 @@ const onConfirm = async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="podcast.texts.title"
               :label="t('coreDam.podcast.model.texts.title')"
               :v="v$.podcast.texts.title"
@@ -116,7 +114,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <ATextarea
+            <AFormTextarea
               v-model="podcast.texts.description"
               :label="t('coreDam.podcast.model.texts.description')"
               :v="v$.podcast.texts.description"
@@ -124,7 +122,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <AValueObjectOptionsSelect
+            <AFormValueObjectOptionsSelect
               v-model="podcast.attributes.mode"
               :label="t('coreDam.podcast.model.attributes.mode')"
               :items="podcastModeOptions"
@@ -132,7 +130,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="podcast.attributes.rssUrl"
               :label="t('coreDam.podcast.model.attributes.rssUrl')"
               :v="v$.podcast.attributes.rssUrl"

@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
-import AFilterValueObject from '@/components/filter/AFilterValueObject.vue'
 import { useLogType } from '@/model/common/valueObject/LogType'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { useLogLevel } from '@/model/common/valueObject/LogLevel'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
 import { useLogSystem } from '@/model/common/valueObject/LogSystem'
-import AFilterDatetime from '@/components/filter/AFilterDatetime.vue'
+import {
+  AFilterDatetimePicker,
+  AFilterWrapper,
+  AFilterString,
+  AFilterInteger,
+  AFilterValueObjectOptionsSelect,
+} from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -31,28 +33,28 @@ const { logSystemOptions } = useLogSystem()
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper enable-advanced enable-top @reset-filter="resetFilter">
+    <AFilterWrapper enable-advanced enable-top @reset-filter="resetFilter">
       <VRow align="start">
         <VCol class="pb-0" cols="12" sm="4">
-          <AFilterValueObject v-model="logFilter.levelName" :items="logLevelOptions" />
+          <AFilterValueObjectOptionsSelect v-model="logFilter.levelName" :items="logLevelOptions" />
         </VCol>
         <VCol cols="12" sm="2">
           <AFilterString v-model="logFilter.contextId" />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="logFilter.datetimeFrom" disable-clearable />
+          <AFilterDatetimePicker v-model="logFilter.datetimeFrom" disable-clearable />
         </VCol>
         <VCol cols="12" sm="3">
-          <AFilterDatetime v-model="logFilter.datetimeTo" disable-clearable />
+          <AFilterDatetimePicker v-model="logFilter.datetimeTo" disable-clearable />
         </VCol>
       </VRow>
       <template #top>
         <VRow align="start">
           <VCol class="pb-0" cols="12" sm="8">
-            <AFilterValueObject v-model="logFilter.system" :items="logSystemOptions" />
+            <AFilterValueObjectOptionsSelect v-model="logFilter.system" :items="logSystemOptions" />
           </VCol>
           <VCol class="pb-0" cols="12" sm="4">
-            <AFilterValueObject v-model="logFilter.type" :items="logTypeOptions" />
+            <AFilterValueObjectOptionsSelect v-model="logFilter.type" :items="logTypeOptions" />
           </VCol>
         </VRow>
         <VDivider class="mb-4" />
@@ -73,6 +75,6 @@ const { logSystemOptions } = useLogSystem()
           </VCol>
         </VRow>
       </template>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

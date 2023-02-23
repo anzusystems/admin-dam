@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useExtSystemSelectActions } from '@/views/dam/extSystem/composables/extSystemActions'
 import { useExtSystemFilter } from '@/model/dam/filter/ExtSystemFilter'
 
@@ -36,7 +36,7 @@ const innerFilter = useExtSystemFilter()
 </script>
 
 <template>
-  <ARemoteAutocomplete
+  <AFormRemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"

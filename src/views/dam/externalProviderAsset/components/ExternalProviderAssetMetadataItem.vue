@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { isArray, isBoolean } from '@/utils/common'
-import ABooleanValue from '@/components/common/ABooleanValue.vue'
+import { ABooleanValue } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type AnzuUser, useAlerts, useAnzuUserFactory } from '@anzusystems/common-admin'
+import { type AnzuUser, useAlerts, useAnzuUserFactory, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
 import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
@@ -102,10 +101,10 @@ const onConfirm = async () => {
       <ASystemEntityScope system="common" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
+            <AFormTextField v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
           </ARow>
           <ARow>
-            <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
+            <AFormTextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
           </ARow>
           <ARow>
             <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />

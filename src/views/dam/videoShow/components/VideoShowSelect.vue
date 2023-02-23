@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useVideoShowSelectActions } from '@/views/dam/videoShow/composables/videoShowActions'
 import { useVideoShowFilter } from '@/model/dam/filter/VideoShowFilter'
 
@@ -34,7 +34,7 @@ const innerFilter = useVideoShowFilter()
 </script>
 
 <template>
-  <ARemoteAutocomplete
+  <AFormRemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"

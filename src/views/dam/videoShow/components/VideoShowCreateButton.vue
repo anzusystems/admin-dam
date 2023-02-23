@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createVideoShow, ENTITY } from '@/services/api/dam/videoShowApi'
 import { useVideoShowFactory } from '@/model/dam/factory/VideoShowFactory'
@@ -103,7 +103,7 @@ const onConfirm = async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="videoShow.texts.title"
               :label="t('coreDam.videoShow.model.texts.title')"
               :v="v$.videoShow.texts.title"

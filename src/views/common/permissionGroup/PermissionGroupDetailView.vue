@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { toInt } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
 
 const route = useRoute()
@@ -44,16 +44,16 @@ const { t } = useI18n()
   <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.detail')" icon="mdi-folder-account-outline" />
   <ActionbarButtonsWrapper>
     <Acl v-if="!loadingPermissionGroup" :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-      <AEditButton
+      <AActionEditButton
         :record-id="id"
         :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
         :loading="loadingDeletePermissionGroup"
       />
     </Acl>
     <Acl v-if="!loadingPermissionGroup" :permission="ACL.DAM_PERMISSION_GROUP_DELETE">
-      <ADeleteButton :loading="loadingDeletePermissionGroup" @delete-record="deletePermissionGroup(id)" />
+      <AActionDeleteButton :loading="loadingDeletePermissionGroup" @delete-record="deletePermissionGroup(id)" />
     </Acl>
-    <ACloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
+    <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
   </ActionbarButtonsWrapper>
   <PermissionGroupDetail :client="damClient" />
 </template>

@@ -17,8 +17,8 @@ import {
   useTableColumns,
 } from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/dam/job/components/JobResourceChip.vue'
-import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
-import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
+import { ATableDetailButton } from '@anzusystems/common-admin'
+import { ATableCopyIdButton } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
@@ -76,8 +76,8 @@ defineExpose({
         <JobStatusChip :value="data"></JobStatusChip>
       </template>
       <template #actions="{ data }">
-        <ADetailButton :record-id="data.id" :route-name="ROUTE.DAM.JOB.DETAIL" />
-        <ACopyIdButton :id="data.id" />
+        <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.JOB.DETAIL" />
+        <ATableCopyIdButton :id="data.id" />
       </template>
     </ADatatable>
     <ADatatablePagination v-model="pagination" @change="getList" />

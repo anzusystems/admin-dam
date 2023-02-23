@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'

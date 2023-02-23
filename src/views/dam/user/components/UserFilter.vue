@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { useUserListFilter } from '@/model/dam/filter/UserFilter'
-import FilterWrapper from '@/components/wrappers/FilterWrapper.vue'
-import AFilterInteger from '@/components/filter/AFilterInteger.vue'
-import AFilterString from '@/components/filter/AFilterString.vue'
+import { AFilterWrapper, AFilterInteger, AFilterString } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -22,7 +20,7 @@ const resetFilter = () => {
 
 <template>
   <VForm name="search" @submit.prevent="submitFilter">
-    <FilterWrapper @reset-filter="resetFilter">
+    <AFilterWrapper @reset-filter="resetFilter">
       <VRow align="start">
         <VCol cols="1">
           <AFilterInteger v-model="userFilter.id" />
@@ -31,6 +29,6 @@ const resetFilter = () => {
           <AFilterString v-model="userFilter.email" />
         </VCol>
       </VRow>
-    </FilterWrapper>
+    </AFilterWrapper>
   </VForm>
 </template>

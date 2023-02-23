@@ -9,7 +9,7 @@ import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/views/dam/asset/detail/components/distribution/DistributionNewDialog.vue'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
+import { ADatatablePagination } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 

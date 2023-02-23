@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategorySelectApi'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import Draggable from 'vuedraggable'
 import { useDistributionCategorySelectEditActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategoryOptionFactory } from '@/model/dam/factory/DistributionCategoryOptionFactory'

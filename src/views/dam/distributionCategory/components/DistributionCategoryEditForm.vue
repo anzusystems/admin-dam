@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { useDistributionCategoryEditActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
-import ARow from '@/components/common/ARow.vue'
-import ATextField from '@/components/form/ATextField.vue'
+import { ARow } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
 import { useDistributionCategoryValidation } from '@/views/dam/distributionCategory/composables/distributionCategoryValidation'
 import DistributionCategorySelectOptionSelect from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 
@@ -18,7 +18,11 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField v-model="distributionCategory.name" :v="v$.distributionCategory.name" data-cy="category-name" />
+          <AFormTextField
+            v-model="distributionCategory.name"
+            :v="v$.distributionCategory.name"
+            data-cy="category-name"
+          />
         </ARow>
         <ARow
           v-for="distributionCategorySelect in distributionCategorySelects"

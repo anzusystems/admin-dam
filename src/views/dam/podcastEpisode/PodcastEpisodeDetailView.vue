@@ -4,8 +4,8 @@ import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
-import ADeleteButton from '@/components/common/buttons/action/ADeleteButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import {
   usePodcastEpisodeDetailActions,
@@ -50,8 +50,8 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.detail')" icon="mdi-file-key-outline" />
   <ActionbarButtonsWrapper>
-    <AEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
-    <ADeleteButton
+    <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+    <AActionDeleteButton
       v-if="!detailLoading"
       variant="outlined"
       color="error"

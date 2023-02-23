@@ -2,14 +2,12 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/podcastApi'
 import { useI18n } from 'vue-i18n'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
+import { ASystemEntityScope, AFormValueObjectOptionsSelect, AFormTextarea } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { usePodcastEditActions } from '@/views/dam/podcast/composables/podcastActions'
 import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
-import AValueObjectOptionsSelect from '@/components/form/AValueObjectOptionsSelect.vue'
-import ATextarea from '@/components/form/ATextarea.vue'
 import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 
 const { podcast } = usePodcastEditActions()
@@ -26,28 +24,28 @@ const { podcastModeOptions } = usePodcastMode()
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcast.texts.title"
             :label="t('coreDam.podcast.model.texts.title')"
             :v="v$.podcast.texts.title"
           />
         </ARow>
         <ARow>
-          <ATextarea
+          <AFormTextarea
             v-model="podcast.texts.description"
             :label="t('coreDam.podcast.model.texts.description')"
             :v="v$.podcast.texts.description"
           />
         </ARow>
         <ARow>
-          <AValueObjectOptionsSelect
+          <AFormValueObjectOptionsSelect
             v-model="podcast.attributes.mode"
             :label="t('coreDam.podcast.model.attributes.mode')"
             :items="podcastModeOptions"
           />
         </ARow>
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcast.attributes.rssUrl"
             :label="t('coreDam.podcast.model.attributes.rssUrl')"
             :v="v$.podcast.attributes.rssUrl"

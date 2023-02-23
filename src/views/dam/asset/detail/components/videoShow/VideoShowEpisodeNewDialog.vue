@@ -8,12 +8,11 @@ import { useVideoShowEpisodeFactory } from '@/model/dam/factory/VideoShowEpisode
 import { createVideoShowEpisode, ENTITY, prepareFormDataVideoShowEpisode } from '@/services/api/dam/videoShowEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useVideoShowEpisodeValidation } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeValidation'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ARow from '@/components/common/ARow.vue'
+import { ASystemEntityScope, AFormTextarea } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useErrorHandler } from '@/composables/system/error'
 import VideoShowSelect from '@/views/dam/videoShow/components/VideoShowSelect.vue'
-import ATextarea from '@/components/form/ATextarea.vue'
 import { isNull } from '@/utils/common'
 
 const props = withDefaults(
@@ -129,7 +128,7 @@ onMounted(async () => {
           </div>
           <template v-if="videoShowEpisode.videoShow && !loadingFormData">
             <ARow>
-              <ATextarea
+              <AFormTextarea
                 v-model="videoShowEpisode.texts.title"
                 :label="t('coreDam.videoShowEpisode.model.texts.title')"
                 :v="v$.videoShowEpisode.texts.title"

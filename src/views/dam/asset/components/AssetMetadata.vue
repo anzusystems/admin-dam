@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/dam/customMetadata/AssetCustomMetadataForm.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/dam/keyword/components/KeywordSelect.vue'
 import LazyUserChip from '@/views/dam/user/components/LazyUserChip.vue'
 import AuthorSelect from '@/views/dam/author/components/AuthorSelect.vue'
@@ -15,7 +15,7 @@ import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/dam/
 import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import ACopyText from '@/components/common/ACopyText.vue'
+import { ACopyText } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 

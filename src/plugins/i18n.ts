@@ -1,24 +1,31 @@
-import type { Locale, LocaleMessageObject, LocaleMessages, Path } from 'vue-i18n'
-import { createI18n } from 'vue-i18n'
+import type { Locale, Path } from 'vue-i18n'
+import { createI18n, useI18n as vueUseI18n } from 'vue-i18n'
 import { createLog } from '@/services/ErrorHandlerApiService'
 import { LogLevel } from '@/model/common/valueObject/LogLevel'
-import { messages } from '@/locales'
 import { envConfig } from '@/services/EnvConfigService'
 import { commonMessages } from '@anzusystems/common-admin'
 
 const DO_NOT_LOG_LOCALES = ['en']
 
-const finalMessages: LocaleMessages<Record<string, LocaleMessageObject>> = {
-  sk: { ...commonMessages.sk, ...messages.sk },
-  en: { ...commonMessages.en, ...messages.en },
-  xx: { ...messages.xx },
+import en from '@/locales/en.json'
+import sk from '@/locales/sk.json'
+
+const finalEn = { ...commonMessages.en, ...en }
+const finalSK = { ...commonMessages.sk, ...sk }
+
+export type MessageSchema = typeof finalEn
+
+const finalMessages = {
+  sk: finalSK,
+  en: finalEn,
+  xx: { ...commonMessages.xx },
 }
 
-export const i18n = createI18n({
+// export const i18n = createI18n<[MessageSchema], 'en' | 'sk'>({
+export const i18n = createI18n<[MessageSchema], 'en'>({
   globalInjection: false,
   legacy: false,
-  useScope: 'global',
-  locale: 'en', // will be changed in App.vue
+  locale: 'en',
   fallbackLocale: false,
   missing: (locale: Locale, key: Path) => {
     if (DO_NOT_LOG_LOCALES.includes(locale)) return

@@ -6,7 +6,7 @@ import AssetQueueEditable from '@/views/dam/asset/components/queue/AssetQueueEdi
 import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { bulkUpdateAssetsMetadata } from '@/services/api/dam/assetApi'
 import AssetFooterUploadButtonStop from '@/views/dam/asset/components/footer/AssetFooterUploadButtonStop.vue'
-import { useTheme } from '@/composables/system/themeSettings'
+import { useTheme } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@/composables/system/error'

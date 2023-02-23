@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 
@@ -32,7 +32,7 @@ const innerFilter = useDistributionCategoryFilter()
 </script>
 
 <template>
-  <ARemoteAutocomplete
+  <AFormRemoteAutocomplete
     :model-value="modelValue"
     :required="required"
     :label="label"

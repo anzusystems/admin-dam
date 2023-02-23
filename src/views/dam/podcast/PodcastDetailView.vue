@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { usePodcastDetailActions } from '@/views/dam/podcast/composables/podcastActions'
 import PodcastDetail from '@/views/dam/podcast/components/PodcastDetail.vue'
@@ -71,8 +71,8 @@ const afterPodcastEpisodeCreate = () => {
       disable-redirect
       @after-create="afterPodcastEpisodeCreate"
     />
-    <AEditButton v-if="!detailLoading" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
-    <ACloseButton :route-name="ROUTE.DAM.PODCAST.LIST" />
+    <AActionEditButton v-if="!detailLoading" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />
+    <AActionCloseButton :route-name="ROUTE.DAM.PODCAST.LIST" />
   </ActionbarButtonsWrapper>
   <VTabs v-model="activeTab" class="mb-4">
     <VTab :value="PodcastDetailTab.Detail" data-cy="podcast-list">{{ t('coreDam.podcast.tabs.detail') }}</VTab>

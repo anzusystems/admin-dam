@@ -2,12 +2,11 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/podcastEpisodeApi'
 import { useI18n } from 'vue-i18n'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { AFormTextField, AFormDatetimePicker } from '@anzusystems/common-admin'
+import { ARow } from '@anzusystems/common-admin'
 import { usePodcastEpisodeEditActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeValidation } from '@/views/dam/podcastEpisode/composables/podcastEpisodeValidation'
-import ADatetimePicker from '@/components/common/ADatetimePicker.vue'
 import ImagePreview from '@/views/dam/asset/components/ImagePreview.vue'
 
 const { podcastEpisode } = usePodcastEpisodeEditActions()
@@ -22,21 +21,21 @@ const { t } = useI18n()
     <VRow>
       <VCol cols="12" md="8">
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcastEpisode.texts.title"
             :label="t('coreDam.podcastEpisode.model.texts.title')"
             :v="v$.podcastEpisode.texts.title"
           />
         </ARow>
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcastEpisode.texts.description"
             :label="t('coreDam.podcastEpisode.model.texts.description')"
             :v="v$.podcastEpisode.texts.description"
           />
         </ARow>
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcastEpisode.attributes.seasonNumber"
             :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
             :v="v$.podcastEpisode.attributes.seasonNumber"
@@ -45,7 +44,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcastEpisode.attributes.episodeNumber"
             :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
             :v="v$.podcastEpisode.attributes.episodeNumber"
@@ -54,14 +53,14 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ATextField
+          <AFormTextField
             v-model="podcastEpisode.attributes.extId"
             :label="t('coreDam.podcastEpisode.model.attributes.extId')"
             :v="v$.podcastEpisode.attributes.extId"
           />
         </ARow>
         <ARow>
-          <ADatetimePicker
+          <AFormDatetimePicker
             v-model="podcastEpisode.dates.publicationDate"
             :label="t('coreDam.podcastEpisode.model.dates.publicationDate')"
           />

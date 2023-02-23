@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import AEditButton from '@/components/common/buttons/action/AEditButton.vue'
+import { AActionEditButton } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useVideoShowDetailActions } from '@/views/dam/videoShow/composables/videoShowActions'
 import VideoShowDetail from '@/views/dam/videoShow/components/VideoShowDetail.vue'
@@ -71,8 +71,8 @@ const afterVideoShowEpisodeCreate = () => {
       disable-redirect
       @after-create="afterVideoShowEpisodeCreate"
     />
-    <AEditButton v-if="!detailLoading" :record-id="videoShowId" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
-    <ACloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
+    <AActionEditButton v-if="!detailLoading" :record-id="videoShowId" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
+    <AActionCloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
   </ActionbarButtonsWrapper>
   <VTabs v-model="activeTab" class="mb-4">
     <VTab :value="VideoShowDetailTab.Detail" data-cy="videoShow-list">{{ t('coreDam.videoShow.tabs.detail') }}</VTab>
