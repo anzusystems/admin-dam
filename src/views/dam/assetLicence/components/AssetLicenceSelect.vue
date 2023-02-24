@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
+import type { IntegerId } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAssetLicenceSelectActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceFilter } from '@/model/dam/filter/AssetLicenceFilter'
-import type { IntegerId } from '@anzusystems/common-admin'
 import { computed, watch } from 'vue'
 
 const props = withDefaults(

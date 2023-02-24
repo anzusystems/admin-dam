@@ -1,18 +1,16 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, getObjectValues, isArray, isEmptyObject } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/dam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/dam/filter/AuthorFilter'
 import LazyAuthorChip from '@/views/dam/author/components/LazyAuthorChip.vue'
 import { loadLazyAuthor, useLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
 import { computed, onMounted, ref } from 'vue'
 import type { Suggestions } from '@/types/dam/Asset'
-import { getObjectValues, isEmptyObject } from '@anzusystems/common-admin'
 import AuthorCreateButton from '@/views/dam/author/components/AuthorCreateButton.vue'
-import { isArray } from '@anzusystems/common-admin'
 import type { Author } from '@/types/dam/Author'
 import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
-import type { ValidationScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

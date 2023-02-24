@@ -1,6 +1,9 @@
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { DocId, IntegerIdNullable } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  DocId,
+  IntegerIdNullable,
+  ResourceNameSystemAware
+} from '@anzusystems/common-admin'
 import type { PodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/dam/valueObject/PodcastLastImportStatus'
 import type { Links } from '@/types/dam/File'

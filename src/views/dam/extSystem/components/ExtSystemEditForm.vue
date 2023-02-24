@@ -4,9 +4,7 @@ import { ENTITY } from '@/services/api/dam/extSystemApi'
 import { useI18n } from 'vue-i18n'
 import { useExtSystemEditActions } from '@/views/dam/extSystem/composables/extSystemActions'
 import { useExtSystemValidation } from '@/views/dam/extSystem/composables/extSystemValidation'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import UserSelect from '@/views/dam/user/components/UserSelect.vue'
 
 const { extSystem } = useExtSystemEditActions()

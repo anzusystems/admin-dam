@@ -1,7 +1,6 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { isUndefined } from '@anzusystems/common-admin'
+import { isUndefined, useAcl } from '@anzusystems/common-admin'
 import type { AclValue } from '@/types/Permission'
-import { useAcl } from '@anzusystems/common-admin'
 import { useCurrentUser } from '@/composables/system/currentUser'
 
 export const checkAbility = async (

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { AssetListItem } from '@/stores/dam/assetListStore'
-import type { AssetFileProperties, AssetSearchListItemDto } from '@/types/dam/Asset'
+import type { AssetSearchListItemDto } from '@/types/dam/Asset'
 import type { DocId } from '@anzusystems/common-admin'
 import { isImageFile } from '@/types/dam/File'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'

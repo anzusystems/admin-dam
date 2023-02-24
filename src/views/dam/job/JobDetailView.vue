@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { ACard, stringToInt } from '@anzusystems/common-admin'
+import { AActionCloseButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
@@ -8,7 +8,6 @@ import { useJobDetailActions } from '@/views/dam/job/composables/jobActions'
 import JobDetail from '@/views/dam/job/components/JobDetail.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useJobDetailActions()
 

@@ -3,12 +3,18 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import {
+  AFormDatetimePicker,
+  AFormTextarea,
+  AFormValueObjectOptionsSelect,
+  ASystemEntityScope,
+  useAlerts,
+  useErrorHandler,
+  usePagination
+} from '@anzusystems/common-admin'
 import { maxLength, minLength, required, requiredIf } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionYoutubeCreateRedistributeDto, DistributionYoutubeItem } from '@/types/dam/Distribution'
-import { ASystemEntityScope, AFormValueObjectOptionsSelect, AFormTextarea } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
 import {
@@ -24,13 +30,15 @@ import {
   DistributionYoutubePrivacy,
   useDistributionYoutubePrivacy,
 } from '@/model/dam/valueObject/DistributionYoutubePrivacy'
-import DistributionYoutubeLanguageSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
-import DistributionYoutubeTermOfUse from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
-import DistributionYoutubePlaylistSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
+import DistributionYoutubeLanguageSelect
+  from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
+import DistributionYoutubeTermOfUse
+  from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
+import DistributionYoutubePlaylistSelect
+  from '@/views/dam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { usePagination, AFormDatetimePicker } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'

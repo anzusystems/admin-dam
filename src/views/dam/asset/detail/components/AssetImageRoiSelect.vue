@@ -7,8 +7,7 @@ import { computed, onUnmounted, ref } from 'vue'
 import { updateRoi } from '@/services/api/dam/imageRoiApi'
 import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
 import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
-import { useErrorHandler } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 
 const { handleError } = useErrorHandler()
 const { showRecordWas } = useAlerts()

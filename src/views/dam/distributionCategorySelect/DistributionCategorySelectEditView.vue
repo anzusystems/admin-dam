@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveAndCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { AActionSaveButton } from '@anzusystems/common-admin'
-import { AActionSaveAndCloseButton } from '@anzusystems/common-admin'
-import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { useDistributionCategorySelectEditActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
-import DistributionCategorySelectEditForm from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
+import {
+  useDistributionCategorySelectEditActions
+} from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import DistributionCategorySelectEditForm
+  from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
 
 const { t } = useI18n()
 

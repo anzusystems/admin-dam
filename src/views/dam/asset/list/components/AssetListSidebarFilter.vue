@@ -9,9 +9,9 @@ import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import DistributionServiceNameFilter from '@/views/dam/distribution/components/DistributionServiceNameFilter.vue'
 import AssetSlotsFilter from '@/views/dam/asset/components/AssetSlotsFilter.vue'
 import {
-  AFilterInteger,
-  AFilterDatetimePicker,
   AFilterBooleanGroup,
+  AFilterDatetimePicker,
+  AFilterInteger,
   AFilterString,
   AFilterValueObjectOptionsSelect,
 } from '@anzusystems/common-admin'

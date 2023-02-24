@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { AFormTextField } from '@anzusystems/common-admin'
-import { useDistributionCategoryOptionValidation } from '@/views/dam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
+import { AFormBooleanToggle, AFormTextField } from '@anzusystems/common-admin'
+import {
+  useDistributionCategoryOptionValidation
+} from '@/views/dam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/types/dam/DistributionCategoryOption'
 import { useVModel } from '@vueuse/core'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AFormBooleanToggle } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

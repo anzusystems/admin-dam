@@ -1,9 +1,7 @@
 import type { Permissions } from '@/types/Permission'
-import { getObjectValueByPath, setObjectValueByPath } from '@anzusystems/common-admin'
-import type { IntegerId } from '@anzusystems/common-admin'
-import { isUndefined } from '@anzusystems/common-admin'
+import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
+import { getObjectValueByPath, isUndefined, setObjectValueByPath } from '@anzusystems/common-admin'
 import { useLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
-import type { AnzuUser } from '@anzusystems/common-admin'
 
 export const usePermissionActions = () => {
   const { get } = useLazyPermissionGroup()

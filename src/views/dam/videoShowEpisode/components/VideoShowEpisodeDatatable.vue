@@ -1,23 +1,25 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { usePagination } from '@anzusystems/common-admin'
-import { ADatatablePagination } from '@anzusystems/common-admin'
-import { useDatatableColumns } from '@anzusystems/common-admin'
-import { ADatatable } from '@anzusystems/common-admin'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import {
+  ADatatable,
+  ADatatablePagination,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+  useDatatableColumns,
+  useFilterHelpers,
+  usePagination
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/videoShowEpisodeApi'
-import { ATableDetailButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { ATableCopyIdButton } from '@anzusystems/common-admin'
-import { ATableEditButton } from '@anzusystems/common-admin'
 import { useRouter } from 'vue-router'
-import { useFilterHelpers } from '@anzusystems/common-admin'
 import type { Author } from '@/types/dam/Author'
 import { useVideoShowEpisodeListActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeListFilter } from '@/model/dam/filter/VideoShowEpisodeFilter'
 import VideoShowEpisodeFilter from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
-import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

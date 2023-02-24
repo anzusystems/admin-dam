@@ -2,16 +2,13 @@
 import UserDetail from '@/views/dam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/views/dam/user/composables/userActions'
 import { useRoute } from 'vue-router'
-import { stringToInt } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 

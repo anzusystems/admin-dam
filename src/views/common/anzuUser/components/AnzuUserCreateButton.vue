@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type AnzuUser, useAlerts, useAnzuUserFactory, ASystemEntityScope } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  type AnzuUser,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  useAlerts,
+  useAnzuUserFactory,
+  useErrorHandler
+} from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
-import { isUndefined } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { AxiosInstance } from 'axios'

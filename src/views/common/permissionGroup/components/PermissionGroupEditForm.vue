@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
+import { AFormTextField, ASystemEntityScope } from '@anzusystems/common-admin'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import type { AxiosInstance } from 'axios'

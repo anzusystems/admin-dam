@@ -4,17 +4,18 @@ import type { Permissions } from '@/types/Permission'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import type { AxiosInstance } from 'axios'
 import PermissionGrantEditor from '@/views/common/permission/components/PermissionGrantEditor.vue'
-import { isUndefined, ROLE_SUPER_ADMIN } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
 import {
   deleteObjectPropertyByPath,
   getObjectValueByPath,
   Grant,
   GrantOrigin,
+  isUndefined,
+  ROLE_SUPER_ADMIN,
   setObjectValueByPath,
+  simpleCloneObject
 } from '@anzusystems/common-admin'
-import { simpleCloneObject } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
 import { useCurrentUser } from '@/composables/system/currentUser'
 
 const props = defineProps<{

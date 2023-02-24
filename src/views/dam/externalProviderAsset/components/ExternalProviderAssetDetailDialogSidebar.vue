@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { AssetDetailTab } from '@/composables/system/assetDetailTab'
 import { useI18n } from 'vue-i18n'
-import ExternalProviderAssetMetadata from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetMetadata.vue'
-import ExternalProviderAssetDetailSidebarActionsTeleportTarget from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailSidebarActionsTeleportTarget.vue'
+import ExternalProviderAssetMetadata
+  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetMetadata.vue'
+import ExternalProviderAssetDetailSidebarActionsTeleportTarget
+  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailSidebarActionsTeleportTarget.vue'
 
 withDefaults(
   defineProps<{

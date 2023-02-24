@@ -1,8 +1,8 @@
 import type { VideoShow } from '@/types/dam/VideoShow'
+import type { IntegerIdNullable } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/dam/videoShowApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { IntegerIdNullable } from '@anzusystems/common-admin'
 
 export function useVideoShowFactory() {
   const createDefault = (licenceId: IntegerIdNullable = null): VideoShow => {

@@ -1,9 +1,8 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { apiFetchByIds, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
-import type { Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
-import type { FilterBag } from '@anzusystems/common-admin'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 
 const END_POINT = '/adm/v1/ext-system'

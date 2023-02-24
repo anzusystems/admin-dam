@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ROUTE } from '@/router/routes'
-</script>
+import { ROUTE } from '@/router/routes'</script>
 
 <template>
   <div class="d-flex justify-center align-center fill-height">

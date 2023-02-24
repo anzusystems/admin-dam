@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAssetLicenceListFilter } from '@/model/dam/filter/AssetLicenceFilter'
-import { AFilterWrapper, AFilterInteger, AFilterString } from '@anzusystems/common-admin'
+import { AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void

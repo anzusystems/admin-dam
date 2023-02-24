@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import type { DocId } from '@anzusystems/common-admin'
 import { eventClickBlur } from '@anzusystems/common-admin'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import type { DocId } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 
 const props = withDefaults(

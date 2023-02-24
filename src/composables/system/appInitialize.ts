@@ -4,7 +4,7 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { updateCurrentUser, useCurrentUser } from '@/composables/system/currentUser'
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
-import { isDefined } from '@anzusystems/common-admin'
+import { isDefined, isUndefined } from '@anzusystems/common-admin'
 import { loadDamConfig } from '@/services/DamConfigService'
 import { envConfig } from '@/services/EnvConfigService'
 import { initCurrentExtSystemAndLicence } from '@/composables/system/currentExtSystem'
@@ -12,7 +12,6 @@ import { loadDamConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { loadDamConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
 import { useLoginStatus } from '@/composables/system/loginStatus'
-import { isUndefined } from '@anzusystems/common-admin'
 
 const initialized = ref<boolean>(false)
 

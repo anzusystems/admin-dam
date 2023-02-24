@@ -2,10 +2,7 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/keywordApi'
 import { useI18n } from 'vue-i18n'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
-import { AFormBooleanToggle } from '@anzusystems/common-admin'
+import { AFormBooleanToggle, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useKeywordEditActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordValidation } from '@/views/dam/keyword/composables/keywordValidation'
 

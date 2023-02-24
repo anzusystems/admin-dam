@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
-import { type DocId, isDocId, isString, useAlerts } from '@anzusystems/common-admin'
+import { type DocId, isDocId, isString, useAlerts, useTheme } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { storeToRefs } from 'pinia'
-import { useTheme } from '@anzusystems/common-admin'
 import AssetImageRoiSelect from '@/views/dam/asset/detail/components/AssetImageRoiSelect.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'

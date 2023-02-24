@@ -1,18 +1,16 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionEditButton } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useVideoShowDetailActions } from '@/views/dam/videoShow/composables/videoShowActions'
 import VideoShowDetail from '@/views/dam/videoShow/components/VideoShowDetail.vue'
 import { useVideoShowDetailTab, VideoShowDetailTab } from '@/views/dam/videoShow/composables/videoShowDetailTab'
 import VideoShowEpisodeDatatable from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
 import VideoShowEpisodeCreateButton from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue'
-import { ACard } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeListActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 
 const { detailLoading, fetchData, resetStore } = useVideoShowDetailActions()

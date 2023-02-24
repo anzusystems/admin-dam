@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { ABooleanValue, ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { ARow } from '@anzusystems/common-admin'
-import { ACopyText } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import { AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { ABooleanValue } from '@anzusystems/common-admin'
 import { useKeywordOneStore } from '@/stores/dam/keywordStore'
 
 const { keyword } = storeToRefs(useKeywordOneStore())

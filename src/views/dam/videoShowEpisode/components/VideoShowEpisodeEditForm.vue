@@ -2,9 +2,7 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/videoShowEpisodeApi'
 import { useI18n } from 'vue-i18n'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeEditActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeValidation } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeValidation'
 

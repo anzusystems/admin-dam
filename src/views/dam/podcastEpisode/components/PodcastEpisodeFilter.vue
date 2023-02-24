@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
-import { AFilterWrapper, AFilterString } from '@anzusystems/common-admin'
+import { AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void

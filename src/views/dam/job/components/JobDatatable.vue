@@ -11,14 +11,14 @@ import {
   ADatatable,
   ADatatablePagination,
   ASystemEntityScope,
+  ATableCopyIdButton,
+  ATableDetailButton,
   JobStatusChip,
+  useDatatableColumns,
   useFilterHelpers,
   usePagination,
-  useDatatableColumns,
 } from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/dam/job/components/JobResourceChip.vue'
-import { ATableDetailButton } from '@anzusystems/common-admin'
-import { ATableCopyIdButton } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const router = useRouter()

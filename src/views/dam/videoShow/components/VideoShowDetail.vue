@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { ARow } from '@anzusystems/common-admin'
-import { ACopyText } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import { AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useVideoShowOneStore } from '@/stores/dam/videoShowStore'
 
 const { videoShow } = storeToRefs(useVideoShowOneStore())

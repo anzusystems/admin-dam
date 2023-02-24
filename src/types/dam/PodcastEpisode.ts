@@ -1,6 +1,10 @@
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { DatetimeUTCNullable, DocId, DocIdNullable } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  DatetimeUTCNullable,
+  DocId,
+  DocIdNullable,
+  ResourceNameSystemAware
+} from '@anzusystems/common-admin'
 import type { Links } from '@/types/dam/File'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 

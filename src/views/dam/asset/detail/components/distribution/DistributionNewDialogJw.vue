@@ -9,19 +9,22 @@ import {
   redistributeJwDistribution,
 } from '@/services/api/dam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import {
+  AFormTextarea,
+  AFormTextField,
+  ASystemEntityScope,
+  useAlerts,
+  useErrorHandler,
+  usePagination
+} from '@anzusystems/common-admin'
 import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/dam/factory/DistributionJw'
 import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/dam/Distribution'
-import { ASystemEntityScope, AFormTextarea } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { AFormTextField } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { fetchAssetFileDistributionList } from '@/services/api/dam/distributionApi'
-import { usePagination } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/dam/AssetSlot'

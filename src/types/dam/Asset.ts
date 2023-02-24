@@ -1,6 +1,10 @@
-import type { DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  DocId,
+  DocIdNullable,
+  IntegerId,
+  ResourceNameSystemAware
+} from '@anzusystems/common-admin'
 import type { AssetFile } from '@/types/dam/File'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { AssetStatus } from '@/model/dam/valueObject/AssetStatus'

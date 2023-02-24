@@ -1,9 +1,7 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import type { Pagination } from '@anzusystems/common-admin'
-import type { FilterBag } from '@anzusystems/common-admin'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/dam/keywordApi'
 import type { Keyword } from '@/types/dam/Keyword'
 import { storeToRefs } from 'pinia'
@@ -11,7 +9,6 @@ import { useKeywordOneStore } from '@/stores/dam/keywordStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()

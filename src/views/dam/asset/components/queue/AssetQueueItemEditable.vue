@@ -2,15 +2,20 @@
 import { computed } from 'vue'
 import { deleteAsset, fetchAsset } from '@/services/api/dam/assetApi'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
-import { isNull } from '@anzusystems/common-admin'
-import { useAssetListStore } from '@/stores/dam/assetListStore'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import {
+  AActionDeleteButton,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  isNull,
+  prettyBytes,
+  useAlerts,
+  useErrorHandler
+} from '@anzusystems/common-admin'
+import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
 import KeywordSelect from '@/views/dam/keyword/components/KeywordSelect.vue'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
 import AuthorSelect from '@/views/dam/author/components/AuthorSelect.vue'
 import { useI18n } from 'vue-i18n'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
@@ -20,9 +25,6 @@ import type { AssetCustomData } from '@/types/dam/Asset'
 import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import { AActionDeleteButton } from '@anzusystems/common-admin'
-import { ATableCopyIdButton } from '@anzusystems/common-admin'
-import { prettyBytes } from '@anzusystems/common-admin'
 import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9

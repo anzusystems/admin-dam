@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { stringToInt } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ExtSystemDetail from '@/views/dam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/views/dam/extSystem/composables/extSystemActions'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 

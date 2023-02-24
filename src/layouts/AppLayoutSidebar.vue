@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { useTheme } from '@anzusystems/common-admin'
+import { AAlerts, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import ASidebarSettings from '@/components/system/ASidebarSettings.vue'
 import ASystemBar from '@/components/system/ASystemBar.vue'
-import { AAlerts } from '@anzusystems/common-admin'
 import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget.vue'
 import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'

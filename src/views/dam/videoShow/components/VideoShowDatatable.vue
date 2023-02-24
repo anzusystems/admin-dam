@@ -2,23 +2,23 @@
 import { onMounted } from 'vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/videoShowApi'
-import { ATableDetailButton } from '@anzusystems/common-admin'
+import {
+  ADatatable,
+  ADatatablePagination,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+  useDatatableColumns,
+  useFilterHelpers,
+  usePagination
+} from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { ATableCopyIdButton } from '@anzusystems/common-admin'
-import { ATableEditButton } from '@anzusystems/common-admin'
 import { useRouter } from 'vue-router'
 import type { Author } from '@/types/dam/Author'
 import { useVideoShowListActions } from '@/views/dam/videoShow/composables/videoShowActions'
 import VideoShowFilter from '@/views/dam/videoShow/components/VideoShowFilter.vue'
 import { useVideoShowListFilter } from '@/model/dam/filter/VideoShowFilter'
-import {
-  ADatatable,
-  ADatatablePagination,
-  ASystemEntityScope,
-  useFilterHelpers,
-  usePagination,
-  useDatatableColumns,
-} from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()

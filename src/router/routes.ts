@@ -1,5 +1,5 @@
-import { objectDeepFreeze } from '@anzusystems/common-admin'
 import type { Immutable } from '@anzusystems/common-admin'
+import { objectDeepFreeze } from '@anzusystems/common-admin'
 
 const routes = {
   DEFAULT: 'asset_list',
