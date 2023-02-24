@@ -4,7 +4,7 @@ import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
 import AppLayoutSidebar from '@/layouts/AppLayoutSidebar.vue'
 import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
-import { i18n } from '@/plugins/i18n'
+import { addI18nMessages, i18n } from '@/plugins/i18n'
 import { vuetify } from '@/plugins/vuetify'
 import { loadFonts } from '@/plugins/webfontloader'
 import { router } from '@/router'
@@ -20,6 +20,7 @@ import '@anzusystems/common-admin/styles'
 const { currentUser } = useCurrentUser()
 
 loadFonts()
+addI18nMessages()
 
 loadEnvConfig(() => {
   const app = createApp(App)
