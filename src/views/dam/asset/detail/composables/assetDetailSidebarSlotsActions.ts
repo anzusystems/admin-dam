@@ -1,5 +1,5 @@
 import { useAssetSlotsStore } from '@/stores/dam/assetSlotsStore'
-import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
+import { usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useAssetSlotFilter } from '@/model/dam/filter/AssetSlotFilter'
 import { fetchAssetSlotList, updateAssetSlots } from '@/services/api/dam/assetSlotApi'
 import type { DocId } from '@anzusystems/common-admin'
@@ -10,7 +10,7 @@ import {
   unsetAssetSlot,
 } from '@/services/api/dam/fileApi'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { makePrivate } from '@/services/api/dam/audioApi'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: AssetType) {

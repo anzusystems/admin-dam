@@ -2,7 +2,7 @@
 import { rotateImage } from '@/services/api/dam/imageApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 
 const props = withDefaults(

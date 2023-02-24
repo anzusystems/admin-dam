@@ -17,7 +17,7 @@ import {
   ASystemEntityScope,
   useFilterHelpers,
   usePagination,
-  useTableColumns,
+  useDatatableColumns,
 } from '@anzusystems/common-admin'
 
 const router = useRouter()
@@ -30,7 +30,7 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const columns = useTableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
+const columns = useDatatableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
 const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: row.id } })

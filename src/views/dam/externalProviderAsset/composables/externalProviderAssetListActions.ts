@@ -5,7 +5,7 @@ import {
   fetchExternalProviderAsset,
   fetchExternalProviderAssetList as apiFetchExternalProviderAssetList,
 } from '@/services/api/dam/externalProviderAssetApi'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
 import { readonly, type Ref, ref } from 'vue'

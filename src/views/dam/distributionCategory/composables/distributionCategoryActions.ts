@@ -1,6 +1,6 @@
 import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'

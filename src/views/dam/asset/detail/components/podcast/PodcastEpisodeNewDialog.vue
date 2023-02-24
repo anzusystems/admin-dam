@@ -12,7 +12,7 @@ import { ASystemEntityScope, AFormTextarea } from '@anzusystems/common-admin'
 import { ARow } from '@anzusystems/common-admin'
 import { AFormTextField } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import PodcastSelect from '@/views/dam/podcast/components/PodcastSelect.vue'
 import { isNull } from '@/utils/common'
 

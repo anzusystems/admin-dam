@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { usePagination } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
-import { useTableColumns } from '@/composables/system/tableColumns'
+import { useDatatableColumns } from '@anzusystems/common-admin'
 import { ADatatable } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
@@ -42,7 +42,7 @@ const getList = () => {
   fetchPermissionGroupList(pagination, filter)
 }
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   { name: 'id' },
   { name: 'title' },
   { name: 'description' },

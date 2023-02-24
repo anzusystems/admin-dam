@@ -9,7 +9,7 @@ import AssetFooterUploadButtonStop from '@/views/dam/asset/components/footer/Ass
 import { useTheme } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
 import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { useAssetListActions } from '@/views/dam/asset/list/composables/assetListActions'

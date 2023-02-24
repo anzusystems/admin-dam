@@ -16,7 +16,7 @@ import { HTTP_STATUS_OK } from '@/services/api/statusCodes'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { isNull } from '@/utils/common'
 import { AnzuApiValidationError } from '@/model/common/error/AnzuApiValidationError'
-import { type ApiErrors, useErrorHandler, type ValidationResponseData } from '@/composables/system/error'
+import { type ApiErrors, useErrorHandler, type ValidationResponseData } from '@anzusystems/common-admin'
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 

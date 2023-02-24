@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubeLanguages } from '@/services/api/dam/distributionYoutubeApi'
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
 import type { YoutubeLanguage } from '@/types/dam/Distribution'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
