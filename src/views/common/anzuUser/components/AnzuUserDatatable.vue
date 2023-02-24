@@ -9,6 +9,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
@@ -23,7 +24,6 @@ import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUser
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import PermissionGroupLazyChip from '@/views/common/permissionGroup/components/PermissionGroupLazyChip.vue'
-import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance

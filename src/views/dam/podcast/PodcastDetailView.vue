@@ -64,13 +64,13 @@ const afterPodcastEpisodeCreate = () => {
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_PODCAST_EPISODE_CREATE">
       <PodcastEpisodeCreateButton
-      v-if="!detailLoading"
-      data-cy="button-create"
-      button-t="coreDam.podcastEpisode.button.create"
-      :podcast-id="podcastId"
-      disable-redirect
-      @after-create="afterPodcastEpisodeCreate"
-    />
+        v-if="!detailLoading"
+        data-cy="button-create"
+        button-t="coreDam.podcastEpisode.button.create"
+        :podcast-id="podcastId"
+        disable-redirect
+        @after-create="afterPodcastEpisodeCreate"
+      />
     </Acl>
     <Acl :permission="ACL.DAM_PODCAST_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="podcastId" :route-name="ROUTE.DAM.PODCAST.EDIT" />

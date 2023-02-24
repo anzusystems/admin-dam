@@ -50,17 +50,17 @@ onBeforeUnmount(() => {
   <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
-    <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+      <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
     </Acl>
     <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
-    <AActionDeleteButton
-      v-if="!detailLoading"
-      variant="outlined"
-      color="error"
-      :width="36"
-      :height="36"
-      @delete-record="deletePodcast(id, onSuccessfulCallback)"
-    />
+      <AActionDeleteButton
+        v-if="!detailLoading"
+        variant="outlined"
+        color="error"
+        :width="36"
+        :height="36"
+        @delete-record="deletePodcast(id, onSuccessfulCallback)"
+      />
     </Acl>
     <VBtn
       class="ml-2"
