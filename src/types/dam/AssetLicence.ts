@@ -1,13 +1,13 @@
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
 import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
-import type { System } from '@/types/System'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 
 export interface AssetLicenceMinimal {
   id: IntegerId
   name: string
 }
 
-export interface AssetLicence extends AssetLicenceMinimal, UserAndTimeTrackingFields, System {
+export interface AssetLicence extends AssetLicenceMinimal, AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   extSystem: IntegerIdNullable
   extId: string
 }

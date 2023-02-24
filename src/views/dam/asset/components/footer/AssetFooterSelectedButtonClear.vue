@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { clickBlur } from '@/utils/event'
+import { eventClickBlur } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 withDefaults(
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 const dialog = ref(false)
 
 const onClick = (event: Event) => {
-  clickBlur(event)
+  eventClickBlur(event)
   dialog.value = true
 }
 const onConfirm = () => {

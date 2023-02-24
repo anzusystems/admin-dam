@@ -4,8 +4,8 @@ import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from
 import { useAssetListFilter } from '@/model/dam/filter/AssetFilter'
 import { storeToRefs } from 'pinia'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
-import { isNull } from '@/utils/common'
-import { toggleArrayItem } from '@/utils/array'
+import { isNull } from '@anzusystems/common-admin'
+import { toggleArrayItem } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@anzusystems/common-admin'
 import { readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
@@ -21,7 +21,7 @@ import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { replaceBrowserHistoryURLByRouter } from '@/utils/history'
+import { replaceBrowserHistoryURLByRouter } from '@anzusystems/common-admin'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 

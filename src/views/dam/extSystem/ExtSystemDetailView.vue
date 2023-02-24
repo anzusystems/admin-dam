@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { toInt } from '@/utils/string'
+import { stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
@@ -15,7 +15,7 @@ import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.v
 const { detailLoading, fetchData, resetStore } = useExtSystemDetailActions()
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const getDetail = () => {
   fetchData(id)

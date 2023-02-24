@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { clickBlur } from '@/utils/event'
+import { eventClickBlur } from '@anzusystems/common-admin'
 import { fileDownloadLink } from '@/services/api/dam/fileApi'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
@@ -28,7 +28,7 @@ const initData = async () => {
 }
 
 const onClick = async (event: Event) => {
-  clickBlur(event)
+  eventClickBlur(event)
   dialog.value = true
   link.value = null
   await initData()

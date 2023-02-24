@@ -12,7 +12,7 @@ import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProvid
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
 import ExternalProviderAssetDetailDialogSidebar from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void

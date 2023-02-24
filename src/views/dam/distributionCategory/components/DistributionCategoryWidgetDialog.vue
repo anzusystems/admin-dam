@@ -12,7 +12,7 @@ import { updateAssetCategory } from '@/services/api/dam/assetApi'
 import type { DistributionCategory } from '@/types/dam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

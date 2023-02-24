@@ -3,7 +3,7 @@ import type { AxiosInstance } from 'axios'
 import { storeToRefs } from 'pinia'
 import { usePermissionConfigApi } from '@/services/api/common/permissionConfigApi'
 import { usePermissionConfigStore } from '@/stores/common/permissionConfigStore'
-import { getValueByPath } from '@/utils/object'
+import { getObjectValueByPath } from '@anzusystems/common-admin'
 import type { PermissionTranslationGroup } from '@anzusystems/common-admin'
 import { useLanguageSettings } from '@anzusystems/common-admin'
 
@@ -35,7 +35,7 @@ export const usePermissionConfigActions = (client: () => AxiosInstance) => {
   const { currentLanguageCode } = useLanguageSettings()
 
   const translatePermission = (group: PermissionTranslationGroup, key: string): string => {
-    const translated = getValueByPath(
+    const translated = getObjectValueByPath(
       permissionConfig.value.translation,
       group + '.' + key + '.' + currentLanguageCode.value
     )

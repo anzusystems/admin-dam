@@ -12,7 +12,7 @@ import { useVideoShowFactory } from '@/model/dam/factory/VideoShowFactory'
 import type { VideoShow } from '@/types/dam/VideoShow'
 import { useVideoShowValidation } from '@/views/dam/videoShow/composables/videoShowValidation'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { isUndefined } from '@/utils/common'
+import { isUndefined } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 

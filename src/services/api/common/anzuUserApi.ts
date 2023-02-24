@@ -1,6 +1,6 @@
 import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
-import type { FilterBag } from '@/types/Filter'
-import type { Pagination } from '@/types/Pagination'
+import type { FilterBag } from '@anzusystems/common-admin'
+import type { Pagination } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 

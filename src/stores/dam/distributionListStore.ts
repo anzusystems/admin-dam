@@ -6,7 +6,7 @@ import { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 import { fetchDistribution } from '@/services/api/dam/distributionApi'
 import type { DistributionAuth } from '@/types/dam/DistributionAuth'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 
 interface State {
   list: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>

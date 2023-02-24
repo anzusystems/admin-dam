@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { isUndefined } from '@/utils/common'
+import { isUndefined } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useJobFactory } from '@/model/dam/factory/JobFactory'

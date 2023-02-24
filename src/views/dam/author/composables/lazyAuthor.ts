@@ -3,7 +3,7 @@ import { useAddToLazyHelper, useAllHelper } from '@/composables/system/lazyFetch
 import type { Author } from '@/types/dam/Author'
 import { fetchAuthorListByIds } from '@/services/api/dam/authorApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { ValueObjectOption } from '@/types/ValueObject'
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/dam/author/composables/authorActions'
 
 const all = ref<Map<string, ValueObjectOption<string>>>(new Map())

@@ -6,13 +6,13 @@ import LazyAuthorChip from '@/views/dam/author/components/LazyAuthorChip.vue'
 import { loadLazyAuthor, useLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
 import { computed, onMounted, ref } from 'vue'
 import type { Suggestions } from '@/types/dam/Asset'
-import { getValues, isEmpty } from '@/utils/object'
+import { getObjectValues, isEmptyObject } from '@anzusystems/common-admin'
 import AuthorCreateButton from '@/views/dam/author/components/AuthorCreateButton.vue'
-import { isArray } from '@/utils/common'
+import { isArray } from '@anzusystems/common-admin'
 import type { Author } from '@/types/dam/Author'
 import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
-import type { ValidationScope } from '@/types/Validation'
+import type { ValidationScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -71,8 +71,8 @@ const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 
 const innerFilter = useAuthorFilter()
 
-const suggestionsDefined = computed(() => !isEmpty(props.suggestions))
-const suggestionsIdsComputed = computed(() => getValues(props.suggestions))
+const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
+const suggestionsIdsComputed = computed(() => getObjectValues(props.suggestions))
 const duplicateAuthorsIds = ref<string[]>([])
 const duplicateAuthorsIdsExists = computed(() => duplicateAuthorsIds.value.length)
 

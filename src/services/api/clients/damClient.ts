@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios'
 import axios, { type AxiosRequestConfig } from 'axios'
 import { envConfig } from '@/services/EnvConfigService'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import { SYSTEM_ADMIN_DAM } from '@/model/systems'
 import { userRefreshRequestInterceptor } from '@/services/api/clients/interceptors/requestRefreshToken'
 import { logoutUserResponseInterceptor } from '@/services/api/clients/interceptors/responseLogoutUser'

@@ -13,7 +13,7 @@ import { ARow } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useErrorHandler } from '@anzusystems/common-admin'
 import VideoShowSelect from '@/views/dam/videoShow/components/VideoShowSelect.vue'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

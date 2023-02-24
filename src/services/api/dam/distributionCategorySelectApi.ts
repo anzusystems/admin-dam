@@ -1,9 +1,9 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { apiFetchByIds, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
-import type { Pagination } from '@/types/Pagination'
+import type { Pagination } from '@anzusystems/common-admin'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
-import type { FilterBag } from '@/types/Filter'
+import type { FilterBag } from '@anzusystems/common-admin'
 import type { DistributionCategorySelect } from '@/types/dam/DistributionCategorySelect'
 
 const END_POINT = '/adm/v1/distribution/category-select'

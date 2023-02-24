@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
 import { computed, ref, watch } from 'vue'
-import { flattenArray, fromArgs } from '@/utils/array'
-import { isArray, isUndefined } from '@/utils/common'
+import { flattenArray, arrayFromArgs } from '@anzusystems/common-admin'
+import { isArray, isUndefined } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -84,7 +84,7 @@ const traverseFileTree = (item: any, path: string | undefined = undefined) => {
           queue.push(traverseFileTree(entries[i], path + item.name + '/'))
         }
         Promise.all(queue).then((filesArr) => {
-          resolve(fromArgs(filesArr))
+          resolve(arrayFromArgs(filesArr))
         })
       })
     }
@@ -119,7 +119,7 @@ const onFileChange = (event: DragEvent) => {
     }
     Promise.all(queue).then((filesArr) => {
       // @ts-ignore
-      setFiles(fromArgs(filesArr))
+      setFiles(arrayFromArgs(filesArr))
     })
     return
   }

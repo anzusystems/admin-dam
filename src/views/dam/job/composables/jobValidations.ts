@@ -1,7 +1,7 @@
 import { required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Ref } from 'vue'
-import { toInt } from '@/utils/string'
+import { stringToInt } from '@anzusystems/common-admin'
 import * as validators from '@vuelidate/validators'
 import type { Job } from '@/types/dam/Job'
 import { useI18n } from 'vue-i18n'
@@ -19,7 +19,7 @@ export function useJobValidation(job: Ref<Job>) {
       }
     ): boolean => {
       if (siblings._resourceName === 'jobUserDataDelete') {
-        return toInt(value) > 0
+        return stringToInt(value) > 0
       }
 
       return true

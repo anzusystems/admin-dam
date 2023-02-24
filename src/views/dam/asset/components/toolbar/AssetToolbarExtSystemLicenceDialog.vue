@@ -5,7 +5,7 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/syste
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import { isUndefined } from '@/utils/common'
+import { isUndefined } from '@anzusystems/common-admin'
 import { minValue, required } from '@/plugins/validators'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/dam/userApi'

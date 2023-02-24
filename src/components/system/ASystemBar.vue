@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useIntervalFn } from '@vueuse/core'
 import { envConfig } from '@/services/EnvConfigService'
-import { isUndefined } from '@/utils/common'
+import { isUndefined } from '@anzusystems/common-admin'
 import ASystemBarNewVersion from '@/components/system/ASystemBarNewVersion.vue'
 
 const CHECK_NEW_VERSION_INTERVAL_MS = 60000

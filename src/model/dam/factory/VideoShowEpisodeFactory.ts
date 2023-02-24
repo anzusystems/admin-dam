@@ -1,5 +1,5 @@
 import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
-import { dateTimeNow } from '@/utils/datetime'
+import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/dam/videoShowEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { DocIdNullable, IntegerId } from '@anzusystems/common-admin'

@@ -8,7 +8,7 @@ import DistributionNewDialogCustom from '@/views/dam/asset/detail/components/dis
 import DistributionNewDialogEmpty from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import { DistributionServiceType } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'

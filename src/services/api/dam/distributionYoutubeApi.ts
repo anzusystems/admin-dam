@@ -10,7 +10,7 @@ import type {
   YoutubeLanguage,
   YoutubePlaylist,
 } from '@/types/dam/Distribution'
-import { booleanToInteger } from '@/utils/bool'
+import { booleanToInteger } from '@anzusystems/common-admin'
 import { usePagination } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/youtube-distribution'

@@ -16,8 +16,8 @@ import { fetchVideoFile } from '@/services/api/dam/videoApi'
 import { fetchDocumentFile } from '@/services/api/dam/documentApi'
 import { loadLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import { loadLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
-import { getValues } from '@/utils/object'
-import { isUndefined } from '@/utils/common'
+import { getObjectValues } from '@anzusystems/common-admin'
+import { isUndefined } from '@anzusystems/common-admin'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/dam/AssetExternalProvider'
 import { externalProviderImport } from '@/services/upload/externalProviderImportService'
 import { useExternalProviders } from '@/composables/system/externalProviders'
@@ -548,7 +548,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     ) {
       item.keywords.forEach((id) => addLazyKeyword(id))
       item.authors.forEach((id) => addLazyAuthor(id))
-      getValues(item.authorSuggestions)
+      getObjectValues(item.authorSuggestions)
         .filter((ids) => ids.length > 1)
         .forEach((ids) => ids.filter((id) => addLazyAuthor(id)))
     },

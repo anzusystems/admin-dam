@@ -1,5 +1,5 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { dateTimeNow } from '@/utils/datetime'
+import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/dam/DistributionCategory'
 import { AssetType } from '@/model/dam/valueObject/AssetType'

@@ -4,14 +4,14 @@ import { useKeywordSelectActions } from '@/views/dam/keyword/composables/keyword
 import { useKeywordFilter } from '@/model/dam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
 import type { Suggestions } from '@/types/dam/Asset'
-import { getValues, isEmpty } from '@/utils/object'
+import { getObjectValues, isEmptyObject } from '@anzusystems/common-admin'
 import { loadLazyKeyword, useLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import KeywordCreateButton from '@/views/dam/keyword/components/KeywordCreateButton.vue'
 import type { Keyword } from '@/types/dam/Keyword'
-import { isArray } from '@/utils/common'
+import { isArray } from '@anzusystems/common-admin'
 import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
-import type { ValidationScope } from '@/types/Validation'
+import type { ValidationScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -70,10 +70,10 @@ const { fetchItems, fetchItemsByIds } = useKeywordSelectActions()
 
 const innerFilter = useKeywordFilter()
 
-const suggestionsDefined = computed(() => !isEmpty(props.suggestions))
+const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
 const existingKeywordsIds = computed(() => {
   const existingKeywordsList: string[] = []
-  getValues(props.suggestions).forEach((ids) => ids.forEach((id) => existingKeywordsList.push(id)))
+  getObjectValues(props.suggestions).forEach((ids) => ids.forEach((id) => existingKeywordsList.push(id)))
   return existingKeywordsList
 })
 const existingKeywordsNames = computed(() => {

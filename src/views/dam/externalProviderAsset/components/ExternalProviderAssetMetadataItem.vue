@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { isArray, isBoolean } from '@/utils/common'
+import { isArray, isBoolean } from '@anzusystems/common-admin'
 import { ABooleanValue } from '@anzusystems/common-admin'
 
 const props = withDefaults(

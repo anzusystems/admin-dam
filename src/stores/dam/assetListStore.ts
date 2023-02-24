@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetSearchListItemDto } from '@/types/dam/Asset'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import type { UploadQueueItem } from '@/types/dam/UploadQueue'
