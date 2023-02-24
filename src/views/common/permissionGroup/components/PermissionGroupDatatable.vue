@@ -10,7 +10,7 @@ import {
   ATableEditButton,
   useDatatableColumns,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
 import { ROUTE } from '@/router/routes'

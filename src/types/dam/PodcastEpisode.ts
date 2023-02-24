@@ -3,7 +3,7 @@ import type {
   DatetimeUTCNullable,
   DocId,
   DocIdNullable,
-  ResourceNameSystemAware
+  ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 import type { Links } from '@/types/dam/File'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'

@@ -11,7 +11,7 @@ import {
   ATableEditButton,
   useDatatableColumns,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'

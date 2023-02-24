@@ -7,11 +7,8 @@ import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import {
-  useDistributionCategorySelectDetailActions
-} from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
-import DistributionCategorySelectDetail
-  from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
+import { useDistributionCategorySelectDetailActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import DistributionCategorySelectDetail from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
 
 const { detailLoading, fetchData, resetStore } = useDistributionCategorySelectDetailActions()
 

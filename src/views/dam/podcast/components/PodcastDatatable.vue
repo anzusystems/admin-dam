@@ -11,7 +11,7 @@ import {
   ATableEditButton,
   useDatatableColumns,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'

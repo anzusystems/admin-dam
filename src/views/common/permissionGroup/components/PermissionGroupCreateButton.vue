@@ -9,7 +9,7 @@ import {
   type PermissionGroup,
   useAlerts,
   useErrorHandler,
-  usePermissionGroupFactory
+  usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
 import { ROUTE } from '@/router/routes'

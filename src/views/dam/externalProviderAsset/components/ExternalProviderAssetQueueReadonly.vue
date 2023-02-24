@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
-import ExternalProviderAssetQueueItemReadonly
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetQueueItemReadonly.vue'
+import ExternalProviderAssetQueueItemReadonly from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetQueueItemReadonly.vue'
 
 const props = withDefaults(
   defineProps<{

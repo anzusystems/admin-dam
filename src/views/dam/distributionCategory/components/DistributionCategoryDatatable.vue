@@ -9,7 +9,7 @@ import {
   ATableEditButton,
   useDatatableColumns,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
@@ -18,13 +18,10 @@ import { useRouter } from 'vue-router'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { ACL } from '@/types/Permission'
 import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
-import {
-  useDistributionCategoryListActions
-} from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryListActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/dam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
-import DistributionCategorySelectedOptionChip
-  from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import DistributionCategorySelectedOptionChip from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 
 const props = withDefaults(
   defineProps<{

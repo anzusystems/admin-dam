@@ -10,12 +10,11 @@ import {
   type LanguageCode,
   modifyLanguageSettings,
 } from '@anzusystems/common-admin'
-import { i18n } from '@/plugins/i18n'
 
 const configAvailableLanguages = inject<LanguageCode[]>(AvailableLanguagesSymbol, [])
 const configDefaultLanguage = inject<LanguageCode>(DefaultLanguageSymbol, 'en')
 const route = useRoute()
-const { initializeLanguage } = modifyLanguageSettings(i18n, configAvailableLanguages, configDefaultLanguage)
+const { initializeLanguage } = modifyLanguageSettings(configAvailableLanguages, configDefaultLanguage)
 
 onMounted(() => {
   initializeLanguage()

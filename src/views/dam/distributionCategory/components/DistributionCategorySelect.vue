@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
-import {
-  useDistributionCategorySelectActions
-} from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategorySelectActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 
 withDefaults(

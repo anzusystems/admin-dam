@@ -5,7 +5,7 @@ import {
   isNull,
   useAlerts,
   useErrorHandler,
-  type ValidationResponseData
+  type ValidationResponseData,
 } from '@anzusystems/common-admin'
 import { apiAnyRequest, apiCreateOne, apiDeleteOne, apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

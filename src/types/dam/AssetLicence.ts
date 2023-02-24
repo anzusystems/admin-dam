@@ -2,7 +2,7 @@ import type {
   AnzuUserAndTimeTrackingAware,
   IntegerId,
   IntegerIdNullable,
-  ResourceNameSystemAware
+  ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 
 export interface AssetLicenceMinimal {

@@ -6,7 +6,7 @@ import {
   AActionCloseButton,
   AActionSaveAndCloseButton,
   AActionSaveButton,
-  stringToInt
+  stringToInt,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'

@@ -11,7 +11,7 @@ import {
   isUndefined,
   useAlerts,
   useErrorHandler,
-  useJobApi
+  useJobApi,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'

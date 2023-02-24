@@ -1,4 +1,9 @@
 {
+  "sidebar": {
+    "settings": {
+      "settings": "Osobné"
+    }
+  },
   "$vuetify": {
     "badge": "Odznak",
     "close": "Zavrieť",

@@ -15,7 +15,7 @@ import {
   ASystemEntityScope,
   useAlerts,
   useErrorHandler,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'

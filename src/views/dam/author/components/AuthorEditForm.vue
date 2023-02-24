@@ -7,7 +7,7 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  ASystemEntityScope
+  ASystemEntityScope,
 } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/dam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/dam/author/composables/authorValidation'

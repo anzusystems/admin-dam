@@ -6,7 +6,7 @@ import {
   useAlerts,
   useErrorHandler,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/dam/assetApi'
