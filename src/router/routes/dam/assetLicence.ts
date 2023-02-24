@@ -1,9 +1,10 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
+import type { RouteRecordRaw } from 'vue-router'
 
 const PATH = '/asset-licence'
 
-export const assetLicenceRoutes = [
+export const assetLicenceRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.ASSET_LICENCE.LIST,

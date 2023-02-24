@@ -1,9 +1,10 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
+import type { RouteRecordRaw } from 'vue-router'
 
 const PATH = '/permission-group'
 
-export const permissionGroupRoutes = [
+export const permissionGroupRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.COMMON.PERMISSION_GROUP.LIST,

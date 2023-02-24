@@ -16,12 +16,13 @@ import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
 import { useDistributionCategoryListActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/dam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
 import DistributionCategorySelectedOptionChip from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -53,9 +54,12 @@ const columns = useDatatableColumns([
   ...distributionServicesTableColumns.value,
   ...[{ name: 'createdAt' }, { name: 'modifiedAt' }],
 ])
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: ExtSystem) => {
-  router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_VIEW)) {
+    router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL, params: { id: row.id } })
+  }
 }
 
 onMounted(() => {
@@ -80,7 +84,9 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL" />
+        <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_VIEW">
+          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL" />
+        </Acl>
         <ATableCopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
           <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT" />

@@ -11,6 +11,7 @@ import {
   usePodcastEpisodeRemoveActions,
 } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeDetail from '@/views/dam/podcastEpisode/components/PodcastEpisodeDetail.vue'
+import { ACL } from '@/types/Permission'
 
 const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
@@ -48,7 +49,10 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.detail')" />
   <ActionbarButtonsWrapper>
+    <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
     <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+    </Acl>
+    <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
     <AActionDeleteButton
       v-if="!detailLoading"
       variant="outlined"
@@ -57,6 +61,7 @@ onBeforeUnmount(() => {
       :height="36"
       @delete-record="deletePodcast(id, onSuccessfulCallback)"
     />
+    </Acl>
     <VBtn
       class="ml-2"
       :to="closeRoute"

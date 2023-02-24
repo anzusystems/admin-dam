@@ -20,6 +20,7 @@ import type { Author } from '@/types/dam/Author'
 import { usePodcastEpisodeListActions } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/dam/podcastEpisode/components/PodcastEpisodeFilter.vue'
+import { ACL } from '@/types/Permission'
 
 const props = withDefaults(
   defineProps<{
@@ -59,9 +60,13 @@ onMounted(() => {
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
-        <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL" />
+        <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">
+          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL" />
+        </Acl>
         <ATableCopyIdButton :id="data.id" />
-        <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+        <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
+          <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT" />
+        </Acl>
       </template>
     </ADatatable>
     <ADatatablePagination v-model="pagination" @change="getList" />

@@ -11,6 +11,7 @@ import AssetFooterUploadSlotsOverlay from '@/views/dam/asset/components/footer/A
 import logo from '@/assets/logo-adam.svg'
 import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/dam/asset/components/toolbar/AssetToolbarIntegrations.vue'
+import { ACL } from '@/types/Permission'
 
 const { t } = useI18n()
 
@@ -31,7 +32,9 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
               <img width="104" height="42" :src="logo" alt="ADAM" />
             </RouterLink>
           </div>
-          <AssetToolbarIntegrations />
+          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
+            <AssetToolbarIntegrations />
+          </Acl>
           <slot name="main-bar-left" />
         </div>
         <div class="d-flex align-center">

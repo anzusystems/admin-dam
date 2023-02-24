@@ -1,9 +1,10 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
+import type { RouteRecordRaw } from 'vue-router'
 
 const PATH = '/ext-system'
 
-export const extSystemRoutes = [
+export const extSystemRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.EXT_SYSTEM.LIST,
