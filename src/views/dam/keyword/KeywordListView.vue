@@ -25,7 +25,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.list')" icon="mdi-file-key-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_KEYWORD_CREATE">
       <KeywordCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />

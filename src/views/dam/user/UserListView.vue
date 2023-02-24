@@ -14,7 +14,7 @@ const datatable = ref<InstanceType<typeof UserDatatable> | null>(null)
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.user.meta.list')" icon="mdi-account" />
+  <ActionbarTitleWrapper :heading="t('coreDam.user.meta.list')" />
   <ACard :loading="listLoading">
     <UserDatatable ref="datatable" />
   </ACard>

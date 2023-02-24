@@ -31,7 +31,7 @@ const onCreateSuccess = (type: AssetType) => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.list')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_CREATE">
       <DistributionCategoryCreateButton

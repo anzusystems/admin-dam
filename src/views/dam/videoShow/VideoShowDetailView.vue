@@ -61,7 +61,7 @@ const afterVideoShowEpisodeCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.detail')" icon="mdi-videoShow" />
+  <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.detail')" />
   <ActionbarButtonsWrapper>
     <VideoShowEpisodeCreateButton
       v-if="!detailLoading"

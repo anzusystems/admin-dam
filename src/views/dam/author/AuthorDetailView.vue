@@ -33,7 +33,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.author.meta.detail')" icon="mdi-account-circle-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.author.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.AUTHOR.EDIT" />

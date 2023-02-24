@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Filter } from '@anzusystems/common-admin'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
+import { useFilterHelpers } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
 import { isArray } from '@anzusystems/common-admin'

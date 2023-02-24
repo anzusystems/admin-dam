@@ -8,7 +8,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('sidebar.settings.settings')" icon="mdi-cog" />
+  <ActionbarTitleWrapper :heading="t('sidebar.settings.settings')" />
   <VRow>
     <VCol cols="12">
       <ACard>

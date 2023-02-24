@@ -34,7 +34,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.detail')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />

@@ -10,13 +10,13 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import PermissionGroupEditForm from '@/views/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { damClient } from '@/services/api/clients/damClient'
-import { toInt } from '@anzusystems/common-admin'
+import { stringToInt } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 
 const { t } = useI18n()
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, loadingUpdatePermissionGroup } =
   usePermissionGroupActions(damClient)
@@ -35,7 +35,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.edit')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.edit')" />
   <ActionbarButtonsWrapper>
     <AActionSaveButton :loading="loadingUpdatePermissionGroup" @save-record="updatePermissionGroup" />
     <AActionSaveAndCloseButton

@@ -34,7 +34,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.user.meta.detail')" icon="mdi-account" />
+  <ActionbarTitleWrapper :heading="t('coreDam.user.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.USER.EDIT" />

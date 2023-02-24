@@ -22,7 +22,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.author.meta.list')" icon="mdi-account-circle-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.author.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_AUTHOR_CREATE">
       <AuthorCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />

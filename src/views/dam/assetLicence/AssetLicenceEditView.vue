@@ -35,7 +35,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.edit')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.edit')" />
   <ActionbarButtonsWrapper>
     <AActionSaveButton
       v-if="!detailLoading"

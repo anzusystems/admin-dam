@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ACopyText } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
+import { useFilterHelpers } from '@anzusystems/common-admin'
 import { usePagination } from '@anzusystems/common-admin'
 import { useDatatableColumns } from '@anzusystems/common-admin'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
