@@ -2,7 +2,7 @@ import type {
   AnzuUserAndTimeTrackingAware,
   DocId,
   IntegerIdNullable,
-  ResourceNameSystemAware
+  ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 import type { PodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/dam/valueObject/PodcastLastImportStatus'

@@ -5,11 +5,8 @@ import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useTheme } from '@anzusystems/common-admin'
 import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
-import ExternalProviderAssetQueueReadonly
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetQueueReadonly.vue'
-import {
-  useExternalProviderAssetImport
-} from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
+import ExternalProviderAssetQueueReadonly from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetQueueReadonly.vue'
+import { useExternalProviderAssetImport } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
 import { useI18n } from 'vue-i18n'
 

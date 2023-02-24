@@ -9,7 +9,7 @@ import {
   isUndefined,
   useAlerts,
   useAnzuUserFactory,
-  useErrorHandler
+  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'

@@ -7,7 +7,7 @@ import {
   isNull,
   useDatatableColumns,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'

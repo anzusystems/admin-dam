@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { AFormBooleanToggle, AFormTextField } from '@anzusystems/common-admin'
-import {
-  useDistributionCategoryOptionValidation
-} from '@/views/dam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
+import { useDistributionCategoryOptionValidation } from '@/views/dam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/types/dam/DistributionCategoryOption'
 import { useVModel } from '@vueuse/core'
 import { onMounted } from 'vue'

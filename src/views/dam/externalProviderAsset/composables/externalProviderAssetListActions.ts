@@ -4,7 +4,7 @@ import {
   useAlerts,
   useErrorHandler,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { useExternalProviderAssetListFilter } from '@/model/dam/filter/ExternalProviderAssetFilter'
 import { storeToRefs } from 'pinia'

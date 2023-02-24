@@ -12,7 +12,7 @@ import {
   isUndefined,
   ROLE_SUPER_ADMIN,
   setObjectValueByPath,
-  simpleCloneObject
+  simpleCloneObject,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'

@@ -30,8 +30,6 @@ loadEnvConfig(() => {
     .use(router)
     .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
       currentUser,
-      // @ts-ignore
-      i18n,
       languages: {
         available: ['en', 'sk'],
         default: 'en',

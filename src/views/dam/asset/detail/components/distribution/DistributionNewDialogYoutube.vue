@@ -10,7 +10,7 @@ import {
   ASystemEntityScope,
   useAlerts,
   useErrorHandler,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { maxLength, minLength, required, requiredIf } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
@@ -30,12 +30,9 @@ import {
   DistributionYoutubePrivacy,
   useDistributionYoutubePrivacy,
 } from '@/model/dam/valueObject/DistributionYoutubePrivacy'
-import DistributionYoutubeLanguageSelect
-  from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
-import DistributionYoutubeTermOfUse
-  from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
-import DistributionYoutubePlaylistSelect
-  from '@/views/dam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
+import DistributionYoutubeLanguageSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
+import DistributionYoutubeTermOfUse from '@/views/dam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
+import DistributionYoutubePlaylistSelect from '@/views/dam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/dam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'

@@ -8,7 +8,7 @@ import {
   ATableEditButton,
   useDatatableColumns,
   useFilterHelpers,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategorySelectApi'
@@ -17,12 +17,9 @@ import { useRouter } from 'vue-router'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { ACL } from '@/types/Permission'
 import { onMounted } from 'vue'
-import {
-  useDistributionCategorySelectListActions
-} from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import { useDistributionCategorySelectListActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
-import DistributionCategorySelectFilter
-  from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
+import DistributionCategorySelectFilter from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
 
 const router = useRouter()
 const pagination = usePagination()

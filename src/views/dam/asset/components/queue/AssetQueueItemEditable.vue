@@ -10,7 +10,7 @@ import {
   isNull,
   prettyBytes,
   useAlerts,
-  useErrorHandler
+  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'

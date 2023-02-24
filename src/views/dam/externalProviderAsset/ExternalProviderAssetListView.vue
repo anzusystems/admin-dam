@@ -1,30 +1,21 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue'
-import {
-  useExternalProviderAssetListActions
-} from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { useGridView } from '@/composables/system/gridView'
 import { useI18n } from 'vue-i18n'
-import ExternalProviderAssetListItem
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetListItem.vue'
-import ExternalProviderAssetDetailDialog
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailDialog.vue'
+import ExternalProviderAssetListItem from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetListItem.vue'
+import ExternalProviderAssetDetailDialog from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailDialog.vue'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
 import DGridViewToggle from '@/components/system/DGridViewToggle.vue'
 import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
-import ExternalProviderAssetToolbarSearch
-  from '@/views/dam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
-import ExternalProviderAssetListSidebarFilter
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetListSidebarFilter.vue'
-import ExternalProviderAssetListSidebarMetadata
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetListSidebarMetadata.vue'
+import ExternalProviderAssetToolbarSearch from '@/views/dam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
+import ExternalProviderAssetListSidebarFilter from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetListSidebarFilter.vue'
+import ExternalProviderAssetListSidebarMetadata from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetListSidebarMetadata.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import AssetFooterUploadOverlayFull from '@/views/dam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
-import ExternalProviderAssetFooterSelected
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetFooterSelected.vue'
-import ExternalProviderAssetFooterSelectedFull
-  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetFooterSelectedFull.vue'
+import ExternalProviderAssetFooterSelected from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetFooterSelected.vue'
+import ExternalProviderAssetFooterSelectedFull from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetFooterSelectedFull.vue'
 import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,

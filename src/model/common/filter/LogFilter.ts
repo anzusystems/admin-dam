@@ -5,7 +5,7 @@ import {
   dateTimeEndOfDay,
   dateTimeStartOfDay,
   makeFilterHelper,
-  type MakeFilterOptions
+  type MakeFilterOptions,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/logApi'
 import type { LogSystem } from '@/model/common/valueObject/LogSystem'

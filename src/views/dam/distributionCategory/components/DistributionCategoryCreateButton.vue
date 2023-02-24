@@ -4,15 +4,10 @@ import { useI18n } from 'vue-i18n'
 import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
-import {
-  useDistributionCategoryValidation
-} from '@/views/dam/distributionCategory/composables/distributionCategoryValidation'
-import {
-  useDistributionCategoryCreateActions
-} from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryValidation } from '@/views/dam/distributionCategory/composables/distributionCategoryValidation'
+import { useDistributionCategoryCreateActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import { AssetType, useAssetType } from '@/model/dam/valueObject/AssetType'
-import DistributionCategorySelectOptionSelect
-  from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import DistributionCategorySelectOptionSelect from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 
 const props = withDefaults(
   defineProps<{

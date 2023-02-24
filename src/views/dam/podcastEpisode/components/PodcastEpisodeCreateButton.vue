@@ -9,7 +9,7 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
-  useErrorHandler
+  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

@@ -9,7 +9,7 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
-  JobStatusChip
+  JobStatusChip,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import type { JobResource } from '@/model/dam/valueObject/JobResource'

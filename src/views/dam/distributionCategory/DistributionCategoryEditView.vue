@@ -6,9 +6,7 @@ import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import {
-  useDistributionCategoryEditActions
-} from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryEditActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryEditForm from '@/views/dam/distributionCategory/components/DistributionCategoryEditForm.vue'
 
 const { t } = useI18n()

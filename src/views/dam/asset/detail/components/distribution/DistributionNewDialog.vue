@@ -2,11 +2,9 @@
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import DistributionNewDialogYoutube
-  from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
+import DistributionNewDialogYoutube from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
-import DistributionNewDialogCustom
-  from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
+import DistributionNewDialogCustom from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/dam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import { DistributionServiceType } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'

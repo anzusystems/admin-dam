@@ -4,7 +4,7 @@ import {
   AActionSaveAndCloseButton,
   AActionSaveButton,
   ACard,
-  stringToInt
+  stringToInt,
 } from '@anzusystems/common-admin'
 import UserEditForm from '@/views/dam/user/components/UserEditForm.vue'
 import { onBeforeUnmount, onMounted } from 'vue'

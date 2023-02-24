@@ -2,7 +2,7 @@ import type {
   AnzuUserAndTimeTrackingAware,
   DocId,
   DocIdNullable,
-  ResourceNameSystemAware
+  ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 
 interface Texts {

@@ -7,11 +7,9 @@ import {
   isNull,
   useAlerts,
   useErrorHandler,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
-import {
-  useVideoDistributionPreviewListActions
-} from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
+import { useVideoDistributionPreviewListActions } from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/dam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/dam/videoApi'
 import { useI18n } from 'vue-i18n'

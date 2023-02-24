@@ -9,7 +9,7 @@ import {
   simpleCloneObject,
   useAlerts,
   useErrorHandler,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/dam/Distribution'
@@ -30,8 +30,7 @@ import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,
 } from '@/services/DamConfigDistributionCustomFormService'
-import DistributionCustomMetadataForm
-  from '@/views/dam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import DistributionCustomMetadataForm from '@/views/dam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/dam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
