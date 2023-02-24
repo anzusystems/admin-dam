@@ -1,5 +1,5 @@
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
 import type { ImagePreviewNullable } from '@/types/dam/ImagePreview'
 
 export enum AssetFileProcessStatus {
@@ -77,7 +77,7 @@ export interface Link {
 
 export type Links = Record<'image_list' | 'image_detail' | 'audio', Link> | Record<string, never>
 
-export interface ImageFile extends UserAndTimeTrackingFields {
+export interface ImageFile extends AnzuUserAndTimeTrackingAware {
   id: DocId
   asset: DocId
   fileAttributes: FileAttributes
@@ -88,7 +88,7 @@ export interface ImageFile extends UserAndTimeTrackingFields {
   _resourceName: 'imageFile'
 }
 
-export interface AudioFile extends UserAndTimeTrackingFields {
+export interface AudioFile extends AnzuUserAndTimeTrackingAware {
   id: DocId
   asset: DocId
   fileAttributes: FileAttributes
@@ -98,7 +98,7 @@ export interface AudioFile extends UserAndTimeTrackingFields {
   _resourceName: 'audioFile'
 }
 
-export interface VideoFile extends UserAndTimeTrackingFields {
+export interface VideoFile extends AnzuUserAndTimeTrackingAware {
   id: DocId
   asset: DocId
   fileAttributes: FileAttributes
@@ -109,7 +109,7 @@ export interface VideoFile extends UserAndTimeTrackingFields {
   _resourceName: 'videoFile'
 }
 
-export interface DocumentFile extends UserAndTimeTrackingFields {
+export interface DocumentFile extends AnzuUserAndTimeTrackingAware {
   id: DocId
   asset: DocId
   fileAttributes: FileAttributes
@@ -119,7 +119,7 @@ export interface DocumentFile extends UserAndTimeTrackingFields {
   _resourceName: 'documentFile'
 }
 
-export interface FileDownloadLink extends UserAndTimeTrackingFields {
+export interface FileDownloadLink extends AnzuUserAndTimeTrackingAware {
   id: DocId
   link: string
   _system: string

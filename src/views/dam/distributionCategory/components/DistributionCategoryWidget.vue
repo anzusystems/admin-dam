@@ -2,7 +2,7 @@
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { fetchDistributionCategory } from '@/services/api/dam/distributionCategoryApi'
 import { computed, ref, watch } from 'vue'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import type { DocIdNullable } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/types/dam/DistributionCategory'

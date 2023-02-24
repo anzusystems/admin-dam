@@ -1,9 +1,9 @@
 import type { DocId } from '@anzusystems/common-admin'
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { System } from '@/types/System'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 import type { AssetFileNullable } from '@/types/dam/File'
 
-export interface AssetSlot extends UserAndTimeTrackingFields, System {
+export interface AssetSlot extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   assetFile: AssetFileNullable
   slotName: string

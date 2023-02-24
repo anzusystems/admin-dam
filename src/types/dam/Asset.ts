@@ -1,6 +1,6 @@
 import type { DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { System } from '@/types/System'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 import type { AssetFile } from '@/types/dam/File'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
@@ -38,7 +38,7 @@ export interface AssetFileProperties {
   height: number
 }
 
-export interface AssetSearchListItemDto extends UserAndTimeTrackingFields, System {
+export interface AssetSearchListItemDto extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   texts: Texts
   attributes: Attributes
@@ -51,7 +51,7 @@ export interface AssetSearchListItemDto extends UserAndTimeTrackingFields, Syste
   assetFileProperties: AssetFileProperties
 }
 
-export interface AssetDetailItemDto extends UserAndTimeTrackingFields, System {
+export interface AssetDetailItemDto extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   texts: Texts
   attributes: Attributes
@@ -66,7 +66,7 @@ export interface AssetDetailItemDto extends UserAndTimeTrackingFields, System {
   assetFileProperties: AssetFileProperties
 }
 
-export interface AssetMetadataDto extends UserAndTimeTrackingFields, System, Metadata {
+export interface AssetMetadataDto extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware, Metadata {
   id: DocId
   customData: AssetCustomData
 }

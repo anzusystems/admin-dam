@@ -1,6 +1,6 @@
 import { useErrorHandler } from '@anzusystems/common-admin'
-import type { FilterBag } from '@/types/Filter'
-import type { Pagination } from '@/types/Pagination'
+import type { FilterBag } from '@anzusystems/common-admin'
+import type { Pagination } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import type { AnzuUser } from '@anzusystems/common-admin'

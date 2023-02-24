@@ -1,5 +1,5 @@
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
-import type { System } from '@/types/System'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 
 export enum CustomFormType {
@@ -20,7 +20,7 @@ export interface DamConfigAssetCustomFormAttributes {
   searchable: boolean
 }
 
-export interface DamConfigAssetCustomFormElement extends UserAndTimeTrackingFields, System {
+export interface DamConfigAssetCustomFormElement extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   key: string
   name: string

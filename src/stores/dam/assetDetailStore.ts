@@ -1,7 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetDetailItemDto } from '@/types/dam/Asset'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
-import { getValues } from '@/utils/object'
+import { getObjectValues } from '@anzusystems/common-admin'
 import { loadLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import { loadLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
@@ -56,7 +56,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
 
       asset.keywords.forEach((id) => addToLazyKeywordBuffer(id))
       asset.authors.forEach((id) => addToLazyAuthorBuffer(id))
-      getValues(asset.metadata.authorSuggestions)
+      getObjectValues(asset.metadata.authorSuggestions)
         .filter((ids) => ids.length > 1)
         .forEach((ids) => ids.filter((id) => addToLazyAuthorBuffer(id)))
       fetchLazyKeyword()

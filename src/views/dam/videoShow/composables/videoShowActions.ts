@@ -2,8 +2,8 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import type { Pagination } from '@/types/Pagination'
-import type { FilterBag } from '@/types/Filter'
+import type { Pagination } from '@anzusystems/common-admin'
+import type { FilterBag } from '@anzusystems/common-admin'
 import {
   fetchVideoShow,
   fetchVideoShowListByExtSystem,
@@ -16,7 +16,7 @@ import { useVideoShowOneStore } from '@/stores/dam/videoShowStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import type { ValueObjectOption } from '@/types/ValueObject'
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 
 const { currentExtSystemId } = useCurrentExtSystem()
 

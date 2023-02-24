@@ -4,7 +4,7 @@ import type { Keyword } from '@/types/dam/Keyword'
 import { fetchKeywordListByIds } from '@/services/api/dam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useKeywordSelectActions } from '@/views/dam/keyword/composables/keywordActions'
-import type { ValueObjectOption } from '@/types/ValueObject'
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 
 const all = ref<Map<string, ValueObjectOption<string>>>(new Map())
 const allIds = ref<Set<string>>(new Set([]))

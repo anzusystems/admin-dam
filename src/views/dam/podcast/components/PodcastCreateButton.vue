@@ -13,7 +13,7 @@ import type { Podcast } from '@/types/dam/Podcast'
 import { usePodcastValidation } from '@/views/dam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { isUndefined } from '@/utils/common'
+import { isUndefined } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 

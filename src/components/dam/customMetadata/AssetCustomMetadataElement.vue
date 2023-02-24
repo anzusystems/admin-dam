@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import { maxLength, maxValue, minLength, minValue, requiredIf, stringArrayItemLength } from '@/plugins/validators'
-import type { ValidationScope } from '@/types/Validation'
+import type { ValidationScope } from '@anzusystems/common-admin'
 import { AFormBooleanToggle } from '@anzusystems/common-admin'
 
 const props = withDefaults(

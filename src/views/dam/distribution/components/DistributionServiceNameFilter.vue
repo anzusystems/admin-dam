@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Filter } from '@/types/Filter'
+import type { Filter } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
 import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'

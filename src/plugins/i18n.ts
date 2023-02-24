@@ -7,7 +7,7 @@ import { createI18n } from 'vue-i18n'
 const finalEn = { ...commonMessages.en, ...en }
 const finalSk = { ...commonMessages.sk, ...sk }
 
-export type MessageSchema = typeof finalSk
+export type MessageSchema = typeof finalEn
 
 const finalMessages = {
   sk: finalSk,

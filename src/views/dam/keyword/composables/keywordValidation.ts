@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Keyword } from '@/types/dam/Keyword'
-import type { ValidationScope } from '@/types/Validation'
+import type { ValidationScope } from '@anzusystems/common-admin'
 
 export function useKeywordValidation(keyword: Ref<Keyword>, validationScope: ValidationScope = undefined) {
   const rules = computed(() => ({

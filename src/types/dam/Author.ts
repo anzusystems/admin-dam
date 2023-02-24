@@ -1,13 +1,13 @@
 import type { DocId, IntegerId } from '@anzusystems/common-admin'
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
 import type { AuthorType } from '@/model/dam/valueObject/AuthorType'
-import type { System } from '@/types/System'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 
 interface Flags {
   reviewed: boolean
 }
 
-export interface Author extends UserAndTimeTrackingFields, System {
+export interface Author extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   name: string
   identifier: string

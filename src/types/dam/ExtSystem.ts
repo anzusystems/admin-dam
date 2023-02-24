@@ -1,8 +1,8 @@
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
 import type { IntegerId } from '@anzusystems/common-admin'
-import type { System } from '@/types/System'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 
-export interface ExtSystem extends UserAndTimeTrackingFields, System {
+export interface ExtSystem extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: IntegerId
   name: string
   slug: string

@@ -1,12 +1,12 @@
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import type { System } from '@/types/System'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 
 interface Texts {
   title: string
 }
 
-export interface VideoShowEpisode extends UserAndTimeTrackingFields, System {
+export interface VideoShowEpisode extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   videoShow: DocIdNullable
   asset: DocIdNullable

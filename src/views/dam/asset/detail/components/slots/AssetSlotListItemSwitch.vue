@@ -77,7 +77,7 @@ const onSwitch = () => {
           {{ fileTitle }}
         </div>
         <div v-if="targetOptions.length === 0" class="my-2 text-warning">
-          {{ t('coreDam.asset.slots.switch.noTargetSlots') }}
+          {{ t('coreDam.asset.slots.switch.no') }}
         </div>
         <div v-else class="my-2">
           <VSelect v-model="targetSlot" :label="t('coreDam.asset.slots.switch.to')" :items="targetOptions" />

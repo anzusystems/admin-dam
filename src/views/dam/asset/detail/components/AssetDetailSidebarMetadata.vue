@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAssetDetailActions } from '@/views/dam/asset/detail/composables/assetDetailActions'
 import { deleteAsset, updateAssetMetadata } from '@/services/api/dam/assetApi'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@anzusystems/common-admin'

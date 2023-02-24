@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { Filter } from '@/types/Filter'
+import type { Filter } from '@anzusystems/common-admin'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
-import { isArray } from '@/utils/common'
-import { toggleArrayItem } from '@/utils/array'
-import { simpleCloneObject } from '@/utils/object'
+import { isArray } from '@anzusystems/common-admin'
+import { toggleArrayItem } from '@anzusystems/common-admin'
+import { simpleCloneObject } from '@anzusystems/common-admin'
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'
 
 const props = withDefaults(

@@ -1,7 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import { simpleCloneObject } from '@/utils/object'
+import { simpleCloneObject } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
 
 interface State {

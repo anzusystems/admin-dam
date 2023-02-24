@@ -2,7 +2,7 @@
 import UserDetail from '@/views/dam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/views/dam/user/composables/userActions'
 import { useRoute } from 'vue-router'
-import { toInt } from '@/utils/string'
+import { stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
@@ -16,7 +16,7 @@ import { ACard } from '@anzusystems/common-admin'
 const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const getDetail = () => {
   fetchData(id)

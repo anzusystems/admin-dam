@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import { useLazyAssetLicence } from '@/views/dam/assetLicence/composables/lazyAssetLicence'
 
 const props = withDefaults(

@@ -1,9 +1,9 @@
-import { isArray, isUndefined } from '@/utils/common'
+import { isArray, isUndefined } from '@anzusystems/common-admin'
 import type { TableSort } from '@/types/ElementPlus'
-import type { Filter, FilterBag, FilterVariant } from '@/types/Filter'
-import type { Pagination } from '@/types/Pagination'
+import type { Filter, FilterBag, FilterVariant } from '@anzusystems/common-admin'
+import type { Pagination } from '@anzusystems/common-admin'
 import { i18n } from '@/plugins/i18n'
-import { simpleCloneObject } from '@/utils/object'
+import { simpleCloneObject } from '@anzusystems/common-admin'
 
 const { t } = i18n.global || i18n
 

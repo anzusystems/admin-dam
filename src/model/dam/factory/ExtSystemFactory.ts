@@ -1,5 +1,5 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { dateTimeNow } from '@/utils/datetime'
+import { dateTimeNow } from '@anzusystems/common-admin'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { ENTITY } from '@/services/api/dam/extSystemApi'
 

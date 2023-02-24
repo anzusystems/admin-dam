@@ -1,5 +1,5 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { isUndefined } from '@/utils/common'
+import { isUndefined } from '@anzusystems/common-admin'
 import type { AclValue } from '@/types/Permission'
 import { useAcl } from '@anzusystems/common-admin'
 import { useCurrentUser } from '@/composables/system/currentUser'

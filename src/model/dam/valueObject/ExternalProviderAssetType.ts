@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import type { ValueObjectOption } from '@/types/ValueObject'
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { damConfig } from '@/services/DamConfigService'
 
 export function useExternalProviderAssetType() {

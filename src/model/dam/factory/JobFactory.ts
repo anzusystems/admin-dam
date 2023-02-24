@@ -1,5 +1,5 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { dateTimeNow } from '@/utils/datetime'
+import { dateTimeNow } from '@anzusystems/common-admin'
 import type { Job } from '@/types/dam/Job'
 import { JobStatus } from '@anzusystems/common-admin'
 

@@ -3,7 +3,7 @@ import { useAddToLazyHelper, useAllHelper } from '@/composables/system/lazyFetch
 import type { VideoShow } from '@/types/dam/VideoShow'
 import { fetchVideoShowListByIds } from '@/services/api/dam/videoShowApi'
 
-import type { ValueObjectOption } from '@/types/ValueObject'
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const all = ref<Map<string, ValueObjectOption<string>>>(new Map())

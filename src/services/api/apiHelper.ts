@@ -1,14 +1,14 @@
 import type { AxiosResponse } from 'axios'
 import { ref, shallowRef } from 'vue'
-import { urlTemplateReplace } from '@/utils/string'
-import { isEmpty } from '@/utils/object'
+import { urlTemplateReplace } from '@anzusystems/common-admin'
+import { isEmptyObject } from '@anzusystems/common-admin'
 
 export type UrlParams = {
   [key: string]: number | string
 }
 
 export const replaceUrlParameters = (urlTemplate: string, urlParams: UrlParams, overrideUrlTemplate = '') => {
-  if (isEmpty(urlParams)) return urlTemplate
+  if (isEmptyObject(urlParams)) return urlTemplate
   return urlTemplateReplace(overrideUrlTemplate === '' ? urlTemplate : overrideUrlTemplate, urlParams)
 }
 

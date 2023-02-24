@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { deleteAsset, fetchAsset } from '@/services/api/dam/assetApi'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/dam/assetListStore'
 import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
@@ -22,7 +22,7 @@ import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorC
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { AActionDeleteButton } from '@anzusystems/common-admin'
 import { ATableCopyIdButton } from '@anzusystems/common-admin'
-import { prettyBytes } from '@/utils/file'
+import { prettyBytes } from '@anzusystems/common-admin'
 import AssetLink from '@/views/dam/asset/components/AssetLink.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9

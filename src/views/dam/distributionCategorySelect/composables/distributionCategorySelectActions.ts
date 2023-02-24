@@ -1,8 +1,8 @@
 import { useAlerts } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import type { Pagination } from '@/types/Pagination'
-import type { FilterBag } from '@/types/Filter'
+import type { Pagination } from '@anzusystems/common-admin'
+import type { FilterBag } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import {
   fetchDistributionCategorySelect,

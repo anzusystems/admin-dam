@@ -1,6 +1,6 @@
-import type { UserAndTimeTrackingFields } from '@/types/UserAndTimeTrackingFields'
+import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
 import type { DocId, IntegerIdNullable } from '@anzusystems/common-admin'
-import type { System } from '@/types/System'
+import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
 import type { PodcastMode } from '@/model/dam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/dam/valueObject/PodcastLastImportStatus'
 import type { Links } from '@/types/dam/File'
@@ -17,7 +17,7 @@ export interface Attributes {
   lastImportStatus: PodcastLastImportStatus
 }
 
-export interface Podcast extends UserAndTimeTrackingFields, System {
+export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   licence: IntegerIdNullable
   texts: Texts

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { isNull } from '@/utils/common'
+import { isNull } from '@anzusystems/common-admin'
 import { useLazyUser } from '@/views/dam/user/composables/lazyUser'
 
 const props = withDefaults(

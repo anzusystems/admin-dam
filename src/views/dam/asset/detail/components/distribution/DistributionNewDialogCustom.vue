@@ -5,7 +5,7 @@ import type { DistributionRequirementsConfig, DistributionServiceName } from '@/
 import { ENTITY } from '@/services/api/dam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import { simpleCloneObject } from '@/utils/object'
+import { simpleCloneObject } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/dam/Distribution'
