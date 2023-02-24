@@ -15,11 +15,12 @@ import { ENTITY } from '@/services/api/dam/distributionCategorySelectApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import { onMounted } from 'vue'
 import { useDistributionCategorySelectListActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
 import DistributionCategorySelectFilter from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()
@@ -33,9 +34,12 @@ const getList = () => {
 }
 
 const columns = useDatatableColumns([{ name: 'serviceSlug' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: ExtSystem) => {
-  router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: row.id } })
+  if (row.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW)) {
+    router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: row.id } })
+  }
 }
 
 onMounted(() => getList())

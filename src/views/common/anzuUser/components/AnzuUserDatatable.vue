@@ -16,13 +16,14 @@ import {
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import PermissionGroupLazyChip from '@/views/common/permissionGroup/components/PermissionGroupLazyChip.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -34,9 +35,10 @@ const pagination = usePagination()
 const filter = useAnzuUserFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchAnzuUserList, anzuUserList, loadingAnzuUserList } = useAnzuUserActions(props.client)
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: AnzuUser) => {
-  if (row.id) {
+  if (row.id && can(ACL.DAM_USER_VIEW)) {
     router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: row.id } })
   }
 }
@@ -99,7 +101,9 @@ const { translatePermission } = usePermissionConfigActions(props.client)
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
+              <Acl :permission="ACL.DAM_USER_VIEW">
+                <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
+              </Acl>
               <ATableCopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_USER_UPDATE">
                 <ATableEditButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" />

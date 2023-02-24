@@ -12,6 +12,7 @@ import { useVideoShowDetailTab, VideoShowDetailTab } from '@/views/dam/videoShow
 import VideoShowEpisodeDatatable from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
 import VideoShowEpisodeCreateButton from '@/views/dam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue'
 import { useVideoShowEpisodeListActions } from '@/views/dam/videoShowEpisode/composables/videoShowEpisodeActions'
+import { ACL } from '@/types/Permission'
 
 const { detailLoading, fetchData, resetStore } = useVideoShowDetailActions()
 const { listLoading } = useVideoShowEpisodeListActions()
@@ -61,6 +62,7 @@ const afterVideoShowEpisodeCreate = () => {
 <template>
   <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.detail')" />
   <ActionbarButtonsWrapper>
+    <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_CREATE">
     <VideoShowEpisodeCreateButton
       v-if="!detailLoading"
       data-cy="button-create"
@@ -69,21 +71,28 @@ const afterVideoShowEpisodeCreate = () => {
       disable-redirect
       @after-create="afterVideoShowEpisodeCreate"
     />
+    </Acl>
+    <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
     <AActionEditButton v-if="!detailLoading" :record-id="videoShowId" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
+    </Acl>
     <AActionCloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
   </ActionbarButtonsWrapper>
   <VTabs v-model="activeTab" class="mb-4">
     <VTab :value="VideoShowDetailTab.Detail" data-cy="videoShow-list">{{ t('coreDam.videoShow.tabs.detail') }}</VTab>
-    <VTab :value="VideoShowDetailTab.Episodes" data-cy="episode-list">{{ t('coreDam.videoShow.tabs.episodes') }}</VTab>
+    <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
+      <VTab :value="VideoShowDetailTab.Episodes" data-cy="episode-list">{{ t('coreDam.videoShow.tabs.episodes') }}</VTab>
+    </Acl>
   </VTabs>
   <div v-show="activeTab === VideoShowDetailTab.Detail">
     <ACard :loading="detailLoading">
       <VideoShowDetail />
     </ACard>
   </div>
-  <div v-show="activeTab === VideoShowDetailTab.Episodes">
-    <ACard :loading="listLoading">
-      <VideoShowEpisodeDatatable v-if="loadVideoShowEpisodeDatatable" :video-show-id="videoShowId" />
-    </ACard>
-  </div>
+  <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
+    <div v-show="activeTab === VideoShowDetailTab.Episodes">
+      <ACard :loading="listLoading">
+        <VideoShowEpisodeDatatable v-if="loadVideoShowEpisodeDatatable" :video-show-id="videoShowId" />
+      </ACard>
+    </div>
+  </Acl>
 </template>

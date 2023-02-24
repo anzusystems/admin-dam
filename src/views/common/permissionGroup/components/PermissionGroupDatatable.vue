@@ -15,11 +15,12 @@ import {
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
+import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -33,9 +34,10 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchPermissionGroupList, permissionGroupList, loadingPermissionGroupList } = usePermissionGroupActions(
   props.client
 )
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: PermissionGroup) => {
-  if (row.id) {
+  if (row.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
     router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: row.id } })
   }
 }
@@ -79,7 +81,9 @@ defineExpose({
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
+              <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
+                <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
+              </Acl>
               <ATableCopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
                 <ATableEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT" />
