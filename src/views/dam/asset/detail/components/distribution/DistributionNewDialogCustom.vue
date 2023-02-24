@@ -4,17 +4,19 @@ import type { AssetType } from '@/model/dam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/dam/DamConfig'
 import { ENTITY } from '@/services/api/dam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { simpleCloneObject } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import {
+  ASystemEntityScope,
+  simpleCloneObject,
+  useAlerts,
+  useErrorHandler,
+  usePagination
+} from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/dam/Distribution'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'
 import AssetDetailSlotSelect from '@/views/dam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { fetchAssetFileDistributionList } from '@/services/api/dam/distributionApi'
-import { usePagination } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/dam/filter/DistributionFilter'
 import DistributionListItem from '@/views/dam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/dam/AssetSlot'
@@ -28,7 +30,8 @@ import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,
 } from '@/services/DamConfigDistributionCustomFormService'
-import DistributionCustomMetadataForm from '@/views/dam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import DistributionCustomMetadataForm
+  from '@/views/dam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import { useAssetDetailDistributionDialog } from '@/views/dam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/dam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 

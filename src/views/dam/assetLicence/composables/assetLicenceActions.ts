@@ -1,9 +1,7 @@
 import { ref } from 'vue'
-import type { Pagination } from '@anzusystems/common-admin'
-import type { FilterBag } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
 import { useAssetLicenceOneStore } from '@/stores/dam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
 import {
@@ -16,7 +14,6 @@ import { loadLazyExtSystem } from '@/views/dam/extSystem/composables/lazyExtSyst
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
 
 const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
 

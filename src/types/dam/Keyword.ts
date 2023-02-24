@@ -1,6 +1,4 @@
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { DocId, IntegerId } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type { AnzuUserAndTimeTrackingAware, DocId, IntegerId, ResourceNameSystemAware } from '@anzusystems/common-admin'
 
 interface Flags {
   reviewed: boolean

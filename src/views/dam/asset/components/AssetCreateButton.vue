@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ARow } from '@anzusystems/common-admin'
-import { ASystemEntityScope, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
+import {
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope,
+  useAlerts,
+  useErrorHandler
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/authorApi'
 import { useAssetFactory } from '@/model/dam/factory/AssetFactory'
@@ -9,8 +14,6 @@ import { useAssetType } from '@/model/dam/valueObject/AssetType'
 import { useI18n } from 'vue-i18n'
 import type { AssetCreateDto, AssetDetailItemDto } from '@/types/dam/Asset'
 import { createAsset } from '@/services/api/dam/assetApi'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
 import { loadLazyUser } from '@/views/dam/user/composables/lazyUser'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'

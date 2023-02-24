@@ -3,10 +3,10 @@ import { useAuthorListFilter } from '@/model/dam/filter/AuthorFilter'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useI18n } from 'vue-i18n'
 import {
-  AFilterWrapper,
-  AFilterString,
   AFilterBooleanGroup,
+  AFilterString,
   AFilterValueObjectOptionsSelect,
+  AFilterWrapper,
 } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{

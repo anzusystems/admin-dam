@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import DistributionListItemJw from '@/views/dam/asset/detail/components/distribution/DistributionListItemJw.vue'
-import DistributionListItemYoutube from '@/views/dam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
+import DistributionListItemYoutube
+  from '@/views/dam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
 import DistributionListItemCustom from '@/views/dam/asset/detail/components/distribution/DistributionListItemCustom.vue'
 import DistributionListItemEmpty from '@/views/dam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'

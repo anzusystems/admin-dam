@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Filter } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { useI18n } from 'vue-i18n'
 

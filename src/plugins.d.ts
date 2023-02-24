@@ -1,5 +1,4 @@
 // eslint-disable-next-line
-import type { DefineLocaleMessage } from 'vue-i18n'
 import type { MessageSchema } from '@/plugins/i18n'
 import 'vue-router'
 import type { AclValue as CustomAclValue } from '@/types/Permission'

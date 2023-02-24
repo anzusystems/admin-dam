@@ -1,6 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { FilterBag } from '@anzusystems/common-admin'
-import type { Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {

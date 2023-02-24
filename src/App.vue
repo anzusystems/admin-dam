@@ -5,9 +5,9 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import { inject, onMounted } from 'vue'
 import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
 import {
-  type LanguageCode,
   AvailableLanguagesSymbol,
   DefaultLanguageSymbol,
+  type LanguageCode,
   modifyLanguageSettings,
 } from '@anzusystems/common-admin'
 import { i18n } from '@/plugins/i18n'

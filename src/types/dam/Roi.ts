@@ -1,6 +1,4 @@
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
-import type { DocId } from '@anzusystems/common-admin'
+import type { AnzuUserAndTimeTrackingAware, DocId, ResourceNameSystemAware } from '@anzusystems/common-admin'
 import type { Link } from '@/types/dam/File'
 
 export interface RegionOfInterest extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {

@@ -4,11 +4,13 @@ import AssetDetailSidebarROI from '@/views/dam/asset/detail/components/AssetDeta
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import type { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
 import type { AssetType } from '@/model/dam/valueObject/AssetType'
-import AssetDetailSidebarActionsTeleportTarget from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
+import AssetDetailSidebarActionsTeleportTarget
+  from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
 import AssetInfobox from '@/views/dam/asset/components/AssetInfobox.vue'
-import AssetDetailSidebarDistribution from '@/views/dam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
+import AssetDetailSidebarDistribution
+  from '@/views/dam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/dam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'

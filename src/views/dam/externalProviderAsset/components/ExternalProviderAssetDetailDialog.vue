@@ -7,12 +7,14 @@ import AssetImageRoiSelect from '@/views/dam/asset/detail/components/AssetImageR
 import { AssetType } from '@/model/dam/valueObject/AssetType'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/dam/asset/components/AssetImage.vue'
-import { useTheme } from '@anzusystems/common-admin'
+import { isNull, useTheme } from '@anzusystems/common-admin'
 import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
-import ExternalProviderAssetDetailDialogSidebar from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
-import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
-import { isNull } from '@anzusystems/common-admin'
+import ExternalProviderAssetDetailDialogSidebar
+  from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
+import {
+  useExternalProviderAssetListActions
+} from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void

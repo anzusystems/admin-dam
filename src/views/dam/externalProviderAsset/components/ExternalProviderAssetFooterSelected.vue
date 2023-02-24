@@ -8,7 +8,9 @@ import AssetFooterSelectedButtonClear from '@/views/dam/asset/components/footer/
 import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
-import { useExternalProviderAssetImport } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
+import {
+  useExternalProviderAssetImport
+} from '@/views/dam/externalProviderAsset/composables/externalProviderAssetImport'
 
 const { t } = useI18n()
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterWrapper, AFilterBooleanGroup, AFilterString } from '@anzusystems/common-admin'
+import { AFilterBooleanGroup, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 
 const emit = defineEmits<{

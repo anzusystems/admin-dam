@@ -2,11 +2,11 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/dam/Distribution'
 import type { DistributionServiceName } from '@/types/dam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
+import { isNull } from '@anzusystems/common-admin'
 import { DistributionStatus } from '@/model/dam/valueObject/DistributionStatus'
 import { fetchDistribution } from '@/services/api/dam/distributionApi'
 import type { DistributionAuth } from '@/types/dam/DistributionAuth'
 import { DistributionAuthStatus } from '@/types/dam/DistributionAuth'
-import { isNull } from '@anzusystems/common-admin'
 
 interface State {
   list: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>

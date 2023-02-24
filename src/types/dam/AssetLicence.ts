@@ -1,6 +1,9 @@
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  IntegerId,
+  IntegerIdNullable,
+  ResourceNameSystemAware
+} from '@anzusystems/common-admin'
 
 export interface AssetLicenceMinimal {
   id: IntegerId

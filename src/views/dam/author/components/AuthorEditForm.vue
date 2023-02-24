@@ -2,13 +2,16 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/authorApi'
 import { useI18n } from 'vue-i18n'
-import { ASystemEntityScope, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
+import {
+  AFormBooleanToggle,
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope
+} from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/dam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/dam/author/composables/authorValidation'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
-import { AFormBooleanToggle } from '@anzusystems/common-admin'
 
 const { author } = useAuthorEditActions()
 

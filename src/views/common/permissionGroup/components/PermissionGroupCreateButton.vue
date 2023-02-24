@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type PermissionGroup, useAlerts, usePermissionGroupFactory } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  type PermissionGroup,
+  useAlerts,
+  useErrorHandler,
+  usePermissionGroupFactory
+} from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
-import { isUndefined } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'

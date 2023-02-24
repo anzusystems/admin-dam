@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, stringToInt } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { stringToInt } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
-import { AActionDeleteButton } from '@anzusystems/common-admin'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
 
 const route = useRoute()

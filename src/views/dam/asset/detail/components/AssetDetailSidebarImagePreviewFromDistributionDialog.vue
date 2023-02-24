@@ -1,11 +1,19 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { ADatatablePagination } from '@anzusystems/common-admin'
-import { ACard, type DocId, isNull, useAlerts, usePagination } from '@anzusystems/common-admin'
-import { useVideoDistributionPreviewListActions } from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
+import {
+  ACard,
+  ADatatablePagination,
+  type DocId,
+  isNull,
+  useAlerts,
+  useErrorHandler,
+  usePagination
+} from '@anzusystems/common-admin'
+import {
+  useVideoDistributionPreviewListActions
+} from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/dam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/dam/videoApi'
-import { useErrorHandler } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(

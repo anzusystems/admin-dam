@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
+import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import { usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
 import { useVideoShowEpisodeListFilter } from '@/model/dam/filter/VideoShowEpisodeFilter'
 import { fetchVideoShowEpisodeListByAsset } from '@/services/api/dam/videoShowEpisodeApi'
-import { ADatatablePagination } from '@anzusystems/common-admin'
 import VideoShowEpisodeListItem from '@/views/dam/asset/detail/components/videoShow/VideoShowEpisodeListItem.vue'
 import { loadLazyVideoShow } from '@/views/dam/videoShow/composables/lazyVideoShow'
 import VideoShowEpisodeNewDialog from '@/views/dam/asset/detail/components/videoShow/VideoShowEpisodeNewDialog.vue'

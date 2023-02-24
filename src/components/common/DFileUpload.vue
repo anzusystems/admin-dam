@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
 import { computed, ref, watch } from 'vue'
-import { flattenArray, arrayFromArgs } from '@anzusystems/common-admin'
-import { isArray, isUndefined } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { arrayFromArgs, flattenArray, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 type InputRef = null | HTMLInputElement

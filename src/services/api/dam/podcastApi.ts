@@ -1,11 +1,9 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { apiCreateOne, apiDeleteOne, apiFetchByIds, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
-import type { Pagination } from '@anzusystems/common-admin'
+import type { DocId, FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
 import { apiFetchList } from '@/services/api/anzuApi/apiFetchList'
-import type { FilterBag } from '@anzusystems/common-admin'
 import type { Podcast } from '@/types/dam/Podcast'
-import type { DocId, IntegerId } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/podcast'
 export const ENTITY = 'podcast'

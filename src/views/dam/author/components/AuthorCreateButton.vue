@@ -2,13 +2,17 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
-import { isUndefined } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  useAlerts,
+  useErrorHandler
+} from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
-import { ASystemEntityScope, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthor, ENTITY } from '@/services/api/dam/authorApi'
 import { useAuthorFactory } from '@/model/dam/factory/AuthorFactory'
@@ -16,7 +20,6 @@ import type { Author } from '@/types/dam/Author'
 import { useAuthorValidation } from '@/views/dam/author/composables/authorValidation'
 import { useAuthorType } from '@/model/dam/valueObject/AuthorType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { ValidationScope } from '@anzusystems/common-admin'
 import { AuthorCreateValidationScopeSymbol } from '@/components/validationScopes'
 
 const props = withDefaults(

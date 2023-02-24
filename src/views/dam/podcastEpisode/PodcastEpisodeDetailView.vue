@@ -4,15 +4,13 @@ import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionEditButton } from '@anzusystems/common-admin'
-import { AActionDeleteButton } from '@anzusystems/common-admin'
+import { AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
 } from '@/views/dam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeDetail from '@/views/dam/podcastEpisode/components/PodcastEpisodeDetail.vue'
-import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()

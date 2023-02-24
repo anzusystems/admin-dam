@@ -3,16 +3,13 @@ import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
 import DistributionCategorySelect from '@/views/dam/distributionCategory/components/DistributionCategorySelect.vue'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { ARow, ASystemEntityScope, isNull, useErrorHandler } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/dam/distributionCategoryApi'
-import { ARow } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
 import { updateAssetCategory } from '@/services/api/dam/assetApi'
 import type { DistributionCategory } from '@/types/dam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { isNull } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

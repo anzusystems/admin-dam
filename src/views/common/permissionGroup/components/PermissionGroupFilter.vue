@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
-import { AFilterWrapper, AFilterInteger, AFilterString } from '@anzusystems/common-admin'
+import { AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void

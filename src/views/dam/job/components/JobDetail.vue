@@ -2,9 +2,15 @@
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useJobOneStore } from '@/stores/dam/jobStore'
-import { ABooleanValue, ACard, ADatetime, ARow, JobStatusChip } from '@anzusystems/common-admin'
-import { AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { ACopyText } from '@anzusystems/common-admin'
+import {
+  ABooleanValue,
+  ACard,
+  ACopyText,
+  ADatetime,
+  ARow,
+  AUserAndTimeTrackingFields,
+  JobStatusChip
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import type { JobResource } from '@/model/dam/valueObject/JobResource'
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
-import { AFilterInteger, AFilterBooleanGroup, AFilterWrapper, AFilterString } from '@anzusystems/common-admin'
+import { AFilterBooleanGroup, AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void

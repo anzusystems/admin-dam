@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { ACopyText, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
 import { useI18n } from 'vue-i18n'
 import PermissionGroupSelect from '@/views/common/permissionGroup/components/PermissionGroupSelect.vue'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
-import { ACopyText } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
 import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 

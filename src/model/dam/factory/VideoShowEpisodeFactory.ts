@@ -1,8 +1,8 @@
 import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
+import type { DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/dam/videoShowEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 
 export function useVideoShowEpisodeFactory() {
   const createDefault = (extSystemId: IntegerId, videoShowId: DocIdNullable = null): VideoShowEpisode => {

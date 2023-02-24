@@ -1,6 +1,9 @@
-import type { AnzuUserAndTimeTrackingAware } from '@anzusystems/common-admin'
-import type { DocId, IntegerIdNullable } from '@anzusystems/common-admin'
-import type { ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  DocId,
+  IntegerIdNullable,
+  ResourceNameSystemAware
+} from '@anzusystems/common-admin'
 
 interface Texts {
   title: string

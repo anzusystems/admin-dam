@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-import { isArray, isBoolean, isNull, isNumber, isString, isUndefined } from '@anzusystems/common-admin'
 import type { Filter, FilterBag, FilterVariant } from '@anzusystems/common-admin'
+import { isArray, isBoolean, isNull, isNumber, isString, isUndefined } from '@anzusystems/common-admin'
 
 /**
  * Docs: /doc/Admin-Cms-Doc/Filters.md

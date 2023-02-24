@@ -6,11 +6,8 @@ import {
   apiFetchOne,
   apiUpdateOne,
 } from '@/services/api/anzuApi'
-import type { FilterBag } from '@anzusystems/common-admin'
-import type { Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, IntegerId, Pagination, PermissionGroup } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
-import type { IntegerId } from '@anzusystems/common-admin'
-import type { PermissionGroup } from '@anzusystems/common-admin'
 
 const SYSTEM = 'common'
 export const ENTITY = 'permissionGroup'

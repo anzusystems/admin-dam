@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/dam/customMetadata/AssetCustomMetadataForm.vue'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { ACopyText, ASystemEntityScope, prettyBytes, prettyDateTime } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/dam/keyword/components/KeywordSelect.vue'
 import LazyUserChip from '@/views/dam/user/components/LazyUserChip.vue'
 import AuthorSelect from '@/views/dam/author/components/AuthorSelect.vue'
 import DColorBox from '@/components/common/DColorBox.vue'
 import { useAssetDetailActions } from '@/views/dam/asset/detail/composables/assetDetailActions'
-import { prettyDateTime } from '@anzusystems/common-admin'
-import { prettyBytes } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AssetType } from '@/model/dam/valueObject/AssetType'
@@ -15,7 +13,6 @@ import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/dam/
 import { useKeywordAssetTypeConfig } from '@/views/dam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/dam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import { ACopyText } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 

@@ -1,25 +1,30 @@
 <script lang="ts" setup>
-import { usePagination } from '@anzusystems/common-admin'
-import { ADatatablePagination } from '@anzusystems/common-admin'
 import type { DatatableColumnConfig } from '@anzusystems/common-admin'
-import { useDatatableColumns } from '@anzusystems/common-admin'
-import { ADatatable } from '@anzusystems/common-admin'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  ADatatable,
+  ADatatablePagination,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+  useDatatableColumns,
+  useFilterHelpers,
+  usePagination
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/distributionCategoryApi'
-import { ATableDetailButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { ATableCopyIdButton } from '@anzusystems/common-admin'
-import { ATableEditButton } from '@anzusystems/common-admin'
 import { useRouter } from 'vue-router'
-import { useFilterHelpers } from '@anzusystems/common-admin'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { ACL } from '@/types/Permission'
 import { useDistributionCategoryListFilter } from '@/model/dam/filter/DistributionCategoryFilter'
-import { useDistributionCategoryListActions } from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
+import {
+  useDistributionCategoryListActions
+} from '@/views/dam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/dam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
-import DistributionCategorySelectedOptionChip from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import DistributionCategorySelectedOptionChip
+  from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 
 const props = withDefaults(
   defineProps<{

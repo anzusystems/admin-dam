@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
-import { AThemeSelect, ALanguageSelect } from '@anzusystems/common-admin'
+import { ACard, ALanguageSelect, AThemeSelect } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useI18n } from 'vue-i18n'
 

@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { ARow } from '@anzusystems/common-admin'
-import { ACopyText } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/dam/userStore'
-import { AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import LazyExtSystemChip from '@/views/dam/extSystem/components/LazyExtSystemChip.vue'
 import ExternalProviderAssetChip from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/dam/distribution/components/DistributionServiceChip.vue'

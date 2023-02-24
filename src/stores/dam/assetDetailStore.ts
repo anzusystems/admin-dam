@@ -1,10 +1,10 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetDetailItemDto } from '@/types/dam/Asset'
 import { AssetStatus } from '@/model/dam/valueObject/AssetStatus'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { getObjectValues } from '@anzusystems/common-admin'
 import { loadLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import { loadLazyAuthor } from '@/views/dam/author/composables/lazyAuthor'
-import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 
 interface State {
   asset: AssetDetailItemDto | null

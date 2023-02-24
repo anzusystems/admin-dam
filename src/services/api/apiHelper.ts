@@ -1,7 +1,6 @@
 import type { AxiosResponse } from 'axios'
 import { ref, shallowRef } from 'vue'
-import { urlTemplateReplace } from '@anzusystems/common-admin'
-import { isEmptyObject } from '@anzusystems/common-admin'
+import { isEmptyObject, urlTemplateReplace } from '@anzusystems/common-admin'
 
 export type UrlParams = {
   [key: string]: number | string

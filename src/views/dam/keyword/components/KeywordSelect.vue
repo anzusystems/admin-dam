@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, getObjectValues, isArray, isEmptyObject } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/dam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
 import type { Suggestions } from '@/types/dam/Asset'
-import { getObjectValues, isEmptyObject } from '@anzusystems/common-admin'
 import { loadLazyKeyword, useLazyKeyword } from '@/views/dam/keyword/composables/lazyKeyword'
 import KeywordCreateButton from '@/views/dam/keyword/components/KeywordCreateButton.vue'
 import type { Keyword } from '@/types/dam/Keyword'
-import { isArray } from '@anzusystems/common-admin'
 import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
-import type { ValidationScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

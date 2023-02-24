@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
-import { useExternalProviderAssetListActions } from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
+import {
+  useExternalProviderAssetListActions
+} from '@/views/dam/externalProviderAsset/composables/externalProviderAssetListActions'
 
 const { t } = useI18n()
 

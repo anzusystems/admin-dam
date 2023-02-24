@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
-import { ARow } from '@anzusystems/common-admin'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  useAlerts,
+  useErrorHandler
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createVideoShow, ENTITY } from '@/services/api/dam/videoShowApi'
 import { useVideoShowFactory } from '@/model/dam/factory/VideoShowFactory'
 import type { VideoShow } from '@/types/dam/VideoShow'
 import { useVideoShowValidation } from '@/views/dam/videoShow/composables/videoShowValidation'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { isUndefined } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 

@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { stringToInt } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import { useAssetLicenceDetailActions } from '@/views/dam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceDetail from '@/views/dam/assetLicence/components/AssetLicenceDetail.vue'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { ACard } from '@anzusystems/common-admin'
 
 const { detailLoading, fetchData, resetStore } = useAssetLicenceDetailActions()
 

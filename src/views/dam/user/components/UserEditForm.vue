@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/userApi'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useUserEditActions } from '@/views/dam/user/composables/userActions'
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/dam/user/composables/userValidation'
-import { ARow } from '@anzusystems/common-admin'
-import { AFormTextField } from '@anzusystems/common-admin'
 import ExtSystemSelect from '@/views/dam/extSystem/components/ExtSystemSelect.vue'
 import DistributionServiceSelect from '@/views/dam/distribution/components/DistributionServiceSelect.vue'
 import ExternalProviderAssetSelect from '@/views/dam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
