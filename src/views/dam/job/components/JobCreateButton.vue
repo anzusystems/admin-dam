@@ -9,11 +9,11 @@ import { useJobFactory } from '@/model/dam/factory/JobFactory'
 import type { Job } from '@/types/dam/Job'
 import { useJobValidation } from '@/views/dam/job/composables/jobValidations'
 import {
-  AValueObjectOptionsSelect,
-  ABooleanToggle,
+  AFormValueObjectOptionsSelect,
+  AFormBooleanToggle,
   ARow,
   ASystemEntityScope,
-  ATextField,
+  AFormTextField,
   useAlerts,
   useErrorHandler,
   useJobApi,
@@ -116,7 +116,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" subject="job">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <AValueObjectOptionsSelect
+            <AFormValueObjectOptionsSelect
               v-model="job._resourceName"
               :label="t('job.model._resourceName')"
               :items="jobResourceOptions"
@@ -133,7 +133,11 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
             />
           </ARow>
           <ARow v-if="'jobUserDataDelete' === job._resourceName">
-            <ABooleanToggle v-model="job.anonymizeUser" :label="t('job.model.anonymizeUser')" data-cy="anonymizeUser" />
+            <AFormBooleanToggle
+              v-model="job.anonymizeUser"
+              :label="t('job.model.anonymizeUser')"
+              data-cy="anonymizeUser"
+            />
           </ARow>
           <ARow v-if="hasPodcastFields">
             <AFormTextField
@@ -144,7 +148,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
             />
           </ARow>
           <ARow v-if="hasPodcastFields">
-            <ABooleanToggle v-model="job.fullSync" :label="t('coreDam.job.model.fullSync')" data-cy="fullSync" />
+            <AFormBooleanToggle v-model="job.fullSync" :label="t('coreDam.job.model.fullSync')" data-cy="fullSync" />
           </ARow>
         </VContainer>
       </ASystemEntityScope>
