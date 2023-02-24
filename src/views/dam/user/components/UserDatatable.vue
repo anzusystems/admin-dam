@@ -2,7 +2,7 @@
 import { useUserListActions } from '@/views/dam/user/composables/userActions'
 import { onMounted } from 'vue'
 import { ADatatablePagination } from '@anzusystems/common-admin'
-import { useTableColumns } from '@/composables/system/tableColumns'
+import { useDatatableColumns } from '@anzusystems/common-admin'
 import { ADatatable } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -30,7 +30,7 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   { name: 'email' },
   { name: 'firstName' },
   { name: 'lastName' },

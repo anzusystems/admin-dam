@@ -1,4 +1,4 @@
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { AnzuApiResponseCodeError } from '@/model/common/error/AnzuApiResponseCodeError'
 import { AnzuApiValidationError } from '@/model/common/error/AnzuApiValidationError'
 import { replaceUrlParameters, type UrlParams } from '@/services/api/apiHelper'

@@ -5,7 +5,7 @@ import { ACard, type DocId, isNull, useAlerts, usePagination } from '@anzusystem
 import { useVideoDistributionPreviewListActions } from '@/views/dam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/dam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/dam/videoApi'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(

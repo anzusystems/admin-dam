@@ -3,7 +3,7 @@ import { ACopyText } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { usePagination } from '@anzusystems/common-admin'
-import { useTableColumns } from '@/composables/system/tableColumns'
+import { useDatatableColumns } from '@anzusystems/common-admin'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'
 import { ENTITY } from '@/services/api/common/logApi'
@@ -70,7 +70,7 @@ onMounted(() => {
   getList()
 })
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   { name: 'datetime', type: 'datetime' },
   { name: 'levelName' },
   { name: 'message' },

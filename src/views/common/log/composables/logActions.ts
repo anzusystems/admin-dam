@@ -1,4 +1,4 @@
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { fetchLog, fetchLogList } from '@/services/api/common/logApi'
 import { useLogOneStore } from '@/stores/common/log'
 import type { Log } from '@/types/common/Log'

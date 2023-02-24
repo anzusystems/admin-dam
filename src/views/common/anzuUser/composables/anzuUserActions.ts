@@ -1,4 +1,4 @@
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import type { FilterBag } from '@/types/Filter'
 import type { Pagination } from '@/types/Pagination'
 import { ref } from 'vue'

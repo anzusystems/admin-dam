@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { usePagination } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
-import { useTableColumns } from '@/composables/system/tableColumns'
+import { useDatatableColumns } from '@anzusystems/common-admin'
 import { ADatatable } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -26,7 +26,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = useExtSystemListActions()
 
-const columns = useTableColumns([{ name: 'name' }, { name: 'slug' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
+const columns = useDatatableColumns([{ name: 'name' }, { name: 'slug' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
 const onRowClick = (row: ExtSystem) => {
   router.push({ name: ROUTE.DAM.EXT_SYSTEM.DETAIL, params: { id: row.id } })

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type AnzuUser, useAlerts, useAnzuUserFactory, ASystemEntityScope } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { AFormTextField } from '@anzusystems/common-admin'
 import { ARow } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useFriendlyDateTime } from '@/composables/system/formatDatetime'
 import { useLogOneStore } from '@/stores/common/log'
 import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
 import { storeToRefs } from 'pinia'
@@ -9,8 +8,6 @@ import { ACard } from '@anzusystems/common-admin'
 const { log } = storeToRefs(useLogOneStore())
 
 const { t } = useI18n()
-
-const formatDatetime = useFriendlyDateTime()
 
 const formattedJSON = (data: string) => {
   try {
@@ -58,7 +55,7 @@ const formattedJSON = (data: string) => {
           </VCol>
           <VCol cols="4">
             <h4 class="text-subtitle-2">{{ t('common.log.model.datetime') }}</h4>
-            {{ formatDatetime(log.datetime) }}
+            {{ friendlyDateTime(log.datetime) }}
           </VCol>
         </VRow>
         <VRow>

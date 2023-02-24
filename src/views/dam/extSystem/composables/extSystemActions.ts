@@ -3,7 +3,7 @@ import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
 import type { ExtSystem } from '@/types/dam/ExtSystem'
 import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import {
   fetchExtSystem,
   fetchExtSystemList,

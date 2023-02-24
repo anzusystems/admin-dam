@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { usePagination } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
-import { useTableColumns } from '@/composables/system/tableColumns'
+import { useDatatableColumns } from '@anzusystems/common-admin'
 import { ADatatable } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -34,7 +34,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePodcastEpisodeListActions()
 
-const columns = useTableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
+const columns = useDatatableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
 
 const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: row.id } })

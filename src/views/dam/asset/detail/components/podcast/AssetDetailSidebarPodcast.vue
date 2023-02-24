@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/dam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import { usePagination, usePaginationAutoHide } from '@/composables/system/pagination'
+import { usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
 import { usePodcastEpisodeListFilter } from '@/model/dam/filter/PodcastEpisodeFilter'
 import { fetchPodcastEpisodeListByAsset } from '@/services/api/dam/podcastEpisodeApi'

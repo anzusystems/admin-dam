@@ -10,7 +10,7 @@ import {
 } from '@/services/api/dam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/dam/factory/DistributionJw'

@@ -4,7 +4,7 @@ import type { UploadQueueItem } from '@/types/dam/UploadQueue'
 import { QueueItemStatus } from '@/types/dam/UploadQueue'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/dam/fileApi'
 import axios, { type CancelTokenSource } from 'axios'
-import { useErrorHandler, type ValidationResponseData } from '@/composables/system/error'
+import { useErrorHandler, type ValidationResponseData } from '@anzusystems/common-admin'
 import { i18n } from '@/plugins/i18n'
 import { NEW_LINE_MARK } from '@anzusystems/common-admin'
 

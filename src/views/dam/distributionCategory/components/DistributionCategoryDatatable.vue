@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { usePagination } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
-import type { ColumnConfig } from '@/composables/system/tableColumns'
-import { useTableColumns } from '@/composables/system/tableColumns'
+import type { DatatableColumnConfig } from '@anzusystems/common-admin'
+import { useDatatableColumns } from '@anzusystems/common-admin'
 import { ADatatable } from '@anzusystems/common-admin'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -41,10 +41,12 @@ const getList = () => {
 }
 
 const distributionServicesTableColumns = computed(() =>
-  props.distributionServiceSlugs.map((serviceSlug): ColumnConfig => ({ name: serviceSlug, label: serviceSlug }))
+  props.distributionServiceSlugs.map(
+    (serviceSlug): DatatableColumnConfig => ({ name: serviceSlug, label: serviceSlug })
+  )
 )
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   ...[{ name: 'name' }, { name: 'type' }],
   ...distributionServicesTableColumns.value,
   ...[{ name: 'createdAt' }, { name: 'modifiedAt' }],

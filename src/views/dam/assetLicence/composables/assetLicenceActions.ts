@@ -3,7 +3,7 @@ import type { Pagination } from '@/types/Pagination'
 import type { FilterBag } from '@/types/Filter'
 import type { AssetLicence } from '@/types/dam/AssetLicence'
 import { useAlerts } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import { useAssetLicenceOneStore } from '@/stores/dam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
 import {

@@ -11,7 +11,7 @@ import { useVideoShowEpisodeValidation } from '@/views/dam/videoShowEpisode/comp
 import { ASystemEntityScope, AFormTextarea } from '@anzusystems/common-admin'
 import { ARow } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import VideoShowSelect from '@/views/dam/videoShow/components/VideoShowSelect.vue'
 import { isNull } from '@/utils/common'
 

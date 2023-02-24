@@ -14,7 +14,7 @@ import {
   JobStatusChip,
   useFilterHelpers,
   usePagination,
-  useTableColumns,
+  useDatatableColumns,
 } from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/dam/job/components/JobResourceChip.vue'
 import { ATableDetailButton } from '@anzusystems/common-admin'
@@ -30,7 +30,7 @@ const { fetchList, listItems } = useJobListActions()
 
 const { t } = useI18n()
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   { name: 'id', label: t('job.model.id') },
   { name: '_resourceName', label: t('job.model._resourceName') },
   { name: 'status', label: t('job.model.status') },

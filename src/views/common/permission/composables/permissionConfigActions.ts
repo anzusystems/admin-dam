@@ -1,4 +1,4 @@
-import { useErrorHandler } from '@/composables/system/error'
+import { useErrorHandler } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { storeToRefs } from 'pinia'
 import { usePermissionConfigApi } from '@/services/api/common/permissionConfigApi'
