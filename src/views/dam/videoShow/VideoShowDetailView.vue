@@ -63,24 +63,26 @@ const afterVideoShowEpisodeCreate = () => {
   <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_CREATE">
-    <VideoShowEpisodeCreateButton
-      v-if="!detailLoading"
-      data-cy="button-create"
-      button-t="coreDam.videoShowEpisode.button.create"
-      :video-show-id="videoShowId"
-      disable-redirect
-      @after-create="afterVideoShowEpisodeCreate"
-    />
+      <VideoShowEpisodeCreateButton
+        v-if="!detailLoading"
+        data-cy="button-create"
+        button-t="coreDam.videoShowEpisode.button.create"
+        :video-show-id="videoShowId"
+        disable-redirect
+        @after-create="afterVideoShowEpisodeCreate"
+      />
     </Acl>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
-    <AActionEditButton v-if="!detailLoading" :record-id="videoShowId" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
+      <AActionEditButton v-if="!detailLoading" :record-id="videoShowId" :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT" />
     </Acl>
     <AActionCloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
   </ActionbarButtonsWrapper>
   <VTabs v-model="activeTab" class="mb-4">
     <VTab :value="VideoShowDetailTab.Detail" data-cy="videoShow-list">{{ t('coreDam.videoShow.tabs.detail') }}</VTab>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
-      <VTab :value="VideoShowDetailTab.Episodes" data-cy="episode-list">{{ t('coreDam.videoShow.tabs.episodes') }}</VTab>
+      <VTab :value="VideoShowDetailTab.Episodes" data-cy="episode-list">{{
+        t('coreDam.videoShow.tabs.episodes')
+      }}</VTab>
     </Acl>
   </VTabs>
   <div v-show="activeTab === VideoShowDetailTab.Detail">

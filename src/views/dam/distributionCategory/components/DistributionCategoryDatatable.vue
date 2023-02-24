@@ -7,6 +7,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
@@ -22,7 +23,6 @@ import { useDistributionCategoryListActions } from '@/views/dam/distributionCate
 import DistributionCategoryFilter from '@/views/dam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
 import DistributionCategorySelectedOptionChip from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
-import { useAcl } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

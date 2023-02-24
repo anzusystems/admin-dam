@@ -8,6 +8,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
@@ -20,7 +21,6 @@ import type { AxiosInstance } from 'axios'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
-import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance

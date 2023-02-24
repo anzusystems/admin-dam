@@ -7,6 +7,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
@@ -20,7 +21,6 @@ import type { Author } from '@/types/dam/Author'
 import { useKeywordListActions } from '@/views/dam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/dam/filter/KeywordFilter'
 import KeywordFilter from '@/views/dam/keyword/components/KeywordFilter.vue'
-import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()

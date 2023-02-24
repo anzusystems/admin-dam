@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
   <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
-    <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+      <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
     </Acl>
     <VBtn
       class="ml-2"

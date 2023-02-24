@@ -6,6 +6,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
@@ -20,7 +21,6 @@ import { onMounted } from 'vue'
 import { useDistributionCategorySelectListActions } from '@/views/dam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategorySelectListFilter } from '@/model/dam/filter/DistributionCategorySelectFilter'
 import DistributionCategorySelectFilter from '@/views/dam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
-import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()

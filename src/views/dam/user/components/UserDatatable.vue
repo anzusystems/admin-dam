@@ -8,6 +8,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
@@ -20,7 +21,6 @@ import { useRouter } from 'vue-router'
 import UserFilter from '@/views/dam/user/components/UserFilter.vue'
 import { ACL, type AclValue } from '@/types/Permission'
 import { useUserListFilter } from '@/model/dam/filter/UserFilter'
-import { useAcl } from '@anzusystems/common-admin'
 
 const router = useRouter()
 const pagination = usePagination()

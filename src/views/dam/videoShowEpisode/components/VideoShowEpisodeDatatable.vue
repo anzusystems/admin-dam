@@ -8,10 +8,10 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  useAcl,
   useDatatableColumns,
   useFilterHelpers,
   usePagination,
-  useAcl,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/dam/videoShowEpisodeApi'
@@ -66,11 +66,11 @@ onMounted(() => {
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #actions="{ data }">
         <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_VIEW">
-        <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL" />
+          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL" />
         </Acl>
         <ATableCopyIdButton :id="data.id" />
         <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE">
-        <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
+          <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
         </Acl>
       </template>
     </ADatatable>
