@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { ACard, toInt } from '@anzusystems/common-admin'
+import { ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
@@ -13,7 +13,7 @@ import { AActionCloseButton } from '@anzusystems/common-admin'
 const { detailLoading, fetchData, resetStore } = useJobDetailActions()
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const getDetail = () => {
   fetchData(id)
@@ -31,7 +31,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('job.meta.detail')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('job.meta.detail')" />
   <ActionbarButtonsWrapper>
     <AActionCloseButton :route-name="ROUTE.DAM.JOB.LIST" />
   </ActionbarButtonsWrapper>

@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.edit')" icon="mdi-podcast" />
+  <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.edit')" />
   <ActionbarButtonsWrapper>
     <AActionSaveButton
       v-if="!detailLoading"

@@ -8,13 +8,13 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { toInt } from '@anzusystems/common-admin'
+import { stringToInt } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserDetail from '@/views/common/anzuUser/components/AnzuUserDetail.vue'
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const { fetchAnzuUser, resetAnzuUserStore, loadingAnzuUser } = useAnzuUserActions(damClient)
 
@@ -34,7 +34,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.detail')" icon="mdi-account-edit-outline" />
+  <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl v-if="!loadingAnzuUser" :permission="ACL.DAM_USER_UPDATE">
       <AActionEditButton :record-id="id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" :loading="loadingAnzuUser" />

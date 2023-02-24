@@ -38,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.detail')" icon="mdi-file-key-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.detail')" />
   <ActionbarButtonsWrapper>
     <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
     <VBtn

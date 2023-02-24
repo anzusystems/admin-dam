@@ -60,7 +60,7 @@ watch(
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.log.meta.list')" icon="mdi-form-down" />
+  <ActionbarTitleWrapper :heading="t('common.log.meta.list')" />
   <ActionbarTitleWrapper />
   <ACard :loading="listLoading">
     <LogFilter @submit-filter="submitFilter" @reset-filter="resetFilter" />

@@ -21,7 +21,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.list')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.assetLicence.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_CREATE">
       <AssetLicenceCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />

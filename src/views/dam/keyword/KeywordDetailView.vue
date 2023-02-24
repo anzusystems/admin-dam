@@ -33,7 +33,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.detail')" icon="mdi-file-key-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.KEYWORD.EDIT" />

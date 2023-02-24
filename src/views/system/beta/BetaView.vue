@@ -7,7 +7,7 @@ const { maxUploadItems, maxAssetListItems, maxSelectedItems } = useBetaTestFeatu
 </script>
 
 <template>
-  <ActionbarTitleWrapper heading="Beta" icon="mdi-beta" />
+  <ActionbarTitleWrapper heading="Beta" />
   <VRow>
     <VCol cols="12">
       <ACard>

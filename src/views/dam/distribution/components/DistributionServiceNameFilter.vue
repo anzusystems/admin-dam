@@ -3,6 +3,7 @@ import type { Filter } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
 import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -31,8 +32,14 @@ const items = computed(() => {
     }
   })
 })
+
+const { t } = useI18n()
+
+const label = computed(() => {
+  return props.modelValue.titleT ? t(props.modelValue.titleT) : undefined
+})
 </script>
 
 <template>
-  <AFilterValueObjectOptionsSelect v-model="value" :label="modelValue.title" :items="items" />
+  <AFilterValueObjectOptionsSelect v-model="value" :label="label" :items="items" />
 </template>

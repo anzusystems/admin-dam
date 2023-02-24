@@ -32,7 +32,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.detail')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT" />

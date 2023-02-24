@@ -33,7 +33,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.detail')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
       <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT" />

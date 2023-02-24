@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { makeFilterHelper } from '@/composables/filter/filterHelpers'
+import { makeFilterHelper } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/dam/authorApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 

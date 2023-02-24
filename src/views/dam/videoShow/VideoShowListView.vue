@@ -19,7 +19,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.list')" icon="mdi-videoShow" />
+  <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.list')" />
   <ActionbarButtonsWrapper>
     <VideoShowCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
   </ActionbarButtonsWrapper>

@@ -9,14 +9,14 @@ import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { damClient } from '@/services/api/clients/damClient'
-import { toInt } from '@anzusystems/common-admin'
+import { stringToInt } from '@anzusystems/common-admin'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserEditForm from '@/views/common/anzuUser/components/AnzuUserEditForm.vue'
 
 const { t } = useI18n()
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const { resetAnzuUserStore, fetchAnzuUser, updateAnzuUser, loadingAnzuUser } = useAnzuUserActions(damClient)
 
@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.edit')" icon="mdi-account-edit-outline" />
+  <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.edit')" />
   <ActionbarButtonsWrapper>
     <AActionSaveButton :loading="loadingAnzuUser" @save-record="updateAnzuUser" />
     <AActionSaveAndCloseButton :loading="loadingAnzuUser" @save-record-and-close="updateAnzuUser(true)" />

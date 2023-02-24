@@ -12,7 +12,7 @@ const { listLoading } = useDistributionCategorySelectListActions()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategorySelect.meta.list')" icon="mdi-form-down" />
+  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategorySelect.meta.list')" />
   <ActionbarButtonsWrapper />
   <ACard :loading="listLoading">
     <DistributionCategorySelectDatatable />

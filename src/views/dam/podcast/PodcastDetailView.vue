@@ -61,7 +61,7 @@ const afterPodcastEpisodeCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.detail')" icon="mdi-podcast" />
+  <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.detail')" />
   <ActionbarButtonsWrapper>
     <PodcastEpisodeCreateButton
       v-if="!detailLoading"

@@ -18,7 +18,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.list')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_CREATE">
       <PermissionGroupCreateButton

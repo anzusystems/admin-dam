@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { LogType } from '@/model/common/valueObject/LogType'
 import { dateTimeEndOfDay, dateTimeStartOfDay } from '@anzusystems/common-admin'
-import { makeFilterHelper, type MakeFilterOptions } from '@/composables/filter/filterHelpers'
+import { makeFilterHelper, type MakeFilterOptions } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/logApi'
 import type { Filter } from '@anzusystems/common-admin'
 import type { LogSystem } from '@/model/common/valueObject/LogSystem'

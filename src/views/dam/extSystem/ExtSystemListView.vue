@@ -12,7 +12,7 @@ const { listLoading } = useExtSystemListActions()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.list')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.extSystem.meta.list')" />
   <ActionbarButtonsWrapper />
   <ACard :loading="listLoading">
     <ExtSystemDatatable />

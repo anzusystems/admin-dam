@@ -19,7 +19,7 @@ import { isNull, isString } from '@anzusystems/common-admin'
 import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProviderAssetDetailStore'
 import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
+import { useFilterHelpers } from '@anzusystems/common-admin'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 
 const { handleError } = useErrorHandler()

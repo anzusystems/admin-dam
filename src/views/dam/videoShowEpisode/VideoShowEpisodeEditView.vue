@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.edit')" icon="mdi-file-key-outline" />
+  <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.edit')" />
   <ActionbarButtonsWrapper>
     <AActionSaveButton
       v-if="!detailLoading"

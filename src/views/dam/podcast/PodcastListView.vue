@@ -19,7 +19,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.list')" icon="mdi-podcast" />
+  <ActionbarTitleWrapper :heading="t('coreDam.podcast.meta.list')" />
   <ActionbarButtonsWrapper>
     <PodcastCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
   </ActionbarButtonsWrapper>

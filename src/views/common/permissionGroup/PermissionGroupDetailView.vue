@@ -8,14 +8,14 @@ import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapp
 import { AActionEditButton } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { toInt } from '@anzusystems/common-admin'
+import { stringToInt } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
 import { AActionDeleteButton } from '@anzusystems/common-admin'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
 
 const route = useRoute()
-const id = toInt(route.params.id)
+const id = stringToInt(route.params.id)
 
 const {
   deletePermissionGroup,
@@ -41,7 +41,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.detail')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.detail')" />
   <ActionbarButtonsWrapper>
     <Acl v-if="!loadingPermissionGroup" :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
       <AActionEditButton
