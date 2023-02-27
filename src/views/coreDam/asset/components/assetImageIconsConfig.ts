@@ -9,31 +9,31 @@ import svgrss from '@/assets/meta-icons/rss.svg'
 
 export const DIMENSIONS_CONFIG = [
   {
-    title: 'FullHD',
+    titleT: 'coreDam.asset.metaIcons.fullHd',
     width: 1920,
     height: 1080,
     svgSrc: svgfhd,
   },
   {
-    title: '2K',
+    titleT: 'coreDam.asset.metaIcons.2k',
     width: 2048,
     height: 1080,
     svgSrc: svg2k,
   },
   {
-    title: 'QHD',
+    titleT: 'coreDam.asset.metaIcons.qhd',
     width: 2560,
     height: 1440,
     svgSrc: svgqhd,
   },
   {
-    title: '4K',
+    titleT: 'coreDam.asset.metaIcons.4k',
     width: 3840,
     height: 2160,
     svgSrc: svg4k,
   },
   {
-    title: '8K',
+    titleT: 'coreDam.asset.metaIcons.8k',
     width: 7680,
     height: 4320,
     svgSrc: svg8k,

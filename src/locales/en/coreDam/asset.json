@@ -41,7 +41,17 @@
       "createdAtUntil": "CreatedAt until"
     },
     "meta": {
-      "create": "Create empty asset"
+      "createEmpty": "Create empty asset"
+    },
+    "metaIcons": {
+      "low": "Low quality",
+      "slots": "Slots",
+      "rss": "RSS",
+      "fullHd": "FullHD",
+      "2k": "2K",
+      "qhd": "QHD",
+      "4k": "4K",
+      "8k": "8K"
     },
     "filterTitle": "Filter",
     "noItemsFound": "No matching assets found",

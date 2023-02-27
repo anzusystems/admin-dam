@@ -79,7 +79,7 @@ const { assetTypeOptions } = useAssetType()
 </script>
 
 <template>
-  <VListItem title="Create empty asset" prepend-icon="mdi-plus" @click.stop="onClick" />
+  <VListItem :title="t('coreDam.asset.meta.createEmpty')" prepend-icon="mdi-plus" @click.stop="onClick" />
   <VDialog v-model="dialog" persistent>
     <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <VCardTitle class="d-flex pr-2">
