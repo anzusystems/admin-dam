@@ -30,7 +30,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('job.meta.detail')" />
+  <ActionbarTitleWrapper :heading="t('common.job.meta.detail')" />
   <ActionbarButtonsWrapper>
     <AActionCloseButton :route-name="ROUTE.DAM.JOB.LIST" />
   </ActionbarButtonsWrapper>

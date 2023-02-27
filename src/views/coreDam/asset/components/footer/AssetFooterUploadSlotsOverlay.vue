@@ -88,7 +88,7 @@ const classComputed = computed(() => {
             @click.stop="setMinimalUpload"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.hide') }}</VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
@@ -101,7 +101,7 @@ const classComputed = computed(() => {
             @click.stop="setCompactUpload"
           >
             <VIcon icon="mdi-chevron-up" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.modal.show') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.show') }}</VTooltip>
           </VBtn>
           <AssetFooterUploadButtonStop :is-uploading="isUploading" @confirm="onStopConfirm" />
         </div>

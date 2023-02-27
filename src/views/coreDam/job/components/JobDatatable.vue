@@ -33,13 +33,13 @@ const { fetchList, listItems } = useJobListActions()
 const { t } = useI18n()
 
 const columns = useDatatableColumns([
-  { name: 'id', label: t('job.model.id') },
-  { name: '_resourceName', label: t('job.model._resourceName') },
-  { name: 'status', label: t('job.model.status') },
-  { name: 'startedAt', label: t('job.model.startedAt'), type: 'datetime' },
-  { name: 'finishedAt', label: t('job.model.finishedAt'), type: 'datetime' },
-  { name: 'result', label: t('job.model.result') },
-  { name: 'createdAt', label: t('job.model.createdAt') },
+  { name: 'id', label: t('common.job.model.id') },
+  { name: '_resourceName', label: t('common.job.model._resourceName') },
+  { name: 'status', label: t('common.job.model.status') },
+  { name: 'startedAt', label: t('common.job.model.startedAt'), type: 'datetime' },
+  { name: 'finishedAt', label: t('common.job.model.finishedAt'), type: 'datetime' },
+  { name: 'result', label: t('common.job.model.result') },
+  { name: 'createdAt', label: t('common.model.tracking.created') },
 ])
 
 const { can } = useAcl<AclValue>()
