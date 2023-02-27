@@ -85,6 +85,16 @@
     "closePage": {
       "title": "This page/tab can be safely closed."
     },
+    "notFoundPage": {
+      "title": "Ops, 404",
+      "subTitle": "This site doesn't exist",
+      "return": "Return me to homepage"
+    },
+    "unauthorizedPage": {
+      "title": "Ops, 401",
+      "subTitle": "You dont have access to this page",
+      "return": "Return me to homepage"
+    },
     "error": {
       "notificationsNotConnected": "Notification service is not working, some elements of admin will not work correctly."
     }

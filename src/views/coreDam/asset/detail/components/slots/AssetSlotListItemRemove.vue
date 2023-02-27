@@ -69,7 +69,7 @@ const onRemove = () => {
       <VCardText>
         <div v-if="showUnset" class="mb-2">{{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}</div>
         <div v-else class="mb-2">{{ t('coreDam.asset.slots.remove.descriptionOnlyRemove') }}</div>
-        <div class="mb-1">
+        <div v-if="item" class="mb-1">
           <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
           {{ item.slotName }}
         </div>
