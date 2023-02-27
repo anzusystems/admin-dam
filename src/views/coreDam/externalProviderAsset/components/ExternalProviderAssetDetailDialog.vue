@@ -12,11 +12,14 @@ import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalPr
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 import ExternalProviderAssetDetailDialogSidebar from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void
   (e: 'prevItem'): void
 }>()
+
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 
@@ -96,11 +99,13 @@ const totalCountText = computed(() => {
       <div class="dam-image-detail__wrapper d-flex flex-column">
         <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div>
-            <VBtn icon variant="text" class="mx-1" :width="36" :height="36" @click.stop="prevItem">
+            <VBtn variant="text" icon class="mx-1" :width="36" :height="36" @click.stop="prevItem">
               <VIcon icon="mdi-chevron-left" />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.prev') }}</VTooltip>
             </VBtn>
-            <VBtn icon variant="text" class="mr-2" :width="36" :height="36" @click.stop="nextItem">
+            <VBtn variant="text" icon class="mr-2" :width="36" :height="36" @click.stop="nextItem">
               <VIcon icon="mdi-chevron-right" />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.next') }}</VTooltip>
             </VBtn>
           </div>
           <div class="text-subtitle-2 d-flex">
@@ -120,9 +125,11 @@ const totalCountText = computed(() => {
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
+              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
             </VBtn>
             <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
               <VIcon icon="mdi-close" />
+              <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
             </VBtn>
           </div>
         </VToolbar>

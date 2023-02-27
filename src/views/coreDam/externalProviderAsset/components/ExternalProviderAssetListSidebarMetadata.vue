@@ -37,8 +37,12 @@ const onImport = () => {
     </div>
     <template v-if="!loader && asset" #append>
       <div class="pa-2 d-flex align-center justify-center">
-        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onImport">Import to DAM</VBtn>
-        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onEditMore"> View detail </VBtn>
+        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onImport">
+          {{ t('coreDam.asset.externalProvider.importToDam') }}
+        </VBtn>
+        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onEditMore">
+          {{ t('coreDam.asset.externalProvider.viewDetail') }}
+        </VBtn>
       </div>
     </template>
   </VNavigationDrawer>
