@@ -8,7 +8,7 @@ export const extSystemRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.EXT_SYSTEM.LIST,
-    component: () => import('@/views/dam/extSystem/ExtSystemListView.vue'),
+    component: () => import('@/views/coreDam/extSystem/ExtSystemListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_EXT_SYSTEM_VIEW],
@@ -18,7 +18,7 @@ export const extSystemRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id(\\d+)',
     name: ROUTE.DAM.EXT_SYSTEM.DETAIL,
-    component: () => import('@/views/dam/extSystem/ExtSystemDetailView.vue'),
+    component: () => import('@/views/coreDam/extSystem/ExtSystemDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_EXT_SYSTEM_VIEW],
@@ -28,7 +28,7 @@ export const extSystemRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id(\\d+)/edit',
     name: ROUTE.DAM.EXT_SYSTEM.EDIT,
-    component: () => import('@/views/dam/extSystem/ExtSystemEditView.vue'),
+    component: () => import('@/views/coreDam/extSystem/ExtSystemEditView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_EXT_SYSTEM_VIEW, ACL.DAM_EXT_SYSTEM_UPDATE],

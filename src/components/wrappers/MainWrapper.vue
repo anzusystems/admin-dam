@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import ASystemBar from '@/components/system/ASystemBar.vue'
-import AssetToolbarOptions from '@/views/dam/asset/components/toolbar/AssetToolbarOptions.vue'
+import AssetToolbarOptions from '@/views/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
 import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
-import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
-import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadOverlay.vue'
+import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
+import AssetFooterUploadOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
-import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
-import AssetFooterUploadSlotsOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
+import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
+import AssetFooterUploadSlotsOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logo from '@/assets/logo-adam.svg'
 import { ROUTE } from '@/router/routes'
-import AssetToolbarIntegrations from '@/views/dam/asset/components/toolbar/AssetToolbarIntegrations.vue'
+import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { ACL } from '@/types/Permission'
 
 const { t } = useI18n()

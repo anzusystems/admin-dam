@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useKeywordFactory } from '@/model/dam/factory/KeywordFactory'
-import type { Keyword } from '@/types/dam/Keyword'
+import { useKeywordFactory } from '@/model/coreDam/factory/KeywordFactory'
+import type { Keyword } from '@/types/coreDam/Keyword'
 
 const { createDefault } = useKeywordFactory()
 

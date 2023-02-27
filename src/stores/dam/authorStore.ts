@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { Author } from '@/types/dam/Author'
-import { useAuthorFactory } from '@/model/dam/factory/AuthorFactory'
+import type { Author } from '@/types/coreDam/Author'
+import { useAuthorFactory } from '@/model/coreDam/factory/AuthorFactory'
 
 const { createDefault } = useAuthorFactory()
 

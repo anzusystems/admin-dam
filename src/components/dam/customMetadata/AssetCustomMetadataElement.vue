@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { DamConfigAssetCustomFormElement } from '@/types/dam/DamConfigAssetCustomForm'
-import { CustomFormType } from '@/types/dam/DamConfigAssetCustomForm'
+import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
+import { CustomFormType } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'

@@ -1,9 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useDistributionCategoryFactory } from '@/model/dam/factory/DistributionCategoryFactory'
-import type { DistributionCategory } from '@/types/dam/DistributionCategory'
-import type { DistributionCategorySelect } from '@/types/dam/DistributionCategorySelect'
-import type { DistributionCategoryOption } from '@/types/dam/DistributionCategoryOption'
-import type { DistributionServiceName } from '@/types/dam/DamConfig'
+import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
+import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
+import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
+import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
+import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 
 const { createDefault } = useDistributionCategoryFactory()
 

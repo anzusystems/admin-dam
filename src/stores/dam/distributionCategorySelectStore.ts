@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useDistributionCategorySelectFactory } from '@/model/dam/factory/DistributionCategorySelectFactory'
-import type { DistributionCategorySelect } from '@/types/dam/DistributionCategorySelect'
+import { useDistributionCategorySelectFactory } from '@/model/coreDam/factory/DistributionCategorySelectFactory'
+import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
 
 const { createDefault } = useDistributionCategorySelectFactory()
 

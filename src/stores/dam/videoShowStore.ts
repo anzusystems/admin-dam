@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useVideoShowFactory } from '@/model/dam/factory/VideoShowFactory'
-import type { VideoShow } from '@/types/dam/VideoShow'
+import { useVideoShowFactory } from '@/model/coreDam/factory/VideoShowFactory'
+import type { VideoShow } from '@/types/coreDam/VideoShow'
 
 const { createDefault } = useVideoShowFactory()
 

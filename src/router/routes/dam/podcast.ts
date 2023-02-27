@@ -8,7 +8,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.PODCAST.LIST,
-    component: () => import('@/views/dam/podcast/PodcastListView.vue'),
+    component: () => import('@/views/coreDam/podcast/PodcastListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_PODCAST_VIEW],
@@ -18,7 +18,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.PODCAST.DETAIL,
-    component: () => import('@/views/dam/podcast/PodcastDetailView.vue'),
+    component: () => import('@/views/coreDam/podcast/PodcastDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_PODCAST_VIEW],
@@ -28,7 +28,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id/edit',
     name: ROUTE.DAM.PODCAST.EDIT,
-    component: () => import('@/views/dam/podcast/PodcastEditView.vue'),
+    component: () => import('@/views/coreDam/podcast/PodcastEditView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_PODCAST_VIEW, ACL.DAM_PODCAST_UPDATE],

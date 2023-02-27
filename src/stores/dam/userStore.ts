@@ -1,5 +1,5 @@
-import type { UpdateUser, User } from '@/types/dam/User'
-import { useUserFactory } from '@/model/dam/factory/UserFactory'
+import type { UpdateUser, User } from '@/types/coreDam/User'
+import { useUserFactory } from '@/model/coreDam/factory/UserFactory'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 const { createDefault, createDefaultForUpdate } = useUserFactory()

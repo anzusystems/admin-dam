@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { usePodcastEpisodeFactory } from '@/model/dam/factory/PodcastEpisodeFactory'
-import type { PodcastEpisode } from '@/types/dam/PodcastEpisode'
+import { usePodcastEpisodeFactory } from '@/model/coreDam/factory/PodcastEpisodeFactory'
+import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 
 const { createDefault } = usePodcastEpisodeFactory()
 

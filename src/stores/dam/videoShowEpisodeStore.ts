@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useVideoShowEpisodeFactory } from '@/model/dam/factory/VideoShowEpisodeFactory'
-import type { VideoShowEpisode } from '@/types/dam/VideoShowEpisode'
+import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpisodeFactory'
+import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 
 const { createDefault } = useVideoShowEpisodeFactory()
 

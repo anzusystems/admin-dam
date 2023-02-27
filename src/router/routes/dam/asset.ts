@@ -8,7 +8,7 @@ export const assetRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.ASSET.LIST,
-    component: () => import('@/views/dam/asset/list/AssetListView.vue'),
+    component: () => import('@/views/coreDam/asset/list/AssetListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_ASSET_VIEW],
@@ -18,7 +18,7 @@ export const assetRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.ASSET.DETAIL,
-    component: () => import('@/views/dam/asset/detail/AssetDetailView.vue'),
+    component: () => import('@/views/coreDam/asset/detail/AssetDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_ASSET_VIEW],

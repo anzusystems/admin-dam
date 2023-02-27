@@ -1,7 +1,7 @@
 import { SYSTEM_ADMIN_DAM, SYSTEM_CORE_DAM } from '@/model/systems'
-import { apiFetchList, apiFetchOne } from '@/services/api/anzuApi'
-import type { Log } from '@/types/common/Log'
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import { apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import type { Log } from '@/types/common/Log'
 import type { AxiosInstance } from 'axios'
 import { damClient } from '@/services/api/clients/damClient'
 

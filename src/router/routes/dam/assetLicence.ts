@@ -8,7 +8,7 @@ export const assetLicenceRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.ASSET_LICENCE.LIST,
-    component: () => import('@/views/dam/assetLicence/AssetLicenceListView.vue'),
+    component: () => import('@/views/coreDam/assetLicence/AssetLicenceListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_ASSET_LICENCE_VIEW],
@@ -18,7 +18,7 @@ export const assetLicenceRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id(\\d+)',
     name: ROUTE.DAM.ASSET_LICENCE.DETAIL,
-    component: () => import('@/views/dam/assetLicence/AssetLicenceDetailView.vue'),
+    component: () => import('@/views/coreDam/assetLicence/AssetLicenceDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_ASSET_LICENCE_VIEW],
@@ -28,7 +28,7 @@ export const assetLicenceRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id(\\d+)/edit',
     name: ROUTE.DAM.ASSET_LICENCE.EDIT,
-    component: () => import('@/views/dam/assetLicence/AssetLicenceEditView.vue'),
+    component: () => import('@/views/coreDam/assetLicence/AssetLicenceEditView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_ASSET_LICENCE_VIEW, ACL.DAM_ASSET_LICENCE_UPDATE],

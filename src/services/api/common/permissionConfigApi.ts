@@ -1,6 +1,6 @@
-import { apiFetchOne } from '@/services/api/anzuApi'
-import type { AxiosInstance } from 'axios'
 import type { PermissionConfig } from '@anzusystems/common-admin'
+import { apiFetchOne } from '@anzusystems/common-admin'
+import type { AxiosInstance } from 'axios'
 
 const SYSTEM = 'common'
 export const ENTITY = 'permissionConfig'
