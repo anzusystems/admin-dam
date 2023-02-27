@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useVideoShowOneStore } from '@/stores/dam/videoShowStore'
@@ -16,20 +16,16 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.videoShow.model.texts.title')" :value="videoShow.texts.title" />
-      </ACard>
+      <ARow :title="t('coreDam.videoShow.model.texts.title')" :value="videoShow.texts.title" />
     </VCol>
     <VCol cols="4">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.videoShow.model.id')">
-          <ACopyText :value="videoShow.id" data-cy="video-show-id" />
-        </ARow>
-        <!--        <ARow v-if="imageSrc" title="Image">-->
-        <!--          <AssetImage :src="imageSrc" use-component />-->
-        <!--        </ARow>-->
-        <AUserAndTimeTrackingFields :data="videoShow" />
-      </ACard>
+      <ARow :title="t('coreDam.videoShow.model.id')">
+        <ACopyText :value="videoShow.id" data-cy="video-show-id" />
+      </ARow>
+      <!--        <ARow v-if="imageSrc" title="Image">-->
+      <!--          <AssetImage :src="imageSrc" use-component />-->
+      <!--        </ARow>-->
+      <AUserAndTimeTrackingFields :data="videoShow" />
     </VCol>
   </VRow>
 </template>

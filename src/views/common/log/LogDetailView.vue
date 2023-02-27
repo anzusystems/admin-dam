@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton } from '@anzusystems/common-admin'
+import { AActionCloseButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useLogDetailActions } from '@/views/common/log/composables/logActions'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore'
@@ -10,7 +10,7 @@ defineProps<{
   client: () => AxiosInstance
 }>()
 
-const { permissionGroup, loadingPermissionGroup } = storeToRefs(usePermissionGroupOneStore())
+const { permissionGroup } = storeToRefs(usePermissionGroupOneStore())
 
 const { t } = useI18n()
 </script>
@@ -20,12 +20,8 @@ const { t } = useI18n()
     <VCol cols="12" sm="8">
       <VRow>
         <VCol cols="12">
-          <ACard :loading="loadingPermissionGroup">
-            <VCardText>
-              <ARow :title="t('common.permissionGroup.model.title')" :value="permissionGroup.title" />
-              <ARow :title="t('common.permissionGroup.model.description')" :value="permissionGroup.description" />
-            </VCardText>
-          </ACard>
+          <ARow :title="t('common.permissionGroup.model.title')" :value="permissionGroup.title" />
+          <ARow :title="t('common.permissionGroup.model.description')" :value="permissionGroup.description" />
         </VCol>
       </VRow>
       <VRow>
@@ -35,12 +31,10 @@ const { t } = useI18n()
       </VRow>
     </VCol>
     <VCol cols="12" sm="4">
-      <ACard loader="detail">
-        <ARow :title="t('common.permissionGroup.model.id')">
-          <ACopyText :value="permissionGroup.id" />
-        </ARow>
-        <AUserAndTimeTrackingFields :data="permissionGroup" />
-      </ACard>
+      <ARow :title="t('common.permissionGroup.model.id')">
+        <ACopyText :value="permissionGroup.id" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="permissionGroup" />
     </VCol>
   </VRow>
 </template>
