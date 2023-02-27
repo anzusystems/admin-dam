@@ -1,0 +1,35 @@
+{
+  "author": {
+    "model": {
+      "id": "ID",
+      "name": "Name",
+      "identifier": "Identifier",
+      "type": "Type",
+      "flags": {
+        "reviewed": "Reviewed"
+      }
+    },
+    "filter": {
+      "id": "ID",
+      "text": "Text",
+      "identifier": "Identifier",
+      "type": "Type",
+      "reviewed": "Reviewed"
+    },
+    "authorType": {
+      "none": "None",
+      "internal": "Internal",
+      "external": "External",
+      "agency": "Agency"
+    },
+    "meta": {
+      "create": "Author Create",
+      "edit": "Author Edit",
+      "detail": "Author Detail",
+      "list": "Authors List"
+    },
+    "button": {
+      "add": "Add new author"
+    }
+  }
+}

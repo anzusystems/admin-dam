@@ -129,7 +129,7 @@ const showIconComputed = computed(() => {
     <template #default>
       <div v-if="showWaiting" class="asset-image__progress">
         <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" />
-        <div class="text-caption text-center">{{ t('common.upload.waiting') }}</div>
+        <div class="text-caption text-center">{{ t('system.upload.waiting') }}</div>
       </div>
       <div v-if="showProcessing" class="asset-image__progress">
         <VProgressCircular
@@ -139,7 +139,7 @@ const showIconComputed = computed(() => {
           :width="iconSize / 10"
           class="ml-auto mr-auto"
         />
-        <div v-if="!disableProcessingText" class="text-caption text-center">{{ t('common.upload.processing') }}</div>
+        <div v-if="!disableProcessingText" class="text-caption text-center">{{ t('system.upload.processing') }}</div>
       </div>
       <div v-else-if="showUploading" class="asset-image__progress">
         <VProgressCircular
@@ -151,7 +151,7 @@ const showIconComputed = computed(() => {
         >
           {{ uploadingPercentage }}
         </VProgressCircular>
-        <div class="text-caption text-center">{{ t('common.upload.uploading') }}</div>
+        <div class="text-caption text-center">{{ t('system.upload.uploading') }}</div>
       </div>
     </template>
   </VImg>
@@ -175,7 +175,7 @@ const showIconComputed = computed(() => {
       </div>
       <div v-if="showDone" class="asset-image__progress asset-image__progress--animate-done">
         <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
-        <div class="text-caption text-center">{{ t('common.upload.done') }}</div>
+        <div class="text-caption text-center">{{ t('system.upload.done') }}</div>
       </div>
       <AssetImageMetaIcons
         v-if="showMetaIcons && assetFileProperties"
@@ -216,7 +216,7 @@ const showIconComputed = computed(() => {
     </div>
     <div v-if="showDone" class="asset-image__progress asset-image__progress--animate-done">
       <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
-      <div class="text-caption text-center">{{ t('common.upload.done') }}</div>
+      <div class="text-caption text-center">{{ t('system.upload.done') }}</div>
     </div>
     <AssetImageMetaIcons
       v-if="showMetaIcons && assetFileProperties"

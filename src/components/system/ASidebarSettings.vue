@@ -138,7 +138,7 @@ const opened = ref([])
     />
     <VListItem class="form-dropdown">
       <VListItemTitle class="text-medium-emphasis text-caption font-weight-light">
-        {{ t('system.version') }}: {{ envConfig.appVersion }}
+        {{ t('common.system.version') }}: {{ envConfig.appVersion }}
       </VListItemTitle>
     </VListItem>
   </VList>

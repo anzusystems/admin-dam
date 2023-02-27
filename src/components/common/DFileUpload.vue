@@ -161,7 +161,7 @@ const checkFormatsAndSizes = (files: File[]) => {
   })
   if (incorrectFileNames.length) {
     const { showWarning } = useAlerts()
-    showWarning(t('common.upload.incorrectFormatSize') + ':' + incorrectFileNames.join(', '))
+    showWarning(t('system.upload.incorrectFormatSize') + ':' + incorrectFileNames.join(', '))
   }
 
   return validFiles
@@ -248,7 +248,7 @@ watch(selectedFiles, (newValue, oldValue) => {
       @click.stop="clickDropzone"
     >
       <VIcon icon="mdi-plus" />
-      <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
+      <VTooltip activator="parent" location="bottom">{{ t('system.upload.add') }}</VTooltip>
     </VBtn>
   </div>
   <VBtn
@@ -261,7 +261,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     @click.stop="clickDropzone"
   >
     <VIcon icon="mdi-plus" :size="18" />
-    <VTooltip activator="parent" location="bottom">{{ t('common.upload.add') }}</VTooltip>
+    <VTooltip activator="parent" location="bottom">{{ t('system.upload.add') }}</VTooltip>
   </VBtn>
   <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
     <VBtn tabindex="-1" color="primary" rounded="pill" variant="flat" :height="height" @click.stop="clickDropzone">
@@ -275,7 +275,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     @drop="onDrop"
     @click.stop="clickDropzone"
   >
-    <div class="text-h1">{{ t('common.upload.dragAndDrop') }}</div>
+    <div class="text-h1">{{ t('system.upload.dragAndDrop') }}</div>
   </div>
   <input
     ref="inputRef"
