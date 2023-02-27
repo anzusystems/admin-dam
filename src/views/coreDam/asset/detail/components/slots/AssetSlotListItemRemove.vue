@@ -52,7 +52,7 @@ const onRemove = () => {
     <VCard v-if="dialog">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('common.modal.confirmDelete') }}</div>
+          <div class="text-h6">{{ t('common.modal.system.confirmDelete') }}</div>
         </div>
         <VSpacer />
         <VToolbarItems>

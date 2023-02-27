@@ -21,7 +21,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('job.meta.list')" />
+  <ActionbarTitleWrapper :heading="t('common.job.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_JOB_CREATE">
       <JobCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />

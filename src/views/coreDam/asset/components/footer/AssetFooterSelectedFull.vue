@@ -161,7 +161,7 @@ const onSaveAndClose = async () => {
             @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.hide') }}</VTooltip>
           </VBtn>
         </div>
       </VToolbar>

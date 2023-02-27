@@ -184,7 +184,7 @@ const onSaveAndClose = async () => {
             @click.stop="setMinimalUpload"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.modal.hide') }}</VTooltip>
+            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.hide') }}</VTooltip>
           </VBtn>
           <AssetFooterUploadButtonStop :button-size="36" :is-uploading="isUploading" @confirm="onStopConfirm" />
         </div>

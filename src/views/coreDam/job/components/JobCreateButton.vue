@@ -109,7 +109,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
   <VDialog v-model="dialog" persistent>
     <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <VCardTitle class="d-flex pr-2">
-        <span>{{ t('job.meta.create') }}</span>
+        <span>{{ t('common.job.meta.create') }}</span>
         <VSpacer />
         <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
@@ -118,7 +118,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
           <ARow>
             <AFormValueObjectOptionsSelect
               v-model="job._resourceName"
-              :label="t('job.model._resourceName')"
+              :label="t('common.job.model._resourceName')"
               :items="jobResourceOptions"
               :v="v$.job._resourceName"
               data-cy="job-select"
@@ -127,7 +127,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
           <ARow v-if="hasTargetUserId">
             <AFormTextField
               v-model.number="job.targetUserId"
-              :label="t('job.model.targetUserId')"
+              :label="t('common.job.model.targetUserId')"
               :v="v$.job.targetUserId"
               data-cy="targetUser"
             />
@@ -135,7 +135,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
           <ARow v-if="'jobUserDataDelete' === job._resourceName">
             <AFormBooleanToggle
               v-model="job.anonymizeUser"
-              :label="t('job.model.anonymizeUser')"
+              :label="t('common.job.model.anonymizeUser')"
               data-cy="anonymizeUser"
             />
           </ARow>
