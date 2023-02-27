@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { AAlerts, useTheme } from '@anzusystems/common-admin'
+import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import ASidebarSettings from '@/components/system/ASidebarSettings.vue'
-import ASystemBar from '@/components/system/ASystemBar.vue'
+import ASidebarSettings from '@/components/system/SidebarSettings.vue'
 import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget.vue'
 import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE } from '@/router/routes'
+import { envConfig } from '@/services/EnvConfigService'
 
 const { t } = useI18n()
 
@@ -22,7 +22,7 @@ const { theme } = useTheme()
 <template>
   <AAlerts />
   <VApp :theme="theme">
-    <ASystemBar />
+    <ASystemBar :current-version="envConfig.appVersion" />
     <VNavigationDrawer v-model="drawer">
       <ASidebarSettings />
     </VNavigationDrawer>

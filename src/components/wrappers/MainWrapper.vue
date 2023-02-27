@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import ASystemBar from '@/components/system/ASystemBar.vue'
 import AssetToolbarOptions from '@/views/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
 import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
@@ -12,6 +11,8 @@ import logo from '@/assets/logo-adam.svg'
 import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { ACL } from '@/types/Permission'
+import { ASystemBar } from '@anzusystems/common-admin'
+import { envConfig } from '@/services/EnvConfigService'
 
 const { t } = useI18n()
 
@@ -20,7 +21,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
 
 <template>
   <VLayout>
-    <ASystemBar />
+    <ASystemBar :current-version="envConfig.appVersion" />
     <slot name="sidebar-left" />
     <slot name="sidebar-right" />
     <VAppBar :order="-1" :height="46" elevation="0" class="system-border-b">
