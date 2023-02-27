@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AAlerts, useTheme } from '@anzusystems/common-admin'
-import ASystemBar from '@/components/system/ASystemBar.vue'
+import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
+import { envConfig } from '@/services/EnvConfigService'
 
 const { theme } = useTheme()
 </script>
@@ -8,7 +8,7 @@ const { theme } = useTheme()
 <template>
   <AAlerts />
   <VApp :theme="theme">
-    <ASystemBar />
+    <ASystemBar :current-version="envConfig.appVersion" />
     <VMain>
       <slot />
     </VMain>
