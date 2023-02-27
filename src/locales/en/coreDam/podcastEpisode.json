@@ -1,0 +1,35 @@
+{
+  "podcastEpisode": {
+    "model": {
+      "id": "ID",
+      "podcast": "Podcast",
+      "asset": "Asset",
+      "position": "Position",
+      "attributes": {
+        "seasonNumber": "Season number",
+        "episodeNumber": "Episode number",
+        "extId": "Ext id"
+      },
+      "texts": {
+        "title": "Title",
+        "description": "Description",
+        "rawDescription": "RAW description"
+      },
+      "dates": {
+        "publicationDate": "Publication date"
+      }
+    },
+    "filter": {
+      "id": "ID",
+      "title": "Title"
+    },
+    "button": {
+      "create": "Add Episode"
+    },
+    "meta": {
+      "create": "Add Episode",
+      "edit": "Podcast Episode Edit",
+      "detail": "Podcast Episode Detail"
+    }
+  }
+}

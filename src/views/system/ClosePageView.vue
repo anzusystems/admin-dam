@@ -11,7 +11,7 @@ const { t } = useI18n()
   </div>
   <div class="full-screen-page-footer px-10">
     <div class="text-medium-emphasis text-caption font-weight-light text-center">
-      {{ t('system.version') }}: {{ envConfig.appVersion }}
+      {{ t('common.system.version') }}: {{ envConfig.appVersion }}
     </div>
   </div>
 </template>

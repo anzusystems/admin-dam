@@ -1,0 +1,63 @@
+{
+  "system": {
+    "upload": {
+      "add": "Add to upload",
+      "dragAndDrop": "Drag and drop files for upload",
+      "incorrectFormatSize": "Incorrect format or size",
+      "stop": "Close",
+      "stopConfirmQuestion": "Are you sure you want to stop upload",
+      "waiting": "Waiting",
+      "processing": "Processing",
+      "uploading": "Uploading",
+      "done": "Done"
+    },
+    "mainBar": {
+      "upload": "Upload",
+      "search": "Search",
+      "backToAssets": "Back to assets",
+      "options": "Options",
+      "userOptions": "Account",
+      "customIntegrations": {
+        "title": "Custom integrations",
+        "assets": "Assets"
+      },
+      "podcasts": "Podcasts",
+      "extSystemLicenceSwitch": {
+        "filters": "Filters",
+        "filter": {
+          "extSystemName": "External system name",
+          "extSystemId": "External system ID",
+          "licenceName": "Licence name",
+          "licenceExtId": "Licence Ext ID"
+        },
+        "extSystem": "External system",
+        "licence": "Licence",
+        "title": "Switch DAM ext system and asset licence",
+        "description": "Important: Please finish all work first, any progress will be lost!",
+        "confirm": "Confirm and reload admin"
+      }
+    },
+    "settings": {
+      "locale": "Locale",
+      "theme": "Theme"
+    },
+    "currentUser": {
+      "settings": "Settings",
+      "backToAssets": "Back to assets",
+      "logout": "Logout"
+    },
+    "uploadErrors": {
+      "unknownError": "System error, try again later or contact administrator",
+      "systemError": "Error",
+      "size": "Incorrect size",
+      "offset": "Incorrect offset",
+      "mimeType": "Incorrect mime type"
+    },
+    "closePage": {
+      "title": "This page/tab can be safely closed."
+    },
+    "error": {
+      "notificationsNotConnected": "Notification service is not working, some elements of admin will not work correctly."
+    }
+  }
+}
