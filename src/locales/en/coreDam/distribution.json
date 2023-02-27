@@ -8,6 +8,7 @@
       "failed": "Failed"
     },
     "common": {
+      "select": "Distribution category",
       "list": "List of distributions",
       "addButton": "Add new",
       "addTitle": "Add new distribution",

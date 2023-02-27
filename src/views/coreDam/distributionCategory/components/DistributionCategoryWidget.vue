@@ -57,10 +57,10 @@ watch(
 <template>
   <div class="d-flex flex-column w-100">
     <VRow align="center">
-      <VCol class="text-caption">Distribution category:</VCol>
+      <VCol class="text-caption">{{ t('coreDam.distribution.common.select') }}:</VCol>
     </VRow>
     <VRow v-if="!distributionCategoryId">
-      <VCol>No distribution category selected</VCol>
+      <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>
       <VCol cols="auto">
         <VBtn variant="text" icon size="small" @click.stop="dialog = true">
           <VIcon icon="mdi-pencil" />

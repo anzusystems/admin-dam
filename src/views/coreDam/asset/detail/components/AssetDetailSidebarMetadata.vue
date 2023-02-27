@@ -3,8 +3,7 @@ import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/
 import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { AActionDeleteButton, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
 import useVuelidate from '@vuelidate/core'

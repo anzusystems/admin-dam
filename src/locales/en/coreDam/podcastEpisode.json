@@ -30,6 +30,9 @@
       "create": "Add Episode",
       "edit": "Podcast Episode Edit",
       "detail": "Podcast Episode Detail"
+    },
+    "common": {
+      "addAssetToNewPodcastEpisode": "Add asset to new podcast episode"
     }
   }
 }
