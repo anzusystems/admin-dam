@@ -21,7 +21,6 @@ interface State {
   }
 }
 
-// todo select multiple, copy paste from asset list
 export const useExternalProviderAssetListStore = defineStore('damExternalProviderAssetListStore', {
   state: (): State => ({
     list: [],

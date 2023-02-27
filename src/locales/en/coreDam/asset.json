@@ -170,6 +170,11 @@
       "clearForm": "Clear form",
       "general": "General"
     },
+    "externalProvider": {
+      "importToDam": "Import to DAM",
+      "id": "ID",
+      "title": "Title"
+    },
     "queueItem": {
       "edit": "Edit more",
       "duplicate": "Duplicate",
