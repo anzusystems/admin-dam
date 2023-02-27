@@ -3,16 +3,12 @@ import { onMounted, ref } from 'vue'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
-import {
-  useAssetDetailSidebarSlotsActions
-} from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
-import { useAssetSlotsStore } from '@/stores/dam/assetSlotsStore'
-import AssetFilePublicLinkPrivateDialog
-  from '@/views/coreDam/asset/detail/components/AssetFilePublicLinkPrivateDialog.vue'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
+import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
+import AssetFilePublicLinkPrivateDialog from '@/views/coreDam/asset/detail/components/AssetFilePublicLinkPrivateDialog.vue'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const props = withDefaults(
   defineProps<{

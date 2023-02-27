@@ -48,7 +48,7 @@ import {
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { AssetFileProcessStatus, type FileDownloadLink } from '@/types/coreDam/File'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
 
 interface UploadStartResponse {

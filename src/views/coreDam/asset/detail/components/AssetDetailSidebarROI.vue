@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import AssetFileRotate from '@/views/coreDam/asset/detail/components/AssetFileRotate.vue'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { onMounted } from 'vue'
 import { isImageFile } from '@/types/coreDam/File'
 import { fetchImageRoiList, fetchRoi } from '@/services/api/coreDam/imageRoiApi'

@@ -1,4 +1,4 @@
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'

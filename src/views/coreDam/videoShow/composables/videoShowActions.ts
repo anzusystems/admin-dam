@@ -10,7 +10,7 @@ import {
 } from '@/services/api/coreDam/videoShowApi'
 import type { VideoShow } from '@/types/coreDam/VideoShow'
 import { storeToRefs } from 'pinia'
-import { useVideoShowOneStore } from '@/stores/dam/videoShowStore'
+import { useVideoShowOneStore } from '@/stores/coreDam/videoShowStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'

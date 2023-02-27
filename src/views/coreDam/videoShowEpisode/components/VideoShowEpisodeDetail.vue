@@ -2,7 +2,7 @@
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useVideoShowEpisodeOneStore } from '@/stores/dam/videoShowEpisodeStore'
+import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
 
 const { videoShowEpisode } = storeToRefs(useVideoShowEpisodeOneStore())
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { computed, watch } from 'vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueUploadList from '@/views/coreDam/asset/components/queue/AssetQueueUploadList.vue'

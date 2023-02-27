@@ -12,7 +12,7 @@ import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ROUTE } from '@/router/routes'
-import { useDistributionCategorySelectOneStore } from '@/stores/dam/distributionCategorySelectStore'
+import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()

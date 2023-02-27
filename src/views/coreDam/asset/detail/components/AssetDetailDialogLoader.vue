@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useAssetListStore } from '@/stores/dam/assetListStore'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useTheme } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'

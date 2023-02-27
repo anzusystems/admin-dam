@@ -8,7 +8,7 @@ import {
 } from '@/services/api/coreDam/videoShowEpisodeApi'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { storeToRefs } from 'pinia'
-import { useVideoShowEpisodeOneStore } from '@/stores/dam/videoShowEpisodeStore'
+import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'

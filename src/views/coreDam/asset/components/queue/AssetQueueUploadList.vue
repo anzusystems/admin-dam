@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueItemList from '@/views/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'

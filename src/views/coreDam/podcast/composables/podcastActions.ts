@@ -10,7 +10,7 @@ import {
 } from '@/services/api/coreDam/podcastApi'
 import type { Podcast } from '@/types/coreDam/Podcast'
 import { storeToRefs } from 'pinia'
-import { usePodcastOneStore } from '@/stores/dam/podcastStore'
+import { usePodcastOneStore } from '@/stores/coreDam/podcastStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'

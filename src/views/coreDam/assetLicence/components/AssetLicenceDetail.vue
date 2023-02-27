@@ -2,7 +2,7 @@
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useAssetLicenceOneStore } from '@/stores/dam/assetLicenceStore'
+import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import LazyExtSystemChip from '@/views/coreDam/extSystem/components/LazyExtSystemChip.vue'
 
 const { assetLicence } = storeToRefs(useAssetLicenceOneStore())

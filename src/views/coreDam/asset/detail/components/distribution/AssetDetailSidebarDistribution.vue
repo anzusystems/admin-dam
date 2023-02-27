@@ -1,19 +1,16 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { useDistributionListStore } from '@/stores/dam/distributionListStore'
+import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { fetchAssetDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialog.vue'
 import { useI18n } from 'vue-i18n'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{

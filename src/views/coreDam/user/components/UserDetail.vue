@@ -2,7 +2,7 @@
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useUserOneStore } from '@/stores/dam/userStore'
+import { useUserOneStore } from '@/stores/coreDam/userStore'
 import LazyExtSystemChip from '@/views/coreDam/extSystem/components/LazyExtSystemChip.vue'
 import ExternalProviderAssetChip from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/coreDam/distribution/components/DistributionServiceChip.vue'

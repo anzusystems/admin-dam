@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
-import { useAssetListStore } from '@/stores/dam/assetListStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'

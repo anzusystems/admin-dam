@@ -5,7 +5,7 @@ import type Cropper from 'cropperjs'
 import 'cropperjs/dist/cropper.css'
 import { computed, onUnmounted, ref } from 'vue'
 import { updateRoi } from '@/services/api/coreDam/imageRoiApi'
-import { useImageRoiStore } from '@/stores/dam/imageRoiStore'
+import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
 import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
 import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 

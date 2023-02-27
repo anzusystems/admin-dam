@@ -7,7 +7,7 @@ import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { isDocId, isString } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<ExtSystem>()
