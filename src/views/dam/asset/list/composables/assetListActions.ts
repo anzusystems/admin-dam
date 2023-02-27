@@ -32,7 +32,7 @@ const { showWarning } = useAlerts()
 
 const filter = useAssetListFilter()
 const pagination = usePagination()
-pagination.sortBy = 'id'
+pagination.sortBy = 'createdAt'
 pagination.rowsPerPage = 25 // todo
 
 const filterIsTouched = ref(false)
