@@ -15,7 +15,8 @@
       "redistributeTitle": "Redistribute",
       "noEntries": "Nothing to show",
       "status": "Status",
-      "error": "An error occurred"
+      "error": "An error occurred",
+      "blockedByDistribution": "Blocked by distribution"
     }
   }
 }

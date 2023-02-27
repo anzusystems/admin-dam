@@ -7,6 +7,7 @@ import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
 import type { ImageFile } from '@/types/coreDam/File'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -25,6 +26,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: ImagePreviewNullable): void
   (e: 'changed', data: ImagePreviewNullable): void
 }>()
+
+const { t } = useI18n()
 
 const loading = ref(false)
 const dialog = ref(false)
@@ -85,7 +88,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="showIsProcessing" class="text-caption">Image is processing, please check again later.</div>
+  <div v-if="showIsProcessing" class="text-caption">{{ t('system.imagePreview.status.isProcessingInfo') }}</div>
   <div v-else>
     <VImg v-if="loading" :width="width" :height="height" :max-height="300" class="asset-image asset-image--loading-bg">
       <template #placeholder />
@@ -99,7 +102,7 @@ watch(
     <div v-if="showActions">
       <slot name="actions-start" />
       <VBtn variant="flat" class="my-2 mr-2" color="secondary" size="small" @click.stop="dialog = true">
-        Replace by image file ID
+        {{ t('system.imagePreview.actions.replaceByFileId') }}
       </VBtn>
       <VBtn
         v-if="imagePreviewModel !== null"
@@ -109,7 +112,7 @@ watch(
         size="small"
         @click.stop="unassignImage"
       >
-        Unassign image
+        {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
       <slot name="actions-end" />
     </div>
@@ -117,7 +120,7 @@ watch(
       <VCard v-if="dialog" data-cy="delete-panel">
         <VToolbar class="pl-2" density="compact">
           <div class="d-block pl-0 w-100">
-            <div class="text-h6">Replace by image file ID</div>
+            <div class="text-h6">{{ t('system.imagePreview.actions.replaceByFileId') }}</div>
           </div>
           <VSpacer />
           <VToolbarItems>
@@ -132,12 +135,12 @@ watch(
           </VToolbarItems>
         </VToolbar>
         <VCardText>
-          <VTextField v-model="newFileId" label="Image File ID" />
+          <VTextField v-model="newFileId" :label="t('system.imagePreview.model.fileId')" />
         </VCardText>
         <VCardActions>
           <VSpacer />
-          <VBtn text data-cy="button-cancel" @click.stop="onCancel"> Cancel </VBtn>
-          <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm"> Confirm </VBtn>
+          <VBtn text data-cy="button-cancel" @click.stop="onCancel">{{ t('common.button.cancel') }}</VBtn>
+          <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm">{{ t('common.button.confirm') }}</VBtn>
         </VCardActions>
       </VCard>
     </VDialog>

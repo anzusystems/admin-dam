@@ -76,7 +76,9 @@ onMounted(async () => {
   <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
     <VProgressCircular indeterminate color="primary" />
   </div>
-  <div v-else-if="listItems.length === 0" class="pa-4 text-caption">Nothing to show</div>
+  <div v-else-if="listItems.length === 0" class="pa-4 text-caption">
+    {{ t('coreDam.podcastEpisode.common.noEntries') }}
+  </div>
   <div v-else>
     <PodcastEpisodeListItem
       v-for="item in listItems"

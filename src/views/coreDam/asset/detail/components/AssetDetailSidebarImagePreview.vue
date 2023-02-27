@@ -10,6 +10,7 @@ import { fetchVideoFile, updatePreviewImage } from '@/services/api/coreDam/video
 import ImagePreview from '@/views/coreDam/asset/components/ImagePreview.vue'
 import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
@@ -18,6 +19,7 @@ withDefaults(
   {}
 )
 
+const { t } = useI18n()
 const loading = ref(true)
 const saving = ref(false)
 const videoFile = ref<VideoFile | null>(null)
@@ -80,7 +82,7 @@ onMounted(async () => {
             size="small"
             @click.stop="chooseImagePreviewFromDistributionDialog = true"
           >
-            Choose from distribution
+            {{ t('system.imagePreview.actions.chooseFromDistribution') }}
           </VBtn>
         </template>
       </ImagePreview>

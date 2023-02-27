@@ -14,6 +14,20 @@
     "download": {
       "downloadOriginalFile": "Download original file"
     },
+    "imagePreview": {
+      "selected": "Selected",
+      "model": {
+        "fileId": "Image file ID"
+      },
+      "status": {
+        "isProcessingInfo": "Image is processing, please check again later"
+      },
+      "actions": {
+        "unassign": "Unassign image",
+        "replaceByFileId": "Unassign image",
+        "chooseFromDistribution": "Choose from distribution"
+      }
+    },
     "mainBar": {
       "upload": "Upload",
       "search": "Search",
