@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, getObjectValues, isArray, isEmptyObject } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocomplete,
+  getObjectValues,
+  isArray,
+  isEmptyObject,
+  useValidateRequiredIf,
+} from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import LazyAuthorChip from '@/views/coreDam/author/components/LazyAuthorChip.vue'
@@ -9,7 +15,6 @@ import { computed, onMounted, ref } from 'vue'
 import type { Suggestions } from '@/types/coreDam/Asset'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import type { Author } from '@/types/coreDam/Author'
-import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
 
 const props = withDefaults(
@@ -55,6 +60,8 @@ const modelValueComputed = computed({
 })
 
 const requiredComputed = computed(() => !!props.required)
+
+const requiredIf = useValidateRequiredIf()
 
 const rules = {
   modelValueComputed: {

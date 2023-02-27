@@ -2,9 +2,16 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
-import { AFormTextField, slugify, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  slugify,
+  useAlerts,
+  useErrorHandler,
+  useValidateMaxLength,
+  useValidateMinLength,
+  useValidateRequired,
+} from '@anzusystems/common-admin'
 import { makePublic } from '@/services/api/coreDam/audioApi'
-import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 
 const props = withDefaults(
@@ -41,6 +48,10 @@ watch(modelValueComputed, async (newValue) => {
     slug.value = slugify(props.title)
   }
 })
+
+const required = useValidateRequired()
+const minLength = useValidateMinLength()
+const maxLength = useValidateMaxLength()
 
 const rules = computed(() => {
   return {
