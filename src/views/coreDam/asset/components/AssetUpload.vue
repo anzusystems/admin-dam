@@ -7,6 +7,7 @@ import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DocId } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -115,6 +116,8 @@ const uploadSizes = computed(() => {
 const uploadAccept = computed(() => {
   return Object.keys(uploadSizes.value).join(',')
 })
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -132,7 +135,7 @@ const uploadAccept = computed(() => {
     <VCard v-if="uploadDialog" data-cy="delete-panel">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">Upload warning</div>
+          <div class="text-h6">{{ t('system.upload.limits.uploadWarning') }}</div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -148,23 +151,24 @@ const uploadAccept = computed(() => {
       </VToolbar>
       <div class="pa-2">
         <p v-if="alreadyAtUploadLimit">
-          You are already on upload limit ({{ maxUploadItems }}). Finish upload, then try again.
+          {{ t('system.upload.limits.onUploadLimit', { limit: maxUploadItems }) }}
         </p>
         <p v-else>
-          You are trying to upload additional {{ fileCache.length }} files.
-          <span v-if="uploadQueueTotalCount > 0">{{ uploadQueueTotalCount }} files are already in progress.</span> Only
-          {{ maxUploadItems }} are allowed to upload at once.<br /><br />Do you want to cancel or upload only first
-          {{ maxUploadItems - uploadQueueTotalCount }} file(s)?
+          {{ t('system.upload.limits.addingOverLimit', { count: fileCache.length }) }}
+          <span v-if="uploadQueueTotalCount > 0">{{
+            t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
+          }}</span>
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
+          {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </div>
       <VCardActions>
         <VSpacer />
-        <VBtn text @click.stop="onDialogCancel">Cancel</VBtn>
+        <VBtn text @click.stop="onDialogCancel">{{ t('common.button.cancel') }}</VBtn>
         <VBtn v-if="!alreadyAtUploadLimit" color="success" :loading="uploadDialogLoader" @click.stop="onDialogConfirm">
-          Add first {{ maxUploadItems - uploadQueueTotalCount }} file(s)
+          {{ t('system.upload.limits.actionAddFirstItems', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </VBtn>
       </VCardActions>
     </VCard>
-    <VCard> </VCard>
   </VDialog>
 </template>

@@ -60,7 +60,7 @@ const status = computed(() => {
           class="dam-upload-queue__duplicate-overlay d-flex align-center justify-center flex-column"
         >
           <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="orange-darken-3" />
-          <div class="text-orange-darken-3">Duplicate</div>
+          <div class="text-orange-darken-3">{{ t('coreDam.asset.detail.info.status.duplicate') }}</div>
         </div>
       </div>
       <div class="d-flex align-center w-100">

@@ -3,8 +3,7 @@ import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import ExternalProviderAssetMetadataItem
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
+import ExternalProviderAssetMetadataItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -45,7 +44,7 @@ const imageSrc = computed(() => {
         </VCol>
       </VRow>
       <VRow class="text-caption">
-        <VCol>Id</VCol>
+        <VCol>{{ t('coreDam.asset.externalProvider.id') }}</VCol>
         <VCol cols="9">{{ item.externalProviderAssetId }}</VCol>
       </VRow>
       <VRow class="text-caption">
@@ -53,7 +52,7 @@ const imageSrc = computed(() => {
         <VCol cols="9">{{ item.assetType }}</VCol>
       </VRow>
       <VRow class="text-caption">
-        <VCol>Title</VCol>
+        <VCol>{{ t('coreDam.asset.externalProvider.title') }}</VCol>
         <VCol cols="9">{{ item.displayTitle }}</VCol>
       </VRow>
       <VRow v-for="(value, key) in item.externalProviderMetadata" :key="key" class="text-caption">
