@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import ASidebarSettings from '@/components/system/ASidebarSettings.vue'
 import ASystemBar from '@/components/system/ASystemBar.vue'
 import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget.vue'
-import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
+import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE } from '@/router/routes'
 
@@ -41,7 +41,7 @@ const { theme } = useTheme()
           >
             <VIcon icon="mdi-home" :size="20" class="mr-2" /> {{ t('system.mainBar.backToAssets') }}
           </VBtn>
-          <DCurrentUserDropdown />
+          <CurrentUserDropdown />
         </div>
       </div>
     </VAppBar>

@@ -7,7 +7,7 @@ import { useAssetListActions } from '@/views/coreDam/asset/list/composables/asse
 import { useI18n } from 'vue-i18n'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
 import AssetToolbarTypeFilters from '@/views/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
-import DGridViewToggle from '@/components/system/DGridViewToggle.vue'
+import GridViewToggle from '@/components/system/GridViewToggle.vue'
 import AssetToolbarSearch from '@/views/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import AssetListSidebarFilter from '@/views/coreDam/asset/list/components/AssetListSidebarFilter.vue'
@@ -116,7 +116,7 @@ onUnmounted(() => {
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
       </VBtn>
       <VDivider vertical class="mx-1 my-2" />
-      <DGridViewToggle />
+      <GridViewToggle />
       <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>

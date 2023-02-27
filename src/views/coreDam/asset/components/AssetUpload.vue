@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DFileUpload from '@/components/common/DFileUpload.vue'
+import FileUpload from '@/components/common/FileUpload.vue'
 import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'
@@ -118,7 +118,7 @@ const uploadAccept = computed(() => {
 </script>
 
 <template>
-  <DFileUpload
+  <FileUpload
     :variant="variant"
     :button-text="buttonText"
     :height="height"
