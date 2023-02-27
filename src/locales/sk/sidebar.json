@@ -1,8 +1,6 @@
 {
-  "sidebar": {
-    "settings": {
-      "settings": "Osobné",
-      "users": "Používatelia"
-    }
+  "settings": {
+    "settings": "Osobné",
+    "users": "Používatelia"
   }
 }
