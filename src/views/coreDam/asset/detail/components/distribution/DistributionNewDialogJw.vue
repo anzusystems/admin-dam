@@ -16,8 +16,10 @@ import {
   useAlerts,
   useErrorHandler,
   usePagination,
+  useValidateMaxLength,
+  useValidateMinLength,
+  useValidateRequired,
 } from '@anzusystems/common-admin'
-import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJw'
 import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/coreDam/Distribution'
@@ -28,9 +30,7 @@ import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distribut
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
@@ -106,6 +106,10 @@ const closeDialog = (reload = false) => {
 
 const { showRecordWas, showValidationError } = useAlerts()
 const { handleError } = useErrorHandler()
+
+const required = useValidateRequired()
+const minLength = useValidateMinLength()
+const maxLength = useValidateMaxLength()
 
 const rules = computed(() => ({
   distribution: {

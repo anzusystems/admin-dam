@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, getObjectValues, isArray, isEmptyObject } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocomplete,
+  getObjectValues,
+  isArray,
+  isEmptyObject,
+  useValidateRequiredIf,
+} from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
@@ -8,7 +14,6 @@ import type { Suggestions } from '@/types/coreDam/Asset'
 import { loadLazyKeyword, useLazyKeyword } from '@/views/coreDam/keyword/composables/lazyKeyword'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import type { Keyword } from '@/types/coreDam/Keyword'
-import { requiredIf } from '@/plugins/validators'
 import { useVuelidate } from '@vuelidate/core'
 
 const props = withDefaults(
@@ -54,6 +59,8 @@ const modelValueComputed = computed({
 })
 
 const requiredComputed = computed(() => !!props.required)
+
+const requiredIf = useValidateRequiredIf()
 
 const rules = {
   modelValueComputed: {

@@ -1,8 +1,11 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
-import { minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
+import { useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
+
+const required = useValidateRequired()
+const minLength = useValidateMinLength()
 
 export function useDistributionCategoryValidation(distributionCategory: Ref<DistributionCategory>) {
   const rules = computed(() => ({

@@ -4,8 +4,14 @@ import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
-import { ASystemEntityScope, isUndefined, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
-import { minValue, required } from '@/plugins/validators'
+import {
+  ASystemEntityScope,
+  isUndefined,
+  useAlerts,
+  useErrorHandler,
+  useValidateMinValue,
+  useValidateRequired,
+} from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
 import { damConfig } from '@/services/DamConfigService'
@@ -83,6 +89,9 @@ const allowSelect = computed(() => {
 const onCancel = () => {
   dialog.value = false
 }
+
+const required = useValidateRequired()
+const minValue = useValidateMinValue()
 
 const rulesLicence = computed(() => ({
   selectedLicence: {

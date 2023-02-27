@@ -1,8 +1,12 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
-import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Podcast } from '@/types/coreDam/Podcast'
+import { useValidateMaxLength, useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
+
+const required = useValidateRequired()
+const minLength = useValidateMinLength()
+const maxLength = useValidateMaxLength()
 
 export function usePodcastValidation(podcast: Ref<Podcast>) {
   const rules = computed(() => ({

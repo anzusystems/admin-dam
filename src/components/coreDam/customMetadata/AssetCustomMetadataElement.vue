@@ -4,9 +4,16 @@ import { CustomFormType } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
-import { maxLength, maxValue, minLength, minValue, requiredIf, stringArrayItemLength } from '@/plugins/validators'
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { AFormBooleanToggle } from '@anzusystems/common-admin'
+import {
+  AFormBooleanToggle,
+  useValidateMaxLength,
+  useValidateMaxValue,
+  useValidateMinLength,
+  useValidateMinValue,
+  useValidateRequiredIf,
+  useValidateStringArrayItemLength,
+} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -31,6 +38,13 @@ const updateModelValue = (value: any) => {
 const modelValueComputed = computed(() => {
   return props.modelValue
 })
+
+const maxLength = useValidateMaxLength()
+const minLength = useValidateMinLength()
+const requiredIf = useValidateRequiredIf()
+const minValue = useValidateMinValue()
+const maxValue = useValidateMaxValue()
+const stringArrayItemLength = useValidateStringArrayItemLength()
 
 const rules = computed(() => {
   const dynamicRules: Record<string, any> = {

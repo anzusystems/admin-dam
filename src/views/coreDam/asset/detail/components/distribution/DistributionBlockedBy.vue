@@ -2,14 +2,13 @@
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
 import { computed, ref, watch } from 'vue'
-import { type DocIdNullable, simpleCloneObject, usePagination } from '@anzusystems/common-admin'
+import { type DocIdNullable, simpleCloneObject, usePagination, useValidateRequired } from '@anzusystems/common-admin'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { required } from '@/plugins/validators'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 
 // now only supports strategy AtLeastOne, as BE too
@@ -62,6 +61,8 @@ const itemsComputed = computed(() => {
     }
   })
 })
+
+const required = useValidateRequired()
 
 const rules = computed(() => {
   if (props.config.strategy === DistributionRequirementStrategy.AtLeastOne) {
