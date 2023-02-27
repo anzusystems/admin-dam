@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { useAuthorOneStore } from '@/stores/dam/authorStore'
+import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const { showValidationError, showRecordWas } = useAlerts()

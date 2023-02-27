@@ -2,7 +2,7 @@
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useDistributionCategorySelectOneStore } from '@/stores/dam/distributionCategorySelectStore'
+import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
 const { distributionCategorySelect } = storeToRefs(useDistributionCategorySelectOneStore())
 

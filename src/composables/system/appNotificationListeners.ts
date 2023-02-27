@@ -1,7 +1,7 @@
 import { useNotification } from '@/composables/system/notifications'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { updateCurrentUser } from '@/composables/system/currentUser'
-import { useDistributionListStore } from '@/stores/dam/distributionListStore'
+import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 
 export const initAppNotificationListeners = () => {

@@ -6,7 +6,7 @@ import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const props = withDefaults(
   defineProps<{

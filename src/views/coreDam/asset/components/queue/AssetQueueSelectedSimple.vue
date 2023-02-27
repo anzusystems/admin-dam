@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AssetQueueSelectedItemSimple from '@/views/coreDam/asset/components/queue/AssetQueueSelectedItemSimple.vue'
 import { computed } from 'vue'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 
 const uploadQueuesStore = useUploadQueuesStore()

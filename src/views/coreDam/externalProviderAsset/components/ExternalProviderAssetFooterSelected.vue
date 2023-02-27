@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import AssetQueueMassEditSimple from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
-import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
+import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 import AssetFooterSelectedButtonClear from '@/views/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
-import {
-  useExternalProviderAssetImport
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
+import { useExternalProviderAssetImport } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
 
 const { t } = useI18n()
 

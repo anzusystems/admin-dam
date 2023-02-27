@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProviderAssetDetailStore'
+import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
 
 export function useExternalProviderAssetDetailActions() {
   const externalProviderAssetDetailStore = useExternalProviderAssetDetailStore()

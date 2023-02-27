@@ -2,7 +2,7 @@
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useExtSystemOneStore } from '@/stores/dam/extSystemStore'
+import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import LazyUserChip from '@/views/coreDam/user/components/LazyUserChip.vue'
 
 const { extSystem } = storeToRefs(useExtSystemOneStore())

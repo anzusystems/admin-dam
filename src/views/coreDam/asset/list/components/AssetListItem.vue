@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { AssetListItem } from '@/stores/dam/assetListStore'
+import type { AssetListItem } from '@/stores/coreDam/assetListStore'
 import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
 import type { DocId } from '@anzusystems/common-admin'
 import { isImageFile } from '@/types/coreDam/File'

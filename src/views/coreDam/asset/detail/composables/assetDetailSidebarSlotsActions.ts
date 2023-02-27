@@ -1,4 +1,4 @@
-import { useAssetSlotsStore } from '@/stores/dam/assetSlotsStore'
+import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import type { DocId } from '@anzusystems/common-admin'
 import { useErrorHandler, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useAssetSlotFilter } from '@/model/coreDam/filter/AssetSlotFilter'

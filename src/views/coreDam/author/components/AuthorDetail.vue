@@ -2,7 +2,7 @@
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useAuthorOneStore } from '@/stores/dam/authorStore'
+import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
 
 const { author } = storeToRefs(useAuthorOneStore())

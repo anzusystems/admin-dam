@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
-import { useAssetLicenceOneStore } from '@/stores/dam/assetLicenceStore'
+import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
 import {
   fetchAssetLicence,

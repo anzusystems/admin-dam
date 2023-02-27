@@ -8,13 +8,10 @@ import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { isNull, useTheme } from '@anzusystems/common-admin'
-import { useExternalProviderAssetDetailStore } from '@/stores/dam/externalProviderAssetDetailStore'
-import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
-import ExternalProviderAssetDetailDialogSidebar
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
-import {
-  useExternalProviderAssetListActions
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
+import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
+import ExternalProviderAssetDetailDialogSidebar from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
+import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void

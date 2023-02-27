@@ -14,7 +14,7 @@ import { useAssetType } from '@/model/coreDam/valueObject/AssetType'
 import { useI18n } from 'vue-i18n'
 import type { AssetCreateDto, AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { createAsset } from '@/services/api/coreDam/assetApi'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 

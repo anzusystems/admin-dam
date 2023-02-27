@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import type { ExternalProviderAssetListItem } from '@/stores/dam/externalProviderAssetListStore'
+import type { ExternalProviderAssetListItem } from '@/stores/coreDam/externalProviderAssetListStore'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { useI18n } from 'vue-i18n'
 

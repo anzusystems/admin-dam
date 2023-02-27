@@ -2,7 +2,7 @@
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useKeywordOneStore } from '@/stores/dam/keywordStore'
+import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
 
 const { keyword } = storeToRefs(useKeywordOneStore())
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import AssetQueueMassEditEditable from '@/views/coreDam/asset/components/queue/AssetQueueEditable.vue'
-import { useAssetListStore } from '@/stores/dam/assetListStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { bulkUpdateAssetsMetadata } from '@/services/api/coreDam/assetApi'
 import { useAlerts, useErrorHandler, useTheme } from '@anzusystems/common-admin'

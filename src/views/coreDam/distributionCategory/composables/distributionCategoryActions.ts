@@ -17,7 +17,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { fetchDistributionCategorySelectList } from '@/services/api/coreDam/distributionCategorySelectApi'
 import { ROUTE } from '@/router/routes'
-import { useDistributionCategoryOneStore } from '@/stores/dam/distributionCategoryStore'
+import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCategoryStore'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 

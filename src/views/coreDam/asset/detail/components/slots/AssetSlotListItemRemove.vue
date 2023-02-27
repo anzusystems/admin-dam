@@ -2,7 +2,7 @@
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
-import { useAssetSlotsStore } from '@/stores/dam/assetSlotsStore'
+import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 
 const props = withDefaults(
   defineProps<{

@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
 import { type DocId, isDocId, isString, useAlerts, useTheme } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
@@ -11,7 +11,7 @@ import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/As
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'
-import { useAssetListStore } from '@/stores/dam/assetListStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 

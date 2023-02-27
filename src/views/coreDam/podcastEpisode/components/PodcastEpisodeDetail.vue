@@ -2,7 +2,7 @@
 import { ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { usePodcastEpisodeOneStore } from '@/stores/dam/podcastEpisodeStore'
+import { usePodcastEpisodeOneStore } from '@/stores/coreDam/podcastEpisodeStore'
 import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AssetQueueItemEditable from '@/views/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
 import { computed } from 'vue'
-import { useUploadQueuesStore } from '@/stores/dam/uploadQueuesStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { deleteAsset, fetchAsset } from '@/services/api/coreDam/assetApi'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import type { DocId } from '@anzusystems/common-admin'
 import {
   AActionDeleteButton,
@@ -12,7 +12,7 @@ import {
   useAlerts,
   useErrorHandler,
 } from '@anzusystems/common-admin'
-import { useAssetListStore } from '@/stores/dam/assetListStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'

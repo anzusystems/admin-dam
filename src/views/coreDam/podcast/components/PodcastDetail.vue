@@ -2,7 +2,7 @@
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { usePodcastOneStore } from '@/stores/dam/podcastStore'
+import { usePodcastOneStore } from '@/stores/coreDam/podcastStore'
 import PodcastModeChip from '@/views/coreDam/podcast/components/PodcastModeChip.vue'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import { computed } from 'vue'
