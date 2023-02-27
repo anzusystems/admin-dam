@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCustomMetadataElement.vue'
+import AssetCustomMetadataElement from '@/components/coreDam/customMetadata/AssetCustomMetadataElement.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { damConfigDistributionCustomFormElements } from '@/services/DamConfigDistributionCustomFormService'

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ASystemBar from '@/components/system/ASystemBar.vue'
 import AssetToolbarOptions from '@/views/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
-import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
+import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
@@ -41,7 +41,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
           <slot name="main-bar-right" />
           <AssetToolbarExtSystemLicence />
           <AssetToolbarOptions variant="main" />
-          <DCurrentUserDropdown />
+          <CurrentUserDropdown />
         </div>
       </div>
     </VAppBar>

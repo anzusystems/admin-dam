@@ -4,7 +4,7 @@ import { useAssetType } from '@/model/coreDam/valueObject/AssetType'
 import { useAssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import { useI18n } from 'vue-i18n'
 import { useImageOrientation } from '@/model/coreDam/valueObject/ImageOrientation'
-import ClosestColor from '@/components/filter/ClosestColor.vue'
+import FilterClosestColor from '@/components/filter/FilterClosestColor.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import DistributionServiceNameFilter from '@/views/coreDam/distribution/components/DistributionServiceNameFilter.vue'
 import AssetSlotsFilter from '@/views/coreDam/asset/components/AssetSlotsFilter.vue'
@@ -118,7 +118,7 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
-            <ClosestColor
+            <FilterClosestColor
               v-model="filter.closestMostDominantColor"
               multiple
               @update:model-value="onAnyFilterUpdate"

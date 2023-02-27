@@ -2,9 +2,9 @@
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { computed } from 'vue'
-import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCustomMetadataElement.vue'
+import AssetCustomMetadataElement from '@/components/coreDam/customMetadata/AssetCustomMetadataElement.vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { useAssetCustomMetadataForm } from '@/components/dam/customMetadata/useAssetCustomMetadataForm'
+import { useAssetCustomMetadataForm } from '@/components/coreDam/customMetadata/useAssetCustomMetadataForm'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { useI18n } from 'vue-i18n'
 

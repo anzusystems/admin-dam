@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import AssetCustomMetadataForm from '@/components/dam/customMetadata/AssetCustomMetadataForm.vue'
+import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
 import { ACopyText, ASystemEntityScope, prettyBytes, prettyDateTime } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
 import LazyUserChip from '@/views/coreDam/user/components/LazyUserChip.vue'
 import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
-import DColorBox from '@/components/common/DColorBox.vue'
+import ColorBox from '@/components/common/ColorBox.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -129,7 +129,7 @@ const onAnyMetadataChange = () => {
         <div v-if="assetMainFile && assetMainFile.imageAttributes && isTypeImage">
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.dominantColor') }}</VCol>
-            <VCol cols="9"><DColorBox :color="assetMainFile?.imageAttributes.mostDominantColor" /></VCol>
+            <VCol cols="9"><ColorBox :color="assetMainFile?.imageAttributes.mostDominantColor" /></VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.width') }}</VCol>
