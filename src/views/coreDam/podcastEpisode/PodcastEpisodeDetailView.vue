@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
       data-cy="button-close"
     >
       <VIcon icon="mdi-close" />
-      <VTooltip activator="parent" location="bottom">Close</VTooltip>
+      <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
     </VBtn>
   </ActionbarButtonsWrapper>
   <ACard :loading="detailLoading">
