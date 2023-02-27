@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAuthorOneStore } from '@/stores/dam/authorStore'
@@ -15,24 +15,20 @@ const { getAuthorTypeOption } = useAuthorType()
 <template>
   <VRow>
     <VCol cols="8">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.author.model.name')" :value="author.name" />
-        <ARow :title="t('coreDam.author.model.identifier')" :value="author.identifier" />
-        <ARow :title="t('coreDam.author.model.type')">
-          <VChip size="small">{{ getAuthorTypeOption(author.type)?.title }}</VChip>
-        </ARow>
-      </ACard>
+      <ARow :title="t('coreDam.author.model.name')" :value="author.name" />
+      <ARow :title="t('coreDam.author.model.identifier')" :value="author.identifier" />
+      <ARow :title="t('coreDam.author.model.type')">
+        <VChip size="small">{{ getAuthorTypeOption(author.type)?.title }}</VChip>
+      </ARow>
     </VCol>
     <VCol cols="4">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.author.model.id')">
-          <ACopyText :value="author.id" />
-        </ARow>
-        <ARow :title="t('coreDam.author.model.flags.reviewed')">
-          <ABooleanValue chip :value="author.flags.reviewed" />
-        </ARow>
-        <AUserAndTimeTrackingFields :data="author" />
-      </ACard>
+      <ARow :title="t('coreDam.author.model.id')">
+        <ACopyText :value="author.id" />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.flags.reviewed')">
+        <ABooleanValue chip :value="author.flags.reviewed" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="author" />
     </VCol>
   </VRow>
 </template>

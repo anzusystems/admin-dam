@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useDistributionCategoryOneStore } from '@/stores/dam/distributionCategoryStore'
@@ -11,24 +11,20 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.distributionCategory.model.name')" :value="distributionCategory.name" />
-        <ARow
-          v-for="(option, serviceName) in distributionCategorySelectedOptions"
-          :key="serviceName"
-          :title="serviceName + ''"
-        >
-          <VChip size="small">{{ option?.name ?? '-' }}</VChip>
-        </ARow>
-      </ACard>
+      <ARow :title="t('coreDam.distributionCategory.model.name')" :value="distributionCategory.name" />
+      <ARow
+        v-for="(option, serviceName) in distributionCategorySelectedOptions"
+        :key="serviceName"
+        :title="serviceName + ''"
+      >
+        <VChip size="small">{{ option?.name ?? '-' }}</VChip>
+      </ARow>
     </VCol>
     <VCol cols="4">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.distributionCategory.model.id')">
-          <ACopyText :value="distributionCategory.id" />
-        </ARow>
-        <AUserAndTimeTrackingFields :data="distributionCategory" />
-      </ACard>
+      <ARow :title="t('coreDam.distributionCategory.model.id')">
+        <ACopyText :value="distributionCategory.id" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="distributionCategory" />
     </VCol>
   </VRow>
 </template>

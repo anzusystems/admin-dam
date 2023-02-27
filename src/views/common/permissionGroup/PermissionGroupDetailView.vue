@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, stringToInt } from '@anzusystems/common-admin'
+import {
+  AActionCloseButton,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  stringToInt,
+} from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
@@ -52,5 +58,7 @@ const { t } = useI18n()
     </Acl>
     <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
   </ActionbarButtonsWrapper>
-  <PermissionGroupDetail :client="damClient" />
+  <ACard :loading="loadingPermissionGroup">
+    <PermissionGroupDetail :client="damClient" />
+  </ACard>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACard, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAssetLicenceOneStore } from '@/stores/dam/assetLicenceStore'
@@ -13,21 +13,17 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.assetLicence.model.name')" :value="assetLicence.name" />
-        <ARow :title="t('coreDam.assetLicence.model.extId')" :value="assetLicence.extId" />
-        <ARow :title="t('coreDam.assetLicence.model.extSystem')">
-          <LazyExtSystemChip :id="assetLicence.extSystem" />
-        </ARow>
-      </ACard>
+      <ARow :title="t('coreDam.assetLicence.model.name')" :value="assetLicence.name" />
+      <ARow :title="t('coreDam.assetLicence.model.extId')" :value="assetLicence.extId" />
+      <ARow :title="t('coreDam.assetLicence.model.extSystem')">
+        <LazyExtSystemChip :id="assetLicence.extSystem" />
+      </ARow>
     </VCol>
     <VCol cols="4">
-      <ACard loader="detail">
-        <ARow :title="t('coreDam.assetLicence.model.id')">
-          <ACopyText :value="assetLicence.id" />
-        </ARow>
-        <AUserAndTimeTrackingFields :data="assetLicence" />
-      </ACard>
+      <ARow :title="t('coreDam.assetLicence.model.id')">
+        <ACopyText :value="assetLicence.id" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="assetLicence" />
     </VCol>
   </VRow>
 </template>
