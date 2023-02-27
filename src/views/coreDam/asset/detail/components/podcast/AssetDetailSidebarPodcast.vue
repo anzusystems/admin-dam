@@ -2,8 +2,7 @@
 import { onMounted, ref } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
 import { fetchPodcastEpisodeListByAsset } from '@/services/api/coreDam/podcastEpisodeApi'
@@ -11,6 +10,7 @@ import PodcastEpisodeListItem from '@/views/coreDam/asset/detail/components/podc
 import { loadLazyPodcast } from '@/views/coreDam/podcast/composables/lazyPodcast'
 import PodcastEpisodeNewDialog from '@/views/coreDam/asset/detail/components/podcast/PodcastEpisodeNewDialog.vue'
 import { usePodcastEpisodeRemoveActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +20,7 @@ const props = withDefaults(
   {}
 )
 
+const { t } = useI18n()
 const pagination = usePagination()
 pagination.sortBy = 'position'
 const filter = usePodcastEpisodeListFilter()
@@ -68,7 +69,9 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn color="secondary" variant="flat" @click.stop="addNew">Add asset to new podcast episode</VBtn>
+    <VBtn color="secondary" variant="flat" @click.stop="addNew">
+      {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
+    </VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
     <VProgressCircular indeterminate color="primary" />

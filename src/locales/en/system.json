@@ -11,6 +11,9 @@
       "uploading": "Uploading",
       "done": "Done"
     },
+    "download": {
+      "downloadOriginalFile": "Download original file"
+    },
     "mainBar": {
       "upload": "Upload",
       "search": "Search",
