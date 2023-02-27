@@ -8,7 +8,7 @@ import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpi
 import {
   createVideoShowEpisode,
   ENTITY,
-  prepareFormDataVideoShowEpisode
+  prepareFormDataVideoShowEpisode,
 } from '@/services/api/coreDam/videoShowEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useVideoShowEpisodeValidation } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
@@ -100,7 +100,7 @@ onMounted(async () => {
     <VCard v-if="value">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">Add new videoShow episode</div>
+          <div class="text-h6">{{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}</div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -139,8 +139,8 @@ onMounted(async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="success" :loading="saving" @click.stop="submit">Add</VBtn>
-        <VBtn text @click.stop="closeDialog(false)">Cancel</VBtn>
+        <VBtn color="success" :loading="saving" @click.stop="submit">{{ t('common.button.add') }}</VBtn>
+        <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

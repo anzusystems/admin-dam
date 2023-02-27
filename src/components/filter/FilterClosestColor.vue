@@ -4,6 +4,7 @@ import { isArray, simpleCloneObject, toggleArrayItem, useFilterHelpers } from '@
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -63,12 +64,18 @@ const clear = () => {
   clearOne(props.modelValue)
   value.value = props.modelValue.model
 }
+
+const { t } = useI18n()
+
+const label = computed(() => {
+  return props.modelValue.titleT ? t(props.modelValue.titleT) : undefined
+})
 </script>
 
 <template>
   <div class="d-flex flex-column align-left justify-center mb-2">
     <VLabel class="pr-1">
-      <span>{{ modelValue.title }}</span>
+      <span v-if="label">{{ label }}</span>
     </VLabel>
     <div class="color-swatches d-flex flex-wrap">
       <div

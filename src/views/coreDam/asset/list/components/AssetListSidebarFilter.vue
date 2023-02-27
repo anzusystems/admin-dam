@@ -328,7 +328,7 @@ const onAnyFilterUpdate = () => {
         </VBtn>
         <VBtn class="px-2" color="light" min-width="36px" variant="flat" size="small" @click.stop="resetFilter">
           <VIcon icon="mdi-filter-remove-outline" />
-          <VTooltip activator="parent" location="bottom">Reset</VTooltip>
+          <VTooltip activator="parent" location="bottom">{{ t('common.button.resetFilter') }}</VTooltip>
         </VBtn>
       </div>
     </template>

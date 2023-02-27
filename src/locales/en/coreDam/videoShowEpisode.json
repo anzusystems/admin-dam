@@ -14,7 +14,8 @@
       "title": "Title"
     },
     "button": {
-      "create": "Add Episode"
+      "create": "Add Episode",
+      "addNewVideoShowEpisode": "Add new video show episode"
     },
     "meta": {
       "create": "Add Episode",
