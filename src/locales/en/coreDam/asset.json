@@ -129,7 +129,12 @@
       "roi": {
         "title": "Previews",
         "description": "Preview of image on mobile, desktop or app.",
-        "refresh": "Refresh previews"
+        "refresh": "Refresh previews",
+        "rotate": {
+          "rotateMainFileImage": "Rotate image (main file)",
+          "rotateClockwise": "Rotate clockwise",
+          "rotateCounterclockwise": "Rotate counterclockwise"
+        }
       }
     },
     "upload": {
@@ -184,6 +189,9 @@
       "copyAssetId": "Copy Asset ID"
     },
     "assetFilePublicLink": {
+      "model": {
+        "slug": "Slug"
+      },
       "actions": {
         "makePrivate": "Make private",
         "makePublic": "Make private",
@@ -200,6 +208,7 @@
       "noFile": "No file",
       "mainFile": "Main file",
       "noEntries": "Nothing to show",
+      "assetSlot": "Asset slot",
       "actions": {
         "refreshList": "Refresh asset slots",
         "slotOptions": "Slot options",

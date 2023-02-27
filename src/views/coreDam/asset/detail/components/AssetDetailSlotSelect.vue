@@ -5,10 +5,13 @@ import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import type { DocId } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{
   (e: 'activeSlotChange', data: null | AssetSlot): void
 }>()
+
+const { t } = useI18n()
 
 const activeSlot = ref<DocId>('')
 const loading = ref(false)
@@ -69,7 +72,7 @@ onMounted(async () => {
     v-model="activeSlot"
     :loading="loading"
     :disabled="isDisabled"
-    label="Asset slot"
+    :label="t('coreDam.asset.slots.assetSlot')"
     :items="slotItems"
     hide-details
   />

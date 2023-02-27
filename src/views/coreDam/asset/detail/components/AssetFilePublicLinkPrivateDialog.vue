@@ -90,12 +90,12 @@ const onConfirm = async () => {
   <VDialog :model-value="modelValue" persistent @update:model-value="emit('update:modelValue', $event)">
     <VCard v-if="modelValue" width="500" class="mt-0 mr-auto ml-auto">
       <VCardTitle class="d-flex pr-2">
-        <span>Make file public</span>
+        <span>{{ t('coreDam.asset.assetFilePublicLink.actions.makePublic') }}</span>
         <VSpacer />
         <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
       <VCardText>
-        <AFormTextField v-model="slug" :v="v$" />
+        <AFormTextField v-model="slug" :label="t('coreDam.asset.assetFilePublicLink.model.slug')" :v="v$" />
       </VCardText>
       <VCardActions>
         <VSpacer />

@@ -27,7 +27,6 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     <VAppBar :order="-1" :height="46" elevation="0" class="system-border-b">
       <div class="d-flex w-100 justify-space-between align-center">
         <div class="d-flex align-center">
-          <!--          <div class="mx-2 font-weight-bold">ADAM</div>-->
           <div class="main-logo mr-2">
             <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
               <img width="104" height="42" :src="logo" alt="ADAM" />
