@@ -9,6 +9,7 @@ import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import AssetFilePublicLinkPrivateDialog from '@/views/coreDam/asset/detail/components/AssetFilePublicLinkPrivateDialog.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -18,6 +19,8 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n()
 
 const assetSlotsStore = useAssetSlotsStore()
 const assetDetailStore = useAssetDetailStore()
@@ -51,13 +54,15 @@ onMounted(async () => {
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <VBtn :loading="assetSlotsStore.loader" color="secondary" variant="flat" @click.stop="getList">
-      Refresh asset slots
+      {{ t('coreDam.asset.slots.actions.refreshList') }}
     </VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div v-if="assetSlotsStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
     <VProgressCircular indeterminate color="primary" />
   </div>
-  <div v-else-if="assetSlotsStore.assetSlotNames.length === 0" class="pa-4 text-caption">Nothing to show</div>
+  <div v-else-if="assetSlotsStore.assetSlotNames.length === 0" class="pa-4 text-caption">
+    {{ t('coreDam.asset.slots.noEntries') }}
+  </div>
   <div v-else>
     <AssetSlotListItem
       v-for="(slot, slotName) in assetSlotsStore.getPositionedSlots"

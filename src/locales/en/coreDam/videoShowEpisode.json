@@ -20,6 +20,10 @@
       "create": "Add Episode",
       "edit": "Video show Episode Edit",
       "detail": "Video show Episode Detail"
+    },
+    "common": {
+      "addAssetToNewVideoShowEpisode": "Add asset to new Video show episode",
+      "noEntries": "Nothing to show"
     }
   }
 }

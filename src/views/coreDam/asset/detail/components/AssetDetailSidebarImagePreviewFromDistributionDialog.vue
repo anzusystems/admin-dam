@@ -9,9 +9,7 @@ import {
   useErrorHandler,
   usePagination,
 } from '@anzusystems/common-admin'
-import {
-  useVideoDistributionPreviewListActions
-} from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
+import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
 import { useI18n } from 'vue-i18n'
@@ -77,7 +75,7 @@ onMounted(async () => {
     <VCard>
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">Choose as preview image</div>
+          <div class="text-h6">{{ t('system.imagePreview.actions.chooseFromDistribution') }}</div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -109,10 +107,14 @@ onMounted(async () => {
         </ACard>
       </VCardText>
       <VCardActions>
-        <div v-if="lastSelectedItem" class="text-caption pl-2">Selected: {{ lastSelectedItem.id }}</div>
+        <div v-if="lastSelectedItem" class="text-caption pl-2">
+          {{ t('system.imagePreview.selected') }}: {{ lastSelectedItem.id }}
+        </div>
         <VSpacer />
-        <VBtn color="success" :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">Confirm</VBtn>
-        <VBtn text @click.stop="closeDialog">Cancel</VBtn>
+        <VBtn color="success" :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">
+          {{ t('common.button.confirm') }}
+        </VBtn>
+        <VBtn text @click.stop="closeDialog">{{ t('common.button.cancel') }}</VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

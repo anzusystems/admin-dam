@@ -183,12 +183,25 @@
       "error": "Error",
       "copyAssetId": "Copy Asset ID"
     },
+    "assetFilePublicLink": {
+      "actions": {
+        "makePrivate": "Make private",
+        "makePublic": "Make private",
+        "openOnNewTab": "Open"
+      },
+      "status": {
+        "private": "File is private",
+        "public": "File is public"
+      }
+    },
     "slots": {
       "name": "Slot name",
       "file": "File",
       "noFile": "No file",
       "mainFile": "Main file",
+      "noEntries": "Nothing to show",
       "actions": {
+        "refreshList": "Refresh asset slots",
         "slotOptions": "Slot options",
         "duplicate": "Duplicate to another slot",
         "makeMainFile": "Make main file",

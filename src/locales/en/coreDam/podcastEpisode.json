@@ -32,7 +32,8 @@
       "detail": "Podcast Episode Detail"
     },
     "common": {
-      "addAssetToNewPodcastEpisode": "Add asset to new podcast episode"
+      "addAssetToNewPodcastEpisode": "Add asset to new podcast episode",
+      "noEntries": "Nothing to show"
     }
   }
 }

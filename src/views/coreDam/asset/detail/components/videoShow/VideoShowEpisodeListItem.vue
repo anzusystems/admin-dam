@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import LazyVideoShowChip from '@/views/coreDam/videoShow/components/LazyVideoShowChip.vue'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
@@ -8,6 +9,8 @@ withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -18,7 +21,7 @@ withDefaults(
       </VCol>
     </VRow>
     <VRow>
-      <VCol>VideoShow: <LazyVideoShowChip :id="item.videoShow" /></VCol>
+      <VCol>{{ t('coreDam.videoShowEpisode.model.videoShow') }}: <LazyVideoShowChip :id="item.videoShow" /></VCol>
     </VRow>
   </div>
 </template>

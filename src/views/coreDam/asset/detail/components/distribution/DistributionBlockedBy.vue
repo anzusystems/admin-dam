@@ -10,6 +10,7 @@ import { useDistributionStatus } from '@/model/coreDam/valueObject/DistributionS
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import { useI18n } from 'vue-i18n'
 
 // now only supports strategy AtLeastOne, as BE too
 
@@ -35,6 +36,9 @@ const value = computed({
     emit('update:modelValue', simpleCloneObject(newValue))
   },
 })
+
+const { t } = useI18n()
+
 const { getDistributionStatusOption } = useDistributionStatus()
 const pagination = usePagination()
 const filter = useDistributionFilter()
@@ -98,7 +102,7 @@ watch(
 <template>
   <div v-if="config.strategy === DistributionRequirementStrategy.AtLeastOne">
     <VSelect v-model="value" multiple :items="itemsComputed" :error-messages="errorMessageComputed" @blur="onBlur">
-      <template #label>Blocked by distribution<span class="required" /></template>
+      <template #label>{{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" /></template>
     </VSelect>
   </div>
   <div v-else></div>
