@@ -1,21 +1,19 @@
 {
-  "sidebar": {
-    "settings": {
-      "settings": "Personal",
-      "users": "Users",
-      "podcasts": "Podcasts",
-      "videoShows": "Video shows",
-      "permissionGroups": "Permission Groups",
-      "anzuUser": "Permission Users",
-      "extSystems": "External Systems",
-      "assetLicences": "Asset Licences",
-      "keywords": "Keywords",
-      "authors": "Authors",
-      "distributionCategory": "Distribution Categories",
-      "distributionCategorySelect": "Distribution Categories Selects",
-      "log": "Logs",
-      "beta": "Beta",
-      "job": "System jobs"
-    }
+  "settings": {
+    "settings": "Personal",
+    "users": "Users",
+    "podcasts": "Podcasts",
+    "videoShows": "Video shows",
+    "permissionGroups": "Permission Groups",
+    "anzuUser": "Permission Users",
+    "extSystems": "External Systems",
+    "assetLicences": "Asset Licences",
+    "keywords": "Keywords",
+    "authors": "Authors",
+    "distributionCategory": "Distribution Categories",
+    "distributionCategorySelect": "Distribution Categories Selects",
+    "log": "Logs",
+    "beta": "Beta",
+    "job": "System jobs"
   }
 }

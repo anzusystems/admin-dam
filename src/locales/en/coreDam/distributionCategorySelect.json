@@ -1,22 +1,20 @@
 {
-  "distributionCategorySelect": {
-    "model": {
-      "id": "ID",
-      "name": "Name",
-      "serviceSlug": "Distribution service",
-      "value": "Value",
-      "options": "Options",
-      "assignable": "Assignable"
-    },
-    "filter": {
-      "id": "ID",
-      "name": "Name",
-      "type": "Asset Type"
-    },
-    "meta": {
-      "edit": "Edit Distribution category select",
-      "detail": "Detail Distribution category select",
-      "list": "List of Distribution category selects"
-    }
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "serviceSlug": "Distribution service",
+    "value": "Value",
+    "options": "Options",
+    "assignable": "Assignable"
+  },
+  "filter": {
+    "id": "ID",
+    "name": "Name",
+    "type": "Asset Type"
+  },
+  "meta": {
+    "edit": "Edit Distribution category select",
+    "detail": "Detail Distribution category select",
+    "list": "List of Distribution category selects"
   }
 }

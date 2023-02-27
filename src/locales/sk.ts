@@ -5,7 +5,7 @@ import sidebar from '@/locales/sk/sidebar.json'
 
 export const sk = {
   ...commonAdminAllMessages.sk,
-  ...sidebar,
+  sidebar,
   ...{
     validations: {
       api: {

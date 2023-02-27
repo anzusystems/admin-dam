@@ -1,14 +1,12 @@
 {
-  "distributionJw": {
-    "model": {
-      "distributionService": "Distribution service name",
-      "texts": {
-        "title": "Title",
-        "description": "Description",
-        "author": "Author",
-        "keywords": "Keywords"
-      }
-    },
-    "videoAdministrationLink": "Video administration on JW Player"
-  }
+  "model": {
+    "distributionService": "Distribution service name",
+    "texts": {
+      "title": "Title",
+      "description": "Description",
+      "author": "Author",
+      "keywords": "Keywords"
+    }
+  },
+  "videoAdministrationLink": "Video administration on JW Player"
 }

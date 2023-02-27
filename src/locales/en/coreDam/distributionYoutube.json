@@ -1,30 +1,28 @@
 {
-  "distributionYoutube": {
-    "model": {
-      "distributionService": "Distribution service name",
-      "privacy": "Privacy",
-      "language": "Language",
-      "playlist": "Playlist",
-      "texts": {
-        "title": "Title",
-        "description": "Description",
-        "keywords": "Keywords"
-      },
-      "flags": {
-        "embeddable": "Embeddable",
-        "forKids": "For kids",
-        "notifySubscribers": "Notify subscribers"
-      }
+  "model": {
+    "distributionService": "Distribution service name",
+    "privacy": "Privacy",
+    "language": "Language",
+    "playlist": "Playlist",
+    "texts": {
+      "title": "Title",
+      "description": "Description",
+      "keywords": "Keywords"
     },
-    "privacy": {
-      "private": "Private",
-      "public": "Public",
-      "unlisted": "Unlisted",
-      "dynamic": "Dynamic"
-    },
-    "videoPreviewLink": "Video preview on YouTube",
-    "videoAdministrationLink": "Video administration on YouTube",
-    "loginDescription": "Login on new tab/window, then return to this screen",
-    "loginButton": "YouTube Login"
-  }
+    "flags": {
+      "embeddable": "Embeddable",
+      "forKids": "For kids",
+      "notifySubscribers": "Notify subscribers"
+    }
+  },
+  "privacy": {
+    "private": "Private",
+    "public": "Public",
+    "unlisted": "Unlisted",
+    "dynamic": "Dynamic"
+  },
+  "videoPreviewLink": "Video preview on YouTube",
+  "videoAdministrationLink": "Video administration on YouTube",
+  "loginDescription": "Login on new tab/window, then return to this screen",
+  "loginButton": "YouTube Login"
 }
