@@ -173,8 +173,12 @@ onMounted(async () => {
       </VToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">
         <div class="mb-4 text-caption">
-          Current ext system: {{ currentExtSystemId }} ({{ extSystemName }})<br />
-          Current licence: {{ currentAssetLicenceId }} ({{ licenceName }})<br />
+          {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
+            extSystemName
+          }})<br />
+          {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
+            licenceName
+          }})<br />
         </div>
         <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <VRow>
@@ -220,7 +224,9 @@ onMounted(async () => {
             </VCol>
           </VRow>
           <div class="d-flex align-center w-100">
-            <div class="text-caption font-weight-bold">Change to licence ID: <span class="text-error">*</span></div>
+            <div class="text-caption font-weight-bold">
+              {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
+            </div>
             <div class="w-100"><VTextField v-model="selectedLicence" hide-details /></div>
           </div>
         </ASystemEntityScope>
