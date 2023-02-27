@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { RegionOfInterest } from '@/types/dam/Roi'
-import type { ImageFile } from '@/types/dam/File'
+import type { RegionOfInterest } from '@/types/coreDam/Roi'
+import type { ImageFile } from '@/types/coreDam/File'
 
 interface State {
   imageFile: null | ImageFile

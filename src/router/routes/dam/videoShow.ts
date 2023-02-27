@@ -8,7 +8,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.VIDEO_SHOW.LIST,
-    component: () => import('@/views/dam/videoShow/VideoShowListView.vue'),
+    component: () => import('@/views/coreDam/videoShow/VideoShowListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
@@ -18,7 +18,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.VIDEO_SHOW.DETAIL,
-    component: () => import('@/views/dam/videoShow/VideoShowDetailView.vue'),
+    component: () => import('@/views/coreDam/videoShow/VideoShowDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
@@ -28,7 +28,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id/edit',
     name: ROUTE.DAM.VIDEO_SHOW.EDIT,
-    component: () => import('@/views/dam/videoShow/VideoShowEditView.vue'),
+    component: () => import('@/views/coreDam/videoShow/VideoShowEditView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW, ACL.DAM_VIDEO_SHOW_UPDATE],

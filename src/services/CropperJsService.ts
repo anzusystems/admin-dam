@@ -1,4 +1,4 @@
-import type { RegionOfInterest } from '@/types/dam/Roi'
+import type { RegionOfInterest } from '@/types/coreDam/Roi'
 import { stringToFloat, stringToInt } from '@anzusystems/common-admin'
 import type Cropper from 'cropperjs'
 

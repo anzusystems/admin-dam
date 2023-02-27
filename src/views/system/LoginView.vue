@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import LoginFormSimple from '@/views/system/components/LoginFormSimple.vue'
 import { damPubConfig } from '@/services/DamConfigService'
 import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
-import { UserAuthType } from '@/types/dam/DamConfig'
+import { UserAuthType } from '@/types/coreDam/DamConfig'
 
 const userAuthType = damPubConfig.userAuthType
 

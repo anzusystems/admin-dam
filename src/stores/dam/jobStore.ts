@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { Job } from '@/types/dam/Job'
-import { useJobFactory } from '@/model/dam/factory/JobFactory'
+import type { Job } from '@/types/coreDam/Job'
+import { useJobFactory } from '@/model/coreDam/factory/JobFactory'
 
 interface State {
   job: Job

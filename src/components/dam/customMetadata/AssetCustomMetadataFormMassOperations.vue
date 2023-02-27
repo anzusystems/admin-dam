@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
-import type { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { computed } from 'vue'
 import AssetCustomMetadataElement from '@/components/dam/customMetadata/AssetCustomMetadataElement.vue'
 import { useI18n } from 'vue-i18n'

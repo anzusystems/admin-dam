@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useAssetLicenceFactory } from '@/model/dam/factory/AssetLicenceFactory'
-import type { AssetLicence } from '@/types/dam/AssetLicence'
+import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
+import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 
 const { createDefault } = useAssetLicenceFactory()
 

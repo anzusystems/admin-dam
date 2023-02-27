@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { AssetExternalProviderDetailDto } from '@/types/dam/AssetExternalProvider'
+import type { AssetExternalProviderDetailDto } from '@/types/coreDam/AssetExternalProvider'
 
 interface State {
   asset: AssetExternalProviderDetailDto | null

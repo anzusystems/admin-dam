@@ -8,7 +8,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST,
-    component: () => import('@/views/dam/distributionCategory/DistributionCategoryListView.vue'),
+    component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
@@ -18,7 +18,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL,
-    component: () => import('@/views/dam/distributionCategory/DistributionCategoryDetailView.vue'),
+    component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
@@ -28,7 +28,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id/edit',
     name: ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT,
-    component: () => import('@/views/dam/distributionCategory/DistributionCategoryEditView.vue'),
+    component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryEditView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW, ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE],

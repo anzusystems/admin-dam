@@ -1,6 +1,6 @@
-import type { UploadQueueItem } from '@/types/dam/UploadQueue'
-import { QueueItemStatus } from '@/types/dam/UploadQueue'
-import { externalProviderUpload } from '@/services/api/dam/fileApi'
+import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
+import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
+import { externalProviderUpload } from '@/services/api/coreDam/fileApi'
 import { useAlerts, useErrorHandler, type ValidationResponseData } from '@anzusystems/common-admin'
 
 export function externalProviderImport(queueItem: UploadQueueItem) {

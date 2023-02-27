@@ -8,7 +8,7 @@ export const jobRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.JOB.LIST,
-    component: () => import('@/views/dam/job/JobListView.vue'),
+    component: () => import('@/views/coreDam/job/JobListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_JOB_VIEW],
@@ -18,7 +18,7 @@ export const jobRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.JOB.DETAIL,
-    component: () => import('@/views/dam/job/JobDetailView.vue'),
+    component: () => import('@/views/coreDam/job/JobDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_JOB_VIEW],

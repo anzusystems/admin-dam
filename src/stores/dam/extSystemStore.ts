@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { ExtSystem } from '@/types/dam/ExtSystem'
-import { useExtSystemFactory } from '@/model/dam/factory/ExtSystemFactory'
+import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import { useExtSystemFactory } from '@/model/coreDam/factory/ExtSystemFactory'
 
 const { createDefault } = useExtSystemFactory()
 

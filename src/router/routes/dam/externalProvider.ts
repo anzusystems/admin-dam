@@ -6,7 +6,7 @@ export const externalProviderRoutes: RouteRecordRaw[] = [
   {
     path: '/external-provider/:provider/list',
     name: ROUTE.DAM.EXTERNAL_PROVIDER.LIST,
-    component: () => import('@/views/dam/externalProviderAsset/ExternalProviderAssetListView.vue'),
+    component: () => import('@/views/coreDam/externalProviderAsset/ExternalProviderAssetListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS],

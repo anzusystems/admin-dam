@@ -5,8 +5,8 @@ import { isNull } from '@anzusystems/common-admin'
 import { SYSTEM_ADMIN_DAM } from '@/model/systems'
 import { userRefreshRequestInterceptor } from '@/services/api/clients/interceptors/requestRefreshToken'
 import { logoutUserResponseInterceptor } from '@/services/api/clients/interceptors/responseLogoutUser'
-import { AUTH_PATH_PREFIX } from '@/services/api/dam/authApi'
-import { PUB_END_POINT_PREFIX } from '@/services/api/dam/configurationApi'
+import { AUTH_PATH_PREFIX } from '@/services/api/coreDam/authApi'
+import { PUB_END_POINT_PREFIX } from '@/services/api/coreDam/configurationApi'
 
 let mainInstance: AxiosInstance | null = null
 

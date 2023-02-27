@@ -1,5 +1,5 @@
-import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
 import type { AnzuUser, FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
+import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 
 const SYSTEM = 'common'

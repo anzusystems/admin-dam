@@ -1,6 +1,6 @@
 import { type Ref, ref } from 'vue'
-import { fetchDistributionCustomFormElements } from '@/services/api/dam/assetCustomFormApi'
-import type { DistributionServiceName } from '@/types/dam/DamConfig'
+import { fetchDistributionCustomFormElements } from '@/services/api/coreDam/assetCustomFormApi'
+import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 
 export const damConfigDistributionCustomFormElements: Ref<Record<DistributionServiceName, any>> = ref({})
 

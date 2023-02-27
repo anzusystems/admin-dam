@@ -8,7 +8,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.DAM.KEYWORD.LIST,
-    component: () => import('@/views/dam/keyword/KeywordListView.vue'),
+    component: () => import('@/views/coreDam/keyword/KeywordListView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
@@ -18,7 +18,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id',
     name: ROUTE.DAM.KEYWORD.DETAIL,
-    component: () => import('@/views/dam/keyword/KeywordDetailView.vue'),
+    component: () => import('@/views/coreDam/keyword/KeywordDetailView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
@@ -28,7 +28,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/:id/edit',
     name: ROUTE.DAM.KEYWORD.EDIT,
-    component: () => import('@/views/dam/keyword/KeywordEditView.vue'),
+    component: () => import('@/views/coreDam/keyword/KeywordEditView.vue'),
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_KEYWORD_VIEW, ACL.DAM_KEYWORD_UPDATE],
