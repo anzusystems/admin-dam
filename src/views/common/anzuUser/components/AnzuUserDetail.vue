@@ -34,6 +34,32 @@ const { t } = useI18n()
           <h4>{{ t('common.anzuUser.model.enabled') }}</h4>
           <ABooleanValue :value="anzuUser.enabled" chip />
         </VCol>
+      </VRow>
+      <VRow>
+        <VCol cols="12" sm="4">
+          <h4>{{ t('common.anzuUser.model.person.firstName') }}</h4>
+          {{ anzuUser.person.firstName }}
+        </VCol>
+        <VCol cols="12" sm="4">
+          <h4>{{ t('common.anzuUser.model.person.lastName') }}</h4>
+          {{ anzuUser.person.lastName }}
+        </VCol>
+        <VCol cols="12" sm="4">
+          <h4>{{ t('common.anzuUser.model.person.fullName') }}</h4>
+          {{ anzuUser.person.fullName }}
+        </VCol>
+      </VRow>
+      <VRow>
+        <VCol cols="12" sm="4">
+          <h4>{{ t('common.anzuUser.model.avatar.text') }}</h4>
+          {{ anzuUser.avatar.text }}
+        </VCol>
+        <VCol cols="12" sm="4">
+          <h4>{{ t('common.anzuUser.model.avatar.color') }}</h4>
+          {{ anzuUser.avatar.color }}
+        </VCol>
+      </VRow>
+      <VRow>
         <VCol cols="12" sm="4">
           <h4>{{ t('common.anzuUser.model.roles') }}</h4>
           <VChip v-for="role in anzuUser.roles" :key="role" class="mr-1 mb-1">{{
