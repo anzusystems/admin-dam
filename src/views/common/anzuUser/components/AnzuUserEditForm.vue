@@ -55,6 +55,25 @@ const { t } = useI18n()
             </VRow>
             <VRow>
               <VCol cols="12" sm="3">
+                <ATextField v-model="anzuUser.person.firstName" :v="v$.anzuUser.person.firstName"></ATextField>
+              </VCol>
+              <VCol cols="12" sm="3">
+                <ATextField v-model="anzuUser.person.lastName" :v="v$.anzuUser.person.lastName"></ATextField>
+              </VCol>
+              <VCol cols="12" sm="6">
+                <ATextField v-model="anzuUser.person.fullName" :v="v$.anzuUser.person.fullName"></ATextField>
+              </VCol>
+            </VRow>
+            <VRow>
+              <VCol cols="12" sm="3">
+                <ATextField v-model="anzuUser.avatar.color" :v="v$.anzuUser.avatar.color"></ATextField>
+              </VCol>
+              <VCol cols="12" sm="3">
+                <ATextField v-model="anzuUser.avatar.text" :v="v$.anzuUser.avatar.text"></ATextField>
+              </VCol>
+            </VRow>
+            <VRow>
+              <VCol cols="12" sm="3">
                 <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />
               </VCol>
               <VCol cols="12" sm="9">

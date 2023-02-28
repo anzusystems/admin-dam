@@ -8,6 +8,13 @@ model:
   id: ID
   enabled: Povolený
   email: Email
+  person:
+    firstName: Meno
+    lastName: Priezvisko
+    fullName: Celé meno
+  avatar:
+    color: Avatar farba
+    text: Avatar text
   roles: Role
   permissionGroups: Skupiny
   permissions: Oprávnenia
