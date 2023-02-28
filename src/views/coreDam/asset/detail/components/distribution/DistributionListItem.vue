@@ -1,19 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import DistributionListItemJw from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemJw.vue'
-import DistributionListItemYoutube
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
-import DistributionListItemCustom
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustom.vue'
-import DistributionListItemEmpty
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
+import DistributionListItemYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
+import DistributionListItemCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustom.vue'
+import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { damConfig } from '@/services/DamConfigService'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{

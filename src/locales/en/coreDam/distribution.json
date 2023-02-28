@@ -6,15 +6,24 @@
     "distributed": "Distributed",
     "failed": "Failed"
   },
+  "failReason": {
+    "none": "None",
+    "unknown": "Unknown",
+    "quotaReached": "Quota reached",
+    "remoteProcessFailed": "Remote process failed"
+  },
   "common": {
     "select": "Distribution category",
     "list": "List of distributions",
     "addButton": "Add new",
+    "redistributeButton": "Redistribute",
     "addTitle": "Add new distribution",
     "redistributeTitle": "Redistribute",
     "noEntries": "Nothing to show",
     "status": "Status",
     "error": "An error occurred",
-    "blockedByDistribution": "Blocked by distribution"
+    "blockedByDistribution": "Blocked by distribution",
+    "extId": "Ext ID",
+    "failReason": "Fail reason"
   }
 }

@@ -7,6 +7,7 @@ import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStat
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import type { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useI18n } from 'vue-i18n'
+import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -48,6 +49,11 @@ const serviceRequirements = computed(() => {
         >
           Redistribute
         </VBtn>
+      </VCol>
+    </VRow>
+    <VRow v-if="item.status === DistributionStatus.Failed">
+      <VCol>
+        {{ t('coreDam.distribution.common.failReason') }}: <DistributionFailReasonChip :status="item.failReason" />
       </VCol>
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Distributed">
