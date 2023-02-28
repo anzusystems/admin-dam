@@ -7,7 +7,8 @@
     "attributes": {
       "seasonNumber": "Season number",
       "episodeNumber": "Episode number",
-      "extId": "Ext id"
+      "extId": "Ext id",
+      "lastImportStatus": "Last import status"
     },
     "texts": {
       "title": "Title",

@@ -3,6 +3,7 @@ import type { DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/podcastEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 export function usePodcastEpisodeFactory() {
   const createDefault = (extSystemId: IntegerId, podcastId: DocIdNullable = null): PodcastEpisode => {
@@ -20,6 +21,7 @@ export function usePodcastEpisodeFactory() {
         seasonNumber: null,
         episodeNumber: null,
         extId: '',
+        lastImportStatus: PodcastLastImportStatus.Default,
       },
       dates: {
         publicationDate: null,

@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { usePodcastEpisodeOneStore } from '@/stores/coreDam/podcastEpisodeStore'
 import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
+import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
@@ -36,6 +37,9 @@ const imageSrc = computed(() => {
       <ARow :title="t('coreDam.podcastEpisode.model.attributes.extId')" :value="podcastEpisode.attributes.extId" />
       <ARow :title="t('coreDam.podcastEpisode.model.dates.publicationDate')">
         <ADatetime :date-time="podcastEpisode.dates.publicationDate" />
+      </ARow>
+      <ARow :title="t('coreDam.podcastEpisode.model.attributes.lastImportStatus')">
+        <PodcastLastImportStatusChip :status="podcastEpisode.attributes.lastImportStatus" />
       </ARow>
     </VCol>
     <VCol cols="4">
