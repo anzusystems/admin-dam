@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { isNull, replaceBrowserHistoryURLByRouter, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { isNull, browserHistoryReplaceUrlByRouter, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'
@@ -34,7 +34,7 @@ const { handleError } = useErrorHandler()
 const onEditMore = async () => {
   assetDetailStore.showDetail()
   if (!assetDetailStore.asset) return
-  replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: assetDetailStore.asset.id } })
+  browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: assetDetailStore.asset.id } })
 }
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
@@ -71,8 +71,8 @@ watch(
   asset,
   (newValue, oldValue) => {
     if (newValue !== oldValue && newValue !== null) {
-      addToLazyUserBuffer(newValue.createdBy)
-      addToLazyUserBuffer(newValue.modifiedBy)
+      if (newValue.createdBy) addToLazyUserBuffer(newValue.createdBy)
+      if (newValue.modifiedBy) addToLazyUserBuffer(newValue.modifiedBy)
       fetchLazyUser()
     }
   },

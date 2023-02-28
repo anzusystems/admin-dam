@@ -4,8 +4,7 @@ import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
 import axios, { type CancelTokenSource } from 'axios'
-import { NEW_LINE_MARK, useErrorHandler, type ValidationResponseData } from '@anzusystems/common-admin'
-import { i18n } from '@/plugins/i18n'
+import { i18n, NEW_LINE_MARK, useErrorHandler, type ValidationResponseData } from '@anzusystems/common-admin'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4

@@ -1,7 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { simpleCloneObject } from '@anzusystems/common-admin'
+import { cloneDeep } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 
 interface State {
@@ -36,7 +36,7 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', {
       this.loader = false
     },
     setAssetSlotsNamesFromConfig(assetType: AssetType) {
-      this.assetSlotNames = simpleCloneObject(damConfigExtSystem[assetType].slots)
+      this.assetSlotNames = cloneDeep(damConfigExtSystem[assetType].slots)
     },
     setList(items: Array<AssetSlot>) {
       this.list = items

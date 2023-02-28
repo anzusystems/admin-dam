@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import { ACopyText, ASystemEntityScope, prettyBytes, prettyDateTime } from '@anzusystems/common-admin'
+import { ACopyText, ASystemEntityScope, prettyBytes, dateTimePretty } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
 import LazyUserChip from '@/views/coreDam/user/components/LazyUserChip.vue'
 import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
@@ -105,11 +105,11 @@ const onAnyMetadataChange = () => {
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.created') }}</VCol>
-          <VCol cols="9"><LazyUserChip :id="asset.createdBy" /><br />{{ prettyDateTime(asset.createdAt) }}</VCol>
+          <VCol cols="9"><LazyUserChip :id="asset.createdBy" /><br />{{ dateTimePretty(asset.createdAt) }}</VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.modified') }}</VCol>
-          <VCol cols="9"><LazyUserChip :id="asset.modifiedBy" /><br />{{ prettyDateTime(asset.modifiedAt) }}</VCol>
+          <VCol cols="9"><LazyUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}</VCol>
         </VRow>
         <div v-if="assetMainFile">
           <VRow>

@@ -1,5 +1,5 @@
 import type { DocId, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { simpleCloneObject, useAlerts, useErrorHandler, usePagination } from '@anzusystems/common-admin'
+import { cloneDeep, useAlerts, useErrorHandler, usePagination } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   createDistributionCategory,
@@ -96,7 +96,7 @@ export const useDistributionCategoryManageActions = () => {
 
   const fetchDistributionCategorySelectsData = async (assetType: AssetType) => {
     const pagination = usePagination()
-    const filter = simpleCloneObject(useDistributionCategorySelectListFilter())
+    const filter = cloneDeep(useDistributionCategorySelectListFilter())
     filter.serviceSlug.model = getAvailableDistributionServiceSlugs(assetType)
     filter.type.model = assetType
     return await fetchDistributionCategorySelectList(currentExtSystemId.value, pagination, filter)

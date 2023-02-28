@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { User } from '@/types/coreDam/User'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { simpleCloneObject, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { cloneDeep, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import { fetchUser, fetchUserList, fetchUserListByIds, updateUser } from '@/services/api/coreDam/userApi'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
 import { storeToRefs } from 'pinia'
@@ -100,7 +100,7 @@ export const useUserEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const userUpdateCloned = simpleCloneObject(userUpdate.value)
+      const userUpdateCloned = cloneDeep(userUpdate.value)
       await updateUser(userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
       if (!close) return

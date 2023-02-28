@@ -1,19 +1,19 @@
 import localValidationJs from '@/locales/sk/validation/js.json'
 import localValidationApi from '@/locales/sk/validation/api.json'
-import { commonAdminAllMessages } from '@anzusystems/common-admin'
+import { messagesSk } from '@anzusystems/common-admin'
 import sidebar from '@/locales/sk/sidebar.json'
 
-export const sk = {
-  ...commonAdminAllMessages.sk,
+export default {
+  ...messagesSk,
   sidebar,
   ...{
     validations: {
       api: {
-        ...commonAdminAllMessages.sk.validations.api,
+        ...messagesSk.validations.api,
         ...localValidationApi,
       },
       js: {
-        ...commonAdminAllMessages.sk.validations.js,
+        ...messagesSk.validations.js,
         ...localValidationJs,
       },
     },

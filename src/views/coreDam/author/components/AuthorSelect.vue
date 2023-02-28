@@ -2,7 +2,7 @@
 import type { ValidationScope } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocomplete,
-  getObjectValues,
+  objectGetValues,
   isArray,
   isEmptyObject,
   useValidateRequiredIf,
@@ -77,7 +77,7 @@ const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 const innerFilter = useAuthorFilter()
 
 const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
-const suggestionsIdsComputed = computed(() => getObjectValues(props.suggestions))
+const suggestionsIdsComputed = computed(() => objectGetValues(props.suggestions))
 const duplicateAuthorsIds = ref<string[]>([])
 const duplicateAuthorsIdsExists = computed(() => duplicateAuthorsIds.value.length)
 

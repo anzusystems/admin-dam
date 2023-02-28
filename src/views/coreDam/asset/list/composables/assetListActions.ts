@@ -1,8 +1,8 @@
 import type { DocId } from '@anzusystems/common-admin'
 import {
   isNull,
-  replaceBrowserHistoryURLByRouter,
-  toggleArrayItem,
+  browserHistoryReplaceUrlByRouter,
+  arrayItemToggle,
   useAlerts,
   useErrorHandler,
   useFilterHelpers,
@@ -113,7 +113,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       await fetchAssetList()
       return
     }
-    toggleArrayItem(filter.type.model, type)
+    arrayItemToggle(filter.type.model, type)
     if (!filter.type.model.includes(AssetType.Audio) && filter.inPodcast.model) {
       filter.inPodcast.model = null
     }
@@ -144,7 +144,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
-    replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: data.assetId } })
+    browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: data.assetId } })
     if (checkQuickDetailReFetch(data.assetId)) {
       assetDetailStore.hideLoader()
       return
@@ -229,7 +229,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()
     const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
-    replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
     if (checkQuickDetailReFetch(newAssetId)) {
       assetDetailStore.hideLoader()
       return
@@ -244,7 +244,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()
     const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
-    replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
     if (checkQuickDetailReFetch(newAssetId)) {
       assetDetailStore.hideLoader()
       return

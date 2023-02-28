@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
 import { computed, ref, watch } from 'vue'
-import { arrayFromArgs, flattenArray, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
+import { arrayFromArgs, arrayFlatten, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 type InputRef = null | HTMLInputElement
@@ -227,7 +227,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     return
   }
   if (isArray(newValue)) {
-    emit('filesInput', checkFormatsAndSizes(flattenArray(newValue)))
+    emit('filesInput', checkFormatsAndSizes(arrayFlatten(newValue)))
     return
   }
   if (newValue) {

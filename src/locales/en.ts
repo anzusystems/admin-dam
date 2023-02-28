@@ -19,10 +19,10 @@ import videoShow from '@/locales/en/coreDam/videoShow.json'
 import videoShowEpisode from '@/locales/en/coreDam/videoShowEpisode.json'
 import localValidationJs from '@/locales/en/validation/js.json'
 import localValidationApi from '@/locales/en/validation/api.json'
-import { commonAdminAllMessages } from '@anzusystems/common-admin'
+import { messagesEn } from '@anzusystems/common-admin'
 
-export const en = {
-  ...commonAdminAllMessages.en,
+export default {
+  ...messagesEn,
   coreDam: {
     asset,
     assetLicence,
@@ -47,11 +47,11 @@ export const en = {
   ...{
     validations: {
       api: {
-        ...commonAdminAllMessages.en.validations.api,
+        ...messagesEn.validations.api,
         ...localValidationApi,
       },
       js: {
-        ...commonAdminAllMessages.en.validations.js,
+        ...messagesEn.validations.js,
         ...localValidationJs,
       },
     },

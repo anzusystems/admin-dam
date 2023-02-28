@@ -4,7 +4,6 @@ import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
 import AppLayoutSidebar from '@/layouts/AppLayoutSidebar.vue'
 import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
-import { addI18nMessages, i18n } from '@/plugins/i18n'
 import { vuetify } from '@/plugins/vuetify'
 import { loadFonts } from '@/plugins/webfontloader'
 import { router } from '@/router'
@@ -12,7 +11,7 @@ import { loadEnvConfig } from '@/services/EnvConfigService'
 import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { AnzuSystemsCommonAdmin, type PluginOptions } from '@anzusystems/common-admin'
+import { AnzuSystemsCommonAdmin, type PluginOptions, i18n } from '@anzusystems/common-admin'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { AclValue } from '@/types/Permission'
 import '@anzusystems/common-admin/styles'
@@ -20,7 +19,6 @@ import '@anzusystems/common-admin/styles'
 const { currentUser } = useCurrentUser()
 
 loadFonts()
-addI18nMessages()
 
 loadEnvConfig(() => {
   const app = createApp(App)

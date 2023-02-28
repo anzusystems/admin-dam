@@ -2,7 +2,7 @@
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
 import { computed, ref, watch } from 'vue'
-import { type DocIdNullable, simpleCloneObject, usePagination, useValidateRequired } from '@anzusystems/common-admin'
+import { type DocIdNullable, cloneDeep, usePagination, useValidateRequired } from '@anzusystems/common-admin'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
@@ -33,7 +33,7 @@ const value = computed({
     return props.modelValue
   },
   set(newValue) {
-    emit('update:modelValue', simpleCloneObject(newValue))
+    emit('update:modelValue', cloneDeep(newValue))
   },
 })
 
