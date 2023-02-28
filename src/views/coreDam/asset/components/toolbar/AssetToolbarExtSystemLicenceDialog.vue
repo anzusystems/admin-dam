@@ -237,7 +237,7 @@ onMounted(async () => {
           v-model="selectedExtSystem"
           :items="extSystemsItems"
           :label="t('system.mainBar.extSystemLicenceSwitch.extSystem')"
-          @update:model-value="selectedLicence = undefined"
+          @update:model-value="selectedLicence = null"
         >
           <template #label>
             <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required" /></span>
