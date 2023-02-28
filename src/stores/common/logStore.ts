@@ -1,5 +1,5 @@
 import { useLogFactory } from '@/model/common/factory/LogFactory'
-import type { Log } from '@/types/common/Log'
+import type { Log } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 interface State {

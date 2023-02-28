@@ -1,6 +1,6 @@
 import type { App, ComponentPublicInstance } from 'vue'
 import { envConfig } from '@/services/EnvConfigService'
-import { LogLevel } from '@/model/common/valueObject/LogLevel'
+import { LogLevel } from '@anzusystems/common-admin'
 import { SYSTEM_ADMIN_DAM } from '@/model/systems'
 import { isNull } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'

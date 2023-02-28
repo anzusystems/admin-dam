@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useLogOneStore } from '@/stores/common/log'
+import { useLogOneStore } from '@/stores/common/logStore'
 import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'

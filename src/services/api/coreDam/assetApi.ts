@@ -11,6 +11,7 @@ import {
   isNull,
   useAlerts,
   useErrorHandler,
+  AnzuApiValidationError,
   type ValidationResponseData,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -22,7 +23,6 @@ import type {
   AssetSearchListItemDto,
 } from '@/types/coreDam/Asset'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { AnzuApiValidationError } from '@/model/common/error/AnzuApiValidationError'
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 

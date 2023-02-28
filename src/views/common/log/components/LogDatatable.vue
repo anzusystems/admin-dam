@@ -12,7 +12,7 @@ import {
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'
 import { ENTITY } from '@/services/api/common/logApi'
-import type { Log } from '@/types/common/Log'
+import type { Log } from '@anzusystems/common-admin'
 import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
