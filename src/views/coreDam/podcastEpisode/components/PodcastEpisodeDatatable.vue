@@ -21,6 +21,7 @@ import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/com
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeFilter.vue'
 import { ACL } from '@/types/Permission'
+import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -37,7 +38,12 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems } = usePodcastEpisodeListActions()
 
-const columns = useDatatableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
+const columns = useDatatableColumns([
+  { name: 'texts.title' },
+  { name: 'attributes.lastImportStatus' },
+  { name: 'createdAt' },
+  { name: 'modifiedAt' },
+])
 
 const onRowClick = (row: Author) => {
   router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: row.id } })
@@ -59,6 +65,9 @@ onMounted(() => {
   />
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
+      <template #attributes-lastImportStatus="{ data }">
+        <PodcastLastImportStatusChip :status="data" />
+      </template>
       <template #actions="{ data }">
         <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">
           <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL" />

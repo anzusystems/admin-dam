@@ -7,6 +7,7 @@ import type {
 } from '@anzusystems/common-admin'
 import type { Links } from '@/types/coreDam/File'
 import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
+import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
   title: string
@@ -18,7 +19,9 @@ interface Attributes {
   seasonNumber: number | null
   episodeNumber: number | null
   extId: string
+  lastImportStatus: PodcastLastImportStatus
 }
+
 interface Dates {
   publicationDate: DatetimeUTCNullable
 }
