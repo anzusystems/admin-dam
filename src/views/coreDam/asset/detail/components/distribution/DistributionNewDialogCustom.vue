@@ -4,13 +4,7 @@ import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  ASystemEntityScope,
-  simpleCloneObject,
-  useAlerts,
-  useErrorHandler,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { ASystemEntityScope, cloneDeep, useAlerts, useErrorHandler, usePagination } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -30,11 +24,8 @@ import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,
 } from '@/services/DamConfigDistributionCustomFormService'
-import DistributionCustomMetadataForm
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
@@ -80,7 +71,7 @@ const loadFormData = async () => {
     distribution.value = {
       id: existingDistributions.value[0].id,
       distributionService: props.distributionServiceName,
-      customData: simpleCloneObject(existingDistributions.value[0].customData),
+      customData: cloneDeep(existingDistributions.value[0].customData),
       blockedBy: existingDistributions.value[0].blockedBy,
     }
     canDisplayForm.value = true

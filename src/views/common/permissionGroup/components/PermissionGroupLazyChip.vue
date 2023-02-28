@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { getObjectValueByPath } from '@anzusystems/common-admin'
+import { objectGetValueByPath } from '@anzusystems/common-admin'
 import { useLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
 
 const props = withDefaults(
@@ -32,7 +32,7 @@ const permissionGroup = computed(() => {
 
 const text = computed(() => {
   if (permissionGroup.value) {
-    return getObjectValueByPath(permissionGroup.value, props.property)
+    return objectGetValueByPath(permissionGroup.value, props.property)
   }
 
   return ''

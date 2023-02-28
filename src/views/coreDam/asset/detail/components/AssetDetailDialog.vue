@@ -12,7 +12,7 @@ import { isImageFile } from '@/types/coreDam/File'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { DocId } from '@anzusystems/common-admin'
-import { isNull, replaceBrowserHistoryURLByRouter, useTheme } from '@anzusystems/common-admin'
+import { isNull, browserHistoryReplaceUrlByRouter, useTheme } from '@anzusystems/common-admin'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -38,7 +38,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  replaceBrowserHistoryURLByRouter(router, { name: ROUTE.DAM.ASSET.LIST })
+  browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.LIST })
 }
 
 const postDelete = (data: DocId) => {

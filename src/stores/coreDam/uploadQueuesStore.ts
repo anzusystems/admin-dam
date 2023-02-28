@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { getObjectValues, isUndefined } from '@anzusystems/common-admin'
+import { objectGetValues, isUndefined } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
@@ -547,7 +547,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     ) {
       item.keywords.forEach((id) => addLazyKeyword(id))
       item.authors.forEach((id) => addLazyAuthor(id))
-      getObjectValues(item.authorSuggestions)
+      objectGetValues(item.authorSuggestions)
         .filter((ids) => ids.length > 1)
         .forEach((ids) => ids.filter((id) => addLazyAuthor(id)))
     },

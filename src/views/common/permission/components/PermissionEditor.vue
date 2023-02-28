@@ -5,14 +5,14 @@ import { usePermissionConfigActions } from '@/views/common/permission/composable
 import type { AxiosInstance } from 'axios'
 import PermissionGrantEditor from '@/views/common/permission/components/PermissionGrantEditor.vue'
 import {
-  deleteObjectPropertyByPath,
-  getObjectValueByPath,
+  objectDeletePropertyByPath,
+  objectGetValueByPath,
   Grant,
   GrantOrigin,
   isUndefined,
   ROLE_SUPER_ADMIN,
-  setObjectValueByPath,
-  simpleCloneObject,
+  objectSetValueByPath,
+  cloneDeep,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
@@ -25,7 +25,7 @@ const props = defineProps<{
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
-const permissions = computed(() => simpleCloneObject(props.modelValue))
+const permissions = computed(() => cloneDeep(props.modelValue))
 const emit = defineEmits<{
   (e: 'update:modelValue', data: Permissions): void
 }>()
@@ -34,19 +34,19 @@ const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized
 const changeGrant = (subject: string, action: string, grant?: Grant) => {
   const permissionName = subject + '_' + action
   if (isUndefined(grant) && Object.hasOwn(permissions.value, permissionName)) {
-    deleteObjectPropertyByPath(permissions.value, permissionName)
+    objectDeletePropertyByPath(permissions.value, permissionName)
     emit('update:modelValue', permissions.value)
     return
   }
-  setObjectValueByPath(permissions.value, permissionName, grant)
+  objectSetValueByPath(permissions.value, permissionName, grant)
   emit('update:modelValue', permissions.value)
 }
 const getSelectedGrant = (subject: string, action: string) => {
   const permissionName = subject + '_' + action
-  return getObjectValueByPath(permissions.value, permissionName)
+  return objectGetValueByPath(permissions.value, permissionName)
 }
 const getAvailableGrants = (subject: string, action: string) => {
-  const grants = getObjectValueByPath(permissionConfig.value.config, subject + '.' + action + '.grants')
+  const grants = objectGetValueByPath(permissionConfig.value.config, subject + '.' + action + '.grants')
   if (isUndefined(grants)) {
     return permissionConfig.value.defaultGrants
   }
@@ -60,11 +60,11 @@ const getResolvedGrant = (subject: string, action: string) => {
   const permissionName = subject + '_' + action
   if (props.resolvedPermissions) {
     if (Object.hasOwn(props.resolvedPermissions, permissionName)) {
-      return getObjectValueByPath(props.resolvedPermissions, permissionName)
+      return objectGetValueByPath(props.resolvedPermissions, permissionName)
     }
   }
   if (Object.hasOwn(permissions.value, permissionName)) {
-    return getObjectValueByPath(permissions.value, permissionName)
+    return objectGetValueByPath(permissions.value, permissionName)
   }
   return Grant.Deny
 }

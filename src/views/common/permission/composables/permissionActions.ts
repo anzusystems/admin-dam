@@ -1,6 +1,6 @@
 import type { Permissions } from '@/types/Permission'
 import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
-import { getObjectValueByPath, isUndefined, setObjectValueByPath } from '@anzusystems/common-admin'
+import { objectGetValueByPath, isUndefined, objectSetValueByPath } from '@anzusystems/common-admin'
 import { useLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
 
 export const usePermissionActions = () => {
@@ -19,13 +19,13 @@ export const usePermissionActions = () => {
     for (const permissionGroup of permissionGroups) {
       if (isUndefined(permissionGroup)) continue
       for (const permissionName in permissionGroup.permissions) {
-        const grant = getObjectValueByPath(permissionGroup.permissions, permissionName)
+        const grant = objectGetValueByPath(permissionGroup.permissions, permissionName)
         if (!Object.hasOwn(permissions, permissionName)) {
-          setObjectValueByPath(permissions, permissionName, grant)
+          objectSetValueByPath(permissions, permissionName, grant)
           continue
         }
-        if (getObjectValueByPath(permissions, permissionName) < grant) {
-          setObjectValueByPath(permissions, permissionName, grant)
+        if (objectGetValueByPath(permissions, permissionName) < grant) {
+          objectSetValueByPath(permissions, permissionName, grant)
         }
       }
     }

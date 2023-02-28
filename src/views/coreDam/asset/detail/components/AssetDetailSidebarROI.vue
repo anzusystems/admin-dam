@@ -8,7 +8,7 @@ import { onMounted } from 'vue'
 import { isImageFile } from '@/types/coreDam/File'
 import { fetchImageRoiList, fetchRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiFilter } from '@/model/coreDam/filter/ImageRoiFilter'
-import { simpleCloneObject, usePagination } from '@anzusystems/common-admin'
+import { cloneDeep, usePagination } from '@anzusystems/common-admin'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
@@ -57,7 +57,7 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !isImageFile(slot.assetFile)) return
   imageRoiStore.showLoader()
   const imageFileDetail = await fetchImageFile(slot.assetFile.id)
-  imageRoiStore.setImageFile(simpleCloneObject(imageFileDetail))
+  imageRoiStore.setImageFile(cloneDeep(imageFileDetail))
   await loadRois()
   imageRoiStore.forceReloadRoiPreviews()
   imageRoiStore.forceReloadCropper()
@@ -67,7 +67,7 @@ onMounted(async () => {
   imageRoiStore.reset()
   imageRoiStore.showLoader()
   if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
-    imageRoiStore.setImageFile(simpleCloneObject(assetDetailStore.asset.mainFile))
+    imageRoiStore.setImageFile(cloneDeep(assetDetailStore.asset.mainFile))
     await loadRois()
   }
   imageRoiStore.hideLoader()

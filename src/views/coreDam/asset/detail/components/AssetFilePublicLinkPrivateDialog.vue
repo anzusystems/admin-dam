@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
 import {
   AFormTextField,
-  slugify,
+  stringToSlug,
   useAlerts,
   useErrorHandler,
   useValidateMaxLength,
@@ -45,7 +45,7 @@ const modelValueComputed = computed(() => {
 
 watch(modelValueComputed, async (newValue) => {
   if (newValue) {
-    slug.value = slugify(props.title)
+    slug.value = stringToSlug(props.title)
   }
 })
 
@@ -74,7 +74,7 @@ const onConfirm = async () => {
     return
   }
   try {
-    await makePublic(props.fileId, slugify(slug.value))
+    await makePublic(props.fileId, stringToSlug(slug.value))
     showRecordWas('updated')
   } catch (e) {
     handleError(e)

@@ -11,14 +11,28 @@ import {
   modifyLanguageSettings,
 } from '@anzusystems/common-admin'
 
+const route = useRoute()
 const configAvailableLanguages = inject<LanguageCode[]>(AvailableLanguagesSymbol, [])
 const configDefaultLanguage = inject<LanguageCode>(DefaultLanguageSymbol, 'en')
-const route = useRoute()
-const { initializeLanguage } = modifyLanguageSettings(configAvailableLanguages, configDefaultLanguage)
+const { initializeLanguage, addMessages, currentLanguageCode } = modifyLanguageSettings(
+  configAvailableLanguages,
+  configDefaultLanguage
+)
 
-onMounted(() => {
-  initializeLanguage()
+const loadLanguageMessages = async (code: LanguageCode | 'default') => {
+  if (code === 'default' || code === 'xx') return
+  try {
+    const messages = await import(`./locales/${code}.ts`)
+    addMessages(code, messages.default)
+  } catch (e) {
+    console.error('Unable to load language translation messages.')
+  }
+}
+
+onMounted(async () => {
   useWindowFilesDragWatcher()
+  initializeLanguage()
+  await loadLanguageMessages(currentLanguageCode.value)
 })
 </script>
 

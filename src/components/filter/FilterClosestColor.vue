@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Filter } from '@anzusystems/common-admin'
-import { isArray, simpleCloneObject, toggleArrayItem, useFilterHelpers } from '@anzusystems/common-admin'
+import { isArray, cloneDeep, arrayItemToggle, useFilterHelpers } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'
@@ -50,8 +50,8 @@ const showClear = computed(() => {
 
 const toggleSelected = (color: string) => {
   if (isArray(value.value)) {
-    const cloned = simpleCloneObject(value.value)
-    toggleArrayItem(cloned, color)
+    const cloned = cloneDeep(value.value)
+    arrayItemToggle(cloned, color)
     value.value = cloned
     return
   }

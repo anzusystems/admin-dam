@@ -2,7 +2,7 @@
 import type { ValidationScope } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocomplete,
-  getObjectValues,
+  objectGetValues,
   isArray,
   isEmptyObject,
   useValidateRequiredIf,
@@ -78,7 +78,7 @@ const innerFilter = useKeywordFilter()
 const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
 const existingKeywordsIds = computed(() => {
   const existingKeywordsList: string[] = []
-  getObjectValues(props.suggestions).forEach((ids) => ids.forEach((id) => existingKeywordsList.push(id)))
+  objectGetValues(props.suggestions).forEach((ids) => ids.forEach((id) => existingKeywordsList.push(id)))
   return existingKeywordsList
 })
 const existingKeywordsNames = computed(() => {
