@@ -1,15 +1,9 @@
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
+import { isDefined } from '@anzusystems/common-admin'
 import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
-
-export enum DistributionFailReason {
-  None = 'none',
-  Unknown = 'unknown',
-  QuotaReached = 'quota_reached',
-  RemoteProcessFailed = 'remote_process_failed',
-  Default = None,
-}
+import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
 
 interface TextsJw {
   title: string
@@ -108,4 +102,10 @@ export interface DistributionYoutubeItem extends DistributionItem {
 export interface DistributionCustomItem extends DistributionItem {
   customData: Record<string, any>
   distributionData: Record<string, any>
+}
+
+export const isDistributionCustomItem = (
+  value: DistributionCustomItem | DistributionYoutubeItem | DistributionJwItem
+): value is DistributionCustomItem => {
+  return isDefined((value as DistributionCustomItem).distributionData)
 }

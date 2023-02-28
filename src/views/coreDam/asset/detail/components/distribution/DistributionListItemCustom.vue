@@ -6,6 +6,8 @@ import DistributionStatusChip from '@/views/coreDam/asset/detail/components/dist
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import type { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useI18n } from 'vue-i18n'
+import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -45,9 +47,22 @@ const serviceRequirements = computed(() => {
           size="small"
           @click.stop="emit('openRedistribute')"
         >
-          Redistribute
+          {{ t('coreDam.distribution.common.redistributeButton') }}
         </VBtn>
       </VCol>
+    </VRow>
+    <VRow v-if="item.status === DistributionStatus.Failed">
+      <VCol>
+        {{ t('coreDam.distribution.common.failReason') }}: <DistributionFailReasonChip :status="item.failReason" />
+      </VCol>
+    </VRow>
+    <VRow>
+      <VCol v-if="item.extId.length > 0">{{ t('coreDam.distribution.common.extId') }}: {{ item.extId }}</VCol>
+      <template v-for="(value, key) in item.distributionData" :key="key + value">
+        <VCol v-if="value.length > 0">
+          <a :href="value" target="_blank">{{ key }} <VIcon size="small" icon="mdi-open-in-new" /></a>
+        </VCol>
+      </template>
     </VRow>
   </div>
 </template>
