@@ -1,8 +1,7 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, Log, Pagination } from '@anzusystems/common-admin'
 import { useErrorHandler } from '@anzusystems/common-admin'
 import { fetchLog, fetchLogList } from '@/services/api/common/logApi'
 import { useLogOneStore } from '@/stores/common/logStore'
-import type { Log } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 

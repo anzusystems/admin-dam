@@ -33,16 +33,21 @@ import {
   DistributionYoutubePrivacy,
   useDistributionYoutubePrivacy,
 } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
-import DistributionYoutubeLanguageSelect from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
-import DistributionYoutubeTermOfUse from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
-import DistributionYoutubePlaylistSelect from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
+import DistributionYoutubeLanguageSelect
+  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
+import DistributionYoutubeTermOfUse
+  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
+import DistributionYoutubePlaylistSelect
+  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import {
+  useAssetDetailDistributionDialog
+} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(

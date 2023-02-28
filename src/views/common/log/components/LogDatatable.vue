@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { Log } from '@anzusystems/common-admin'
 import {
   ACopyText,
   ADatatable,
   ADatatablePagination,
+  ALogLevelChip,
   ASystemEntityScope,
   isNull,
   useDatatableColumns,
@@ -12,8 +14,6 @@ import {
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'
 import { ENTITY } from '@/services/api/common/logApi'
-import type { Log } from '@anzusystems/common-admin'
-import { ALogLevelChip } from '@anzusystems/common-admin'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'

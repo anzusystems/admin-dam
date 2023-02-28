@@ -2,7 +2,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { useI18n } from 'vue-i18n'
-import AssetCustomMetadataFormMassOperations from '@/components/coreDam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
+import AssetCustomMetadataFormMassOperations
+  from '@/components/coreDam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'

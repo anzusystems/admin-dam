@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Filter } from '@anzusystems/common-admin'
-import { isArray, cloneDeep, arrayItemToggle, useFilterHelpers } from '@anzusystems/common-admin'
+import { arrayItemToggle, cloneDeep, isArray, useFilterHelpers } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { damConfig } from '@/services/DamConfigService'
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'

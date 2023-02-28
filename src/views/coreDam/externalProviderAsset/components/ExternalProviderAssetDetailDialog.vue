@@ -10,8 +10,11 @@ import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { isNull, useTheme } from '@anzusystems/common-admin'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
-import ExternalProviderAssetDetailDialogSidebar from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
-import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
+import ExternalProviderAssetDetailDialogSidebar
+  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
+import {
+  useExternalProviderAssetListActions
+} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{
