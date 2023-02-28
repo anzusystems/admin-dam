@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FileUpload from '@/components/common/FileUpload.vue'
+import FileUpload from '@/components/coreDam/FileUpload.vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'

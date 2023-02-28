@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useLogType } from '@/model/common/valueObject/LogType'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
-import { useLogLevel } from '@/model/common/valueObject/LogLevel'
+import { useLogLevel } from '@anzusystems/common-admin'
 import { useLogSystem } from '@/model/common/valueObject/LogSystem'
 import {
   AFilterDatetimePicker,

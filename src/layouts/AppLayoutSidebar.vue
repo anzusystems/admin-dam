@@ -2,7 +2,7 @@
 import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import ASidebarSettings from '@/components/system/SidebarSettings.vue'
-import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget.vue'
+import ActionbarTeleportTarget from '@/components/coreDam/ActionbarTeleportTarget.vue'
 import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE } from '@/router/routes'

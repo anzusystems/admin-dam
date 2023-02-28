@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { LogLevel, useLogLevel } from '@/model/common/valueObject/LogLevel'
+import { LogLevel, useLogLevel } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
