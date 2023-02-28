@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { isNull, browserHistoryReplaceUrlByRouter, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { browserHistoryReplaceUrlByRouter, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'

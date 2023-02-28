@@ -24,8 +24,11 @@ import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,
 } from '@/services/DamConfigDistributionCustomFormService'
-import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionCustomMetadataForm
+  from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import {
+  useAssetDetailDistributionDialog
+} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(

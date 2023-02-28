@@ -2,9 +2,9 @@
 import type { ValidationScope } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocomplete,
-  objectGetValues,
   isArray,
   isEmptyObject,
+  objectGetValues,
   useValidateRequiredIf,
 } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'

@@ -6,9 +6,9 @@ import {
   ABooleanValue,
   ACopyText,
   ADatetime,
+  AJobStatusChip,
   ARow,
   AUserAndTimeTrackingFields,
-  AJobStatusChip,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import type { JobResource } from '@/model/coreDam/valueObject/JobResource'

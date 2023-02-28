@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import { ACopyText, ASystemEntityScope, prettyBytes, dateTimePretty } from '@anzusystems/common-admin'
+import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
 import LazyUserChip from '@/views/coreDam/user/components/LazyUserChip.vue'
 import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'

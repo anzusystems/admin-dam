@@ -2,7 +2,8 @@
 import { onMounted, ref } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper
+  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useVideoShowEpisodeListFilter } from '@/model/coreDam/filter/VideoShowEpisodeFilter'
 import { fetchVideoShowEpisodeListByAsset } from '@/services/api/coreDam/videoShowEpisodeApi'

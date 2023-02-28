@@ -30,7 +30,9 @@ import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distribut
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import {
+  useAssetDetailDistributionDialog
+} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(

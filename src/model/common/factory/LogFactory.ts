@@ -1,5 +1,5 @@
-import { LogLevel } from '@anzusystems/common-admin'
 import type { Log } from '@anzusystems/common-admin'
+import { LogLevel } from '@anzusystems/common-admin'
 
 export function useLogFactory() {
   const createDefault = (): Log => {

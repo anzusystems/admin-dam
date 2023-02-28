@@ -1,6 +1,6 @@
 import { useWebSocket } from '@vueuse/core'
 import { envConfig } from '@/services/EnvConfigService'
-import { useAlerts, i18n } from '@anzusystems/common-admin'
+import { i18n, useAlerts } from '@anzusystems/common-admin'
 
 const notificationEventTarget = new EventTarget()
 const { t } = i18n.global || i18n

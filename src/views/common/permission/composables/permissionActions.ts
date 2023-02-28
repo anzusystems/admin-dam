@@ -1,6 +1,6 @@
 import type { Permissions } from '@/types/Permission'
 import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
-import { objectGetValueByPath, isUndefined, objectSetValueByPath } from '@anzusystems/common-admin'
+import { isUndefined, objectGetValueByPath, objectSetValueByPath } from '@anzusystems/common-admin'
 import { useLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
 
 export const usePermissionActions = () => {

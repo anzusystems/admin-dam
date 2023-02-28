@@ -9,7 +9,9 @@ import {
   useErrorHandler,
   usePagination,
 } from '@anzusystems/common-admin'
-import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
+import {
+  useVideoDistributionPreviewListActions
+} from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
 import { useI18n } from 'vue-i18n'

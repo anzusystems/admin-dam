@@ -1,8 +1,8 @@
 import type { DocId } from '@anzusystems/common-admin'
 import {
-  isNull,
-  browserHistoryReplaceUrlByRouter,
   arrayItemToggle,
+  browserHistoryReplaceUrlByRouter,
+  isNull,
   useAlerts,
   useErrorHandler,
   useFilterHelpers,

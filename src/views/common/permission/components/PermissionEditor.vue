@@ -5,14 +5,14 @@ import { usePermissionConfigActions } from '@/views/common/permission/composable
 import type { AxiosInstance } from 'axios'
 import PermissionGrantEditor from '@/views/common/permission/components/PermissionGrantEditor.vue'
 import {
-  objectDeletePropertyByPath,
-  objectGetValueByPath,
+  cloneDeep,
   Grant,
   GrantOrigin,
   isUndefined,
-  ROLE_SUPER_ADMIN,
+  objectDeletePropertyByPath,
+  objectGetValueByPath,
   objectSetValueByPath,
-  cloneDeep,
+  ROLE_SUPER_ADMIN,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
