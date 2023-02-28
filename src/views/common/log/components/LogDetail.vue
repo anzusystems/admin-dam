@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useLogOneStore } from '@/stores/common/logStore'
-import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { ALogLevelChip } from '@anzusystems/common-admin'
 
 const { log } = storeToRefs(useLogOneStore())
 
@@ -27,7 +27,7 @@ const formattedJSON = (data: string) => {
         </VCol>
         <VCol cols="3">
           <h4 class="text-subtitle-2">{{ t('common.log.model.levelName') }}</h4>
-          <LogLevelChip :level="log.levelName" />
+          <ALogLevelChip :level="log.levelName" />
         </VCol>
         <VCol cols="2">
           <h4 class="text-subtitle-2">{{ t('common.log.model.context.userId') }}</h4>

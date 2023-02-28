@@ -13,7 +13,7 @@ import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'
 import { ENTITY } from '@/services/api/common/logApi'
 import type { Log } from '@anzusystems/common-admin'
-import LogLevelChip from '@/views/common/log/components/LogLevelChip.vue'
+import { ALogLevelChip } from '@anzusystems/common-admin'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -93,7 +93,7 @@ defineExpose({
     <ASystemEntityScope system="common" :subject="ENTITY">
       <ADatatable :columns="columns" :data="listItems" @row-click="onRowClick">
         <template #levelName="{ data }">
-          <LogLevelChip :level="data" />
+          <ALogLevelChip :level="data" />
         </template>
         <template #message="{ data }">
           <div class="line-clamp-2">{{ data }}</div>

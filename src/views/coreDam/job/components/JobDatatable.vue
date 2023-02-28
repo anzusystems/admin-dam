@@ -13,7 +13,7 @@ import {
   ASystemEntityScope,
   ATableCopyIdButton,
   ATableDetailButton,
-  JobStatusChip,
+  AJobStatusChip,
   useAcl,
   useDatatableColumns,
   useFilterHelpers,
@@ -79,7 +79,7 @@ defineExpose({
         <JobResourceChip :value="data"></JobResourceChip>
       </template>
       <template #status="{ data }">
-        <JobStatusChip :value="data"></JobStatusChip>
+        <AJobStatusChip :value="data"></AJobStatusChip>
       </template>
       <template #actions="{ data }">
         <Acl :permission="ACL.DAM_JOB_VIEW">

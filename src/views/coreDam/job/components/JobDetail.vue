@@ -8,7 +8,7 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
-  JobStatusChip,
+  AJobStatusChip,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
@@ -42,7 +42,7 @@ const hasPodcastFields = computed(() => 'jobPodcastSynchronizer' === job.value._
         <ADatetime :date-time="job.finishedAt"></ADatetime>
       </ARow>
       <ARow :title="t('job.model.status')">
-        <JobStatusChip :value="job.status"></JobStatusChip>
+        <AJobStatusChip :value="job.status"></AJobStatusChip>
       </ARow>
       <ARow v-if="job.result" :title="t('job.model.result')" :value="job.result"></ARow>
     </VCol>

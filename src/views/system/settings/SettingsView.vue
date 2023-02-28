@@ -5,7 +5,7 @@ import {
   AThemeSelect,
   AvailableLanguagesSymbol,
   DefaultLanguageSymbol,
-  LanguageCode,
+  type LanguageCode,
   modifyLanguageSettings,
 } from '@anzusystems/common-admin'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
