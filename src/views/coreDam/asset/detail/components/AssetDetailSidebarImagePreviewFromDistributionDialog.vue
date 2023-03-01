@@ -9,9 +9,7 @@ import {
   useErrorHandler,
   usePagination,
 } from '@anzusystems/common-admin'
-import {
-  useVideoDistributionPreviewListActions
-} from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
+import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
 import { useI18n } from 'vue-i18n'
@@ -35,7 +33,7 @@ const saving = ref(false)
 const pagination = usePagination()
 pagination.rowsPerPage = 12
 const filter = {}
-const { listItems, fetchList, listLoading, toggleSelectedItem, lastSelectedItem } =
+const { listItems, fetchList, listLoading, toggleSelectedItem, itemImageIsInvalid, lastSelectedItem } =
   useVideoDistributionPreviewListActions()
 const getList = () => {
   fetchList(props.fileId, pagination, filter)
@@ -43,6 +41,10 @@ const getList = () => {
 
 const toggleSelected = (index: number) => {
   toggleSelectedItem(index)
+}
+
+const invalidImage = (index: number) => {
+  itemImageIsInvalid(index)
 }
 
 const closeDialog = () => {
@@ -103,6 +105,7 @@ onMounted(async () => {
               :index="index"
               :item="item"
               @toggle-selected="toggleSelected"
+              @invalid-image="invalidImage"
             />
           </div>
           <ADatatablePagination v-model="pagination" hide-records-per-page @change="getList" />
@@ -111,6 +114,9 @@ onMounted(async () => {
       <VCardActions>
         <div v-if="lastSelectedItem" class="text-caption pl-2">
           {{ t('system.imagePreview.selected') }}: {{ lastSelectedItem.id }}
+        </div>
+        <div v-if="lastSelectedItem && lastSelectedItem.invalidImage" class="text-caption pl-2">
+          (todo: invalid image?)
         </div>
         <VSpacer />
         <VBtn color="success" :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">
