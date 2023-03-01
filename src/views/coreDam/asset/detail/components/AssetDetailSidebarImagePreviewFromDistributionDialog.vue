@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import {
   ACard,
   ADatatablePagination,
@@ -13,6 +13,7 @@ import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/de
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
 import { useI18n } from 'vue-i18n'
+import { damConfig } from '@/services/DamConfigService'
 
 const props = withDefaults(
   defineProps<{
@@ -69,6 +70,13 @@ const onConfirm = async () => {
   }
 }
 
+const selectedTitle = computed(() => {
+  if (lastSelectedItem.value && damConfig.distributionServices[lastSelectedItem.value.service]) {
+    return damConfig.distributionServices[lastSelectedItem.value.service].title
+  }
+  return ''
+})
+
 onMounted(async () => {
   getList()
 })
@@ -113,10 +121,7 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <div v-if="lastSelectedItem" class="text-caption pl-2">
-          {{ t('system.imagePreview.selected') }}: {{ lastSelectedItem.id }}
-        </div>
-        <div v-if="lastSelectedItem && lastSelectedItem.invalidImage" class="text-caption pl-2">
-          (todo: invalid image?)
+          {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>
         <VSpacer />
         <VBtn color="success" :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">
