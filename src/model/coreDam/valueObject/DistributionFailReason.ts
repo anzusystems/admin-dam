@@ -7,6 +7,7 @@ export enum DistributionFailReason {
   Unknown = 'unknown',
   QuotaReached = 'quota_reached',
   RemoteProcessFailed = 'remote_process_failed',
+  ValidationFailed = 'validation_failed',
   Default = None,
 }
 
@@ -29,6 +30,10 @@ export function useDistributionFailReason() {
     {
       value: DistributionFailReason.RemoteProcessFailed,
       title: t('coreDam.distribution.failReason.remoteProcessFailed'),
+    },
+    {
+      value: DistributionFailReason.ValidationFailed,
+      title: t('coreDam.distribution.failReason.validationFailed'),
     },
   ])
 
