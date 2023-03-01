@@ -13,7 +13,8 @@
     "none": "None",
     "unknown": "Unknown",
     "quotaReached": "Quota reached",
-    "remoteProcessFailed": "Remote process failed"
+    "remoteProcessFailed": "Remote process failed",
+    "validationFailed": "Validation failed"
   },
   "common": {
     "select": "Distribution category",
