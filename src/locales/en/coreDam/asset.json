@@ -202,7 +202,7 @@
     },
     "actions": {
       "makePrivate": "Make private",
-      "makePublic": "Make private",
+      "makePublic": "Make public",
       "openOnNewTab": "Open"
     },
     "status": {
