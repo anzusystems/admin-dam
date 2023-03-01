@@ -67,8 +67,5 @@ const serviceRequirements = computed(() => {
         </a>
       </VCol>
     </VRow>
-    <VRow v-else-if="item.status === DistributionStatus.Failed">
-      <VCol>{{ t('coreDam.distribution.common.error') }}: {{ item.failReason }}</VCol>
-    </VRow>
   </div>
 </template>
