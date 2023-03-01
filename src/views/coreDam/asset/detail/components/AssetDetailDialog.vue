@@ -194,6 +194,7 @@ const assetMainFile = computed(() => {
               :asset-status="assetStatus"
               :asset-type="assetType"
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
+              :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="postDelete"
             />
           </div>

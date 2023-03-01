@@ -21,6 +21,8 @@ import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/ty
 import { externalProviderImport } from '@/services/upload/externalProviderImportService'
 import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
+import { useUploadQueueItemFactory } from '@/model/coreDam/factory/UploadQueueItemFactory'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -29,6 +31,8 @@ interface State {
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
 const CHUNK_SIZE = 10485760
+
+const { createDefault } = useUploadQueueItemFactory()
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   state: (): State => ({
@@ -113,46 +117,16 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       for await (const file of files) {
         const type = getAssetTypeByMimeType(file.type)
         if (!type) continue
-        const queueItem: UploadQueueItem = {
-          key: 'file_' + file.name,
-          type: QueueItemType.File,
-          file: file,
-          status: QueueItemStatus.Waiting,
-          isDuplicate: false,
-          duplicateAssetId: null,
-          assetType: type,
-          assetStatus: AssetStatus.Default,
-          displayTitle: file.name,
-          assetId: null,
-          fileId: null,
-          externalProviderAssetId: null,
-          externalProviderName: null,
-          externalProviderMetadata: {},
-          chunks: [],
-          chunkSize: CHUNK_SIZE,
-          currentChunkIndex: 0,
-          chunkTotalCount: 0,
-          licenceId: currentAssetLicenceId.value,
-          imagePreview: undefined,
-          keywords: [],
-          authors: [],
-          keywordSuggestions: {},
-          authorSuggestions: {},
-          customData: {},
-          progress: {
-            remainingTime: null,
-            progressPercent: null,
-          },
-          canEditMetadata: false,
-          error: {
-            hasError: false,
-            message: '',
-          },
-          notificationFallbackTimer: undefined,
-          notificationFallbackTry: 1,
-          slotName: null,
-        }
-
+        const queueItem = createDefault(
+          'file_' + file.name,
+          QueueItemType.File,
+          QueueItemStatus.Waiting,
+          type,
+          CHUNK_SIZE,
+          currentAssetLicenceId.value
+        )
+        queueItem.file = file
+        queueItem.displayTitle = file.name
         this.createQueue(queueId)
         this.addQueueItem(queueId, queueItem)
         this.recalculateQueueCounts(queueId)
@@ -168,45 +142,18 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     ) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
-        const queueItem: UploadQueueItem = {
-          key: 'file_' + file.name,
-          type: QueueItemType.SlotFile,
-          file: file,
-          status: QueueItemStatus.Waiting,
-          isDuplicate: false,
-          duplicateAssetId: null,
-          assetType: assetType,
-          assetStatus: AssetStatus.Default,
-          displayTitle: file.name,
-          assetId: assetId,
-          fileId: null,
-          externalProviderAssetId: null,
-          externalProviderName: null,
-          externalProviderMetadata: {},
-          chunks: [],
-          chunkSize: CHUNK_SIZE,
-          currentChunkIndex: 0,
-          chunkTotalCount: 0,
-          licenceId: currentAssetLicenceId.value,
-          imagePreview: undefined,
-          keywords: [],
-          authors: [],
-          keywordSuggestions: {},
-          authorSuggestions: {},
-          customData: {},
-          progress: {
-            remainingTime: null,
-            progressPercent: null,
-          },
-          canEditMetadata: false,
-          error: {
-            hasError: false,
-            message: '',
-          },
-          notificationFallbackTimer: undefined,
-          notificationFallbackTry: 1,
-          slotName: slotName,
-        }
+        const queueItem = createDefault(
+          'file_' + file.name,
+          QueueItemType.SlotFile,
+          QueueItemStatus.Waiting,
+          assetType,
+          CHUNK_SIZE,
+          currentAssetLicenceId.value
+        )
+        queueItem.file = file
+        queueItem.displayTitle = file.name
+        queueItem.assetId = assetId
+        queueItem.slotName = slotName
 
         this.createQueue(queueId)
         this.addQueueItem(queueId, queueItem)
@@ -221,45 +168,19 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       const assetIds: DocId[] = []
       for await (const asset of assets) {
         assetIds.push(asset.id)
-        const queueItem: UploadQueueItem = {
-          key: 'asset_' + asset.id,
-          type: QueueItemType.Asset,
-          file: null,
-          status: QueueItemStatus.Loading,
-          isDuplicate: false,
-          duplicateAssetId: null,
-          assetType: asset.attributes.assetType,
-          assetStatus: asset.attributes.assetStatus,
-          displayTitle: asset.texts.displayTitle,
-          assetId: asset.id,
-          fileId: asset.mainFile ? asset.mainFile.id : null,
-          externalProviderAssetId: null,
-          externalProviderName: null,
-          externalProviderMetadata: {},
-          keywords: [],
-          authors: [],
-          keywordSuggestions: {},
-          authorSuggestions: {},
-          customData: {},
-          chunks: [],
-          chunkSize: CHUNK_SIZE,
-          currentChunkIndex: 0,
-          chunkTotalCount: 0,
-          licenceId: currentAssetLicenceId.value,
-          imagePreview: asset.mainFile && asset.mainFile.links ? asset.mainFile.links.image_list : undefined,
-          progress: {
-            remainingTime: null,
-            progressPercent: null,
-          },
-          canEditMetadata: false,
-          error: {
-            hasError: false,
-            message: '',
-          },
-          notificationFallbackTimer: undefined,
-          notificationFallbackTry: 1,
-          slotName: null,
-        }
+        const queueItem = createDefault(
+          'asset_' + asset.id,
+          QueueItemType.Asset,
+          QueueItemStatus.Loading,
+          asset.attributes.assetType,
+          CHUNK_SIZE,
+          currentAssetLicenceId.value
+        )
+        queueItem.assetStatus = asset.attributes.assetStatus
+        queueItem.displayTitle = asset.texts.displayTitle
+        queueItem.assetId = asset.id
+        queueItem.fileId = asset.mainFile ? asset.mainFile.id : null
+        queueItem.imagePreview = asset.mainFile && asset.mainFile.links ? asset.mainFile.links.image_list : undefined
 
         this.addToBufferLazyValues(queueItem, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
         this.createQueue(queueId)
@@ -275,52 +196,27 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       const { activeExternalProvider } = useExternalProviders()
       for await (const asset of assets) {
-        const queueItem: UploadQueueItem = {
-          key: 'externalProviderAsset_' + asset.id,
-          type: QueueItemType.ExternalProviderAsset,
-          file: null,
-          status: importAsset ? QueueItemStatus.Waiting : QueueItemStatus.Uploaded,
-          isDuplicate: false,
-          duplicateAssetId: null,
-          assetType: asset.attributes.assetType,
-          assetStatus: AssetStatus.WithFile,
-          displayTitle: asset.texts.displayTitle,
-          assetId: null,
-          fileId: null,
-          externalProviderAssetId: asset.id,
-          externalProviderName: activeExternalProvider.value,
-          externalProviderMetadata: asset.metadata,
-          keywords: [],
-          authors: [],
-          keywordSuggestions: {},
-          authorSuggestions: {},
-          customData: {},
-          chunks: [],
-          chunkSize: CHUNK_SIZE,
-          currentChunkIndex: 0,
-          chunkTotalCount: 0,
-          licenceId: currentAssetLicenceId.value,
-          imagePreview: {
-            width: 0,
-            height: 0,
-            requestedWidth: 0,
-            requestedHeight: 0,
-            url: asset.url,
-            title: '',
-            type: LinkType.Image,
-          },
-          progress: {
-            remainingTime: null,
-            progressPercent: null,
-          },
-          canEditMetadata: false,
-          error: {
-            hasError: false,
-            message: '',
-          },
-          notificationFallbackTimer: undefined,
-          notificationFallbackTry: 1,
-          slotName: null,
+        const queueItem = createDefault(
+          'externalProviderAsset_' + asset.id,
+          QueueItemType.ExternalProviderAsset,
+          importAsset ? QueueItemStatus.Waiting : QueueItemStatus.Uploaded,
+          asset.attributes.assetType,
+          CHUNK_SIZE,
+          currentAssetLicenceId.value
+        )
+        queueItem.assetStatus = AssetStatus.WithFile
+        queueItem.displayTitle = asset.texts.displayTitle
+        queueItem.externalProviderAssetId = asset.id
+        queueItem.externalProviderName = activeExternalProvider.value
+        queueItem.externalProviderMetadata = asset.metadata
+        queueItem.imagePreview = {
+          width: 0,
+          height: 0,
+          requestedWidth: 0,
+          requestedHeight: 0,
+          url: asset.url,
+          title: '',
+          type: LinkType.Image,
         }
         this.createQueue(queueId)
         this.addQueueItem(queueId, queueItem)
@@ -460,7 +356,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         this.recalculateQueueCounts(queueId)
       }
     },
-    async queueItemFailed(assetId: DocId) {
+    async queueItemFailed(assetId: DocId, failReason: AssetFileFailReason) {
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
@@ -468,6 +364,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             clearTimeout(item.notificationFallbackTimer)
             item.error.hasError = true
             item.status = QueueItemStatus.Failed
+            item.error.assetFileFailReason = failReason
             item.canEditMetadata = false
             this.processUpload(queueId)
           }

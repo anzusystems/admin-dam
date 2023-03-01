@@ -65,6 +65,14 @@
     "withFile": "With File",
     "deleting": "Deleting"
   },
+  "assetFileFailReason": {
+    "none": "None",
+    "unknown": "Unknown",
+    "invalidChecksum": "Invalid checksum",
+    "invalidMimeType": "Invalid mime type",
+    "downloadFailed": "Download failed",
+    "invalidSize": "Invalid size"
+  },
   "imageOrientation": {
     "landscape": "landscape",
     "portrait": "portrait",
@@ -107,7 +115,8 @@
       "status": {
         "duplicate": "Asset main file is duplicate",
         "draft": "Asset is without file",
-        "deleting": "Asset will be removed soon"
+        "deleting": "Asset will be removed soon",
+        "failed": "Asset file processing failed"
       },
       "metadata": "Metadata",
       "file": "File info",

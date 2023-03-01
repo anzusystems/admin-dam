@@ -5,8 +5,9 @@ import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { CancelTokenSource } from 'axios'
 import type {
   AssetExternalProviderIdNullable,
-  AssetExternalProviderMetadata
+  AssetExternalProviderMetadata,
 } from '@/types/coreDam/AssetExternalProvider'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 
 export enum QueueItemType {
   File = 'file',
@@ -63,6 +64,7 @@ export interface UploadQueueItem {
   error: {
     hasError: boolean
     message: string
+    assetFileFailReason: AssetFileFailReason
   }
   notificationFallbackTimer: ReturnType<typeof setTimeout> | undefined
   notificationFallbackTry: number

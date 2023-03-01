@@ -1,5 +1,6 @@
 import type { AnzuUserAndTimeTrackingAware, DocId, DocIdNullable } from '@anzusystems/common-admin'
 import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 
 export enum AssetFileProcessStatus {
   Uploading = 'uploading', // file entity created and ready to receive chunks
@@ -55,7 +56,7 @@ interface FileAttributes {
   size: number
   originFileName: string
   originUrl: string
-  failReason: string
+  failReason: AssetFileFailReason
 }
 
 export enum LinkType {

@@ -4,13 +4,11 @@ import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/Asset
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import type { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import AssetDetailSidebarActionsTeleportTarget
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
+import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
 import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
-import AssetDetailSidebarDistribution
-  from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
+import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
@@ -18,8 +16,8 @@ import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slo
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
 import type { AssetFileProcessStatus } from '@/types/coreDam/File'
 import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
-import AssetDetailSidebarVideoShow
-  from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
+import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 
 const props = withDefaults(
   defineProps<{
@@ -30,10 +28,12 @@ const props = withDefaults(
     isDocument: boolean
     assetStatus: AssetStatus
     assetType: AssetType
-    assetMainFileStatus?: AssetFileProcessStatus
+    assetMainFileStatus?: AssetFileProcessStatus | undefined
+    assetMainFileFailReason?: AssetFileFailReason | undefined
   }>(),
   {
     assetMainFileStatus: undefined,
+    assetMainFileFailReason: undefined,
   }
 )
 const emit = defineEmits<{
@@ -71,7 +71,11 @@ const typeHasDistributions = computed(() => {
       </VTabs>
 
       <div class="sidebar-info__content">
-        <AssetInfobox :asset-status="assetStatus" />
+        <AssetInfobox
+          :asset-status="assetStatus"
+          :asset-main-file-status="assetMainFileStatus"
+          :asset-main-file-fail-reason="assetMainFileFailReason"
+        />
         <div v-if="activeTab === AssetDetailTab.Info" class="py-2">
           <AssetDetailSidebarMetadata
             :is-active="activeTab === AssetDetailTab.Info"

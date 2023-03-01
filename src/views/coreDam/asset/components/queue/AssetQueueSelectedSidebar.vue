@@ -2,8 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { useI18n } from 'vue-i18n'
-import AssetCustomMetadataFormMassOperations
-  from '@/components/coreDam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
+import AssetCustomMetadataFormMassOperations from '@/components/coreDam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
@@ -129,7 +128,7 @@ onMounted(() => {
                 <VCol>
                   <ASystemEntityScope subject="keyword" system="dam">
                     <div class="d-flex">
-                      <div style="min-width: 292px">
+                      <div style="min-width: 286px">
                         <KeywordSelect
                           v-model="massOperationsKeywords"
                           label="Keywords"
@@ -160,7 +159,7 @@ onMounted(() => {
                 <VCol>
                   <ASystemEntityScope subject="author" system="dam">
                     <div class="d-flex">
-                      <div style="min-width: 292px">
+                      <div style="min-width: 286px">
                         <AuthorSelect
                           v-model="massOperationsAuthors"
                           label="Authors"
