@@ -83,7 +83,7 @@ const { assetTypeOptions } = useAssetType()
   <VDialog v-model="dialog" persistent>
     <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <VCardTitle class="d-flex pr-2">
-        <span>{{ t('coreDam.asset.meta.create') }}</span>
+        <span>{{ t('coreDam.asset.meta.createEmpty') }}</span>
         <VSpacer />
         <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
       </VCardTitle>
