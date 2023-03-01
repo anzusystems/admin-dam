@@ -38,9 +38,14 @@ export const useVideoDistributionPreviewListActions = () => {
     lastSelectedItem.value = listItems.value[index]
   }
 
+  const itemImageIsInvalid = (index: number) => {
+    listItems.value[index].invalidImage = true
+  }
+
   return {
     lastSelectedItem,
     toggleSelectedItem,
+    itemImageIsInvalid,
     listLoading,
     listItems,
     fetchList,

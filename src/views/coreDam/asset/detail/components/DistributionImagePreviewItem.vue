@@ -15,12 +15,17 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'toggleSelected', index: number): void
+  (e: 'invalidImage', index: number): void
 }>()
 
 const { t } = useI18n()
 
 const toggleSelected = () => {
   emit('toggleSelected', props.index)
+}
+
+const onImageError = () => {
+  emit('invalidImage', props.index)
 }
 </script>
 
@@ -40,6 +45,8 @@ const toggleSelected = () => {
         :background-color="IMAGE_BG_COLOR"
         :height="IMAGE_HEIGHT"
         :fallback-height="IMAGE_HEIGHT"
+        use-component
+        @error="onImageError"
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">

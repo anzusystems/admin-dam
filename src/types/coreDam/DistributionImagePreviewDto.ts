@@ -5,4 +5,5 @@ export interface DistributionImagePreviewDto extends AnzuUserAndTimeTrackingAwar
   service: string
   url: string
   selected?: boolean
+  invalidImage?: boolean
 }
