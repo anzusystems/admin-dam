@@ -60,7 +60,7 @@ const serviceRequirements = computed(() => {
       <VCol v-if="item.extId.length > 0">{{ t('coreDam.distribution.common.extId') }}: {{ item.extId }}</VCol>
       <template v-for="(value, key) in item.distributionData" :key="key + value">
         <VCol v-if="value.length > 0">
-          <a :href="value" target="_blank">{{ key }} <VIcon size="small" icon="mdi-open-in-new" /></a>
+          <a :href="value" target="_blank">{{ key }}</a>
         </VCol>
       </template>
     </VRow>
