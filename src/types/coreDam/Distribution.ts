@@ -54,11 +54,13 @@ export interface DistributionItem {
   status: DistributionStatus
   failReason: DistributionFailReason
   blockedBy: DocId[]
+  publishAt: DatetimeUTCNullable
   _resourceName: string
 }
 
 export interface DistributionJwCreateRedistributeDto {
   id: DocId
+  publishAt: DatetimeUTCNullable
   texts: TextsJw
   distributionService: DistributionServiceName
   blockedBy: DocId[]
@@ -68,6 +70,7 @@ export interface DistributionJwRedistributeDto extends DistributionJwCreateRedis
 
 export interface DistributionCustomCreateRedistributeDto {
   id: DocId
+  publishAt: DatetimeUTCNullable
   customData: Record<string, any>
   distributionService: DistributionServiceName
   blockedBy: DocId[]
@@ -93,7 +96,6 @@ export interface DistributionYoutubeItem extends DistributionItem {
   language: string
   playlist: string
   channelId: string
-  publishAt: DatetimeUTCNullable
   privacy: DistributionYoutubePrivacy
   flags: FlagsYoutube
   texts: TextsYoutube

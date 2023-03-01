@@ -4,7 +4,14 @@ import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { ASystemEntityScope, cloneDeep, useAlerts, useErrorHandler, usePagination } from '@anzusystems/common-admin'
+import {
+  AFormDatetimePicker,
+  ASystemEntityScope,
+  cloneDeep,
+  useAlerts,
+  useErrorHandler,
+  usePagination,
+} from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -24,11 +31,8 @@ import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,
 } from '@/services/DamConfigDistributionCustomFormService'
-import DistributionCustomMetadataForm
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
@@ -76,6 +80,7 @@ const loadFormData = async () => {
       distributionService: props.distributionServiceName,
       customData: cloneDeep(existingDistributions.value[0].customData),
       blockedBy: existingDistributions.value[0].blockedBy,
+      publishAt: existingDistributions.value[0].publishAt,
     }
     canDisplayForm.value = true
     return
@@ -86,6 +91,7 @@ const loadFormData = async () => {
     distributionService: props.distributionServiceName,
     customData: res.customData,
     blockedBy: res.blockedBy,
+    publishAt: res.publishAt,
   }
   canDisplayForm.value = true
 }
@@ -100,6 +106,7 @@ const { handleError } = useErrorHandler()
 const rules = computed(() => ({
   distribution: {
     distributionService: {},
+    publishAt: {},
   },
 }))
 const v$ = useVuelidate(rules, { distribution })
@@ -189,6 +196,11 @@ onMounted(async () => {
               :asset-file-id="assetFileId"
               :asset-type="assetType"
             />
+          </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <AFormDatetimePicker v-model="distribution.publishAt" :label="t('coreDam.distribution.model.publishAt')" />
           </VCol>
         </VRow>
       </ASystemEntityScope>

@@ -10,6 +10,7 @@ import {
 } from '@/services/api/coreDam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
 import {
+  AFormDatetimePicker,
   AFormTextarea,
   AFormTextField,
   ASystemEntityScope,
@@ -30,9 +31,7 @@ import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distribut
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
@@ -83,6 +82,7 @@ const loadFormData = async () => {
         keywords: existingDistributions.value[0].texts.keywords,
       },
       blockedBy: existingDistributions.value[0].blockedBy,
+      publishAt: existingDistributions.value[0].publishAt,
     }
     canDisplayForm.value = true
     return
@@ -98,6 +98,7 @@ const loadFormData = async () => {
       keywords: res.texts.keywords,
     },
     blockedBy: res.blockedBy,
+    publishAt: res.publishAt,
   }
   canDisplayForm.value = true
 }
@@ -133,6 +134,7 @@ const rules = computed(() => ({
       },
     },
     distributionService: {},
+    publishAt: {},
   },
 }))
 const v$ = useVuelidate(rules, { distribution })
@@ -245,6 +247,11 @@ onMounted(async () => {
               :asset-file-id="assetFileId"
               :asset-type="assetType"
             />
+          </VCol>
+        </VRow>
+        <VRow class="mb-2">
+          <VCol>
+            <AFormDatetimePicker v-model="distribution.publishAt" :label="t('coreDam.distribution.model.publishAt')" />
           </VCol>
         </VRow>
       </ASystemEntityScope>
