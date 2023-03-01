@@ -162,7 +162,6 @@ const rules = computed(() => ({
       required: requiredIf(distribution.value.privacy === DistributionYoutubePrivacy.Dynamic),
     },
     distributionService: {},
-    publishAt: {},
   },
 }))
 const v$ = useVuelidate(rules, { distribution })
