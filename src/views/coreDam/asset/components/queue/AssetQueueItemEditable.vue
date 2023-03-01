@@ -26,6 +26,8 @@ import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/k
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetLink from '@/views/coreDam/asset/components/AssetLink.vue'
+import { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
+import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -180,6 +182,9 @@ const showCancel = computed(() => {
             <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
             <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
             <div v-if="item.error.message.length" class="text-caption" v-text="item.error.message" />
+            <div v-else-if="item.error.assetFileFailReason !== AssetFileFailReason.None">
+              <AssetFileFailReasonChip :reason="item.error.assetFileFailReason" />
+            </div>
             <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
           </div>
         </div>

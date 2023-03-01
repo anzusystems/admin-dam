@@ -16,8 +16,8 @@ export const initAppNotificationListeners = () => {
     }
   })
   addNotificationListener('asset_file_failed', (message: Event) => {
-    if (message instanceof CustomEvent) {
-      uploadQueuesStore.queueItemFailed(message.detail.asset)
+    if (message instanceof CustomEvent<unknown>) {
+      uploadQueuesStore.queueItemFailed(message.detail.asset, message.detail.failReason)
     }
   })
   addNotificationListener('asset_file_duplicate', (message: Event) => {

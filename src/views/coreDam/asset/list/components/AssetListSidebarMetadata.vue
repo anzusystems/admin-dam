@@ -92,6 +92,7 @@ watch(
       <AssetInfobox
         :asset-status="assetStatus"
         :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
+        :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
       />
       <AssetMetadata />
     </div>
