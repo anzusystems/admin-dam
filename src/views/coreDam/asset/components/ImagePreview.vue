@@ -54,8 +54,17 @@ const src = computed(() => {
   return placeholder16x9
 })
 
-const showIsProcessing = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status !== AssetFileProcessStatus.Processed) return true
+const isProcessing = computed(() => {
+  if (
+    imageFile.value &&
+    imageFile.value.fileAttributes?.status !== AssetFileProcessStatus.Processed &&
+    imageFile.value.fileAttributes?.status !== AssetFileProcessStatus.Failed
+  )
+    return true
+  return false
+})
+const isFailed = computed(() => {
+  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Failed) return true
   return false
 })
 
@@ -88,8 +97,9 @@ watch(
 </script>
 
 <template>
-  <div v-if="showIsProcessing" class="text-caption">{{ t('system.imagePreview.status.isProcessingInfo') }}</div>
-  <div v-else>
+  <div v-if="isFailed" class="text-caption">{{ t('system.imagePreview.status.isFailedInfo') }}</div>
+  <div v-else-if="isProcessing" class="text-caption">{{ t('system.imagePreview.status.isProcessingInfo') }}</div>
+  <div v-if="!isProcessing">
     <VImg v-if="loading" :width="width" :height="height" :max-height="300" class="asset-image asset-image--loading-bg">
       <template #placeholder />
       <template #default>
