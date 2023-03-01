@@ -191,6 +191,7 @@ const showIconComputed = computed(() => {
       :height="height"
       alt=""
       :style="'background-color:' + backgroundColorComputed"
+      @onerror="onError"
     />
     <div v-if="showIconComputed" class="asset-image__icon-wrapper">
       <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">

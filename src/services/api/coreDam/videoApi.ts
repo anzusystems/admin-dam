@@ -6,7 +6,7 @@ import {
   apiFetchOne,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
-  HTTP_STATUS_OK
+  HTTP_STATUS_OK,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
