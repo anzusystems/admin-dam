@@ -31,7 +31,7 @@ const { t } = useI18n()
     v-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Failed"
     class="w-100 pa-2 text-caption"
   >
-    <VAlert dark type="warning">
+    <VAlert dark type="error">
       {{ t('coreDam.asset.detail.info.status.failed') }}
       <div v-if="assetMainFileFailReason"><br /><AssetFileFailReasonChip :reason="assetMainFileFailReason" /></div>
     </VAlert>
