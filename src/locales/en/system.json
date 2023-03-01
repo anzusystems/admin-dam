@@ -28,7 +28,8 @@
       "fileId": "Image file ID"
     },
     "status": {
-      "isProcessingInfo": "Image is processing, please check again later"
+      "isProcessingInfo": "Image is processing, please check again later",
+      "isFailedInfo": "Image processing failed"
     },
     "actions": {
       "unassign": "Unassign image",
