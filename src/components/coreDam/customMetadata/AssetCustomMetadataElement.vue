@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { CustomFormType } from '@/types/coreDam/DamConfigAssetCustomForm'
-import { computed } from 'vue'
+import { computed, isProxy, toRaw } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
 import {
   AFormBooleanToggle,
+  isEmptyObject,
   useValidateMaxLength,
   useValidateMaxValue,
   useValidateMinLength,
@@ -36,7 +37,9 @@ const updateModelValue = (value: any) => {
 }
 
 const modelValueComputed = computed(() => {
-  return props.modelValue
+  const value = isProxy(props.modelValue) ? toRaw(props.modelValue) : props.modelValue
+  if (props.config.attributes.type === CustomFormType.StringArray && isEmptyObject(value)) return []
+  return value
 })
 
 const maxLength = useValidateMaxLength()
@@ -114,7 +117,7 @@ const onBlur = () => {
   </VTextarea>
   <VTextField
     v-else-if="config.attributes.type === CustomFormType.Number"
-    :model-value="modelValue"
+    :model-value="modelValueComputed"
     type="number"
     :label="config.name"
     :error-messages="errorMessageComputed"
@@ -125,7 +128,7 @@ const onBlur = () => {
   </VTextField>
   <VCombobox
     v-else-if="config.attributes.type === CustomFormType.StringArray"
-    :model-value="modelValue"
+    :model-value="modelValueComputed"
     :label="config.name"
     multiple
     chips
@@ -138,8 +141,8 @@ const onBlur = () => {
   <AFormBooleanToggle
     v-if="config.attributes.type === CustomFormType.Boolean"
     :label="config.name"
-    :model-value="modelValue"
-    :mandatory="config.attributes.required"
+    :model-value="modelValueComputed"
+    :required="config.attributes.required"
     @update:model-value="updateModelValue"
   />
 </template>
