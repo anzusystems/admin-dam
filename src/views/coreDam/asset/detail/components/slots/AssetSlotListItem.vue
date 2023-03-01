@@ -107,7 +107,7 @@ const { showSuccess } = useAlerts()
 const copyFileId = async () => {
   if (!props.item || !props.item.assetFile) return
   copy(props.item.assetFile.id).then(() => {
-    showSuccess(t('common.alerts.idWasCopied'))
+    showSuccess(t('common.alert.idWasCopied'))
   })
 }
 
