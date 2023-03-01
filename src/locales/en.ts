@@ -8,6 +8,7 @@ import distribution from '@/locales/en/coreDam/distribution.json'
 import distributionCategory from '@/locales/en/coreDam/distributionCategory.json'
 import distributionCategorySelect from '@/locales/en/coreDam/distributionCategorySelect.json'
 import jwDistribution from '@/locales/en/coreDam/jwDistribution.json'
+import customDistribution from '@/locales/en/coreDam/customDistribution.json'
 import youtubeDistribution from '@/locales/en/coreDam/youtubeDistribution.json'
 import extSystem from '@/locales/en/coreDam/extSystem.json'
 import job from '@/locales/en/coreDam/job.json'
@@ -32,6 +33,7 @@ export default {
     distributionCategorySelect,
     jwDistribution,
     youtubeDistribution,
+    customDistribution,
     extSystem,
     job,
     keyword,
