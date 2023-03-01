@@ -1,4 +1,7 @@
 {
+  "model": {
+    "publishAt": "Publish at"
+  },
   "distributionStatus": {
     "waiting": "Waiting",
     "distributing": "Distributing",

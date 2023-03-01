@@ -33,21 +33,16 @@ import {
   DistributionYoutubePrivacy,
   useDistributionYoutubePrivacy,
 } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
-import DistributionYoutubeLanguageSelect
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
-import DistributionYoutubeTermOfUse
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
-import DistributionYoutubePlaylistSelect
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
+import DistributionYoutubeLanguageSelect from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
+import DistributionYoutubeTermOfUse from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
+import DistributionYoutubePlaylistSelect from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
@@ -93,7 +88,6 @@ const loadFormData = async () => {
   if (redistributeMode.value && existingDistributions.value[0]) {
     distribution.value = {
       id: existingDistributions.value[0].id,
-      publishAt: existingDistributions.value[0].publishAt,
       distributionService: props.distributionServiceName,
       texts: {
         title: existingDistributions.value[0].texts.title,
@@ -109,6 +103,7 @@ const loadFormData = async () => {
         notifySubscribers: existingDistributions.value[0].flags.notifySubscribers,
       },
       blockedBy: existingDistributions.value[0].blockedBy,
+      publishAt: existingDistributions.value[0].publishAt,
     }
     canDisplayForm.value = true
     return
@@ -116,7 +111,6 @@ const loadFormData = async () => {
   const res = await prepareFormDataYoutubeDistribution(assetFileId.value, props.distributionServiceName)
   distribution.value = {
     id: '',
-    publishAt: res.publishAt,
     distributionService: props.distributionServiceName,
     texts: {
       title: res.texts.title,
@@ -132,6 +126,7 @@ const loadFormData = async () => {
       notifySubscribers: res.flags.notifySubscribers,
     },
     blockedBy: res.blockedBy,
+    publishAt: res.publishAt,
   }
   canDisplayForm.value = true
 }
@@ -167,6 +162,7 @@ const rules = computed(() => ({
       required: requiredIf(distribution.value.privacy === DistributionYoutubePrivacy.Dynamic),
     },
     distributionService: {},
+    publishAt: {},
   },
 }))
 const v$ = useVuelidate(rules, { distribution })
@@ -379,6 +375,14 @@ onUnmounted(async () => {
                 :distribution-service-name="distributionServiceName"
                 :asset-file-id="assetFileId"
                 :asset-type="assetType"
+              />
+            </VCol>
+          </VRow>
+          <VRow class="mb-2">
+            <VCol>
+              <AFormDatetimePicker
+                v-model="distribution.publishAt"
+                :label="t('coreDam.distribution.model.publishAt')"
               />
             </VCol>
           </VRow>
