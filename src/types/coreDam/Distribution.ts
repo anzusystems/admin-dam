@@ -101,9 +101,18 @@ export interface DistributionYoutubeItem extends DistributionItem {
   texts: TextsYoutube
 }
 
+export enum DistributionDataItemType {
+  Url = 'url',
+}
+
+export interface DistributionDataItem {
+  type: DistributionDataItemType
+  value: any
+}
+
 export interface DistributionCustomItem extends DistributionItem {
   customData: Record<string, any>
-  distributionData: Record<string, any>
+  distributionData: Record<string, DistributionDataItem>
 }
 
 export const isDistributionCustomItem = (
