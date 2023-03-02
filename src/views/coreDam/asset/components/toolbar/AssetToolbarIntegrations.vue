@@ -39,7 +39,14 @@ const activeDisplayText = computed(() => {
 <template>
   <VMenu v-if="show" location="bottom">
     <template #activator="{ props }">
-      <VBtn variant="text" size="small" class="mx-1" rounded="pill" :height="34" v-bind="props">
+      <VBtn
+        variant="text"
+        size="small"
+        class="mx-1 pl-2 pr-1 pl-sm-3 pr-sm-2"
+        rounded="pill"
+        :height="34"
+        v-bind="props"
+      >
         {{ activeDisplayText }}
         <VIcon icon="mdi-chevron-down" />
         <VTooltip activator="parent" location="bottom">{{ t('system.mainBar.customIntegrations.title') }}</VTooltip>
