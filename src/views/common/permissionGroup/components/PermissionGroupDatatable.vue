@@ -1,24 +1,26 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { usePagination } from '@/composables/system/pagination'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
-import { useTableColumns } from '@/composables/system/tableColumns'
-import ADatatable from '@/components/common/ADatatable.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import type { PermissionGroup } from '@anzusystems/common-admin'
+import {
+  ADatatable,
+  ADatatablePagination,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+  useAcl,
+  useDatatableColumns,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
-import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
 import { ROUTE } from '@/router/routes'
-import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
-import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
 import { ACL, type AclValue } from '@/types/Permission'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-import type { PermissionGroup } from '@anzusystems/common-admin'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
-import { useAcl } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -44,7 +46,7 @@ const getList = () => {
   fetchPermissionGroupList(pagination, filter)
 }
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   { name: 'id' },
   { name: 'title' },
   { name: 'description' },
@@ -80,11 +82,11 @@ defineExpose({
             </template>
             <template #actions="{ data }">
               <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
-                <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
+                <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
               </Acl>
-              <ACopyIdButton :id="data.id" />
+              <ATableCopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT" />
+                <ATableEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT" />
               </Acl>
             </template>
           </ADatatable>

@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -7,12 +10,12 @@ import { ROUTE } from '@/router/routes'
     <div class="flex-grow-1 text-center">
       <h1 class="d-flex justify-center align-center text-primary">
         <VIcon size="x-large" icon="mdi-emoticon-cry" />
-        <span>Ops, 404</span>
+        <span>{{ t('system.notFoundPage.title') }}</span>
       </h1>
 
-      <p class="pa-2">This site doesn't exist</p>
+      <p class="pa-2">{{ t('system.notFoundPage.subTitle') }}</p>
 
-      <VBtn :to="{ name: ROUTE.SYSTEM.HOMEPAGE }" color="primary" outlined>Return me to homepage</VBtn>
+      <VBtn :to="{ name: ROUTE.SYSTEM.HOMEPAGE }" color="primary" outlined>{{ t('system.notFoundPage.return') }}</VBtn>
     </div>
   </div>
 </template>

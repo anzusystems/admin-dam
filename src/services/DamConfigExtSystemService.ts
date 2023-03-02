@@ -1,5 +1,5 @@
-import type { DamConfigExtSystem, ExtSystemConfig } from '@/types/dam/DamConfig'
-import { fetchExtSystemConfiguration } from '@/services/api/dam/configurationApi'
+import type { DamConfigExtSystem, ExtSystemConfig } from '@/types/coreDam/DamConfig'
+import { fetchExtSystemConfiguration } from '@/services/api/coreDam/configurationApi'
 import { ref } from 'vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 

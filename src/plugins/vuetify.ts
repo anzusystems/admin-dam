@@ -3,8 +3,7 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { Intersect } from 'vuetify/directives'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
-import { i18n } from '@/plugins/i18n'
-import { useI18n } from 'vue-i18n'
+import { i18n, useI18n } from '@anzusystems/common-admin'
 
 export const vuetify = createVuetify({
   locale: {
@@ -93,4 +92,4 @@ export const vuetify = createVuetify({
       color: 'success',
     },
   },
-}) as any // todo: temp ts fix
+})

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
-import { isArray, isNull } from '@/utils/common'
+import { isArray, isNull } from '@anzusystems/common-admin'
 
 export function useAllHelper<T, I extends string | number = number>(all: Ref<Map<I, T>>, ids: Ref<Set<I>>) {
   const get = (id: I | null): T | undefined => {

@@ -1,8 +1,6 @@
-import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@/services/api/anzuApi'
-import type { FilterBag } from '@/types/Filter'
-import type { Pagination } from '@/types/Pagination'
+import type { AnzuUser, FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
+import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
-import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 
 const SYSTEM = 'common'
 export const ENTITY = 'anzuUser'

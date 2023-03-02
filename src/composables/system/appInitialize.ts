@@ -4,7 +4,7 @@ import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { updateCurrentUser, useCurrentUser } from '@/composables/system/currentUser'
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
-import { isNotUndefined } from '@/utils/common'
+import { isDefined, isUndefined } from '@anzusystems/common-admin'
 import { loadDamConfig } from '@/services/DamConfigService'
 import { envConfig } from '@/services/EnvConfigService'
 import { initCurrentExtSystemAndLicence } from '@/composables/system/currentExtSystem'
@@ -12,7 +12,6 @@ import { loadDamConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { loadDamConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
 import { useLoginStatus } from '@/composables/system/loginStatus'
-import { isUndefined } from '@anzusystems/common-admin'
 
 const initialized = ref<boolean>(false)
 
@@ -74,7 +73,7 @@ export function useAppInitialize() {
     const refreshTokenExistsCookie = cookies.get(envConfig.cookies.refreshTokenExistsName)
     const jwtPayloadCookie = cookies.get(envConfig.cookies.jwtPayloadName)
 
-    return isNotUndefined(refreshTokenExistsCookie) || isNotUndefined(jwtPayloadCookie)
+    return isDefined(refreshTokenExistsCookie) || isDefined(jwtPayloadCookie)
   }
   const isAppInitialized = () => initialized.value
 

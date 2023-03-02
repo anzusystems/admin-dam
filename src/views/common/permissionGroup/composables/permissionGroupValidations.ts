@@ -1,7 +1,11 @@
-import { maxLength, minLength, required } from '@/plugins/validators'
 import useVuelidate from '@vuelidate/core'
 import type { Ref } from 'vue'
 import type { PermissionGroup } from '@anzusystems/common-admin'
+import { useValidateMaxLength, useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
+
+const required = useValidateRequired()
+const minLength = useValidateMinLength()
+const maxLength = useValidateMaxLength()
 
 export function usePermissionGroupValidation(permissionGroup: Ref<PermissionGroup>) {
   const rules = {

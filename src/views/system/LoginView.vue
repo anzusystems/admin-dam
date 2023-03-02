@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import LoginFormSimple from '@/views/system/components/LoginFormSimple.vue'
 import { damPubConfig } from '@/services/DamConfigService'
 import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
-import { UserAuthType } from '@/types/dam/DamConfig'
+import { UserAuthType } from '@/types/coreDam/DamConfig'
 
 const userAuthType = damPubConfig.userAuthType
 
@@ -20,7 +20,7 @@ const { t } = useI18n()
   </div>
   <div class="full-screen-page-footer px-10">
     <div class="text-medium-emphasis text-caption font-weight-light text-center">
-      {{ t('system.version') }}: {{ envConfig.appVersion }}
+      {{ t('common.system.version') }}: {{ envConfig.appVersion }}
     </div>
   </div>
 </template>
