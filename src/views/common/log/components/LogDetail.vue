@@ -2,7 +2,7 @@
 import { useLogOneStore } from '@/stores/common/logStore'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { ALogLevelChip } from '@anzusystems/common-admin'
+import { ALogLevelChip, dateTimeFriendly } from '@anzusystems/common-admin'
 
 const { log } = storeToRefs(useLogOneStore())
 
@@ -53,7 +53,7 @@ const formattedJSON = (data: string) => {
         </VCol>
         <VCol cols="4">
           <h4 class="text-subtitle-2">{{ t('common.log.model.datetime') }}</h4>
-          {{ friendlyDateTime(log.datetime) }}
+          {{ dateTimeFriendly(log.datetime) }}
         </VCol>
       </VRow>
       <VRow>

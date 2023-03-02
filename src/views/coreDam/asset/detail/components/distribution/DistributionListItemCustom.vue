@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n'
 import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
+import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
 
 const props = withDefaults(
   defineProps<{
@@ -57,7 +58,7 @@ const serviceRequirements = computed(() => {
         {{ t('coreDam.distribution.common.failReason') }}: <DistributionFailReasonChip :status="item.failReason" />
       </VCol>
     </VRow>
-    <VRow v-if="item.distributionData">
+    <VRow v-if="isDistributionCustomItem(item)">
       <VCol v-if="item.extId.length > 0">{{ t('coreDam.distribution.common.extId') }}: {{ item.extId }}</VCol>
       <VCol v-for="(value, key) in item.distributionData" :key="key">
         <DistributionListItemCustomDistributionDataItem :item="value" :title="key" />

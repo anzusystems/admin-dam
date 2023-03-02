@@ -7,16 +7,16 @@ import { useUserFilter } from '@/model/coreDam/filter/UserFilter'
 const props = withDefaults(
   defineProps<{
     modelValue: number | null | number[] | any
-    label?: string | null
-    required?: boolean | null
+    label?: string | undefined
+    required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
     disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
-    label: null,
-    required: null,
+    label: undefined,
+    required: undefined,
     multiple: false,
     clearable: false,
     disableInitFetch: false,
