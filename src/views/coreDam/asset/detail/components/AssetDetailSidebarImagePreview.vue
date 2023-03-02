@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { onMounted, ref } from 'vue'
@@ -10,8 +9,7 @@ import { isVideoFile } from '@/types/coreDam/File'
 import { fetchVideoFile, updatePreviewImage } from '@/services/api/coreDam/videoApi'
 import ImagePreview from '@/views/coreDam/asset/components/ImagePreview.vue'
 import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
-import AssetDetailSidebarImagePreviewFromDistributionDialog
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
+import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
 import { useI18n } from 'vue-i18n'
 
 withDefaults(

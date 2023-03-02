@@ -20,7 +20,7 @@ import { useVuelidate } from '@vuelidate/core'
 const props = withDefaults(
   defineProps<{
     modelValue: string | null | string[] | any
-    label?: string | null
+    label?: string | undefined
     required?: boolean | null
     disabled?: boolean | undefined
     multiple?: boolean
@@ -32,7 +32,7 @@ const props = withDefaults(
     validationScope?: ValidationScope
   }>(),
   {
-    label: null,
+    label: undefined,
     required: null,
     disabled: undefined,
     multiple: false,

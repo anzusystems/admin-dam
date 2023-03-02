@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 import { useExtSystemSelectActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemFilter } from '@/model/coreDam/filter/ExtSystemFilter'
 
@@ -26,7 +26,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: number | null | number[]): void
+  (e: 'update:modelValue', data: IntegerIdNullable | IntegerId[]): void
 }>()
 const { modelValue } = useVModels(props, emit)
 

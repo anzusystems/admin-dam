@@ -57,7 +57,7 @@ const serviceRequirements = computed(() => {
         {{ t('coreDam.distribution.common.failReason') }}: <DistributionFailReasonChip :status="item.failReason" />
       </VCol>
     </VRow>
-    <VRow>
+    <VRow v-if="item.distributionData">
       <VCol v-if="item.extId.length > 0">{{ t('coreDam.distribution.common.extId') }}: {{ item.extId }}</VCol>
       <VCol v-for="(value, key) in item.distributionData" :key="key">
         <DistributionListItemCustomDistributionDataItem :item="value" :title="key" />

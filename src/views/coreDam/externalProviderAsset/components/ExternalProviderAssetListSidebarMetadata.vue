@@ -1,14 +1,9 @@
 <script lang="ts" setup>
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
-import {
-  useExternalProviderAssetDetailActions
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetDetailActions'
-import ExternalProviderAssetMetadata
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadata.vue'
+import { useExternalProviderAssetDetailActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetDetailActions'
+import ExternalProviderAssetMetadata from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadata.vue'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
-import {
-  useExternalProviderAssetImport
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
+import { useExternalProviderAssetImport } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

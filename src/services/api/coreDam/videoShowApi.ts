@@ -7,7 +7,7 @@ import {
   apiFetchByIds,
   apiFetchList,
   apiFetchOne,
-  apiUpdateOne
+  apiUpdateOne,
 } from '@anzusystems/common-admin'
 import type { VideoShow } from '@/types/coreDam/VideoShow'
 

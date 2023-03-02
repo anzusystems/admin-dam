@@ -13,6 +13,8 @@ import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/core
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
+import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
+import { isImageFile } from '@/types/coreDam/File'
 
 const { t } = useI18n()
 
@@ -126,27 +128,10 @@ const onAnyMetadataChange = () => {
           </VRow>
         </div>
         <!-- image -->
-        <div v-if="assetMainFile && assetMainFile.imageAttributes && isTypeImage">
-          <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.dominantColor') }}</VCol>
-            <VCol cols="9"><ColorBox :color="assetMainFile?.imageAttributes.mostDominantColor" /></VCol>
-          </VRow>
-          <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.width') }}</VCol>
-            <VCol cols="9">{{ assetMainFile?.imageAttributes.width }} px</VCol>
-          </VRow>
-          <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.height') }}</VCol>
-            <VCol cols="9">{{ assetMainFile?.imageAttributes.height }} px</VCol>
-          </VRow>
-          <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.ratio') }}</VCol>
-            <VCol cols="9">
-              {{ assetMainFile?.imageAttributes.ratioWidth }} /
-              {{ assetMainFile?.imageAttributes.ratioHeight }}
-            </VCol>
-          </VRow>
-        </div>
+        <AssetMetadataImageAttributes
+          v-if="assetMainFile && isTypeImage && isImageFile(assetMainFile)"
+          :file="assetMainFile"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
   </VExpansionPanels>

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import {
-  useExternalProviderAssetDetailSidebarActionbar
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetDetailSidebarActionbar'
+import { useExternalProviderAssetDetailSidebarActionbar } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetDetailSidebarActionbar'
 
 const { canTeleport } = useExternalProviderAssetDetailSidebarActionbar()
 </script>

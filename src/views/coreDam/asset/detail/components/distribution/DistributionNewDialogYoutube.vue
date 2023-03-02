@@ -27,7 +27,7 @@ import {
   prepareFormDataYoutubeDistribution,
   redistributeYoutubeDistribution,
 } from '@/services/api/coreDam/distributionYoutubeApi'
-import { useDistributionYoutubeFactory } from '@/model/coreDam/factory/DistributionYoutube'
+import { useDistributionYoutubeFactory } from '@/model/coreDam/factory/DistributionYoutubeFactory'
 import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import {
   DistributionYoutubePrivacy,
