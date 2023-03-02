@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { ACL } from '@/types/Permission'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import { ref } from 'vue'
-import logo from '@/assets/logo-adam.svg'
+import logo from '@/assets/logo-adam-full.svg'
 
 const { t } = useI18n()
 
