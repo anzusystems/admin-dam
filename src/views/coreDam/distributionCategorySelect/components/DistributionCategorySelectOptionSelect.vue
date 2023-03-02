@@ -10,15 +10,15 @@ import { useValidateRequired } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DistributionCategoryOption | null
+    modelValue: DistributionCategoryOption | null | undefined
     select: DistributionCategorySelect
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: DistributionCategoryOption | null): void
-  (e: 'blur', data: DistributionCategoryOption | null): void
+  (e: 'update:modelValue', data: DistributionCategoryOption | null | undefined): void
+  (e: 'blur', data: DistributionCategoryOption | null | undefined): void
 }>()
 
 const modelValue = useVModel(props, 'modelValue', emit)
