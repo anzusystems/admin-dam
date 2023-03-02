@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type PermissionGroup, useAlerts, usePermissionGroupFactory } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@/composables/system/error'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import {
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  type PermissionGroup,
+  useAlerts,
+  useErrorHandler,
+  usePermissionGroupFactory,
+} from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
-import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
@@ -100,10 +104,14 @@ const onConfirm = async () => {
       <ASystemEntityScope system="common" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField v-model="permissionGroup.title" :v="v$.permissionGroup.title" data-cy="permissionGroup-title" />
+            <AFormTextField
+              v-model="permissionGroup.title"
+              :v="v$.permissionGroup.title"
+              data-cy="permissionGroup-title"
+            />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="permissionGroup.description"
               :v="v$.permissionGroup.description"
               data-cy="permissionGroup-description"

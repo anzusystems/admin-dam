@@ -1,5 +1,5 @@
-import type { RegionOfInterest } from '@/types/dam/Roi'
-import { toFloat, toInt } from '@/utils/string'
+import type { RegionOfInterest } from '@/types/coreDam/Roi'
+import { stringToFloat, stringToInt } from '@anzusystems/common-admin'
 import type Cropper from 'cropperjs'
 
 const PRECISION = 3
@@ -34,19 +34,19 @@ export const cropToRegion = function (
   const data = cropper.getData()
   const ratio = imageData.naturalHeight / originalImageHeight
 
-  let pointX = toInt((data.x / ratio).toFixed(PRECISION))
+  let pointX = stringToInt((data.x / ratio).toFixed(PRECISION))
   if (pointX < 0) pointX = 0
 
-  let pointY = toInt((data.y / ratio).toFixed(PRECISION))
+  let pointY = stringToInt((data.y / ratio).toFixed(PRECISION))
   if (pointY < 0) pointY = 0
 
-  let percentageWidth = toFloat((data.width / imageData.naturalWidth).toFixed(PRECISION))
+  let percentageWidth = stringToFloat((data.width / imageData.naturalWidth).toFixed(PRECISION))
   const validateWidth = percentageWidth * originalImageWidth + pointX
   if (validateWidth > originalImageWidth) {
     percentageWidth = percentageWidth - ((validateWidth - originalImageWidth) * 100) / originalImageWidth
   }
 
-  let percentageHeight = toFloat((data.height / imageData.naturalHeight).toFixed(PRECISION))
+  let percentageHeight = stringToFloat((data.height / imageData.naturalHeight).toFixed(PRECISION))
   const validateHeight = percentageHeight * originalImageHeight + pointY
   if (validateHeight > originalImageHeight) {
     percentageHeight = percentageHeight - ((validateHeight - originalImageHeight) * 100) / originalImageHeight

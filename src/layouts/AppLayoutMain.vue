@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { useTheme } from '@/composables/system/themeSettings'
-import { AAlerts } from '@anzusystems/common-admin'
+import { AAlerts, useTheme } from '@anzusystems/common-admin'
 
 const { theme } = useTheme()
 </script>

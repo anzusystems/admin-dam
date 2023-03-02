@@ -1,5 +1,5 @@
 import type { InternalAxiosRequestConfig } from 'axios'
-import { refreshToken } from '@/services/api/dam/authApi'
+import { refreshToken } from '@/services/api/coreDam/authApi'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { logoutUser } from '@/composables/system/currentUser'
 import { envConfig } from '@/services/EnvConfigService'

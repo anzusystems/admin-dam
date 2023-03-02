@@ -1,9 +1,3 @@
-export const clickBlur = (event?: Event): void => {
-  if (event?.currentTarget instanceof HTMLElement) {
-    event.currentTarget.blur()
-  }
-}
-
 const FORM_TAG_NAMES = ['input', 'textarea']
 
 export const keyboardEventTargetIsAnyFormElement = (keyboardEvent: KeyboardEvent, preventDefault = true) => {

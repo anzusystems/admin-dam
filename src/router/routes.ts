@@ -1,5 +1,5 @@
-import { deepFreeze } from '@/utils/object'
-import type { Immutable } from '@/types/Immutable'
+import type { Immutable } from '@anzusystems/common-admin'
+import { objectDeepFreeze } from '@anzusystems/common-admin'
 
 const routes = {
   DEFAULT: 'asset_list',
@@ -97,4 +97,4 @@ const routes = {
   },
 }
 
-export const ROUTE: Immutable<typeof routes> = deepFreeze(routes)
+export const ROUTE: Immutable<typeof routes> = objectDeepFreeze(routes)

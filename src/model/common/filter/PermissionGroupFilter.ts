@@ -1,4 +1,4 @@
-import { makeFilterHelper } from '@/composables/filter/filterHelpers'
+import { makeFilterHelper } from '@anzusystems/common-admin'
 import { reactive } from 'vue'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
 

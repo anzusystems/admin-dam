@@ -1,7 +1,7 @@
-import { fetchCurrentUser } from '@/services/api/dam/userApi'
+import { fetchCurrentUser } from '@/services/api/coreDam/userApi'
 import { envConfig } from '@/services/EnvConfigService'
 import { readonly, ref } from 'vue'
-import type { CurrentUserDto } from '@/types/dam/CurrentUser'
+import type { CurrentUserDto } from '@/types/coreDam/CurrentUser'
 import { ROLE_SUPER_ADMIN } from '@anzusystems/common-admin'
 
 const currentUser = ref<CurrentUserDto | undefined>(undefined)

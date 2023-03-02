@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -7,12 +10,12 @@ import { ROUTE } from '@/router/routes'
     <div class="flex-grow-1 text-center">
       <h1 class="d-flex justify-center align-center text-primary">
         <VIcon size="x-large" icon="mdi-emoticon-cry" />
-        <span>Ups, 401</span>
+        <span>{{ t('system.unauthorizedPage.title') }}</span>
       </h1>
 
-      <p class="pa-2">Na túto stránku nemáte prístup</p>
+      <p class="pa-2">{{ t('system.unauthorizedPage.subTitle') }}</p>
 
-      <VBtn :to="{ name: ROUTE.SYSTEM.LOGIN }" color="primary" outlined>Vráť ma na prihlásenie</VBtn>
+      <VBtn :to="{ name: ROUTE.SYSTEM.LOGIN }" color="primary" outlined>{{ t('system.unauthorizedPage.return') }}</VBtn>
     </div>
   </div>
 </template>

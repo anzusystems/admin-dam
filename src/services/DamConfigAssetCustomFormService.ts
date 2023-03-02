@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import type { DamConfigAssetCustomFormElement } from '@/types/dam/DamConfigAssetCustomForm'
-import { fetchAssetCustomFormElements } from '@/services/api/dam/assetCustomFormApi'
-import { AssetType } from '@/model/dam/valueObject/AssetType'
+import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
+import { fetchAssetCustomFormElements } from '@/services/api/coreDam/assetCustomFormApi'
+import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 export const damConfigAssetCustomFormElementsInitialized = ref(false)

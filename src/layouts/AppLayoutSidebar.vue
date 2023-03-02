@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { useTheme } from '@/composables/system/themeSettings'
+import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import ASidebarSettings from '@/components/system/ASidebarSettings.vue'
-import ASystemBar from '@/components/system/ASystemBar.vue'
-import { AAlerts } from '@anzusystems/common-admin'
-import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget.vue'
-import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
+import ASidebarSettings from '@/components/system/SidebarSettings.vue'
+import ActionbarTeleportTarget from '@/components/coreDam/ActionbarTeleportTarget.vue'
+import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE } from '@/router/routes'
+import { envConfig } from '@/services/EnvConfigService'
 
 const { t } = useI18n()
 
@@ -23,7 +22,7 @@ const { theme } = useTheme()
 <template>
   <AAlerts />
   <VApp :theme="theme">
-    <ASystemBar />
+    <ASystemBar :current-version="envConfig.appVersion" />
     <VNavigationDrawer v-model="drawer">
       <ASidebarSettings />
     </VNavigationDrawer>
@@ -42,7 +41,7 @@ const { theme } = useTheme()
           >
             <VIcon icon="mdi-home" :size="20" class="mr-2" /> {{ t('system.mainBar.backToAssets') }}
           </VBtn>
-          <DCurrentUserDropdown />
+          <CurrentUserDropdown />
         </div>
       </div>
     </VAppBar>

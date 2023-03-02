@@ -1,0 +1,101 @@
+{
+  "upload": {
+    "add": "Add to upload",
+    "dragAndDrop": "Drag and drop files for upload",
+    "incorrectFormatSize": "Incorrect format or size",
+    "stop": "Close",
+    "stopConfirmQuestion": "Are you sure you want to stop upload",
+    "waiting": "Waiting",
+    "processing": "Processing",
+    "uploading": "Uploading",
+    "done": "Done",
+    "limits": {
+      "uploadWarning": "Upload warning",
+      "onUploadLimit": "You are already on upload limit ({limit}). Finish upload, then try again.",
+      "addingOverLimit": "You are trying to upload additional {count} files",
+      "countAlreadyInProgress": "{count} file(s) are already in progress.",
+      "onlyAllowedAtOnce": "Only {count} are allowed to upload at once",
+      "cancelOrUploadFirst": "Do you want to cancel or upload only first {count} file(s)?",
+      "actionAddFirstItems": "Add first {count} file(s)"
+    }
+  },
+  "download": {
+    "downloadOriginalFile": "Download original file"
+  },
+  "imagePreview": {
+    "selected": "Selected",
+    "model": {
+      "fileId": "Image file ID"
+    },
+    "status": {
+      "isProcessingInfo": "Image is processing, please check again later",
+      "isFailedInfo": "Image processing failed"
+    },
+    "actions": {
+      "unassign": "Unassign image",
+      "replaceByFileId": "Unassign image",
+      "chooseFromDistribution": "Choose from distribution"
+    }
+  },
+  "mainBar": {
+    "upload": "Upload",
+    "search": "Search",
+    "backToAssets": "Back to assets",
+    "options": "Options",
+    "userOptions": "Account",
+    "customIntegrations": {
+      "title": "Custom integrations",
+      "assets": "Assets"
+    },
+    "podcasts": "Podcasts",
+    "extSystemLicenceSwitch": {
+      "filters": "Filters",
+      "filter": {
+        "extSystemName": "External system name",
+        "extSystemId": "External system ID",
+        "licenceName": "Licence name",
+        "licenceExtId": "Licence Ext ID"
+      },
+      "currentExtSystem": "Current ext system",
+      "currentLicence": "Current licence",
+      "extSystem": "External system",
+      "licence": "Licence",
+      "title": "Switch DAM ext system and asset licence",
+      "description": "Important: Please finish all work first, any progress will be lost!",
+      "confirm": "Confirm and reload admin",
+      "changeToLicenceId": "Change to licence ID"
+    }
+  },
+  "settings": {
+    "locale": "Locale",
+    "theme": "Theme"
+  },
+  "currentUser": {
+    "settings": "Settings",
+    "backToAssets": "Back to assets",
+    "logout": "Logout"
+  },
+  "uploadErrors": {
+    "unknownError": "System error, try again later or contact administrator",
+    "systemError": "Error",
+    "size": "Incorrect size",
+    "offset": "Incorrect offset",
+    "mimeType": "Incorrect mime type"
+  },
+  "closePage": {
+    "title": "This page/tab can be safely closed."
+  },
+  "notFoundPage": {
+    "title": "Ops, 404",
+    "subTitle": "This site doesn't exist",
+    "return": "Return me to homepage"
+  },
+  "unauthorizedPage": {
+    "title": "Ops, 401",
+    "subTitle": "You dont have access to this page",
+    "return": "Return me to homepage"
+  },
+  "error": {
+    "notificationsNotConnected": "Notification service is not working, some elements of admin will not work correctly."
+  }
+}

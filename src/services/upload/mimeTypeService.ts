@@ -1,5 +1,5 @@
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { AssetType } from '@/model/dam/valueObject/AssetType'
+import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 
 export const getAssetTypeByMimeType = (mimeType: string): AssetType | null => {
   for (const [key, values] of Object.entries(damConfigExtSystem)) {

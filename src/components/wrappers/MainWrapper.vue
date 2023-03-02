@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import ASystemBar from '@/components/system/ASystemBar.vue'
-import AssetToolbarOptions from '@/views/dam/asset/components/toolbar/AssetToolbarOptions.vue'
-import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
-import AssetUpload from '@/views/dam/asset/components/AssetUpload.vue'
-import AssetFooterUploadOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadOverlay.vue'
+import AssetToolbarOptions from '@/views/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
+import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
+import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
+import AssetFooterUploadOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
-import AssetToolbarExtSystemLicence from '@/views/dam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
-import AssetFooterUploadSlotsOverlay from '@/views/dam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
+import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
+import AssetFooterUploadSlotsOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logo from '@/assets/logo-adam.svg'
 import { ROUTE } from '@/router/routes'
-import AssetToolbarIntegrations from '@/views/dam/asset/components/toolbar/AssetToolbarIntegrations.vue'
+import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { ACL } from '@/types/Permission'
+import { ASystemBar } from '@anzusystems/common-admin'
+import { envConfig } from '@/services/EnvConfigService'
 
 const { t } = useI18n()
 
@@ -20,13 +21,12 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
 
 <template>
   <VLayout>
-    <ASystemBar />
+    <ASystemBar :current-version="envConfig.appVersion" />
     <slot name="sidebar-left" />
     <slot name="sidebar-right" />
     <VAppBar :order="-1" :height="46" elevation="0" class="system-border-b">
       <div class="d-flex w-100 justify-space-between align-center">
         <div class="d-flex align-center">
-          <!--          <div class="mx-2 font-weight-bold">ADAM</div>-->
           <div class="main-logo mr-2">
             <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
               <img width="104" height="42" :src="logo" alt="ADAM" />
@@ -41,7 +41,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
           <slot name="main-bar-right" />
           <AssetToolbarExtSystemLicence />
           <AssetToolbarOptions variant="main" />
-          <DCurrentUserDropdown />
+          <CurrentUserDropdown />
         </div>
       </div>
     </VAppBar>
