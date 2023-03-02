@@ -9,16 +9,16 @@ const props = withDefaults(
   defineProps<{
     modelValue: string | number | string[] | number[] | null
     client: () => AxiosInstance
-    label?: string | null
-    required?: boolean | null
+    label?: string | undefined
+    required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
     disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
-    label: null,
-    required: null,
+    label: undefined,
+    required: undefined,
     multiple: false,
     clearable: false,
     disableInitFetch: false,

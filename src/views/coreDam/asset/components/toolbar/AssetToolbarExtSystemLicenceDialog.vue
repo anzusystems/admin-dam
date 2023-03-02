@@ -6,7 +6,7 @@ import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
 import {
   ASystemEntityScope,
-  IntegerIdNullable,
+  type IntegerIdNullable,
   isArray,
   isInt,
   isNull,

@@ -36,7 +36,7 @@ const requiredComputed = computed(() => {
 })
 
 const errorMessageComputed = computed(() => {
-  if (v$.value.$errors?.length) return v$.value.$errors.map((item: ErrorObject) => item.$message)
+  if (v$.value.$errors?.length) return [v$.value.$errors.map((item: ErrorObject) => item.$message).join(' ')]
   return []
 })
 

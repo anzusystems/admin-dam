@@ -24,7 +24,7 @@ const opened = ref([])
       :title="t('sidebar.settings.settings')"
       data-cy="personal-settings"
     />
-    <Acl permission="dam">
+    <Acl :permission="ACL.DAM_PODCAST_UI">
       <VListItem
         :to="{ name: ROUTE.DAM.PODCAST.LIST }"
         prepend-icon="mdi-podcast"

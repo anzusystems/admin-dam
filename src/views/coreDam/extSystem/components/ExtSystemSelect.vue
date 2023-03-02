@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
-import { AFormRemoteAutocomplete, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, type IntegerId, type IntegerIdNullable } from '@anzusystems/common-admin'
 import { useExtSystemSelectActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemFilter } from '@/model/coreDam/filter/ExtSystemFilter'
 
 const props = withDefaults(
   defineProps<{
     modelValue: number | null | number[] | any
-    label?: string | null
-    required?: boolean | null
+    label?: string | undefined
+    required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
     dataCy?: string
@@ -16,8 +16,8 @@ const props = withDefaults(
     disableInitFetch?: boolean
   }>(),
   {
-    label: null,
-    required: null,
+    label: undefined,
+    required: undefined,
     multiple: false,
     clearable: false,
     dataCy: '',

@@ -9,8 +9,8 @@ import { computed, watch } from 'vue'
 const props = withDefaults(
   defineProps<{
     modelValue: number | null | number[] | any
-    label?: string | null
-    required?: boolean | null
+    label?: string | undefined
+    required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
     dataCy?: string
@@ -19,8 +19,8 @@ const props = withDefaults(
     disableInitFetch?: boolean
   }>(),
   {
-    label: null,
-    required: null,
+    label: undefined,
+    required: undefined,
     multiple: false,
     clearable: false,
     dataCy: '',

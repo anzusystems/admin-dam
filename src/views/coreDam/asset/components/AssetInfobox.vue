@@ -2,7 +2,7 @@
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import { useI18n } from 'vue-i18n'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
-import { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 
 withDefaults(
