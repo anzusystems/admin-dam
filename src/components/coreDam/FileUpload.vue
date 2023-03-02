@@ -117,7 +117,7 @@ const onFileChange = (event: Event) => {
       }
     }
     Promise.all(queue).then((filesArr) => {
-      setFiles(arrayFromArgs(filesArr))
+      setFiles(arrayFromArgs<File>(filesArr as File[]))
     })
     return
   }

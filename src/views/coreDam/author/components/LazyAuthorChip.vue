@@ -42,7 +42,8 @@ const onClick = () => {
 
 const showed = ref(true)
 
-const onClose = (id: string) => {
+const onClose = (id: string | null) => {
+  if (isNull(id)) return
   showed.value = false
   emit('closeChip', id)
 }
