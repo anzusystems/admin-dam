@@ -1,30 +1,21 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue'
-import {
-  useExternalProviderAssetListActions
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { useGridView } from '@/composables/system/gridView'
 import { useI18n } from 'vue-i18n'
-import ExternalProviderAssetListItem
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListItem.vue'
-import ExternalProviderAssetDetailDialog
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialog.vue'
+import ExternalProviderAssetListItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListItem.vue'
+import ExternalProviderAssetDetailDialog from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialog.vue'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
 import GridViewToggle from '@/components/system/GridViewToggle.vue'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
-import ExternalProviderAssetToolbarSearch
-  from '@/views/coreDam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
-import ExternalProviderAssetListSidebarFilter
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListSidebarFilter.vue'
-import ExternalProviderAssetListSidebarMetadata
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListSidebarMetadata.vue'
+import ExternalProviderAssetToolbarSearch from '@/views/coreDam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
+import ExternalProviderAssetListSidebarFilter from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListSidebarFilter.vue'
+import ExternalProviderAssetListSidebarMetadata from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListSidebarMetadata.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import AssetFooterUploadOverlayFull from '@/views/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
-import ExternalProviderAssetFooterSelected
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetFooterSelected.vue'
-import ExternalProviderAssetFooterSelectedFull
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetFooterSelectedFull.vue'
+import ExternalProviderAssetFooterSelected from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetFooterSelected.vue'
+import ExternalProviderAssetFooterSelectedFull from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetFooterSelectedFull.vue'
 import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,
@@ -121,8 +112,8 @@ onUnmounted(() => {
         <VIcon icon="mdi-refresh" />
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
       </VBtn>
-      <VDivider vertical class="mx-1 my-2" />
-      <GridViewToggle />
+      <VDivider vertical class="mx-1 my-2 hidden-xs" />
+      <GridViewToggle class="hidden-xs" />
       <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>

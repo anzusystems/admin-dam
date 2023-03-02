@@ -69,53 +69,15 @@
   }
 }
 
-/*
-#app {
-  .v-layout--full-height {
-    min-height: 100vh;
+/* one or more available input mechanism(s) can hover, but not with ease (for example simulating the hovering when performing a long touch) */
+@media (any-hover: on-demand) {
+  .v-overlay.v-tooltip {
+    display: none !important;
   }
 }
-
-.v-overlay-container,
-#app {
-  .v-btn {
-    font-stretch: normal;
-    font-weight: 500;
-    letter-spacing: 0.8px;
-    text-transform: none;
-  }
-
-  .v-chip.v-chip--density-default {
-    height: auto;
-    min-height: calc(var(--v-chip-height) + 0px);
+/* one or more available input mechanism(s) cannot hover or there are no pointing input mechanisms */
+@media (any-hover: none) {
+  .v-overlay.v-tooltip {
+    display: none !important;
   }
 }
-
- temp fixes:
-.v-btn--disabled.v-btn--icon {
-  > .v-icon {
-    opacity: 0.45;
-  }
-}
-
-.v-autocomplete.v-text-field {
-  input {
-    flex: 1 1 100px;
-    min-width: 100px;
-  }
-
-  .v-field__input {
-    flex-wrap: wrap;
-    width: 80%;
-  }
-
-  .v-autocomplete__selections {
-    flex: 1 0 auto;
-
-    .v-chip {
-      margin-right: 3px;
-      margin-bottom: 3px;
-    }
-  }
-}
-*/
