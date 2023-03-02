@@ -3,8 +3,7 @@ import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/
 import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { AActionDeleteButton, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
 import useVuelidate from '@vuelidate/core'
@@ -12,6 +11,7 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ref } from 'vue'
+import { ACL } from '@/types/Permission'
 
 withDefaults(
   defineProps<{
@@ -69,10 +69,14 @@ const onDelete = async () => {
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <AssetDownloadButton :asset-type="assetType" />
-    <AActionDeleteButton @delete-record="onDelete" />
-    <VBtn color="success" type="submit" variant="flat" class="ml-2" :loading="saveButtonLoading" @click.stop="onSave">
-      {{ t('common.button.save') }}
-    </VBtn>
+    <Acl :permission="ACL.DAM_ASSET_DELETE">
+      <AActionDeleteButton @delete-record="onDelete" />
+    </Acl>
+    <Acl :permission="ACL.DAM_ASSET_UPDATE">
+      <VBtn color="success" type="submit" variant="flat" class="ml-2" :loading="saveButtonLoading" @click.stop="onSave">
+        {{ t('common.button.save') }}
+      </VBtn>
+    </Acl>
   </AssetDetailSidebarActionsWrapper>
   <AssetMetadata />
 </template>

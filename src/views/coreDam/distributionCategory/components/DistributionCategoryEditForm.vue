@@ -2,14 +2,9 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import {
-  useDistributionCategoryEditActions
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import {
-  useDistributionCategoryValidation
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
-import DistributionCategorySelectOptionSelect
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import { useDistributionCategoryEditActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
+import DistributionCategorySelectOptionSelect from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 
 const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
   useDistributionCategoryEditActions()

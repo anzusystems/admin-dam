@@ -6,6 +6,10 @@ import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
 import {
   ASystemEntityScope,
+  IntegerIdNullable,
+  isArray,
+  isInt,
+  isNull,
   isUndefined,
   useAlerts,
   useErrorHandler,
@@ -135,15 +139,24 @@ const onConfirm = async () => {
   }
 }
 
-const onSelectedExtSystemSearchChange = (value: IntegerId) => {
-  if (value) {
+const onSelectedExtSystemSearchChange = (value: IntegerIdNullable | IntegerId[]) => {
+  if (isArray<IntegerIdNullable>(value) && value[0]) {
+    selectedExtSystem.value = value[0]
+    selectedLicence.value = null
+    return
+  }
+  if (isInt(value)) {
     selectedExtSystem.value = value
     selectedLicence.value = null
   }
 }
 
-const onSelectedLicenceSearchChange = (value: IntegerId) => {
-  if (value) selectedLicence.value = value
+const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) => {
+  if (isArray<IntegerIdNullable>(value) && value[0]) {
+    selectedLicence.value = value[0]
+    return
+  }
+  if (isInt(value) || isNull(value)) selectedLicence.value = value
 }
 
 onMounted(async () => {

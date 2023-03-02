@@ -14,6 +14,7 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
+import { ACL } from '@/types/Permission'
 
 const { sidebarRight } = useMainWrapper()
 const router = useRouter()
@@ -101,15 +102,17 @@ watch(
         <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onEditMore">
           {{ t('coreDam.asset.detail.info.edit') }}
         </VBtn>
-        <VBtn
-          :color="metadataAreTouched ? 'success' : 'secondary'"
-          size="small"
-          variant="flat"
-          :loading="saveButtonLoading"
-          @click.stop="onSave"
-        >
-          {{ t('common.button.save') }}
-        </VBtn>
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <VBtn
+            :color="metadataAreTouched ? 'success' : 'secondary'"
+            size="small"
+            variant="flat"
+            :loading="saveButtonLoading"
+            @click.stop="onSave"
+          >
+            {{ t('common.button.save') }}
+          </VBtn>
+        </Acl>
       </div>
     </template>
   </VNavigationDrawer>

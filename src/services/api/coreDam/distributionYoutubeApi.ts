@@ -5,7 +5,7 @@ import {
   apiFetchOne,
   apiUpdateOne,
   booleanToInteger,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

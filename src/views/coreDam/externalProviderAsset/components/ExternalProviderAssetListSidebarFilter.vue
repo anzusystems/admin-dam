@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
-import {
-  useExternalProviderAssetListActions
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
+import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { AFilterString } from '@anzusystems/common-admin'
 
 const { sidebarLeft } = useMainWrapper()

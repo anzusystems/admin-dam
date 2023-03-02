@@ -2,21 +2,16 @@
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import DistributionNewDialogYoutube
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
+import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
-import DistributionNewDialogCustom
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
-import DistributionNewDialogEmpty
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
+import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
+import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
 import { isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { damConfig } from '@/services/DamConfigService'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
   defineProps<{
