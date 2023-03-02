@@ -7,7 +7,8 @@ import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
 import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 import AssetFooterUploadSlotsOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
-import logo from '@/assets/logo-adam.svg'
+import logoFull from '@/assets/logo-adam-full.svg'
+import logoNoText from '@/assets/logo-adam-no-text.svg'
 import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { ACL } from '@/types/Permission'
@@ -25,11 +26,12 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
     <slot name="sidebar-left" />
     <slot name="sidebar-right" />
     <VAppBar :order="-1" :height="46" elevation="0" class="system-border-b">
-      <div class="d-flex w-100 justify-space-between align-center">
+      <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2">
         <div class="d-flex align-center">
-          <div class="main-logo mr-2">
+          <div class="main-logo mr-sm-2">
             <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
-              <img width="104" height="42" :src="logo" alt="ADAM" />
+              <img width="104" height="42" :src="logoFull" alt="ADAM" class="hidden-xs" />
+              <img width="42" height="42" :src="logoNoText" alt="ADAM" class="hidden-sm-and-up" />
             </RouterLink>
           </div>
           <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">

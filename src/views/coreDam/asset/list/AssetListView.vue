@@ -115,8 +115,8 @@ onUnmounted(() => {
         <VIcon icon="mdi-refresh" />
         <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
       </VBtn>
-      <VDivider vertical class="mx-1 my-2" />
-      <GridViewToggle />
+      <VDivider vertical class="mx-1 my-2 hidden-xs" />
+      <GridViewToggle class="hidden-xs" />
       <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>
