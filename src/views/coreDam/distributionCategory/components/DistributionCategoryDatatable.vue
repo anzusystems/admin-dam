@@ -19,13 +19,10 @@ import { useRouter } from 'vue-router'
 import type { ExtSystem } from '@/types/coreDam/ExtSystem'
 import { ACL, type AclValue } from '@/types/Permission'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import {
-  useDistributionCategoryListActions
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryListActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
-import DistributionCategorySelectedOptionChip
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import DistributionCategorySelectedOptionChip from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 
 const props = withDefaults(
   defineProps<{

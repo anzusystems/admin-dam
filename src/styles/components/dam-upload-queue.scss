@@ -30,7 +30,7 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
   }
 
   .asset-image--loading-bg .v-responsive__content {
-    background-color: rgba(255, 255, 255, 0.5); // todo dark
+    background-color: rgba(255 255 255 / 50%); // todo dark
   }
 
   .asset-image__progress {
@@ -47,17 +47,7 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
   }
 
   .asset-image__progress--animate-done {
-    //position: absolute;
-    //top: 0;
-    //right: 0;
-    //bottom: 0;
-    //left: 0;
-    //display: flex;
-    //flex-direction: column;
-    //gap: 0;
-    //align-items: center;
-    //justify-content: center;
-    background-color: rgba(255, 255, 255, 0.5); // todo dark
+    background-color: rgba(255 255 255 / 50%); // todo dark
     animation: animate-upload-done 2s forwards;
   }
 }
@@ -154,7 +144,7 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
 
   100% {
     opacity: 0;
-    display: none !important;
+    display: none;
   }
 }
 

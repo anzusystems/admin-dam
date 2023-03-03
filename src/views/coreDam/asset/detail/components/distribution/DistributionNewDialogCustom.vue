@@ -26,7 +26,7 @@ import {
   prepareFormDataCustomDistribution,
   redistributeCustomDistribution,
 } from '@/services/api/coreDam/distributionCustomApi'
-import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustom'
+import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
 import {
   damConfigDistributionCustomFormElements,
   loadDamConfigDistributionCustomFormElements,

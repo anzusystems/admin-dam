@@ -104,9 +104,10 @@ const setFiles = (files: File[] | undefined = []) => {
   selectedFiles.value = files[0] || null
 }
 
-const onFileChange = (event: DragEvent) => {
-  emit('change', event)
-  const items = event.dataTransfer && event.dataTransfer.items
+const onFileChange = (event: Event) => {
+  const dragEvent = event as DragEvent
+  emit('change', dragEvent)
+  const items = dragEvent.dataTransfer && dragEvent.dataTransfer.items
   if (items && !props.disableTraverse) {
     const queue = []
     for (let i = 0; i < items.length; i++) {
@@ -116,17 +117,16 @@ const onFileChange = (event: DragEvent) => {
       }
     }
     Promise.all(queue).then((filesArr) => {
-      // @ts-ignore
-      setFiles(arrayFromArgs(filesArr))
+      setFiles(arrayFromArgs<File>(filesArr as File[]))
     })
     return
   }
   // @ts-ignore
-  if (event && event.target && event.target.files) {
+  if (dragEvent && dragEvent.target && dragEvent.target.files) {
     // @ts-ignore
-    setFiles(event.target.files)
-  } else if (event && event.dataTransfer && event.dataTransfer.files) {
-    setFiles(Array.from(event.dataTransfer.files as ArrayLike<File>))
+    setFiles(dragEvent.target.files)
+  } else if (dragEvent && dragEvent.dataTransfer && dragEvent.dataTransfer.files) {
+    setFiles(Array.from(dragEvent.dataTransfer.files as ArrayLike<File>))
   }
 }
 

@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import {
-  useExternalProviderAssetDetailActions
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetDetailActions'
+import { useExternalProviderAssetDetailActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetDetailActions'
 import { useI18n } from 'vue-i18n'
-import ExternalProviderAssetMetadataItem
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
-import ExternalProviderAssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailSidebarActionsWrapper.vue'
-import {
-  useExternalProviderAssetImport
-} from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
+import ExternalProviderAssetMetadataItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
+import ExternalProviderAssetDetailSidebarActionsWrapper from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailSidebarActionsWrapper.vue'
+import { useExternalProviderAssetImport } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
 
 const props = withDefaults(
   defineProps<{

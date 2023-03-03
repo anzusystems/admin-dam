@@ -6,11 +6,8 @@ import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import {
-  useDistributionCategorySelectEditActions
-} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
-import DistributionCategorySelectEditForm
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
+import { useDistributionCategorySelectEditActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import DistributionCategorySelectEditForm from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
 
 const { t } = useI18n()
 
