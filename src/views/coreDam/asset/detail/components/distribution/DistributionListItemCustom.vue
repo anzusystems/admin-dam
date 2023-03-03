@@ -10,6 +10,7 @@ import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStat
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
 import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
+import { ACopyText, ATableCopyIdButton } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -40,7 +41,8 @@ const serviceRequirements = computed(() => {
     </VRow>
     <VRow>
       <VCol>
-        {{ t('coreDam.distribution.common.status') }}: <DistributionStatusChip :status="item.status" />
+        {{ t('coreDam.distribution.common.status') }}:
+        <DistributionStatusChip :status="item.status" />
         <VBtn
           v-if="showRedistribute"
           class="ml-2"
@@ -55,14 +57,22 @@ const serviceRequirements = computed(() => {
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Failed">
       <VCol>
-        {{ t('coreDam.distribution.common.failReason') }}: <DistributionFailReasonChip :status="item.failReason" />
+        {{ t('coreDam.distribution.common.failReason') }}:
+        <DistributionFailReasonChip :status="item.failReason" />
       </VCol>
     </VRow>
-    <VRow v-if="isDistributionCustomItem(item)">
-      <VCol v-if="item.extId.length > 0">{{ t('coreDam.distribution.common.extId') }}: {{ item.extId }}</VCol>
-      <VCol v-for="(value, key) in item.distributionData" :key="key">
-        <DistributionListItemCustomDistributionDataItem :item="value" :title="key" />
-      </VCol>
-    </VRow>
+    <template v-if="isDistributionCustomItem(item)">
+      <VRow>
+        <VCol v-if="item.extId.length > 0">
+          {{ t('coreDam.distribution.common.extId') }}:
+          <ACopyText :value="item.extId" />
+        </VCol>
+      </VRow>
+      <VRow v-for="(value, key) in item.distributionData" :key="key">
+        <VCol>
+          <DistributionListItemCustomDistributionDataItem :item="value" :title="key" />
+        </VCol>
+      </VRow>
+    </template>
   </div>
 </template>
