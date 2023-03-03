@@ -4,7 +4,6 @@ import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anz
 import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
 import LazyUserChip from '@/views/coreDam/user/components/LazyUserChip.vue'
 import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
-import ColorBox from '@/components/coreDam/ColorBox.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
