@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import AssetFileRotate from '@/views/coreDam/asset/detail/components/AssetFileRotate.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'

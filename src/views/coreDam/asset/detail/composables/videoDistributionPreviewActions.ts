@@ -3,7 +3,6 @@ import { isNull, useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchVideoFileDistributionPreviewList } from '@/services/api/coreDam/videoApi'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
-import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 
 const { handleError } = useErrorHandler()
 

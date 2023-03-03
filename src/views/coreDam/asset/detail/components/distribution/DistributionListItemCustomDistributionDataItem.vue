@@ -12,7 +12,11 @@ withDefaults(
 </script>
 
 <template>
-  <a v-if="item.type === DistributionDataItemType.Url && item.value && item.value.length > 0" :href="item.value">
+  <a
+    v-if="item.type === DistributionDataItemType.Url && item.value && item.value.length > 0"
+    :href="item.value"
+    target="_blank"
+  >
     {{ title }}
   </a>
 </template>

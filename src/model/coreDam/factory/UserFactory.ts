@@ -10,6 +10,15 @@ export function useUserFactory() {
       email: '',
       firstName: '',
       lastName: '',
+      person: {
+        firstName: '',
+        lastName: '',
+        fullName: '',
+      },
+      avatar: {
+        color: '',
+        text: '',
+      },
       roles: [],
       permissionGroups: [],
       permissions: {},

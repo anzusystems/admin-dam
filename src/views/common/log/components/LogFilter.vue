@@ -7,7 +7,7 @@ import {
   AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
-  useLogLevel
+  useLogLevel,
 } from '@anzusystems/common-admin'
 import { useLogSystem } from '@/model/common/valueObject/LogSystem'
 

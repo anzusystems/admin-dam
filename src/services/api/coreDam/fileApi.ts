@@ -114,7 +114,7 @@ async function notificationFallbackCallback(item: UploadQueueItem) {
       uploadQueuesStore.queueItemDuplicate(asset.id)
       return
     } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Failed) {
-      uploadQueuesStore.queueItemFailed(asset.id)
+      uploadQueuesStore.queueItemFailed(asset.id, asset.mainFile.fileAttributes.failReason)
       return
     }
   }

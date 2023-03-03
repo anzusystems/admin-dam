@@ -22,7 +22,7 @@ import {
   useValidateRequired,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
-import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJw'
+import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
 import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useI18n } from 'vue-i18n'

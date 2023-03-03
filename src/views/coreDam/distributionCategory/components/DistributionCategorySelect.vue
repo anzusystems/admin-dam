@@ -1,23 +1,21 @@
 <script lang="ts" setup>
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
-import {
-  useDistributionCategorySelectActions
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategorySelectActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
 
 withDefaults(
   defineProps<{
     modelValue: string | null | string[] | any
-    label?: string | null
-    required?: boolean | null
+    label?: string | undefined
+    required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
     disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
-    label: null,
-    required: null,
+    label: undefined,
+    required: undefined,
     multiple: false,
     clearable: false,
     disableInitFetch: false,

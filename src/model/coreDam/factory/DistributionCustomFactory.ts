@@ -7,6 +7,7 @@ export function useDistributionCustomFactory() {
       customData: {},
       distributionService: '',
       blockedBy: [],
+      publishAt: null,
     }
   }
 

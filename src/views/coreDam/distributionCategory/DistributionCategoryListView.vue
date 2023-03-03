@@ -3,16 +3,14 @@ import { ACard } from '@anzusystems/common-admin'
 import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import DistributionCategoryDatatable
-  from '@/views/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'
+import DistributionCategoryDatatable from '@/views/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
 import { computed, ref } from 'vue'
 import {
   useDistributionCategoryListActions,
   useDistributionCategoryManageActions,
 } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import DistributionCategoryCreateButton
-  from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
+import DistributionCategoryCreateButton from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ACL } from '@/types/Permission'
 

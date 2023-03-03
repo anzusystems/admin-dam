@@ -8,8 +8,7 @@ import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useI18n } from 'vue-i18n'
-import DistributionCategoryWidgetDialog
-  from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
+import DistributionCategoryWidgetDialog from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
 
 const { t } = useI18n()
 

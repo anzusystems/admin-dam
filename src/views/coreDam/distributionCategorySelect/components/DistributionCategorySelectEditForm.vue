@@ -3,12 +3,9 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategorySelectApi'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import Draggable from 'vuedraggable'
-import {
-  useDistributionCategorySelectEditActions
-} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import { useDistributionCategorySelectEditActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategoryOptionFactory } from '@/model/coreDam/factory/DistributionCategoryOptionFactory'
-import DistributionCategoryOptionEditForm
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
+import DistributionCategoryOptionEditForm from '@/views/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
 
 const { distributionCategorySelect } = useDistributionCategorySelectEditActions()
 const { createDefault } = useDistributionCategoryOptionFactory()
