@@ -15,11 +15,11 @@ interface UserCacheItem extends UserMinimal, CachedItem {}
 const cache = ref<Map<IntegerId, UserCacheItem>>(new Map())
 
 const mapFullToMinimal = (source: User): UserMinimal => {
-  return { id: source.id, email: source.email, firstName: source.firstName, lastName: source.lastName }
+  return { id: source.id, email: source.email, avatar: source.avatar, person: source.person }
 }
 
 const mapIdToMinimal = (id: IntegerId): UserMinimal => {
-  return { id: id, email: '', firstName: id + '', lastName: '' }
+  return { id: id, email: '', person: { firstName: '', lastName: '', fullName: '' }, avatar: { color: '', text: '' } }
 }
 
 export const loadCachedUsers = () => {

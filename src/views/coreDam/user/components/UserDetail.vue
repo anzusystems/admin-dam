@@ -16,8 +16,6 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.user.model.firstName')" :value="user.firstName" />
-      <ARow :title="t('coreDam.user.model.lastName')" :value="user.lastName" />
       <ARow :title="t('coreDam.user.model.assetLicences')">
         <LazyAssetLicenceChip
           v-for="assetLicenceId in user.assetLicences"

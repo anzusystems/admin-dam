@@ -33,12 +33,7 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const columns = useDatatableColumns([
-  { name: 'email' },
-  { name: 'firstName' },
-  { name: 'lastName' },
-  { name: 'modifiedAt' },
-])
+const columns = useDatatableColumns([{ name: 'email' }, { name: 'modifiedAt' }])
 
 const { can } = useAcl<AclValue>()
 

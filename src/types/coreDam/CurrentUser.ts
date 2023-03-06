@@ -14,7 +14,7 @@ export interface CurrentUserAssetLicence {
 
 export interface CurrentUserDto
   extends AnzuUser,
-    Pick<User, 'firstName' | 'lastName' | 'allowedAssetExternalProviders' | 'allowedDistributionServices'> {
+    Pick<User, 'person' | 'avatar' | 'allowedAssetExternalProviders' | 'allowedDistributionServices'> {
   selectedLicence: CurrentUserAssetLicence | null
   adminToExtSystems: CurrentUserExtSystem[]
   userToExtSystems: CurrentUserExtSystem[]
