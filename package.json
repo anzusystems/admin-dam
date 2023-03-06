@@ -27,7 +27,7 @@
     "flatpickr": "^4.6.13",
     "js-sha1": "^0.6.0",
     "jwt-decode": "^3.1.2",
-    "pinia": "^2.0.32",
+    "pinia": "^2.0.33",
     "roboto-fontface": "^0.10.0",
     "shortcut-buttons-flatpickr": "^0.4.0",
     "universal-cookie": "^4.0.4",
