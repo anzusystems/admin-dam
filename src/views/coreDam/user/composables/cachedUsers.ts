@@ -2,6 +2,7 @@ import type { User, UserMinimal } from '@/types/coreDam/User'
 import { fetchUserListByIds } from '@/services/api/coreDam/userApi'
 import type { IntegerId } from '@anzusystems/common-admin'
 import { defineCached } from '@/composables/system/defineCached'
+import { onMounted, onUnmounted } from 'vue'
 
 const mapFullToMinimal = (source: User): UserMinimal => {
   return { id: source.id, email: source.email, firstName: source.firstName, lastName: source.lastName }
@@ -17,11 +18,23 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<Intege
   fetchUserListByIds
 )
 
-export const useCachedUsers = () => {
+export const loadCachedUsers = () => {
+  onMounted(() => {
+    console.log('onMounted loadCachedUsers')
+  })
+
+  onUnmounted(() => {
+    console.log('onUnmounted loadCachedUsers')
+  })
+
   return {
     addManualToCachedUsers: addManual,
     addToCachedUsers: add,
     fetchCachedUsers: fetch,
+  }
+}
+export const useCachedUsers = () => {
+  return {
     cachedUsers: cache,
     hasCachedUser: has,
     getCachedUser: get,

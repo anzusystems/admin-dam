@@ -13,12 +13,12 @@ import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { loadCachedUsers, useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = loadCachedUsers()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
