@@ -13,6 +13,7 @@ import type { IntegerId } from '@anzusystems/common-admin'
 interface UserCacheItem extends UserMinimal, CachedItem {}
 
 const cache = ref<Map<IntegerId, UserCacheItem>>(new Map())
+const toFetch = ref<Set<IntegerId>>(new Set())
 
 const mapFullToMinimal = (source: User): UserMinimal => {
   return { id: source.id, email: source.email, firstName: source.firstName, lastName: source.lastName }
@@ -23,9 +24,9 @@ const mapIdToMinimal = (id: IntegerId): UserMinimal => {
 }
 
 export const loadCachedUsers = () => {
-  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(cache)
+  const { fetchNotLoaded, addToCache, manualAdd } = useAddToLazyHelper<IntegerId, User, UserMinimal>(cache, toFetch)
 
-  const fetchCachedUsers = () => fetchNotLoaded(cache, 'id', mapFullToMinimal, fetchUserListByIds)
+  const fetchCachedUsers = () => fetchNotLoaded(cache, toFetch, 'id', mapFullToMinimal, fetchUserListByIds)
 
   const addToCachedUsersLazy = (...args: AddToCachedArgs<IntegerId>) => addToCache(mapIdToMinimal, ...args)
 
