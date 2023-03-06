@@ -52,9 +52,8 @@ export function useAddToLazyHelper<
   I extends DocId | IntegerId,
   T extends Record<string, any>,
   M extends Record<string | '_loaded', any>
->(cache: Ref<Map<I, M>>) {
+>(cache: Ref<Map<I, M>>, toFetch: Ref<Set<I>>) {
   const addToCache = (mapCallback: (id: I) => M, ...args: AddToCachedArgs<I>) => {
-    const toFetch: Set<I> = new Set()
     for (let i = 0; i < args.length; i++) {
       const arg = args[i]
       if (isNull(arg) || isUndefined(arg)) continue
@@ -62,13 +61,13 @@ export function useAddToLazyHelper<
         for (let j = 0; j < arg.length; j++) {
           const item = arg[j]
           if (isNull(item) || isUndefined(item)) continue
-          if (!cache.value.has(item)) toFetch.add(item)
+          if (!cache.value.has(item)) toFetch.value.add(item)
         }
         continue
       }
-      if (!cache.value.has(arg)) toFetch.add(arg)
+      if (!cache.value.has(arg)) toFetch.value.add(arg)
     }
-    toFetch.forEach((item) => {
+    toFetch.value.forEach((item) => {
       cache.value.set(item, { ...mapCallback(item), ...{ _loaded: false } })
     })
   }
@@ -79,35 +78,41 @@ export function useAddToLazyHelper<
     }
   }
 
+  const updateToFetch = (ids: Array<I>, toFetch: Ref<Set<I>>) => {
+    for (let i = 0; i < ids.length; i += 1) {
+      toFetch.value.delete(ids[i])
+    }
+  }
+
   const manualAdd = (all: Ref<Map<I, M>>, data: T, propId = 'id', mapCallback: (source: T) => M) => {
     all.value.set(data[propId], { ...mapCallback(data), ...{ _loaded: true } })
   }
 
   async function fetch(
     cache: Ref<Map<I, M>>,
+    toFetch: Ref<Set<I>>,
     propId = 'id',
     mapCallback: (source: T) => M,
     fetchCallback: (ids: I[]) => Promise<T[]>
   ) {
-    const idsToFetch: Array<I> = []
-    cache.value.forEach((item) => {
-      if (item._loaded === false && !idsToFetch.includes(item[propId])) idsToFetch.push(item[propId])
-    })
-    if (idsToFetch.length > 0) {
-      const res = await fetchCallback(idsToFetch)
-      updateMap(cache, res, 'id', mapCallback)
+    if (toFetch.value.size > 0) {
+      const ids = Array.from(toFetch.value)
+      const res = await fetchCallback(ids)
+      updateToFetch(ids, toFetch)
+      updateMap(cache, res, propId, mapCallback)
     }
   }
 
   const fetchNotLoaded = async (
     cache: Ref<Map<I, M>>,
+    toFetch: Ref<Set<I>>,
     propId = 'id',
     mapCallback: (source: T) => M,
     fetchCallback: (ids: I[]) => Promise<T[]>
   ) => {
     return useDebounceFn(
       async () => {
-        await fetch(cache, propId, mapCallback, fetchCallback)
+        await fetch(cache, toFetch, propId, mapCallback, fetchCallback)
       },
       1000,
       { maxWait: 3000 }
