@@ -13,7 +13,7 @@ import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { loadCachedUsers, useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { t } = useI18n()
 const { showErrorT } = useAlerts()
@@ -24,7 +24,7 @@ const assetListStore = useAssetListStore()
 const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = loadCachedUsers()
 const {
   toggleSidebar,
   sidebar,

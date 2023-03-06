@@ -23,7 +23,7 @@ import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { loadCachedUsers, useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 
@@ -46,7 +46,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
   const { resetFilter } = useFilterHelpers()
   const { currentAssetLicenceId } = useCurrentAssetLicence()
-  const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+  const { fetchCachedUsers, addToCachedUsers } = loadCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 

@@ -42,8 +42,10 @@ export function defineCached<
       }
       if (!cache.value.has(arg)) toAdd.value.add(arg)
     }
+    console.log(toAdd.value)
     toAdd.value.forEach((id) => {
       cache.value.set(id, { ...mapIdToMinimal(id), ...{ _loaded: false } })
+      toFetch.value.add(id)
     })
   }
 
@@ -65,23 +67,30 @@ export function defineCached<
     }
   }
 
-  async function apiFetch(toFetchValue: Set<I>) {
-    if (toFetchValue.size > 0) {
-      const ids = Array.from(toFetchValue)
+  async function apiFetch() {
+    console.log('debounced fetch')
+    console.log(toFetch.value)
+    console.log(toFetch.value.size)
+    if (toFetch.value.size > 0) {
+      const ids = Array.from(toFetch.value)
       const res = await fetchCallback(ids)
+      console.log(res)
       updateToFetch(ids)
       updateMap(res)
     }
   }
 
-  const fetch = async () => {
-    return useDebounceFn(
-      async () => {
-        await apiFetch(toFetch.value)
-      },
-      1000,
-      { maxWait: 3000 }
-    )
+  const debouncedFetch = useDebounceFn(
+    async () => {
+      console.log('lala')
+      await apiFetch()
+    },
+    1000,
+    { maxWait: 5000 }
+  )
+
+  const fetch = () => {
+    debouncedFetch()
   }
 
   // todo check why return types are incorrect

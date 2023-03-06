@@ -19,12 +19,13 @@ const router = useRouter()
 const { getCachedUser } = useCachedUsers()
 
 const item = computed(() => {
+  console.log('computed for id', props.id)
   return getCachedUser(props.id)
 })
 
 const showLoader = computed(() => {
-  if (item.value && item.value._loaded === true) return true
-  return false
+  if (item.value && item.value._loaded === true) return false
+  return true
 })
 
 const text = computed(() => {
