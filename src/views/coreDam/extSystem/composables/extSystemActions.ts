@@ -13,12 +13,12 @@ import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -54,8 +54,8 @@ export const useExtSystemDetailActions = () => {
     detailLoading.value = true
     try {
       const extSystem = await fetchExtSystem(id)
-      extSystem.adminUsers.forEach((id) => addToLazyUserBuffer(id))
-      fetchLazyUser()
+      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+      fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
     } catch (error) {
       handleError(error)
@@ -107,8 +107,8 @@ export const useExtSystemEditActions = () => {
     detailLoading.value = true
     try {
       const extSystem = await fetchExtSystem(id)
-      extSystem.adminUsers.forEach((id) => addToLazyUserBuffer(id))
-      fetchLazyUser()
+      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+      fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
     } catch (error) {
       handleError(error)

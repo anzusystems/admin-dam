@@ -1,7 +1,7 @@
 import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 
 export interface UserMinimal {
-  id: number
+  id: IntegerId
   firstName: string
   lastName: string
   email: string
