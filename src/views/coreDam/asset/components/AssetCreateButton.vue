@@ -15,8 +15,8 @@ import { useI18n } from 'vue-i18n'
 import type { AssetCreateDto, AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { createAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void
@@ -24,6 +24,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const assetDetailStore = useAssetDetailStore()
+const { addToCachedUsers, fetchCachedUsers } = useCachedUsers()
 
 const { createCreateDto } = useAssetFactory()
 const asset = ref<AssetCreateDto>(createCreateDto())
@@ -47,13 +49,8 @@ const showDetail = async (asset: AssetDetailItemDto) => {
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
   assetDetailStore.setAsset(asset)
-  if (assetDetailStore.asset?.createdBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-  }
-  if (assetDetailStore.asset?.modifiedBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-  }
-  fetchLazyUser()
+  addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+  fetchCachedUsers()
   assetDetailStore.hideLoader()
 }
 
@@ -71,9 +68,6 @@ const onConfirm = async () => {
     buttonLoading.value = false
   }
 }
-
-const assetDetailStore = useAssetDetailStore()
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
 
 const { assetTypeOptions } = useAssetType()
 </script>
