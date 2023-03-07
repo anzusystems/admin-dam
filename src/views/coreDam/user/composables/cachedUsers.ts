@@ -4,11 +4,11 @@ import type { IntegerId } from '@anzusystems/common-admin'
 import { defineCached } from '@/composables/system/defineCached'
 
 const mapFullToMinimal = (source: User): UserMinimal => {
-  return { id: source.id, email: source.email, firstName: source.firstName, lastName: source.lastName }
+  return { id: source.id, email: source.email, avatar: source.avatar, person: source.person }
 }
 
 const mapIdToMinimal = (id: IntegerId): UserMinimal => {
-  return { id: id, email: '', firstName: id + '', lastName: '' }
+  return { id: id, email: '', person: { firstName: '', lastName: '', fullName: '' }, avatar: { color: '', text: '' } }
 }
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<IntegerId, User, UserMinimal>(

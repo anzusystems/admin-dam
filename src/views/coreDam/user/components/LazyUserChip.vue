@@ -4,6 +4,7 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { isNull } from '@anzusystems/common-admin'
 import { useLazyUser } from '@/views/coreDam/user/composables/lazyUser'
+import { useUserDisplayHelper } from '@/composables/system/userDisplayHelper'
 
 const props = withDefaults(
   defineProps<{
@@ -26,14 +27,9 @@ const item = computed(() => {
   return get(props.id)
 })
 
-const text = computed(() => {
-  if (item.value) {
-    return item.value.firstName.length || item.value?.lastName.length
-      ? item.value.firstName + ' ' + item.value.lastName
-      : item.value.email.split('@')[0]
-  }
-  return ''
-})
+const { getUsername } = useUserDisplayHelper()
+
+const text = computed(() => getUsername(item.value))
 
 const onClick = () => {
   router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: props.id } })

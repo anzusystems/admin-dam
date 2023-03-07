@@ -8,8 +8,6 @@ export function useUserFactory() {
     return {
       id: 0,
       email: '',
-      firstName: '',
-      lastName: '',
       person: {
         firstName: '',
         lastName: '',
@@ -41,8 +39,6 @@ export function useUserFactory() {
   const createDefaultForUpdate = (user: User): UpdateUser => {
     return {
       id: 0,
-      firstName: user.firstName,
-      lastName: user.lastName,
       plainPassword: '',
       adminToExtSystems: user.adminToExtSystems,
       userToExtSystems: [],

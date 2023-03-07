@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const { currentUser } = useCurrentUser()
+const { currentUser, currentUserUsername } = useCurrentUser()
 </script>
 
 <template>
@@ -14,12 +14,7 @@ const { currentUser } = useCurrentUser()
     <VMenu activator="parent">
       <VCard min-width="300">
         <VList v-if="currentUser">
-          <VListItem
-            prepend-icon=""
-            :title="currentUser.firstName + ' ' + currentUser.lastName"
-            :subtitle="currentUser.email"
-            data-cy="user-email"
-          >
+          <VListItem prepend-icon="" :title="currentUserUsername" :subtitle="currentUser.email" data-cy="user-email">
             <template #prepend>
               <div class="mr-3">
                 <VIcon color="secondary" icon="mdi-account" :size="44" />
