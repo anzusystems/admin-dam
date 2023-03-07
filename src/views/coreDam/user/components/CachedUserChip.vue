@@ -27,9 +27,7 @@ const item = computed(() => {
 
 const text = computed(() => {
   if (cached.value) {
-    return cached.value.firstName.length || cached.value?.lastName.length
-      ? cached.value.firstName + ' ' + cached.value.lastName
-      : cached.value.email.split('@')[0]
+    return cached.value.person.fullName.length ? cached.value.person.fullName : cached.value.email.split('@')[0]
   }
   return props.id
 })
