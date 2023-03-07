@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { IntegerId, isNull, isUndefined } from '@anzusystems/common-admin'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { watchPausable } from '@vueuse/core'
+import type { UserMinimal } from '@/types/coreDam/User'
 
 const props = withDefaults(
   defineProps<{
@@ -15,39 +17,39 @@ const props = withDefaults(
 )
 
 const router = useRouter()
+const cached = shallowRef<undefined | UserMinimal>(undefined)
 
 const { getCachedUser } = useCachedUsers()
 
 const item = computed(() => {
-  console.log('computed for id', props.id)
   return getCachedUser(props.id)
 })
 
-const showLoader = computed(() => {
-  if (item.value && item.value._loaded === true) return false
-  return true
-})
-
 const text = computed(() => {
-  if (item.value) {
-    return item.value.firstName.length || item.value?.lastName.length
-      ? item.value.firstName + ' ' + item.value.lastName
-      : item.value.email.split('@')[0]
+  if (cached.value) {
+    return cached.value.firstName.length || cached.value?.lastName.length
+      ? cached.value.firstName + ' ' + cached.value.lastName
+      : cached.value.email.split('@')[0]
   }
-  return ''
+  return props.id
 })
 
 const onClick = () => {
   router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: props.id } })
 }
+
+const { stop } = watchPausable(item, (newValue) => {
+  if (isUndefined(newValue) || newValue._loaded === false) return
+  cached.value = newValue
+  stop()
+})
 </script>
 
 <template>
   <div class="d-inline-flex">
     <span v-if="isNull(id) || isUndefined(id)">-</span>
-    <VProgressCircular v-else-if="showLoader" :size="16" :width="2" indeterminate />
     <VChip v-else rounded="lg" size="small" variant="tonal" @click.stop="onClick">
-      {{ text }}
+      {{ text }} <VProgressCircular v-if="!cached" :size="12" :width="2" indeterminate class="ml-1" />
     </VChip>
   </div>
 </template>
