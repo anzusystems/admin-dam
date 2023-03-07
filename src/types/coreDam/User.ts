@@ -1,13 +1,20 @@
 import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 
 export interface UserMinimal {
-  id: IntegerId
-  firstName: string
-  lastName: string
+  id: number
+  person: {
+    firstName: string
+    lastName: string
+    fullName: string
+  }
+  avatar: {
+    color: string
+    text: string
+  }
   email: string
 }
 
-export interface UpdateUser extends Pick<UserMinimal, 'id' | 'firstName' | 'lastName'> {
+export interface UpdateUser extends Pick<UserMinimal, 'id'> {
   assetLicences: IntegerId[]
   allowedAssetExternalProviders: string[]
   allowedDistributionServices: string[]

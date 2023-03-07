@@ -23,12 +23,6 @@ const { t } = useI18n()
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <VRow>
       <VCol cols="12" md="8">
-        <ARow>
-          <AFormTextField v-model="userUpdate.firstName" :v="v$.userUpdate.firstName" />
-        </ARow>
-        <ARow>
-          <AFormTextField v-model="userUpdate.lastName" :v="v$.userUpdate.lastName" />
-        </ARow>
         <ARow
           v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials && !isUndefined(userUpdate.plainPassword)"
         >
