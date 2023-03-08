@@ -66,20 +66,6 @@ const { fetchItemsMinimal } = useKeywordSelectActions()
 
 const innerFilter = useKeywordFilter()
 
-const appendNewIcon = (name: string, id: DocId) => {
-  return undefined
-  // console.log(name)
-  // console.log(id)
-  // console.log(suggestionsDefined.value)
-  // console.log(existingKeywordsIds.value)
-  // console.log(existingKeywordsNames.value)
-  // return suggestionsDefined.value &&
-  //   !existingKeywordsIds.value.includes(id) &&
-  //   existingKeywordsNames.value.includes(name)
-  //   ? 'mdi-new-box'
-  //   : undefined
-}
-
 const addNewKeywordText = ref('')
 
 const searchChange = (newValue: string) => {

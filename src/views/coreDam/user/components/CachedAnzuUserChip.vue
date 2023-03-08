@@ -2,7 +2,7 @@
 import { computed, shallowRef, watch } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { IntegerId, isNull, isUndefined, ICON } from '@anzusystems/common-admin'
+import { ICON, type IntegerId, isNull, isUndefined } from '@anzusystems/common-admin'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import type { UserMinimal } from '@/types/coreDam/User'
 

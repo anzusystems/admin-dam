@@ -31,7 +31,6 @@ const displayNewIcon = computed(() => {
   if (!props.queueId) return undefined
   const queue = uploadQueuesStore.getQueue(props.queueId)
   if (!queue || !cached.value) return undefined
-  console.log(queue.suggestions.newKeywordNames)
   if (queue.suggestions.newKeywordNames.has(cached.value.name)) return 'mdi-new-box'
   return undefined
 })

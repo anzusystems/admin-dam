@@ -1,5 +1,4 @@
-import type { PermissionGroup, PermissionGroupMinimal } from '@anzusystems/common-admin'
-import type { IntegerId } from '@anzusystems/common-admin'
+import type { IntegerId, PermissionGroup, PermissionGroupMinimal } from '@anzusystems/common-admin'
 import { defineCached } from '@/composables/system/defineCached'
 import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
 import { damClient } from '@/services/api/clients/damClient'

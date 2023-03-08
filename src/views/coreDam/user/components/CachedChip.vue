@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { DocId, ICON, IntegerId, isNull, isUndefined, objectGetValueByPath } from '@anzusystems/common-admin'
+import { type DocId, ICON, type IntegerId, isNull, isUndefined, objectGetValueByPath } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
     id: null | undefined | IntegerId | DocId
     containerClass?: undefined | string
-    getCachedFn: (id: DocId | IntegerId) => any
+    getCachedFn: (id: any) => any
     displayTextPath: string
     route: string
     disableClick?: boolean

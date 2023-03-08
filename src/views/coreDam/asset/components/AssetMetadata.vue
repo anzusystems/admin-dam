@@ -9,11 +9,11 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/coreDam/File'
+import { isImageFile } from '@/types/coreDam/File'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import { isImageFile } from '@/types/coreDam/File'
 
 const { t } = useI18n()
 
