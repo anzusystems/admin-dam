@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { DocId } from '@anzusystems/common-admin'
+import { isUndefined } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { computed, shallowRef, watch } from 'vue'
-import { isUndefined } from '@anzusystems/common-admin'
 import type { CachedItem } from '@/composables/system/defineCached'
 import type { AuthorMinimal } from '@/types/coreDam/Author'
 

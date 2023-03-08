@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { DocId, isArray, useValidateRequiredIf } from '@anzusystems/common-admin'
+import { type DocId, isArray, useValidateRequiredIf } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, onMounted, ref } from 'vue'

@@ -1,5 +1,4 @@
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import type { QueueItemStatus, QueueItemType } from '@/types/coreDam/UploadQueue'
+import type { QueueItemStatus, QueueItemType, UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'

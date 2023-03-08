@@ -11,7 +11,7 @@ export const updateNewNames = (suggestions: Suggestions, newNames: Set<string>) 
 
 export const getAuthorConflicts = (suggestions: Suggestions) => {
   const conflicts: Array<DocId> = []
-  for (const [key, value] of Object.entries(suggestions)) {
+  for (const value of Object.values(suggestions)) {
     if (isArray(value) && value.length > 1) {
       value.forEach((id) => {
         conflicts.push(id)

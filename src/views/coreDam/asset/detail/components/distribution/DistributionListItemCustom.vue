@@ -4,13 +4,13 @@ import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
 import type { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useI18n } from 'vue-i18n'
 import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
-import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
-import { ACopyText, ATableCopyIdButton } from '@anzusystems/common-admin'
+import { ACopyText } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
