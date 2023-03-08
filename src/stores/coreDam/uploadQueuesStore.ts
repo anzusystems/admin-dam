@@ -24,6 +24,7 @@ import { useUploadQueueItemFactory } from '@/model/coreDam/factory/UploadQueueIt
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -378,6 +379,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       }
     },
     async queueItemMetadataProcessed(assetId: DocId) {
+      const assetDetailStore = useAssetDetailStore()
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
@@ -393,6 +395,13 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             addToCachedKeywords(item.keywords)
             addToCachedAuthors(item.authors)
             addToCachedAuthors(item.authorConflicts)
+          } else if (
+            item.assetId === asset.id &&
+            item.type === QueueItemType.SlotFile &&
+            assetDetailStore.asset?.id === assetId &&
+            assetDetailStore.asset.mainFile === null
+          ) {
+            assetDetailStore.asset.mainFile = asset.mainFile
           }
         })
         this.recalculateQueueCounts(queueId)
