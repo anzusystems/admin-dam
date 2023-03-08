@@ -2,7 +2,7 @@
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
 import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anzusystems/common-admin'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import CachedAnzuUserChip from '@/views/coreDam/user/components/CachedAnzuUserChip.vue'
+import ACachedAnzuUserChip from '@/components/ACachedAnzuUserChip.vue'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
@@ -104,9 +104,9 @@ const onAnyMetadataChange = () => {
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.modified') }}</VCol>
-          <VCol cols="9"
-            ><CachedAnzuUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}</VCol
-          >
+          <VCol cols="9">
+            <ACachedAnzuUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}
+          </VCol>
         </VRow>
         <div v-if="assetMainFile">
           <VRow>
