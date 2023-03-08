@@ -60,9 +60,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
 
       addToCachedKeywords(asset.keywords)
       addToCachedAuthors(asset.authors)
-      // objectGetValues(asset.metadata.authorSuggestions)
-      //   .filter((ids) => ids.length > 1)
-      //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
+      addToCachedAuthors(this.authorConflicts)
       fetchCachedKeywords()
       fetchCachedAuthors()
     },

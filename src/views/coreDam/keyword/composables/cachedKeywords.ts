@@ -41,6 +41,5 @@ export const useCachedKeywordsForRemoteAutocomplete = () => {
     fetch,
     add,
     addManualMinimal,
-    minimalValueFieldName: 'name',
   }
 }

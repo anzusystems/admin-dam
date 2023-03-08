@@ -132,11 +132,9 @@ onMounted(() => {
                         <KeywordRemoteAutocompleteWithCached
                           v-model="massOperationsKeywords"
                           :label="t('coreDam.asset.model.keywords')"
-                          chips
                           clearable
                           multiple
                           :validation-scope="false"
-                          disable-init-fetch
                         />
                       </div>
                       <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyKeywords">
@@ -163,10 +161,8 @@ onMounted(() => {
                         <AuthorRemoteAutocompleteWithCached
                           v-model="massOperationsAuthors"
                           :label="t('coreDam.asset.model.authors')"
-                          chips
                           clearable
                           multiple
-                          disable-init-fetch
                           :validation-scope="false"
                         />
                       </div>

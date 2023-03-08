@@ -13,14 +13,9 @@ const props = withDefaults(
     disableClick?: boolean
     openInNew?: boolean
     size?: string
-    closeIcon?: string
-    prependIcon?: string | undefined
-    appendIcon?: string | undefined
-    closable?: boolean
     forceRounded?: boolean
     textOnly?: boolean
     fallbackIdText?: boolean
-    hideLoader?: boolean
   }>(),
   {
     id: null,
@@ -28,19 +23,11 @@ const props = withDefaults(
     disableClick: false,
     openInNew: false,
     size: 'small',
-    closeIcon: 'close-circle',
-    prependIcon: undefined,
-    appendIcon: undefined,
-    closable: false,
     forceRounded: false,
     textOnly: false,
     fallbackIdText: false,
-    hideLoader: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'closeChip', id: null | undefined | IntegerId | DocId): void
-}>()
 
 const router = useRouter()
 const cached = shallowRef<undefined | any>(undefined)
@@ -61,10 +48,6 @@ const onClick = () => {
   router.push({ name: props.route, params: { id: props.id } })
 }
 
-const onClose = (id: null | undefined | IntegerId | DocId) => {
-  emit('closeChip', id)
-}
-
 watch(
   item,
   async (newValue) => {
@@ -82,32 +65,21 @@ watch(
     <template v-if="isNull(id) || isUndefined(id)"><slot name="empty">-</slot></template>
     <div v-else-if="textOnly">
       {{ displayTitle }}
-      <VProgressCircular v-if="!hideLoader && !loaded" :size="12" :width="2" indeterminate class="mx-1" />
+      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
     </div>
-    <VChip
-      v-else-if="disableClick"
-      :size="size"
-      :prepend-icon="prependIcon"
-      :append-icon="appendIcon"
-      :label="forceRounded ? undefined : true"
-      @click:close="onClose(id)"
-    >
+    <VChip v-else-if="disableClick" :size="size" :label="forceRounded ? undefined : true">
       {{ displayTitle }}
-      <VProgressCircular v-if="!hideLoader && !loaded" :size="12" :width="2" indeterminate class="mx-1" />
+      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
     </VChip>
     <VChip
       v-else
       :size="size"
-      :closable="closable"
-      :close-icon="closeIcon"
-      :prepend-icon="prependIcon"
-      :append-icon="appendIcon ? appendIcon : openInNew ? ICON.CHIP_LINK_EXTERNAL : ICON.CHIP_LINK"
+      :append-icon="openInNew ? ICON.CHIP_LINK_EXTERNAL : ICON.CHIP_LINK"
       :label="forceRounded ? undefined : true"
       @click.stop="onClick"
-      @click:close="onClose(id)"
     >
       {{ displayTitle }}
-      <VProgressCircular v-if="!hideLoader && !loaded" :size="12" :width="2" indeterminate class="mx-1" />
+      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
     </VChip>
   </div>
 </template>

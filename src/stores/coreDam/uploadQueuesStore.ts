@@ -236,11 +236,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           this.queues[queueId].items[foundIndex].customData = res[i].metadata.customData
           this.queues[queueId].items[foundIndex].status = QueueItemStatus.Uploaded
           this.queues[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
-          // updateNewNames(res[i].metadata.authorSuggestions, this.queues[queueId].suggestions.newAuthorNames)
-          // updateNewNames(res[i].metadata.keywordSuggestions, this.queues[queueId].suggestions.newKeywordNames)
           this.queues[queueId].items[foundIndex].canEditMetadata = true
+          addToCachedAuthors(this.queues[queueId].items[foundIndex].authors)
         }
       }
+      fetchCachedAuthors()
     },
     async removeByAssetId(queueId: string, assetId: DocId) {
       if (queueId in this.queues) {
@@ -391,10 +391,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             item.canEditMetadata = true
             addToCachedKeywords(item.keywords)
             addToCachedAuthors(item.authors)
-            // todo ask ronald if keywords too
-            // objectGetValues(item.authorSuggestions)
-            //   .filter((ids) => ids.length > 1)
-            //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
+            addToCachedAuthors(item.authorConflicts)
           }
         })
         this.recalculateQueueCounts(queueId)

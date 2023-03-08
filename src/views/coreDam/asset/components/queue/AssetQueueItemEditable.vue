@@ -238,11 +238,10 @@ const showCancel = computed(() => {
                   <ASystemEntityScope subject="keyword" system="dam">
                     <KeywordRemoteAutocompleteWithCached
                       v-model="keywords"
+                      :queue-id="queueId"
                       :label="t('coreDam.asset.model.keywords')"
-                      chips
                       clearable
                       multiple
-                      disable-init-fetch
                       :required="keywordRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
@@ -255,12 +254,11 @@ const showCancel = computed(() => {
                   <ASystemEntityScope subject="author" system="dam">
                     <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
+                      :queue-id="queueId"
                       :label="t('coreDam.asset.model.authors')"
                       :author-conflicts="item.authorConflicts"
-                      chips
                       clearable
                       multiple
-                      disable-init-fetch
                       :required="authorRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"

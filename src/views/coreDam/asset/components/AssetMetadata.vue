@@ -58,10 +58,8 @@ const onAnyMetadataChange = () => {
                   <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
                     :label="t('coreDam.asset.model.keywords')"
-                    chips
                     clearable
                     multiple
-                    disable-init-fetch
                     :required="keywordRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -76,10 +74,8 @@ const onAnyMetadataChange = () => {
                     v-model="asset.authors"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
-                    chips
                     clearable
                     multiple
-                    disable-init-fetch
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"

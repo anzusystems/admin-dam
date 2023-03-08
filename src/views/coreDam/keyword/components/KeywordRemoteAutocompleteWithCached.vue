@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { DocId, isArray, isEmptyObject, objectGetValues, useValidateRequiredIf } from '@anzusystems/common-admin'
+import { type DocId, isArray, useValidateRequiredIf } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
@@ -8,7 +8,7 @@ import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreat
 import type { Keyword } from '@/types/coreDam/Keyword'
 import { useVuelidate } from '@vuelidate/core'
 import AFormRemoteAutocompleteWithCached from '@/components/AFormRemoteAutocompleteWithCached.vue'
-import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
+import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
   useCachedKeywordsForRemoteAutocomplete,
@@ -17,24 +17,22 @@ import {
 const props = withDefaults(
   defineProps<{
     modelValue: DocId | null | DocId[] | any
+    queueId?: string | undefined
     label?: string | undefined
     required?: boolean | null
     disabled?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
-    chips?: boolean
-    disableInitFetch?: boolean
     dataCy?: string
     validationScope?: ValidationScope
   }>(),
   {
     label: undefined,
+    queueId: undefined,
     required: null,
     disabled: undefined,
     multiple: false,
     clearable: false,
-    chips: false,
-    disableInitFetch: false,
     dataCy: '',
     validationScope: undefined,
   }
@@ -64,7 +62,7 @@ const rules = {
 
 const v$ = useVuelidate(rules, { modelValueComputed }, { $scope: props.validationScope })
 
-const { fetchItems, fetchItemsByIds } = useKeywordSelectActions()
+const { fetchItemsMinimal } = useKeywordSelectActions()
 
 const innerFilter = useKeywordFilter()
 
@@ -117,15 +115,14 @@ const itemSlotIsSelected = (item: DocId) => {
       :v="v$"
       :required="requiredComputed"
       :label="label"
-      :fetch-items="fetchItems"
-      :fetch-items-by-ids="fetchItemsByIds"
+      :fetch-items-minimal="fetchItemsMinimal"
       :inner-filter="innerFilter"
       :multiple="multiple"
       :clearable="clearable"
-      :chips="chips"
       filter-by-field="text"
+      item-title="name"
+      item-value="id"
       :data-cy="dataCy"
-      :disable-init-fetch="disableInitFetch"
       @search-change="searchChange"
     >
       <template #item="{ props: itemProps, item }">
@@ -135,27 +132,12 @@ const itemSlotIsSelected = (item: DocId) => {
           </template>
           <template #title>
             <div v-if="item.title?.length > 0">{{ item.title }}</div>
-            <CachedKeywordChip
-              v-else
-              :id="item.value"
-              :key="item.value"
-              disable-click
-              text-only
-              fallback-id-text
-              hide-loader
-              :append-icon="appendNewIcon(item.raw.title, item.raw.value)"
-            />
+            <KeywordRemoteAutocompleteCachedKeywordChip v-else :id="item.value" :key="item.value" :queue-id="queueId" />
           </template>
         </VListItem>
       </template>
       <template #chip="{ item }">
-        <CachedKeywordChip
-          :id="item.value"
-          :key="item.value + item.title"
-          disable-click
-          force-rounded
-          :append-icon="appendNewIcon(item.raw.title, item.raw.value)"
-        />
+        <KeywordRemoteAutocompleteCachedKeywordChip :id="item.value" :key="item.value" :queue-id="queueId" />
       </template>
     </AFormRemoteAutocompleteWithCached>
     <div>
