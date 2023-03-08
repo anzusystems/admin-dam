@@ -114,6 +114,7 @@ watch(
             <ARow>
               <DistributionCategoryRemoteAutocomplete
                 v-model="selectedCategoryId"
+                :asset-type="assetType"
                 clearable
                 :label="t('coreDam.asset.model.distributionCategory')"
               />
