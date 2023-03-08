@@ -123,6 +123,10 @@ const itemSlotIsSelected = (item: DocId) => {
   return false
 }
 
+const appendNewIcon = (id: DocId) => {
+  return suggestionsDefined.value && !existingAuthorsIds.value.includes(id) ? 'mdi-new-box' : undefined
+}
+
 onMounted(() => {
   const duplicateAuthorIdsList: DocId[] = []
   suggestionsIdsComputed.value.forEach((ids) => {
@@ -151,33 +155,33 @@ onMounted(() => {
       :disable-init-fetch="disableInitFetch"
       @search-change="searchChange"
     >
-      <template #item="{ props: itemProps, item }">
-        <VListItem v-bind="itemProps">
+      <template #item="{ props: itemSlotProps, item: itemSlotItem }">
+        <VListItem v-bind="itemSlotProps">
           <template #prepend>
-            <VCheckboxBtn :model-value="itemSlotIsSelected(item.value)" :ripple="false" />
+            <VCheckboxBtn :model-value="itemSlotIsSelected(itemSlotItem.value)" :ripple="false" />
           </template>
           <template #title>
-            <div v-if="item.title?.length > 0">{{ item.title }}</div>
+            <div v-if="itemSlotItem.title?.length > 0">{{ itemSlotItem.title }}</div>
             <CachedAuthorChip
               v-else
-              :id="item.value"
-              :key="item.value"
+              :id="itemSlotItem.value"
+              :key="itemSlotItem.value"
               disable-click
               text-only
               fallback-id-text
               hide-loader
-              :append-icon="suggestionsDefined && !existingAuthorsIds.includes(item.value) ? 'mdi-new-box' : undefined"
+              :append-icon="appendNewIcon(itemSlotItem.value)"
             />
           </template>
         </VListItem>
       </template>
-      <template #chip="{ item }">
+      <template #chip="{ item: chipSlotItem }">
         <CachedAuthorChip
-          :id="item.value"
-          :key="item.value"
+          :id="chipSlotItem.value"
+          :key="chipSlotItem.value"
           disable-click
           force-rounded
-          :append-icon="suggestionsDefined && !existingAuthorsIds.includes(item.value) ? 'mdi-new-box' : undefined"
+          :append-icon="appendNewIcon(chipSlotItem.value)"
         />
       </template>
     </AFormRemoteAutocompleteWithCached>

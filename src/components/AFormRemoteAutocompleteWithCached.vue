@@ -28,6 +28,10 @@ type UseCachedType = () => {
   minimalValueFieldName: string
 }
 
+/**
+ * current limitation: now only supports cached where only 2 fields are in minimal interface,
+ * like ValueObjectOption (some id and title)
+ */
 const props = withDefaults(
   defineProps<{
     modelValue: DocId | IntegerId | DocId[] | IntegerId[] | null | undefined

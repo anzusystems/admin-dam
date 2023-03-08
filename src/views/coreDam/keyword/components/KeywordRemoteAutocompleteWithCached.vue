@@ -76,17 +76,28 @@ const innerFilter = useKeywordFilter()
 const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
 const existingKeywordsIds = computed(() => {
   const existingKeywordsList: DocId[] = []
-  objectGetValues(props.suggestions).forEach((ids) => ids.forEach((id) => existingKeywordsList.push(id)))
+  objectGetValues(props.suggestions).forEach((ids) => {
+    if (isArray(ids)) {
+      ids.forEach((id) => existingKeywordsList.push(id))
+    }
+  })
   return existingKeywordsList
 })
 const existingKeywordsNames = computed(() => {
   return Object.keys(props.suggestions)
 })
 
-const isNewKeyword = (name: string, id: DocId) => {
-  return (
-    suggestionsDefined.value && !existingKeywordsIds.value.includes(id) && existingKeywordsNames.value.includes(name)
-  )
+const appendNewIcon = (name: string, id: DocId) => {
+  console.log(name)
+  console.log(id)
+  console.log(suggestionsDefined.value)
+  console.log(existingKeywordsIds.value)
+  console.log(existingKeywordsNames.value)
+  return suggestionsDefined.value &&
+    !existingKeywordsIds.value.includes(id) &&
+    existingKeywordsNames.value.includes(name)
+    ? 'mdi-new-box'
+    : undefined
 }
 
 const addNewKeywordText = ref('')
@@ -150,7 +161,7 @@ const itemSlotIsSelected = (item: DocId) => {
               text-only
               fallback-id-text
               hide-loader
-              :append-icon="isNewKeyword(item.raw.title, item.raw.value) ? 'mdi-new-box' : undefined"
+              :append-icon="appendNewIcon(item.raw.title, item.raw.value)"
             />
           </template>
         </VListItem>
@@ -158,10 +169,10 @@ const itemSlotIsSelected = (item: DocId) => {
       <template #chip="{ item }">
         <CachedKeywordChip
           :id="item.value"
-          :key="item.value"
+          :key="item.value + item.title"
           disable-click
           force-rounded
-          :append-icon="isNewKeyword(item.raw.title, item.raw.value) ? 'mdi-new-box' : undefined"
+          :append-icon="appendNewIcon(item.raw.title, item.raw.value)"
         />
       </template>
     </AFormRemoteAutocompleteWithCached>

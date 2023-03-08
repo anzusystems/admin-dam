@@ -7,10 +7,11 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 const mapFullToMinimal = (author: Author): AuthorMinimal => ({
   id: author.id,
   name: author.name,
+  identifier: author.identifier,
 })
 
 const mapIdToMinimal = (id: DocId): AuthorMinimal => {
-  return { id: id, name: '' }
+  return { id: id, name: '', identifier: '' }
 }
 
 const { cache, toFetch, fetch, add, addManual, addManualMinimal, has, get, isLoaded } = defineCached<
