@@ -6,7 +6,6 @@ import AssetQueueSelectedSidebar from '@/views/coreDam/asset/components/queue/As
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
-import { objectGetValues } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

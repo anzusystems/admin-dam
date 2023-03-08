@@ -3,7 +3,7 @@ import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/comm
 import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/coreDam/keywordApi'
-import type { Keyword } from '@/types/coreDam/Keyword'
+import type { Keyword, KeywordMinimal } from '@/types/coreDam/Keyword'
 import { storeToRefs } from 'pinia'
 import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
 import useVuelidate from '@vuelidate/core'
@@ -123,12 +123,25 @@ export const useKeywordSelectActions = () => {
     value: keyword.id,
   })
 
+  const mapToMinimal = (keyword: Keyword): KeywordMinimal => ({
+    id: keyword.id,
+    name: keyword.name,
+  })
+
   const mapToValueObjects = (keywords: Keyword[]): ValueObjectOption<string>[] => {
     return keywords.map((keyword: Keyword) => mapToValueObject(keyword))
   }
 
+  const mapToMinimals = (keywords: Keyword[]): KeywordMinimal[] => {
+    return keywords.map((keyword: Keyword) => mapToMinimal(keyword))
+  }
+
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
     return mapToValueObjects(await fetchKeywordList(currentExtSystemId.value, pagination, filterBag))
+  }
+
+  const fetchItemsMinimal = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToMinimals(await fetchKeywordList(currentExtSystemId.value, pagination, filterBag))
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
@@ -139,5 +152,6 @@ export const useKeywordSelectActions = () => {
     mapToValueObject,
     fetchItems,
     fetchItemsByIds,
+    fetchItemsMinimal,
   }
 }

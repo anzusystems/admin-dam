@@ -15,17 +15,16 @@ import {
 import type { ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 
-type FetchItemsByIdsType =
-  | ((ids: IntegerId[]) => Promise<ValueObjectOption<IntegerId>[]>)
-  | ((ids: DocId[]) => Promise<ValueObjectOption<DocId>[]>)
+// type FetchItemsByIdsType =
+//   | ((ids: IntegerId[]) => Promise<ValueObjectOption<IntegerId>[]>)
+//   | ((ids: DocId[]) => Promise<ValueObjectOption<DocId>[]>)
 
-type FetchItemsType = (pagination: Pagination, filterBag: FilterBag) => Promise<ValueObjectOption<DocId | IntegerId>[]>
+type FetchItemsMinimalType = (pagination: Pagination, filterBag: FilterBag) => Promise<any[]>
 
 type UseCachedType = () => {
   fetch: any
   add: any
   addManualMinimal: any
-  minimalValueFieldName: string
 }
 
 /**
@@ -41,16 +40,14 @@ const props = withDefaults(
     clearable?: boolean
     v?: any
     errorMessage?: string
-    hideDetails?: boolean
     hideLabel?: boolean
-    fetchItems: FetchItemsType
-    fetchItemsByIds: FetchItemsByIdsType
+    fetchItemsMinimal: FetchItemsMinimalType
     innerFilter: FilterBag
     filterByField?: string
-    disableInitFetch?: boolean
-    chips?: boolean
     loading?: boolean
     useCached: UseCachedType
+    itemTitle?: string
+    itemValue?: string
   }>(),
   {
     label: undefined,
@@ -59,12 +56,11 @@ const props = withDefaults(
     clearable: false,
     v: null,
     errorMessage: undefined,
-    hideDetails: false,
     hideLabel: false,
     filterByField: 'name',
-    disableInitFetch: false,
-    chips: false,
     loading: false,
+    itemTitle: 'name',
+    itemValue: 'id',
   }
 )
 const emit = defineEmits<{
@@ -75,7 +71,7 @@ const emit = defineEmits<{
   (e: 'searchChangeDebounced', data: string): void
 }>()
 
-const { fetch, add, addManualMinimal, minimalValueFieldName } = props.useCached()
+const { fetch, add, addManualMinimal } = props.useCached()
 
 const modelValue = computed({
   get() {
@@ -95,7 +91,9 @@ const search = ref('')
 const loading = ref(false)
 const { innerFilter } = toRefs(props)
 const pagination = usePagination()
-const fetchedItems = ref<Map<IntegerId | DocId, string>>(new Map())
+
+const fetchedItemsMinimal = ref<Map<IntegerId | DocId, any>>(new Map())
+// const fetchedItems = ref<Map<IntegerId | DocId, string>>(new Map())
 
 const onFocus = () => {
   isFocused.value = true
@@ -140,10 +138,10 @@ const apiSearch = async (query: string) => {
   loading.value = true
   const filterField = innerFilter.value[props.filterByField]
   filterField.model = query
-  fetchedItems.value.clear()
-  const res = await props.fetchItems(pagination, innerFilter.value)
-  res.forEach((item) => {
-    fetchedItems.value.set(item.value, item.title)
+  fetchedItemsMinimal.value.clear()
+  const res = await props.fetchItemsMinimal(pagination, innerFilter.value)
+  res.forEach((item: any) => {
+    fetchedItemsMinimal.value.set(item.value, item)
   })
   loading.value = false
 }
@@ -157,8 +155,8 @@ const allItems = computed<ValueObjectOption<DocId | IntegerId>[]>(() => {
   } else if (modelValue.value) {
     final.set(modelValue.value, modelValue.value + '')
   }
-  fetchedItems.value.forEach((value, key) => {
-    final.set(key, value + '')
+  fetchedItemsMinimal.value.forEach((value, key) => {
+    final.set(key, { value: value[props.itemValue], title: value[props.itemTitle] })
   })
   return Array.from(final, ([key, value]) => {
     return { value: key, title: value }
@@ -167,12 +165,9 @@ const allItems = computed<ValueObjectOption<DocId | IntegerId>[]>(() => {
 
 const tryToAddFromFetchedItems = (ids: Set<DocId | IntegerId>) => {
   return new Promise<boolean>((resolve) => {
-    fetchedItems.value.forEach((value, key) => {
+    fetchedItemsMinimal.value.forEach((value, key) => {
       if (ids.has(key)) {
-        const object = {} as any
-        object['id'] = key as DocId & IntegerId
-        object[minimalValueFieldName] = value
-        addManualMinimal(object)
+        addManualMinimal(cloneDeep(value))
       }
     })
     return resolve(true)
@@ -218,10 +213,8 @@ watch(
 <template>
   <VAutocomplete
     v-model="modelValue"
-    :chips="chips"
+    chips
     :items="allItems"
-    item-title="title"
-    item-value="value"
     no-filter
     :multiple="multipleComputedVuetifyTypeFix"
     :clearable="clearable"
@@ -237,7 +230,7 @@ watch(
         {{ labelComputed }}<span v-if="requiredComputed" class="required" />
       </span>
     </template>
-    <template v-if="chips" #chip="{ props: chipProps, item }">
+    <template #chip="{ props: chipProps, item }">
       <slot name="chip" :props="chipProps" :item="item">
         <VChip v-bind="chipProps" :text="item.title" />
       </slot>
