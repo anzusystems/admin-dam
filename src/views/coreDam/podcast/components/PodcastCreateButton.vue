@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
+  AFormDatetimePicker,
   AFormTextarea,
   AFormTextField,
   AFormValueObjectOptionsSelect,
@@ -139,6 +140,14 @@ const onConfirm = async () => {
               :label="t('coreDam.podcast.model.attributes.rssUrl')"
               :v="v$.podcast.attributes.rssUrl"
               data-cy="podcast-rss-url"
+            />
+          </ARow>
+          <ARow>
+            <AFormDatetimePicker
+              v-model="podcast.dates.importFrom"
+              :label="t('coreDam.podcast.model.dates.importFrom')"
+              :v="v$.podcast.dates.importFrom"
+              clearable
             />
           </ARow>
         </VContainer>
