@@ -1,25 +1,24 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import {
-  AFormRemoteAutocomplete,
-  isArray,
-  isEmptyObject,
-  objectGetValues,
-  useValidateRequiredIf,
-} from '@anzusystems/common-admin'
+import { DocId, isArray, isEmptyObject, objectGetValues, useValidateRequiredIf } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
-import LazyAuthorChip from '@/views/coreDam/author/components/LazyAuthorChip.vue'
-import { loadLazyAuthor, useLazyAuthor } from '@/views/coreDam/author/composables/lazyAuthor'
 import { computed, onMounted, ref } from 'vue'
 import type { Suggestions } from '@/types/coreDam/Asset'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import type { Author } from '@/types/coreDam/Author'
 import { useVuelidate } from '@vuelidate/core'
+import CachedAuthorChip from '@/views/coreDam/author/components/CachedAuthorChip.vue'
+import {
+  useCachedAuthors,
+  useCachedAuthorsForRemoteAutocomplete,
+} from '@/views/coreDam/author/composables/cachedAuthors'
+import AFormRemoteAutocompleteWithCached from '@/components/AFormRemoteAutocompleteWithCached.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | null | string[] | any
+    modelValue: DocId | null | DocId[] | any
     label?: string | undefined
     required?: boolean | null
     disabled?: boolean | undefined
@@ -47,7 +46,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | null | string[]): void
+  (e: 'update:modelValue', data: DocId | null | DocId[]): void
 }>()
 
 const modelValueComputed = computed({
@@ -58,6 +57,8 @@ const modelValueComputed = computed({
     emit('update:modelValue', [...newValue])
   },
 })
+
+const { t } = useI18n()
 
 const requiredComputed = computed(() => !!props.required)
 
@@ -71,25 +72,25 @@ const rules = {
 
 const v$ = useVuelidate(rules, { modelValueComputed }, { $scope: props.validationScope })
 
-const { loadedAll } = useLazyAuthor()
 const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 
 const innerFilter = useAuthorFilter()
 
 const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
 const suggestionsIdsComputed = computed(() => objectGetValues(props.suggestions))
-const duplicateAuthorsIds = ref<string[]>([])
+const duplicateAuthorsIds = ref<DocId[]>([])
 const duplicateAuthorsIdsExists = computed(() => duplicateAuthorsIds.value.length)
 
 const existingAuthorsIds = computed(() => {
-  const existingAuthorList: string[] = []
+  const existingAuthorList: DocId[] = []
   suggestionsIdsComputed.value.forEach((ids) => {
     ids.forEach((id) => existingAuthorList.push(id))
   })
   return existingAuthorList
 })
 
-const addAuthor = async (id: string) => {
+const addAuthor = async (id: null | DocId | undefined) => {
+  if (!id) return
   if (!modelValueComputed.value.includes(id)) {
     modelValueComputed.value = [...modelValueComputed.value, ...[id]]
     duplicateAuthorsIds.value = duplicateAuthorsIds.value.filter((duplicateId) => duplicateId !== id)
@@ -102,10 +103,10 @@ const searchChange = (newValue: string) => {
   if (newValue.length > 0) addNewAuthorText.value = newValue
 }
 
-const { manualAddLazyAuthor } = loadLazyAuthor()
+const { addManualToCachedAuthors } = useCachedAuthors()
 
 const afterCreate = (author: Author) => {
-  manualAddLazyAuthor(author)
+  addManualToCachedAuthors(author)
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, author.id]
     return
@@ -113,8 +114,17 @@ const afterCreate = (author: Author) => {
   modelValueComputed.value = author.id
 }
 
+const itemSlotIsSelected = (item: DocId) => {
+  if (isArray(modelValueComputed.value)) {
+    return modelValueComputed.value.includes(item)
+  } else if (modelValueComputed.value) {
+    return modelValueComputed.value === item
+  }
+  return false
+}
+
 onMounted(() => {
-  const duplicateAuthorIdsList: string[] = []
+  const duplicateAuthorIdsList: DocId[] = []
   suggestionsIdsComputed.value.forEach((ids) => {
     if (ids.length > 1) ids.forEach((id) => duplicateAuthorIdsList.push(id))
   })
@@ -124,8 +134,9 @@ onMounted(() => {
 
 <template>
   <div class="d-flex">
-    <AFormRemoteAutocomplete
+    <AFormRemoteAutocompleteWithCached
       v-model="modelValueComputed"
+      :use-cached="useCachedAuthorsForRemoteAutocomplete"
       :v="v$"
       :required="requiredComputed"
       :label="label"
@@ -136,23 +147,40 @@ onMounted(() => {
       :clearable="clearable"
       :chips="chips"
       filter-by-field="text"
-      :lazy-loader="useLazyAuthor"
       :data-cy="dataCy"
       :disable-init-fetch="disableInitFetch"
       @search-change="searchChange"
     >
-      <template #chip="{ props: chipProps, item }">
-        <VChip v-bind="chipProps">
-          <VIcon
-            v-if="loadedAll && suggestionsDefined && !existingAuthorsIds.includes(item.value)"
-            start
-            icon="mdi-new-box"
-          />
-          <span v-if="loadedAll">{{ item.title }}</span>
-          <VProgressCircular v-else indeterminate size="15" />
-        </VChip>
+      <template #item="{ props: itemProps, item }">
+        <VListItem v-bind="itemProps">
+          <template #prepend>
+            <VCheckboxBtn :model-value="itemSlotIsSelected(item.value)" :ripple="false" />
+          </template>
+          <template #title>
+            <div v-if="item.title?.length > 0">{{ item.title }}</div>
+            <CachedAuthorChip
+              v-else
+              :id="item.value"
+              :key="item.value"
+              disable-click
+              text-only
+              fallback-id-text
+              hide-loader
+              :append-icon="suggestionsDefined && !existingAuthorsIds.includes(item.value) ? 'mdi-new-box' : undefined"
+            />
+          </template>
+        </VListItem>
       </template>
-    </AFormRemoteAutocomplete>
+      <template #chip="{ item }">
+        <CachedAuthorChip
+          :id="item.value"
+          :key="item.value"
+          disable-click
+          force-rounded
+          :append-icon="suggestionsDefined && !existingAuthorsIds.includes(item.value) ? 'mdi-new-box' : undefined"
+        />
+      </template>
+    </AFormRemoteAutocompleteWithCached>
     <div>
       <AuthorCreateButton
         variant="icon"
@@ -165,20 +193,18 @@ onMounted(() => {
   </div>
   <div v-if="suggestionsDefined && duplicateAuthorsIdsExists" class="d-flex flex-column">
     <div>
-      <span class="text-caption">Authors conflicts</span>
+      <span class="text-caption">{{ t('coreDam.author.conflicts') }}</span>
     </div>
     <div>
-      <LazyAuthorChip
+      <CachedAuthorChip
         v-for="authorId in duplicateAuthorsIds"
         :id="authorId"
         :key="authorId"
-        title=""
         class="mr-1 mt-1"
         close-icon="mdi-plus-circle"
-        :allow-click="false"
+        disable-click
         @close-chip="addAuthor"
-      >
-      </LazyAuthorChip>
+      />
     </div>
   </div>
 </template>

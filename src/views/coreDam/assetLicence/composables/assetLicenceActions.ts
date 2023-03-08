@@ -10,12 +10,12 @@ import {
   fetchAssetLicenceListByIds,
   updateAssetLicence,
 } from '@/services/api/coreDam/assetLicenceApi'
-import { loadLazyExtSystem } from '@/views/coreDam/extSystem/composables/lazyExtSystem'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
+import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 
-const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
+const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
@@ -32,10 +32,8 @@ export const useAssetLicenceListActions = () => {
     listLoading.value = true
     try {
       listItems.value = await fetchAssetLicenceList(pagination, filterBag)
-      listItems.value.forEach((item) => {
-        if (item.extSystem) addToLazyExtSystemBuffer(item.extSystem)
-      })
-      fetchLazyExtSystem()
+      addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
+      fetchCachedExtSystems()
     } catch (error) {
       handleError(error)
     } finally {
@@ -58,8 +56,8 @@ export const useAssetLicenceDetailActions = () => {
     detailLoading.value = true
     try {
       const assetLicence = await fetchAssetLicence(id)
-      if (assetLicence.extSystem) addToLazyExtSystemBuffer(assetLicence.extSystem)
-      fetchLazyExtSystem()
+      addToCachedExtSystems(assetLicence.extSystem)
+      fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
       handleError(error)
@@ -86,8 +84,8 @@ export const useAssetLicenceEditActions = () => {
     detailLoading.value = true
     try {
       const assetLicence = await fetchAssetLicence(id)
-      if (assetLicence.extSystem) addToLazyExtSystemBuffer(assetLicence.extSystem)
-      fetchLazyExtSystem()
+      addToCachedExtSystems(assetLicence.extSystem)
+      fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
       handleError(error)

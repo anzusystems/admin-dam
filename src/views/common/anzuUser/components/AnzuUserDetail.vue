@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
 import { storeToRefs } from 'pinia'
 import { ABooleanValue, ACopyText } from '@anzusystems/common-admin'
-import PermissionGroupLazyChip from '@/views/common/permissionGroup/components/PermissionGroupLazyChip.vue'
+import CachedPermissionGroupChip from '@/views/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
@@ -68,7 +68,7 @@ const { t } = useI18n()
         </VCol>
         <VCol v-if="anzuUser.permissionGroups.length > 0" cols="12" sm="8">
           <h4>{{ t('common.anzuUser.model.permissionGroups') }}</h4>
-          <PermissionGroupLazyChip
+          <CachedPermissionGroupChip
             v-for="permissionGroupId in anzuUser.permissionGroups"
             :id="permissionGroupId"
             :key="permissionGroupId"

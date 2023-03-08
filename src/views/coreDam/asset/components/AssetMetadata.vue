@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
 import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anzusystems/common-admin'
-import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
-import CachedUserChip from '@/views/coreDam/user/components/CachedUserChip.vue'
-import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
+import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import CachedAnzuUserChip from '@/views/coreDam/user/components/CachedAnzuUserChip.vue'
+import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -55,7 +55,7 @@ const onAnyMetadataChange = () => {
             <VRow v-if="keywordEnabled" dense class="my-2">
               <VCol>
                 <ASystemEntityScope subject="keyword" system="dam">
-                  <KeywordSelect
+                  <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
                     label="Keywords"
                     :suggestions="asset.metadata.keywordSuggestions"
@@ -73,7 +73,7 @@ const onAnyMetadataChange = () => {
             <VRow v-if="authorEnabled" dense class="my-2">
               <VCol>
                 <ASystemEntityScope subject="author" system="dam">
-                  <AuthorSelect
+                  <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
                     label="Authors"
                     :suggestions="asset.metadata.authorSuggestions"
@@ -92,7 +92,6 @@ const onAnyMetadataChange = () => {
         </AssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
-
     <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.file')" value="file">
       <VExpansionPanelText class="text-caption">
         <!-- all types -->
@@ -106,11 +105,13 @@ const onAnyMetadataChange = () => {
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.created') }}</VCol>
-          <VCol cols="9"><CachedUserChip :id="asset.createdBy" /><br />{{ dateTimePretty(asset.createdAt) }}</VCol>
+          <VCol cols="9"><CachedAnzuUserChip :id="asset.createdBy" /><br />{{ dateTimePretty(asset.createdAt) }}</VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.modified') }}</VCol>
-          <VCol cols="9"><CachedUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}</VCol>
+          <VCol cols="9"
+            ><CachedAnzuUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}</VCol
+          >
         </VRow>
         <div v-if="assetMainFile">
           <VRow>

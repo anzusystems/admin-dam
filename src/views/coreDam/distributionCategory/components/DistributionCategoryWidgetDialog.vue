@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
-import DistributionCategorySelect from '@/views/coreDam/distributionCategory/components/DistributionCategorySelect.vue'
+import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { ARow, ASystemEntityScope, isNull, useErrorHandler } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -110,7 +110,7 @@ watch(
         <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <VContainer class="pa-4" fluid>
             <ARow>
-              <DistributionCategorySelect
+              <DistributionCategoryRemoteAutocomplete
                 v-model="selectedCategoryId"
                 clearable
                 :label="t('coreDam.asset.model.distributionCategory')"

@@ -29,5 +29,6 @@
   },
   "button": {
     "add": "Add new author"
-  }
+  },
+  "conflicts": "Authors conflicts"
 }

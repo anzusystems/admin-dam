@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
-import ExtSystemSelect from '@/views/coreDam/extSystem/components/ExtSystemSelect.vue'
+import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
 
 const { assetLicence } = useAssetLicenceEditActions()
 
@@ -35,7 +35,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ExtSystemSelect
+          <ExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
             :label="t('coreDam.assetLicence.model.extSystem')"
             :v="v$.assetLicence.extSystem"

@@ -8,14 +8,14 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
-import { loadLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
+import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 const { handleError } = useErrorHandler()
 const { showValidationError, showRecordWas } = useAlerts()
 
 export const useAnzuUserActions = (client: () => AxiosInstance) => {
   const { apiFetchAnzuUserList, apiFetchAnzuUser, apiUpdateAnzuUser, apiCreateAnzuUser } = useAnzuUserApi(client)
-  const { addToLazyPermissionGroupBuffer, fetchLazyPermissionGroup } = loadLazyPermissionGroup(client)
+  const { addToCachedPermissionGroups, fetchCachedPermissionGroups } = useCachedPermissionGroups()
 
   const anzuUserList = ref<AnzuUser[]>([])
   const loadingAnzuUserList = ref(false)
@@ -23,10 +23,8 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
     loadingAnzuUserList.value = true
     try {
       anzuUserList.value = await apiFetchAnzuUserList(pagination, filterBag)
-      anzuUserList.value.forEach((anzuUser) =>
-        anzuUser.permissionGroups.forEach((permissionGroup) => addToLazyPermissionGroupBuffer(permissionGroup))
-      )
-      fetchLazyPermissionGroup()
+      anzuUserList.value.forEach((anzuUser) => addToCachedPermissionGroups(anzuUser.permissionGroups))
+      fetchCachedPermissionGroups()
     } catch (error) {
       handleError(error)
     } finally {
@@ -36,13 +34,14 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
 
   const anzuUserOneStore = useAnzuUserOneStore()
   const { anzuUser, loadingAnzuUser } = storeToRefs(anzuUserOneStore)
+
   const fetchAnzuUser = async (id: number) => {
     anzuUserOneStore.setLoadingAnzuUser(true)
     try {
       const anzuUserRes = await apiFetchAnzuUser(id)
       anzuUserOneStore.setAnzuUser(anzuUserRes)
-      anzuUserRes.permissionGroups.forEach((permissionGroup) => addToLazyPermissionGroupBuffer(permissionGroup))
-      await fetchLazyPermissionGroup()
+      addToCachedPermissionGroups(anzuUserRes.permissionGroups)
+      fetchCachedPermissionGroups()
     } catch (error) {
       handleError(error)
     } finally {

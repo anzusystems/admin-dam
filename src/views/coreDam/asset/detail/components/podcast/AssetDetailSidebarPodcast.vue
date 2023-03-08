@@ -7,10 +7,10 @@ import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
 import { fetchPodcastEpisodeListByAsset } from '@/services/api/coreDam/podcastEpisodeApi'
 import PodcastEpisodeListItem from '@/views/coreDam/asset/detail/components/podcast/PodcastEpisodeListItem.vue'
-import { loadLazyPodcast } from '@/views/coreDam/podcast/composables/lazyPodcast'
 import PodcastEpisodeNewDialog from '@/views/coreDam/asset/detail/components/podcast/PodcastEpisodeNewDialog.vue'
 import { usePodcastEpisodeRemoveActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { useI18n } from 'vue-i18n'
+import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 
 const props = withDefaults(
   defineProps<{
@@ -40,7 +40,7 @@ const addNew = async () => {
   dialogNew.value = true
 }
 
-const { addToLazyPodcastBuffer, fetchLazyPodcast } = loadLazyPodcast()
+const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const deletePodcastEpisode = (id: DocId) => {
@@ -50,14 +50,8 @@ const deletePodcastEpisode = (id: DocId) => {
 const getList = async () => {
   loading.value = true
   const items = await fetchPodcastEpisodeListByAsset(props.assetId, pagination, filter)
-  const podcastIds = []
-  items.forEach((item) => {
-    if (item.podcast) {
-      podcastIds.push(item.podcast)
-      addToLazyPodcastBuffer(item.podcast)
-    }
-  })
-  if (podcastIds.length > 0) fetchLazyPodcast()
+  addToCachedPodcasts(items.map((item) => item.podcast))
+  fetchCachedPodcasts()
   listItems.value = items
   loading.value = false
 }

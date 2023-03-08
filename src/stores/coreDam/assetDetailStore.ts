@@ -3,8 +3,8 @@ import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { objectGetValues } from '@anzusystems/common-admin'
-import { loadLazyKeyword } from '@/views/coreDam/keyword/composables/lazyKeyword'
-import { loadLazyAuthor } from '@/views/coreDam/author/composables/lazyAuthor'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 
 interface State {
   asset: AssetDetailItemDto | null
@@ -51,16 +51,16 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
       this.asset = asset
     },
     prefetchLazyData(asset: AssetDetailItemDto) {
-      const { fetchLazyKeyword, addToLazyKeywordBuffer } = loadLazyKeyword()
-      const { fetchLazyAuthor, addToLazyAuthorBuffer } = loadLazyAuthor()
+      const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
+      const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
-      asset.keywords.forEach((id) => addToLazyKeywordBuffer(id))
-      asset.authors.forEach((id) => addToLazyAuthorBuffer(id))
+      addToCachedKeywords(asset.keywords)
+      addToCachedAuthors(asset.authors)
       objectGetValues(asset.metadata.authorSuggestions)
         .filter((ids) => ids.length > 1)
-        .forEach((ids) => ids.filter((id) => addToLazyAuthorBuffer(id)))
-      fetchLazyKeyword()
-      fetchLazyAuthor()
+        .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
+      fetchCachedKeywords()
+      fetchCachedAuthors()
     },
     setView(value: 'list' | 'queue') {
       this.view = value
