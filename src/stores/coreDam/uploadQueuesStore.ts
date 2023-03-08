@@ -382,6 +382,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
           if (item.assetId === asset.id && item.type !== QueueItemType.SlotFile) {
+            console.log('queueItemMetadataProcessed', asset)
             item.keywords = asset.keywords
             item.authors = asset.authors
             item.customData = asset.metadata.customData
