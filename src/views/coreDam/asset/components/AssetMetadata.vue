@@ -19,7 +19,7 @@ const { t } = useI18n()
 
 const panels = ref(['metadata', 'file'])
 
-const { asset, metadataTouch } = useAssetDetailActions()
+const { asset, authorConflicts, metadataTouch } = useAssetDetailActions()
 
 const assetType = computed(() => {
   return asset.value?.attributes.assetType || AssetType.Default
@@ -57,8 +57,7 @@ const onAnyMetadataChange = () => {
                 <ASystemEntityScope subject="keyword" system="dam">
                   <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
-                    label="Keywords"
-                    :suggestions="asset.metadata.keywordSuggestions"
+                    :label="t('coreDam.asset.model.keywords')"
                     chips
                     clearable
                     multiple
@@ -75,8 +74,8 @@ const onAnyMetadataChange = () => {
                 <ASystemEntityScope subject="author" system="dam">
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
-                    label="Authors"
-                    :suggestions="asset.metadata.authorSuggestions"
+                    :label="t('coreDam.asset.model.authors')"
+                    :author-conflicts="authorConflicts"
                     chips
                     clearable
                     multiple

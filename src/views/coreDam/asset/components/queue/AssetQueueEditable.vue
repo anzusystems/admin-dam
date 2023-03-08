@@ -40,9 +40,9 @@ onMounted(() => {
   list.value.forEach((item) => {
     addToCachedKeywords(item.keywords)
     addToCachedAuthors(item.authors)
-    objectGetValues(item.authorSuggestions)
-      .filter((ids) => ids.length > 1)
-      .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
+    // objectGetValues(item.authorSuggestions)
+    //   .filter((ids) => ids.length > 1)
+    //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
   })
   fetchCachedKeywords()
   fetchCachedAuthors()

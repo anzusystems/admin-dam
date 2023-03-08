@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { isUndefined, objectGetValues } from '@anzusystems/common-admin'
+import { isUndefined } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
@@ -23,6 +23,7 @@ import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileF
 import { useUploadQueueItemFactory } from '@/model/coreDam/factory/UploadQueueItemFactory'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -232,10 +233,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         if (foundIndex > -1) {
           this.queues[queueId].items[foundIndex].keywords = res[i].keywords
           this.queues[queueId].items[foundIndex].authors = res[i].authors
-          this.queues[queueId].items[foundIndex].authorSuggestions = res[i].metadata.authorSuggestions
-          this.queues[queueId].items[foundIndex].keywordSuggestions = res[i].metadata.keywordSuggestions
           this.queues[queueId].items[foundIndex].customData = res[i].metadata.customData
           this.queues[queueId].items[foundIndex].status = QueueItemStatus.Uploaded
+          this.queues[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
+          // updateNewNames(res[i].metadata.authorSuggestions, this.queues[queueId].suggestions.newAuthorNames)
+          // updateNewNames(res[i].metadata.keywordSuggestions, this.queues[queueId].suggestions.newKeywordNames)
           this.queues[queueId].items[foundIndex].canEditMetadata = true
         }
       }
@@ -262,7 +264,13 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
     createQueue(queueId: string) {
       if (!(queueId in this.queues)) {
-        this.queues[queueId] = { items: [], totalCount: 0, processedCount: 0, fileInputKey: 0 }
+        this.queues[queueId] = {
+          items: [],
+          totalCount: 0,
+          processedCount: 0,
+          fileInputKey: 0,
+          suggestions: { newKeywordNames: new Set<string>(), newAuthorNames: new Set<string>() },
+        }
       }
     },
     addQueueItem(queueId: string, item: UploadQueueItem) {
@@ -376,16 +384,17 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
           if (item.assetId === asset.id && item.type !== QueueItemType.SlotFile) {
             item.keywords = asset.keywords
             item.authors = asset.authors
-            item.keywordSuggestions = asset.metadata.keywordSuggestions
-            item.authorSuggestions = asset.metadata.authorSuggestions
             item.customData = asset.metadata.customData
+            updateNewNames(asset.metadata.authorSuggestions, this.queues[queueId].suggestions.newAuthorNames)
+            updateNewNames(asset.metadata.keywordSuggestions, this.queues[queueId].suggestions.newKeywordNames)
+            item.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
             item.canEditMetadata = true
             addToCachedKeywords(item.keywords)
             addToCachedAuthors(item.authors)
             // todo ask ronald if keywords too
-            objectGetValues(item.authorSuggestions)
-              .filter((ids) => ids.length > 1)
-              .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
+            // objectGetValues(item.authorSuggestions)
+            //   .filter((ids) => ids.length > 1)
+            //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
           }
         })
         this.recalculateQueueCounts(queueId)
@@ -453,6 +462,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         totalCount: 0,
         processedCount: 0,
         fileInputKey: this.getQueueFileInputKey(queueId) + 1,
+        suggestions: { newKeywordNames: new Set<string>(), newAuthorNames: new Set<string>() },
       }
     },
     queueItemsReplaceEmptyCustomDataValue(

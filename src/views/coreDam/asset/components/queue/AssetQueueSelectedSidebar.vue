@@ -131,7 +131,7 @@ onMounted(() => {
                       <div style="min-width: 286px">
                         <KeywordRemoteAutocompleteWithCached
                           v-model="massOperationsKeywords"
-                          label="Keywords"
+                          :label="t('coreDam.asset.model.keywords')"
                           chips
                           clearable
                           multiple
@@ -162,7 +162,7 @@ onMounted(() => {
                       <div style="min-width: 286px">
                         <AuthorRemoteAutocompleteWithCached
                           v-model="massOperationsAuthors"
-                          label="Authors"
+                          :label="t('coreDam.asset.model.authors')"
                           chips
                           clearable
                           multiple
