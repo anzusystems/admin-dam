@@ -238,8 +238,7 @@ const showCancel = computed(() => {
                   <ASystemEntityScope subject="keyword" system="dam">
                     <KeywordRemoteAutocompleteWithCached
                       v-model="keywords"
-                      label="Keywords"
-                      :suggestions="item.keywordSuggestions"
+                      :label="t('coreDam.asset.model.keywords')"
                       chips
                       clearable
                       multiple
@@ -256,8 +255,8 @@ const showCancel = computed(() => {
                   <ASystemEntityScope subject="author" system="dam">
                     <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
-                      label="Authors"
-                      :suggestions="item.authorSuggestions"
+                      :label="t('coreDam.asset.model.authors')"
+                      :author-conflicts="item.authorConflicts"
                       chips
                       clearable
                       multiple

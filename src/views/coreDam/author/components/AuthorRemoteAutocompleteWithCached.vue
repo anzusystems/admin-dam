@@ -24,7 +24,7 @@ const props = withDefaults(
     disabled?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
-    suggestions?: Suggestions
+    authorConflicts?: DocId[]
     chips?: boolean
     disableInitFetch?: boolean
     dataCy?: string
@@ -36,9 +36,7 @@ const props = withDefaults(
     disabled: undefined,
     multiple: false,
     clearable: false,
-    suggestions: () => {
-      return {}
-    },
+    authorConflicts: undefined,
     chips: false,
     disableInitFetch: false,
     dataCy: '',
@@ -76,25 +74,13 @@ const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 
 const innerFilter = useAuthorFilter()
 
-const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
-const suggestionsIdsComputed = computed(() => objectGetValues(props.suggestions))
-const duplicateAuthorsIds = ref<DocId[]>([])
-const duplicateAuthorsIdsExists = computed(() => duplicateAuthorsIds.value.length)
-
-const existingAuthorsIds = computed(() => {
-  const existingAuthorList: DocId[] = []
-  suggestionsIdsComputed.value.forEach((ids) => {
-    ids.forEach((id) => existingAuthorList.push(id))
-  })
-  return existingAuthorList
-})
-
 const addAuthor = async (id: null | DocId | undefined) => {
   if (!id) return
-  if (!modelValueComputed.value.includes(id)) {
-    modelValueComputed.value = [...modelValueComputed.value, ...[id]]
-    duplicateAuthorsIds.value = duplicateAuthorsIds.value.filter((duplicateId) => duplicateId !== id)
-  }
+  console.log('todo')
+  // if (!modelValueComputed.value.includes(id)) {
+  //   modelValueComputed.value = [...modelValueComputed.value, ...[id]]
+  //   duplicateAuthorsIds.value = duplicateAuthorsIds.value.filter((duplicateId) => duplicateId !== id)
+  // }
 }
 
 const addNewAuthorText = ref('')
@@ -124,15 +110,12 @@ const itemSlotIsSelected = (item: DocId) => {
 }
 
 const appendNewIcon = (id: DocId) => {
-  return suggestionsDefined.value && !existingAuthorsIds.value.includes(id) ? 'mdi-new-box' : undefined
+  return undefined
+  // return suggestionsDefined.value && !existingAuthorsIds.value.includes(id) ? 'mdi-new-box' : undefined
 }
 
 onMounted(() => {
-  const duplicateAuthorIdsList: DocId[] = []
-  suggestionsIdsComputed.value.forEach((ids) => {
-    if (ids.length > 1) ids.forEach((id) => duplicateAuthorIdsList.push(id))
-  })
-  duplicateAuthorsIds.value = duplicateAuthorIdsList
+  //
 })
 </script>
 
@@ -195,13 +178,13 @@ onMounted(() => {
       />
     </div>
   </div>
-  <div v-if="suggestionsDefined && duplicateAuthorsIdsExists" class="d-flex flex-column">
+  <div v-if="authorConflicts" class="d-flex flex-column">
     <div>
       <span class="text-caption">{{ t('coreDam.author.conflicts') }}</span>
     </div>
     <div>
       <CachedAuthorChip
-        v-for="authorId in duplicateAuthorsIds"
+        v-for="authorId in authorConflicts"
         :id="authorId"
         :key="authorId"
         class="mr-1 mt-1"

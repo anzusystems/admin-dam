@@ -4,7 +4,6 @@ import { DocId, isArray, isEmptyObject, objectGetValues, useValidateRequiredIf }
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
-import type { Suggestions } from '@/types/coreDam/Asset'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import type { Keyword } from '@/types/coreDam/Keyword'
 import { useVuelidate } from '@vuelidate/core'
@@ -23,7 +22,6 @@ const props = withDefaults(
     disabled?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
-    suggestions?: Suggestions
     chips?: boolean
     disableInitFetch?: boolean
     dataCy?: string
@@ -35,9 +33,6 @@ const props = withDefaults(
     disabled: undefined,
     multiple: false,
     clearable: false,
-    suggestions: () => {
-      return {}
-    },
     chips: false,
     disableInitFetch: false,
     dataCy: '',
@@ -73,31 +68,18 @@ const { fetchItems, fetchItemsByIds } = useKeywordSelectActions()
 
 const innerFilter = useKeywordFilter()
 
-const suggestionsDefined = computed(() => !isEmptyObject(props.suggestions))
-const existingKeywordsIds = computed(() => {
-  const existingKeywordsList: DocId[] = []
-  objectGetValues(props.suggestions).forEach((ids) => {
-    if (isArray(ids)) {
-      ids.forEach((id) => existingKeywordsList.push(id))
-    }
-  })
-  return existingKeywordsList
-})
-const existingKeywordsNames = computed(() => {
-  return Object.keys(props.suggestions)
-})
-
 const appendNewIcon = (name: string, id: DocId) => {
-  console.log(name)
-  console.log(id)
-  console.log(suggestionsDefined.value)
-  console.log(existingKeywordsIds.value)
-  console.log(existingKeywordsNames.value)
-  return suggestionsDefined.value &&
-    !existingKeywordsIds.value.includes(id) &&
-    existingKeywordsNames.value.includes(name)
-    ? 'mdi-new-box'
-    : undefined
+  return undefined
+  // console.log(name)
+  // console.log(id)
+  // console.log(suggestionsDefined.value)
+  // console.log(existingKeywordsIds.value)
+  // console.log(existingKeywordsNames.value)
+  // return suggestionsDefined.value &&
+  //   !existingKeywordsIds.value.includes(id) &&
+  //   existingKeywordsNames.value.includes(name)
+  //   ? 'mdi-new-box'
+  //   : undefined
 }
 
 const addNewKeywordText = ref('')

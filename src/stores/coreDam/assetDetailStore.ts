@@ -5,9 +5,11 @@ import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { objectGetValues } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import { getAuthorConflicts } from '@/services/AssetSuggestionsService'
 
 interface State {
   asset: AssetDetailItemDto | null
+  authorConflicts: DocId[]
   loader: boolean
   detail: boolean
   view: 'list' | 'queue'
@@ -20,6 +22,7 @@ interface State {
 export const useAssetDetailStore = defineStore('damAssetDetailStore', {
   state: (): State => ({
     asset: null,
+    authorConflicts: [],
     loader: false,
     detail: false,
     view: 'list',
@@ -47,6 +50,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     setAsset(asset: AssetDetailItemDto) {
       this.metadataAreTouched = false // todo check
+      this.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
       this.prefetchLazyData(asset) // todo check
       this.asset = asset
     },
@@ -56,9 +60,9 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
 
       addToCachedKeywords(asset.keywords)
       addToCachedAuthors(asset.authors)
-      objectGetValues(asset.metadata.authorSuggestions)
-        .filter((ids) => ids.length > 1)
-        .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
+      // objectGetValues(asset.metadata.authorSuggestions)
+      //   .filter((ids) => ids.length > 1)
+      //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
       fetchCachedKeywords()
       fetchCachedAuthors()
     },
@@ -76,6 +80,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     reset() {
       this.asset = null
+      this.authorConflicts = []
       this.loader = false
       this.detail = false
       this.view = 'list'
