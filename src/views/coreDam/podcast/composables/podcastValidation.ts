@@ -28,6 +28,9 @@ export function usePodcastValidation(podcast: Ref<Podcast>) {
           maxLength: maxLength(100),
         },
       },
+      dates: {
+        importFrom: {},
+      },
     },
   }))
   const v$ = useVuelidate(rules, { podcast })
