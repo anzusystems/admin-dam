@@ -16,7 +16,6 @@ import {
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
-import { useCurrentUser } from '@/composables/system/currentUser'
 
 const props = defineProps<{
   modelValue: Permissions
@@ -52,9 +51,9 @@ const getAvailableGrants = (subject: string, action: string) => {
   }
   return grants
 }
-const { currentUserIsSuperAdmin } = useCurrentUser()
+const hasSuperAdminRole = computed(() => props.roles?.includes(ROLE_SUPER_ADMIN) ?? false)
 const getResolvedGrant = (subject: string, action: string) => {
-  if (currentUserIsSuperAdmin.value) {
+  if (hasSuperAdminRole.value) {
     return Grant.Allow
   }
   const permissionName = subject + '_' + action
@@ -69,7 +68,7 @@ const getResolvedGrant = (subject: string, action: string) => {
   return Grant.Deny
 }
 const getGrantOrigin = (subject: string, action: string) => {
-  if (props.roles?.includes(ROLE_SUPER_ADMIN)) {
+  if (hasSuperAdminRole.value) {
     return GrantOrigin.Role
   }
   const permissionName = subject + '_' + action
