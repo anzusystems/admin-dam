@@ -13,3 +13,8 @@ export interface Author extends AnzuUserAndTimeTrackingAware, ResourceNameSystem
   flags: Flags
   type: AuthorType
 }
+
+export interface AuthorMinimal {
+  id: DocId
+  name: string
+}

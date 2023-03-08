@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
-import AssetQueueMassEditEditable from '@/views/coreDam/asset/components/queue/AssetQueueEditable.vue'
+import AssetQueueEditable from '@/views/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { bulkUpdateAssetsMetadata } from '@/services/api/coreDam/assetApi'
@@ -104,7 +104,7 @@ const onSaveAndClose = async () => {
       <VToolbar class="w-100 system-border-b" :color="toolbarColor" density="compact" :height="64">
         <div class="d-flex align-center pa-2">
           <div>
-            <span class="text-subtitle-2">Selected files: {{ queueTotalCount }}</span>
+            <span class="text-subtitle-2">{{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}</span>
           </div>
         </div>
         <VSpacer />
@@ -165,11 +165,7 @@ const onSaveAndClose = async () => {
           </VBtn>
         </div>
       </VToolbar>
-      <AssetQueueMassEditEditable
-        :queue-id="QUEUE_ID_MASS_EDIT"
-        :mass-operations="massOperations"
-        disable-done-animation
-      />
+      <AssetQueueEditable :queue-id="QUEUE_ID_MASS_EDIT" :mass-operations="massOperations" disable-done-animation />
     </div>
   </div>
 </template>

@@ -23,7 +23,8 @@ import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { loadCachedUsers, useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 
@@ -46,7 +47,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
   const { resetFilter } = useFilterHelpers()
   const { currentAssetLicenceId } = useCurrentAssetLicence()
-  const { fetchCachedUsers, addToCachedUsers } = loadCachedUsers()
+  const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+  const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -166,6 +168,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
     const res = await fetchAsset(data.assetId)
     assetDetailStore.setAsset(res)
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
     assetDetailStore.hideLoader()
   }
 

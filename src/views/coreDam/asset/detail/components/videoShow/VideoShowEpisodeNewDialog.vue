@@ -13,7 +13,7 @@ import {
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useVideoShowEpisodeValidation } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
 import { useI18n } from 'vue-i18n'
-import VideoShowSelect from '@/views/coreDam/videoShow/components/VideoShowSelect.vue'
+import VideoShowRemoteAutocomplete from '@/views/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -117,7 +117,7 @@ onMounted(async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <VideoShowSelect
+            <VideoShowRemoteAutocomplete
               v-model="videoShowEpisode.videoShow"
               required
               :label="t('coreDam.videoShowEpisode.model.videoShow')"

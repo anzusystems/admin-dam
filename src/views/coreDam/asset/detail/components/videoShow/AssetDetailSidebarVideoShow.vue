@@ -7,9 +7,9 @@ import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useVideoShowEpisodeListFilter } from '@/model/coreDam/filter/VideoShowEpisodeFilter'
 import { fetchVideoShowEpisodeListByAsset } from '@/services/api/coreDam/videoShowEpisodeApi'
 import VideoShowEpisodeListItem from '@/views/coreDam/asset/detail/components/videoShow/VideoShowEpisodeListItem.vue'
-import { loadLazyVideoShow } from '@/views/coreDam/videoShow/composables/lazyVideoShow'
 import VideoShowEpisodeNewDialog from '@/views/coreDam/asset/detail/components/videoShow/VideoShowEpisodeNewDialog.vue'
 import { useI18n } from 'vue-i18n'
+import { useCachedVideoShows } from '@/views/coreDam/videoShow/composables/cachedVideoShow'
 
 const props = withDefaults(
   defineProps<{
@@ -39,19 +39,13 @@ const addNew = async () => {
   dialogNew.value = true
 }
 
-const { addToLazyVideoShowBuffer, fetchLazyVideoShow } = loadLazyVideoShow()
+const { addToCachedVideoShows, fetchCachedVideoShows } = useCachedVideoShows()
 
 const getList = async () => {
   loading.value = true
   const items = await fetchVideoShowEpisodeListByAsset(props.assetId, pagination, filter)
-  const videoShowIds = []
-  items.forEach((item) => {
-    if (item.videoShow) {
-      videoShowIds.push(item.videoShow)
-      addToLazyVideoShowBuffer(item.videoShow)
-    }
-  })
-  if (videoShowIds.length > 0) fetchLazyVideoShow()
+  addToCachedVideoShows(items.map((item) => item.videoShow))
+  fetchCachedVideoShows()
   listItems.value = items
   loading.value = false
 }

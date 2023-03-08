@@ -5,8 +5,8 @@ import { useI18n } from 'vue-i18n'
 import AssetCustomMetadataFormMassOperations from '@/components/coreDam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
-import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
-import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
+import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -129,7 +129,7 @@ onMounted(() => {
                   <ASystemEntityScope subject="keyword" system="dam">
                     <div class="d-flex">
                       <div style="min-width: 286px">
-                        <KeywordSelect
+                        <KeywordRemoteAutocompleteWithCached
                           v-model="massOperationsKeywords"
                           label="Keywords"
                           chips
@@ -160,7 +160,7 @@ onMounted(() => {
                   <ASystemEntityScope subject="author" system="dam">
                     <div class="d-flex">
                       <div style="min-width: 286px">
-                        <AuthorSelect
+                        <AuthorRemoteAutocompleteWithCached
                           v-model="massOperationsAuthors"
                           label="Authors"
                           chips

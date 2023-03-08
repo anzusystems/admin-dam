@@ -4,7 +4,7 @@ import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUser
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
 import { useI18n } from 'vue-i18n'
-import PermissionGroupSelect from '@/views/common/permissionGroup/components/PermissionGroupSelect.vue'
+import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
 import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'
@@ -74,7 +74,7 @@ const { t } = useI18n()
                 <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />
               </VCol>
               <VCol cols="12" sm="9">
-                <PermissionGroupSelect
+                <PermissionGroupRemoteAutocomplete
                   v-model="anzuUser.permissionGroups"
                   :client="client"
                   :label="t('common.anzuUser.model.permissionGroups')"

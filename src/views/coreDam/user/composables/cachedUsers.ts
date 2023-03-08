@@ -17,16 +17,11 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<Intege
   fetchUserListByIds
 )
 
-export const loadCachedUsers = () => {
+export const useCachedUsers = () => {
   return {
     addManualToCachedUsers: addManual,
     addToCachedUsers: add,
     fetchCachedUsers: fetch,
-  }
-}
-
-export const useCachedUsers = () => {
-  return {
     cachedUsers: cache,
     hasCachedUser: has,
     getCachedUser: get,

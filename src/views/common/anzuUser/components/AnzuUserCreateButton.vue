@@ -17,7 +17,7 @@ import { useRouter } from 'vue-router'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
-import PermissionGroupSelect from '@/views/common/permissionGroup/components/PermissionGroupSelect.vue'
+import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -115,7 +115,7 @@ const onConfirm = async () => {
             <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />
           </ARow>
           <ARow>
-            <PermissionGroupSelect
+            <PermissionGroupRemoteAutocomplete
               v-model="anzuUser.permissionGroups"
               :client="client"
               :label="t('common.anzuUser.model.permissionGroups')"

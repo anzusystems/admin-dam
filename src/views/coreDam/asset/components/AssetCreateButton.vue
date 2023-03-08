@@ -16,7 +16,7 @@ import type { AssetCreateDto, AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { createAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { loadCachedUsers, useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void
@@ -25,7 +25,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const assetDetailStore = useAssetDetailStore()
-const { addToCachedUsers, fetchCachedUsers } = loadCachedUsers()
+const { addToCachedUsers, fetchCachedUsers } = useCachedUsers()
 
 const { createCreateDto } = useAssetFactory()
 const asset = ref<AssetCreateDto>(createCreateDto())

@@ -14,7 +14,7 @@ import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
-import { loadCachedUsers, useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { sidebarRight } = useMainWrapper()
 const router = useRouter()
@@ -25,7 +25,7 @@ const { t } = useI18n()
 
 const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
 
-const { fetchCachedUsers, addToCachedUsers } = loadCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
 

@@ -42,7 +42,6 @@ export function defineCached<
       }
       if (!cache.value.has(arg)) toAdd.value.add(arg)
     }
-    console.log(toAdd.value)
     toAdd.value.forEach((id) => {
       cache.value.set(id, { ...mapIdToMinimal(id), ...{ _loaded: false } })
       toFetch.value.add(id)
@@ -52,6 +51,12 @@ export function defineCached<
   const addManual = (data: T) => {
     if (data[idProp]) {
       cache.value.set(data[idProp] as I, { ...mapFullToMinimal(data), ...{ _loaded: true } })
+    }
+  }
+
+  const addManualMinimal = (data: M) => {
+    if (data[idProp]) {
+      cache.value.set(data[idProp] as I, { ...data, ...{ _loaded: true } })
     }
   }
 
@@ -68,13 +73,9 @@ export function defineCached<
   }
 
   async function apiFetch() {
-    console.log('debounced fetch')
-    console.log(toFetch.value)
-    console.log(toFetch.value.size)
     if (toFetch.value.size > 0) {
       const ids = Array.from(toFetch.value)
       const res = await fetchCallback(ids)
-      console.log(res)
       updateToFetch(ids)
       updateMap(res)
     }
@@ -82,10 +83,9 @@ export function defineCached<
 
   const debouncedFetch = useDebounceFn(
     async () => {
-      console.log('lala')
       await apiFetch()
     },
-    1000,
+    1500,
     { maxWait: 5000 }
   )
 
@@ -117,6 +117,7 @@ export function defineCached<
     fetch,
     add,
     addManual,
+    addManualMinimal,
     has,
     get,
     isLoaded,
