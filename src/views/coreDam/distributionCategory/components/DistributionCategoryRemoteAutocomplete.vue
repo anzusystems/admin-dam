@@ -2,10 +2,13 @@
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
+import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { onMounted } from 'vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue: string | null | string[] | any
+    assetType: AssetType
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -29,6 +32,10 @@ const emit = defineEmits<{
 const { fetchItems, fetchItemsByIds } = useDistributionCategorySelectActions()
 
 const innerFilter = useDistributionCategoryFilter()
+
+onMounted(() => {
+  innerFilter.type.model = props.assetType
+})
 </script>
 
 <template>
