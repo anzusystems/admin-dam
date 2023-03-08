@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CachedChip from '@/views/coreDam/user/components/CachedChip.vue'
+import ACachedChip from '@/components/ACachedChip.vue'
 import { ROUTE } from '@/router/routes'
 import type { DocId } from '@anzusystems/common-admin'
 import { useCachedVideoShows } from '@/views/coreDam/videoShow/composables/cachedVideoShow'
@@ -15,7 +15,7 @@ const { getCachedVideoShow } = useCachedVideoShows()
 </script>
 
 <template>
-  <CachedChip
+  <ACachedChip
     :id="id"
     :get-cached-fn="getCachedVideoShow"
     :route="ROUTE.DAM.VIDEO_SHOW.DETAIL"

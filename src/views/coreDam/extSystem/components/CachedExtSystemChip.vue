@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CachedChip from '@/views/coreDam/user/components/CachedChip.vue'
+import ACachedChip from '@/components/ACachedChip.vue'
 import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import type { IntegerId } from '@anzusystems/common-admin'
@@ -15,7 +15,7 @@ const { getCachedExtSystem } = useCachedExtSystems()
 </script>
 
 <template>
-  <CachedChip
+  <ACachedChip
     :id="id"
     :get-cached-fn="getCachedExtSystem"
     :route="ROUTE.DAM.EXT_SYSTEM.DETAIL"

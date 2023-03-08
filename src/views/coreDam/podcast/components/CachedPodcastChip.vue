@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CachedChip from '@/views/coreDam/user/components/CachedChip.vue'
+import ACachedChip from '@/components/ACachedChip.vue'
 import { ROUTE } from '@/router/routes'
 import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 import type { DocId } from '@anzusystems/common-admin'
@@ -15,5 +15,5 @@ const { getCachedPodcast } = useCachedPodcasts()
 </script>
 
 <template>
-  <CachedChip :id="id" :get-cached-fn="getCachedPodcast" :route="ROUTE.DAM.PODCAST.DETAIL" display-text-path="title" />
+  <ACachedChip :id="id" :get-cached-fn="getCachedPodcast" :route="ROUTE.DAM.PODCAST.DETAIL" display-text-path="title" />
 </template>

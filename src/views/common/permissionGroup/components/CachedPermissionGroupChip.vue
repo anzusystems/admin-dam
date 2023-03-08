@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CachedChip from '@/views/coreDam/user/components/CachedChip.vue'
+import ACachedChip from '@/components/ACachedChip.vue'
 import { ROUTE } from '@/router/routes'
 import type { IntegerId } from '@anzusystems/common-admin'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
@@ -15,7 +15,7 @@ const { getCachedPermissionGroup } = useCachedPermissionGroups()
 </script>
 
 <template>
-  <CachedChip
+  <ACachedChip
     :id="id"
     :get-cached-fn="getCachedPermissionGroup"
     :route="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"
