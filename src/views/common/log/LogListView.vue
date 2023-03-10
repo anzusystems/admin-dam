@@ -60,7 +60,6 @@ watch(
 
 <template>
   <ActionbarTitleWrapper :heading="t('common.log.meta.list')" />
-  <ActionbarTitleWrapper />
   <ACard :loading="listLoading">
     <LogFilter @submit-filter="submitFilter" @reset-filter="resetFilter" />
     <VTabs v-if="systems.length > 1" v-model="activeTab" color="primary">
