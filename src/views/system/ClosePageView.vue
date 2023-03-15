@@ -2,7 +2,7 @@
 import { envConfig } from '@/services/EnvConfigService'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>
@@ -11,7 +11,7 @@ const { t } = useI18n({ useScope: 'global' })
   </div>
   <div class="full-screen-page-footer px-10">
     <div class="text-medium-emphasis text-caption font-weight-light text-center">
-      {{ t('system.version') }}: {{ envConfig.appVersion }}
+      {{ t('common.system.version') }}: {{ envConfig.appVersion }}
     </div>
   </div>
 </template>

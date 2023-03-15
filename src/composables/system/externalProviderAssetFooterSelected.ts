@@ -1,6 +1,6 @@
 import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
-import { useExternalProviderAssetListStore } from '@/stores/dam/externalProviderAssetListStore'
+import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 
 const HEIGHT_MINIMAL = 32
 const HEIGHT_COMPACT = 160

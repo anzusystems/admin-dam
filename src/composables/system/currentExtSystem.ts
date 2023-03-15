@@ -1,13 +1,13 @@
 import { readonly, ref, watch } from 'vue'
 import { damConfig, damConfigInitialized } from '@/services/DamConfigService'
-import type { ExtSystem } from '@/types/dam/ExtSystem'
-import { fetchExtSystem } from '@/services/api/dam/extSystemApi'
+import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { useCurrentUser } from '@/composables/system/currentUser'
-import { fetchAssetLicence } from '@/services/api/dam/assetLicenceApi'
-import type { AssetLicence } from '@/types/dam/AssetLicence'
-import { fetchAsset } from '@/services/api/dam/assetApi'
+import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
+import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { isDocId, isString } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/stores/dam/assetDetailStore'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<ExtSystem>()

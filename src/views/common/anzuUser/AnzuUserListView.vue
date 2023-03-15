@@ -8,7 +8,7 @@ import { damClient } from '@/services/api/clients/damClient'
 import AnzuUserDatatable from '@/views/common/anzuUser/components/AnzuUserDatatable.vue'
 import AnzuUserCreateButton from '@/views/common/anzuUser/components/AnzuUserCreateButton.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)
 
@@ -18,7 +18,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.list')" icon="mdi-account-edit-outline" />
+  <ActionbarTitleWrapper :heading="t('common.anzuUser.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_USER_CREATE">
       <AnzuUserCreateButton data-cy="button-create" disable-redirect :client="damClient" @after-create="afterCreate" />

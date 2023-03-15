@@ -1,24 +1,27 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { usePagination } from '@/composables/system/pagination'
-import ADatatablePagination from '@/components/common/ADatatablePagination.vue'
-import { useTableColumns } from '@/composables/system/tableColumns'
-import ADatatable from '@/components/common/ADatatable.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import {
+  ABooleanValue,
+  ADatatable,
+  ADatatablePagination,
+  type AnzuUser,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+  useAcl,
+  useDatatableColumns,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
-import ADetailButton from '@/components/common/buttons/table/ADetailButton.vue'
 import { ROUTE } from '@/router/routes'
-import ACopyIdButton from '@/components/common/buttons/table/ACopyIdButton.vue'
-import AEditButton from '@/components/common/buttons/table/AEditButton.vue'
 import { useRouter } from 'vue-router'
-import { useFilterHelpers } from '@/composables/filter/filterHelpers'
-import { ACL } from '@/types/Permission'
+import { ACL, type AclValue } from '@/types/Permission'
 import type { AxiosInstance } from 'axios'
-import type { AnzuUser } from '@anzusystems/common-admin'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
-import ABooleanValue from '@/components/common/ABooleanValue.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import PermissionGroupLazyChip from '@/views/common/permissionGroup/components/PermissionGroupLazyChip.vue'
 
@@ -32,9 +35,10 @@ const pagination = usePagination()
 const filter = useAnzuUserFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchAnzuUserList, anzuUserList, loadingAnzuUserList } = useAnzuUserActions(props.client)
+const { can } = useAcl<AclValue>()
 
 const onRowClick = (row: AnzuUser) => {
-  if (row.id) {
+  if (row.id && can(ACL.DAM_USER_VIEW)) {
     router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: row.id } })
   }
 }
@@ -47,7 +51,7 @@ onMounted(() => {
   getList()
 })
 
-const columns = useTableColumns([
+const columns = useDatatableColumns([
   { name: 'id' },
   { name: 'email' },
   { name: 'enabled' },
@@ -97,10 +101,12 @@ const { translatePermission } = usePermissionConfigActions(props.client)
               <VChip>{{ Object.keys(data).length }}</VChip>
             </template>
             <template #actions="{ data }">
-              <ADetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
-              <ACopyIdButton :id="data.id" />
+              <Acl :permission="ACL.DAM_USER_VIEW">
+                <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.DETAIL" />
+              </Acl>
+              <ATableCopyIdButton :id="data.id" />
               <Acl :permission="ACL.DAM_USER_UPDATE">
-                <AEditButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" />
+                <ATableEditButton :record-id="data.id" :route-name="ROUTE.COMMON.ANZU_USER.EDIT" />
               </Acl>
             </template>
           </ADatatable>

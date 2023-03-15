@@ -8,7 +8,7 @@ import PermissionGroupDatatable from '@/views/common/permissionGroup/components/
 import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupCreateButton from '@/views/common/permissionGroup/components/PermissionGroupCreateButton.vue'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof PermissionGroupDatatable> | null>(null)
 
@@ -18,7 +18,7 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.list')" icon="mdi-folder-account-outline" />
+  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.list')" />
   <ActionbarButtonsWrapper>
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_CREATE">
       <PermissionGroupCreateButton

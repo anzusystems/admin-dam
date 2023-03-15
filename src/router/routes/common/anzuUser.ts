@@ -1,9 +1,10 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
+import type { RouteRecordRaw } from 'vue-router'
 
 const PATH = '/anzu-user'
 
-export const anzuUserRoutes = [
+export const anzuUserRoutes: RouteRecordRaw[] = [
   {
     path: PATH + '/list',
     name: ROUTE.COMMON.ANZU_USER.LIST,

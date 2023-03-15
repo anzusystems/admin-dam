@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
-import ATextField from '@/components/form/ATextField.vue'
+import { AFormTextField, ASystemEntityScope } from '@anzusystems/common-admin'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import type { AxiosInstance } from 'axios'
@@ -20,8 +19,12 @@ const { v$ } = usePermissionGroupValidation(permissionGroup)
       <VCol cols="12">
         <VCard :loading="loadingPermissionGroup" variant="flat">
           <VCardText>
-            <ATextField v-model="permissionGroup.title" :v="v$.permissionGroup.title" data-cy="permissionGroup-title" />
-            <ATextField
+            <AFormTextField
+              v-model="permissionGroup.title"
+              :v="v$.permissionGroup.title"
+              data-cy="permissionGroup-title"
+            />
+            <AFormTextField
               v-model="permissionGroup.description"
               :v="v$.permissionGroup.description"
               data-cy="permissionGroup-description"

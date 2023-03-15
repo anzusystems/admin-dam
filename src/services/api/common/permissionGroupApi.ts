@@ -1,3 +1,4 @@
+import type { FilterBag, IntegerId, Pagination, PermissionGroup } from '@anzusystems/common-admin'
 import {
   apiCreateOne,
   apiDeleteOne,
@@ -5,12 +6,8 @@ import {
   apiFetchList,
   apiFetchOne,
   apiUpdateOne,
-} from '@/services/api/anzuApi'
-import type { FilterBag } from '@/types/Filter'
-import type { Pagination } from '@/types/Pagination'
+} from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
-import type { IntegerId } from '@/types/common'
-import type { PermissionGroup } from '@anzusystems/common-admin'
 
 const SYSTEM = 'common'
 export const ENTITY = 'permissionGroup'

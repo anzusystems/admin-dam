@@ -1,11 +1,11 @@
-import { useSimpleLoginFactory } from '@/model/dam/factory/SimpleLoginFactory'
+import { useSimpleLoginFactory } from '@/model/coreDam/factory/SimpleLoginFactory'
 import { ref } from 'vue'
 import type { Ref } from 'vue/dist/vue'
-import { login } from '@/services/api/dam/authApi'
-import { useAlerts } from '@/composables/system/alerts'
+import { login } from '@/services/api/coreDam/authApi'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import type { SimpleLoginForm } from '@/types/dam/Auth'
+import type { SimpleLoginForm } from '@/types/coreDam/Auth'
 
 const loginButtonLoading = ref(false)
 

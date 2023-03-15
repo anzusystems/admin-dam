@@ -1,9 +1,9 @@
-import { fetchCurrentUser } from '@/services/api/dam/userApi'
+import { fetchCurrentUser } from '@/services/api/coreDam/userApi'
 import { envConfig } from '@/services/EnvConfigService'
-import { isNotUndefined } from '@/utils/common'
-import { readonly, ref } from 'vue'
-import type { CurrentUserDto } from '@/types/dam/CurrentUser'
-import { ROLE_ADMIN } from '@/composables/system/ability'
+import { computed, readonly, ref } from 'vue'
+import type { CurrentUserDto } from '@/types/coreDam/CurrentUser'
+import { ROLE_SUPER_ADMIN } from '@anzusystems/common-admin'
+import { useUserDisplayHelper } from '@/composables/system/userDisplayHelper'
 
 const currentUser = ref<CurrentUserDto | undefined>(undefined)
 const currentUserIsSuperAdmin = ref(false)
@@ -18,7 +18,7 @@ export function updateCurrentUser() {
     fetchCurrentUser()
       .then((res: CurrentUserDto) => {
         currentUser.value = res
-        if (res.roles.includes(ROLE_ADMIN)) currentUserIsSuperAdmin.value = true
+        if (res.roles.includes(ROLE_SUPER_ADMIN)) currentUserIsSuperAdmin.value = true
         if (currentUserIsSuperAdmin.value || envConfig.appVersion === 'dev') showDevFeature.value = true
 
         resolve(currentUser)
@@ -29,13 +29,14 @@ export function updateCurrentUser() {
   })
 }
 
-export function useCurrentUser() {
-  const hasCurrentUser = () => isNotUndefined(currentUser.value)
+const { getUsername } = useUserDisplayHelper()
+const currentUserUsername = computed(() => getUsername(currentUser.value))
 
+export function useCurrentUser() {
   return {
     currentUser: readonly(currentUser),
     currentUserIsSuperAdmin: readonly(currentUserIsSuperAdmin),
-    hasCurrentUser,
+    currentUserUsername: readonly(currentUserUsername),
     showDevFeature,
   }
 }

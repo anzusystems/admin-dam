@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { makeFilterHelper } from '@/composables/filter/filterHelpers'
+import { makeFilterHelper } from '@anzusystems/common-admin'
 
 const makeFilter = makeFilterHelper('common', 'anzuUser')
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-import ARemoteAutocomplete from '@/components/form/ARemoteAutocomplete.vue'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupFilter } from '@/model/common/filter/PermissionGroupFilter'
 
@@ -9,16 +9,16 @@ const props = withDefaults(
   defineProps<{
     modelValue: string | number | string[] | number[] | null
     client: () => AxiosInstance
-    label?: string | null
-    required?: boolean | null
+    label?: string | undefined
+    required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
     disableInitFetch?: boolean
     dataCy?: string
   }>(),
   {
-    label: null,
-    required: null,
+    label: undefined,
+    required: undefined,
     multiple: false,
     clearable: false,
     disableInitFetch: false,
@@ -35,7 +35,7 @@ const innerFilter = usePermissionGroupFilter()
 </script>
 
 <template>
-  <ARemoteAutocomplete
+  <AFormRemoteAutocomplete
     v-model="modelValue"
     :required="required"
     :label="label"

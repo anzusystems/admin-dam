@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
-import { useErrorHandler } from '@/composables/system/error'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import {
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  type PermissionGroup,
+  useAlerts,
+  useErrorHandler,
+  usePermissionGroupFactory,
+} from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
-import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
-import { type PermissionGroup, usePermissionGroupFactory } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 
 const props = withDefaults(
@@ -52,7 +55,7 @@ const onCancel = () => {
 
 const router = useRouter()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
@@ -101,10 +104,14 @@ const onConfirm = async () => {
       <ASystemEntityScope system="common" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField v-model="permissionGroup.title" :v="v$.permissionGroup.title" data-cy="permissionGroup-title" />
+            <AFormTextField
+              v-model="permissionGroup.title"
+              :v="v$.permissionGroup.title"
+              data-cy="permissionGroup-title"
+            />
           </ARow>
           <ARow>
-            <ATextField
+            <AFormTextField
               v-model="permissionGroup.description"
               :v="v$.permissionGroup.description"
               data-cy="permissionGroup-description"

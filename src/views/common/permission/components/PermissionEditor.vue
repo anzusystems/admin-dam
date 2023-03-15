@@ -4,12 +4,18 @@ import type { Permissions } from '@/types/Permission'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import type { AxiosInstance } from 'axios'
 import PermissionGrantEditor from '@/views/common/permission/components/PermissionGrantEditor.vue'
-import { isUndefined } from '@/utils/common'
+import {
+  cloneDeep,
+  Grant,
+  GrantOrigin,
+  isUndefined,
+  objectDeletePropertyByPath,
+  objectGetValueByPath,
+  objectSetValueByPath,
+  ROLE_SUPER_ADMIN,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
-import { useAcl } from '@/composables/system/ability'
-import { deletePropertyByPath, getValueByPath, Grant, GrantOrigin, setValueByPath } from '@anzusystems/common-admin'
-import { simpleCloneObject } from '@/utils/object'
 
 const props = defineProps<{
   modelValue: Permissions
@@ -18,7 +24,7 @@ const props = defineProps<{
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
-const permissions = computed(() => simpleCloneObject(props.modelValue))
+const permissions = computed(() => cloneDeep(props.modelValue))
 const emit = defineEmits<{
   (e: 'update:modelValue', data: Permissions): void
 }>()
@@ -27,42 +33,42 @@ const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized
 const changeGrant = (subject: string, action: string, grant?: Grant) => {
   const permissionName = subject + '_' + action
   if (isUndefined(grant) && Object.hasOwn(permissions.value, permissionName)) {
-    deletePropertyByPath(permissions.value, permissionName)
+    objectDeletePropertyByPath(permissions.value, permissionName)
     emit('update:modelValue', permissions.value)
     return
   }
-  setValueByPath(permissions.value, permissionName, grant)
+  objectSetValueByPath(permissions.value, permissionName, grant)
   emit('update:modelValue', permissions.value)
 }
 const getSelectedGrant = (subject: string, action: string) => {
   const permissionName = subject + '_' + action
-  return getValueByPath(permissions.value, permissionName)
+  return objectGetValueByPath(permissions.value, permissionName)
 }
 const getAvailableGrants = (subject: string, action: string) => {
-  const grants = getValueByPath(permissionConfig.value.config, subject + '.' + action + '.grants')
+  const grants = objectGetValueByPath(permissionConfig.value.config, subject + '.' + action + '.grants')
   if (isUndefined(grants)) {
     return permissionConfig.value.defaultGrants
   }
   return grants
 }
-const { hasSuperAdminRole } = useAcl()
+const hasSuperAdminRole = computed(() => props.roles?.includes(ROLE_SUPER_ADMIN) ?? false)
 const getResolvedGrant = (subject: string, action: string) => {
-  if (hasSuperAdminRole(props.roles)) {
+  if (hasSuperAdminRole.value) {
     return Grant.Allow
   }
   const permissionName = subject + '_' + action
   if (props.resolvedPermissions) {
     if (Object.hasOwn(props.resolvedPermissions, permissionName)) {
-      return getValueByPath(props.resolvedPermissions, permissionName)
+      return objectGetValueByPath(props.resolvedPermissions, permissionName)
     }
   }
   if (Object.hasOwn(permissions.value, permissionName)) {
-    return getValueByPath(permissions.value, permissionName)
+    return objectGetValueByPath(permissions.value, permissionName)
   }
   return Grant.Deny
 }
 const getGrantOrigin = (subject: string, action: string) => {
-  if (hasSuperAdminRole(props.roles)) {
+  if (hasSuperAdminRole.value) {
     return GrantOrigin.Role
   }
   const permissionName = subject + '_' + action
@@ -82,7 +88,7 @@ const getGrantOrigin = (subject: string, action: string) => {
 
   return GrantOrigin.DefaultGrant
 }
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 </script>
 
 <template>

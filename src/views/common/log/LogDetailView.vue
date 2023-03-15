@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import ACloseButton from '@/components/common/buttons/action/ACloseButton.vue'
+import { AActionCloseButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useLogDetailActions } from '@/views/common/log/composables/logActions'
 import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
@@ -29,7 +29,7 @@ onBeforeUnmount(() => {
 
 <template>
   <ActionbarTitleWrapper>
-    <ACloseButton :route-name="ROUTE.COMMON.LOG.LIST" />
+    <AActionCloseButton :route-name="ROUTE.COMMON.LOG.LIST" />
   </ActionbarTitleWrapper>
   <ACard :loading="detailLoading">
     <LogDetail />

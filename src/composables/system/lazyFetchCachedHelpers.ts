@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { DocId, IntegerId } from '@/types/common'
+import type { DocId, IntegerId } from '@anzusystems/common-admin'
 import { isArray, isNull, isUndefined } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
 

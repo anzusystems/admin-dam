@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@/composables/system/alerts'
-import { useErrorHandler } from '@/composables/system/error'
-import ATextField from '@/components/form/ATextField.vue'
-import ARow from '@/components/common/ARow.vue'
-import ASystemEntityScope from '@/components/form/ASystemEntityScope.vue'
+import {
+  AFormTextField,
+  type AnzuUser,
+  ARow,
+  ASystemEntityScope,
+  isUndefined,
+  useAlerts,
+  useAnzuUserFactory,
+  useErrorHandler,
+} from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
-import { isUndefined } from '@/utils/common'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { type AnzuUser, useAnzuUserFactory } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
@@ -54,7 +57,7 @@ const onCancel = () => {
 
 const router = useRouter()
 const { v$ } = useAnzuUserValidation(anzuUser)
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
@@ -103,10 +106,10 @@ const onConfirm = async () => {
       <ASystemEntityScope system="common" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <ATextField v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
+            <AFormTextField v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
           </ARow>
           <ARow>
-            <ATextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
+            <AFormTextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
           </ARow>
           <ARow>
             <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />

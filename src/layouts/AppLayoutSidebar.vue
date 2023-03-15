@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { useTheme } from '@/composables/system/themeSettings'
+import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import ASidebarSettings from '@/components/system/ASidebarSettings.vue'
-import ASystemBar from '@/components/system/ASystemBar.vue'
-import { ROUTE } from '@/router/routes'
-import ActionbarTeleportTarget from '@/components/common/ActionbarTeleportTarget.vue'
-import DCurrentUserDropdown from '@/components/system/DCurrentUserDropdown.vue'
+import ASidebarSettings from '@/components/system/SidebarSettings.vue'
+import ActionbarTeleportTarget from '@/components/coreDam/ActionbarTeleportTarget.vue'
+import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
+import { ROUTE } from '@/router/routes'
+import { envConfig } from '@/services/EnvConfigService'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t } = useI18n()
 
 const drawer = ref<boolean>(true)
 
@@ -20,18 +20,9 @@ const { theme } = useTheme()
 </script>
 
 <template>
-  <notifications :max="5" group="alerts" position="top center" width="50%">
-    <template #body="props">
-      <VAlert :type="props.item.type" class="ma-1" density="compact">
-        <div class="white-space-pre" data-cy="page-title" v-text="props.item.text" />
-        <template #close>
-          <VIcon icon="mdi-close" @click.stop="props.close" />
-        </template>
-      </VAlert>
-    </template>
-  </notifications>
+  <AAlerts />
   <VApp :theme="theme">
-    <ASystemBar />
+    <ASystemBar :current-version="envConfig.appVersion" />
     <VNavigationDrawer v-model="drawer">
       <ASidebarSettings />
     </VNavigationDrawer>
@@ -50,7 +41,7 @@ const { theme } = useTheme()
           >
             <VIcon icon="mdi-home" :size="20" class="mr-2" /> {{ t('system.mainBar.backToAssets') }}
           </VBtn>
-          <DCurrentUserDropdown />
+          <CurrentUserDropdown />
         </div>
       </div>
     </VAppBar>
