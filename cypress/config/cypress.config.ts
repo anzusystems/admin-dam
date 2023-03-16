@@ -12,7 +12,7 @@ export default defineConfig({
     quiet: true,
     showPending: 'false',
   },
-  trashAssetsBeforeRuns: false,
+  trashAssetsBeforeRuns: true,
   videoUploadOnPasses: false,
   watchForFileChanges: false,
   viewportHeight: 1080,
@@ -31,7 +31,7 @@ export default defineConfig({
   },
   e2e: {
     baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
-    specPattern: 'cypress/e2e/*.cy.ts',
+    specPattern: 'cypress/e2e/**/*.cy.ts',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)

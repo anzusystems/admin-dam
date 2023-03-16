@@ -13,7 +13,8 @@
     "lint:eslint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
     "lint:eslint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "lint:stylelint": "stylelint **/*.{scss,vue}",
-    "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix"
+    "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix",
+    "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
     "@anzusystems/common-admin": "^0.0.21",

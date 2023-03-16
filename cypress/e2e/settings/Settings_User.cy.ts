@@ -10,7 +10,7 @@ import {
   DISTRIBUTION_SERVICE,
   EXTERNAL_SYS,
   RAND_NUM,
-} from './var/constants'
+} from '../../utils/constants'
 
 describe(`Test user function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create User', () => {

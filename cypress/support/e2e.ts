@@ -1,6 +1,12 @@
 /// <reference types="cypress" />
 
-import './commands'
+// commands
+import '../commands/auth'
+import '../commands/common'
+import '../commands/api'
+import '../commands/upload'
+
+// plugins
 import '@cypress/grep'
 import 'cypress-mochawesome-reporter/register'
 
@@ -14,11 +20,11 @@ beforeEach(function () {
       //Setup protection cookie based on env
       cy.protectionCookie()
       //Login with provided user
-      cy.login('admin', 20000)
+      cy.login(`${Cypress.env('loginUser')}`)
     },
     {
       cacheAcrossSpecs: true,
     }
   )
-  cy.visitBaseUrl('/', 10000, Cypress.env('visitBaseUrl'))
+  cy.visitBaseUrl(Cypress.env('visitBaseUrl'))
 })

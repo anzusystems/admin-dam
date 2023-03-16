@@ -5,13 +5,13 @@
 #######################################################################################################################
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
-DOCKER_CONTAINER="admin-inhouse"
+DOCKER_CONTAINER="admin-dam"
 BROWSER="chrome"
 ENV="local"
 FILTER=""
 TAG=""
 RUNNER="yarn"
-DASHBOARD_OPTIONS=""
+DASHBOARD_OPTIONS="--record false"
 CONFIG_FILE="cypress/config/cypress.config.ts"
 
 cd "${PROJECT_ROOT}" || exit 1
@@ -20,7 +20,7 @@ function help() {
     echo "
     $(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
     Options:
-      -e --env     [(Optional) Environment of the project]
+      -e --env     [(Optional) Environment of the project (Allowed values: local | dev | stg, Default: stg)]
       -b --browser [(Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)]
       -f --filter  [(Optional) Comma separated list of filters (Default: n/a - all tests)]
       -t --tag     [(Optional) Only for dashboard runs tags for cypress dashboard list]
@@ -36,7 +36,7 @@ function help() {
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    admin-inhouse)
+    admin-dam)
         DOCKER_CONTAINER=$1
         shift 1
         continue
@@ -82,7 +82,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     -d)
-        DASHBOARD_OPTIONS="--record --key ${CYPRESS_DASHBOARD_KEY} --tag ${ENV},${TAG},${FILTER}"
+        DASHBOARD_OPTIONS="--record --tag ${ENV},${TAG},${FILTER}"
         shift 1
         continue
         ;;
@@ -102,7 +102,7 @@ if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; t
 fi
 
 # Ensure that the user has provided the terraform environment
-if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ]; then
+if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
     echo "[ERROR] Config file '${ENV}.ts' does not exist in cypress/config folder"
     help
     exit
@@ -115,7 +115,7 @@ if [ -f /.dockerenv ]; then
     # shellcheck disable=SC2086
     dbus-launch ${RUNNER} cypress run \
     --config-file ${CONFIG_FILE} \
-    --env cfg=${ENV},grepTags=${TAGS} \
+    --env cfg=${ENV},grepTags=${FILTER} \
     --browser ${BROWSER} \
     ${DASHBOARD_OPTIONS}
     exit
