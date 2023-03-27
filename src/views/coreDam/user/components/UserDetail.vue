@@ -3,10 +3,10 @@ import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
-import LazyExtSystemChip from '@/views/coreDam/extSystem/components/LazyExtSystemChip.vue'
+import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import ExternalProviderAssetChip from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/coreDam/distribution/components/DistributionServiceChip.vue'
-import LazyAssetLicenceChip from '@/views/coreDam/assetLicence/components/LazyAssetLicenceChip.vue'
+import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 
 const { user } = storeToRefs(useUserOneStore())
 
@@ -17,7 +17,7 @@ const { t } = useI18n()
   <VRow>
     <VCol cols="8">
       <ARow :title="t('coreDam.user.model.assetLicences')">
-        <LazyAssetLicenceChip
+        <CachedAssetLicenceChip
           v-for="assetLicenceId in user.assetLicences"
           :id="assetLicenceId"
           :key="assetLicenceId"
@@ -25,7 +25,7 @@ const { t } = useI18n()
         />
       </ARow>
       <ARow :title="t('coreDam.user.model.adminToExtSystems')">
-        <LazyExtSystemChip
+        <CachedExtSystemChip
           v-for="adminToExtSystem in user.adminToExtSystems"
           :id="adminToExtSystem"
           :key="adminToExtSystem"
@@ -33,7 +33,7 @@ const { t } = useI18n()
         />
       </ARow>
       <ARow :title="t('coreDam.user.model.userToExtSystems')">
-        <LazyExtSystemChip
+        <CachedExtSystemChip
           v-for="userToExtSystem in user.userToExtSystems"
           :id="userToExtSystem"
           :key="userToExtSystem"

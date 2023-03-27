@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
-import type { Author } from '@/types/coreDam/Author'
+import type { Author, AuthorMinimal } from '@/types/coreDam/Author'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
@@ -119,6 +119,12 @@ export const useAuthorEditActions = () => {
 export const useAuthorSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
 
+  const mapToMinimal = (author: Author): AuthorMinimal => ({
+    id: author.id,
+    name: author.name,
+    identifier: author.identifier,
+  })
+
   const mapToValueObject = (author: Author): ValueObjectOption<string> => ({
     title: author.name + (author.identifier ? ` (${author.identifier})` : ''),
     value: author.id,
@@ -128,8 +134,16 @@ export const useAuthorSelectActions = () => {
     return authors.map((author: Author) => mapToValueObject(author))
   }
 
+  const mapToMinimals = (authors: Author[]): AuthorMinimal[] => {
+    return authors.map((author: Author) => mapToMinimal(author))
+  }
+
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
     return mapToValueObjects(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
+  }
+
+  const fetchItemsMinimal = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToMinimals(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
@@ -140,5 +154,6 @@ export const useAuthorSelectActions = () => {
     mapToValueObject,
     fetchItems,
     fetchItemsByIds,
+    fetchItemsMinimal,
   }
 }

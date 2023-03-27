@@ -8,14 +8,14 @@ import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { loadLazyExtSystem } from '@/views/coreDam/extSystem/composables/lazyExtSystem'
-import { loadLazyAssetLicence } from '@/views/coreDam/assetLicence/composables/lazyAssetLicence'
+import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
+import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const { showValidationError, showRecordWas } = useAlerts()
 const { handleError } = useErrorHandler()
 
-const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
-const { fetchLazyAssetLicence, addToLazyAssetLicenceBuffer } = loadLazyAssetLicence()
+const { fetchCachedExtSystems, addToCachedExtSystems } = useCachedExtSystems()
+const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -52,11 +52,10 @@ export const useUserDetailActions = () => {
     try {
       const user = await fetchUser(id)
       userOneStore.setUser(user)
-      user.adminToExtSystems.forEach((id) => addToLazyExtSystemBuffer(id))
-      user.userToExtSystems.forEach((id) => addToLazyExtSystemBuffer(id))
-      user.assetLicences.forEach((id) => addToLazyAssetLicenceBuffer(id))
-      fetchLazyExtSystem()
-      fetchLazyAssetLicence()
+      addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
+      addToCachedAssetLicences(user.assetLicences)
+      fetchCachedExtSystems()
+      fetchCachedAssetLicences()
     } catch (error) {
       handleError(error)
     } finally {

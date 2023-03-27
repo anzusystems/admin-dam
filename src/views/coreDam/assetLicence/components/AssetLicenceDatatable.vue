@@ -20,7 +20,7 @@ import { useAssetLicenceListActions } from '@/views/coreDam/assetLicence/composa
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import AssetLicenceFilter from '@/views/coreDam/assetLicence/components/AssetLicenceFilter.vue'
 import { useAssetLicenceListFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
-import LazyExtSystemChip from '@/views/coreDam/extSystem/components/LazyExtSystemChip.vue'
+import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, type AclValue } from '@/types/Permission'
 
 const router = useRouter()
@@ -69,7 +69,7 @@ defineExpose({
   <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
       <template #extSystem="{ data }">
-        <LazyExtSystemChip :id="data" variant="text" />
+        <CachedExtSystemChip :id="data" variant="text" />
       </template>
       <template #actions="{ data }">
         <Acl :permission="ACL.DAM_ASSET_LICENCE_VIEW">

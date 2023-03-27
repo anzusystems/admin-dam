@@ -9,11 +9,11 @@ import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDet
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { t } = useI18n()
 const { showErrorT } = useAlerts()
@@ -24,7 +24,7 @@ const assetListStore = useAssetListStore()
 const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 const {
   toggleSidebar,
   sidebar,
@@ -55,13 +55,8 @@ const getDetail = async () => {
   if (assetDetailStore.directDetailLoad) {
     assetDetailStore.setView('list')
     assetDetailStore.showDetail()
-    if (assetDetailStore.asset?.createdBy) {
-      addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-    }
-    if (assetDetailStore.asset?.modifiedBy) {
-      addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-    }
-    fetchLazyUser()
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
     nextTick(() => {
       assetDetailStore.directDetailLoad = false
     })
@@ -77,13 +72,8 @@ const getDetail = async () => {
   assetDetailStore.showDetail()
   const res = await fetchAsset(id.value)
   assetDetailStore.setAsset(res)
-  if (assetDetailStore.asset?.createdBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-  }
-  if (assetDetailStore.asset?.modifiedBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-  }
-  fetchLazyUser()
+  addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+  fetchCachedUsers()
   assetDetailStore.hideLoader()
 }
 

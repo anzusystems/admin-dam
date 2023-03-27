@@ -12,7 +12,7 @@ import {
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import ExtSystemSelect from '@/views/coreDam/extSystem/components/ExtSystemSelect.vue'
+import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
 import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
@@ -112,7 +112,7 @@ const onConfirm = async () => {
             />
           </ARow>
           <ARow>
-            <ExtSystemSelect
+            <ExtSystemRemoteAutocomplete
               v-model="assetLicence.extSystem"
               :label="t('coreDam.assetLicence.model.extSystem')"
               required

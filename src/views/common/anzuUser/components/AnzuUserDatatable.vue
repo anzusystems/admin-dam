@@ -23,7 +23,7 @@ import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
-import PermissionGroupLazyChip from '@/views/common/permissionGroup/components/PermissionGroupLazyChip.vue'
+import CachedPermissionGroupChip from '@/views/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -89,7 +89,7 @@ const { translatePermission } = usePermissionConfigActions(props.client)
               <span v-if="data.length === 0">-</span>
             </template>
             <template #permissionGroups="{ data }">
-              <PermissionGroupLazyChip
+              <CachedPermissionGroupChip
                 v-for="permissionGroupId in data"
                 :id="permissionGroupId"
                 :key="permissionGroupId"

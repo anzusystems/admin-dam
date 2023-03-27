@@ -377,14 +377,6 @@ onUnmounted(async () => {
               />
             </VCol>
           </VRow>
-          <VRow class="mb-2">
-            <VCol>
-              <AFormDatetimePicker
-                v-model="distribution.publishAt"
-                :label="t('coreDam.distribution.model.publishAt')"
-              />
-            </VCol>
-          </VRow>
         </ASystemEntityScope>
       </div>
       <div

@@ -10,6 +10,9 @@
       "rssUrl": "RSS URL",
       "mode": "Mode",
       "lastImportStatus": "Last import status"
+    },
+    "dates": {
+      "importFrom": "Import from"
     }
   },
   "filter": {

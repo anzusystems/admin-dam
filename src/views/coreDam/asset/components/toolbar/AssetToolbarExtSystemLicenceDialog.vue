@@ -19,9 +19,9 @@ import {
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
 import { damConfig } from '@/services/DamConfigService'
-import ExtSystemSelect from '@/views/coreDam/extSystem/components/ExtSystemSelect.vue'
-import AssetLicenceSelect from '@/views/coreDam/assetLicence/components/AssetLicenceSelect.vue'
-import AssetLicenceByExtIdSelect from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdSelect.vue'
+import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
+import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
+import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
@@ -201,7 +201,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol class="pt-2">
-              <ExtSystemSelect
+              <ExtSystemRemoteAutocomplete
                 v-model="selectedExtSystemSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
                 hide-details
@@ -218,7 +218,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <AssetLicenceSelect
+              <AssetLicenceRemoteAutocomplete
                 v-model="selectedLicenceSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
                 :ext-system-id="selectedExtSystem"
@@ -227,7 +227,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol>
-              <AssetLicenceByExtIdSelect
+              <AssetLicenceByExtIdRemoteAutocomplete
                 v-model="selectedLicenceSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
                 :ext-system-id="selectedExtSystem"

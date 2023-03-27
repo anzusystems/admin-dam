@@ -1,7 +1,9 @@
 {
   "model": {
     "id": "ID",
-    "distributionCategory": "Distribution Category"
+    "distributionCategory": "Distribution Category",
+    "authors": "Authors",
+    "keywords": "Keywords"
   },
   "filter": {
     "text": "Text",

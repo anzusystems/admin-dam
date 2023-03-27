@@ -8,7 +8,7 @@ import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
-import { loadLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
+import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 const { handleError } = useErrorHandler()
 const { showValidationError, showRecordWas } = useAlerts()
@@ -112,10 +112,10 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
     }
   }
 
-  const { manualAddLazyPermissionGroup } = loadLazyPermissionGroup(client)
+  const { addManualToCachedPermissionGroups } = useCachedPermissionGroups()
   const fetchPermissionGroupOptions = async (pagination: Pagination, filterBag: FilterBag) => {
     const permissionGroups = await apiFetchPermissionGroupList(pagination, filterBag)
-    permissionGroups.forEach((permissionGroup) => manualAddLazyPermissionGroup(permissionGroup))
+    permissionGroups.forEach((permissionGroup) => addManualToCachedPermissionGroups(permissionGroup))
 
     return <ValueObjectOption<number>[]>permissionGroups.map((permissionGroup: PermissionGroup) => ({
       title: permissionGroup.title,
@@ -125,7 +125,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
 
   const fetchPermissionGroupOptionsByIds = async (ids: IntegerId[]) => {
     const permissionGroups = await apiFetchPermissionGroupListByIds(ids)
-    permissionGroups.forEach((permissionGroup) => manualAddLazyPermissionGroup(permissionGroup))
+    permissionGroups.forEach((permissionGroup) => addManualToCachedPermissionGroups(permissionGroup))
 
     return <ValueObjectOption<number>[]>permissionGroups.map((permissionGroup: PermissionGroup) => ({
       title: permissionGroup.title,
