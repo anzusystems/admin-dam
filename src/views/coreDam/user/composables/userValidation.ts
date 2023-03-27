@@ -3,21 +3,13 @@ import { computed } from 'vue'
 import type { UpdateUser } from '@/types/coreDam/User'
 import useVuelidate from '@vuelidate/core'
 import { UserAuthType } from '@/types/coreDam/DamConfig'
-import { useValidateMaxLength, useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
+import { useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
 
 const required = useValidateRequired()
 const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
 
 export function useUpdateUserValidation(userUpdate: Ref<UpdateUser>, userAuthType: UserAuthType) {
-  const rulesRaw = {
-    firstName: {
-      maxLength: maxLength(120),
-    },
-    lastName: {
-      maxLength: maxLength(120),
-    },
-  } as Record<string, any> // todo find better type
+  const rulesRaw = {} as Record<string, any> // todo find better type
 
   if (userAuthType === UserAuthType.JsonCredentials) {
     rulesRaw['plainPassword'] = {
