@@ -1,5 +1,6 @@
-import localValidationJs from '@/locales/sk/validation/js.json'
-import localValidationApi from '@/locales/sk/validation/api.json'
+import apiValidation from '@/locales/sk/error/apiValidation.json'
+import apiForbiddenOperation from '@/locales/sk/error/apiForbiddenOperation.json'
+import jsValidation from '@/locales/sk/error/jsValidation.json'
 import { messagesSk } from '@anzusystems/common-admin'
 import sidebar from '@/locales/sk/sidebar.json'
 
@@ -7,14 +8,18 @@ export default {
   ...messagesSk,
   sidebar,
   ...{
-    validations: {
-      api: {
-        ...messagesSk.validations.api,
-        ...localValidationApi,
+    error: {
+      apiValidation: {
+        ...messagesSk.error.apiValidation,
+        ...apiValidation,
       },
-      js: {
-        ...messagesSk.validations.js,
-        ...localValidationJs,
+      apiForbiddenOperation: {
+        ...messagesSk.error.apiForbiddenOperation,
+        ...apiForbiddenOperation,
+      },
+      jsValidation: {
+        ...messagesSk.error.jsValidation,
+        ...jsValidation,
       },
     },
   },
