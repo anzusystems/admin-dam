@@ -2,14 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormTextField,
-  stringToSlug,
-  useAlerts,
-  useValidateMaxLength,
-  useValidateMinLength,
-  useValidateRequired,
-} from '@anzusystems/common-admin'
+import { AFormTextField, stringToSlug, useAlerts, useValidate } from '@anzusystems/common-admin'
 import { makePublic } from '@/services/api/coreDam/audioApi'
 import useVuelidate from '@vuelidate/core'
 
@@ -47,9 +40,7 @@ watch(modelValueComputed, async (newValue) => {
   }
 })
 
-const required = useValidateRequired()
-const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
+const { required, minLength, maxLength } = useValidate()
 
 const rules = computed(() => {
   return {

@@ -16,9 +16,7 @@ import {
   ASystemEntityScope,
   useAlerts,
   usePagination,
-  useValidateMaxLength,
-  useValidateMinLength,
-  useValidateRequired,
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
@@ -108,9 +106,7 @@ const closeDialog = (reload = false) => {
 
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
-const required = useValidateRequired()
-const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
+const { required, minLength, maxLength } = useValidate()
 
 const rules = computed(() => ({
   distribution: {

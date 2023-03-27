@@ -6,7 +6,7 @@ import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { useValidateRequired } from '@anzusystems/common-admin'
+import { useValidate } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +27,7 @@ const isRequired = (): boolean =>
   damConfigExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]?.categorySelect
     ?.required ?? false
 
-const required = useValidateRequired()
+const { required } = useValidate()
 
 const v$ = useVuelidate({ modelValue: isRequired() ? { required } : {} }, { modelValue })
 

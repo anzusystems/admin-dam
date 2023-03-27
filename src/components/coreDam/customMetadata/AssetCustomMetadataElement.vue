@@ -5,16 +5,7 @@ import { computed, isProxy, toRaw } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
-import {
-  AFormBooleanToggle,
-  isEmptyObject,
-  useValidateMaxLength,
-  useValidateMaxValue,
-  useValidateMinLength,
-  useValidateMinValue,
-  useValidateRequiredIf,
-  useValidateStringArrayItemLength,
-} from '@anzusystems/common-admin'
+import { AFormBooleanToggle, isEmptyObject, useValidate } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -42,12 +33,7 @@ const modelValueComputed = computed(() => {
   return value
 })
 
-const maxLength = useValidateMaxLength()
-const minLength = useValidateMinLength()
-const requiredIf = useValidateRequiredIf()
-const minValue = useValidateMinValue()
-const maxValue = useValidateMaxValue()
-const stringArrayItemLength = useValidateStringArrayItemLength()
+const { maxLength, minLength, requiredIf, minValue, maxValue, stringArrayItemLength } = useValidate()
 
 const rules = computed(() => {
   const dynamicRules: Record<string, any> = {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { type DocId, isArray, useValidateRequiredIf } from '@anzusystems/common-admin'
+import { type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
@@ -52,7 +52,7 @@ const modelValueComputed = computed({
 
 const requiredComputed = computed(() => !!props.required)
 
-const requiredIf = useValidateRequiredIf()
+const { requiredIf } = useValidate()
 
 const rules = {
   modelValueComputed: {

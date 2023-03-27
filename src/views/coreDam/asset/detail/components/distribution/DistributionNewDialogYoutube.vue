@@ -10,10 +10,7 @@ import {
   ASystemEntityScope,
   useAlerts,
   usePagination,
-  useValidateMaxLength,
-  useValidateMinLength,
-  useValidateRequired,
-  useValidateRequiredIf,
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionYoutubeCreateRedistributeDto, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
@@ -137,10 +134,7 @@ const closeDialog = (reload = false) => {
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 const { distributionYoutubePrivacyOptions } = useDistributionYoutubePrivacy()
 
-const required = useValidateRequired()
-const requiredIf = useValidateRequiredIf()
-const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
+const { required, requiredIf, minLength, maxLength } = useValidate()
 
 const rules = computed(() => ({
   distribution: {

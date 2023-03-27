@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { type DocId, isArray, useValidateRequiredIf } from '@anzusystems/common-admin'
+import { type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, onMounted, ref } from 'vue'
@@ -58,7 +58,7 @@ const { t } = useI18n()
 
 const requiredComputed = computed(() => !!props.required)
 
-const requiredIf = useValidateRequiredIf()
+const { requiredIf } = useValidate()
 
 const rules = {
   modelValueComputed: {
