@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { Author, AuthorMinimal } from '@/types/coreDam/Author'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
@@ -10,8 +10,7 @@ import { ROUTE } from '@/router/routes'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -28,7 +27,7 @@ export const useAuthorListActions = () => {
     try {
       listItems.value = await fetchAuthorList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -51,7 +50,7 @@ export const useAuthorDetailActions = () => {
       const author = await fetchAuthor(id)
       authorOneStore.setAuthor(author)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -77,7 +76,7 @@ export const useAuthorEditActions = () => {
       const author = await fetchAuthor(id)
       authorOneStore.setAuthor(author)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -98,7 +97,7 @@ export const useAuthorEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.AUTHOR.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

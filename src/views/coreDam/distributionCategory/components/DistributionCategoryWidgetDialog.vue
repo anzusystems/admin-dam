@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
 import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { ARow, ASystemEntityScope, isNull, useErrorHandler } from '@anzusystems/common-admin'
+import { ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
 import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
@@ -47,7 +47,7 @@ const dialogComputed = computed({
   },
 })
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   saving.value = true
@@ -57,7 +57,7 @@ const onConfirm = async () => {
     dialogComputed.value = false
     emit('afterSave', idCache)
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     saving.value = false
   }

@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {
-  AFormValueObjectOptionsSelect,
-  ARow,
-  ASystemEntityScope,
-  useAlerts,
-  useErrorHandler,
-} from '@anzusystems/common-admin'
+import { AFormValueObjectOptionsSelect, ARow, ASystemEntityScope, useAlerts } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { useAssetFactory } from '@/model/coreDam/factory/AssetFactory'
@@ -41,8 +35,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const { showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const showDetail = async (asset: AssetDetailItemDto) => {
   assetDetailStore.setView('queue')
@@ -63,7 +56,7 @@ const onConfirm = async () => {
     emit('afterCreate', res)
     await showDetail(res)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

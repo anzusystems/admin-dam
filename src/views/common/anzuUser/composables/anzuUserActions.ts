@@ -1,5 +1,5 @@
 import type { AnzuUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
@@ -10,8 +10,7 @@ import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
-const { handleError } = useErrorHandler()
-const { showValidationError, showRecordWas } = useAlerts()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 export const useAnzuUserActions = (client: () => AxiosInstance) => {
   const { apiFetchAnzuUserList, apiFetchAnzuUser, apiUpdateAnzuUser, apiCreateAnzuUser } = useAnzuUserApi(client)
@@ -26,7 +25,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       anzuUserList.value.forEach((anzuUser) => addToCachedPermissionGroups(anzuUser.permissionGroups))
       fetchCachedPermissionGroups()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingAnzuUserList.value = false
     }
@@ -43,7 +42,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       addToCachedPermissionGroups(anzuUserRes.permissionGroups)
       fetchCachedPermissionGroups()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       anzuUserOneStore.setLoadingAnzuUser(false)
     }
@@ -65,7 +64,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       if (!close) return
       router.push({ name: ROUTE.COMMON.ANZU_USER.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingUpdateAnzuUser.value = false
     }
@@ -88,7 +87,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       }
       router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: anzuUserRes.id } })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingCreateAnzuUser.value = false
     }

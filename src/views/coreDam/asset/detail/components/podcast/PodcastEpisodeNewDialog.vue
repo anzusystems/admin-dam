@@ -1,15 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormTextarea,
-  AFormTextField,
-  ARow,
-  ASystemEntityScope,
-  isNull,
-  useAlerts,
-  useErrorHandler,
-} from '@anzusystems/common-admin'
+import { AFormTextarea, AFormTextField, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/coreDam/factory/PodcastEpisodeFactory'
@@ -41,8 +33,7 @@ const value = computed({
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
@@ -70,7 +61,7 @@ const submit = async () => {
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }

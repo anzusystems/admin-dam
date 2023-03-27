@@ -9,7 +9,6 @@ import {
   isUndefined,
   useAlerts,
   useAnzuUserFactory,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'
@@ -58,8 +57,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useAnzuUserValidation(anzuUser)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -78,7 +76,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

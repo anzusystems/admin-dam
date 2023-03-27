@@ -1,5 +1,5 @@
 import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   deletePodcastEpisode,
@@ -14,8 +14,7 @@ import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -30,7 +29,7 @@ export const usePodcastEpisodeListActions = () => {
     try {
       listItems.value = await fetchPodcastEpisodeListByPodcast(podcastId, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -49,7 +48,7 @@ export const usePodcastEpisodeRemoveActions = () => {
       await deletePodcastEpisode(id)
       onSuccessfulCallback()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -70,7 +69,7 @@ export const usePodcastEpisodeDetailActions = () => {
       const podcastEpisode = await fetchPodcastEpisode(id)
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -96,7 +95,7 @@ export const usePodcastEpisodeEditActions = () => {
       const podcastEpisode = await fetchPodcastEpisode(id)
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -117,7 +116,7 @@ export const usePodcastEpisodeEditActions = () => {
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
       router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

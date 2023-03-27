@@ -1,11 +1,4 @@
-import {
-  isNull,
-  isString,
-  useAlerts,
-  useErrorHandler,
-  useFilterHelpers,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { isNull, isString, useAlerts, useFilterHelpers, usePagination } from '@anzusystems/common-admin'
 import { useExternalProviderAssetListFilter } from '@/model/coreDam/filter/ExternalProviderAssetFilter'
 import { storeToRefs } from 'pinia'
 import {
@@ -25,8 +18,7 @@ import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 
-const { handleError } = useErrorHandler()
-const { showWarning } = useAlerts()
+const { showWarning, showErrorsDefault } = useAlerts()
 
 const filter = useExternalProviderAssetListFilter()
 const pagination = usePagination()
@@ -53,7 +45,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       externalProviderAssetListStore.hideLoader('hard')
     }
@@ -80,7 +72,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       externalProviderAssetListStore.hideLoader('soft')
     }

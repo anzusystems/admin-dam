@@ -2,7 +2,7 @@
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { AActionDeleteButton, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
@@ -30,8 +30,7 @@ const { asset } = useAssetDetailActions()
 
 const saveButtonLoading = ref(false)
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
@@ -48,7 +47,7 @@ const onSave = async () => {
     await updateAssetMetadata(asset.value)
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -61,7 +60,7 @@ const onDelete = async () => {
     showRecordWas('deleted')
     emit('postDelete', asset.value.id)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   }
 }
 </script>

@@ -4,7 +4,6 @@ import {
   browserHistoryReplaceUrlByRouter,
   isNull,
   useAlerts,
-  useErrorHandler,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
@@ -27,8 +26,7 @@ import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 
-const { handleError } = useErrorHandler()
-const { showWarning } = useAlerts()
+const { showWarning, showErrorsDefault } = useAlerts()
 
 const filter = useAssetListFilter()
 const pagination = usePagination()
@@ -75,7 +73,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       assetListStore.hideLoader('hard')
     }
@@ -100,7 +98,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       assetListStore.hideLoader('soft')
     }

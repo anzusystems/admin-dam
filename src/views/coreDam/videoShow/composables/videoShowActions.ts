@@ -1,6 +1,6 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   fetchVideoShow,
@@ -17,8 +17,7 @@ import { ROUTE } from '@/router/routes'
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -33,7 +32,7 @@ export const useVideoShowListActions = () => {
     try {
       listItems.value = await fetchVideoShowListByExtSystem(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -56,7 +55,7 @@ export const useVideoShowDetailActions = () => {
       const videoShow = await fetchVideoShow(id)
       videoShowOneStore.setVideoShow(videoShow)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -82,7 +81,7 @@ export const useVideoShowEditActions = () => {
       const videoShow = await fetchVideoShow(id)
       videoShowOneStore.setVideoShow(videoShow)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -103,7 +102,7 @@ export const useVideoShowEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.VIDEO_SHOW.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

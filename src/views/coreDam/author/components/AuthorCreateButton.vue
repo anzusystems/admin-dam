@@ -10,7 +10,6 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -68,8 +67,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   if (buttonLoading.value) return
@@ -89,7 +87,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

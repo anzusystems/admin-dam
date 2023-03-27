@@ -10,7 +10,6 @@ import {
   isNull,
   prettyBytes,
   useAlerts,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
@@ -85,8 +84,7 @@ const { t } = useI18n()
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 
-const { showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const processing = computed(() => {
   return [QueueItemStatus.Processing, QueueItemStatus.Loading].includes(props.item.status)
@@ -120,7 +118,7 @@ const remove = async () => {
     emit('removeItem', props.index)
     showRecordWas('deleted')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   }
 }
 const imageSrc = computed(() => {

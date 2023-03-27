@@ -8,7 +8,6 @@ import {
   isUndefined,
   type PermissionGroup,
   useAlerts,
-  useErrorHandler,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
@@ -56,8 +55,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -76,7 +74,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

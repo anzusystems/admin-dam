@@ -1,14 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import {
-  ACard,
-  ADatatablePagination,
-  type DocId,
-  isNull,
-  useAlerts,
-  useErrorHandler,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { ACard, ADatatablePagination, type DocId, isNull, useAlerts, usePagination } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
@@ -52,8 +44,7 @@ const closeDialog = () => {
   emit('update:modelValue', false)
 }
 
-const { showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   if (isNull(lastSelectedItem.value)) return
@@ -64,7 +55,7 @@ const onConfirm = async () => {
     showRecordWas('updated')
     emit('afterSuccessfulConfirm')
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     saving.value = false
   }

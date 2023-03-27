@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { browserHistoryReplaceUrlByRouter, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { browserHistoryReplaceUrlByRouter, isNull, useAlerts } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
@@ -29,8 +29,7 @@ const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const onEditMore = async () => {
   assetDetailStore.showDetail()
@@ -54,7 +53,7 @@ const onSave = async () => {
     await updateAssetMetadata(asset.value)
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }

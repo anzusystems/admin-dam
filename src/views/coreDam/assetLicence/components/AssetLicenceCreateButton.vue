@@ -2,14 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  AFormTextField,
-  ARow,
-  ASystemEntityScope,
-  isUndefined,
-  useAlerts,
-  useErrorHandler,
-} from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
@@ -53,8 +46,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useAssetLicenceValidation(assetLicence)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -73,7 +65,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

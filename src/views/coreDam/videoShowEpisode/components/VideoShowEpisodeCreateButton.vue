@@ -3,14 +3,7 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormTextField,
-  ARow,
-  ASystemEntityScope,
-  isUndefined,
-  useAlerts,
-  useErrorHandler,
-} from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createVideoShowEpisode, ENTITY } from '@/services/api/coreDam/videoShowEpisodeApi'
@@ -59,8 +52,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useVideoShowEpisodeValidation(videoShowEpisode)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -79,7 +71,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

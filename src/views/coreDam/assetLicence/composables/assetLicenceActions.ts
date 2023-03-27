@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
@@ -17,8 +17,7 @@ import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cache
 
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -35,7 +34,7 @@ export const useAssetLicenceListActions = () => {
       addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
       fetchCachedExtSystems()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -60,7 +59,7 @@ export const useAssetLicenceDetailActions = () => {
       fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -88,7 +87,7 @@ export const useAssetLicenceEditActions = () => {
       fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -109,7 +108,7 @@ export const useAssetLicenceEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.ASSET_LICENCE.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

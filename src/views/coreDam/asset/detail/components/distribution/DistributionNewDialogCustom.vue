@@ -4,14 +4,7 @@ import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormDatetimePicker,
-  ASystemEntityScope,
-  cloneDeep,
-  useAlerts,
-  useErrorHandler,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { AFormDatetimePicker, ASystemEntityScope, cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -100,8 +93,7 @@ const closeDialog = (reload = false) => {
   emit('closeDialog', reload)
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const rules = computed(() => ({
   distribution: {
@@ -125,7 +117,7 @@ const submitRedistribute = async () => {
     showRecordWas('updated')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -145,7 +137,7 @@ const submitCreateNew = async () => {
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }

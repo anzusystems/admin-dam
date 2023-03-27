@@ -12,7 +12,6 @@ import {
   isNull,
   isUndefined,
   useAlerts,
-  useErrorHandler,
   useValidateMinValue,
   useValidateRequired,
 } from '@anzusystems/common-admin'
@@ -111,8 +110,7 @@ const errorMessageLicence = computed(() => {
   return []
 })
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   saving.value = true
@@ -133,7 +131,7 @@ const onConfirm = async () => {
     showRecordWas('updated')
     window.location.reload()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
