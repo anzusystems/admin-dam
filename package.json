@@ -16,7 +16,7 @@
     "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "^0.0.42",
+    "@anzusystems/common-admin": "^0.0.43",
     "@mdi/font": "7.2.96",
     "@vuelidate/core": "^2.0.1",
     "@vuelidate/validators": "^2.0.1",
@@ -45,7 +45,7 @@
     "@types/node": "^16.18.21",
     "@types/uuid": "^9.0.1",
     "@types/webfontloader": "^1.6.35",
-    "@typescript-eslint/parser": "^5.56.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.2",
