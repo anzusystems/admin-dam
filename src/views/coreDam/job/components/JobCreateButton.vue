@@ -78,7 +78,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }
