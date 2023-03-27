@@ -31,8 +31,8 @@ const loadLanguageMessages = async (code: LanguageCode | 'default') => {
 
 onMounted(async () => {
   useWindowFilesDragWatcher()
-  initializeLanguage()
-  await loadLanguageMessages(currentLanguageCode.value)
+  // initializeLanguage()
+  // await loadLanguageMessages(currentLanguageCode.value)
 })
 </script>
 

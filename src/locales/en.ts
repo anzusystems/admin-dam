@@ -18,9 +18,10 @@ import podcastEpisode from '@/locales/en/coreDam/podcastEpisode.json'
 import user from '@/locales/en/coreDam/user.json'
 import videoShow from '@/locales/en/coreDam/videoShow.json'
 import videoShowEpisode from '@/locales/en/coreDam/videoShowEpisode.json'
-import localValidationJs from '@/locales/en/validation/js.json'
-import localValidationApi from '@/locales/en/validation/api.json'
-import { messagesEn } from '@anzusystems/common-admin'
+import { messagesEn, messagesSk } from '@anzusystems/common-admin'
+import apiValidation from '@/locales/en/error/apiValidation.json'
+import apiForbiddenOperation from '@/locales/en/error/apiForbiddenOperation.json'
+import jsValidation from '@/locales/en/error/jsValidation.json'
 
 export default {
   ...messagesEn,
@@ -47,14 +48,18 @@ export default {
   sidebar,
   system,
   ...{
-    validations: {
-      api: {
-        ...messagesEn.validations.api,
-        ...localValidationApi,
+    error: {
+      apiValidation: {
+        ...messagesSk.error.apiValidation,
+        ...apiValidation,
       },
-      js: {
-        ...messagesEn.validations.js,
-        ...localValidationJs,
+      apiForbiddenOperation: {
+        ...messagesSk.error.apiForbiddenOperation,
+        ...apiForbiddenOperation,
+      },
+      jsValidation: {
+        ...messagesSk.error.jsValidation,
+        ...jsValidation,
       },
     },
   },
