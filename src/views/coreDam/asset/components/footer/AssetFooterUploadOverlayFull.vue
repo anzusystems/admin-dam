@@ -81,7 +81,7 @@ const onSave = async () => {
   } catch (error) {
     handleError(error)
   } finally {
-    saveButtonLoading.value = true
+    saveButtonLoading.value = false
   }
 }
 

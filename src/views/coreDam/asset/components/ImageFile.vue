@@ -109,17 +109,17 @@ watch(
   </VImg>
   <div v-if="showActions">
     <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">
-      WIP Replace by image file ID
+      {{ t('system.imagePreview.actions.replaceByFileId') }}
     </VBtn>
     <VBtn v-if="fileIdModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="removeImage">
-      Unassign image
+      {{ t('system.imagePreview.actions.unassign') }}
     </VBtn>
   </div>
   <VDialog v-if="showActions" v-model="dialog" persistent :width="500" no-click-animation>
     <VCard v-if="dialog" data-cy="delete-panel">
       <VToolbar class="pl-2" density="compact">
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">Replace by image file ID</div>
+          <div class="text-h6">{{ t('system.imagePreview.actions.replaceByFileId') }}</div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -134,12 +134,12 @@ watch(
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <VTextField v-model="newFileId" label="Image File ID" />
+        <VTextField v-model="newFileId" :label="t('system.imagePreview.actions.replaceByFileId')" />
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel"> Cancel </VBtn>
-        <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm"> Confirm </VBtn>
+        <VBtn text data-cy="button-cancel" @click.stop="onCancel">{{ t('common.button.cancel') }}</VBtn>
+        <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm">{{ t('common.button.confirm') }}</VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

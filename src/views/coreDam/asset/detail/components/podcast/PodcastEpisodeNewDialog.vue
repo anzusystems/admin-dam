@@ -17,7 +17,7 @@ import { createPodcastEpisode, ENTITY, prepareFormDataPodcastEpisode } from '@/s
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { usePodcastEpisodeValidation } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
 import { useI18n } from 'vue-i18n'
-import PodcastSelect from '@/views/coreDam/podcast/components/PodcastSelect.vue'
+import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -126,7 +126,7 @@ onMounted(async () => {
       <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <VContainer class="pa-4" fluid>
           <ARow>
-            <PodcastSelect
+            <PodcastRemoteAutocomplete
               v-model="podcastEpisode.podcast"
               required
               :label="t('coreDam.podcastEpisode.model.podcast')"

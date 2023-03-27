@@ -15,8 +15,8 @@ import {
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
-import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
+import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useI18n } from 'vue-i18n'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
@@ -236,14 +236,12 @@ const showCancel = computed(() => {
               <VRow v-if="keywordEnabled" dense class="my-2">
                 <VCol>
                   <ASystemEntityScope subject="keyword" system="dam">
-                    <KeywordSelect
+                    <KeywordRemoteAutocompleteWithCached
                       v-model="keywords"
-                      label="Keywords"
-                      :suggestions="item.keywordSuggestions"
-                      chips
+                      :queue-id="queueId"
+                      :label="t('coreDam.asset.model.keywords')"
                       clearable
                       multiple
-                      disable-init-fetch
                       :required="keywordRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
@@ -254,14 +252,13 @@ const showCancel = computed(() => {
               <VRow v-if="authorEnabled" dense class="my-2">
                 <VCol>
                   <ASystemEntityScope subject="author" system="dam">
-                    <AuthorSelect
+                    <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
-                      label="Authors"
-                      :suggestions="item.authorSuggestions"
-                      chips
+                      :queue-id="queueId"
+                      :label="t('coreDam.asset.model.authors')"
+                      :author-conflicts="item.authorConflicts"
                       clearable
                       multiple
-                      disable-init-fetch
                       :required="authorRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"

@@ -33,7 +33,7 @@
     },
     "actions": {
       "unassign": "Unassign image",
-      "replaceByFileId": "Unassign image",
+      "replaceByFileId": "Replace by file ID",
       "chooseFromDistribution": "Choose from distribution"
     }
   },

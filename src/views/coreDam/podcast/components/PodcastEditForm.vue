@@ -3,6 +3,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import { useI18n } from 'vue-i18n'
 import {
+  AFormDatetimePicker,
   AFormTextarea,
   AFormTextField,
   AFormValueObjectOptionsSelect,
@@ -55,6 +56,16 @@ const { podcastModeOptions } = usePodcastMode()
             :v="v$.podcast.attributes.rssUrl"
           />
         </ARow>
+        <ARow>
+          <AFormDatetimePicker
+            v-model="podcast.dates.importFrom"
+            :label="t('coreDam.podcast.model.dates.importFrom')"
+            :v="v$.podcast.dates.importFrom"
+            clearable
+          />
+        </ARow>
+      </VCol>
+      <VCol cols="12" md="4">
         <ARow>
           <ImagePreview v-model="podcast.imagePreview" show-actions />
         </ARow>

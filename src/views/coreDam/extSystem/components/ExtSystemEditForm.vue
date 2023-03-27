@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useExtSystemEditActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemValidation } from '@/views/coreDam/extSystem/composables/extSystemValidation'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import UserSelect from '@/views/coreDam/user/components/UserSelect.vue'
+import UserRemoteAutocomplete from '@/views/coreDam/user/components/UserRemoteAutocomplete.vue'
 
 const { extSystem } = useExtSystemEditActions()
 
@@ -22,7 +22,7 @@ const { t } = useI18n()
           <AFormTextField v-model="extSystem.name" :v="v$.extSystem.name" data-cy="ext-system-name" />
         </ARow>
         <ARow>
-          <UserSelect
+          <UserRemoteAutocomplete
             v-model="extSystem.adminUsers"
             :label="t('coreDam.extSystem.model.adminUsers')"
             multiple

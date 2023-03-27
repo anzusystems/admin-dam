@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { isUndefined, objectGetValues } from '@anzusystems/common-admin'
+import { isUndefined } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
@@ -15,14 +15,16 @@ import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { fetchAudioFile } from '@/services/api/coreDam/audioApi'
 import { fetchVideoFile } from '@/services/api/coreDam/videoApi'
 import { fetchDocumentFile } from '@/services/api/coreDam/documentApi'
-import { loadLazyKeyword } from '@/views/coreDam/keyword/composables/lazyKeyword'
-import { loadLazyAuthor } from '@/views/coreDam/author/composables/lazyAuthor'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { externalProviderImport } from '@/services/upload/externalProviderImportService'
 import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import { useUploadQueueItemFactory } from '@/model/coreDam/factory/UploadQueueItemFactory'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -33,6 +35,8 @@ const QUEUE_MAX_PARALLEL_UPLOADS = 2
 const CHUNK_SIZE = 10485760
 
 const { createDefault } = useUploadQueueItemFactory()
+const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   state: (): State => ({
@@ -162,8 +166,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       }
     },
     async addByAssets(queueId: string, assets: AssetSearchListItemDto[]) {
-      const { fetchLazyKeyword, addToLazyKeywordBuffer } = loadLazyKeyword()
-      const { fetchLazyAuthor, addToLazyAuthorBuffer } = loadLazyAuthor()
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       const assetIds: DocId[] = []
       for await (const asset of assets) {
@@ -182,15 +184,12 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         queueItem.fileId = asset.mainFile ? asset.mainFile.id : null
         queueItem.imagePreview = asset.mainFile && asset.mainFile.links ? asset.mainFile.links.image_list : undefined
 
-        this.addToBufferLazyValues(queueItem, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
         this.createQueue(queueId)
         this.addQueueItem(queueId, queueItem)
         this.recalculateQueueCounts(queueId)
         this.processUpload(queueId)
       }
       this.fetchLazyAdditionalMetadata(queueId, currentAssetLicenceId.value, assetIds)
-      await fetchLazyKeyword()
-      await fetchLazyAuthor()
     },
     async addByExternalProviderAsset(queueId: string, assets: AssetExternalProviderListDto[], importAsset = false) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
@@ -235,13 +234,14 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         if (foundIndex > -1) {
           this.queues[queueId].items[foundIndex].keywords = res[i].keywords
           this.queues[queueId].items[foundIndex].authors = res[i].authors
-          this.queues[queueId].items[foundIndex].authorSuggestions = res[i].metadata.authorSuggestions
-          this.queues[queueId].items[foundIndex].keywordSuggestions = res[i].metadata.keywordSuggestions
           this.queues[queueId].items[foundIndex].customData = res[i].metadata.customData
           this.queues[queueId].items[foundIndex].status = QueueItemStatus.Uploaded
+          this.queues[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
           this.queues[queueId].items[foundIndex].canEditMetadata = true
+          addToCachedAuthors(this.queues[queueId].items[foundIndex].authors)
         }
       }
+      fetchCachedAuthors()
     },
     async removeByAssetId(queueId: string, assetId: DocId) {
       if (queueId in this.queues) {
@@ -265,7 +265,13 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
     createQueue(queueId: string) {
       if (!(queueId in this.queues)) {
-        this.queues[queueId] = { items: [], totalCount: 0, processedCount: 0, fileInputKey: 0 }
+        this.queues[queueId] = {
+          items: [],
+          totalCount: 0,
+          processedCount: 0,
+          fileInputKey: 0,
+          suggestions: { newKeywordNames: new Set<string>(), newAuthorNames: new Set<string>() },
+        }
       }
     },
     addQueueItem(queueId: string, item: UploadQueueItem) {
@@ -373,26 +379,35 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       }
     },
     async queueItemMetadataProcessed(assetId: DocId) {
-      const { fetchLazyKeyword, addToLazyKeywordBuffer } = loadLazyKeyword()
-      const { fetchLazyAuthor, addToLazyAuthorBuffer } = loadLazyAuthor()
+      const assetDetailStore = useAssetDetailStore()
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
           if (item.assetId === asset.id && item.type !== QueueItemType.SlotFile) {
-            // todo check slots
+            console.log('queueItemMetadataProcessed', asset)
             item.keywords = asset.keywords
             item.authors = asset.authors
-            item.keywordSuggestions = asset.metadata.keywordSuggestions
-            item.authorSuggestions = asset.metadata.authorSuggestions
             item.customData = asset.metadata.customData
+            updateNewNames(asset.metadata.authorSuggestions, this.queues[queueId].suggestions.newAuthorNames)
+            updateNewNames(asset.metadata.keywordSuggestions, this.queues[queueId].suggestions.newKeywordNames)
+            item.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
             item.canEditMetadata = true
-            this.addToBufferLazyValues(item, addToLazyAuthorBuffer, addToLazyKeywordBuffer)
+            addToCachedKeywords(item.keywords)
+            addToCachedAuthors(item.authors)
+            addToCachedAuthors(item.authorConflicts)
+          } else if (
+            item.assetId === asset.id &&
+            item.type === QueueItemType.SlotFile &&
+            assetDetailStore.asset?.id === assetId &&
+            assetDetailStore.asset.mainFile === null
+          ) {
+            assetDetailStore.asset.mainFile = asset.mainFile
           }
         })
         this.recalculateQueueCounts(queueId)
       }
-      fetchLazyKeyword()
-      fetchLazyAuthor()
+      fetchCachedAuthors()
+      fetchCachedKeywords()
     },
     async queueItemDuplicate(
       assetId: DocId,
@@ -437,17 +452,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         this.recalculateQueueCounts(queueId)
       }
     },
-    addToBufferLazyValues(
-      item: UploadQueueItem,
-      addLazyAuthor: (id: string) => void,
-      addLazyKeyword: (id: string) => void
-    ) {
-      item.keywords.forEach((id) => addLazyKeyword(id))
-      item.authors.forEach((id) => addLazyAuthor(id))
-      objectGetValues(item.authorSuggestions)
-        .filter((ids) => ids.length > 1)
-        .forEach((ids) => ids.filter((id) => addLazyAuthor(id)))
-    },
     setUploadSpeed(item: UploadQueueItem, progress: number, speed: number, estimate: number) {
       item.progress.progressPercent = progress
       item.progress.remainingTime = estimate
@@ -465,6 +469,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         totalCount: 0,
         processedCount: 0,
         fileInputKey: this.getQueueFileInputKey(queueId) + 1,
+        suggestions: { newKeywordNames: new Set<string>(), newAuthorNames: new Set<string>() },
       }
     },
     queueItemsReplaceEmptyCustomDataValue(

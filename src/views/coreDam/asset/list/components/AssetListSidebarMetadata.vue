@@ -4,7 +4,6 @@ import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
 import { browserHistoryReplaceUrlByRouter, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
@@ -15,6 +14,7 @@ import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { sidebarRight } = useMainWrapper()
 const router = useRouter()
@@ -25,7 +25,7 @@ const { t } = useI18n()
 
 const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
 
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
 
@@ -72,9 +72,9 @@ watch(
   asset,
   (newValue, oldValue) => {
     if (newValue !== oldValue && newValue !== null) {
-      if (newValue.createdBy) addToLazyUserBuffer(newValue.createdBy)
-      if (newValue.modifiedBy) addToLazyUserBuffer(newValue.modifiedBy)
-      fetchLazyUser()
+      if (newValue.createdBy) addToCachedUsers(newValue.createdBy)
+      if (newValue.modifiedBy) addToCachedUsers(newValue.modifiedBy)
+      fetchCachedUsers()
     }
   },
   { immediate: true }
