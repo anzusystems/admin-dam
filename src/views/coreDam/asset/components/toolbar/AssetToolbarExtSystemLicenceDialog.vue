@@ -12,8 +12,7 @@ import {
   isNull,
   isUndefined,
   useAlerts,
-  useValidateMinValue,
-  useValidateRequired,
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
@@ -93,8 +92,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const required = useValidateRequired()
-const minValue = useValidateMinValue()
+const { required, minValue } = useValidate()
 
 const rulesLicence = computed(() => ({
   selectedLicence: {
