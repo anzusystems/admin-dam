@@ -10,7 +10,7 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  DatatableOrderingOption,
+  type DatatableOrderingOption,
   useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'

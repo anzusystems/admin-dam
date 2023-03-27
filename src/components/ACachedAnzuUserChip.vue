@@ -2,7 +2,7 @@
 import { computed, shallowRef, watch } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ICON, type IntegerId, isNull, isUndefined } from '@anzusystems/common-admin'
+import { COMMON_CONFIG, type IntegerId, isNull, isUndefined } from '@anzusystems/common-admin'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import type { UserMinimal } from '@/types/coreDam/User'
 import AAnzuUserAvatar from '@/components/AAnzuUserAvatar.vue'
@@ -50,10 +50,25 @@ watch(
 <template>
   <div class="d-inline-flex">
     <span v-if="isNull(id) || isUndefined(id)">-</span>
-    <VChip v-else label size="small" :append-icon="ICON.CHIP_LINK" @click.stop="onClick">
-      <AAnzuUserAvatar :user="cached ?? undefined" container-class="mr-1" />
+    <VChip
+      v-else
+      label
+      size="small"
+      :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
+      @click.stop="onClick"
+    >
+      <AAnzuUserAvatar
+        :user="cached ?? undefined"
+        container-class="mr-1"
+      />
       {{ text }}
-      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="ml-1" />
+      <VProgressCircular
+        v-if="!loaded"
+        :size="12"
+        :width="2"
+        indeterminate
+        class="ml-1"
+      />
     </VChip>
   </div>
 </template>

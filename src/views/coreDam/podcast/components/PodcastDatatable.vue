@@ -11,7 +11,7 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  DatatableOrderingOption,
+  type DatatableOrderingOption,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'

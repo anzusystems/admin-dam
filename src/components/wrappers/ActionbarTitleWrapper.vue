@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/composables/system/actionbar'
-import { APageTitle } from '@anzusystems/common-admin'
 
 const { canTeleport } = useActionbar()
 
@@ -17,9 +16,12 @@ withDefaults(
 </script>
 
 <template>
-  <Teleport v-if="canTeleport" to="#anzu-actionbar-title">
+  <Teleport
+    v-if="canTeleport"
+    to="#anzu-actionbar-title"
+  >
     <slot>
-      <APageTitle :heading="heading" :icon="icon" />
+      <!--      <APageTitle :heading="heading" :icon="icon" />-->
     </slot>
   </Teleport>
 </template>
