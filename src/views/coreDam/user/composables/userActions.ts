@@ -16,6 +16,7 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const { fetchCachedExtSystems, addToCachedExtSystems } = useCachedExtSystems()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
+const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -36,6 +37,7 @@ export const useUserListActions = () => {
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,

@@ -4,12 +4,10 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 module.exports = {
   root: true,
   extends: [
-    'plugin:vue/vue3-essential',
-    'plugin:vue/vue3-strongly-recommended',
-    'plugin:vue/vue3-recommended',
     'eslint:recommended',
-    '@vue/eslint-config-typescript/recommended',
-    '@vue/eslint-config-prettier',
+    '@vue/eslint-config-typescript',
+    '@vue/eslint-config-prettier/skip-formatting',
+    'plugin:vue/vue3-recommended',
   ],
   env: {
     'vue/setup-compiler-macros': true,
@@ -18,8 +16,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
     'vue/script-setup-uses-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
-    '@typescript-eslint/no-empty-interface': ['error', { allowSingleExtends: true }],
+    '@typescript-eslint/no-empty-interface': 'off',
     semi: ['error', 'never'],
     quotes: ['error', 'single', 'avoid-escape'],
     'vue/multi-word-component-names': [
@@ -28,11 +25,33 @@ module.exports = {
         ignores: ['Acl'],
       },
     ],
+    'vue/valid-v-slot': ['error', { 'allowModifiers': true }],
+    'object-curly-spacing': ['error', 'always'],
+    'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
+    'no-trailing-spaces': 'error',
+    'comma-dangle': ['error', {
+      'arrays': 'always-multiline',
+      'objects': 'always-multiline',
+      'imports': 'only-multiline',
+      'exports': 'only-multiline',
+      'functions': 'only-multiline',
+    }],
+    'max-len': ['error', {
+      'code': 120,
+      'ignoreTrailingComments': true,
+      'ignoreUrls': true,
+      'ignoreRegExpLiterals': true,
+      'ignorePattern': '^import .*',
+    }],
+    'vue/no-template-target-blank': ['error'],
   },
   overrides: [
     {
-      files: ['cypress/integration/**.spec.{js,ts,jsx,tsx}'],
+      files: ['**/__tests__/*.{cy,spec}.{js,ts,jsx,tsx}', 'cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}'],
       extends: ['plugin:cypress/recommended'],
     },
   ],
+  parserOptions: {
+    ecmaVersion: 'latest',
+  },
 }

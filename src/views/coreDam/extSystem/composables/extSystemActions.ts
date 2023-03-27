@@ -19,6 +19,7 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
+const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -39,6 +40,7 @@ export const useExtSystemListActions = () => {
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,

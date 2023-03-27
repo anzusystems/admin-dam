@@ -2,16 +2,16 @@
 import { onMounted } from 'vue'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import {
-  ADatatable,
+  ADatatableConfigButton,
+  ADatatableOrdering,
   ADatatablePagination,
-  ASystemEntityScope,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  createDatatableColumnsConfig,
+  DatatableOrderingOption,
   useAcl,
-  useDatatableColumns,
   useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
 import { ROUTE } from '@/router/routes'
@@ -21,6 +21,7 @@ import type { AxiosInstance } from 'axios'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 
 const props = defineProps<{
   client: () => AxiosInstance
@@ -28,71 +29,100 @@ const props = defineProps<{
 
 const router = useRouter()
 
-const pagination = usePagination()
 const filter = usePermissionGroupListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
-const { fetchPermissionGroupList, permissionGroupList, loadingPermissionGroupList } = usePermissionGroupActions(
+const { fetchPermissionGroupList, permissionGroupList, loadingPermissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(
   props.client
 )
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (row: PermissionGroup) => {
-  if (row.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
-    router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: row.id } })
+const onRowClick = (event: unknown, { item }: { item: { raw: PermissionGroup } }) => {
+  if (item.raw.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
+    router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: item.raw.id } })
   }
 }
+
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+  [
+    { key: 'id' },
+    { key: 'title' },
+    { key: 'description' },
+    { key: 'permissions' },
+    { key: 'modifiedAt' },
+  ],
+  datatableHiddenColumns,
+  SYSTEM_CORE_DAM,
+  ENTITY
+)
 
 const getList = () => {
   fetchPermissionGroupList(pagination, filter)
 }
 
-const columns = useDatatableColumns([
-  { name: 'id' },
-  { name: 'title' },
-  { name: 'description' },
-  { name: 'permissions' },
-  { name: 'modifiedAt' },
-])
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
+}
 
 onMounted(() => {
   getList()
 })
 
-const refresh = () => {
-  getList()
-}
-
 defineExpose({
-  refresh,
+  refresh: getList,
 })
 </script>
 
 <template>
-  <VCard :loading="loadingPermissionGroupList" variant="flat">
-    <VCardText>
-      <div>
-        <PermissionGroupFilter
-          @submit-filter="submitFilter(filter, pagination, getList)"
-          @reset-filter="resetFilter(filter, pagination, getList)"
+  <div>
+    <PermissionGroupFilter
+      @submit-filter="submitFilter(filter, pagination, getList)"
+      @reset-filter="resetFilter(filter, pagination, getList)"
+    />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
         />
-        <ASystemEntityScope system="common" :subject="ENTITY">
-          <ADatatable :data="permissionGroupList" :columns="columns" @row-click="onRowClick">
-            <template #permissions="{ data }">
-              <VChip>{{ Object.keys(data).length }}</VChip>
-            </template>
-            <template #actions="{ data }">
-              <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
-                <ATableDetailButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL" />
-              </Acl>
-              <ATableCopyIdButton :id="data.id" />
-              <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-                <ATableEditButton :record-id="data.id" :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT" />
-              </Acl>
-            </template>
-          </ADatatable>
-          <ADatatablePagination v-model="pagination" @change="getList" />
-        </ASystemEntityScope>
       </div>
-    </VCardText>
-  </VCard>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #permissions="{ item }">
+          <VChip>{{ Object.keys(item.raw.permissions).length }}</VChip>
+        </template>
+        <template #item.actions="{ item }">
+          <div class="d-flex justify-end">
+            <ATableCopyIdButton :id="item.raw.id" />
+            <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
+              <ATableDetailButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"
+              />
+            </Acl>
+            <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
+              <ATableEditButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
+              />
+            </Acl>
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
+  </div>
 </template>

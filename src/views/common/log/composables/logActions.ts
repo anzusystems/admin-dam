@@ -7,6 +7,7 @@ import { ref } from 'vue'
 
 const { showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 
@@ -25,6 +26,7 @@ export const useLogListActions = () => {
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     fetchList,
     listItems,

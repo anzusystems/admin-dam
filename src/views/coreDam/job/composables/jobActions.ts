@@ -8,6 +8,7 @@ import { storeToRefs } from 'pinia'
 
 const { showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 
@@ -28,6 +29,7 @@ export const useJobListActions = () => {
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,
