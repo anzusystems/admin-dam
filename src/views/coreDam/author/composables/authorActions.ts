@@ -12,6 +12,7 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -34,6 +35,7 @@ export const useAuthorListActions = () => {
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,

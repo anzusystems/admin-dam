@@ -8,86 +8,124 @@ import { onMounted } from 'vue'
 import JobFilter from '@/views/coreDam/job/components/JobFilter.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
-  ADatatable,
+  ADatatableConfigButton,
+  ADatatableOrdering,
   ADatatablePagination,
   AJobStatusChip,
-  ASystemEntityScope,
   ATableCopyIdButton,
   ATableDetailButton,
+  createDatatableColumnsConfig,
+  DatatableOrderingOption,
   useAcl,
-  useDatatableColumns,
   useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
 import { useI18n } from 'vue-i18n'
 import { ACL, type AclValue } from '@/types/Permission'
+import { ENTITY } from '@/services/api/coreDam/podcastApi'
 
 const router = useRouter()
-const pagination = usePagination()
 const filter = useJobListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
-const { fetchList, listItems } = useJobListActions()
+const { fetchList, listItems, datatableHiddenColumns } = useJobListActions()
 
 const { t } = useI18n()
 
-const columns = useDatatableColumns([
-  { name: 'id', label: t('common.job.model.id') },
-  { name: '_resourceName', label: t('common.job.model._resourceName') },
-  { name: 'status', label: t('common.job.model.status') },
-  { name: 'startedAt', label: t('common.job.model.startedAt'), type: 'datetime' },
-  { name: 'finishedAt', label: t('common.job.model.finishedAt'), type: 'datetime' },
-  { name: 'result', label: t('common.job.model.result') },
-  { name: 'createdAt', label: t('common.model.tracking.created') },
-])
-
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (row: Job) => {
-  if (row.id && can(ACL.DAM_JOB_VIEW)) {
-    router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: row.id } })
+const onRowClick = (event: unknown, { item }: { item: { raw: Job } }) => {
+  if (item.raw.id && can(ACL.DAM_JOB_VIEW)) {
+    router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: item.raw.id } })
   }
 }
 
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+  [
+    { key: 'id', title: t('common.job.model.id') },
+    { key: '_resourceName', title: t('common.job.model._resourceName') },
+    { key: 'status', title: t('common.job.model.status') },
+    { key: 'startedAt', title: t('common.job.model.startedAt') },
+    { key: 'finishedAt', title: t('common.job.model.finishedAt') },
+    { key: 'result', title: t('common.job.model.result') },
+    { key: 'createdAt', title: t('common.model.tracking.created') },
+  ],
+  datatableHiddenColumns,
+  SYSTEM_CORE_DAM,
+  ENTITY
+)
+
 const getList = () => {
   fetchList(pagination, filter)
+}
+
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
 }
 
 onMounted(() => {
   fetchList(pagination, filter)
 })
 
-const refresh = () => {
-  getList()
-}
-
 defineExpose({
-  refresh,
+  refresh: getList,
 })
 </script>
 
 <template>
-  <JobFilter
-    @submit-filter="submitFilter(filter, pagination, getList)"
-    @reset-filter="resetFilter(filter, pagination, getList)"
-  >
-  </JobFilter>
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" subject="job">
-    <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
-      <template #_resourceName="{ data }">
-        <JobResourceChip :value="data"></JobResourceChip>
-      </template>
-      <template #status="{ data }">
-        <AJobStatusChip :value="data"></AJobStatusChip>
-      </template>
-      <template #actions="{ data }">
-        <Acl :permission="ACL.DAM_JOB_VIEW">
-          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.JOB.DETAIL" />
-        </Acl>
-        <ATableCopyIdButton :id="data.id" />
-      </template>
-    </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList" />
-  </ASystemEntityScope>
+  <div>
+    <JobFilter
+      @submit-filter="submitFilter(filter, pagination, getList)"
+      @reset-filter="resetFilter(filter, pagination, getList)"
+    />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
+        />
+      </div>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #_resourceName="{ item }">
+          <JobResourceChip :value="item.raw._resourceName" />
+        </template>
+        <template #status="{ item }">
+          <AJobStatusChip :value="item.raw.status" />
+        </template>
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
+        <template #item.actions="{ item }">
+          <div class="d-flex justify-end">
+            <ATableCopyIdButton :id="item.raw.id" />
+            <Acl :permission="ACL.DAM_JOB_VIEW">
+              <ATableDetailButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.DAM.JOB.DETAIL"
+              />
+            </Acl>
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
+  </div>
 </template>

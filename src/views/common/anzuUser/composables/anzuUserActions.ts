@@ -12,6 +12,8 @@ import { useCachedPermissionGroups } from '@/views/common/permissionGroup/compos
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>([])
+
 export const useAnzuUserActions = (client: () => AxiosInstance) => {
   const { apiFetchAnzuUserList, apiFetchAnzuUser, apiUpdateAnzuUser, apiCreateAnzuUser } = useAnzuUserApi(client)
   const { addToCachedPermissionGroups, fetchCachedPermissionGroups } = useCachedPermissionGroups()
@@ -94,6 +96,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
   }
 
   return {
+    datatableHiddenColumns,
     fetchAnzuUserList,
     fetchAnzuUser,
     updateAnzuUser,
