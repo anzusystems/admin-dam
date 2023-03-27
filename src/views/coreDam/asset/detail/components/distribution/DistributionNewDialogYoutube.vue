@@ -9,7 +9,6 @@ import {
   AFormValueObjectOptionsSelect,
   ASystemEntityScope,
   useAlerts,
-  useErrorHandler,
   usePagination,
   useValidateMaxLength,
   useValidateMinLength,
@@ -135,8 +134,7 @@ const closeDialog = (reload = false) => {
   emit('closeDialog', reload)
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 const { distributionYoutubePrivacyOptions } = useDistributionYoutubePrivacy()
 
 const required = useValidateRequired()
@@ -194,7 +192,7 @@ const submitRedistribute = async () => {
     showRecordWas('updated')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -214,7 +212,7 @@ const submitCreateNew = async () => {
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }

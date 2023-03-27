@@ -6,7 +6,7 @@ import AssetQueueEditable from '@/views/coreDam/asset/components/queue/AssetQueu
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { bulkUpdateAssetsMetadata } from '@/services/api/coreDam/assetApi'
-import { useAlerts, useErrorHandler, useTheme } from '@anzusystems/common-admin'
+import { useAlerts, useTheme } from '@anzusystems/common-admin'
 import AssetFooterSelectedButtonClear from '@/views/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
@@ -50,8 +50,7 @@ const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate()
 
@@ -68,7 +67,7 @@ const onSave = async () => {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -88,7 +87,7 @@ const onSaveAndClose = async () => {
     showRecordWas('updated')
     await onClearConfirm()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveAndCloseButtonLoading.value = false
   }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { rotateImage } from '@/services/api/coreDam/imageApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -15,8 +15,7 @@ const emit = defineEmits<{
   (e: 'afterRotate'): void
 }>()
 
-const { handleError } = useErrorHandler()
-const { showRecordWas } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const loading = ref(false)
 
@@ -27,7 +26,7 @@ const rotate = async (angle: 90 | 270) => {
     showRecordWas('updated')
     emit('afterRotate')
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     loading.value = false
   }

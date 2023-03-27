@@ -10,7 +10,6 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
-  useErrorHandler,
   useJobApi,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
@@ -58,8 +57,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useJobValidation(job)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { createJob } = useJobApi<Job>(damClient, SYSTEM_CORE_DAM)
 

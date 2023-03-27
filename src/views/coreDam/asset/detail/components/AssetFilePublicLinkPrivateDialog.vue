@@ -6,7 +6,6 @@ import {
   AFormTextField,
   stringToSlug,
   useAlerts,
-  useErrorHandler,
   useValidateMaxLength,
   useValidateMinLength,
   useValidateRequired,
@@ -36,8 +35,7 @@ const onCancel = () => {
   emit('update:modelValue', false)
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const modelValueComputed = computed(() => {
   return props.modelValue
@@ -77,7 +75,7 @@ const onConfirm = async () => {
     await makePublic(props.fileId, stringToSlug(slug.value))
     showRecordWas('updated')
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     buttonLoading.value = false
     onCancel()

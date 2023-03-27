@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubeLanguages } from '@/services/api/coreDam/distributionYoutubeApi'
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 import type { YoutubeLanguage } from '@/types/coreDam/Distribution'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -28,7 +28,7 @@ const modelValueComputed = computed({
   },
 })
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const items = ref<YoutubeLanguage[]>([])
 const loading = ref(false)
@@ -44,7 +44,7 @@ const fetchItems = async () => {
   try {
     items.value = await fetchYoutubeLanguages(props.distributionServiceName)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   }
   loading.value = false
 }

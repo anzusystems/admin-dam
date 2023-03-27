@@ -1,12 +1,12 @@
 import { ref } from 'vue'
 import type { Job } from '@/types/coreDam/Job'
-import { type FilterBag, type Pagination, useErrorHandler, useJobApi } from '@anzusystems/common-admin'
+import { type FilterBag, type Pagination, useAlerts, useJobApi } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useJobOneStore } from '@/stores/coreDam/jobStore'
 import { storeToRefs } from 'pinia'
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -21,7 +21,7 @@ export const useJobListActions = () => {
     try {
       listItems.value = await fetchJobList(pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -44,7 +44,7 @@ export const useJobDetailActions = () => {
       const job = await fetchJob(id)
       jobOneStore.setJob(job)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }

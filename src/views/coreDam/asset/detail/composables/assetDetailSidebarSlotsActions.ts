@@ -1,6 +1,6 @@
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import type { DocId } from '@anzusystems/common-admin'
-import { useErrorHandler, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
+import { useAlerts, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useAssetSlotFilter } from '@/model/coreDam/filter/AssetSlotFilter'
 import { fetchAssetSlotList, updateAssetSlots } from '@/services/api/coreDam/assetSlotApi'
 import {
@@ -14,7 +14,7 @@ import { makePrivate } from '@/services/api/coreDam/audioApi'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: AssetType) {
   const assetSlotsStore = useAssetSlotsStore()
-  const { handleError } = useErrorHandler()
+  const { showErrorsDefault } = useAlerts()
 
   const pagination = usePagination()
   const filter = useAssetSlotFilter()
@@ -34,7 +34,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await deleteFile(assetType, fileId)
     } catch (e) {
-      handleError(e)
+      showErrorsDefault(e)
     } finally {
       getList()
     }
@@ -46,7 +46,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await apiMakeMainFile(assetType, fileId, assetId)
     } catch (e) {
-      handleError(e)
+      showErrorsDefault(e)
     } finally {
       getList()
     }
@@ -57,7 +57,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await makePrivate(fileId)
     } catch (e) {
-      handleError(e)
+      showErrorsDefault(e)
     } finally {
       getList()
     }
@@ -69,7 +69,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await unsetAssetSlot(assetType, data.fileId, assetId, data.slotName)
     } catch (e) {
-      handleError(e)
+      showErrorsDefault(e)
     } finally {
       getList()
     }
@@ -81,7 +81,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
       assetSlotsStore.showLoader()
       await existingFileToSlot(assetType, data.fileId, assetId, data.targetSlotName)
     } catch (e) {
-      handleError(e)
+      showErrorsDefault(e)
     } finally {
       getList()
     }
@@ -115,7 +115,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
           targetSlotNameCache
         )
       } catch (e) {
-        handleError(e)
+        showErrorsDefault(e)
       } finally {
         getList()
       }
@@ -138,7 +138,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
           sourceSlotNameCache
         )
       } catch (e) {
-        handleError(e)
+        showErrorsDefault(e)
       } finally {
         getList()
       }
@@ -159,7 +159,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
     try {
       await updateAssetSlots(assetId, prepareData)
     } catch (e) {
-      handleError(e)
+      showErrorsDefault(e)
     } finally {
       getList()
     }

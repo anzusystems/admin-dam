@@ -1,5 +1,5 @@
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import {
@@ -14,8 +14,7 @@ import { storeToRefs } from 'pinia'
 import { ROUTE } from '@/router/routes'
 import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -32,7 +31,7 @@ export const useDistributionCategorySelectListActions = () => {
     try {
       listItems.value = await fetchDistributionCategorySelectList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -55,7 +54,7 @@ export const useDistributionCategorySelectDetailActions = () => {
       const distributionCategorySelect = await fetchDistributionCategorySelect(id)
       distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -81,7 +80,7 @@ export const useDistributionCategorySelectEditActions = () => {
       const distributionCategorySelect = await fetchDistributionCategorySelect(id)
       distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -105,7 +104,7 @@ export const useDistributionCategorySelectEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

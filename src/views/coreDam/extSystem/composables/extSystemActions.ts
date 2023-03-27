@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { ExtSystem } from '@/types/coreDam/ExtSystem'
 import {
   fetchExtSystem,
@@ -15,8 +15,7 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
@@ -33,7 +32,7 @@ export const useExtSystemListActions = () => {
     try {
       listItems.value = await fetchExtSystemList(pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -58,7 +57,7 @@ export const useExtSystemDetailActions = () => {
       fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -111,7 +110,7 @@ export const useExtSystemEditActions = () => {
       fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -132,7 +131,7 @@ export const useExtSystemEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.EXT_SYSTEM.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

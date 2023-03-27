@@ -1,11 +1,11 @@
 import type { FilterBag, Log, Pagination } from '@anzusystems/common-admin'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { fetchLog, fetchLogList } from '@/services/api/common/logApi'
 import { useLogOneStore } from '@/stores/common/logStore'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 const detailLoading = ref(false)
@@ -18,7 +18,7 @@ export const useLogListActions = () => {
     try {
       listItems.value = await fetchLogList(system, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -41,7 +41,7 @@ export const useLogDetailActions = () => {
       const logRes = await fetchLog(id, system, type)
       logOneStore.setLog(logRes)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }

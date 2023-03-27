@@ -7,10 +7,9 @@ import { computed, onUnmounted, ref } from 'vue'
 import { updateRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
 import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 
-const { handleError } = useErrorHandler()
-const { showRecordWas } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const DAM_IMAGE_ASPECT_RATIO = 16 / 9
 const cropperContainerStyle = { overflow: 'hidden', maxHeight: 'calc(100vh - 160px)' }
@@ -69,7 +68,7 @@ const saveRoi = async () => {
         imageRoiStore.forceReloadRoiPreviews()
       }, 2000)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       imageRoiStore.hideLoader()
     }

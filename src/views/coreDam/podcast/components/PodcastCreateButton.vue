@@ -10,7 +10,6 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createPodcast, ENTITY } from '@/services/api/coreDam/podcastApi'
@@ -63,8 +62,7 @@ const { podcastModeOptions } = usePodcastMode()
 const router = useRouter()
 const { v$ } = usePodcastValidation(podcast)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -83,7 +81,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }

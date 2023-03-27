@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { User } from '@/types/coreDam/User'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { cloneDeep, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { cloneDeep, useAlerts } from '@anzusystems/common-admin'
 import { fetchUser, fetchUserList, fetchUserListByIds, updateUser } from '@/services/api/coreDam/userApi'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
 import { storeToRefs } from 'pinia'
@@ -11,8 +11,7 @@ import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { fetchCachedExtSystems, addToCachedExtSystems } = useCachedExtSystems()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
@@ -30,7 +29,7 @@ export const useUserListActions = () => {
     try {
       listItems.value = await fetchUserList(pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
@@ -57,7 +56,7 @@ export const useUserDetailActions = () => {
       fetchCachedExtSystems()
       fetchCachedAssetLicences()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -83,7 +82,7 @@ export const useUserEditActions = () => {
       const user = await fetchUser(id)
       userOneStore.setUser(user)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -105,7 +104,7 @@ export const useUserEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.USER.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

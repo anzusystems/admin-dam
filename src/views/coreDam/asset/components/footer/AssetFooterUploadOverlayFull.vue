@@ -6,7 +6,7 @@ import AssetQueueEditable from '@/views/coreDam/asset/components/queue/AssetQueu
 import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { bulkUpdateAssetsMetadata } from '@/services/api/coreDam/assetApi'
 import AssetFooterUploadButtonStop from '@/views/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
-import { useAlerts, useErrorHandler, useTheme } from '@anzusystems/common-admin'
+import { useAlerts, useTheme } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
@@ -60,8 +60,7 @@ const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate()
 
@@ -79,7 +78,7 @@ const onSave = async () => {
     fetchAssetList()
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -100,7 +99,7 @@ const onSaveAndClose = async () => {
     await onStopConfirm()
     fetchAssetList()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveAndCloseButtonLoading.value = false
   }

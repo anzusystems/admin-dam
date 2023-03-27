@@ -1,5 +1,5 @@
 import type { FilterBag, IntegerId, Pagination, PermissionGroup, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
@@ -10,8 +10,7 @@ import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
-const { handleError } = useErrorHandler()
-const { showValidationError, showRecordWas } = useAlerts()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 export const usePermissionGroupActions = (client: () => AxiosInstance) => {
   const {
@@ -30,7 +29,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
     try {
       permissionGroupList.value = await apiFetchPermissionGroupList(pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingPermissionGroupList.value = false
     }
@@ -44,7 +43,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       const permissionGroupRes = await apiFetchPermissionGroup(id)
       permissionGroupOneStore.setPermissionGroup(permissionGroupRes)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       permissionGroupOneStore.setLoadingPermissionGroup(false)
     }
@@ -59,7 +58,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       showRecordWas('deleted')
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingDeletePermissionGroup.value = false
     }
@@ -83,7 +82,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       if (!close) return
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingUpdatePermissionGroup.value = false
     }
@@ -106,7 +105,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       }
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: permissionGroupRes.id } })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       loadingCreatePermissionGroup.value = false
     }

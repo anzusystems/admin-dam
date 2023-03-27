@@ -1,10 +1,10 @@
 import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { isNull, useErrorHandler } from '@anzusystems/common-admin'
+import { isNull, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchVideoFileDistributionPreviewList } from '@/services/api/coreDam/videoApi'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const listLoading = ref(false)
 
@@ -17,7 +17,7 @@ export const useVideoDistributionPreviewListActions = () => {
     try {
       listItems.value = await fetchVideoFileDistributionPreviewList(fileId, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
