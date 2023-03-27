@@ -8,7 +8,7 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  DatatableOrderingOption,
+  type DatatableOrderingOption,
   useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
@@ -21,7 +21,7 @@ import AssetLicenceFilter from '@/views/coreDam/assetLicence/components/AssetLic
 import { useAssetLicenceListFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, type AclValue } from '@/types/Permission'
-import { Podcast } from '@/types/coreDam/Podcast'
+import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 
 const router = useRouter()
 const filter = useAssetLicenceListFilter()
@@ -34,7 +34,7 @@ const getList = () => {
 
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: Podcast } }) => {
+const onRowClick = (event: unknown, { item }: { item: { raw: AssetLicence } }) => {
   if (item.raw.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
     router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: item.raw.id } })
 }

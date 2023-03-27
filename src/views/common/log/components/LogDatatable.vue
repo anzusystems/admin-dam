@@ -119,6 +119,7 @@ defineExpose({
           <ADatetime :date-time="item.raw.datetime" />
         </template>
         <template #item.levelName="{ item }">
+          {{ item.raw.levelName }}
           <!--          <LogLevelChip :level="item.raw.levelName" />-->
         </template>
         <template #item.message="{ item }">

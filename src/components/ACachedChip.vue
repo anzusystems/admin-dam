@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { type DocId, ICON, type IntegerId, isNull, isUndefined, objectGetValueByPath } from '@anzusystems/common-admin'
+import { type DocId, COMMON_CONFIG, type IntegerId, isNull, isUndefined, objectGetValueByPath } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -62,24 +62,50 @@ watch(
 
 <template>
   <div :class="containerClass">
-    <template v-if="isNull(id) || isUndefined(id)"><slot name="empty">-</slot></template>
+    <template v-if="isNull(id) || isUndefined(id)">
+      <slot name="empty">
+        -
+      </slot>
+    </template>
     <div v-else-if="textOnly">
       {{ displayTitle }}
-      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
+      <VProgressCircular
+        v-if="!loaded"
+        :size="12"
+        :width="2"
+        indeterminate
+        class="mx-1"
+      />
     </div>
-    <VChip v-else-if="disableClick" :size="size" :label="forceRounded ? undefined : true">
+    <VChip
+      v-else-if="disableClick"
+      :size="size"
+      :label="forceRounded ? undefined : true"
+    >
       {{ displayTitle }}
-      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
+      <VProgressCircular
+        v-if="!loaded"
+        :size="12"
+        :width="2"
+        indeterminate
+        class="mx-1"
+      />
     </VChip>
     <VChip
       v-else
       :size="size"
-      :append-icon="openInNew ? ICON.CHIP_LINK_EXTERNAL : ICON.CHIP_LINK"
+      :append-icon="openInNew ? COMMON_CONFIG.CHIP.ICON.LINK_EXTERNAL : COMMON_CONFIG.CHIP.ICON.LINK"
       :label="forceRounded ? undefined : true"
       @click.stop="onClick"
     >
       {{ displayTitle }}
-      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
+      <VProgressCircular
+        v-if="!loaded"
+        :size="12"
+        :width="2"
+        indeterminate
+        class="mx-1"
+      />
     </VChip>
   </div>
 </template>

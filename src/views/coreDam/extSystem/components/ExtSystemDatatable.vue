@@ -9,7 +9,7 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  DatatableOrderingOption,
+  type DatatableOrderingOption,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

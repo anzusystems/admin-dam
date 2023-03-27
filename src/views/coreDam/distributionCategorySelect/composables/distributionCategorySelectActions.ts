@@ -18,6 +18,7 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
+const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -38,6 +39,7 @@ export const useDistributionCategorySelectListActions = () => {
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,

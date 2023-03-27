@@ -15,7 +15,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   createDatatableColumnsConfig,
-  DatatableOrderingOption,
+  type DatatableOrderingOption,
   useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
