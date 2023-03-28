@@ -22,6 +22,7 @@ import { messagesEn, messagesSk } from '@anzusystems/common-admin'
 import apiValidation from '@/locales/en/error/apiValidation.json'
 import apiForbiddenOperation from '@/locales/en/error/apiForbiddenOperation.json'
 import jsValidation from '@/locales/en/error/jsValidation.json'
+import breadcrumb from '@/locales/en/breadcrumb.json'
 
 export default {
   ...messagesEn,
@@ -46,6 +47,7 @@ export default {
   },
   auth,
   sidebar,
+  breadcrumb,
   system,
   ...{
     error: {

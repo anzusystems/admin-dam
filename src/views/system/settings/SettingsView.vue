@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {
-  ACard,
   ALanguageSelect,
   AThemeSelect,
   AvailableLanguagesSymbol,
@@ -35,32 +34,34 @@ const afterLanguageChange = async (language: LanguageCode) => {
 <template>
   <ActionbarWrapper />
 
-  <VRow>
-    <VCol cols="12">
-      <ACard>
-        <VRow
-          align="center"
-          class="pb-2"
-        >
-          <VCol cols="1">
-            {{ t('system.settings.locale') }}
-          </VCol>
-          <VCol>
-            <ALanguageSelect @after-change="afterLanguageChange" />
-          </VCol>
-        </VRow>
-        <VRow
-          align="center"
-          class="pb-2"
-        >
-          <VCol cols="1">
-            {{ t('system.settings.theme') }}
-          </VCol>
-          <VCol>
-            <AThemeSelect />
-          </VCol>
-        </VRow>
-      </ACard>
-    </VCol>
-  </VRow>
+  <VCard>
+    <VCardText>
+      <VRow>
+        <VCol cols="12">
+          <VRow
+            align="center"
+            class="pb-2"
+          >
+            <VCol cols="1">
+              {{ t('system.settings.locale') }}
+            </VCol>
+            <VCol>
+              <ALanguageSelect @after-change="afterLanguageChange" />
+            </VCol>
+          </VRow>
+          <VRow
+            align="center"
+            class="pb-2"
+          >
+            <VCol cols="1">
+              {{ t('system.settings.theme') }}
+            </VCol>
+            <VCol>
+              <AThemeSelect />
+            </VCol>
+          </VRow>
+        </VCol>
+      </VRow>
+    </VCardText>
+  </VCard>
 </template>

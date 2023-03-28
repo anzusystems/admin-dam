@@ -15,9 +15,20 @@ const opened = ref([])
 
 <template>
   <div class="main-logo ml-2 mt-1">
-    <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }"><img width="104" height="42" :src="logo" alt="ADAM" /></RouterLink>
+    <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
+      <img
+        width="104"
+        height="42"
+        :src="logo"
+        alt="ADAM"
+      >
+    </RouterLink>
   </div>
-  <VList v-model:opened="opened" density="compact" nav>
+  <VList
+    v-model:opened="opened"
+    density="compact"
+    nav
+  >
     <VListItem
       :to="{ name: ROUTE.SYSTEM.SETTINGS }"
       prepend-icon="mdi-cog"
@@ -129,17 +140,5 @@ const opened = ref([])
         data-cy="log-settings"
       />
     </Acl>
-    <VListItem
-      v-if="showDevFeature"
-      :to="{ name: ROUTE.SYSTEM.BETA }"
-      prepend-icon="mdi-beta"
-      :title="t('sidebar.settings.beta')"
-      data-cy="beta-settings"
-    />
-    <VListItem class="form-dropdown">
-      <VListItemTitle class="text-medium-emphasis text-caption font-weight-light">
-        {{ t('common.system.version') }}: {{ envConfig.appVersion }}
-      </VListItemTitle>
-    </VListItem>
   </VList>
 </template>
