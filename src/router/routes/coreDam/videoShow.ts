@@ -21,7 +21,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
         },
       },
       {
@@ -31,7 +31,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW, ACL.DAM_VIDEO_SHOW_UPDATE],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
           breadcrumbT: 'common.system.breadcrumb.edit',
         },
       },
@@ -42,7 +42,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
           breadcrumbT: 'common.system.breadcrumb.detail',
         },
       },

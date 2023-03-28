@@ -12,7 +12,7 @@ export const anzuUserRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_USER_VIEW],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {
@@ -22,7 +22,7 @@ export const anzuUserRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_USER_VIEW],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {
@@ -32,7 +32,7 @@ export const anzuUserRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_USER_VIEW, ACL.DAM_USER_UPDATE],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
 ]

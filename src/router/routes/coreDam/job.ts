@@ -21,7 +21,7 @@ export const jobRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_JOB_VIEW],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
         },
       },
       {
@@ -31,7 +31,7 @@ export const jobRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_JOB_VIEW],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
           breadcrumbT: 'common.system.breadcrumb.detail',
         },
       },

@@ -12,7 +12,7 @@ export const permissionGroupRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_PERMISSION_GROUP_VIEW],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {
@@ -22,7 +22,7 @@ export const permissionGroupRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_PERMISSION_GROUP_VIEW],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {
@@ -32,7 +32,7 @@ export const permissionGroupRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_PERMISSION_GROUP_VIEW, ACL.DAM_PERMISSION_GROUP_UPDATE],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
 ]

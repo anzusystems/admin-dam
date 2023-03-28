@@ -10,7 +10,7 @@ export const systemRoutes = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {

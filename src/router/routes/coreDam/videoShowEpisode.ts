@@ -12,7 +12,7 @@ export const videoShowEpisodeRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_VIDEO_SHOW_EPISODE_VIEW],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {
@@ -22,7 +22,7 @@ export const videoShowEpisodeRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_VIDEO_SHOW_EPISODE_VIEW, ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
 ]
