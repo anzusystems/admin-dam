@@ -82,22 +82,43 @@ const onConfirm = async () => {
   <VBtn
     :class="buttonClass"
     :data-cy="dataCy"
-    color="success"
+    color="primary"
     :disabled="disabled"
     rounded="pill"
     @click.stop="onClick"
   >
-    {{ t(buttonT) }}
+    {{ t(buttonT) }} todo
   </VBtn>
-  <VDialog v-model="dialog" persistent>
-    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
+  <VDialog
+    v-model="dialog"
+    persistent
+  >
+    <VCard
+      v-if="dialog"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
       <VCardTitle class="d-flex pr-2">
         <span>{{ t('coreDam.podcastEpisode.meta.create') }}</span>
         <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
+        <VBtn
+          class="ml-2"
+          icon="mdi-close"
+          size="small"
+          variant="text"
+          data-cy="button-close"
+          @click.stop="onCancel"
+        />
       </VCardTitle>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+      <ASystemEntityScope
+        :system="SYSTEM_CORE_DAM"
+        :subject="ENTITY"
+      >
+        <VContainer
+          class="pa-4"
+          fluid
+        >
           <ARow>
             <AFormTextField
               v-model="podcastEpisode.texts.title"
@@ -138,10 +159,20 @@ const onConfirm = async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <VBtn
+          color="secondary"
+          variant="text"
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="success" :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
+        <VBtn
+          color="success"
+          :loading="buttonLoading"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t(buttonT) }}
         </VBtn>
       </VCardActions>

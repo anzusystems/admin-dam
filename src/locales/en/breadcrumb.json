@@ -28,5 +28,8 @@
     "extSystem": "External systems",
     "keyword": "Keywords"
   },
-  "settings": "Settings"
+  "anzuUser": "AnzuUser",
+  "settings": "Settings",
+  "log": "Logs",
+  "permissionGroup": "Permission groups"
 }

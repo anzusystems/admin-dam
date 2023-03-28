@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { usePodcastEpisodeEditActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
@@ -8,21 +8,15 @@ import PodcastEpisodeEditForm from '@/views/coreDam/podcastEpisode/components/Po
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
+const podcastId = route.params.id.toString()
 const id = route.params.episodeId.toString()
 
-const { detailLoading, fetchData, resetStore, onUpdate, podcastEpisode, saveButtonLoading, saveAndCloseButtonLoading } =
+const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading } =
   usePodcastEpisodeEditActions()
 
 const getData = () => {
   fetchData(id)
 }
-
-const closeRoute = computed(() => {
-  if (podcastEpisode.value.podcast) {
-    return { name: ROUTE.DAM.PODCAST.DETAIL, params: { id: podcastEpisode.value.podcast } }
-  }
-  return { name: ROUTE.DAM.PODCAST.LIST }
-})
 
 onMounted(() => {
   getData()
@@ -42,15 +36,9 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-
-      <VBtn
-        class="ml-2"
-        :to="closeRoute"
-        icon="mdi-close"
-        size="small"
-        variant="outlined"
-        :width="36"
-        :height="36"
+      <AActionCloseButton
+        :route-name="ROUTE.DAM.PODCAST.DETAIL"
+        :route-params="{ id: podcastId }"
       />
     </template>
   </ActionbarWrapper>

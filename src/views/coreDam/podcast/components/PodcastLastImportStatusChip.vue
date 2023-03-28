@@ -4,6 +4,7 @@ import {
   type PodcastLastImportStatus,
   usePodcastLastImportStatus,
 } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import { AChipNoLink } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +20,7 @@ const statusOption = computed(() => {
 </script>
 
 <template>
-  <VChip v-if="statusOption" label size="small" class="v-chip-custom-no-link">
+  <AChipNoLink v-if="statusOption">
     {{ statusOption.title }}
-  </VChip>
+  </AChipNoLink>
 </template>
