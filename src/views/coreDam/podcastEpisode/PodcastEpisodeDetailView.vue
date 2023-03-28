@@ -17,7 +17,7 @@ const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const route = useRoute()
 const router = useRouter()
-const id = route.params.id.toString()
+const id = route.params.episodeId.toString()
 
 const getDetail = () => {
   fetchData(id)

@@ -8,7 +8,7 @@ import PodcastEpisodeEditForm from '@/views/coreDam/podcastEpisode/components/Po
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = route.params.id.toString()
+const id = route.params.episodeId.toString()
 
 const { detailLoading, fetchData, resetStore, onUpdate, podcastEpisode, saveButtonLoading, saveAndCloseButtonLoading } =
   usePodcastEpisodeEditActions()

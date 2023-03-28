@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/composables/system/actionbar'
 import { computed } from 'vue'
-import { useI18n } from '@anzusystems/common-admin'
-import { useRoute } from 'vue-router'
+import { isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
+import { RouteParams, RouteRecordName, useRoute } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{
@@ -18,24 +18,43 @@ const { canTeleport } = useActionbar()
 const { t } = useI18n()
 const route = useRoute()
 
-// todo fix warning on 4 level route
+const parametrizeRoutePath = (to: {
+  path: string
+  name: string | undefined | RouteRecordName
+  params: RouteParams | undefined
+}) => {
+  const path = stringUrlTemplateReplaceVueRouter(to.path, to.params as any)
+  to.path = path
+  to.params = undefined
+  to.name = undefined
+}
+
 const breadcrumbs = computed(() => {
   const final: any[] = []
-  route.matched.forEach((value, index, array) => {
-    if (value.path.length === 0) return
-    if (index === array.length - 1 && props.lastBreadcrumbTitle) {
-      final.push({
-        title: props.lastBreadcrumbTitle,
-        to: value,
-      })
-    } else if (value.meta.breadcrumbT) {
-      final.push({
-        disabled: false,
-        title: value.meta.breadcrumbT ? t(value.meta.breadcrumbT as string) : '',
-        to: value,
-      })
-    }
-  })
+  route.matched
+    .filter((item) => !isUndefined(item.meta.breadcrumbT))
+    .forEach((value, index, array) => {
+      if (value.path.length === 0) return
+      const to: { path: string; name: string | undefined | RouteRecordName; params: RouteParams | undefined } = {
+        path: value.path,
+        name: value.name ?? undefined,
+        params: { ...route.params },
+      }
+      if (isUndefined(to.name) && to.path.indexOf(':') > -1) parametrizeRoutePath(to)
+      if (index === array.length - 1 && props.lastBreadcrumbTitle) {
+        final.push({
+          disabled: false,
+          title: props.lastBreadcrumbTitle,
+          to: to,
+        })
+      } else if (value.meta.breadcrumbT) {
+        final.push({
+          disabled: false,
+          title: value.meta.breadcrumbT ? t(value.meta.breadcrumbT as string) : '',
+          to: to,
+        })
+      }
+    })
   return final
 })
 </script>

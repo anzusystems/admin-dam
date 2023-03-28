@@ -7,8 +7,7 @@ import {
   ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
-  ATableDetailButton,
-  ATableEditButton,
+  ATableDetailButton, ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
   useFilterHelpers,
@@ -104,13 +103,13 @@ defineExpose({
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :route-params="{ id: props.podcastId, episodeId: item.raw.id }"
                 :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :route-params="{ id: props.podcastId, episodeId: item.raw.id }"
                 :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT"
               />
             </Acl>

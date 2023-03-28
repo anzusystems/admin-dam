@@ -1,11 +1,28 @@
 {
   "coreDam": {
-    "asset": "Assets",
-    "assetLicence": "Asset licences",
-    "author": "Authors",
-    "distributionCategory": "Distribution categories",
-    "distributionCategorySelect": "Distribution category selects",
-    "podcast": "Podcasts",
+    "asset": {
+      "list": "Assets"
+    },
+    "assetLicence": {
+      "list": "Asset licences"
+    },
+    "author": {
+      "list": "Authors"
+    },
+    "distributionCategory": {
+      "list": "Distribution categories"
+    },
+    "distributionCategorySelect": {
+      "list": "Distribution category selects"
+    },
+    "podcast": {
+      "list": "Podcasts",
+      "detail": "Podcast"
+    },
+    "podcastEpisode": {
+      "list": "Episodes",
+      "detail": "Episode"
+    },
     "user": "Users",
     "videoShow": "Video shows",
     "extSystem": "External systems",
