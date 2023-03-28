@@ -1,4 +1,5 @@
 {
+  "adminSwitcherConfigUrl": "${ADMIN_SWITCHER_CONFIG_URL}",
   "appEnvironment": "${APP_ENVIRONMENT}",
   "appVersion": "${APP_VERSION}",
   "apiLogError": {

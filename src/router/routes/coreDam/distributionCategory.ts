@@ -21,7 +21,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
         },
       },
       {
@@ -31,7 +31,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW, ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
           breadcrumbT: 'common.system.breadcrumb.edit',
         },
       },
@@ -42,7 +42,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
-          layout: 'AppLayoutSidebar',
+          layout: 'AppLayoutDrawer',
           breadcrumbT: 'common.system.breadcrumb.detail',
         },
       },

@@ -1,7 +1,7 @@
 import App from '@/App.vue'
 import AppLayoutLoader from '@/layouts/AppLayoutLoader.vue'
 import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
-import AppLayoutSidebar from '@/layouts/AppLayoutSidebar.vue'
+import AppLayoutDrawer from '@/layouts/AppLayoutDrawer.vue'
 import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
 import { vuetify } from '@/plugins/vuetify'
@@ -37,7 +37,7 @@ loadEnvConfig(() => {
     })
     .component('AppLayoutLoader', AppLayoutLoader)
     .component('AppLayoutMain', AppLayoutMain)
-    .component('AppLayoutSidebar', AppLayoutSidebar)
+    .component('AppLayoutDrawer', AppLayoutDrawer)
     .component('AppLayoutBlank', AppLayoutBlank)
     .component('AppLayoutFullscreen', AppLayoutFullscreen)
   initErrorHandler(app)

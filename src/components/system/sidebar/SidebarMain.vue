@@ -1,31 +1,13 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
-import { envConfig } from '@/services/EnvConfigService'
 import { useI18n } from 'vue-i18n'
 import { ACL } from '@/types/Permission'
-import { useCurrentUser } from '@/composables/system/currentUser'
-import { ref } from 'vue'
-import logo from '@/assets/logo-adam-full.svg'
 
 const { t } = useI18n()
-
-const { showDevFeature } = useCurrentUser()
-const opened = ref([])
 </script>
 
 <template>
-  <div class="main-logo ml-2 mt-1">
-    <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
-      <img
-        width="104"
-        height="42"
-        :src="logo"
-        alt="ADAM"
-      >
-    </RouterLink>
-  </div>
   <VList
-    v-model:opened="opened"
     density="compact"
     nav
   >

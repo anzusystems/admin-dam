@@ -13,7 +13,7 @@ export const commonLogRoutes = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_LOG_UI],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
   {
@@ -23,7 +23,7 @@ export const commonLogRoutes = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [ACL.DAM_LOG_UI],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
     },
   },
 ]
