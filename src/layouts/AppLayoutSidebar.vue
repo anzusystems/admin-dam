@@ -2,11 +2,11 @@
 import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import ASidebarSettings from '@/components/system/SidebarSettings.vue'
-import ActionbarTeleportTarget from '@/components/coreDam/ActionbarTeleportTarget.vue'
 import CurrentUserDropdown from '@/components/system/CurrentUserDropdown.vue'
 import { useI18n } from 'vue-i18n'
 import { ROUTE } from '@/router/routes'
 import { envConfig } from '@/services/EnvConfigService'
+import ActionbarTeleportTarget from '@/components/system/ActionbarTeleportTarget.vue'
 
 const { t } = useI18n()
 
@@ -26,7 +26,11 @@ const { theme } = useTheme()
     <VNavigationDrawer v-model="drawer">
       <ASidebarSettings />
     </VNavigationDrawer>
-    <VAppBar :height="46" elevation="0" class="system-border-b">
+    <VAppBar
+      :height="46"
+      elevation="0"
+      class="system-border-b"
+    >
       <div class="d-flex justify-space-between w-100 align-center">
         <div class="d-flex w-100 align-center">
           <VAppBarNavIcon @click.stop="navIconClick" />
@@ -39,13 +43,21 @@ const { theme } = useTheme()
             rounded="pill"
             :height="34"
           >
-            <VIcon icon="mdi-home" :size="20" class="mr-2" /> {{ t('system.mainBar.backToAssets') }}
+            <VIcon
+              icon="mdi-home"
+              :size="20"
+              class="mr-2"
+            /> {{ t('system.mainBar.backToAssets') }}
           </VBtn>
           <CurrentUserDropdown />
         </div>
       </div>
     </VAppBar>
-    <VAppBar :height="46" elevation="0" class="system-border-b">
+    <VAppBar
+      :height="46"
+      elevation="0"
+      class="system-border-b"
+    >
       <div class="d-flex flex-column w-100 px-1 align-center">
         <KeepAlive>
           <ActionbarTeleportTarget />
@@ -53,7 +65,10 @@ const { theme } = useTheme()
       </div>
     </VAppBar>
     <VMain>
-      <VContainer class="pa-2" fluid>
+      <VContainer
+        class="pa-2"
+        fluid
+      >
         <slot />
       </VContainer>
     </VMain>

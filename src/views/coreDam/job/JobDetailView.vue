@@ -3,11 +3,9 @@ import { useRoute } from 'vue-router'
 import { AActionCloseButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
-import { useI18n } from 'vue-i18n'
 import { useJobDetailActions } from '@/views/coreDam/job/composables/jobActions'
 import JobDetail from '@/views/coreDam/job/components/JobDetail.vue'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore } = useJobDetailActions()
 
@@ -25,16 +23,18 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
-
-const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.job.meta.detail')" />
-  <ActionbarButtonsWrapper>
-    <AActionCloseButton :route-name="ROUTE.DAM.JOB.LIST" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <AActionCloseButton :route-name="ROUTE.DAM.JOB.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <JobDetail />
+    <VCardText>
+      <JobDetail />
+    </VCardText>
   </ACard>
 </template>

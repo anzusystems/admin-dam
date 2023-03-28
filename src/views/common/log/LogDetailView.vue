@@ -4,8 +4,8 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useLogDetailActions } from '@/views/common/log/composables/logActions'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import LogDetail from '@/views/common/log/components/LogDetail.vue'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = route.params.id as string
@@ -28,10 +28,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper>
-    <AActionCloseButton :route-name="ROUTE.COMMON.LOG.LIST" />
-  </ActionbarTitleWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <AActionCloseButton :route-name="ROUTE.COMMON.LOG.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <LogDetail />
+    <VCardText>
+      <LogDetail />
+    </VCardText>
   </ACard>
 </template>

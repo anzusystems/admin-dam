@@ -15,8 +15,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="w-100 d-flex justify-space-between align-center">
-    <div id="anzu-actionbar-title" />
-    <div id="anzu-actionbar-buttons" class="pr-2" />
-  </div>
+  <div
+    id="anzu-actionbar"
+    class="d-flex w-100 align-center justify-space-between min-width-0"
+  />
 </template>
