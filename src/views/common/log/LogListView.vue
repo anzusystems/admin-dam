@@ -1,15 +1,12 @@
 <script lang="ts" setup>
 import type LogDatatableType from '@/views/common/log/components/LogDatatable.vue'
 import LogDatatable from '@/views/common/log/components/LogDatatable.vue'
-import { useI18n } from 'vue-i18n'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { computed, ref, watch } from 'vue'
 import { ACard, isNull } from '@anzusystems/common-admin'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import LogFilter from '@/views/common/log/components/LogFilter.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
-
-const { t } = useI18n()
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const logFilter = useLogFilter()
 const activeTab = ref<null | string>(null)
@@ -59,16 +56,38 @@ watch(
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.log.meta.list')" />
+  <ActionbarWrapper />
+
   <ACard :loading="listLoading">
-    <LogFilter @submit-filter="submitFilter" @reset-filter="resetFilter" />
-    <VTabs v-if="systems.length > 1" v-model="activeTab" color="primary">
-      <VTab v-for="system in logFilter.system.model" :key="system" :value="system">
+    <LogFilter
+      @submit-filter="submitFilter"
+      @reset-filter="resetFilter"
+    />
+    <VTabs
+      v-if="systems.length > 1"
+      v-model="activeTab"
+      color="primary"
+    >
+      <VTab
+        v-for="system in logFilter.system.model"
+        :key="system"
+        :value="system"
+      >
         <span>{{ system }}</span>
-        <VChip v-if="counts[system]" class="ml-1" size="small">{{ counts[system] }}</VChip>
+        <VChip
+          v-if="counts[system]"
+          class="ml-1"
+          size="small"
+        >
+          {{ counts[system] }}
+        </VChip>
       </VTab>
     </VTabs>
-    <div v-for="system in logFilter.system.model" v-show="system === activeTab" :key="system">
+    <div
+      v-for="system in logFilter.system.model"
+      v-show="system === activeTab"
+      :key="system"
+    >
       <LogDatatable
         :key="system"
         :ref="(el: any) => { datatables[system] = el }"

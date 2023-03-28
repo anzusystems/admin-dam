@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-import { AActionSaveAndCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
+import { AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { usePodcastEpisodeEditActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeEditForm from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeEditForm.vue'
-
-const { t } = useI18n()
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -38,23 +34,30 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.podcastEpisode.meta.edit')" />
-  <ActionbarButtonsWrapper>
-    <AActionSaveButton
-      v-if="!detailLoading"
-      :loading="saveButtonLoading"
-      :disabled="saveAndCloseButtonLoading"
-      @save-record="onUpdate"
-    />
-    <AActionSaveAndCloseButton
-      v-if="!detailLoading"
-      :loading="saveAndCloseButtonLoading"
-      :disabled="saveButtonLoading"
-      @save-record-and-close="onUpdate(true)"
-    />
-    <VBtn class="ml-2" :to="closeRoute" icon="mdi-close" size="small" variant="outlined" :width="36" :height="36" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <AActionSaveButton
+        v-if="!detailLoading"
+        :loading="saveButtonLoading"
+        :disabled="saveAndCloseButtonLoading"
+        @save-record="onUpdate"
+      />
+
+      <VBtn
+        class="ml-2"
+        :to="closeRoute"
+        icon="mdi-close"
+        size="small"
+        variant="outlined"
+        :width="36"
+        :height="36"
+      />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <PodcastEpisodeEditForm />
+    <VCardText>
+      <PodcastEpisodeEditForm />
+    </VCardText>
   </ACard>
 </template>

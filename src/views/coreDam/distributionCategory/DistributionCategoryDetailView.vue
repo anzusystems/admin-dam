@@ -3,12 +3,12 @@ import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { useI18n } from 'vue-i18n'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import { ACL } from '@/types/Permission'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
-import { useDistributionCategoryDetailActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import {
+  useDistributionCategoryDetailActions
+} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryDetail from '@/views/coreDam/distributionCategory/components/DistributionCategoryDetail.vue'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore } = useDistributionCategoryDetailActions()
 
@@ -26,19 +26,25 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
-
-const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.distributionCategory.meta.detail')" />
-  <ActionbarButtonsWrapper>
-    <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
-      <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT" />
-    </Acl>
-    <AActionCloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
+        <AActionEditButton
+          v-if="!detailLoading"
+          :record-id="id"
+          :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT"
+        />
+      </Acl>
+      <AActionCloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <DistributionCategoryDetail />
+    <VCardText>
+      <DistributionCategoryDetail />
+    </VCardText>
   </ACard>
 </template>

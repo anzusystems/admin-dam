@@ -29,7 +29,9 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = useExtSystemListActions()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: ExtSystem } }) => {
-  router.push({ name: ROUTE.DAM.EXT_SYSTEM.DETAIL, params: { id: item.raw.id } })
+  if (item.raw.id) {
+    router.push({ name: ROUTE.DAM.EXT_SYSTEM.DETAIL, params: { id: item.raw.id } })
+  }
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -97,7 +99,7 @@ defineExpose({
             </Acl>
             <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id.id"
+                :record-id="item.raw.id"
                 :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT"
               />
             </Acl>

@@ -1,15 +1,12 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import { useI18n } from 'vue-i18n'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import VideoShowCreateButton from '@/views/coreDam/videoShow/components/VideoShowCreateButton.vue'
 import VideoShowDatatable from '@/views/coreDam/videoShow/components/VideoShowDatatable.vue'
 import { ref } from 'vue'
 import { useVideoShowListActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import { ACL } from '@/types/Permission'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { t } = useI18n()
 const { listLoading } = useVideoShowListActions()
 
 const datatable = ref<InstanceType<typeof VideoShowDatatable> | null>(null)
@@ -20,13 +17,21 @@ const afterCreate = () => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.list')" />
-  <ActionbarButtonsWrapper>
-    <Acl :permission="ACL.DAM_VIDEO_SHOW_CREATE">
-      <VideoShowCreateButton data-cy="button-create" disable-redirect @after-create="afterCreate" />
-    </Acl>
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <Acl :permission="ACL.DAM_VIDEO_SHOW_CREATE">
+        <VideoShowCreateButton
+          data-cy="button-create"
+          disable-redirect
+          @after-create="afterCreate"
+        />
+      </Acl>
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="listLoading">
-    <VideoShowDatatable ref="datatable" />
+    <VCardText>
+      <VideoShowDatatable ref="datatable" />
+    </VCardText>
   </ACard>
 </template>

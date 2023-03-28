@@ -2,13 +2,11 @@
 import { useRoute } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
-import { useI18n } from 'vue-i18n'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import { AActionEditButton, ACard } from '@anzusystems/common-admin'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useVideoShowEpisodeDetailActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
 import { ACL } from '@/types/Permission'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, videoShowEpisode } = useVideoShowEpisodeDetailActions()
 
@@ -18,8 +16,6 @@ const id = route.params.id.toString()
 const getDetail = () => {
   fetchData(id)
 }
-
-const { t } = useI18n()
 
 const closeRoute = computed(() => {
   if (videoShowEpisode.value.videoShow) {
@@ -38,23 +34,31 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShowEpisode.meta.detail')" />
-  <ActionbarButtonsWrapper>
-    <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
-      <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
-    </Acl>
-    <VBtn
-      class="ml-2"
-      :to="closeRoute"
-      icon="mdi-close"
-      size="small"
-      variant="outlined"
-      :width="36"
-      :height="36"
-      data-cy="button-close"
-    />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
+        <AActionEditButton
+          v-if="!detailLoading"
+          :record-id="id"
+          :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT"
+        />
+      </Acl>
+      <VBtn
+        class="ml-2"
+        :to="closeRoute"
+        icon="mdi-close"
+        size="small"
+        variant="outlined"
+        :width="36"
+        :height="36"
+        data-cy="button-close"
+      />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <VideoShowEpisodeDetail />
+    <VCardText>
+      <VideoShowEpisodeDetail />
+    </VCardText>
   </ACard>
 </template>

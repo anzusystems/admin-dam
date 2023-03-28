@@ -4,11 +4,10 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
 import { ACL } from '@/types/Permission'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useAuthorDetailActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorDetail from '@/views/coreDam/author/components/AuthorDetail.vue'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore } = useAuthorDetailActions()
 
@@ -31,14 +30,22 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.author.meta.detail')" />
-  <ActionbarButtonsWrapper>
-    <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-      <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="ROUTE.DAM.AUTHOR.EDIT" />
-    </Acl>
-    <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
+        <AActionEditButton
+          v-if="!detailLoading"
+          :record-id="id"
+          :route-name="ROUTE.DAM.AUTHOR.EDIT"
+        />
+      </Acl>
+      <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <AuthorDetail />
+    <VCardText>
+      <AuthorDetail />
+    </VCardText>
   </ACard>
 </template>

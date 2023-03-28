@@ -8,9 +8,9 @@ import {
   type LanguageCode,
   modifyLanguageSettings,
 } from '@anzusystems/common-admin'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import { inject } from 'vue'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const { t } = useI18n()
 const configAvailableLanguages = inject<LanguageCode[]>(AvailableLanguagesSymbol, [])
@@ -33,18 +33,29 @@ const afterLanguageChange = async (language: LanguageCode) => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('sidebar.settings.settings')" />
+  <ActionbarWrapper />
+
   <VRow>
     <VCol cols="12">
       <ACard>
-        <VRow align="center" class="pb-2">
-          <VCol cols="1">{{ t('system.settings.locale') }}</VCol>
+        <VRow
+          align="center"
+          class="pb-2"
+        >
+          <VCol cols="1">
+            {{ t('system.settings.locale') }}
+          </VCol>
           <VCol>
             <ALanguageSelect @after-change="afterLanguageChange" />
           </VCol>
         </VRow>
-        <VRow align="center" class="pb-2">
-          <VCol cols="1">{{ t('system.settings.theme') }}</VCol>
+        <VRow
+          align="center"
+          class="pb-2"
+        >
+          <VCol cols="1">
+            {{ t('system.settings.theme') }}
+          </VCol>
           <VCol>
             <AThemeSelect />
           </VCol>

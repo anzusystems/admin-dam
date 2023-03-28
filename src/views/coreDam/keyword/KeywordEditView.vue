@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveAndCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useKeywordEditActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import KeywordEditForm from '@/views/coreDam/keyword/components/KeywordEditForm.vue'
-
-const { t } = useI18n()
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -31,23 +27,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.keyword.meta.edit')" />
-  <ActionbarButtonsWrapper>
-    <AActionSaveButton
-      v-if="!detailLoading"
-      :loading="saveButtonLoading"
-      :disabled="saveAndCloseButtonLoading"
-      @save-record="onUpdate"
-    />
-    <AActionSaveAndCloseButton
-      v-if="!detailLoading"
-      :loading="saveAndCloseButtonLoading"
-      :disabled="saveButtonLoading"
-      @save-record-and-close="onUpdate(true)"
-    />
-    <AActionCloseButton :route-name="ROUTE.DAM.KEYWORD.LIST" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper>
+    <template #buttons>
+      <AActionSaveButton
+        v-if="!detailLoading"
+        :loading="saveButtonLoading"
+        :disabled="saveAndCloseButtonLoading"
+        @save-record="onUpdate"
+      />
+      <AActionCloseButton :route-name="ROUTE.DAM.KEYWORD.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <KeywordEditForm />
+    <VCardText>
+      <KeywordEditForm />
+    </VCardText>
   </ACard>
 </template>
