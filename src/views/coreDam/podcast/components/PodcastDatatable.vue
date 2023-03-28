@@ -87,7 +87,7 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #attributes.lastImportStatus="{ item }">
+        <template #item.attributes.lastImportStatus="{ item }">
           <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatus" />
         </template>
         <template #item.createdAt="{ item }">

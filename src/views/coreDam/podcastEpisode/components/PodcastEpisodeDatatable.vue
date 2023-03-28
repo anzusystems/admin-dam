@@ -3,11 +3,11 @@ import { onMounted } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
-  ADatatableOrdering,
   ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
-  ATableDetailButton, ATableEditButton,
+  ATableDetailButton,
+  ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
   useFilterHelpers,
@@ -37,7 +37,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = usePodcastEpisodeListActions()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: PodcastEpisode } }) => {
-  router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: item.raw.id } })
+  router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: props.podcastId, episodeId: item.raw.id } })
 }
 
 const getList = () => {
@@ -45,7 +45,13 @@ const getList = () => {
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'texts.title' }, { key: 'attributes.lastImportStatus' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [
+    { key: 'id' },
+    { key: 'texts.title' },
+    { key: 'attributes.lastImportStatus' },
+    { key: 'createdAt' },
+    { key: 'modifiedAt' },
+  ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
@@ -75,7 +81,6 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering @sort-by-change="sortByChange" />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -89,8 +94,8 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #attributes.lastImportStatus="{ item }">
-          <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatu" />
+        <template #item.attributes.lastImportStatus="{ item }">
+          <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatus" />
         </template>
         <template #item.createdAt="{ item }">
           <ADatetime :date-time="item.raw.createdAt" />

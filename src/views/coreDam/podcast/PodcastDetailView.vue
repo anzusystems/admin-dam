@@ -74,6 +74,7 @@ const afterPodcastEpisodeCreate = () => {
       <Acl :permission="ACL.DAM_PODCAST_UPDATE">
         <AActionEditButton
           v-if="!detailLoading"
+          variant="secondary"
           :record-id="podcastId"
           :route-name="ROUTE.DAM.PODCAST.EDIT"
         />

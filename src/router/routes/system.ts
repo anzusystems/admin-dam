@@ -1,4 +1,3 @@
-import HomepageView from '@/views/system/HomepageView.vue'
 import { ROUTE } from '@/router/routes'
 import { AUnauthorizedView } from '@anzusystems/common-admin'
 
@@ -11,6 +10,7 @@ export const systemRoutes = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
+      breadcrumbT: 'breadcrumb.settings',
     },
   },
   {

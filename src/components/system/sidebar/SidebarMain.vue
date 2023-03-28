@@ -12,6 +12,13 @@ const { t } = useI18n()
     nav
   >
     <VListItem
+      :to="{ name: ROUTE.DAM.ASSET.LIST }"
+      prepend-icon="mdi-home"
+      :title="t('sidebar.settings.backToAssets')"
+      data-cy="back-to-assets-settings"
+    />
+    <VDivider />
+    <VListItem
       :to="{ name: ROUTE.SYSTEM.SETTINGS }"
       prepend-icon="mdi-cog"
       :title="t('sidebar.settings.settings')"

@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-import { AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
@@ -17,13 +17,12 @@ const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const route = useRoute()
 const router = useRouter()
+const podcastId = route.params.id.toString()
 const id = route.params.episodeId.toString()
 
 const getDetail = () => {
   fetchData(id)
 }
-
-const { t } = useI18n()
 
 const closeRoute = computed(() => {
   if (podcastEpisode.value.podcast) {
@@ -58,31 +57,13 @@ onBeforeUnmount(() => {
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
         <AActionDeleteButton
           v-if="!detailLoading"
-          variant="outlined"
-          color="error"
-          :width="36"
-          :height="36"
           @delete-record="deletePodcast(id, onSuccessfulCallback)"
         />
       </Acl>
-      <VBtn
-        class="ml-2"
-        :to="closeRoute"
-        icon="mdi-close"
-        size="small"
-        variant="outlined"
-        :width="36"
-        :height="36"
-        data-cy="button-close"
-      >
-        <VIcon icon="mdi-close" />
-        <VTooltip
-          activator="parent"
-          location="bottom"
-        >
-          {{ t('common.button.close') }}
-        </VTooltip>
-      </VBtn>
+      <AActionCloseButton
+        :route-name="ROUTE.DAM.PODCAST.DETAIL"
+        :route-params="{ id: podcastId }"
+      />
     </template>
   </ActionbarWrapper>
 
