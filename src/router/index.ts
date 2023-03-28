@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { beforeEachRoute } from '@/router/beforeEachRoute'
-import NotFoundView from '@/views/system/NotFoundView.vue'
 import { systemRoutes } from '@/router/routes/system'
 import { ROUTE } from '@/router/routes'
 import { assetRoutes } from '@/router/routes/coreDam/asset'
@@ -20,10 +19,22 @@ import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
 import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
 import { videoShowEpisodeRoutes } from '@/router/routes/coreDam/videoShowEpisode'
 import { jobRoutes } from '@/router/routes/coreDam/job'
+import HomepageView from '@/views/system/HomepageView.vue'
+import { ANotFoundView } from '@anzusystems/common-admin'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: '/',
+      component: HomepageView,
+      name: ROUTE.SYSTEM.HOMEPAGE,
+      meta: {
+        requiresAuth: true,
+        requiredPermissions: [],
+        layout: 'AppLayoutFullscreen',
+      },
+    },
     ...assetRoutes,
     ...externalProviderRoutes,
     ...userRoutes,
@@ -44,7 +55,8 @@ const vueRouter = createRouter({
     ...systemRoutes,
     {
       path: '/:pathMatch(.*)*',
-      component: NotFoundView,
+      component: ANotFoundView,
+      props: { returnRouteName: ROUTE.SYSTEM.HOMEPAGE },
       name: ROUTE.SYSTEM.NOT_FOUND,
       meta: {
         requiresAuth: false,

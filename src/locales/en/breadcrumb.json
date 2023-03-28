@@ -1,0 +1,15 @@
+{
+  "coreDam": {
+    "asset": "Assets",
+    "assetLicence": "Asset licences",
+    "author": "Authors",
+    "distributionCategory": "Distribution categories",
+    "distributionCategorySelect": "Distribution category selects",
+    "podcast": "Podcasts",
+    "user": "Users",
+    "videoShow": "Video shows",
+    "extSystem": "External systems",
+    "keyword": "Keywords"
+  },
+  "settings": "Settings"
+}

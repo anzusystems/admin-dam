@@ -1,38 +1,51 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
-
-const PATH = '/distribution-category'
+import { AEmptyRouterView } from '@anzusystems/common-admin'
 
 export const distributionCategoryRoutes: RouteRecordRaw[] = [
   {
-    path: PATH + '/list',
-    name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST,
-    component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryListView.vue'),
+    path: '/distribution-category',
+    component: AEmptyRouterView,
     meta: {
       requiresAuth: true,
-      requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
-      layout: 'AppLayoutSidebar',
+      requiredPermissions: [],
+      layout: 'AppLayoutDrawer',
+      breadcrumbT: 'breadcrumb.coreDam.distributionCategory',
     },
-  },
-  {
-    path: PATH + '/:id',
-    name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL,
-    component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryDetailView.vue'),
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
-      layout: 'AppLayoutSidebar',
-    },
-  },
-  {
-    path: PATH + '/:id/edit',
-    name: ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT,
-    component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryEditView.vue'),
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW, ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE],
-      layout: 'AppLayoutSidebar',
-    },
+    children: [
+      {
+        path: '',
+        name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST,
+        component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryListView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
+          layout: 'AppLayoutSidebar',
+        },
+      },
+      {
+        path: ':id/edit',
+        name: ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT,
+        component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryEditView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW, ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE],
+          layout: 'AppLayoutSidebar',
+          breadcrumbT: 'common.system.breadcrumb.edit',
+        },
+      },
+      {
+        path: ':id',
+        name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL,
+        component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryDetailView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
+          layout: 'AppLayoutSidebar',
+          breadcrumbT: 'common.system.breadcrumb.detail',
+        },
+      },
+    ],
   },
 ]

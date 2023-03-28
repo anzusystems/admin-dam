@@ -31,7 +31,7 @@ const router = useRouter()
 
 const filter = usePermissionGroupListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
-const { fetchPermissionGroupList, permissionGroupList, loadingPermissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(
+const { fetchPermissionGroupList, permissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(
   props.client
 )
 const { can } = useAcl<AclValue>()
@@ -91,8 +91,8 @@ defineExpose({
       <VDataTableServer
         class="a-datatable"
         :headers="columnsVisible"
-        :items="listItems"
-        :items-length="listItems.length"
+        :items="permissionGroupList"
+        :items-length="permissionGroupList.length"
         item-value="id"
         @click:row="onRowClick"
       >

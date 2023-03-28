@@ -10,7 +10,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   AJobStatusChip,
   ATableCopyIdButton,
   ATableDetailButton,
