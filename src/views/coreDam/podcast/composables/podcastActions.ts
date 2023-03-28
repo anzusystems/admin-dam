@@ -19,7 +19,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
-const datatableHiddenColumns = ref<Array<string>>([])
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)

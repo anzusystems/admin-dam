@@ -13,7 +13,7 @@ import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/com
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = usePodcastDetailActions()
+const { detailLoading, fetchData, resetStore, podcast } = usePodcastDetailActions()
 const { listLoading } = usePodcastEpisodeListActions()
 
 const route = useRoute()
@@ -59,7 +59,7 @@ const afterPodcastEpisodeCreate = () => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="podcast.texts.title">
     <template #buttons>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_CREATE">
         <PodcastEpisodeCreateButton

@@ -5,12 +5,12 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@anzusystems/common-admin@npm:^0.0.43":
-  version: 0.0.43
-  resolution: "@anzusystems/common-admin@npm:0.0.43"
+"@anzusystems/common-admin@npm:^0.0.45":
+  version: 0.0.45
+  resolution: "@anzusystems/common-admin@npm:0.0.45"
   peerDependencies:
-    "@vuelidate/core": ^2.0.0
-    "@vuelidate/validators": ^2.0.0
+    "@vuelidate/core": ^2.0.1
+    "@vuelidate/validators": ^2.0.1
     "@vueuse/core": ^9.13.0
     "@vueuse/integrations": ^9.13.0
     axios: ^1.3.4
@@ -20,7 +20,7 @@ __metadata:
     vue: ^3.2.47
     vue-i18n: ^9.2.2
     vue-router: ^4.1.6
-    vuetify: ^3.1.11
+    vuetify: ^3.1.12
   peerDependenciesMeta:
     "@vueuse/core":
       optional: true
@@ -36,7 +36,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: edefa321e3a9acddb5da999331dd9788a276104247ded50cafdb6d1c66a952e9d4bccc7c16076ffa1a5348454250e01166031743772dc76f466b1438cbccf8ad
+  checksum: 1187aba958be7d14e116743b0f8be20619f6c38ab8c2e0dcd91e56f71d9c448a44a8447c89c9b34be7359670dcbafd575af999a5828df903dcf9da81c4276c64
   languageName: node
   linkType: hard
 
@@ -699,10 +699,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.18.21":
-  version: 16.18.21
-  resolution: "@types/node@npm:16.18.21"
-  checksum: 152e7976f30b4e599d37e5a92a0c62dbe0751a63dab1aef44a0c2db940fa6f79a23be9783886b6afe34aa20485679c6bdd7b787b304fdbb05e72326c95d2b255
+"@types/node@npm:^16.18.22":
+  version: 16.18.22
+  resolution: "@types/node@npm:16.18.22"
+  checksum: 0fa5b7ca37855125988eb90207b9ebd50cc9c30a559be6d69e53f7e4cc474ce514994012c806d2e83e03bf1f48705b7e3d1c45a424f6e11ee39818ee4c4c2c2d
   languageName: node
   linkType: hard
 
@@ -1356,12 +1356,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": ^0.0.43
+    "@anzusystems/common-admin": ^0.0.45
     "@cypress/grep": ^3.1.5
     "@intlify/unplugin-vue-i18n": ^0.10.0
     "@mdi/font": 7.2.96
     "@rushstack/eslint-patch": ^1.2.0
-    "@types/node": ^16.18.21
+    "@types/node": ^16.18.22
     "@types/uuid": ^9.0.1
     "@types/webfontloader": ^1.6.35
     "@typescript-eslint/parser": ^5.57.0
@@ -1375,10 +1375,10 @@ __metadata:
     "@vueuse/integrations": 9.13.0
     axios: ^1.3.4
     core-js: ^3.29.1
-    cypress: ^12.8.1
+    cypress: ^12.9.0
     cypress-mochawesome-reporter: ^3.3.0
     eslint: 8.36.0
-    eslint-plugin-cypress: ^2.12.1
+    eslint-plugin-cypress: ^2.13.1
     eslint-plugin-vue: ^9.10.0
     js-sha1: ^0.6.0
     jwt-decode: ^3.1.2
@@ -1402,7 +1402,7 @@ __metadata:
     vue-router: ^4.1.6
     vue-tsc: ^1.3.8
     vuedraggable: ^4.1.0
-    vuetify: ^3.1.11
+    vuetify: ^3.1.12
     webfontloader: ^1.6.28
   languageName: unknown
   linkType: soft
@@ -2204,9 +2204,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^12.8.1":
-  version: 12.8.1
-  resolution: "cypress@npm:12.8.1"
+"cypress@npm:^12.9.0":
+  version: 12.9.0
+  resolution: "cypress@npm:12.9.0"
   dependencies:
     "@cypress/request": ^2.88.10
     "@cypress/xvfb": ^1.2.4
@@ -2252,7 +2252,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: a229f2b3ff20b1b533f6d4670303596aef596a394db77ea8eafe2fa8f175b79b9d48ba66262513fa806076be5c857e159539f6d8fd9acf4df9936a2fa649bf1e
+  checksum: aad2278310fe4897b2c4e1f23e22f28992c83bcac945a6c350d077b1b2fb1805e44d5c58e19e2a9d63ca04aa3f9eabdd3c661cab0ce5dddd75c72702262ac89e
   languageName: node
   linkType: hard
 
@@ -2670,14 +2670,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-cypress@npm:^2.12.1":
-  version: 2.12.1
-  resolution: "eslint-plugin-cypress@npm:2.12.1"
+"eslint-plugin-cypress@npm:^2.13.1":
+  version: 2.13.1
+  resolution: "eslint-plugin-cypress@npm:2.13.1"
   dependencies:
     globals: ^11.12.0
   peerDependencies:
     eslint: ">= 3.2.1"
-  checksum: 1f1c36e149304e9a6f58e2292a761abad58274da33b3a48b24ad55ad20cbce3ac7467321f2b6fcb052f9563c89f67004de4766eba2e2bdbcb010a6a0666989cf
+  checksum: 99a84748328ad7dbdd8712815c4243b1b72d1449bdbe04e1aefee0af275fd72a47382be46a516dbc8064cd7f4993f8d6cfc5b991ca8ab600b99da0ce79fee25f
   languageName: node
   linkType: hard
 
@@ -6687,9 +6687,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.1.11":
-  version: 3.1.11
-  resolution: "vuetify@npm:3.1.11"
+"vuetify@npm:^3.1.12":
+  version: 3.1.12
+  resolution: "vuetify@npm:3.1.12"
   peerDependencies:
     vite-plugin-vuetify: ^1.0.0-alpha.12
     vue: ^3.2.0
@@ -6702,7 +6702,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: d9e3dd90b065e6321717ff5dbd450da470741d0e5595b15877b57aa57727ebdfb1b80d30e8bc54e59b46af79f5feede94bbf6aea907c5b1088bace49f10b61d2
+  checksum: 0dffa1691c6686f2588d558d963355082a143fc752acd3896dd82d943d65a867993fe480f510b9626eb34e70cfffc24c8f1c513562f89fd4f28cf68cd381ebee
   languageName: node
   linkType: hard
 

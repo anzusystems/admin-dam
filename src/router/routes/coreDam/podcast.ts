@@ -11,7 +11,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.podcast',
+      breadcrumbT: 'breadcrumb.coreDam.podcast.list',
     },
     children: [
       {
@@ -37,14 +37,47 @@ export const podcastRoutes: RouteRecordRaw[] = [
       },
       {
         path: ':id',
-        name: ROUTE.DAM.PODCAST.DETAIL,
-        component: () => import('@/views/coreDam/podcast/PodcastDetailView.vue'),
+        component: AEmptyRouterView,
         meta: {
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_PODCAST_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.podcast.detail',
         },
+        children: [
+          {
+            path: '',
+            name: ROUTE.DAM.PODCAST.DETAIL,
+            component: () => import('@/views/coreDam/podcast/PodcastDetailView.vue'),
+            meta: {
+              requiresAuth: true,
+              requiredPermissions: [ACL.DAM_PODCAST_VIEW],
+              layout: 'AppLayoutDrawer',
+            },
+          },
+          {
+            path: 'episode/:episodeId/edit',
+            name: ROUTE.DAM.PODCAST_EPISODE.EDIT,
+            component: () => import('@/views/coreDam/podcastEpisode/PodcastEpisodeEditView.vue'),
+            meta: {
+              requiresAuth: true,
+              requiredPermissions: [ACL.DAM_PODCAST_EPISODE_VIEW, ACL.DAM_PODCAST_EPISODE_UPDATE],
+              layout: 'AppLayoutDrawer',
+              breadcrumbT: 'common.system.breadcrumb.edit',
+            },
+          },
+          {
+            path: 'episode/:episodeId',
+            name: ROUTE.DAM.PODCAST_EPISODE.DETAIL,
+            component: () => import('@/views/coreDam/podcastEpisode/PodcastEpisodeDetailView.vue'),
+            meta: {
+              requiresAuth: true,
+              requiredPermissions: [ACL.DAM_PODCAST_EPISODE_VIEW],
+              layout: 'AppLayoutDrawer',
+              breadcrumbT: 'breadcrumb.coreDam.podcastEpisode.detail',
+            },
+          },
+        ],
       },
     ],
   },
