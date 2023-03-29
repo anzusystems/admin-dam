@@ -9,7 +9,7 @@ import { useAuthorDetailActions } from '@/views/coreDam/author/composables/autho
 import AuthorDetail from '@/views/coreDam/author/components/AuthorDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useAuthorDetailActions()
+const { detailLoading, fetchData, resetStore, author } = useAuthorDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -30,7 +30,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="author.name">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
         <AActionEditButton

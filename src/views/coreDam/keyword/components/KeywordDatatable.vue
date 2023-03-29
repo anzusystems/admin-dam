@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import {
+  ABooleanValue,
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -40,7 +41,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: Keyword } }) => {
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'name' }, { key: 'flags.reviewed' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [{ key: 'id' }, { key: 'name' }, { key: 'flags.reviewed' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
@@ -83,6 +84,18 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
+        <template #item.flags.reviewed="{ item }">
+          <ABooleanValue
+            chip
+            :value="item.raw.flags.reviewed"
+          />
+        </template>
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
         <template #item.actions="{ item }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />

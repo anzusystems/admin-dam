@@ -8,7 +8,7 @@ import { useKeywordDetailActions } from '@/views/coreDam/keyword/composables/key
 import KeywordDetail from '@/views/coreDam/keyword/components/KeywordDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useKeywordDetailActions()
+const { detailLoading, fetchData, resetStore, keyword } = useKeywordDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="keyword.name">
     <template #buttons>
       <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
         <AActionEditButton
