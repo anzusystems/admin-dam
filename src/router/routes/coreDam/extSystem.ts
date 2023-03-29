@@ -11,7 +11,7 @@ export const extSystemRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.extSystem',
+      breadcrumbT: 'breadcrumb.coreDam.extSystem.list',
     },
     children: [
       {
@@ -32,7 +32,7 @@ export const extSystemRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_EXT_SYSTEM_VIEW, ACL.DAM_EXT_SYSTEM_UPDATE],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.edit',
+          breadcrumbT: 'breadcrumb.coreDam.extSystem.edit',
         },
       },
       {
@@ -43,7 +43,7 @@ export const extSystemRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_EXT_SYSTEM_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.extSystem.detail',
         },
       },
     ],

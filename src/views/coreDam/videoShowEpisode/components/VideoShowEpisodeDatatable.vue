@@ -3,7 +3,6 @@ import { onMounted } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
-  ADatatableOrdering,
   ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
@@ -41,7 +40,7 @@ const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: VideoShowEpisode } }) => {
   if (item.raw.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
-    router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: item.raw.id } })
+    router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: props.videoShowId, episodeId: item.raw.id } })
   }
 }
 
@@ -80,7 +79,6 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering @sort-by-change="sortByChange" />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -104,11 +102,11 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <ATableDetailButton
-              :record-id="item.raw.id"
+              :route-params="{ id: props.videoShowId, episodeId: item.raw.id }"
               :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL"
             />
             <ATableEditButton
-              :record-id="item.raw.id"
+              :route-params="{ id: props.videoShowId, episodeId: item.raw.id }"
               :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT"
             />
           </div>

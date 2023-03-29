@@ -2,7 +2,6 @@
 import { useRoute, useRouter } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
-import { useI18n } from 'vue-i18n'
 import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
@@ -45,12 +44,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="podcastEpisode.texts.title">
     <template #buttons>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
         <AActionEditButton
           v-if="!detailLoading"
-          :record-id="id"
+          :route-params="{ id: podcastId, episodeId: id }"
           :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT"
         />
       </Acl>

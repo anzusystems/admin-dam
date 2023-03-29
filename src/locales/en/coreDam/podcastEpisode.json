@@ -26,11 +26,6 @@
   "button": {
     "create": "Add Episode"
   },
-  "meta": {
-    "create": "Add Episode",
-    "edit": "Podcast Episode Edit",
-    "detail": "Podcast Episode Detail"
-  },
   "common": {
     "addAssetToNewPodcastEpisode": "Add asset to new podcast episode",
     "noEntries": "Nothing to show"

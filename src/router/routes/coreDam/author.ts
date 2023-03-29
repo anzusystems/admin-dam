@@ -11,7 +11,7 @@ export const authorRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.author',
+      breadcrumbT: 'breadcrumb.coreDam.author.list',
     },
     children: [
       {
@@ -32,7 +32,7 @@ export const authorRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_AUTHOR_VIEW, ACL.DAM_AUTHOR_UPDATE],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.edit',
+          breadcrumbT: 'breadcrumb.coreDam.author.edit',
         },
       },
       {
@@ -43,7 +43,7 @@ export const authorRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_AUTHOR_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.author.detail',
         },
       },
     ],

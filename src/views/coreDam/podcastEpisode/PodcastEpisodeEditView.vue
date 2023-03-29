@@ -11,7 +11,7 @@ const route = useRoute()
 const podcastId = route.params.id.toString()
 const id = route.params.episodeId.toString()
 
-const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading } =
+const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading, podcastEpisode } =
   usePodcastEpisodeEditActions()
 
 const getData = () => {
@@ -28,7 +28,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="podcastEpisode.texts.title">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

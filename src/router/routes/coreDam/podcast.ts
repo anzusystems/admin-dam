@@ -32,7 +32,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_PODCAST_VIEW, ACL.DAM_PODCAST_UPDATE],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.edit',
+          breadcrumbT: 'breadcrumb.coreDam.podcast.edit',
         },
       },
       {

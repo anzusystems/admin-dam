@@ -63,18 +63,17 @@ const afterPodcastEpisodeCreate = () => {
     <template #buttons>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_CREATE">
         <PodcastEpisodeCreateButton
+          v-show="activeTab === PodcastDetailTab.Episodes"
           v-if="!detailLoading"
           data-cy="button-create"
-          button-t="coreDam.podcastEpisode.button.create"
           :podcast-id="podcastId"
-          disable-redirect
-          @after-create="afterPodcastEpisodeCreate"
+          @on-success="afterPodcastEpisodeCreate"
         />
       </Acl>
       <Acl :permission="ACL.DAM_PODCAST_UPDATE">
         <AActionEditButton
+          v-show="activeTab === PodcastDetailTab.Detail"
           v-if="!detailLoading"
-          variant="secondary"
           :record-id="podcastId"
           :route-name="ROUTE.DAM.PODCAST.EDIT"
         />
@@ -87,12 +86,6 @@ const afterPodcastEpisodeCreate = () => {
     v-model="activeTab"
     class="mb-4"
   >
-    <VTab
-      :value="PodcastDetailTab.Detail"
-      data-cy="podcast-list"
-    >
-      {{ t('coreDam.podcast.tabs.detail') }}
-    </VTab>
     <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
       <VTab
         :value="PodcastDetailTab.Episodes"
@@ -101,14 +94,13 @@ const afterPodcastEpisodeCreate = () => {
         {{ t('coreDam.podcast.tabs.episodes') }}
       </VTab>
     </Acl>
+    <VTab
+      :value="PodcastDetailTab.Detail"
+      data-cy="podcast-list"
+    >
+      {{ t('coreDam.podcast.tabs.detail') }}
+    </VTab>
   </VTabs>
-  <div v-show="activeTab === PodcastDetailTab.Detail">
-    <ACard :loading="detailLoading">
-      <VCardText>
-        <PodcastDetail />
-      </VCardText>
-    </ACard>
-  </div>
   <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
     <div v-show="activeTab === PodcastDetailTab.Episodes">
       <ACard :loading="listLoading">
@@ -121,4 +113,11 @@ const afterPodcastEpisodeCreate = () => {
       </ACard>
     </div>
   </Acl>
+  <div v-show="activeTab === PodcastDetailTab.Detail">
+    <ACard :loading="detailLoading">
+      <VCardText>
+        <PodcastDetail />
+      </VCardText>
+    </ACard>
+  </div>
 </template>

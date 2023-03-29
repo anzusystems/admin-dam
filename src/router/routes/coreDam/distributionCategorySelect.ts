@@ -11,7 +11,7 @@ export const distributionCategorySelectRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.distributionCategorySelect',
+      breadcrumbT: 'breadcrumb.coreDam.distributionCategorySelect.list',
     },
     children: [
       {
@@ -32,7 +32,7 @@ export const distributionCategorySelectRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW, ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.edit',
+          breadcrumbT: 'breadcrumb.coreDam.distributionCategorySelect.edit',
         },
       },
       {
@@ -43,7 +43,7 @@ export const distributionCategorySelectRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.distributionCategorySelect.detail',
         },
       },
     ],

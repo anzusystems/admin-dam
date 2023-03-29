@@ -11,7 +11,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.keyword',
+      breadcrumbT: 'breadcrumb.coreDam.keyword.list',
     },
     children: [
       {
@@ -32,7 +32,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_KEYWORD_VIEW, ACL.DAM_KEYWORD_UPDATE],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.edit',
+          breadcrumbT: 'breadcrumb.coreDam.keyword.edit',
         },
       },
       {
@@ -43,7 +43,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.keyword.detail',
         },
       },
     ],

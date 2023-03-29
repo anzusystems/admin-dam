@@ -49,6 +49,8 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'id' },
     { key: 'texts.title' },
     { key: 'attributes.lastImportStatus' },
+    { key: 'attributes.seasonNumber' },
+    { key: 'attributes.episodeNumber' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],

@@ -11,7 +11,7 @@ export const jobRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.keyword',
+      breadcrumbT: 'breadcrumb.coreDam.job.list',
     },
     children: [
       {
@@ -32,7 +32,7 @@ export const jobRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_JOB_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.job.detail',
         },
       },
     ],

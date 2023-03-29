@@ -11,7 +11,7 @@ export const assetLicenceRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.assetLicence',
+      breadcrumbT: 'breadcrumb.coreDam.assetLicence.list',
     },
     children: [
       {
@@ -32,7 +32,7 @@ export const assetLicenceRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_ASSET_LICENCE_VIEW, ACL.DAM_ASSET_LICENCE_UPDATE],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.edit',
+          breadcrumbT: 'breadcrumb.coreDam.assetLicence.edit',
         },
       },
       {
@@ -43,7 +43,7 @@ export const assetLicenceRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_ASSET_LICENCE_VIEW],
           layout: 'AppLayoutDrawer',
-          breadcrumbT: 'common.system.breadcrumb.detail',
+          breadcrumbT: 'breadcrumb.coreDam.assetLicence.detail',
         },
       },
     ],

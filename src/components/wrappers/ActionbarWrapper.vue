@@ -44,7 +44,7 @@ const breadcrumbs = computed(() => {
       if (index === array.length - 1 && props.lastBreadcrumbTitle) {
         final.push({
           disabled: false,
-          title: props.lastBreadcrumbTitle,
+          title: t(value.meta.breadcrumbT as string) + ': ' + props.lastBreadcrumbTitle,
           to: to,
         })
       } else if (value.meta.breadcrumbT) {
