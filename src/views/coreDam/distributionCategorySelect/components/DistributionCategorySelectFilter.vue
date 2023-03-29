@@ -41,17 +41,25 @@ const onAnyFilterUpdate = () => {
   >
     <AFilterWrapper
       :touched="touched"
+      enable-top
       @reset-filter="resetFilter"
     >
+      <template #top>
+        <VRow align="start">
+          <VCol
+            cols="12"
+            md="6"
+          >
+            <AFilterValueObjectOptionsSelect
+              v-model="filter.type"
+              :items="assetTypeOptions"
+              @change="submitFilter"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+      </template>
       <VRow align="start">
-        <VCol cols="12">
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.type"
-            :items="assetTypeOptions"
-            @change="submitFilter"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
         <VCol cols="1">
           <AFilterInteger
             v-model="filter.id"

@@ -2,7 +2,7 @@
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -58,7 +58,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: DistributionCategor
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
-    ...[{ key: 'name' }, { key: 'type' }],
+    ...[{ key: 'id' }, { key: 'name' }, { key: 'type' }],
     ...distributionServicesTableColumns.value,
     ...[{ key: 'createdAt' }, { key: 'modifiedAt' }],
   ],
@@ -104,6 +104,12 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
         <template #item.actions="{ item }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
@@ -130,6 +136,7 @@ defineExpose({
       </VDataTableServer>
     </div>
   </div>
+<!-- TODO TODO TODO  -->
 <!--  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">-->
 <!--    <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">-->
 <!--      <template #actions="{ data }">-->

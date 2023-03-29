@@ -32,45 +32,99 @@ const { logSystemOptions } = useLogSystem()
 </script>
 
 <template>
-  <VForm name="search" @submit.prevent="submitFilter">
-    <AFilterWrapper enable-advanced enable-top @reset-filter="resetFilter">
+  <VForm
+    name="search"
+    @submit.prevent="submitFilter"
+  >
+    <AFilterWrapper
+      enable-advanced
+      enable-top
+      @reset-filter="resetFilter"
+    >
       <VRow align="start">
-        <VCol class="pb-0" cols="12" sm="4">
-          <AFilterValueObjectOptionsSelect v-model="logFilter.levelName" :items="logLevelOptions" />
+        <VCol
+          class="pb-0"
+          cols="12"
+          sm="4"
+        >
+          <AFilterValueObjectOptionsSelect
+            v-model="logFilter.levelName"
+            :items="logLevelOptions"
+          />
         </VCol>
-        <VCol cols="12" sm="2">
+        <VCol
+          cols="12"
+          sm="2"
+        >
           <AFilterString v-model="logFilter.contextId" />
         </VCol>
-        <VCol cols="12" sm="3">
-          <AFilterDatetimePicker v-model="logFilter.datetimeFrom" disable-clearable />
+        <VCol
+          cols="12"
+          sm="3"
+        >
+          <AFilterDatetimePicker
+            v-model="logFilter.datetimeFrom"
+            disable-clearable
+          />
         </VCol>
-        <VCol cols="12" sm="3">
-          <AFilterDatetimePicker v-model="logFilter.datetimeTo" disable-clearable />
+        <VCol
+          cols="12"
+          sm="3"
+        >
+          <AFilterDatetimePicker
+            v-model="logFilter.datetimeTo"
+            disable-clearable
+          />
         </VCol>
       </VRow>
       <template #top>
         <VRow align="start">
-          <VCol class="pb-0" cols="12" sm="8">
-            <AFilterValueObjectOptionsSelect v-model="logFilter.system" :items="logSystemOptions" />
+          <VCol
+            class="pb-0"
+            cols="12"
+            sm="8"
+          >
+            <AFilterValueObjectOptionsSelect
+              v-model="logFilter.system"
+              :items="logSystemOptions"
+            />
           </VCol>
-          <VCol class="pb-0" cols="12" sm="4">
-            <AFilterValueObjectOptionsSelect v-model="logFilter.type" :items="logTypeOptions" />
+          <VCol
+            class="pb-0"
+            cols="12"
+            sm="4"
+          >
+            <AFilterValueObjectOptionsSelect
+              v-model="logFilter.type"
+              :items="logTypeOptions"
+            />
           </VCol>
         </VRow>
-        <VDivider class="mb-4" />
       </template>
       <template #advanced>
         <VRow align="start">
-          <VCol cols="12" sm="2">
+          <VCol
+            cols="12"
+            sm="2"
+          >
             <AFilterString v-model="logFilter.id" />
           </VCol>
-          <VCol cols="12" sm="6">
+          <VCol
+            cols="12"
+            sm="6"
+          >
             <AFilterString v-model="logFilter.message" />
           </VCol>
-          <VCol cols="12" sm="2">
+          <VCol
+            cols="12"
+            sm="2"
+          >
             <AFilterString v-model="logFilter.appVersion" />
           </VCol>
-          <VCol cols="12" sm="2">
+          <VCol
+            cols="12"
+            sm="2"
+          >
             <AFilterInteger v-model="logFilter.userId" />
           </VCol>
         </VRow>

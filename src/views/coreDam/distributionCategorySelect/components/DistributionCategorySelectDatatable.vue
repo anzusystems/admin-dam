@@ -2,7 +2,7 @@
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -44,7 +44,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: DistributionCategor
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'serviceSlug' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [{ key: 'id' }, { key: 'serviceSlug' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
@@ -85,6 +85,12 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
         <template #item.actions="{ item }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />

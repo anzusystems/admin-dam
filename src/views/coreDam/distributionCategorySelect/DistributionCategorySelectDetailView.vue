@@ -11,7 +11,7 @@ import DistributionCategorySelectDetail
   from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useDistributionCategorySelectDetailActions()
+const { detailLoading, fetchData, resetStore, distributionCategorySelect } = useDistributionCategorySelectDetailActions()
 
 const route = useRoute()
 const id = route.params.id.toString()
@@ -30,7 +30,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="distributionCategorySelect.id">
     <template #buttons>
       <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
         <AActionEditButton
