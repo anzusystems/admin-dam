@@ -11,7 +11,6 @@ export const assetRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.asset',
     },
     children: [
       {
@@ -32,7 +31,6 @@ export const assetRoutes: RouteRecordRaw[] = [
           requiresAuth: true,
           requiredPermissions: [ACL.DAM_ASSET_VIEW],
           layout: 'AppLayoutMain',
-          breadcrumbT: 'common.system.breadcrumb.detail',
         },
       },
     ],

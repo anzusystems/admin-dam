@@ -10,7 +10,7 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate } =
+const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, videoShow } =
   useVideoShowEditActions()
 
 const getData = () => {
@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="videoShow.texts.title">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

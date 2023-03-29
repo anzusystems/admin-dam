@@ -22,7 +22,6 @@ const afterCreate = () => {
       <Acl :permission="ACL.DAM_PODCAST_CREATE">
         <PodcastCreateButton
           data-cy="button-create"
-          disable-redirect
           @on-success="afterCreate"
         />
       </Acl>

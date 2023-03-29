@@ -17,7 +17,7 @@
     "list": "Video show List"
   },
   "tabs": {
-    "detail": "Detail",
-    "episodes": "Episodes"
+    "detail": "Video show detail",
+    "episodes": "Video show episodes"
   }
 }

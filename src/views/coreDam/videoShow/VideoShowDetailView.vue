@@ -13,7 +13,7 @@ import { useVideoShowEpisodeListActions } from '@/views/coreDam/videoShowEpisode
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useVideoShowDetailActions()
+const { detailLoading, fetchData, resetStore, videoShow } = useVideoShowDetailActions()
 const { listLoading } = useVideoShowEpisodeListActions()
 
 const route = useRoute()
@@ -59,20 +59,20 @@ const afterVideoShowEpisodeCreate = () => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="videoShow.texts.title">
     <template #buttons>
       <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_CREATE">
         <VideoShowEpisodeCreateButton
+          v-show="activeTab === VideoShowDetailTab.Episodes"
           v-if="!detailLoading"
           data-cy="button-create"
-          button-t="coreDam.videoShowEpisode.button.create"
           :video-show-id="videoShowId"
-          disable-redirect
-          @after-create="afterVideoShowEpisodeCreate"
+          @on-success="afterVideoShowEpisodeCreate"
         />
       </Acl>
       <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
         <AActionEditButton
+          v-show="activeTab === VideoShowDetailTab.Detail"
           v-if="!detailLoading"
           :record-id="videoShowId"
           :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT"
@@ -86,12 +86,6 @@ const afterVideoShowEpisodeCreate = () => {
     v-model="activeTab"
     class="mb-4"
   >
-    <VTab
-      :value="VideoShowDetailTab.Detail"
-      data-cy="videoShow-list"
-    >
-      {{ t('coreDam.videoShow.tabs.detail') }}
-    </VTab>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
       <VTab
         :value="VideoShowDetailTab.Episodes"
@@ -100,14 +94,13 @@ const afterVideoShowEpisodeCreate = () => {
         {{ t('coreDam.videoShow.tabs.episodes') }}
       </VTab>
     </Acl>
+    <VTab
+      :value="VideoShowDetailTab.Detail"
+      data-cy="videoShow-list"
+    >
+      {{ t('coreDam.videoShow.tabs.detail') }}
+    </VTab>
   </VTabs>
-  <div v-show="activeTab === VideoShowDetailTab.Detail">
-    <ACard :loading="detailLoading">
-      <VCardText>
-        <VideoShowDetail />
-      </VCardText>
-    </ACard>
-  </div>
   <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
     <div v-show="activeTab === VideoShowDetailTab.Episodes">
       <ACard :loading="listLoading">
@@ -120,4 +113,11 @@ const afterVideoShowEpisodeCreate = () => {
       </ACard>
     </div>
   </Acl>
+  <div v-show="activeTab === VideoShowDetailTab.Detail">
+    <ACard :loading="detailLoading">
+      <VCardText>
+        <VideoShowDetail />
+      </VCardText>
+    </ACard>
+  </div>
 </template>

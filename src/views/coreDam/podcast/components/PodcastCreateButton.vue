@@ -17,16 +17,13 @@ import type { Podcast } from '@/types/coreDam/Podcast'
 import { usePodcastValidation } from '@/views/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { ROUTE } from '@/router/routes'
 
 const props = withDefaults(
   defineProps<{
-    disableRedirect?: boolean
     buttonClass?: string
     dataCy?: string
   }>(),
   {
-    disableRedirect: false,
     buttonClass: 'ml-2',
     dataCy: '',
   }
@@ -62,8 +59,7 @@ const { v$ } = usePodcastValidation(podcast)
     v-model="dialog"
     :v="v$"
     :call-create="create"
-    :redirect-route-name="ROUTE.DAM.PODCAST.DETAIL"
-    :disable-redirect="disableRedirect"
+    disable-redirect
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"

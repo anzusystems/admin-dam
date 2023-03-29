@@ -14,10 +14,8 @@ import { distributionCategoryRoutes } from '@/router/routes/coreDam/distribution
 import { distributionCategorySelectRoutes } from '@/router/routes/coreDam/distributionCategorySelect'
 import { commonLogRoutes } from '@/router/common/log'
 import { podcastRoutes } from '@/router/routes/coreDam/podcast'
-import { podcastEpisodeRoutes } from '@/router/routes/coreDam/podcastEpisode'
 import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
 import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
-import { videoShowEpisodeRoutes } from '@/router/routes/coreDam/videoShowEpisode'
 import { jobRoutes } from '@/router/routes/coreDam/job'
 import HomepageView from '@/views/system/HomepageView.vue'
 import { ANotFoundView } from '@anzusystems/common-admin'
@@ -47,9 +45,7 @@ const vueRouter = createRouter({
     ...distributionCategoryRoutes,
     ...distributionCategorySelectRoutes,
     ...podcastRoutes,
-    ...podcastEpisodeRoutes,
     ...videoShowRoutes,
-    ...videoShowEpisodeRoutes,
     ...jobRoutes,
     ...commonLogRoutes,
     ...systemRoutes,

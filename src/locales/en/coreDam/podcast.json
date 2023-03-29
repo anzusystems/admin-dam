@@ -26,8 +26,8 @@
     "list": "Podcasts List"
   },
   "tabs": {
-    "detail": "Detail",
-    "episodes": "Episodes"
+    "detail": "Podcast detail",
+    "episodes": "Podcast episodes"
   },
   "lastImportStatus": {
     "notImported": "Not imported",
