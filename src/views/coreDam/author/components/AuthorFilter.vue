@@ -3,7 +3,7 @@ import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
 import { useI18n } from 'vue-i18n'
 import {
-  AFilterBooleanGroup,
+  AFilterBooleanSelect,
   AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
@@ -73,7 +73,7 @@ const { authorTypeOptions } = useAuthorType()
           />
         </VCol>
         <VCol cols="2">
-          <AFilterBooleanGroup
+          <AFilterBooleanSelect
             v-model="filter.reviewed"
             :label="t('coreDam.author.filter.reviewed')"
             @update:model-value="onAnyFilterUpdate"

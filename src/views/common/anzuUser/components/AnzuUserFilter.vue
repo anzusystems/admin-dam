@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
-import { AFilterBooleanGroup, AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterBooleanSelect, AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 
 const emit = defineEmits<{
@@ -58,7 +58,7 @@ const onAnyFilterUpdate = () => {
           cols="12"
           sm="5"
         >
-          <AFilterBooleanGroup
+          <AFilterBooleanSelect
             v-model="filter.enabled"
             @update:model-value="onAnyFilterUpdate"
           />

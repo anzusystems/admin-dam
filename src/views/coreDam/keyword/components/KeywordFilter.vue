@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterBooleanGroup, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterBooleanSelect, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { ref } from 'vue'
 
@@ -49,7 +49,7 @@ const onAnyFilterUpdate = () => {
           />
         </VCol>
         <VCol cols="2">
-          <AFilterBooleanGroup
+          <AFilterBooleanSelect
             v-model="filter.reviewed"
             @update:model-value="onAnyFilterUpdate"
           />
