@@ -13,7 +13,15 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate } =
+const {
+  saveButtonLoading,
+  saveAndCloseButtonLoading,
+  detailLoading,
+  fetchData,
+  resetStore,
+  onUpdate,
+  distributionCategorySelect,
+} =
   useDistributionCategorySelectEditActions()
 
 const getData = () => {
@@ -30,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="distributionCategorySelect.id">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"
