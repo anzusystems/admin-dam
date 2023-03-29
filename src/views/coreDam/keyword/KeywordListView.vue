@@ -16,7 +16,6 @@ const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 const { listLoading } = useKeywordListActions()
 
 const afterCreate = () => {
-  // todo check why timeout is needed
   setTimeout(() => {
     datatable.value?.refresh()
   }, 1000)
@@ -30,7 +29,7 @@ const afterCreate = () => {
         <KeywordCreateButton
           data-cy="button-create"
           disable-redirect
-          @after-create="afterCreate"
+          @on-success="afterCreate"
         />
       </Acl>
     </template>

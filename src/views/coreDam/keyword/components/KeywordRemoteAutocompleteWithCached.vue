@@ -114,16 +114,30 @@ const itemSlotIsSelected = (item: DocId) => {
       <template #item="{ props: itemProps, item }">
         <VListItem v-bind="itemProps">
           <template #prepend>
-            <VCheckboxBtn :model-value="itemSlotIsSelected(item.value)" :ripple="false" />
+            <VCheckboxBtn
+              :model-value="itemSlotIsSelected(item.value)"
+              :ripple="false"
+            />
           </template>
           <template #title>
-            <div v-if="item.title?.length > 0">{{ item.title }}</div>
-            <KeywordRemoteAutocompleteCachedKeywordChip v-else :id="item.value" :key="item.value" :queue-id="queueId" />
+            <div v-if="item.title?.length > 0">
+              {{ item.title }}
+            </div>
+            <KeywordRemoteAutocompleteCachedKeywordChip
+              v-else
+              :id="item.value"
+              :key="item.value"
+              :queue-id="queueId"
+            />
           </template>
         </VListItem>
       </template>
       <template #chip="{ item }">
-        <KeywordRemoteAutocompleteCachedKeywordChip :id="item.value" :key="item.value" :queue-id="queueId" />
+        <KeywordRemoteAutocompleteCachedKeywordChip
+          :id="item.value"
+          :key="item.value"
+          :queue-id="queueId"
+        />
       </template>
     </AFormRemoteAutocompleteWithCached>
     <div>
@@ -132,7 +146,7 @@ const itemSlotIsSelected = (item: DocId) => {
         :initial-value="addNewKeywordText"
         disable-redirect
         :disabled="disabled"
-        @after-create="afterCreate"
+        @on-success="afterCreate"
       />
     </div>
   </div>
