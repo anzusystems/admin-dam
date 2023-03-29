@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValidationScope } from '@anzusystems/common-admin'
 import {
+  ADialogToolbar,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
@@ -44,7 +45,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'afterCreate', data: Author): void
+  (e: 'onSuccess', data: Author): void
 }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -80,7 +81,7 @@ const onConfirm = async () => {
       return
     }
     const res = await createAuthor(author.value)
-    emit('afterCreate', res)
+    emit('onSuccess', res)
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
@@ -97,17 +98,16 @@ const { authorTypeOptions } = useAuthorType()
 </script>
 
 <template>
-  <VBtn
+  <ABtnPrimary
     v-if="variant === 'button'"
     :class="buttonClass"
     :data-cy="dataCy"
-    color="success"
     :disabled="disabled"
     rounded="pill"
     @click.stop="onClick"
   >
     {{ t(buttonT) }}
-  </VBtn>
+  </ABtnPrimary>
   <VBtn
     v-else
     :class="buttonClass"
@@ -119,17 +119,31 @@ const { authorTypeOptions } = useAuthorType()
     @click.stop="onClick"
   >
     <VIcon icon="mdi-plus" />
-    <VTooltip activator="parent" location="bottom">{{ t('coreDam.author.button.add') }}</VTooltip>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('coreDam.author.button.add') }}
+    </VTooltip>
   </VBtn>
-  <VDialog v-model="dialog" persistent>
-    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
-      <VCardTitle class="d-flex pr-2">
-        <span>{{ t('coreDam.author.meta.create') }}</span>
-        <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
-      </VCardTitle>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+  <VDialog
+    v-model="dialog"
+    persistent
+  >
+    <VCard
+      v-if="dialog"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('coreDam.author.meta.create') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <ARow>
             <AFormTextField
               v-model="author.name"
@@ -158,16 +172,23 @@ const { authorTypeOptions } = useAuthorType()
               @keyup.enter="onConfirm"
             />
           </ARow>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="success" btn-helper="create" data-cy="button-confirm" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="buttonLoading"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t(buttonT) }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

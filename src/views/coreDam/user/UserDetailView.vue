@@ -8,7 +8,7 @@ import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useUserDetailActions()
+const { detailLoading, fetchData, resetStore, user } = useUserDetailActions()
 
 const route = useRoute()
 const id = stringToInt(route.params.id)
@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="user.id + ''">
     <template #buttons>
       <Acl :permission="ACL.DAM_USER_UPDATE">
         <AActionEditButton
@@ -39,6 +39,7 @@ onBeforeUnmount(() => {
           v-if="!detailLoading"
           :record-id="id"
           :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
+          variant="secondary"
           button-t="coreDam.user.button.editPermissions"
         />
       </Acl>

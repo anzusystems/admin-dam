@@ -59,7 +59,7 @@ const create = async () => {
       {{ t('coreDam.podcastEpisode.button.create') }}
     </template>
     <template #title>
-      {{ t('coreDam.podcastEpisode.button.create') }}
+      {{ t('coreDam.podcastEpisode.meta.create') }}
     </template>
     <template #content>
       <ASystemEntityScope

@@ -40,12 +40,15 @@ const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: VideoShowEpisode } }) => {
   if (item.raw.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
-    router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: props.videoShowId, episodeId: item.raw.id } })
+    router.push({
+      name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL,
+      params: { id: props.videoShowId, episodeId: item.raw.id },
+    })
   }
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [{ key: 'id' }, { key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

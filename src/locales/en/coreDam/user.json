@@ -24,10 +24,7 @@
     "email": "Email"
   },
   "meta": {
-    "create": "Create User",
-    "edit": "Edit User",
-    "detail": "User detail",
-    "list": "List of Users"
+    "create": "Create user"
   },
   "button": {
     "editPermissions": "Edit Permissions"

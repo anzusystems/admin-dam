@@ -9,7 +9,7 @@ import AssetLicenceDetail from '@/views/coreDam/assetLicence/components/AssetLic
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useAssetLicenceDetailActions()
+const { detailLoading, fetchData, resetStore, assetLicence } = useAssetLicenceDetailActions()
 
 const route = useRoute()
 const id = stringToInt(route.params.id)
@@ -30,7 +30,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="assetLicence.name">
     <template #buttons>
       <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
         <AActionEditButton

@@ -12,10 +12,7 @@
     "reviewed": "Reviewed"
   },
   "meta": {
-    "create": "Keyword Create",
-    "edit": "Keyword Edit",
-    "detail": "Keyword Detail",
-    "list": "Keywords List"
+    "create": "Keyword create"
   },
   "button": {
     "add": "Add new keyword"

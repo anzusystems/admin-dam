@@ -42,7 +42,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: User } }) => {
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'email' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [{ key: 'id' }, { key: 'email' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

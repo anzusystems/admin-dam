@@ -13,7 +13,7 @@ const { t } = useI18n()
 const route = useRoute()
 const id = stringToInt(route.params.id)
 
-const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, extSystem } =
   useExtSystemEditActions()
 
 const getData = () => {
@@ -30,7 +30,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="extSystem.name">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

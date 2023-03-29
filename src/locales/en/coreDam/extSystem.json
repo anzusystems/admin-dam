@@ -9,10 +9,5 @@
     "id": "ID",
     "name": "Name",
     "slug": "Slug"
-  },
-  "meta": {
-    "edit": "Edit External System",
-    "detail": "External System Detail",
-    "list": "List of External Systems"
   }
 }
