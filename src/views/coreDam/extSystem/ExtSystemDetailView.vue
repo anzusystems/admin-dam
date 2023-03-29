@@ -9,7 +9,7 @@ import { useExtSystemDetailActions } from '@/views/coreDam/extSystem/composables
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore } = useExtSystemDetailActions()
+const { detailLoading, fetchData, resetStore, extSystem } = useExtSystemDetailActions()
 
 const route = useRoute()
 const id = stringToInt(route.params.id)
@@ -30,7 +30,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="extSystem.name">
     <template #buttons>
       <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
         <AActionEditButton

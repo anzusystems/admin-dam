@@ -22,10 +22,7 @@
     "agency": "Agency"
   },
   "meta": {
-    "create": "Author Create",
-    "edit": "Author Edit",
-    "detail": "Author Detail",
-    "list": "Authors List"
+    "create": "Author Create"
   },
   "button": {
     "add": "Add new author"

@@ -59,6 +59,9 @@ const create = async () => {
     @on-open="onOpen"
     @on-success="emit('onSuccess', $event)"
   >
+    <template #title>
+      {{ t('coreDam.videoShow.meta.create') }}
+    </template>
     <template #content>
       <ASystemEntityScope
         :system="SYSTEM_CORE_DAM"

@@ -10,7 +10,7 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt(route.params.id)
 
-const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, user } =
   useUserEditActions()
 
 const getData = () => {
@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="user.id + ''">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"
@@ -40,6 +40,7 @@ onBeforeUnmount(() => {
     </template>
   </ActionbarWrapper>
 
+  {{ userUpdate }}
   <ACard :loading="detailLoading">
     <VCardText>
       <UserEditForm />

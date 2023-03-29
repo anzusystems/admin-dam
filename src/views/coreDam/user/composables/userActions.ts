@@ -16,7 +16,7 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const { fetchCachedExtSystems, addToCachedExtSystems } = useCachedExtSystems()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
-const datatableHiddenColumns = ref<Array<string>>([])
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -76,7 +76,7 @@ export const useUserEditActions = () => {
   const v$ = useVuelidate()
   const router = useRouter()
   const userOneStore = useUserOneStore()
-  const { userUpdate } = storeToRefs(userOneStore)
+  const { userUpdate, user } = storeToRefs(userOneStore)
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
@@ -114,6 +114,7 @@ export const useUserEditActions = () => {
   }
 
   return {
+    user,
     detailLoading,
     saveButtonLoading,
     saveAndCloseButtonLoading,

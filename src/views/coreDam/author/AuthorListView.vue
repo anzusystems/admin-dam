@@ -27,7 +27,7 @@ const afterCreate = () => {
         <AuthorCreateButton
           data-cy="button-create"
           disable-redirect
-          @after-create="afterCreate"
+          @on-success="afterCreate"
         />
       </Acl>
     </template>

@@ -131,7 +131,10 @@ onMounted(() => {
       <template #item="{ props: itemSlotProps, item: itemSlotItem }">
         <VListItem v-bind="itemSlotProps">
           <template #prepend>
-            <VCheckboxBtn :model-value="itemSlotIsSelected(itemSlotItem.value)" :ripple="false" />
+            <VCheckboxBtn
+              :model-value="itemSlotIsSelected(itemSlotItem.value)"
+              :ripple="false"
+            />
           </template>
           <template #title>
             <AuthorRemoteAutocompleteCachedAuthorChip
@@ -156,11 +159,14 @@ onMounted(() => {
         :initial-value="addNewAuthorText"
         disable-redirect
         :disabled="disabled"
-        @after-create="afterCreate"
+        @on-success="afterCreate"
       />
     </div>
   </div>
-  <div v-if="!disabled && authorConflicts && authorConflicts.length > 0" class="d-flex flex-column">
+  <div
+    v-if="!disabled && authorConflicts && authorConflicts.length > 0"
+    class="d-flex flex-column"
+  >
     <div>
       <span class="text-caption">{{ t('coreDam.author.conflicts') }}</span>
     </div>

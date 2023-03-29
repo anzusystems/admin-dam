@@ -41,7 +41,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: VideoShow } }) => {
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [{ key: 'id' }, { key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

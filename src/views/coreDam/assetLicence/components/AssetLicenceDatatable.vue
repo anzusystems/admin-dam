@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -41,6 +41,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: AssetLicence } }) =
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
+    { key: 'id' },
     { key: 'name' },
     { key: 'extSystem' },
     { key: 'extId' },
@@ -94,6 +95,12 @@ defineExpose({
             :id="item.raw.extSystem"
             variant="text"
           />
+        </template>
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
         <template #item.actions="{ item }">
           <div class="d-flex justify-end">

@@ -11,10 +11,5 @@
     "id": "ID",
     "name": "Name",
     "type": "Asset Type"
-  },
-  "meta": {
-    "edit": "Edit Distribution category select",
-    "detail": "Detail Distribution category select",
-    "list": "List of Distribution category selects"
   }
 }

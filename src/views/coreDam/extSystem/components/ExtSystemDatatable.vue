@@ -35,7 +35,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: ExtSystem } }) => {
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'name' }, { key: 'slug' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  [{ key: 'id' }, { key: 'name' }, { key: 'slug' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

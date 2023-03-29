@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import {
+  ABooleanValue,
+  AChipNoLink,
   ADatatableConfigButton,
   ADatatableOrdering,
   ADatatablePagination,
@@ -22,6 +24,7 @@ import type { Author } from '@/types/coreDam/Author'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
+import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'
 
 const router = useRouter()
 const filter = useAuthorListFilter()
@@ -39,6 +42,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: Author } }) => {
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
+    { key: 'id' },
     { key: 'name' },
     { key: 'identifier' },
     { key: 'type' },
@@ -88,10 +92,14 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #type="{ item }">
-          <VChip size="small">
-            {{ getAuthorTypeOption(item.raw.type)?.title }}
-          </VChip>
+        <template #item.type="{ item }">
+          <AuthorTypeChip :type="item.raw.type" />
+        </template>
+        <template #item.flags.reviewed="{ item }">
+          <ABooleanValue
+            chip
+            :value="item.raw.flags.reviewed"
+          />
         </template>
         <template #item.createdAt="{ item }">
           <ADatetime :date-time="item.raw.createdAt" />
