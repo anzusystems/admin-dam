@@ -59,41 +59,43 @@ watch(
   <ActionbarWrapper />
 
   <ACard :loading="listLoading">
-    <LogFilter
-      @submit-filter="submitFilter"
-      @reset-filter="resetFilter"
-    />
-    <VTabs
-      v-if="systems.length > 1"
-      v-model="activeTab"
-      color="primary"
-    >
-      <VTab
-        v-for="system in logFilter.system.model"
-        :key="system"
-        :value="system"
-      >
-        <span>{{ system }}</span>
-        <VChip
-          v-if="counts[system]"
-          class="ml-1"
-          size="small"
-        >
-          {{ counts[system] }}
-        </VChip>
-      </VTab>
-    </VTabs>
-    <div
-      v-for="system in logFilter.system.model"
-      v-show="system === activeTab"
-      :key="system"
-    >
-      <LogDatatable
-        :key="system"
-        :ref="(el: any) => { datatables[system] = el }"
-        :system="system"
-        @count-change="updateCount($event, system)"
+    <VCardText>
+      <LogFilter
+        @submit-filter="submitFilter"
+        @reset-filter="resetFilter"
       />
-    </div>
+      <VTabs
+        v-if="systems.length > 1"
+        v-model="activeTab"
+        color="primary"
+      >
+        <VTab
+          v-for="system in logFilter.system.model"
+          :key="system"
+          :value="system"
+        >
+          <span>{{ system }}</span>
+          <VChip
+            v-if="counts[system]"
+            class="ml-1"
+            size="small"
+          >
+            {{ counts[system] }}
+          </VChip>
+        </VTab>
+      </VTabs>
+      <div
+        v-for="system in logFilter.system.model"
+        v-show="system === activeTab"
+        :key="system"
+      >
+        <LogDatatable
+          :key="system"
+          :ref="(el: any) => { datatables[system] = el }"
+          :system="system"
+          @count-change="updateCount($event, system)"
+        />
+      </div>
+    </VCardText>
   </ACard>
 </template>
