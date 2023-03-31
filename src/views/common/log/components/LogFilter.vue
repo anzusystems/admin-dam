@@ -10,6 +10,7 @@ import {
   useLogLevel,
 } from '@anzusystems/common-admin'
 import { useLogSystem } from '@/model/common/valueObject/LogSystem'
+import { ref } from 'vue'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -17,13 +18,20 @@ const emit = defineEmits<{
 }>()
 
 const logFilter = useLogFilter()
+const touched = ref(false)
 
 const submitFilter = () => {
+  touched.value = false
   emit('submitFilter')
 }
 
 const resetFilter = () => {
+  touched.value = false
   emit('resetFilter')
+}
+
+const onAnyFilterUpdate = () => {
+  touched.value = true
 }
 
 const { logTypeOptions } = useLogType()
@@ -37,6 +45,7 @@ const { logSystemOptions } = useLogSystem()
     @submit.prevent="submitFilter"
   >
     <AFilterWrapper
+      :touched="touched"
       enable-advanced
       enable-top
       @reset-filter="resetFilter"
@@ -56,7 +65,10 @@ const { logSystemOptions } = useLogSystem()
           cols="12"
           sm="2"
         >
-          <AFilterString v-model="logFilter.contextId" />
+          <AFilterString
+            v-model="logFilter.contextId"
+            @update:model-value="onAnyFilterUpdate"
+          />
         </VCol>
         <VCol
           cols="12"
@@ -65,6 +77,7 @@ const { logSystemOptions } = useLogSystem()
           <AFilterDatetimePicker
             v-model="logFilter.datetimeFrom"
             disable-clearable
+            @update:model-value="onAnyFilterUpdate"
           />
         </VCol>
         <VCol
@@ -74,6 +87,7 @@ const { logSystemOptions } = useLogSystem()
           <AFilterDatetimePicker
             v-model="logFilter.datetimeTo"
             disable-clearable
+            @update:model-value="onAnyFilterUpdate"
           />
         </VCol>
       </VRow>
@@ -87,6 +101,7 @@ const { logSystemOptions } = useLogSystem()
             <AFilterValueObjectOptionsSelect
               v-model="logFilter.system"
               :items="logSystemOptions"
+              @update:model-value="onAnyFilterUpdate"
             />
           </VCol>
           <VCol
@@ -97,6 +112,7 @@ const { logSystemOptions } = useLogSystem()
             <AFilterValueObjectOptionsSelect
               v-model="logFilter.type"
               :items="logTypeOptions"
+              @update:model-value="onAnyFilterUpdate"
             />
           </VCol>
         </VRow>
@@ -107,25 +123,37 @@ const { logSystemOptions } = useLogSystem()
             cols="12"
             sm="2"
           >
-            <AFilterString v-model="logFilter.id" />
+            <AFilterString
+              v-model="logFilter.id"
+              @update:model-value="onAnyFilterUpdate"
+            />
           </VCol>
           <VCol
             cols="12"
             sm="6"
           >
-            <AFilterString v-model="logFilter.message" />
+            <AFilterString
+              v-model="logFilter.message"
+              @update:model-value="onAnyFilterUpdate"
+            />
           </VCol>
           <VCol
             cols="12"
             sm="2"
           >
-            <AFilterString v-model="logFilter.appVersion" />
+            <AFilterString
+              v-model="logFilter.appVersion"
+              @update:model-value="onAnyFilterUpdate"
+            />
           </VCol>
           <VCol
             cols="12"
             sm="2"
           >
-            <AFilterInteger v-model="logFilter.userId" />
+            <AFilterInteger
+              v-model="logFilter.userId"
+              @update:model-value="onAnyFilterUpdate"
+            />
           </VCol>
         </VRow>
       </template>

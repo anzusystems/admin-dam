@@ -3,7 +3,7 @@ import type { Log } from '@anzusystems/common-admin'
 import {
   ACopyText,
   ADatatableConfigButton,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
   isNull,
@@ -14,6 +14,7 @@ import { ROUTE } from '@/router/routes'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import type { LogSystem } from '@/model/common/valueObject/LogSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -58,8 +59,7 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
 pagination.sortBy = 'id'
 
 const getList = async () => {
-  // filter.contextAppSystem.model = props.system
-  // filter.contextAppSystem.touched = true
+  filter.contextAppSystem.model = props.system as LogSystem
   await fetchList(props.system, pagination, filter)
   emit('countChange', calculateCount())
 }
