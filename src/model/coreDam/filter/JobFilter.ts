@@ -6,16 +6,26 @@ const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, 'job')
 
 const filter = reactive({
   id: {
-    ...makeFilter({ name: 'id' }),
+    ...makeFilter({ name: 'id', titleT: 'common.job.filter.id' }),
   },
   status: {
-    ...makeFilter({ name: 'status', variant: 'in' }),
+    ...makeFilter({ name: 'status', variant: 'in', titleT: 'common.job.filter.status' }),
   },
   startedAtFrom: {
-    ...makeFilter({ name: 'startedAtFrom', field: 'startedAt', variant: 'gte' }),
+    ...makeFilter({
+      name: 'startedAtFrom',
+      field: 'startedAt',
+      variant: 'gte',
+      titleT: 'common.job.filter.startedAtFrom',
+    }),
   },
   startedAtUntil: {
-    ...makeFilter({ name: 'startedAtUntil', field: 'startedAt', variant: 'lte' }),
+    ...makeFilter({
+      name: 'startedAtUntil',
+      field: 'startedAt',
+      variant: 'lte',
+      titleT: 'common.job.filter.startedAtUntil',
+    }),
   },
 })
 

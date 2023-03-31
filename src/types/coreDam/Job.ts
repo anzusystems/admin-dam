@@ -1,7 +1,9 @@
-import type { Job as BaseJob } from '@anzusystems/common-admin'
+import type { DocIdNullable, JobBase, JobUserDataDelete } from '@anzusystems/common-admin'
 import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
 
-export interface Job extends BaseJob<JobResource> {
-  podcastId: string
+export interface JobPodcastSynchronizer extends JobBase<JobResource> {
+  podcastId: DocIdNullable
   fullSync: boolean
 }
+
+export type Job = JobUserDataDelete | JobPodcastSynchronizer

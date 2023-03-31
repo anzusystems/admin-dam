@@ -3,19 +3,20 @@ import { useRouter } from 'vue-router'
 import { useJobListFilter } from '@/model/coreDam/filter/JobFilter'
 import { useJobListActions } from '@/views/coreDam/job/composables/jobActions'
 import { ROUTE } from '@/router/routes'
-import type { Job } from '@/types/coreDam/Job'
 import { onMounted } from 'vue'
 import JobFilter from '@/views/coreDam/job/components/JobFilter.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination, ADatetime,
+  ADatatablePagination,
+  ADatetime,
   AJobStatusChip,
   ATableCopyIdButton,
   ATableDetailButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
+  type JobUserDataDelete,
   useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
@@ -23,6 +24,7 @@ import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
 import { useI18n } from 'vue-i18n'
 import { ACL, type AclValue } from '@/types/Permission'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
+import type { Job, JobPodcastSynchronizer } from '@/types/coreDam/Job'
 
 const router = useRouter()
 const filter = useJobListFilter()
@@ -96,11 +98,17 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #_resourceName="{ item }">
+        <template #item._resourceName="{ item }">
           <JobResourceChip :value="item.raw._resourceName" />
         </template>
-        <template #status="{ item }">
+        <template #item.status="{ item }">
           <AJobStatusChip :value="item.raw.status" />
+        </template>
+        <template #item.startedAt="{ item }">
+          <ADatetime :date-time="item.raw.startedAt" />
+        </template>
+        <template #item.finishedAt="{ item }">
+          <ADatetime :date-time="item.raw.finishedAt" />
         </template>
         <template #item.createdAt="{ item }">
           <ADatetime :date-time="item.raw.createdAt" />

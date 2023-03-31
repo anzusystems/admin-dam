@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { AActionCloseButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import {
+  AActionCloseButton,
+  ACard, AJobDetailCommon,
+  isUndefined,
+  JOB_RESOURCE_USER_DATA_DELETE,
+  stringToInt
+} from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useJobDetailActions } from '@/views/coreDam/job/composables/jobActions'
-import JobDetail from '@/views/coreDam/job/components/JobDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import JobDetailPodcastSynchronizer from '@/views/coreDam/job/components/JobDetailPodcastSynchronizer.vue'
+import JobDetailUserDataDelete from '@/views/coreDam/job/components/JobDetailUserDataDelete.vue'
+import { JOB_RESOURCE_PODCAST_SYNCHRONIZER } from '@/model/coreDam/valueObject/JobResource'
 
-const { detailLoading, fetchData, resetStore } = useJobDetailActions()
+const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 
 const route = useRoute()
 const id = stringToInt(route.params.id)
@@ -15,6 +23,18 @@ const id = stringToInt(route.params.id)
 const getDetail = () => {
   fetchData(id)
 }
+
+const jobComponent = computed(() => {
+  if (isUndefined(job.value)) return AJobDetailCommon
+  switch (job.value._resourceName) {
+    case JOB_RESOURCE_PODCAST_SYNCHRONIZER:
+      return JobDetailPodcastSynchronizer
+    case JOB_RESOURCE_USER_DATA_DELETE:
+      return JobDetailUserDataDelete
+    default:
+      return AJobDetailCommon
+  }
+})
 
 onMounted(() => {
   getDetail()
@@ -34,7 +54,12 @@ onBeforeUnmount(() => {
 
   <ACard :loading="detailLoading">
     <VCardText>
-      <JobDetail />
+      <component
+        :is="jobComponent"
+        v-if="job"
+        :job="job"
+        :loading="detailLoading"
+      />
     </VCardText>
   </ACard>
 </template>
