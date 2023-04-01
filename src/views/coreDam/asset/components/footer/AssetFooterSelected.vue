@@ -56,7 +56,12 @@ const onClearConfirm = async () => {
     :class="'asset-footer--' + footerViewSelected + ' asset-footer__selected--' + footerViewSelected"
   >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
+      <VToolbar
+        class="w-100"
+        :color="toolbarColor"
+        density="compact"
+        :height="48"
+      >
         <div class="d-flex px-2">
           <div>
             <span class="text-caption font-weight-bold">
@@ -76,7 +81,11 @@ const onClearConfirm = async () => {
           >
             {{ t('coreDam.asset.selected.edit') }}
           </VBtn>
-          <AssetFooterSelectedButtonClear v-show="showFullSelected" variant="small" @confirm="onClearConfirm" />
+          <AssetFooterSelectedButtonClear
+            v-show="showFullSelected"
+            variant="small"
+            @confirm="onClearConfirm"
+          />
           <VBtn
             v-show="showMinimalSelected"
             icon
@@ -88,7 +97,12 @@ const onClearConfirm = async () => {
             @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.hide') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.hide') }}
+            </VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
@@ -101,7 +115,12 @@ const onClearConfirm = async () => {
             @click.stop="setCompactSelected"
           >
             <VIcon icon="mdi-chevron-up" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.show') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.show') }}
+            </VTooltip>
           </VBtn>
         </div>
       </VToolbar>

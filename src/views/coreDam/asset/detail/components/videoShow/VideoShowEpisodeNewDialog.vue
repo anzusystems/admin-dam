@@ -95,11 +95,21 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation :width="500">
+  <VDialog
+    v-model="value"
+    persistent
+    no-click-animation
+    :width="500"
+  >
     <VCard v-if="value">
-      <VToolbar class="pl-2" density="compact">
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}</div>
+          <div class="text-h6">
+            {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -113,8 +123,14 @@ onMounted(async () => {
           />
         </VToolbarItems>
       </VToolbar>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+      <ASystemEntityScope
+        :system="SYSTEM_CORE_DAM"
+        :subject="ENTITY"
+      >
+        <VContainer
+          class="pa-4"
+          fluid
+        >
           <ARow>
             <VideoShowRemoteAutocomplete
               v-model="videoShowEpisode.videoShow"
@@ -122,8 +138,14 @@ onMounted(async () => {
               :label="t('coreDam.videoShowEpisode.model.videoShow')"
             />
           </ARow>
-          <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
-            <VProgressCircular indeterminate color="primary" />
+          <div
+            v-if="loadingFormData"
+            class="d-flex w-100 justify-center align-center pa-2"
+          >
+            <VProgressCircular
+              indeterminate
+              color="primary"
+            />
           </div>
           <template v-if="videoShowEpisode.videoShow && !loadingFormData">
             <ARow>
@@ -138,8 +160,19 @@ onMounted(async () => {
       </ASystemEntityScope>
       <VCardActions>
         <VSpacer />
-        <VBtn color="success" :loading="saving" @click.stop="submit">{{ t('common.button.add') }}</VBtn>
-        <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
+        <VBtn
+          color="success"
+          :loading="saving"
+          @click.stop="submit"
+        >
+          {{ t('common.button.add') }}
+        </VBtn>
+        <VBtn
+          text
+          @click.stop="closeDialog(false)"
+        >
+          {{ t('common.button.cancel') }}
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -56,11 +56,25 @@ const showCancel = computed(() => {
               :size="16"
               :width="3"
               :model-value="loadingProgress ? loadingProgress : undefined"
-            >
-            </VProgressCircular>
-            <VIcon v-else-if="item.error.hasError" icon="mdi-alert" color="error" :size="16" />
-            <VIcon v-else-if="item.isDuplicate" icon="mdi-alert" color="warning" :size="16" />
-            <VIcon v-else icon="mdi-check" color="success" :size="16" />
+            />
+            <VIcon
+              v-else-if="item.error.hasError"
+              icon="mdi-alert"
+              color="error"
+              :size="16"
+            />
+            <VIcon
+              v-else-if="item.isDuplicate"
+              icon="mdi-alert"
+              color="warning"
+              :size="16"
+            />
+            <VIcon
+              v-else
+              icon="mdi-check"
+              color="success"
+              :size="16"
+            />
           </div>
           <VBtn
             v-if="showCancel"
@@ -71,11 +85,21 @@ const showCancel = computed(() => {
             class="dam-upload-queue__item-remove"
             @click.stop="cancelItem"
           >
-            <VIcon icon="mdi-close-circle-outline" :size="16" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
+            <VIcon
+              icon="mdi-close-circle-outline"
+              :size="16"
+            />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.cancel') }}
+            </VTooltip>
           </VBtn>
         </div>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
+        <div class="text-caption line-clamp-1">
+          {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
+        </div>
       </div>
     </div>
   </div>

@@ -19,7 +19,11 @@ const href = computed(() => {
 </script>
 
 <template>
-  <VBtn :href="href" target="_blank">
-    <slot></slot>
+  <VBtn
+    :href="href"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <slot />
   </VBtn>
 </template>

@@ -43,15 +43,40 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <VBtn variant="flat" :data-cy="dataCy" icon :width="buttonSize" :height="buttonSize" @click.stop="onClick">
+  <VBtn
+    variant="flat"
+    :data-cy="dataCy"
+    icon
+    :width="buttonSize"
+    :height="buttonSize"
+    @click.stop="onClick"
+  >
     <VIcon icon="mdi-close" />
-    <VTooltip activator="parent" location="bottom">{{ t('system.upload.stop') }}</VTooltip>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.upload.stop') }}
+    </VTooltip>
   </VBtn>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
-    <VCard v-if="dialog" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
+  <VDialog
+    v-model="dialog"
+    persistent
+    :width="500"
+    no-click-animation
+  >
+    <VCard
+      v-if="dialog"
+      data-cy="delete-panel"
+    >
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.upload.stopConfirmQuestion') }}</div>
+          <div class="text-h6">
+            {{ t('system.upload.stopConfirmQuestion') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -67,10 +92,21 @@ const { t } = useI18n()
       </VToolbar>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+        <VBtn
+          color="secondary"
+          text
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="error" data-cy="button-confirm" @click.stop="onConfirm">{{ t('system.upload.stop') }}</VBtn>
+        <VBtn
+          color="error"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
+          {{ t('system.upload.stop') }}
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -3,7 +3,7 @@ import { createAppInitialize, useAppInitialize } from '@/composables/system/appI
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
 import { damPubConfigInitialized, loadDamPubConfig } from '@/services/DamConfigService'
-import { initLoadLanguageMessages, initLanguageMessagesLoaded } from '@/loadLanguageMessages'
+import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 
 export const beforeEachRoute = async (
   to: RouteLocationNormalized,

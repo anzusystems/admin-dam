@@ -52,8 +52,19 @@ watch(
 </script>
 
 <template>
-  <VChip size="small" closable close-icon="mdi-plus" @click:close="clickClose">
+  <VChip
+    size="small"
+    closable
+    close-icon="mdi-plus"
+    @click:close="clickClose"
+  >
     {{ displayTitle }}
-    <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
+    <VProgressCircular
+      v-if="!loaded"
+      :size="12"
+      :width="2"
+      indeterminate
+      class="mx-1"
+    />
   </VChip>
 </template>

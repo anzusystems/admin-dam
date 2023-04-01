@@ -3,9 +3,9 @@ import type { Log } from '@anzusystems/common-admin'
 import {
   ACopyText,
   ADatatableConfigButton,
-  ADatatablePagination, ADatetime,
+  ADatatablePagination,
+  ADatetime,
   createDatatableColumnsConfig,
-  type DatatableOrderingOption,
   isNull,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
@@ -41,7 +41,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: Log } }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'datetime' },
@@ -78,11 +78,6 @@ const calculateCount = () => {
     return pagination.hasNextPage ? max + 1 + '+' : max + ''
   }
   return pagination.totalCount + ''
-}
-
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
 }
 
 onMounted(() => {

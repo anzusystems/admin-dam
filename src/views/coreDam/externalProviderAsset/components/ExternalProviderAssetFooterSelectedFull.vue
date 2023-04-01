@@ -48,13 +48,18 @@ const onImport = () => {
     class="asset-footer__selected pa-0"
     :class="
       'asset-footer--' +
-      externalProviderFooterViewSelected +
-      ' asset-footer__selected--' +
-      externalProviderFooterViewSelected
+        externalProviderFooterViewSelected +
+        ' asset-footer__selected--' +
+        externalProviderFooterViewSelected
     "
   >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar class="w-100 system-border-b" :color="toolbarColor" density="compact" :height="64">
+      <VToolbar
+        class="w-100 system-border-b"
+        :color="toolbarColor"
+        density="compact"
+        :height="64"
+      >
         <div class="d-flex align-center pa-2">
           <div>
             <span class="text-subtitle-2">{{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}</span>
@@ -62,11 +67,24 @@ const onImport = () => {
         </div>
         <VSpacer />
         <div class="d-flex align-center">
-          <VBtn color="primary" variant="flat" :height="36" class="mr-2" rounded="pill" @click.stop="onImport">
+          <VBtn
+            color="primary"
+            variant="flat"
+            :height="36"
+            class="mr-2"
+            rounded="pill"
+            @click.stop="onImport"
+          >
             {{ t('coreDam.asset.selected.import') }} ({{ queueTotalCount }})
           </VBtn>
-          <AssetFooterSelectedButtonClear variant="normal" @confirm="onClearConfirm" />
-          <VDivider vertical class="mx-4 my-2" />
+          <AssetFooterSelectedButtonClear
+            variant="normal"
+            @confirm="onClearConfirm"
+          />
+          <VDivider
+            vertical
+            class="mx-4 my-2"
+          />
           <VBtn
             v-show="showMinimalSelected"
             icon

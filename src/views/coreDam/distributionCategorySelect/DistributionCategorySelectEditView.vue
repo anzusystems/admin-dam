@@ -3,11 +3,8 @@ import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/commo
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import {
-  useDistributionCategorySelectEditActions
-} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
-import DistributionCategorySelectEditForm
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
+import { useDistributionCategorySelectEditActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import DistributionCategorySelectEditForm from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -21,8 +18,7 @@ const {
   resetStore,
   onUpdate,
   distributionCategorySelect,
-} =
-  useDistributionCategorySelectEditActions()
+} = useDistributionCategorySelectEditActions()
 
 const getData = () => {
   fetchData(id)

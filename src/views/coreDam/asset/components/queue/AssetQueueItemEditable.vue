@@ -145,7 +145,13 @@ const showCancel = computed(() => {
 </script>
 
 <template>
-  <VCol xxl="2" xl="3" md="4" sm="6" cols="12">
+  <VCol
+    xxl="2"
+    xl="3"
+    md="4"
+    sm="6"
+    cols="12"
+  >
     <div class="dam-upload-queue__item">
       <div class="dam-upload-queue__item-card">
         <div class="position-relative">
@@ -167,9 +173,21 @@ const showCancel = computed(() => {
             v-if="item.isDuplicate"
             class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
           >
-            <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
-            <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
-            <AssetLink v-if="item.duplicateAssetId" :asset-id="item.duplicateAssetId" variant="text" size="small">
+            <VIcon
+              icon="mdi-alert"
+              class="ma-1"
+              size="x-small"
+              color="warning"
+            />
+            <div class="text-warning">
+              {{ t('coreDam.asset.queueItem.duplicate') }}
+            </div>
+            <AssetLink
+              v-if="item.duplicateAssetId"
+              :asset-id="item.duplicateAssetId"
+              variant="text"
+              size="small"
+            >
               {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
             </AssetLink>
           </div>
@@ -177,16 +195,35 @@ const showCancel = computed(() => {
             v-if="item.error.hasError"
             class="dam-upload-queue__overlay dam-upload-queue__overlay--error d-flex align-center justify-center flex-column"
           >
-            <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
-            <div class="text-error">{{ t('coreDam.asset.queueItem.error') }}</div>
-            <div v-if="item.error.message.length" class="text-caption" v-text="item.error.message" />
+            <VIcon
+              icon="mdi-alert"
+              class="ma-1"
+              size="x-small"
+              color="error"
+            />
+            <div class="text-error">
+              {{ t('coreDam.asset.queueItem.error') }}
+            </div>
+            <div
+              v-if="item.error.message.length"
+              class="text-caption"
+              v-text="item.error.message"
+            />
             <div v-else-if="item.error.assetFileFailReason !== AssetFileFailReason.None">
               <AssetFileFailReasonChip :reason="item.error.assetFileFailReason" />
             </div>
-            <div v-else class="text-caption">{{ t('system.uploadErrors.unknownError') }}</div>
+            <div
+              v-else
+              class="text-caption"
+            >
+              {{ t('system.uploadErrors.unknownError') }}
+            </div>
           </div>
         </div>
-        <VRow dense class="my-2">
+        <VRow
+          dense
+          class="my-2"
+        >
           <VCol>
             <div class="w-100 d-flex justify-space-between align-center">
               <div>
@@ -208,9 +245,20 @@ const showCancel = computed(() => {
                   button-t="coreDam.asset.queueItem.copyAssetId"
                   size="small"
                 />
-                <VBtn v-if="showCancel" icon size="small" variant="text" @click.stop="cancelItem">
+                <VBtn
+                  v-if="showCancel"
+                  icon
+                  size="small"
+                  variant="text"
+                  @click.stop="cancelItem"
+                >
                   <VIcon icon="mdi-close-circle-outline" />
-                  <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
+                  <VTooltip
+                    activator="parent"
+                    location="bottom"
+                  >
+                    {{ t('common.button.cancel') }}
+                  </VTooltip>
                 </VBtn>
                 <AActionDeleteButton
                   variant="text"
@@ -222,18 +270,33 @@ const showCancel = computed(() => {
             </div>
           </VCol>
         </VRow>
-        <VRow v-if="item.displayTitle" dense class="my-2 mb-3 mt-0 text-caption">
+        <VRow
+          v-if="item.displayTitle"
+          dense
+          class="my-2 mb-3 mt-0 text-caption"
+        >
           <VCol class="pt-0">
             {{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}
             <span v-if="item.file?.size">&nbsp;({{ prettyBytes(item.file.size) }})</span>
           </VCol>
         </VRow>
         <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
-          <AssetCustomMetadataForm v-if="item" v-model="customData" :asset-type="assetType">
+          <AssetCustomMetadataForm
+            v-if="item"
+            v-model="customData"
+            :asset-type="assetType"
+          >
             <template #after-pinned>
-              <VRow v-if="keywordEnabled" dense class="my-2">
+              <VRow
+                v-if="keywordEnabled"
+                dense
+                class="my-2"
+              >
                 <VCol>
-                  <ASystemEntityScope subject="keyword" system="dam">
+                  <ASystemEntityScope
+                    subject="keyword"
+                    system="dam"
+                  >
                     <KeywordRemoteAutocompleteWithCached
                       v-model="keywords"
                       :queue-id="queueId"
@@ -247,9 +310,16 @@ const showCancel = computed(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow v-if="authorEnabled" dense class="my-2">
+              <VRow
+                v-if="authorEnabled"
+                dense
+                class="my-2"
+              >
                 <VCol>
-                  <ASystemEntityScope subject="author" system="dam">
+                  <ASystemEntityScope
+                    subject="author"
+                    system="dam"
+                  >
                     <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
                       :queue-id="queueId"

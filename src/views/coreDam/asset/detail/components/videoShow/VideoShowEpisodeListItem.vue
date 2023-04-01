@@ -17,7 +17,9 @@ const { t } = useI18n()
   <div class="pa-4 pb-8 text-body-2">
     <VRow>
       <VCol>
-        <div class="font-weight-bold">{{ item.texts.title }}</div>
+        <div class="font-weight-bold">
+          {{ item.texts.title }}
+        </div>
       </VCol>
     </VRow>
     <VRow>

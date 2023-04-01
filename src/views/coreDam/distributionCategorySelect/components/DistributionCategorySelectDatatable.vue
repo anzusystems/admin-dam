@@ -2,7 +2,8 @@
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination, ADatetime,
+  ADatatablePagination,
+  ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -17,12 +18,9 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
 import { onMounted } from 'vue'
-import {
-  useDistributionCategorySelectListActions
-} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import { useDistributionCategorySelectListActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
-import DistributionCategorySelectFilter
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
+import DistributionCategorySelectFilter from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
 
 const router = useRouter()

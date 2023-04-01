@@ -97,21 +97,54 @@ watch(
 </script>
 
 <template>
-  <div v-if="isFailed" class="text-caption">{{ t('system.imagePreview.status.isFailedInfo') }}</div>
-  <div v-else-if="isProcessing" class="text-caption">{{ t('system.imagePreview.status.isProcessingInfo') }}</div>
+  <div
+    v-if="isFailed"
+    class="text-caption"
+  >
+    {{ t('system.imagePreview.status.isFailedInfo') }}
+  </div>
+  <div
+    v-else-if="isProcessing"
+    class="text-caption"
+  >
+    {{ t('system.imagePreview.status.isProcessingInfo') }}
+  </div>
   <div v-if="!isProcessing">
-    <VImg v-if="loading" :width="width" :height="height" :max-height="300" class="asset-image asset-image--loading-bg">
+    <VImg
+      v-if="loading"
+      :width="width"
+      :height="height"
+      :max-height="300"
+      class="asset-image asset-image--loading-bg"
+    >
       <template #placeholder />
       <template #default>
         <div class="d-flex w-100 h-100 align-center justify-center">
-          <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />
+          <VProgressCircular
+            color="primary"
+            indeterminate
+            class="ml-auto mr-auto"
+          />
         </div>
       </template>
     </VImg>
-    <VImg v-else :width="width" :height="height" :max-height="300" :src="src" contain />
+    <VImg
+      v-else
+      :width="width"
+      :height="height"
+      :max-height="300"
+      :src="src"
+      contain
+    />
     <div v-if="showActions">
       <slot name="actions-start" />
-      <VBtn variant="flat" class="my-2 mr-2" color="secondary" size="small" @click.stop="dialog = true">
+      <VBtn
+        variant="flat"
+        class="my-2 mr-2"
+        color="secondary"
+        size="small"
+        @click.stop="dialog = true"
+      >
         {{ t('system.imagePreview.actions.replaceByFileId') }}
       </VBtn>
       <VBtn
@@ -126,11 +159,24 @@ watch(
       </VBtn>
       <slot name="actions-end" />
     </div>
-    <VDialog v-model="dialog" persistent :width="500" no-click-animation>
-      <VCard v-if="dialog" data-cy="delete-panel">
-        <VToolbar class="pl-2" density="compact">
+    <VDialog
+      v-model="dialog"
+      persistent
+      :width="500"
+      no-click-animation
+    >
+      <VCard
+        v-if="dialog"
+        data-cy="delete-panel"
+      >
+        <VToolbar
+          class="pl-2"
+          density="compact"
+        >
           <div class="d-block pl-0 w-100">
-            <div class="text-h6">{{ t('system.imagePreview.actions.replaceByFileId') }}</div>
+            <div class="text-h6">
+              {{ t('system.imagePreview.actions.replaceByFileId') }}
+            </div>
           </div>
           <VSpacer />
           <VToolbarItems>
@@ -145,12 +191,27 @@ watch(
           </VToolbarItems>
         </VToolbar>
         <VCardText>
-          <VTextField v-model="newFileId" :label="t('system.imagePreview.model.fileId')" />
+          <VTextField
+            v-model="newFileId"
+            :label="t('system.imagePreview.model.fileId')"
+          />
         </VCardText>
         <VCardActions>
           <VSpacer />
-          <VBtn text data-cy="button-cancel" @click.stop="onCancel">{{ t('common.button.cancel') }}</VBtn>
-          <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm">{{ t('common.button.confirm') }}</VBtn>
+          <VBtn
+            text
+            data-cy="button-cancel"
+            @click.stop="onCancel"
+          >
+            {{ t('common.button.cancel') }}
+          </VBtn>
+          <VBtn
+            color="success"
+            data-cy="button-confirm"
+            @click.stop="onConfirm"
+          >
+            {{ t('common.button.confirm') }}
+          </VBtn>
         </VCardActions>
       </VCard>
     </VDialog>

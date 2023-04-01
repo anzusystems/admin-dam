@@ -11,13 +11,18 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.distributionCategory.model.name')" :value="distributionCategory.name" />
+      <ARow
+        :title="t('coreDam.distributionCategory.model.name')"
+        :value="distributionCategory.name"
+      />
       <ARow
         v-for="(option, serviceName) in distributionCategorySelectedOptions"
         :key="serviceName"
         :title="serviceName + ''"
       >
-        <VChip size="small">{{ option?.name ?? '-' }}</VChip>
+        <VChip size="small">
+          {{ option?.name ?? '-' }}
+        </VChip>
       </ARow>
     </VCol>
     <VCol cols="4">

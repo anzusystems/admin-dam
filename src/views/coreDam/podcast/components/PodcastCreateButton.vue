@@ -18,7 +18,7 @@ import { usePodcastValidation } from '@/views/coreDam/podcast/composables/podcas
 import { usePodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     buttonClass?: string
     dataCy?: string

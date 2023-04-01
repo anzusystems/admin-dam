@@ -61,7 +61,10 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.user.model.id')">
         <ACopyText :value="user.id" />
       </ARow>
-      <ARow :title="t('coreDam.user.model.email')" :value="user.email" />
+      <ARow
+        :title="t('coreDam.user.model.email')"
+        :value="user.email"
+      />
       <AUserAndTimeTrackingFields :data="user" />
     </VCol>
   </VRow>

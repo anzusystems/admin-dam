@@ -25,9 +25,15 @@ const { podcastModeOptions } = usePodcastMode()
 </script>
 
 <template>
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+  <ASystemEntityScope
+    :system="SYSTEM_CORE_DAM"
+    :subject="ENTITY"
+  >
     <VRow>
-      <VCol cols="12" md="8">
+      <VCol
+        cols="12"
+        md="8"
+      >
         <ARow>
           <AFormTextField
             v-model="podcast.texts.title"
@@ -65,9 +71,15 @@ const { podcastModeOptions } = usePodcastMode()
           />
         </ARow>
       </VCol>
-      <VCol cols="12" md="4">
+      <VCol
+        cols="12"
+        md="4"
+      >
         <ARow>
-          <ImagePreview v-model="podcast.imagePreview" show-actions />
+          <ImagePreview
+            v-model="podcast.imagePreview"
+            show-actions
+          />
         </ARow>
       </VCol>
     </VRow>

@@ -47,12 +47,25 @@ const onRemove = () => {
 </script>
 
 <template>
-  <VListItem :title="t('coreDam.asset.slots.actions.remove')" @click.stop="openDialog" />
-  <VDialog v-model="dialog" persistent :width="600" no-click-animation>
+  <VListItem
+    :title="t('coreDam.asset.slots.actions.remove')"
+    @click.stop="openDialog"
+  />
+  <VDialog
+    v-model="dialog"
+    persistent
+    :width="600"
+    no-click-animation
+  >
     <VCard v-if="dialog">
-      <VToolbar class="pl-2" density="compact">
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('common.modal.system.confirmDelete') }}</div>
+          <div class="text-h6">
+            {{ t('common.modal.system.confirmDelete') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -67,26 +80,59 @@ const onRemove = () => {
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <div v-if="showUnset" class="mb-2">{{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}</div>
-        <div v-else class="mb-2">{{ t('coreDam.asset.slots.remove.descriptionOnlyRemove') }}</div>
-        <div v-if="item" class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
+        <div
+          v-if="showUnset"
+          class="mb-2"
+        >
+          {{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}
+        </div>
+        <div
+          v-else
+          class="mb-2"
+        >
+          {{ t('coreDam.asset.slots.remove.descriptionOnlyRemove') }}
+        </div>
+        <div
+          v-if="item"
+          class="mb-1"
+        >
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.name') }}:
+          </div>
           {{ item.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.file') }}:
+          </div>
           {{ fileTitle }}
         </div>
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn v-if="showUnset" color="warning" text data-cy="button-unset" @click.stop="onUnset">
+        <VBtn
+          v-if="showUnset"
+          color="warning"
+          text
+          data-cy="button-unset"
+          @click.stop="onUnset"
+        >
           {{ t('coreDam.asset.slots.remove.unsetSlot') }}
         </VBtn>
-        <VBtn color="error" text data-cy="button-remove" @click.stop="onRemove">
+        <VBtn
+          color="error"
+          text
+          data-cy="button-remove"
+          @click.stop="onRemove"
+        >
           {{ t('coreDam.asset.slots.remove.removeFile') }}
         </VBtn>
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+        <VBtn
+          color="secondary"
+          text
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </VBtn>
       </VCardActions>

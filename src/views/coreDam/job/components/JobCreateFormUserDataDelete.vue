@@ -5,9 +5,9 @@ import {
   ARow,
   type JobUserDataDelete,
   useAlerts,
+  useCommonJobFactory,
   useJobApi,
   useValidate,
-  useCommonJobFactory,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'

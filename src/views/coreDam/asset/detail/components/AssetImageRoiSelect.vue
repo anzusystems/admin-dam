@@ -101,7 +101,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <VProgressCircular v-if="imageRoiStore.loader" indeterminate color="primary" />
+  <VProgressCircular
+    v-if="imageRoiStore.loader"
+    indeterminate
+    color="primary"
+  />
   <VueCropper
     v-if="showCropper"
     :key="imageRoiStore.timestampCropper"

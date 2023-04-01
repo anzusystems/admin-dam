@@ -33,31 +33,57 @@ const imageSrc = computed(() => {
   <div class="dam-upload-queue__item">
     <div class="dam-upload-queue__item-card">
       <div class="position-relative">
-        <AssetImage :src="imageSrc" background-color="#ccc" use-component cover :aspect-ratio="IMAGE_ASPECT_RATIO" />
+        <AssetImage
+          :src="imageSrc"
+          background-color="#ccc"
+          use-component
+          cover
+          :aspect-ratio="IMAGE_ASPECT_RATIO"
+        />
       </div>
-      <VRow dense class="my-2">
+      <VRow
+        dense
+        class="my-2"
+      >
         <VCol>
           <div class="w-100 d-flex justify-space-between align-center">
             <div />
-            <VBtn icon="mdi-trash-can-outline" variant="text" size="small" @click.stop="remove" />
+            <VBtn
+              icon="mdi-trash-can-outline"
+              variant="text"
+              size="small"
+              @click.stop="remove"
+            />
           </div>
         </VCol>
       </VRow>
       <VRow class="text-caption">
         <VCol>{{ t('coreDam.asset.externalProvider.id') }}</VCol>
-        <VCol cols="9">{{ item.externalProviderAssetId }}</VCol>
+        <VCol cols="9">
+          {{ item.externalProviderAssetId }}
+        </VCol>
       </VRow>
       <VRow class="text-caption">
         <VCol>{{ t('coreDam.asset.detail.info.field.type') }}</VCol>
-        <VCol cols="9">{{ item.assetType }}</VCol>
+        <VCol cols="9">
+          {{ item.assetType }}
+        </VCol>
       </VRow>
       <VRow class="text-caption">
         <VCol>{{ t('coreDam.asset.externalProvider.title') }}</VCol>
-        <VCol cols="9">{{ item.displayTitle }}</VCol>
+        <VCol cols="9">
+          {{ item.displayTitle }}
+        </VCol>
       </VRow>
-      <VRow v-for="(value, key) in item.externalProviderMetadata" :key="key" class="text-caption">
+      <VRow
+        v-for="(value, key) in item.externalProviderMetadata"
+        :key="key"
+        class="text-caption"
+      >
         <VCol>{{ key }}</VCol>
-        <VCol cols="9"><ExternalProviderAssetMetadataItem :value="value" /></VCol>
+        <VCol cols="9">
+          <ExternalProviderAssetMetadataItem :value="value" />
+        </VCol>
       </VRow>
     </div>
   </div>

@@ -48,7 +48,13 @@ const href = computed(() => {
 </script>
 
 <template>
-  <VBtn v-if="href" :href="href" target="_blank" :loading="loading">
-    <slot></slot>
+  <VBtn
+    v-if="href"
+    :href="href"
+    target="_blank"
+    rel="noopener noreferrer"
+    :loading="loading"
+  >
+    <slot />
   </VBtn>
 </template>

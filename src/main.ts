@@ -10,7 +10,13 @@ import { loadEnvConfig } from '@/services/EnvConfigService'
 import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { type LanguageCode, AnzuSystemsCommonAdmin, i18n, loadCommonFonts, type PluginOptions } from '@anzusystems/common-admin'
+import {
+  AnzuSystemsCommonAdmin,
+  i18n,
+  type LanguageCode,
+  loadCommonFonts,
+  type PluginOptions,
+} from '@anzusystems/common-admin'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { AclValue } from '@/types/Permission'
 import '@anzusystems/common-admin/styles'

@@ -226,17 +226,35 @@ watch(
     @update:search="onSearchUpdate"
   >
     <template #label>
-      <span v-if="!hideLabel" :key="requiredComputed + ''">
-        {{ labelComputed }}<span v-if="requiredComputed" class="required" />
+      <span
+        v-if="!hideLabel"
+        :key="requiredComputed + ''"
+      >
+        {{ labelComputed
+        }}<span
+          v-if="requiredComputed"
+          class="required"
+        />
       </span>
     </template>
     <template #chip="{ props: chipProps, item }">
-      <slot name="chip" :props="chipProps" :item="item">
-        <VChip v-bind="chipProps" :text="item.title" />
+      <slot
+        name="chip"
+        :props="chipProps"
+        :item="item"
+      >
+        <VChip
+          v-bind="chipProps"
+          :text="item.title"
+        />
       </slot>
     </template>
     <template #item="{ props: itemProps, item }">
-      <slot name="item" :props="itemProps" :item="item">
+      <slot
+        name="item"
+        :props="itemProps"
+        :item="item"
+      >
         <VListItem :props="itemProps" />
       </slot>
     </template>

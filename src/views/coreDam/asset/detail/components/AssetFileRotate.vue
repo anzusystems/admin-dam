@@ -36,15 +36,34 @@ const { t } = useI18n()
 
 <template>
   <div>
-    <div class="text-caption">{{ t('coreDam.asset.detail.roi.rotate.rotateMainFileImage') }}</div>
-    <div v-if="loading" class="w-100 d-flex align-center justify-center">
-      <VProgressCircular indeterminate color="primary" />
+    <div class="text-caption">
+      {{ t('coreDam.asset.detail.roi.rotate.rotateMainFileImage') }}
+    </div>
+    <div
+      v-if="loading"
+      class="w-100 d-flex align-center justify-center"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
     <div v-else>
-      <VBtn variant="flat" prepend-icon="mdi-rotate-right" color="secondary" class="mr-2" @click.stop="rotate(90)">
+      <VBtn
+        variant="flat"
+        prepend-icon="mdi-rotate-right"
+        color="secondary"
+        class="mr-2"
+        @click.stop="rotate(90)"
+      >
         {{ t('coreDam.asset.detail.roi.rotate.rotateClockwise') }}
       </VBtn>
-      <VBtn variant="flat" prepend-icon="mdi-rotate-left" color="secondary" @click.stop="rotate(270)">
+      <VBtn
+        variant="flat"
+        prepend-icon="mdi-rotate-left"
+        color="secondary"
+        @click.stop="rotate(270)"
+      >
         {{ t('coreDam.asset.detail.roi.rotate.rotateCounterclockwise') }}
       </VBtn>
     </div>

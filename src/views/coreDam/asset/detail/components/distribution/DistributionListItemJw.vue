@@ -30,10 +30,15 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div v-if="serviceRequirements" class="text-body-2">
+  <div
+    v-if="serviceRequirements"
+    class="text-body-2"
+  >
     <VRow>
       <VCol>
-        <div class="font-weight-bold">{{ serviceRequirements.title }}</div>
+        <div class="font-weight-bold">
+          {{ serviceRequirements.title }}
+        </div>
       </VCol>
     </VRow>
     <VRow>
@@ -58,7 +63,11 @@ const serviceRequirements = computed(() => {
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Distributed">
       <VCol>
-        <a :href="'https://dashboard.jwplayer.com/#/content/detail?key=' + item.extId" target="_blank">
+        <a
+          :href="'https://dashboard.jwplayer.com/#/content/detail?key=' + item.extId"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {{ t('coreDam.jwDistribution.videoAdministrationLink') }}
         </a>
       </VCol>

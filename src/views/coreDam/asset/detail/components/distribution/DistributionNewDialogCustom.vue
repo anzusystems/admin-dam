@@ -165,16 +165,30 @@ onMounted(async () => {
 
 <template>
   <VCardText>
-    <VRow v-if="!redistributeMode" class="mb-6">
+    <VRow
+      v-if="!redistributeMode"
+      class="mb-6"
+    >
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
     </VRow>
     <div v-if="!redistributeMode && existingDistributions.length > 0">
-      <DistributionListItem v-for="item in existingDistributions" :key="item.id" :item="item" :asset-type="assetType" />
+      <DistributionListItem
+        v-for="item in existingDistributions"
+        :key="item.id"
+        :item="item"
+        :asset-type="assetType"
+      />
     </div>
-    <div v-else-if="canDisplayForm" class="pa-4">
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+    <div
+      v-else-if="canDisplayForm"
+      class="pa-4"
+    >
+      <ASystemEntityScope
+        :system="SYSTEM_CORE_DAM"
+        :subject="ENTITY"
+      >
         <DistributionCustomMetadataForm
           v-model="distribution.customData"
           :distribution-service-name="distributionServiceName"
@@ -192,21 +206,40 @@ onMounted(async () => {
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <AFormDatetimePicker v-model="distribution.publishAt" :label="t('coreDam.distribution.model.publishAt')" />
+            <AFormDatetimePicker
+              v-model="distribution.publishAt"
+              :label="t('coreDam.distribution.model.publishAt')"
+            />
           </VCol>
         </VRow>
       </ASystemEntityScope>
     </div>
-    <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
-      <VProgressCircular indeterminate color="primary" />
+    <div
+      v-else
+      class="d-flex w-100 h-100 justify-center align-center pa-2"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
   </VCardText>
   <VCardActions>
     <VSpacer />
-    <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
+    <VBtn
+      v-if="canDisplayForm"
+      color="success"
+      :loading="saving"
+      @click.stop="submit"
+    >
       <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
       <span v-else>{{ t('common.button.add') }}</span>
     </VBtn>
-    <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
+    <VBtn
+      text
+      @click.stop="closeDialog(false)"
+    >
+      {{ t('common.button.cancel') }}
+    </VBtn>
   </VCardActions>
 </template>

@@ -54,25 +54,48 @@ onMounted(async () => {
 <template>
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
-      <VBtn color="secondary" variant="flat" @click.stop="addNew">
+      <VBtn
+        color="secondary"
+        variant="flat"
+        @click.stop="addNew"
+      >
         {{ t('coreDam.distribution.common.addButton') }}
       </VBtn>
     </AssetDetailSidebarActionsWrapper>
-    <div class="px-4 text-caption">{{ t('coreDam.distribution.common.list') }}:</div>
-    <div v-if="distributionListStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
-      <VProgressCircular indeterminate color="primary" />
+    <div class="px-4 text-caption">
+      {{ t('coreDam.distribution.common.list') }}:
     </div>
-    <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-caption">
+    <div
+      v-if="distributionListStore.loader"
+      class="d-flex w-100 h-100 justify-center align-center pa-2"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
+    </div>
+    <div
+      v-else-if="distributionListStore.list.length === 0"
+      class="pa-4 text-caption"
+    >
       {{ t('coreDam.distribution.common.noEntries') }}
     </div>
-    <div v-else class="mx-4">
+    <div
+      v-else
+      class="mx-4"
+    >
       <DistributionListItem
         v-for="item in distributionListStore.list"
         :key="item.id"
         :item="item"
         :asset-type="assetType"
       />
-      <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
+      <ADatatablePagination
+        v-if="showPagination"
+        v-model="pagination"
+        hide-records-per-page
+        @change="getList"
+      />
     </div>
     <DistributionNewDialog
       :key="dialogKey"

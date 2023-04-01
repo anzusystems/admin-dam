@@ -75,12 +75,32 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation scrollable :max-width="1400" class="dialog-distribution">
+  <VDialog
+    v-model="value"
+    persistent
+    no-click-animation
+    scrollable
+    :max-width="1400"
+    class="dialog-distribution"
+  >
     <VCard v-if="value">
-      <VToolbar class="pl-2" density="compact">
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div v-if="redistributeMode" class="text-h6">{{ t('coreDam.distribution.common.redistributeTitle') }}</div>
-          <div v-else class="text-h6">{{ t('coreDam.distribution.common.addTitle') }}</div>
+          <div
+            v-if="redistributeMode"
+            class="text-h6"
+          >
+            {{ t('coreDam.distribution.common.redistributeTitle') }}
+          </div>
+          <div
+            v-else
+            class="text-h6"
+          >
+            {{ t('coreDam.distribution.common.addTitle') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -95,8 +115,18 @@ const componentComputed = computed(() => {
         </VToolbarItems>
       </VToolbar>
       <div v-if="showTabs">
-        <VTabs v-model="activeDistributionName" density="compact" class="sidebar-info__tabs">
-          <VTab v-for="(requirement, key) in serviceRequirements" :key="key" :value="key">{{ requirement.title }}</VTab>
+        <VTabs
+          v-model="activeDistributionName"
+          density="compact"
+          class="sidebar-info__tabs"
+        >
+          <VTab
+            v-for="(requirement, key) in serviceRequirements"
+            :key="key"
+            :value="key"
+          >
+            {{ requirement.title }}
+          </VTab>
         </VTabs>
       </div>
       <component

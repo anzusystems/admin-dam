@@ -9,7 +9,6 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  type DatatableOrderingOption,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -44,7 +43,7 @@ const getList = () => {
   fetchList(props.podcastId, pagination, filter)
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'texts.title' },
@@ -59,11 +58,6 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   ENTITY
 )
 pagination.sortBy = 'position'
-
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
-}
 
 onMounted(() => {
   fetchList(props.podcastId, pagination, filter)

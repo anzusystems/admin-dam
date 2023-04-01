@@ -13,10 +13,17 @@ const onSubmit = () => {
 
 <template>
   <div class="py-5 d-flex justify-center align-center">
-    <div class="login-form pa-4 system-border-a" data-cy="login-form">
+    <div
+      class="login-form pa-4 system-border-a"
+      data-cy="login-form"
+    >
       <h1 class="display-1 my-3">
         ADAM
-        <svg width="1000" height="623" class="logo-login pr-10 pb-5">
+        <svg
+          width="1000"
+          height="623"
+          class="logo-login pr-10 pb-5"
+        >
           <use xlink:href="#svg-logo" />
         </svg>
       </h1>

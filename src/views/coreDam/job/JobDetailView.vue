@@ -2,10 +2,11 @@
 import { useRoute } from 'vue-router'
 import {
   AActionCloseButton,
-  ACard, AJobDetailCommon,
+  ACard,
+  AJobDetailCommon,
   isUndefined,
   JOB_RESOURCE_USER_DATA_DELETE,
-  stringToInt
+  stringToInt,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'

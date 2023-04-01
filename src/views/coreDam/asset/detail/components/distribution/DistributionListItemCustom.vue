@@ -33,10 +33,15 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div v-if="serviceRequirements" class="text-body-2">
+  <div
+    v-if="serviceRequirements"
+    class="text-body-2"
+  >
     <VRow>
       <VCol>
-        <div class="font-weight-bold">{{ serviceRequirements.title }}</div>
+        <div class="font-weight-bold">
+          {{ serviceRequirements.title }}
+        </div>
       </VCol>
     </VRow>
     <VRow>
@@ -68,9 +73,15 @@ const serviceRequirements = computed(() => {
           <ACopyText :value="item.extId" />
         </VCol>
       </VRow>
-      <VRow v-for="(value, key) in item.distributionData" :key="key">
+      <VRow
+        v-for="(value, key) in item.distributionData"
+        :key="key"
+      >
         <VCol>
-          <DistributionListItemCustomDistributionDataItem :item="value" :title="key" />
+          <DistributionListItemCustomDistributionDataItem
+            :item="value"
+            :title="key"
+          />
         </VCol>
       </VRow>
     </template>

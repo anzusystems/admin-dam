@@ -120,13 +120,29 @@ onMounted(() => {
         <VTab>{{ t('coreDam.asset.massOperations.title') }}</VTab>
       </VTabs>
       <div class="sidebar-info__content">
-        <div class="text-caption pa-3">{{ t('coreDam.asset.massOperations.description') }}</div>
-        <VExpansionPanels v-model="panels" multiple class="v-expansion-panels--compact">
-          <VExpansionPanel elevation="0" :title="t('coreDam.asset.massOperations.general')" value="general">
+        <div class="text-caption pa-3">
+          {{ t('coreDam.asset.massOperations.description') }}
+        </div>
+        <VExpansionPanels
+          v-model="panels"
+          multiple
+          class="v-expansion-panels--compact"
+        >
+          <VExpansionPanel
+            elevation="0"
+            :title="t('coreDam.asset.massOperations.general')"
+            value="general"
+          >
             <VExpansionPanelText>
-              <VRow dense class="my-2">
+              <VRow
+                dense
+                class="my-2"
+              >
                 <VCol>
-                  <ASystemEntityScope subject="keyword" system="dam">
+                  <ASystemEntityScope
+                    subject="keyword"
+                    system="dam"
+                  >
                     <div class="d-flex">
                       <div style="min-width: 286px">
                         <KeywordRemoteAutocompleteWithCached
@@ -137,15 +153,32 @@ onMounted(() => {
                           :validation-scope="false"
                         />
                       </div>
-                      <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyKeywords">
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        class="mr-1"
+                        @click.stop="fillEmptyKeywords"
+                      >
                         <VIcon icon="mdi-file-arrow-left-right-outline" />
-                        <VTooltip activator="parent" location="bottom">
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
                           {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
                         </VTooltip>
                       </VBtn>
-                      <VBtn icon size="small" variant="text" @click.stop="replaceKeywords">
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        @click.stop="replaceKeywords"
+                      >
                         <VIcon icon="mdi-file-replace-outline" />
-                        <VTooltip activator="parent" location="bottom">
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
                           {{ t('coreDam.asset.massOperations.replaceOne') }}
                         </VTooltip>
                       </VBtn>
@@ -153,9 +186,15 @@ onMounted(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow dense class="my-2">
+              <VRow
+                dense
+                class="my-2"
+              >
                 <VCol>
-                  <ASystemEntityScope subject="author" system="dam">
+                  <ASystemEntityScope
+                    subject="author"
+                    system="dam"
+                  >
                     <div class="d-flex">
                       <div style="min-width: 286px">
                         <AuthorRemoteAutocompleteWithCached
@@ -166,15 +205,32 @@ onMounted(() => {
                           :validation-scope="false"
                         />
                       </div>
-                      <VBtn icon size="small" variant="text" class="mr-1" @click.stop="fillEmptyAuthors">
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        class="mr-1"
+                        @click.stop="fillEmptyAuthors"
+                      >
                         <VIcon icon="mdi-file-arrow-left-right-outline" />
-                        <VTooltip activator="parent" location="bottom">
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
                           {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
                         </VTooltip>
                       </VBtn>
-                      <VBtn icon size="small" variant="text" @click.stop="replaceAuthors">
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        @click.stop="replaceAuthors"
+                      >
                         <VIcon icon="mdi-file-replace-outline" />
-                        <VTooltip activator="parent" location="bottom">
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
                           {{ t('coreDam.asset.massOperations.replaceOne') }}
                         </VTooltip>
                       </VBtn>
@@ -206,7 +262,10 @@ onMounted(() => {
             :value="AssetType.Video"
           >
             <VExpansionPanelText>
-              <AssetCustomMetadataFormMassOperations v-model="massOperationsData.video" :asset-type="AssetType.Video" />
+              <AssetCustomMetadataFormMassOperations
+                v-model="massOperationsData.video"
+                :asset-type="AssetType.Video"
+              />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
@@ -216,7 +275,10 @@ onMounted(() => {
             :value="AssetType.Audio"
           >
             <VExpansionPanelText>
-              <AssetCustomMetadataFormMassOperations v-model="massOperationsData.audio" :asset-type="AssetType.Audio" />
+              <AssetCustomMetadataFormMassOperations
+                v-model="massOperationsData.audio"
+                :asset-type="AssetType.Audio"
+              />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
@@ -235,13 +297,30 @@ onMounted(() => {
         </VExpansionPanels>
       </div>
       <div class="sidebar-info__actions pa-2 d-flex align-center justify-center">
-        <VBtn class="mr-2" variant="flat" color="secondary" size="small" @click.stop="fillAll(false)">
+        <VBtn
+          class="mr-2"
+          variant="flat"
+          color="secondary"
+          size="small"
+          @click.stop="fillAll(false)"
+        >
           {{ t('coreDam.asset.massOperations.fillAllEmpty') }}
         </VBtn>
-        <VBtn class="mr-2" variant="flat" color="secondary" size="small" @click.stop="fillAll(true)">
+        <VBtn
+          class="mr-2"
+          variant="flat"
+          color="secondary"
+          size="small"
+          @click.stop="fillAll(true)"
+        >
           {{ t('coreDam.asset.massOperations.replaceAll') }}
         </VBtn>
-        <VBtn variant="flat" color="secondary" size="small" @click.stop="clearForm">
+        <VBtn
+          variant="flat"
+          color="secondary"
+          size="small"
+          @click.stop="clearForm"
+        >
           {{ t('coreDam.asset.massOperations.clearForm') }}
         </VBtn>
       </div>

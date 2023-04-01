@@ -40,7 +40,12 @@ const elements = computed(() => {
 
 <template>
   <div class="w-100">
-    <VRow v-for="element in elements" :key="element.id" dense class="mt-1">
+    <VRow
+      v-for="element in elements"
+      :key="element.id"
+      dense
+      class="mt-1"
+    >
       <VCol>
         <div class="d-flex">
           <AssetCustomMetadataElement
@@ -57,13 +62,26 @@ const elements = computed(() => {
             @click.stop="fillEmptyField(element.key, modelValue[element.key])"
           >
             <VIcon icon="mdi-file-arrow-left-right-outline" />
-            <VTooltip activator="parent" location="bottom">
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
               {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
             </VTooltip>
           </VBtn>
-          <VBtn icon size="small" variant="text" @click.stop="replaceField(element.key, modelValue[element.key])">
+          <VBtn
+            icon
+            size="small"
+            variant="text"
+            @click.stop="replaceField(element.key, modelValue[element.key])"
+          >
             <VIcon icon="mdi-file-replace-outline" />
-            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.replaceOne') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('coreDam.asset.massOperations.replaceOne') }}
+            </VTooltip>
           </VBtn>
         </div>
       </VCol>

@@ -99,7 +99,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VTextarea>
   <VTextField
     v-else-if="config.attributes.type === CustomFormType.Number"
@@ -110,7 +116,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VTextField>
   <VCombobox
     v-else-if="config.attributes.type === CustomFormType.StringArray"
@@ -122,7 +134,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VCombobox>
   <AFormBooleanToggle
     v-if="config.attributes.type === CustomFormType.Boolean"

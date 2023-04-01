@@ -25,21 +25,47 @@ const { t } = useI18n()
     v-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Duplicate"
     class="w-100 pa-2 text-caption"
   >
-    <VAlert dark type="warning">{{ t('coreDam.asset.detail.info.status.duplicate') }}</VAlert>
+    <VAlert
+      dark
+      type="warning"
+    >
+      {{ t('coreDam.asset.detail.info.status.duplicate') }}
+    </VAlert>
   </div>
   <div
     v-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Failed"
     class="w-100 pa-2 text-caption"
   >
-    <VAlert dark type="error">
+    <VAlert
+      dark
+      type="error"
+    >
       {{ t('coreDam.asset.detail.info.status.failed') }}
-      <div v-if="assetMainFileFailReason"><br /><AssetFileFailReasonChip :reason="assetMainFileFailReason" /></div>
+      <div v-if="assetMainFileFailReason">
+        <br><AssetFileFailReasonChip :reason="assetMainFileFailReason" />
+      </div>
     </VAlert>
   </div>
-  <div v-else-if="assetStatus === AssetStatus.Deleting" class="w-100 pa-2 text-caption">
-    <VAlert dark type="error">{{ t('coreDam.asset.detail.info.status.deleting') }}</VAlert>
+  <div
+    v-else-if="assetStatus === AssetStatus.Deleting"
+    class="w-100 pa-2 text-caption"
+  >
+    <VAlert
+      dark
+      type="error"
+    >
+      {{ t('coreDam.asset.detail.info.status.deleting') }}
+    </VAlert>
   </div>
-  <div v-else-if="assetStatus === AssetStatus.Draft" class="w-100 pa-2 text-caption">
-    <VAlert dark type="warning">{{ t('coreDam.asset.detail.info.status.draft') }}</VAlert>
+  <div
+    v-else-if="assetStatus === AssetStatus.Draft"
+    class="w-100 pa-2 text-caption"
+  >
+    <VAlert
+      dark
+      type="warning"
+    >
+      {{ t('coreDam.asset.detail.info.status.draft') }}
+    </VAlert>
   </div>
 </template>

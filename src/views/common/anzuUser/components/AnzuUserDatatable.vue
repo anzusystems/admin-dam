@@ -34,7 +34,7 @@ const router = useRouter()
 
 const filter = useAnzuUserFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
-const { fetchAnzuUserList, anzuUserList, loadingAnzuUserList, datatableHiddenColumns } = useAnzuUserActions(props.client)
+const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions(props.client)
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: AnzuUser } }) => {
@@ -96,8 +96,8 @@ defineExpose({
       <VDataTableServer
         class="a-datatable"
         :headers="columnsVisible"
-        :items="listItems"
-        :items-length="listItems.length"
+        :items="anzuUserList"
+        :items-length="anzuUserList.length"
         item-value="id"
         @click:row="onRowClick"
       >

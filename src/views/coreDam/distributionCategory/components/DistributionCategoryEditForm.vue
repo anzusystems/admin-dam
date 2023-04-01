@@ -12,9 +12,15 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
 </script>
 
 <template>
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+  <ASystemEntityScope
+    :system="SYSTEM_CORE_DAM"
+    :subject="ENTITY"
+  >
     <VRow>
-      <VCol cols="12" md="8">
+      <VCol
+        cols="12"
+        md="8"
+      >
         <ARow>
           <AFormTextField
             v-model="distributionCategory.name"
@@ -30,8 +36,7 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
           <DistributionCategorySelectOptionSelect
             v-model="distributionCategorySelectedOptions[distributionCategorySelect.serviceSlug]"
             :select="distributionCategorySelect"
-          >
-          </DistributionCategorySelectOptionSelect>
+          />
         </ARow>
       </VCol>
     </VRow>

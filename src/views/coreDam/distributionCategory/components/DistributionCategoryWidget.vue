@@ -64,33 +64,66 @@ watch(
 <template>
   <div class="d-flex flex-column w-100">
     <VRow align="center">
-      <VCol class="text-caption">{{ t('coreDam.distribution.common.select') }}:</VCol>
+      <VCol class="text-caption">
+        {{ t('coreDam.distribution.common.select') }}:
+      </VCol>
     </VRow>
     <VRow v-if="!distributionCategoryId">
       <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>
       <VCol cols="auto">
-        <VBtn variant="text" icon size="small" @click.stop="dialog = true">
+        <VBtn
+          variant="text"
+          icon
+          size="small"
+          @click.stop="dialog = true"
+        >
           <VIcon icon="mdi-pencil" />
-          <VTooltip activator="parent" location="bottom">{{ t('common.button.edit') }}</VTooltip>
+          <VTooltip
+            activator="parent"
+            location="bottom"
+          >
+            {{ t('common.button.edit') }}
+          </VTooltip>
         </VBtn>
       </VCol>
     </VRow>
     <VRow v-else-if="loading">
       <VCol class="d-flex w-100 h-100 justify-center align-center pa-2">
-        <VProgressCircular indeterminate color="primary" />
+        <VProgressCircular
+          indeterminate
+          color="primary"
+        />
       </VCol>
     </VRow>
-    <VRow v-else align="center">
+    <VRow
+      v-else
+      align="center"
+    >
       <VCol>
-        <div class="font-weight-bold">{{ category.name }}</div>
-        <div v-for="item in category.selectedOptionsDetail" :key="item.id">
+        <div class="font-weight-bold">
+          {{ category.name }}
+        </div>
+        <div
+          v-for="item in category.selectedOptionsDetail"
+          :key="item.id"
+        >
           <div>{{ item.serviceSlug }} - {{ item.name }}</div>
         </div>
       </VCol>
       <VCol cols="auto">
-        <VBtn variant="text" icon size="small" @click.stop="dialog = true">
+        <VBtn
+          variant="text"
+          icon
+          size="small"
+          @click.stop="dialog = true"
+        >
           <VIcon icon="mdi-pencil" />
-          <VTooltip activator="parent" location="bottom">{{ t('common.button.edit') }}</VTooltip>
+          <VTooltip
+            activator="parent"
+            location="bottom"
+          >
+            {{ t('common.button.edit') }}
+          </VTooltip>
         </VBtn>
       </VCol>
     </VRow>

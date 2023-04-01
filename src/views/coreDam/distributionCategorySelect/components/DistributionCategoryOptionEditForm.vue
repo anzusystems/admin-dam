@@ -31,7 +31,10 @@ const { t } = useI18n()
 
 <template>
   <VRow class="mt-5">
-    <VCol cols="12" sm="5">
+    <VCol
+      cols="12"
+      sm="5"
+    >
       <AFormTextField
         v-model="modelValue.name"
         prepend-icon="mdi-drag"
@@ -39,13 +42,19 @@ const { t } = useI18n()
         data-cy="ext-system-name"
       />
     </VCol>
-    <VCol cols="12" sm="1">
+    <VCol
+      cols="12"
+      sm="1"
+    >
       <AFormBooleanToggle
         v-model="modelValue.assignable"
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
       />
     </VCol>
-    <VCol cols="12" sm="6">
+    <VCol
+      cols="12"
+      sm="6"
+    >
       <AFormTextField
         v-model="modelValue.value"
         append-icon="mdi-trash-can-outline"

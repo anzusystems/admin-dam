@@ -97,20 +97,45 @@ watch(
 </script>
 
 <template>
-  <VDialog v-model="dialogComputed" persistent :width="500" no-click-animation>
-    <VCard v-if="dialogComputed" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
+  <VDialog
+    v-model="dialogComputed"
+    persistent
+    :width="500"
+    no-click-animation
+  >
+    <VCard
+      v-if="dialogComputed"
+      data-cy="delete-panel"
+    >
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">Manage distribution category</div>
+          <div class="text-h6">
+            Manage distribution category
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
-          <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel" />
+          <VBtn
+            class="ml-2"
+            icon="mdi-close"
+            size="small"
+            variant="text"
+            @click.stop="onCancel"
+          />
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-          <VContainer class="pa-4" fluid>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
+          <VContainer
+            class="pa-4"
+            fluid
+          >
             <ARow>
               <DistributionCategoryRemoteAutocomplete
                 v-model="selectedCategoryId"
@@ -120,7 +145,10 @@ watch(
               />
             </ARow>
             <ARow>
-              <div v-for="item in category.selectedOptionsDetail" :key="item.id">
+              <div
+                v-for="item in category.selectedOptionsDetail"
+                :key="item.id"
+              >
                 <div>{{ item.serviceSlug }} - {{ item.name }}</div>
               </div>
             </ARow>
@@ -129,10 +157,20 @@ watch(
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+        <VBtn
+          color="secondary"
+          text
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </VBtn>
-        <VBtn color="primary" :loading="saving" data-cy="button-confirm" @click.stop="onConfirm">
+        <VBtn
+          color="primary"
+          :loading="saving"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t('common.button.confirm') }}
         </VBtn>
       </VCardActions>

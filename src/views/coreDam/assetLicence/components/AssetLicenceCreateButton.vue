@@ -9,7 +9,7 @@ import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
 import { createAssetLicence, ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     buttonClass?: string
     dataCy?: string
