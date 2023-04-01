@@ -31,7 +31,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       elevation="0"
       class="system-border-b"
     >
-      <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2">
+      <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2 pr-1">
         <div class="d-flex align-center">
           <div class="main-logo mr-sm-2 pl-1">
             <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">

@@ -83,13 +83,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="assetDetailStore.loader" class="d-flex w-100 h-100 justify-center align-center">
-    <VProgressCircular indeterminate color="primary" />
+  <div
+    v-if="assetDetailStore.loader"
+    class="d-flex w-100 h-100 justify-center align-center"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
   </div>
   <div v-else-if="asset">
-    <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
+    <VCard
+      class="dam-image-detail"
+      :class="{ 'dam-image-detail--sidebar-active': sidebar }"
+    >
       <div class="dam-image-detail__wrapper d-flex flex-column">
-        <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
+        <VToolbar
+          :color="toolbarColor"
+          density="compact"
+          :height="64"
+          class="system-border-b pr-1"
+        >
           <div class="text-subtitle-2 d-flex pl-2">
             <div>{{ toolbarTitle }}</div>
           </div>
@@ -106,20 +120,43 @@ onMounted(() => {
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.detail.toggleInfo') }}
+              </VTooltip>
             </VBtn>
-            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
+            <VBtn
+              icon
+              variant="text"
+              :width="36"
+              :height="36"
+              class="mr-1"
+              @click.stop="closeDialog"
+            >
               <VIcon icon="mdi-close" />
-              <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('common.button.close') }}
+              </VTooltip>
             </VBtn>
           </div>
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
+            <div
+              v-if="activeTab === AssetDetailTab.ROI"
+              class="w-100 h-100 pa-2 d-flex align-center justify-center"
+            >
               <AssetImageRoiSelect />
             </div>
-            <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
+            <div
+              v-else
+              class="w-100 h-100 pa-2 d-flex align-center justify-center"
+            >
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"

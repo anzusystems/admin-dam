@@ -42,8 +42,17 @@ const onAnyMetadataChange = () => {
 </script>
 
 <template>
-  <VExpansionPanels v-if="asset" v-model="panels" multiple class="v-expansion-panels--compact">
-    <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.metadata')" value="metadata">
+  <VExpansionPanels
+    v-if="asset"
+    v-model="panels"
+    multiple
+    class="v-expansion-panels--compact"
+  >
+    <VExpansionPanel
+      elevation="0"
+      :title="t('coreDam.asset.detail.info.metadata')"
+      value="metadata"
+    >
       <VExpansionPanelText>
         <AssetCustomMetadataForm
           v-if="asset"
@@ -52,9 +61,16 @@ const onAnyMetadataChange = () => {
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
-            <VRow v-if="keywordEnabled" dense class="my-2">
+            <VRow
+              v-if="keywordEnabled"
+              dense
+              class="my-2"
+            >
               <VCol>
-                <ASystemEntityScope subject="keyword" system="dam">
+                <ASystemEntityScope
+                  subject="keyword"
+                  system="dam"
+                >
                   <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
                     :label="t('coreDam.asset.model.keywords')"
@@ -67,9 +83,16 @@ const onAnyMetadataChange = () => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow v-if="authorEnabled" dense class="my-2">
+            <VRow
+              v-if="authorEnabled"
+              dense
+              class="my-2"
+            >
               <VCol>
-                <ASystemEntityScope subject="author" system="dam">
+                <ASystemEntityScope
+                  subject="author"
+                  system="dam"
+                >
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
                     :label="t('coreDam.asset.model.authors')"
@@ -87,39 +110,55 @@ const onAnyMetadataChange = () => {
         </AssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
-    <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.file')" value="file">
+    <VExpansionPanel
+      elevation="0"
+      :title="t('coreDam.asset.detail.info.file')"
+      value="file"
+    >
       <VExpansionPanelText class="text-caption">
         <!-- all types -->
         <VRow>
           <VCol>{{ t('coreDam.asset.detail.info.field.id') }}</VCol>
-          <VCol cols="9"><ACopyText :value="asset.id" /></VCol>
+          <VCol cols="9">
+            <ACopyText :value="asset.id" />
+          </VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('coreDam.asset.detail.info.field.type') }}</VCol>
-          <VCol cols="9">{{ asset.attributes.assetType }}</VCol>
+          <VCol cols="9">
+            {{ asset.attributes.assetType }}
+          </VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.created') }}</VCol>
-          <VCol cols="9"><CachedAnzuUserChip :id="asset.createdBy" /><br />{{ dateTimePretty(asset.createdAt) }}</VCol>
+          <VCol cols="9">
+            <ACachedAnzuUserChip :id="asset.createdBy" /><br>{{ dateTimePretty(asset.createdAt) }}
+          </VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.modified') }}</VCol>
           <VCol cols="9">
-            <ACachedAnzuUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}
+            <ACachedAnzuUserChip :id="asset.modifiedBy" /><br>{{ dateTimePretty(asset.modifiedAt) }}
           </VCol>
         </VRow>
         <div v-if="assetMainFile">
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.mainFileId') }}</VCol>
-            <VCol cols="9"><ACopyText :value="assetMainFile.id" /></VCol>
+            <VCol cols="9">
+              <ACopyText :value="assetMainFile.id" />
+            </VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.mimeType') }}</VCol>
-            <VCol cols="9">{{ assetMainFile.fileAttributes.mimeType }}</VCol>
+            <VCol cols="9">
+              {{ assetMainFile.fileAttributes.mimeType }}
+            </VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.size') }}</VCol>
-            <VCol cols="9">{{ prettyBytes(assetMainFile.fileAttributes.size) }}</VCol>
+            <VCol cols="9">
+              {{ prettyBytes(assetMainFile.fileAttributes.size) }}
+            </VCol>
           </VRow>
         </div>
         <!-- image -->
