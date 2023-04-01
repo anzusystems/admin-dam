@@ -77,14 +77,6 @@ const onImport = () => {
           >
             {{ t('coreDam.asset.selected.import') }} ({{ queueTotalCount }})
           </VBtn>
-          <AssetFooterSelectedButtonClear
-            variant="normal"
-            @confirm="onClearConfirm"
-          />
-          <VDivider
-            vertical
-            class="mx-4 my-2"
-          />
           <VBtn
             v-show="showMinimalSelected"
             icon
@@ -97,6 +89,10 @@ const onImport = () => {
           >
             <VIcon icon="mdi-chevron-down" />
           </VBtn>
+          <AssetFooterSelectedButtonClear
+            variant="normal"
+            @confirm="onClearConfirm"
+          />
         </div>
       </VToolbar>
       <ExternalProviderAssetQueueReadonly :queue-id="QUEUE_ID_MASS_EDIT" />
