@@ -9,7 +9,7 @@ import { ENTITY } from '@/services/api/common/permissionGroupApi'
 const props = defineProps<{
   client: () => AxiosInstance
 }>()
-const { permissionGroup, loadingPermissionGroup } = usePermissionGroupActions(props.client)
+const { permissionGroup } = usePermissionGroupActions(props.client)
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 </script>
 
@@ -20,23 +20,18 @@ const { v$ } = usePermissionGroupValidation(permissionGroup)
   >
     <VRow>
       <VCol cols="12">
-        <VCard
-          :loading="loadingPermissionGroup"
-          variant="flat"
-        >
-          <VCardText>
-            <AFormTextField
-              v-model="permissionGroup.title"
-              :v="v$.permissionGroup.title"
-              data-cy="permissionGroup-title"
-            />
-            <AFormTextField
-              v-model="permissionGroup.description"
-              :v="v$.permissionGroup.description"
-              data-cy="permissionGroup-description"
-            />
-          </VCardText>
-        </VCard>
+        <VCardText>
+          <AFormTextField
+            v-model="permissionGroup.title"
+            :v="v$.permissionGroup.title"
+            data-cy="permissionGroup-title"
+          />
+          <AFormTextField
+            v-model="permissionGroup.description"
+            :v="v$.permissionGroup.description"
+            data-cy="permissionGroup-description"
+          />
+        </vcardtext>
       </VCol>
       <VCol cols="12">
         <PermissionEditor

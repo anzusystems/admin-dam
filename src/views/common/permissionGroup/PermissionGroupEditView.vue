@@ -11,7 +11,7 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt(route.params.id)
 
-const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, detailLoading } =
+const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, detailLoading, saveButtonLoading } =
   usePermissionGroupActions(damClient)
 
 const getData = () => {
@@ -31,7 +31,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper>
     <template #buttons>
       <AActionSaveButton
-        :loading="detailLoading"
+        :loading="saveButtonLoading"
         @save-record="updatePermissionGroup"
       />
       <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
