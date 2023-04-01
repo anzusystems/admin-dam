@@ -48,12 +48,25 @@ const onDuplicate = () => {
 </script>
 
 <template>
-  <VListItem :title="t('coreDam.asset.slots.actions.duplicate')" @click.stop="openDialog" />
-  <VDialog v-model="dialog" persistent :width="600" no-click-animation>
+  <VListItem
+    :title="t('coreDam.asset.slots.actions.duplicate')"
+    @click.stop="openDialog"
+  />
+  <VDialog
+    v-model="dialog"
+    persistent
+    :width="600"
+    no-click-animation
+  >
     <VCard v-if="dialog">
-      <VToolbar class="pl-2" density="compact">
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('coreDam.asset.slots.actions.duplicate') }}</div>
+          <div class="text-h6">
+            {{ t('coreDam.asset.slots.actions.duplicate') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -69,18 +82,32 @@ const onDuplicate = () => {
       </VToolbar>
       <VCardText>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.name') }}:
+          </div>
           {{ item?.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.file') }}:
+          </div>
           {{ fileTitle }}
         </div>
-        <div v-if="targetOptions.length === 0" class="my-2 text-warning">
+        <div
+          v-if="targetOptions.length === 0"
+          class="my-2 text-warning"
+        >
           {{ t('coreDam.asset.slots.duplicate.onlyToEmptyWarning') }}
         </div>
-        <div v-else class="my-2">
-          <VSelect v-model="targetSlot" :label="t('coreDam.asset.slots.duplicate.to')" :items="targetOptions" />
+        <div
+          v-else
+          class="my-2"
+        >
+          <VSelect
+            v-model="targetSlot"
+            :label="t('coreDam.asset.slots.duplicate.to')"
+            :items="targetOptions"
+          />
         </div>
       </VCardText>
       <VCardActions>
@@ -94,7 +121,12 @@ const onDuplicate = () => {
         >
           {{ t('coreDam.asset.slots.actions.duplicate') }}
         </VBtn>
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+        <VBtn
+          color="secondary"
+          text
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </VBtn>
       </VCardActions>

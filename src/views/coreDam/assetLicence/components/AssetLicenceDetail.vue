@@ -13,8 +13,14 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.assetLicence.model.name')" :value="assetLicence.name" />
-      <ARow :title="t('coreDam.assetLicence.model.extId')" :value="assetLicence.extId" />
+      <ARow
+        :title="t('coreDam.assetLicence.model.name')"
+        :value="assetLicence.name"
+      />
+      <ARow
+        :title="t('coreDam.assetLicence.model.extId')"
+        :value="assetLicence.extId"
+      />
       <ARow :title="t('coreDam.assetLicence.model.extSystem')">
         <CachedExtSystemChip :id="assetLicence.extSystem" />
       </ARow>

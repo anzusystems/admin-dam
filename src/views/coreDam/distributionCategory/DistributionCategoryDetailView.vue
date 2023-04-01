@@ -4,9 +4,7 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
-import {
-  useDistributionCategoryDetailActions
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryDetailActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryDetail from '@/views/coreDam/distributionCategory/components/DistributionCategoryDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 

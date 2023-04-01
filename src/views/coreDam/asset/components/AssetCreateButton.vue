@@ -5,7 +5,7 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  useAlerts
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'

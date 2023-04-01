@@ -60,15 +60,38 @@ const onCancel = () => {
 </script>
 
 <template>
-  <VBtn icon size="small" variant="text" @click.stop="onClick">
+  <VBtn
+    icon
+    size="small"
+    variant="text"
+    @click.stop="onClick"
+  >
     <VIcon icon="mdi-download" />
-    <VTooltip activator="parent" location="bottom">{{ t('common.button.download') }}</VTooltip>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('common.button.download') }}
+    </VTooltip>
   </VBtn>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
-    <VCard v-if="dialog" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
+  <VDialog
+    v-model="dialog"
+    persistent
+    :width="500"
+    no-click-animation
+  >
+    <VCard
+      v-if="dialog"
+      data-cy="delete-panel"
+    >
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('common.button.download') }}</div>
+          <div class="text-h6">
+            {{ t('common.button.download') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -84,18 +107,37 @@ const onCancel = () => {
       </VToolbar>
       <VCardText>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
-        <div v-if="loading" class="w-100 h-100 d-flex align-center justify-center">
-          <VProgressCircular indeterminate color="primary" />
+        <div
+          v-if="loading"
+          class="w-100 h-100 d-flex align-center justify-center"
+        >
+          <VProgressCircular
+            indeterminate
+            color="primary"
+          />
         </div>
-        <div v-else-if="link" class="w-100 text-center mt-4">
-          <VBtn color="primary" prepend-icon="mdi-download" :href="link">
+        <div
+          v-else-if="link"
+          class="w-100 text-center mt-4"
+        >
+          <VBtn
+            color="primary"
+            prepend-icon="mdi-download"
+            :href="link"
+          >
             {{ t('system.download.downloadOriginalFile') }}
           </VBtn>
         </div>
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel">{{ t('common.button.close') }}</VBtn>
+        <VBtn
+          text
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
+          {{ t('common.button.close') }}
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

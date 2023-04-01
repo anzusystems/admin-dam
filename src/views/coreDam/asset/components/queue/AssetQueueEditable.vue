@@ -49,7 +49,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="asset-queue-editable" :class="{ 'asset-queue-editable--sidebar-active': massOperations }">
+  <div
+    class="asset-queue-editable"
+    :class="{ 'asset-queue-editable--sidebar-active': massOperations }"
+  >
     <div class="asset-queue-editable__left">
       <div class="overflow-y-auto overflow-x-hidden h-100">
         <VRow class="dam-upload-queue dam-upload-queue--editable pa-2 mb-5">

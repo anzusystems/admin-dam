@@ -16,6 +16,7 @@ describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'te
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage('Record was created')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000)
     cy.getCy('copy_text')
       .invoke('text')
@@ -29,10 +30,13 @@ describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'te
   it('Edit asset licence', () => {
     cy.visit('asset-licence/list')
     cy.getCy('filter-text').type(`${Cypress._.repeat(RAND_NUM, 2)}{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('asset-licence-name').find('input').clear().type(`${EXTERNAL_SYS[0]}${RAND_NUM}-edit`)
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('asset-licence-ext-id')
       .find('input')
       .clear()
@@ -44,6 +48,7 @@ describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'te
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
     cy.getCy('filter-text').type(`${Cypress._.repeat(RAND_NUM, 2)}-edit{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.contains('td', `${EXTERNAL_SYS[0]}${RAND_NUM}-edit`)
     cy.getCyVisibleClick('filter-reset')

@@ -13,10 +13,21 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.extSystem.model.name')" :value="extSystem.name" />
-      <ARow :title="t('coreDam.extSystem.model.slug')" :value="extSystem.slug" />
+      <ARow
+        :title="t('coreDam.extSystem.model.name')"
+        :value="extSystem.name"
+      />
+      <ARow
+        :title="t('coreDam.extSystem.model.slug')"
+        :value="extSystem.slug"
+      />
       <ARow :title="t('coreDam.extSystem.model.adminUsers')">
-        <ACachedAnzuUserChip v-for="userId in extSystem.adminUsers" :id="userId" :key="userId" class="mr-2 mt-2" />
+        <ACachedAnzuUserChip
+          v-for="userId in extSystem.adminUsers"
+          :id="userId"
+          :key="userId"
+          class="mr-2 mt-2"
+        />
       </ARow>
     </VCol>
     <VCol cols="4">

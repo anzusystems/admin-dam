@@ -3,7 +3,8 @@ import { onMounted } from 'vue'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination, ADatetime,
+  ADatatablePagination,
+  ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -40,14 +41,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: AssetLicence } }) =
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [
-    { key: 'id' },
-    { key: 'name' },
-    { key: 'extSystem' },
-    { key: 'extId' },
-    { key: 'createdAt' },
-    { key: 'modifiedAt' },
-  ],
+  [{ key: 'id' }, { key: 'name' }, { key: 'extSystem' }, { key: 'extId' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

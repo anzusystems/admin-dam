@@ -43,13 +43,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: PermissionGroup } }
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [
-    { key: 'id' },
-    { key: 'title' },
-    { key: 'description' },
-    { key: 'permissions' },
-    { key: 'modifiedAt' },
-  ],
+  [{ key: 'id' }, { key: 'title' }, { key: 'description' }, { key: 'permissions' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

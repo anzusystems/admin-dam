@@ -2,7 +2,6 @@
 import { onMounted } from 'vue'
 import {
   ABooleanValue,
-  AChipNoLink,
   ADatatableConfigButton,
   ADatatableOrdering,
   ADatatablePagination,
@@ -22,14 +21,12 @@ import { ACL } from '@/types/Permission'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
 import type { Author } from '@/types/coreDam/Author'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
-import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'
 
 const router = useRouter()
 const filter = useAuthorListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
-const { getAuthorTypeOption } = useAuthorType()
 
 const { fetchList, listItems, datatableHiddenColumns } = useAuthorListActions()
 const getList = () => {

@@ -65,14 +65,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AssetDetailSidebarActionsWrapper v-if="isActive"></AssetDetailSidebarActionsWrapper>
+  <AssetDetailSidebarActionsWrapper v-if="isActive" />
   <div class="px-3">
-    <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
-    <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
-      <VProgressCircular indeterminate color="primary" />
+    <AssetDetailSlotSelect
+      class="mt-4"
+      @active-slot-change="activeSlotChange"
+    />
+    <div
+      v-if="loading"
+      class="d-flex w-100 h-100 justify-center align-center pa-2"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
     <div v-else-if="videoFile">
-      <ImagePreview v-model="videoFile.imagePreview" show-actions @changed="onSave">
+      <ImagePreview
+        v-model="videoFile.imagePreview"
+        show-actions
+        @changed="onSave"
+      >
         <template #actions-end>
           <VBtn
             variant="flat"

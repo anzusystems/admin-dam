@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { computed, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { type DocId, COMMON_CONFIG, type IntegerId, isNull, isUndefined, objectGetValueByPath } from '@anzusystems/common-admin'
+import {
+  COMMON_CONFIG,
+  type DocId,
+  type IntegerId,
+  isNull,
+  isUndefined,
+  objectGetValueByPath,
+} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

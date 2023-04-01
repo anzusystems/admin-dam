@@ -85,41 +85,96 @@ watch(
 </script>
 
 <template>
-  <VImg v-if="loading" :width="width" :height="height" class="asset-image asset-image--loading-bg">
+  <VImg
+    v-if="loading"
+    :width="width"
+    :height="height"
+    class="asset-image asset-image--loading-bg"
+  >
     <template #placeholder />
     <template #default>
       <div class="d-flex w-100 h-100 align-center justify-center">
-        <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />
+        <VProgressCircular
+          color="primary"
+          indeterminate
+          class="ml-auto mr-auto"
+        />
       </div>
     </template>
   </VImg>
-  <VImg v-else :width="width" :height="width" :src="src" contain>
+  <VImg
+    v-else
+    :width="width"
+    :height="width"
+    :src="src"
+    contain
+  >
     <template #placeholder />
-    <template v-if="isDuplicate" #default>
+    <template
+      v-if="isDuplicate"
+      #default
+    >
       <div
         class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
       >
-        <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
-        <div class="text-warning">{{ t('coreDam.asset.queueItem.duplicate') }}</div>
-        <AssetByImageIdLink v-if="imageFile" variant="text" size="small" :image-id="imageFile.id">
+        <VIcon
+          icon="mdi-alert"
+          class="ma-1"
+          size="x-small"
+          color="warning"
+        />
+        <div class="text-warning">
+          {{ t('coreDam.asset.queueItem.duplicate') }}
+        </div>
+        <AssetByImageIdLink
+          v-if="imageFile"
+          variant="text"
+          size="small"
+          :image-id="imageFile.id"
+        >
           {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
         </AssetByImageIdLink>
       </div>
     </template>
   </VImg>
   <div v-if="showActions">
-    <VBtn variant="flat" class="my-2 mr-2" color="secondary" @click.stop="dialog = true">
+    <VBtn
+      variant="flat"
+      class="my-2 mr-2"
+      color="secondary"
+      @click.stop="dialog = true"
+    >
       {{ t('system.imagePreview.actions.replaceByFileId') }}
     </VBtn>
-    <VBtn v-if="fileIdModel !== null" variant="flat" class="my-2" color="secondary" @click.stop="removeImage">
+    <VBtn
+      v-if="fileIdModel !== null"
+      variant="flat"
+      class="my-2"
+      color="secondary"
+      @click.stop="removeImage"
+    >
       {{ t('system.imagePreview.actions.unassign') }}
     </VBtn>
   </div>
-  <VDialog v-if="showActions" v-model="dialog" persistent :width="500" no-click-animation>
-    <VCard v-if="dialog" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
+  <VDialog
+    v-if="showActions"
+    v-model="dialog"
+    persistent
+    :width="500"
+    no-click-animation
+  >
+    <VCard
+      v-if="dialog"
+      data-cy="delete-panel"
+    >
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.imagePreview.actions.replaceByFileId') }}</div>
+          <div class="text-h6">
+            {{ t('system.imagePreview.actions.replaceByFileId') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -134,12 +189,27 @@ watch(
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <VTextField v-model="newFileId" :label="t('system.imagePreview.actions.replaceByFileId')" />
+        <VTextField
+          v-model="newFileId"
+          :label="t('system.imagePreview.actions.replaceByFileId')"
+        />
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel">{{ t('common.button.cancel') }}</VBtn>
-        <VBtn color="success" data-cy="button-confirm" @click.stop="onConfirm">{{ t('common.button.confirm') }}</VBtn>
+        <VBtn
+          text
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
+          {{ t('common.button.cancel') }}
+        </VBtn>
+        <VBtn
+          color="success"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
+          {{ t('common.button.confirm') }}
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

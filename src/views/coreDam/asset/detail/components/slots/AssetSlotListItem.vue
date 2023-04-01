@@ -188,7 +188,10 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div>{{ t('coreDam.asset.slots.noFile') }}</div>
       </VCol>
-      <VCol cols="3" class="text-right">
+      <VCol
+        cols="3"
+        class="text-right"
+      >
         <AssetUpload
           v-if="!itemHasFile"
           :height="40"
@@ -200,7 +203,13 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :multiple="false"
           :asset-type="assetType"
         />
-        <VBtn v-if="itemHasFile" variant="text" icon size="small" class="mx-1">
+        <VBtn
+          v-if="itemHasFile"
+          variant="text"
+          icon
+          size="small"
+          class="mx-1"
+        >
           <VIcon icon="mdi-dots-horizontal" />
           <VMenu activator="parent">
             <VCard min-width="300">
@@ -210,7 +219,10 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                   :title="t('coreDam.asset.slots.actions.copyFileId')"
                   @click.stop="copyFileId"
                 />
-                <VListItem :title="t('coreDam.asset.slots.actions.download')" @click.stop="downloadFile" />
+                <VListItem
+                  :title="t('coreDam.asset.slots.actions.download')"
+                  @click.stop="downloadFile"
+                />
                 <VListItem
                   v-if="totalSlotCount > 1 && item && !item.main"
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
@@ -237,7 +249,12 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
               </VList>
             </VCard>
           </VMenu>
-          <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.slots.actions.slotOptions') }}</VTooltip>
+          <VTooltip
+            activator="parent"
+            location="bottom"
+          >
+            {{ t('coreDam.asset.slots.actions.slotOptions') }}
+          </VTooltip>
         </VBtn>
       </VCol>
     </VRow>

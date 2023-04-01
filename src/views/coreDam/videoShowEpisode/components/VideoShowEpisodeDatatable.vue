@@ -9,7 +9,6 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  type DatatableOrderingOption,
   useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
@@ -47,7 +46,7 @@ const onRowClick = (event: unknown, { item }: { item: { raw: VideoShowEpisode } 
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
   [{ key: 'id' }, { key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
@@ -57,11 +56,6 @@ pagination.sortBy = 'position'
 
 const getList = () => {
   fetchList(props.videoShowId, pagination, filter)
-}
-
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
 }
 
 onMounted(() => {

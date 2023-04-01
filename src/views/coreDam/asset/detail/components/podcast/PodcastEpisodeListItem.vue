@@ -22,7 +22,9 @@ const { t } = useI18n()
 <template>
   <div class="d-flex align-center w-100 pa-4 pb-8 text-body-2">
     <div class="w-100">
-      <div class="font-weight-bold">{{ item.texts.title }}</div>
+      <div class="font-weight-bold">
+        {{ item.texts.title }}
+      </div>
       <div>{{ t('coreDam.podcastEpisode.model.podcast') }}: <CachedPodcastChip :id="item.podcast" /></div>
       <div class="pt-1">
         {{ t('coreDam.podcastEpisode.model.attributes.lastImportStatus') }}:

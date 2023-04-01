@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { ACL } from '@/types/Permission'
 import { ref } from 'vue'
 import { damClient } from '@/services/api/clients/damClient'

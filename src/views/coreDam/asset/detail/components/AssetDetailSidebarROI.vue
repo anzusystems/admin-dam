@@ -86,22 +86,44 @@ onMounted(async () => {
     </VBtn>
   </AssetDetailSidebarActionsWrapper>
   <div class="px-3">
-    <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
-    <div class="v-expansion-panel-title px-0">{{ t('coreDam.asset.detail.roi.title') }}</div>
-    <div class="text-caption">{{ t('coreDam.asset.detail.roi.description') }}</div>
+    <AssetDetailSlotSelect
+      class="mt-4"
+      @active-slot-change="activeSlotChange"
+    />
+    <div class="v-expansion-panel-title px-0">
+      {{ t('coreDam.asset.detail.roi.title') }}
+    </div>
+    <div class="text-caption">
+      {{ t('coreDam.asset.detail.roi.description') }}
+    </div>
   </div>
-  <div v-if="imageRoiStore.loader" class="w-100 h-100 d-flex align-center justify-center">
-    <VProgressCircular indeterminate color="primary" />
+  <div
+    v-if="imageRoiStore.loader"
+    class="w-100 h-100 d-flex align-center justify-center"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
   </div>
-  <div v-else-if="imageRoiStore.roi" class="crop-preview pa-2">
-    <div v-for="item in imageRoiStore.roi?.links.image_roi_example" :key="item.url" class="pb-2">
-      <div class="text-subtitle-2">{{ item.title }}</div>
+  <div
+    v-else-if="imageRoiStore.roi"
+    class="crop-preview pa-2"
+  >
+    <div
+      v-for="item in imageRoiStore.roi?.links.image_roi_example"
+      :key="item.url"
+      class="pb-2"
+    >
+      <div class="text-subtitle-2">
+        {{ item.title }}
+      </div>
       <img
         :src="item.url + '?timestamp=' + imageRoiStore.timestampRoiPreviews"
         :width="item.width"
         :height="item.height"
         alt=""
-      />
+      >
     </div>
   </div>
   <AssetFileRotate

@@ -14,10 +14,16 @@ const { v$ } = usePermissionGroupValidation(permissionGroup)
 </script>
 
 <template>
-  <ASystemEntityScope system="common" :subject="ENTITY">
+  <ASystemEntityScope
+    system="common"
+    :subject="ENTITY"
+  >
     <VRow>
       <VCol cols="12">
-        <VCard :loading="loadingPermissionGroup" variant="flat">
+        <VCard
+          :loading="loadingPermissionGroup"
+          variant="flat"
+        >
           <VCardText>
             <AFormTextField
               v-model="permissionGroup.title"
@@ -33,7 +39,11 @@ const { v$ } = usePermissionGroupValidation(permissionGroup)
         </VCard>
       </VCol>
       <VCol cols="12">
-        <PermissionEditor v-model="permissionGroup.permissions" :client="client" is-edit />
+        <PermissionEditor
+          v-model="permissionGroup.permissions"
+          :client="client"
+          is-edit
+        />
       </VCol>
     </VRow>
   </ASystemEntityScope>

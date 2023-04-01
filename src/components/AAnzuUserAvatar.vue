@@ -36,8 +36,17 @@ const text = computed(() => {
 </script>
 
 <template>
-  <VAvatar :color="color" class="text-uppercase" :class="containerClass">
-    <div class="d-inline-flex" :style="{ fontSize: fontSize }">{{ text }}</div>
+  <VAvatar
+    :color="color"
+    class="text-uppercase"
+    :class="containerClass"
+  >
+    <div
+      class="d-inline-flex"
+      :style="{ fontSize: fontSize }"
+    >
+      {{ text }}
+    </div>
   </VAvatar>
-  <div></div>
+  <div />
 </template>

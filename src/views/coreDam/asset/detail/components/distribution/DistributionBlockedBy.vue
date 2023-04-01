@@ -101,9 +101,17 @@ watch(
 
 <template>
   <div v-if="config.strategy === DistributionRequirementStrategy.AtLeastOne">
-    <VSelect v-model="value" multiple :items="itemsComputed" :error-messages="errorMessageComputed" @blur="onBlur">
-      <template #label>{{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" /></template>
+    <VSelect
+      v-model="value"
+      multiple
+      :items="itemsComputed"
+      :error-messages="errorMessageComputed"
+      @blur="onBlur"
+    >
+      <template #label>
+        {{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" />
+      </template>
     </VSelect>
   </div>
-  <div v-else></div>
+  <div v-else />
 </template>

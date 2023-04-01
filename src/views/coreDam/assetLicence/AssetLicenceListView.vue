@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
 import AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
-import { useI18n } from 'vue-i18n'
 import AssetLicenceCreateButton from '@/views/coreDam/assetLicence/components/AssetLicenceCreateButton.vue'
 import { ACL } from '@/types/Permission'
 import { ref } from 'vue'
 import { useAssetLicenceListActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-
-const { t } = useI18n()
 
 const { listLoading } = useAssetLicenceListActions()
 

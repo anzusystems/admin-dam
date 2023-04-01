@@ -42,6 +42,5 @@ const { allDistributionServiceTypeOptions } = useDistributionServiceType()
     no-filter
     :data-cy="dataCy"
     @blur="onBlur"
-  >
-  </VSelect>
+  />
 </template>

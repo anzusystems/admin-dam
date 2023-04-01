@@ -16,8 +16,14 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.videoShowEpisode.model.texts.title')" :value="videoShowEpisode.texts.title" />
-      <ARow :title="t('coreDam.videoShowEpisode.model.position')" :value="videoShowEpisode.position" />
+      <ARow
+        :title="t('coreDam.videoShowEpisode.model.texts.title')"
+        :value="videoShowEpisode.texts.title"
+      />
+      <ARow
+        :title="t('coreDam.videoShowEpisode.model.position')"
+        :value="videoShowEpisode.position"
+      />
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.videoShowEpisode.model.id')">

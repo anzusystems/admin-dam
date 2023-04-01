@@ -81,11 +81,25 @@ watch(
 </script>
 
 <template>
-  <VNavigationDrawer v-model="sidebarRight" permanent location="right" :width="300">
-    <div v-if="loader" class="d-flex w-100 h-100 align-center justify-center">
-      <VProgressCircular indeterminate color="primary" />
+  <VNavigationDrawer
+    v-model="sidebarRight"
+    permanent
+    location="right"
+    :width="300"
+  >
+    <div
+      v-if="loader"
+      class="d-flex w-100 h-100 align-center justify-center"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
-    <div v-else-if="!asset" class="d-flex w-100 h-100 align-center justify-center">
+    <div
+      v-else-if="!asset"
+      class="d-flex w-100 h-100 align-center justify-center"
+    >
       {{ t('coreDam.asset.detail.noAssetSelected') }}
     </div>
     <div v-else>
@@ -96,9 +110,18 @@ watch(
       />
       <AssetMetadata />
     </div>
-    <template v-if="!loader && asset" #append>
+    <template
+      v-if="!loader && asset"
+      #append
+    >
       <div class="pa-2 d-flex align-center justify-center">
-        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onEditMore">
+        <VBtn
+          color="secondary"
+          variant="flat"
+          class="mr-2"
+          size="small"
+          @click.stop="onEditMore"
+        >
           {{ t('coreDam.asset.detail.info.edit') }}
         </VBtn>
         <Acl :permission="ACL.DAM_ASSET_UPDATE">

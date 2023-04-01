@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import { ACL } from '@/types/Permission'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import KeywordDatatable from '@/views/coreDam/keyword/components/KeywordDatatable.vue'
@@ -8,8 +7,6 @@ import { ref } from 'vue'
 import type AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-
-const { t } = useI18n()
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 

@@ -87,10 +87,27 @@ const label = computed(() => {
         :title="item.name"
         @click.stop="toggleSelected(item.color)"
       >
-        <VIcon v-show="item.selected" icon="mdi-check position-absolute" :color="item.iconColor" :size="20" />
-        <VTooltip activator="parent" location="bottom">{{ item.color }}</VTooltip>
+        <VIcon
+          v-show="item.selected"
+          icon="mdi-check position-absolute"
+          :color="item.iconColor"
+          :size="20"
+        />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ item.color }}
+        </VTooltip>
       </div>
-      <VBtn v-show="showClear" icon="mdi-close-circle" variant="text" :width="24" :height="24" @click.stop="clear" />
+      <VBtn
+        v-show="showClear"
+        icon="mdi-close-circle"
+        variant="text"
+        :width="24"
+        :height="24"
+        @click.stop="clear"
+      />
     </div>
   </div>
 </template>

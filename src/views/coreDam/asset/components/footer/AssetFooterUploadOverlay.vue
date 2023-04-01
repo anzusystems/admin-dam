@@ -42,23 +42,46 @@ const isUploading = computed(() => {
 </script>
 
 <template>
-  <div class="asset-upload-overlay" :class="'asset-upload-overlay--' + footerViewUpload">
+  <div
+    class="asset-upload-overlay"
+    :class="'asset-upload-overlay--' + footerViewUpload"
+  >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
+      <VToolbar
+        class="w-100"
+        :color="toolbarColor"
+        density="compact"
+        :height="48"
+      >
         <div class="d-flex px-2">
           <div class="d-flex align-center">
-            <div v-if="isUploading" class="text-caption d-flex align-center font-weight-bold">
+            <div
+              v-if="isUploading"
+              class="text-caption d-flex align-center font-weight-bold"
+            >
               {{ t('coreDam.asset.upload.title') }}
             </div>
-            <div v-else class="text-caption d-flex align-center text-green-darken-3 font-weight-bold">
+            <div
+              v-else
+              class="text-caption d-flex align-center text-green-darken-3 font-weight-bold"
+            >
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
           </div>
         </div>
         <VSpacer />
         <div class="d-flex align-center pr-1">
-          <div v-if="isUploading" class="text-caption mr-2 d-flex align-center">
-            <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1" />
+          <div
+            v-if="isUploading"
+            class="text-caption mr-2 d-flex align-center"
+          >
+            <VProgressCircular
+              indeterminate
+              color="primary"
+              size="16"
+              width="2"
+              class="mr-1"
+            />
             <div>{{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
           </div>
           <VBtn
@@ -72,7 +95,12 @@ const isUploading = computed(() => {
             @click.stop="setMinimalUpload"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.hide') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.hide') }}
+            </VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
@@ -85,12 +113,24 @@ const isUploading = computed(() => {
             @click.stop="setCompactUpload"
           >
             <VIcon icon="mdi-chevron-up" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.show') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.show') }}
+            </VTooltip>
           </VBtn>
         </div>
       </VToolbar>
-      <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
-        <div class="ml-2 text-caption">New assets upload</div>
+      <VToolbar
+        class="w-100"
+        :color="toolbarColor"
+        density="compact"
+        :height="48"
+      >
+        <div class="ml-2 text-caption">
+          New assets upload
+        </div>
         <VSpacer />
         <div class="d-flex">
           <VBtn

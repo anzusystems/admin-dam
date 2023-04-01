@@ -3,7 +3,6 @@ import { useRoute } from 'vue-router'
 import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
-import { useI18n } from 'vue-i18n'
 import { useAssetLicenceDetailActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceDetail from '@/views/coreDam/assetLicence/components/AssetLicenceDetail.vue'
 import { ACL } from '@/types/Permission'
@@ -25,8 +24,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
-
-const { t } = useI18n()
 </script>
 
 <template>

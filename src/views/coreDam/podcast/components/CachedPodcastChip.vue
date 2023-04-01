@@ -15,5 +15,10 @@ const { getCachedPodcast } = useCachedPodcasts()
 </script>
 
 <template>
-  <ACachedChip :id="id" :get-cached-fn="getCachedPodcast" :route="ROUTE.DAM.PODCAST.DETAIL" display-text-path="title" />
+  <ACachedChip
+    :id="id"
+    :get-cached-fn="getCachedPodcast"
+    :route="ROUTE.DAM.PODCAST.DETAIL"
+    display-text-path="title"
+  />
 </template>

@@ -16,6 +16,7 @@ describe(`Test authors function, Env: ${Cypress.env('env')}`, () => {
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage('Record was created')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000)
     cy.getCy('copy_text')
       .invoke('text')
@@ -29,10 +30,13 @@ describe(`Test authors function, Env: ${Cypress.env('env')}`, () => {
   it('Edit author', () => {
     cy.visit('author/list')
     cy.getCy('filter-text').eq(2).type(`${RAND_NUM}{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('author-name').find('input').clear().type(`${USER_FIRST_NAME}-edit`)
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('author-identifier').find('input').clear().type(`${RAND_NUM}-edit`)
     cy.getCy('toggle-false').click()
     cy.getCy('author-type').click()
@@ -42,6 +46,7 @@ describe(`Test authors function, Env: ${Cypress.env('env')}`, () => {
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
     cy.getCy('filter-text').eq(2).type(`${RAND_NUM}-edit{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.contains('td', `${USER_FIRST_NAME}-edit`)
     cy.getCyVisibleClick('filter-reset')

@@ -42,13 +42,18 @@ const icon = computed(() => {
     :width="width"
     alt=""
     :style="'background-color:' + backgroundColor"
-  />
+  >
   <div
     v-else
     :style="{ height: height + 'px', backgroundColor: '#ccc', width: '100%' }"
     style="width: 100%; min-width: 200px"
     class="asset-list-item-image-placeholder d-flex align-center justify-center"
   >
-    <VIcon v-if="icon.length" size="100" :icon="icon" color="#363636" />
+    <VIcon
+      v-if="icon.length"
+      size="100"
+      :icon="icon"
+      color="#363636"
+    />
   </div>
 </template>

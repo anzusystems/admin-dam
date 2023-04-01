@@ -9,7 +9,7 @@ import type { VideoShow } from '@/types/coreDam/VideoShow'
 import { useVideoShowValidation } from '@/views/coreDam/videoShow/composables/videoShowValidation'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     disableRedirect?: boolean
     buttonT?: string

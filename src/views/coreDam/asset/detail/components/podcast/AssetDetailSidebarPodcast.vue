@@ -63,14 +63,27 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn color="secondary" variant="flat" @click.stop="addNew">
+    <VBtn
+      color="secondary"
+      variant="flat"
+      @click.stop="addNew"
+    >
       {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
     </VBtn>
   </AssetDetailSidebarActionsWrapper>
-  <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
-    <VProgressCircular indeterminate color="primary" />
+  <div
+    v-if="loading"
+    class="d-flex w-100 h-100 justify-center align-center pa-2"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
   </div>
-  <div v-else-if="listItems.length === 0" class="pa-4 text-caption">
+  <div
+    v-else-if="listItems.length === 0"
+    class="pa-4 text-caption"
+  >
     {{ t('coreDam.podcastEpisode.common.noEntries') }}
   </div>
   <div v-else>
@@ -80,7 +93,16 @@ onMounted(async () => {
       :item="item"
       @delete-record="deletePodcastEpisode"
     />
-    <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
+    <ADatatablePagination
+      v-if="showPagination"
+      v-model="pagination"
+      hide-records-per-page
+      @change="getList"
+    />
   </div>
-  <PodcastEpisodeNewDialog v-model="dialogNew" :asset-id="assetId" @reload-list="reloadList" />
+  <PodcastEpisodeNewDialog
+    v-model="dialogNew"
+    :asset-id="assetId"
+    @reload-list="reloadList"
+  />
 </template>

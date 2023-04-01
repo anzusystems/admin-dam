@@ -41,7 +41,7 @@ module.exports = {
       'ignoreTrailingComments': true,
       'ignoreUrls': true,
       'ignoreRegExpLiterals': true,
-      'ignorePattern': '^import .*',
+      ignorePattern: '^import .*|(class\\s*=\\s*"[^"]+")',
     }],
     'vue/no-template-target-blank': ['error'],
   },

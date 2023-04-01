@@ -19,54 +19,95 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <VCard :loading="loadingAnzuUser" variant="flat">
+  <VCard
+    :loading="loadingAnzuUser"
+    variant="flat"
+  >
     <VCardText>
       <VRow>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.id') }}</h4>
           <ACopyText :value="anzuUser.id" />
         </VCol>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.email') }}</h4>
           {{ anzuUser.email }}
         </VCol>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.enabled') }}</h4>
-          <ABooleanValue :value="anzuUser.enabled" chip />
+          <ABooleanValue
+            :value="anzuUser.enabled"
+            chip
+          />
         </VCol>
       </VRow>
       <VRow>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.person.firstName') }}</h4>
           {{ anzuUser.person.firstName }}
         </VCol>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.person.lastName') }}</h4>
           {{ anzuUser.person.lastName }}
         </VCol>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.person.fullName') }}</h4>
           {{ anzuUser.person.fullName }}
         </VCol>
       </VRow>
       <VRow>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.avatar.text') }}</h4>
           {{ anzuUser.avatar.text }}
         </VCol>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.avatar.color') }}</h4>
           {{ anzuUser.avatar.color }}
         </VCol>
       </VRow>
       <VRow>
-        <VCol cols="12" sm="4">
+        <VCol
+          cols="12"
+          sm="4"
+        >
           <h4>{{ t('common.anzuUser.model.roles') }}</h4>
-          <VChip v-for="role in anzuUser.roles" :key="role" class="mr-1 mb-1">{{
-            translatePermission('roles', role)
-          }}</VChip>
+          <VChip
+            v-for="role in anzuUser.roles"
+            :key="role"
+            class="mr-1 mb-1"
+          >
+            {{ translatePermission('roles', role) }}
+          </VChip>
         </VCol>
-        <VCol v-if="anzuUser.permissionGroups.length > 0" cols="12" sm="8">
+        <VCol
+          v-if="anzuUser.permissionGroups.length > 0"
+          cols="12"
+          sm="8"
+        >
           <h4>{{ t('common.anzuUser.model.permissionGroups') }}</h4>
           <CachedPermissionGroupChip
             v-for="permissionGroupId in anzuUser.permissionGroups"

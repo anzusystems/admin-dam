@@ -16,7 +16,12 @@ const statusOption = computed(() => {
 </script>
 
 <template>
-  <VChip v-if="statusOption" label size="small" :color="statusOption.color">
+  <VChip
+    v-if="statusOption"
+    label
+    size="small"
+    :color="statusOption.color"
+  >
     {{ statusOption.title }}
   </VChip>
 </template>

@@ -16,7 +16,6 @@ import {
   ATableDetailButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  type JobUserDataDelete,
   useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
@@ -24,7 +23,7 @@ import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
 import { useI18n } from 'vue-i18n'
 import { ACL, type AclValue } from '@/types/Permission'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
-import type { Job, JobPodcastSynchronizer } from '@/types/coreDam/Job'
+import type { Job } from '@/types/coreDam/Job'
 
 const router = useRouter()
 const filter = useJobListFilter()

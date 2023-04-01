@@ -131,11 +131,24 @@ const { t } = useI18n()
     :multiple="multiple"
     @files-input="assetUpload"
   />
-  <VDialog v-model="uploadDialog" persistent no-click-animation :width="500">
-    <VCard v-if="uploadDialog" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
+  <VDialog
+    v-model="uploadDialog"
+    persistent
+    no-click-animation
+    :width="500"
+  >
+    <VCard
+      v-if="uploadDialog"
+      data-cy="delete-panel"
+    >
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.upload.limits.uploadWarning') }}</div>
+          <div class="text-h6">
+            {{ t('system.upload.limits.uploadWarning') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -158,14 +171,24 @@ const { t } = useI18n()
           <span v-if="uploadQueueTotalCount > 0">{{
             t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
           }}</span>
-          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
           {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </div>
       <VCardActions>
         <VSpacer />
-        <VBtn text @click.stop="onDialogCancel">{{ t('common.button.cancel') }}</VBtn>
-        <VBtn v-if="!alreadyAtUploadLimit" color="success" :loading="uploadDialogLoader" @click.stop="onDialogConfirm">
+        <VBtn
+          text
+          @click.stop="onDialogCancel"
+        >
+          {{ t('common.button.cancel') }}
+        </VBtn>
+        <VBtn
+          v-if="!alreadyAtUploadLimit"
+          color="success"
+          :loading="uploadDialogLoader"
+          @click.stop="onDialogConfirm"
+        >
           {{ t('system.upload.limits.actionAddFirstItems', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </VBtn>
       </VCardActions>

@@ -74,11 +74,22 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog :model-value="modelValue" persistent no-click-animation scrollable :max-width="800">
+  <VDialog
+    :model-value="modelValue"
+    persistent
+    no-click-animation
+    scrollable
+    :max-width="800"
+  >
     <VCard>
-      <VToolbar class="pl-2" density="compact">
+      <VToolbar
+        class="pl-2"
+        density="compact"
+      >
         <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.imagePreview.actions.chooseFromDistribution') }}</div>
+          <div class="text-h6">
+            {{ t('system.imagePreview.actions.chooseFromDistribution') }}
+          </div>
         </div>
         <VSpacer />
         <VToolbarItems>
@@ -93,11 +104,20 @@ onMounted(async () => {
         </VToolbarItems>
       </VToolbar>
       <VCardText>
-        <ACard :loading="listLoading" inner-div-class="">
-          <div v-if="listItems.length === 0" class="text-center text-caption w-100 pa-2">
+        <ACard
+          :loading="listLoading"
+          inner-div-class=""
+        >
+          <div
+            v-if="listItems.length === 0"
+            class="text-center text-caption w-100 pa-2"
+          >
             {{ t('coreDam.distribution.common.noEntries') }}
           </div>
-          <div v-else class="dam-image-grid dam-image-grid--special">
+          <div
+            v-else
+            class="dam-image-grid dam-image-grid--special"
+          >
             <DistributionImagePreviewItem
               v-for="(item, index) in listItems"
               :key="item.id"
@@ -107,18 +127,35 @@ onMounted(async () => {
               @invalid-image="invalidImage"
             />
           </div>
-          <ADatatablePagination v-model="pagination" hide-records-per-page @change="getList" />
+          <ADatatablePagination
+            v-model="pagination"
+            hide-records-per-page
+            @change="getList"
+          />
         </ACard>
       </VCardText>
       <VCardActions>
-        <div v-if="lastSelectedItem" class="text-caption pl-2">
+        <div
+          v-if="lastSelectedItem"
+          class="text-caption pl-2"
+        >
           {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>
         <VSpacer />
-        <VBtn color="success" :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">
+        <VBtn
+          color="success"
+          :loading="saving"
+          :disabled="!lastSelectedItem"
+          @click.stop="onConfirm"
+        >
           {{ t('common.button.confirm') }}
         </VBtn>
-        <VBtn text @click.stop="closeDialog">{{ t('common.button.cancel') }}</VBtn>
+        <VBtn
+          text
+          @click.stop="closeDialog"
+        >
+          {{ t('common.button.cancel') }}
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>
