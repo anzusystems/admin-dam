@@ -5,6 +5,7 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/syste
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
 import {
+  ADialogToolbar,
   ASystemEntityScope,
   type IntegerIdNullable,
   isArray,
@@ -162,34 +163,28 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
+  <VDialog
+    v-model="dialog"
+    persistent
+    :width="500"
+  >
     <VCard v-if="dialog">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.mainBar.extSystemLicenceSwitch.title') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
+      </ADialogToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">
         <div class="mb-4 text-caption">
           {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
             extSystemName
-          }})<br />
+          }})<br>
           {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
             licenceName
-          }})<br />
+          }})<br>
         </div>
-        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <VRow>
             <VCol class="text-caption font-weight-bold mb-4">
               {{ t('system.mainBar.extSystemLicenceSwitch.filters') }}
@@ -236,12 +231,19 @@ onMounted(async () => {
             <div class="text-caption font-weight-bold">
               {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
             </div>
-            <div class="w-100"><VTextField v-model="selectedLicence" hide-details /></div>
+            <div class="w-100">
+              <VTextField
+                v-model="selectedLicence"
+                hide-details
+              />
+            </div>
           </div>
         </ASystemEntityScope>
       </VCardText>
       <VCardText v-else-if="allowSelect">
-        <div class="mb-4">{{ t('system.mainBar.extSystemLicenceSwitch.description') }}</div>
+        <div class="mb-4">
+          {{ t('system.mainBar.extSystemLicenceSwitch.description') }}
+        </div>
         <VSelect
           v-model="selectedExtSystem"
           :items="extSystemsItems"
@@ -276,12 +278,19 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn v-if="allowSelect" color="warning" data-cy="button-confirm" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          v-if="allowSelect"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t('system.mainBar.extSystemLicenceSwitch.confirm') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>
