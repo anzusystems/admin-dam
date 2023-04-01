@@ -54,24 +54,20 @@ const onImport = () => {
       #append
     >
       <div class="pa-2 d-flex align-center justify-center">
-        <VBtn
-          color="secondary"
-          variant="flat"
+        <ABtnPrimary
           class="mr-2"
           size="small"
           @click.stop="onImport"
         >
           {{ t('coreDam.asset.externalProvider.importToDam') }}
-        </VBtn>
-        <VBtn
-          color="secondary"
-          variant="flat"
+        </ABtnPrimary>
+        <ABtnTertiary
           class="mr-2"
           size="small"
           @click.stop="onEditMore"
         >
           {{ t('coreDam.asset.externalProvider.viewDetail') }}
-        </VBtn>
+        </ABtnTertiary>
       </div>
     </template>
   </VNavigationDrawer>

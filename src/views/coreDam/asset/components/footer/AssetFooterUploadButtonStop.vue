@@ -72,21 +72,18 @@ const { t } = useI18n()
       </ADialogToolbar>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          color="secondary"
-          variant="text"
+        <ABtnTertiary
           data-cy="button-cancel"
           @click.stop="onCancel"
         >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn
-          color="error"
+        </ABtnTertiary>
+        <ABtnPrimary
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >
           {{ t('system.upload.stop') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -91,31 +91,27 @@ const onRemove = () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          v-if="showUnset"
-          color="warning"
-          variant="text"
-          data-cy="button-unset"
-          @click.stop="onUnset"
-        >
-          {{ t('coreDam.asset.slots.remove.unsetSlot') }}
-        </VBtn>
-        <VBtn
-          color="error"
-          variant="text"
-          data-cy="button-remove"
-          @click.stop="onRemove"
-        >
-          {{ t('coreDam.asset.slots.remove.removeFile') }}
-        </VBtn>
-        <VBtn
-          color="secondary"
-          variant="text"
+        <ABtnTertiary
           data-cy="button-cancel"
           @click.stop="onCancel"
         >
           {{ t('common.button.cancel') }}
-        </VBtn>
+        </ABtnTertiary>
+        <ABtnPrimary
+          v-if="showUnset"
+          color="warning"
+          data-cy="button-unset"
+          @click.stop="onUnset"
+        >
+          {{ t('coreDam.asset.slots.remove.unsetSlot') }}
+        </ABtnPrimary>
+        <ABtnPrimary
+          color="error"
+          data-cy="button-remove"
+          @click.stop="onRemove"
+        >
+          {{ t('coreDam.asset.slots.remove.removeFile') }}
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

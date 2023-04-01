@@ -97,22 +97,19 @@ const onConfirm = async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          color="secondary"
-          variant="text"
+        <ABtnTertiary
           data-cy="button-cancel"
           @click.stop="onCancel"
         >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn
-          color="success"
+        </ABtnTertiary>
+        <ABtnPrimary
           :loading="buttonLoading"
           data-cy="button-create-podcast"
           @click.stop="onConfirm"
         >
           {{ t('common.button.confirm') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

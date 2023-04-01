@@ -188,6 +188,7 @@
   },
   "externalProvider": {
     "importToDam": "Import to DAM",
+    "viewDetail": "View detail",
     "id": "ID",
     "title": "Title"
   },

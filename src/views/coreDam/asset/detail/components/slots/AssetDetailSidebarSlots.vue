@@ -53,14 +53,12 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn
+    <ABtnPrimary
       :loading="assetSlotsStore.loader"
-      color="secondary"
-      variant="flat"
       @click.stop="getList"
     >
       {{ t('coreDam.asset.slots.actions.refreshList') }}
-    </VBtn>
+    </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
   <div
     v-if="assetSlotsStore.loader"

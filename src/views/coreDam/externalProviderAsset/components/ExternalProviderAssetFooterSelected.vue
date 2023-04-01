@@ -94,19 +94,13 @@ const onImport = () => {
           </VBtn>
           <VBtn
             v-show="showFullSelected"
-            color="secondary"
-            variant="flat"
+            variant="text"
             :height="26"
             class="mr-2"
             @click.stop="setFullSelected"
           >
             {{ t('coreDam.asset.selected.more') }}
           </VBtn>
-          <AssetFooterSelectedButtonClear
-            v-show="showFullSelected"
-            variant="small"
-            @confirm="onClearConfirm"
-          />
           <VBtn
             v-show="showMinimalSelected"
             icon
@@ -131,6 +125,11 @@ const onImport = () => {
           >
             <VIcon icon="mdi-chevron-up" />
           </VBtn>
+          <AssetFooterSelectedButtonClear
+            v-show="showFullSelected"
+            variant="small"
+            @confirm="onClearConfirm"
+          />
         </div>
       </VToolbar>
       <AssetQueueMassEditSimple />

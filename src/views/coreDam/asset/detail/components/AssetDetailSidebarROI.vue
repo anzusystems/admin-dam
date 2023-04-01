@@ -76,14 +76,12 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn
+    <ABtnTertiary
       v-if="!imageRoiStore.loader"
-      color="secondary"
-      variant="flat"
       @click.stop="imageRoiStore.forceReloadRoiPreviews()"
     >
       {{ t('coreDam.asset.detail.roi.refresh') }}
-    </VBtn>
+    </ABtnTertiary>
   </AssetDetailSidebarActionsWrapper>
   <div class="px-3">
     <AssetDetailSlotSelect

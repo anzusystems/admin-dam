@@ -30,15 +30,13 @@ const onImport = () => {
 
 <template>
   <ExternalProviderAssetDetailSidebarActionsWrapper v-if="detailDialog && asset">
-    <VBtn
-      color="secondary"
+    <ABtnPrimary
       type="submit"
-      variant="flat"
       class="ml-2"
       @click.stop="onImport"
     >
       {{ t('coreDam.asset.externalProvider.importToDam') }}
-    </VBtn>
+    </ABtnPrimary>
   </ExternalProviderAssetDetailSidebarActionsWrapper>
   <VExpansionPanels
     v-if="asset"

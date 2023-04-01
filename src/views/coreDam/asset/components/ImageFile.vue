@@ -139,18 +139,16 @@ watch(
   </VImg>
   <div v-if="showActions">
     <VBtn
-      variant="flat"
+      variant="text"
       class="my-2 mr-2"
-      color="secondary"
       @click.stop="dialog = true"
     >
       {{ t('system.imagePreview.actions.replaceByFileId') }}
     </VBtn>
     <VBtn
       v-if="fileIdModel !== null"
-      variant="flat"
+      variant="text"
       class="my-2"
-      color="secondary"
       @click.stop="removeImage"
     >
       {{ t('system.imagePreview.actions.unassign') }}

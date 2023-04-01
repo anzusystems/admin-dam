@@ -54,13 +54,11 @@ onMounted(async () => {
 <template>
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
-      <VBtn
-        color="secondary"
-        variant="flat"
+      <ABtnPrimary
         @click.stop="addNew"
       >
         {{ t('coreDam.distribution.common.addButton') }}
-      </VBtn>
+      </ABtnPrimary>
     </AssetDetailSidebarActionsWrapper>
     <div class="px-4 text-caption">
       {{ t('coreDam.distribution.common.list') }}:
