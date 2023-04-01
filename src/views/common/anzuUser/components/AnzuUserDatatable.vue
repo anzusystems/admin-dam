@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import {
-  ABooleanValue,
+  ABooleanValue, AChipNoLink,
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   type AnzuUser,
   ATableCopyIdButton,
   ATableDetailButton,
@@ -18,23 +18,18 @@ import { ENTITY } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
-import type { AxiosInstance } from 'axios'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import CachedPermissionGroupChip from '@/views/common/permissionGroup/components/CachedPermissionGroupChip.vue'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-
-const props = defineProps<{
-  client: () => AxiosInstance
-}>()
+import { damClient } from '@/services/api/clients/damClient'
 
 const router = useRouter()
 
 const filter = useAnzuUserFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
-const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions(props.client)
+const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions(damClient)
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: AnzuUser } }) => {
@@ -51,10 +46,11 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'roles' },
     { key: 'permissionGroups' },
     { key: 'permissions' },
+    { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
   datatableHiddenColumns,
-  SYSTEM_CORE_DAM,
+  'common',
   ENTITY
 )
 
@@ -62,7 +58,7 @@ const getList = () => {
   fetchAnzuUserList(pagination, filter)
 }
 
-const { translatePermission } = usePermissionConfigActions(props.client)
+const { translatePermission } = usePermissionConfigActions(damClient)
 
 const sortByChange = (option: DatatableOrderingOption) => {
   updateSortBy(option.sortBy)
@@ -101,23 +97,23 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #enabled="{ item }">
+        <template #item.enabled="{ item }">
           <ABooleanValue
             chip
             :value="item.raw.enabled"
           />
         </template>
-        <template #roles="{ item }">
-          <VChip
+        <template #item.roles="{ item }">
+          <AChipNoLink
             v-for="role in item.raw.roles"
             :key="role"
             class="mr-1 mb-1"
           >
             {{ translatePermission('roles', role) }}
-          </VChip>
+          </AChipNoLink>
           <span v-if="item.raw.roles.length === 0">-</span>
         </template>
-        <template #permissionGroups="{ item }">
+        <template #item.permissionGroups="{ item }">
           <CachedPermissionGroupChip
             v-for="permissionGroupId in item.raw.permissionGroups"
             :id="permissionGroupId"
@@ -126,8 +122,14 @@ defineExpose({
           />
           <span v-if="item.raw.permissionGroups.length === 0">-</span>
         </template>
-        <template #permissions="{ item }">
-          <VChip>{{ Object.keys(item.raw.permissions).length }}</VChip>
+        <template #item.permissions="{ item }">
+          {{ Object.keys(item.raw.permissions).length }}
+        </template>
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
         <template #item.actions="{ item }">
           <div class="d-flex justify-end">

@@ -74,6 +74,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
+        saveButtonLoading.value = false
         return
       }
       await apiUpdatePermissionGroup(
@@ -96,6 +97,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
+        saveButtonLoading.value = false
         return
       }
       const permissionGroupRes = await apiCreatePermissionGroup(permissionGroupOneStore.permissionGroup)
