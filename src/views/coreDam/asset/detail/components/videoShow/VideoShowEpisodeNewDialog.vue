@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
-import { AFormTextarea, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextarea, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpisodeFactory'
@@ -97,39 +97,16 @@ onMounted(async () => {
 <template>
   <VDialog
     v-model="value"
-    persistent
-    no-click-animation
     :width="500"
   >
     <VCard v-if="value">
-      <VToolbar
-        class="pl-2"
-        density="compact"
-      >
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">
-            {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
-          </div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="closeDialog(false)"
-          />
-        </VToolbarItems>
-      </VToolbar>
-      <ASystemEntityScope
-        :system="SYSTEM_CORE_DAM"
-        :subject="ENTITY"
-      >
-        <VContainer
-          class="pa-4"
-          fluid
+      <ADialogToolbar @on-cancel="closeDialog(false)">
+        {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
         >
           <ARow>
             <VideoShowRemoteAutocomplete
@@ -156,23 +133,21 @@ onMounted(async () => {
               />
             </ARow>
           </template>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          color="success"
+        <ABtnTertiary
+          @click.stop="closeDialog(false)"
+        >
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
           :loading="saving"
           @click.stop="submit"
         >
           {{ t('common.button.add') }}
-        </VBtn>
-        <VBtn
-          variant="text"
-          @click.stop="closeDialog(false)"
-        >
-          {{ t('common.button.cancel') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

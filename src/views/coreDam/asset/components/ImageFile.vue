@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { isNull } from '@anzusystems/common-admin'
+import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImageFile } from '@/types/coreDam/File'
@@ -159,35 +159,15 @@ watch(
   <VDialog
     v-if="showActions"
     v-model="dialog"
-    persistent
     :width="500"
-    no-click-animation
   >
     <VCard
       v-if="dialog"
       data-cy="delete-panel"
     >
-      <VToolbar
-        class="pl-2"
-        density="compact"
-      >
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">
-            {{ t('system.imagePreview.actions.replaceByFileId') }}
-          </div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('system.imagePreview.actions.replaceByFileId') }}
+      </ADialogToolbar>
       <VCardText>
         <VTextField
           v-model="newFileId"
@@ -196,20 +176,18 @@ watch(
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          variant="text"
+        <ABtnTertiary
           data-cy="button-cancel"
           @click.stop="onCancel"
         >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn
-          color="success"
+        </ABtnTertiary>
+        <ABtnPrimary
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >
           {{ t('common.button.confirm') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

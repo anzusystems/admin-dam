@@ -126,8 +126,6 @@ const assetMainFile = computed(() => {
   <VDialog
     v-model="assetDetailStore.detail"
     fullscreen
-    persistent
-    no-click-animation
   >
     <AssetDetailDialogLoader
       v-if="assetDetailStore.loader"

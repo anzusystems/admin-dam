@@ -79,7 +79,6 @@ const { assetTypeOptions } = useAssetType()
   />
   <VDialog
     v-model="dialog"
-    persistent
   >
     <VCard
       v-if="dialog"

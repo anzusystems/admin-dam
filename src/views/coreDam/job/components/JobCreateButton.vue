@@ -63,7 +63,6 @@ const onSuccess = () => {
   <VDialog
     v-model="dialog"
     :max-width="500"
-    persistent
   >
     <VCard>
       <ADialogToolbar @on-cancel="closeDialog">

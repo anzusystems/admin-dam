@@ -87,7 +87,6 @@ const { assetTypeOptions } = useAssetType()
   </ABtnPrimary>
   <VDialog
     v-model="dialog"
-    persistent
     :max-width="500"
   >
     <VCard

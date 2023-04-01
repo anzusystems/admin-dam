@@ -1,6 +1,14 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { ACard, ADatatablePagination, type DocId, isNull, useAlerts, usePagination } from '@anzusystems/common-admin'
+import {
+  ACard,
+  ADatatablePagination,
+  ADialogToolbar,
+  type DocId,
+  isNull,
+  useAlerts,
+  usePagination
+} from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
@@ -76,33 +84,13 @@ onMounted(async () => {
 <template>
   <VDialog
     :model-value="modelValue"
-    persistent
-    no-click-animation
     scrollable
     :max-width="800"
   >
     <VCard>
-      <VToolbar
-        class="pl-2"
-        density="compact"
-      >
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">
-            {{ t('system.imagePreview.actions.chooseFromDistribution') }}
-          </div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="closeDialog"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="closeDialog">
+        {{ t('system.imagePreview.actions.chooseFromDistribution') }}
+      </ADialogToolbar>
       <VCardText>
         <ACard
           :loading="listLoading"
@@ -142,20 +130,18 @@ onMounted(async () => {
           {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>
         <VSpacer />
-        <VBtn
-          color="success"
+        <ABtnTertiary
+          @click.stop="closeDialog"
+        >
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
           :loading="saving"
           :disabled="!lastSelectedItem"
           @click.stop="onConfirm"
         >
           {{ t('common.button.confirm') }}
-        </VBtn>
-        <VBtn
-          variant="text"
-          @click.stop="closeDialog"
-        >
-          {{ t('common.button.cancel') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -67,9 +67,7 @@ const { t } = useI18n()
     </VBtn>
     <VDialog
       v-model="dialog"
-      persistent
       :width="500"
-      no-click-animation
     >
       <VCard
         v-if="dialog"
