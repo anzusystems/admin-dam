@@ -94,7 +94,6 @@ const onConfirm = async () => {
   </ABtnPrimary>
   <VDialog
     v-model="dialog"
-    persistent
   >
     <VCard
       v-if="dialog"

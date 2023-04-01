@@ -127,8 +127,6 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       v-if="customDialog"
       :model-value="true"
       fullscreen
-      persistent
-      no-click-animation
       class="overlay--sidebar"
     >
       <VCard>

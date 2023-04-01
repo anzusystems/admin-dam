@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
-import { eventClickBlur } from '@anzusystems/common-admin'
+import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
@@ -76,35 +76,15 @@ const onCancel = () => {
   </VBtn>
   <VDialog
     v-model="dialog"
-    persistent
     :width="500"
-    no-click-animation
   >
     <VCard
       v-if="dialog"
       data-cy="delete-panel"
     >
-      <VToolbar
-        class="pl-2"
-        density="compact"
-      >
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">
-            {{ t('common.button.download') }}
-          </div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('common.button.download') }}
+      </ADialogToolbar>
       <VCardText>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
         <div

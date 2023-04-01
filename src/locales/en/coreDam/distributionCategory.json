@@ -9,5 +9,6 @@
     "name": "Name",
     "type": "Asset Type"
   },
-  "notSelected": "No distribution category selected"
+  "notSelected": "No distribution category selected",
+  "manage": "Manage distribution category"
 }

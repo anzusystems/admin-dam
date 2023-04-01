@@ -426,20 +426,18 @@ onUnmounted(async () => {
   </VCardText>
   <VCardActions>
     <VSpacer />
-    <VBtn
+    <ABtnTertiary
+      @click.stop="closeDialog(false)"
+    >
+      {{ t('common.button.cancel') }}
+    </ABtnTertiary>
+    <ABtnPrimary
       v-if="canDisplayForm"
-      color="success"
       :loading="saving"
       @click.stop="submit"
     >
       <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
       <span v-else>{{ t('common.button.add') }}</span>
-    </VBtn>
-    <VBtn
-      variant="text"
-      @click.stop="closeDialog(false)"
-    >
-      {{ t('common.button.cancel') }}
-    </VBtn>
+    </ABtnPrimary>
   </VCardActions>
 </template>

@@ -165,7 +165,6 @@ onMounted(async () => {
 <template>
   <VDialog
     v-model="dialog"
-    persistent
     :width="500"
   >
     <VCard v-if="dialog">

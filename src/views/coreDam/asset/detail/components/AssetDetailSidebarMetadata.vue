@@ -72,16 +72,14 @@ const onDelete = async () => {
       <AActionDeleteButton @delete-record="onDelete" />
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_UPDATE">
-      <VBtn
-        color="success"
+      <ABtnPrimary
         type="submit"
-        variant="flat"
         class="ml-2"
         :loading="saveButtonLoading"
         @click.stop="onSave"
       >
         {{ t('common.button.save') }}
-      </VBtn>
+      </ABtnPrimary>
     </Acl>
   </AssetDetailSidebarActionsWrapper>
   <AssetMetadata />

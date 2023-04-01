@@ -96,8 +96,6 @@ const totalCountText = computed(() => {
   <VDialog
     v-model="externalProviderAssetDetailStore.detail"
     fullscreen
-    persistent
-    no-click-animation
   >
     <AssetDetailDialogLoader
       v-if="externalProviderAssetDetailStore.loader"
