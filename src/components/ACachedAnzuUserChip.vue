@@ -2,10 +2,9 @@
 import { computed, shallowRef, watch } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { COMMON_CONFIG, type IntegerId, isNull, isUndefined } from '@anzusystems/common-admin'
+import { COMMON_CONFIG, type IntegerId, isNull, isUndefined, AAnzuUserAvatar } from '@anzusystems/common-admin'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import type { UserMinimal } from '@/types/coreDam/User'
-import AAnzuUserAvatar from '@/components/AAnzuUserAvatar.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -52,7 +51,7 @@ watch(
     <span v-if="isNull(id) || isUndefined(id)">-</span>
     <VChip
       v-else
-      label
+      class="pl-1"
       size="small"
       :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
       @click.stop="onClick"
@@ -60,6 +59,7 @@ watch(
       <AAnzuUserAvatar
         :user="cached ?? undefined"
         container-class="mr-1"
+        :size="20"
       />
       {{ text }}
       <VProgressCircular

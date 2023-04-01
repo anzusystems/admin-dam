@@ -2,15 +2,19 @@
 import { ACL } from '@/types/Permission'
 import { ref } from 'vue'
 import PermissionGroupDatatable from '@/views/common/permissionGroup/components/PermissionGroupDatatable.vue'
-import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupCreateButton from '@/views/common/permissionGroup/components/PermissionGroupCreateButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
+import { damClient } from '@/services/api/clients/damClient'
+import { ACard } from '@anzusystems/common-admin'
 
 const datatable = ref<InstanceType<typeof PermissionGroupDatatable> | null>(null)
 
 const afterCreate = () => {
   datatable.value?.refresh()
 }
+
+const { listLoading } = usePermissionGroupActions(damClient)
 </script>
 
 <template>
@@ -27,8 +31,9 @@ const afterCreate = () => {
     </template>
   </ActionbarWrapper>
 
-  <PermissionGroupDatatable
-    ref="datatable"
-    :client="damClient"
-  />
+  <ACard :loading="listLoading">
+    <VCardText>
+      <PermissionGroupDatatable ref="datatable" />
+    </VCardText>
+  </ACard>
 </template>

@@ -4,7 +4,7 @@ import type { PermissionGroup } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination,
+  ADatatablePagination, ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -17,23 +17,16 @@ import { ENTITY } from '@/services/api/common/permissionGroupApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
-import type { AxiosInstance } from 'axios'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-
-const props = defineProps<{
-  client: () => AxiosInstance
-}>()
+import { damClient } from '@/services/api/clients/damClient'
 
 const router = useRouter()
 
 const filter = usePermissionGroupListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
-const { fetchPermissionGroupList, permissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(
-  props.client
-)
+const { fetchPermissionGroupList, permissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(damClient)
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: { raw: PermissionGroup } }) => {
@@ -43,9 +36,16 @@ const onRowClick = (event: unknown, { item }: { item: { raw: PermissionGroup } }
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
-  [{ key: 'id' }, { key: 'title' }, { key: 'description' }, { key: 'permissions' }, { key: 'modifiedAt' }],
+  [
+    { key: 'id' },
+    { key: 'title' },
+    { key: 'description' },
+    { key: 'permissions' },
+    { key: 'createdAt' },
+    { key: 'modifiedAt' },
+  ],
   datatableHiddenColumns,
-  SYSTEM_CORE_DAM,
+  'common',
   ENTITY
 )
 
@@ -90,8 +90,14 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #permissions="{ item }">
-          <VChip>{{ Object.keys(item.raw.permissions).length }}</VChip>
+        <template #item.permissions="{ item }">
+          {{ Object.keys(item.raw.permissions).length }}
+        </template>
+        <template #item.createdAt="{ item }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
         <template #item.actions="{ item }">
           <div class="d-flex justify-end">
