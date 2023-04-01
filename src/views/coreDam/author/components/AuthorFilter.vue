@@ -75,7 +75,6 @@ const { authorTypeOptions } = useAuthorType()
         <VCol cols="2">
           <AFilterBooleanSelect
             v-model="filter.reviewed"
-            :label="t('coreDam.author.filter.reviewed')"
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>

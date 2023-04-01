@@ -9,7 +9,7 @@ declare module 'vue-router' {
     layout?: string
     requiresAuth?: boolean
     requiredPermissions?: Array<CustomAclValue>
-    breadcrumbT?: ObjectLeaves<MessageSchema>
+    breadcrumbT?: ObjectLeaves<MessageSchema> | string
   }
 }
 

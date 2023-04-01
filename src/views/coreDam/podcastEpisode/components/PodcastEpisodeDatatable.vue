@@ -22,6 +22,8 @@ import { ACL } from '@/types/Permission'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 
+type DatatableItem = { raw: PodcastEpisode }
+
 const props = withDefaults(
   defineProps<{
     podcastId: DocId
@@ -35,7 +37,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems, datatableHiddenColumns } = usePodcastEpisodeListActions()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: PodcastEpisode } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: props.podcastId, episodeId: item.raw.id } })
 }
 
@@ -90,16 +92,16 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.attributes.lastImportStatus="{ item }">
+        <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
           <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatus" />
         </template>
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">

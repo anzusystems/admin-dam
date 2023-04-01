@@ -32,9 +32,7 @@ const { listLoading } = useAnzuUserActions(damClient)
 
   <ACard :loading="listLoading">
     <VCardText>
-      <AnzuUserDatatable
-        ref="datatable"
-      />
+      <AnzuUserDatatable ref="datatable" />
     </VCardText>
   </ACard>
 </template>

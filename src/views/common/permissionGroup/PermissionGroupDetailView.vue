@@ -18,12 +18,8 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt(route.params.id)
 
-const {
-  deletePermissionGroup,
-  fetchPermissionGroup,
-  resetPermissionGroupStore,
-  detailLoading,
-} = usePermissionGroupActions(damClient)
+const { deletePermissionGroup, fetchPermissionGroup, resetPermissionGroupStore, detailLoading } =
+  usePermissionGroupActions(damClient)
 
 const getDetail = () => {
   fetchPermissionGroup(id)
@@ -54,9 +50,7 @@ onBeforeUnmount(() => {
         v-if="!detailLoading"
         :permission="ACL.DAM_PERMISSION_GROUP_DELETE"
       >
-        <AActionDeleteButton
-          @delete-record="deletePermissionGroup(id)"
-        />
+        <AActionDeleteButton @delete-record="deletePermissionGroup(id)" />
       </Acl>
       <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
     </template>

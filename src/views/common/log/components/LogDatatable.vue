@@ -16,6 +16,8 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import type { LogSystem } from '@/model/common/valueObject/LogSystem'
 
+type DatatableItem = { raw: Log }
+
 const props = withDefaults(
   defineProps<{
     system: string
@@ -32,7 +34,7 @@ const filter = useLogFilter()
 const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: Log } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id) {
     router.push({
       name: ROUTE.COMMON.LOG.DETAIL,
@@ -110,28 +112,28 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.datetime="{ item }">
+        <template #item.datetime="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.datetime" />
         </template>
-        <template #item.levelName="{ item }">
+        <template #item.levelName="{ item }: { item: DatatableItem }">
           {{ item.raw.levelName }}
           <!--          <LogLevelChip :level="item.raw.levelName" />-->
         </template>
-        <template #item.message="{ item }">
+        <template #item.message="{ item }: { item: DatatableItem }">
           <div class="line-clamp-2">
             {{ item.raw.message }}
           </div>
         </template>
-        <template #item.context.contextId="{ item }">
+        <template #item.context.contextId="{ item }: { item: DatatableItem }">
           <ACopyText :value="item.raw.context.contextId" />
         </template>
-        <template #item.context.userId="{ item }">
+        <template #item.context.userId="{ item }: { item: DatatableItem }">
           <ACopyText
             v-if="!isNull(item.raw.context.userId)"
             :value="item.raw.context.userId"
           />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <VBtn
               :to="{

@@ -159,7 +159,7 @@ watch(
         <VSpacer />
         <VBtn
           color="secondary"
-          text
+          variant="text"
           data-cy="button-cancel"
           @click.stop="onCancel"
         >

@@ -178,7 +178,7 @@ const { t } = useI18n()
       <VCardActions>
         <VSpacer />
         <VBtn
-          text
+          variant="text"
           @click.stop="onDialogCancel"
         >
           {{ t('common.button.cancel') }}

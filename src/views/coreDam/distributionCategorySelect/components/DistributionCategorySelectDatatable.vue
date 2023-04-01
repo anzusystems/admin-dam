@@ -18,10 +18,15 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
 import { onMounted } from 'vue'
-import { useDistributionCategorySelectListActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import {
+  useDistributionCategorySelectListActions
+} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
-import DistributionCategorySelectFilter from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
+import DistributionCategorySelectFilter
+  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
+
+type DatatableItem = { raw: DistributionCategorySelect }
 
 const router = useRouter()
 const filter = useDistributionCategorySelectListFilter()
@@ -35,7 +40,7 @@ const getList = () => {
 
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: DistributionCategorySelect } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW)) {
     router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: item.raw.id } })
   }
@@ -83,13 +88,13 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW">

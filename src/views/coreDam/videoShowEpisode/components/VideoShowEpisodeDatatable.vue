@@ -22,6 +22,8 @@ import VideoShowEpisodeFilter from '@/views/coreDam/videoShowEpisode/components/
 import { ACL, type AclValue } from '@/types/Permission'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 
+type DatatableItem = { raw: VideoShowEpisode }
+
 const props = withDefaults(
   defineProps<{
     videoShowId: DocId
@@ -37,7 +39,7 @@ const { fetchList, listItems, datatableHiddenColumns } = useVideoShowEpisodeList
 
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: VideoShowEpisode } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
     router.push({
       name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL,
@@ -89,13 +91,13 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <ATableDetailButton

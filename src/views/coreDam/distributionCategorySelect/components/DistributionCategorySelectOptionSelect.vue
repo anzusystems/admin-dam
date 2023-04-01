@@ -53,7 +53,6 @@ const onBlur = () => {
     item-title="name"
     item-value="id"
     :label="select.serviceSlug"
-    return-object
     clearable
     no-filter
     :error-messages="errorMessageComputed"

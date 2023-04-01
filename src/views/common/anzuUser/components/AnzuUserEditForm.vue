@@ -4,8 +4,7 @@ import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUser
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
 import { useI18n } from 'vue-i18n'
-import PermissionGroupRemoteAutocomplete
-  from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
+import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
 import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'

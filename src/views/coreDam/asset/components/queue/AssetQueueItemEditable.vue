@@ -261,7 +261,7 @@ const showCancel = computed(() => {
                   </VTooltip>
                 </VBtn>
                 <AActionDeleteButton
-                  variant="text"
+                  variant="tertiary"
                   :disabled="!item.canEditMetadata && !item.isDuplicate"
                   button-class=""
                   @delete-record="remove"

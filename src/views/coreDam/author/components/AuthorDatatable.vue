@@ -24,6 +24,8 @@ import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'
 
+type DatatableItem = { raw: Author }
+
 const router = useRouter()
 const filter = useAuthorListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
@@ -33,7 +35,7 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const onRowClick = (event: unknown, { item }: { item: { raw: Author } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: item.raw.id } })
 }
 
@@ -89,22 +91,22 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.type="{ item }">
+        <template #item.type="{ item }: { item: DatatableItem }">
           <AuthorTypeChip :type="item.raw.type" />
         </template>
-        <template #item.flags.reviewed="{ item }">
+        <template #item.flags.reviewed="{ item }: { item: DatatableItem }">
           <ABooleanValue
             chip
             :value="item.raw.flags.reviewed"
           />
         </template>
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <ATableDetailButton

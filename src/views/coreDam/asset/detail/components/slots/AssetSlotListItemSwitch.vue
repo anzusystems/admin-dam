@@ -114,7 +114,7 @@ const onSwitch = () => {
         <VSpacer />
         <VBtn
           color="primary"
-          text
+          variant="text"
           data-cy="button-unset"
           :disabled="targetOptions.length === 0 || targetSlot === null"
           @click.stop="onSwitch"
@@ -123,7 +123,7 @@ const onSwitch = () => {
         </VBtn>
         <VBtn
           color="secondary"
-          text
+          variant="text"
           data-cy="button-cancel"
           @click.stop="onCancel"
         >

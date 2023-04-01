@@ -151,7 +151,7 @@ onMounted(async () => {
           {{ t('common.button.confirm') }}
         </VBtn>
         <VBtn
-          text
+          variant="text"
           @click.stop="closeDialog"
         >
           {{ t('common.button.cancel') }}

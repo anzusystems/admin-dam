@@ -31,7 +31,7 @@ const { v$ } = usePermissionGroupValidation(permissionGroup)
             :v="v$.permissionGroup.description"
             data-cy="permissionGroup-description"
           />
-        </vcardtext>
+        </VCardText>
       </VCol>
       <VCol cols="12">
         <PermissionEditor

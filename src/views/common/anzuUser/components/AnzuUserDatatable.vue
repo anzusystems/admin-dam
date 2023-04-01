@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import {
-  ABooleanValue, AChipNoLink,
+  ABooleanValue,
+  AChipNoLink,
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination, ADatetime,
+  ADatatablePagination,
+  ADatetime,
   type AnzuUser,
   ATableCopyIdButton,
   ATableDetailButton,
@@ -25,6 +27,8 @@ import { usePermissionConfigActions } from '@/views/common/permission/composable
 import CachedPermissionGroupChip from '@/views/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 import { damClient } from '@/services/api/clients/damClient'
 
+type DatatableItem = { raw: AnzuUser }
+
 const router = useRouter()
 
 const filter = useAnzuUserFilter()
@@ -32,7 +36,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions(damClient)
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: AnzuUser } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id && can(ACL.DAM_USER_VIEW)) {
     router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: item.raw.id } })
   }
@@ -97,13 +101,13 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.enabled="{ item }">
+        <template #item.enabled="{ item }: { item: DatatableItem }">
           <ABooleanValue
             chip
             :value="item.raw.enabled"
           />
         </template>
-        <template #item.roles="{ item }">
+        <template #item.roles="{ item }: { item: DatatableItem }">
           <AChipNoLink
             v-for="role in item.raw.roles"
             :key="role"
@@ -113,7 +117,7 @@ defineExpose({
           </AChipNoLink>
           <span v-if="item.raw.roles.length === 0">-</span>
         </template>
-        <template #item.permissionGroups="{ item }">
+        <template #item.permissionGroups="{ item }: { item: DatatableItem }">
           <CachedPermissionGroupChip
             v-for="permissionGroupId in item.raw.permissionGroups"
             :id="permissionGroupId"
@@ -122,16 +126,16 @@ defineExpose({
           />
           <span v-if="item.raw.permissionGroups.length === 0">-</span>
         </template>
-        <template #item.permissions="{ item }">
+        <template #item.permissions="{ item }: { item: DatatableItem }">
           {{ Object.keys(item.raw.permissions).length }}
         </template>
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_USER_VIEW">

@@ -25,6 +25,8 @@ import { ACL, type AclValue } from '@/types/Permission'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import type { Job } from '@/types/coreDam/Job'
 
+type DatatableItem = { raw: Job }
+
 const router = useRouter()
 const filter = useJobListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
@@ -35,7 +37,7 @@ const { t } = useI18n()
 
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: Job } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id && can(ACL.DAM_JOB_VIEW)) {
     router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: item.raw.id } })
   }
@@ -97,25 +99,25 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item._resourceName="{ item }">
+        <template #item._resourceName="{ item }: { item: DatatableItem }">
           <JobResourceChip :value="item.raw._resourceName" />
         </template>
-        <template #item.status="{ item }">
+        <template #item.status="{ item }: { item: DatatableItem }">
           <AJobStatusChip :value="item.raw.status" />
         </template>
-        <template #item.startedAt="{ item }">
+        <template #item.startedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.startedAt" />
         </template>
-        <template #item.finishedAt="{ item }">
+        <template #item.finishedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.finishedAt" />
         </template>
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_JOB_VIEW">

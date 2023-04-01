@@ -2,7 +2,7 @@
 import { useActionbar } from '@/composables/system/actionbar'
 import { computed } from 'vue'
 import { isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
-import { RouteParams, RouteRecordName, useRoute } from 'vue-router'
+import { type RouteParams, type RouteRecordName, useRoute } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{

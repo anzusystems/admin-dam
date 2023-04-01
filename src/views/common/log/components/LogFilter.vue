@@ -86,7 +86,6 @@ const { logSystemOptions } = useLogSystem()
         >
           <AFilterDatetimePicker
             v-model="logFilter.datetimeTo"
-            disable-clearable
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>
