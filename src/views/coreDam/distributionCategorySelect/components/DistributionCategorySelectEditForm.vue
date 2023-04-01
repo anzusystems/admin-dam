@@ -49,7 +49,6 @@ const removeItem = (index: number) => {
       <template #footer>
         <v-btn
           class="mx-2"
-          fab
           dark
           color="indigo"
           @click="addOption"

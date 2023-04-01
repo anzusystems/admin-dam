@@ -22,13 +22,15 @@ import ExtSystemFilter from '@/views/coreDam/extSystem/components/ExtSystemFilte
 import type { ExtSystem } from '@/types/coreDam/ExtSystem'
 import { ACL } from '@/types/Permission'
 
+type DatatableItem = { raw: ExtSystem }
+
 const router = useRouter()
 const filter = useExtSystemListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems, datatableHiddenColumns } = useExtSystemListActions()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: ExtSystem } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id) {
     router.push({ name: ROUTE.DAM.EXT_SYSTEM.DETAIL, params: { id: item.raw.id } })
   }
@@ -82,13 +84,13 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_EXT_SYSTEM_VIEW">

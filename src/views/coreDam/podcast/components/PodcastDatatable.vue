@@ -22,6 +22,8 @@ import { usePodcastListFilter } from '@/model/coreDam/filter/PodcastFilter'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { Podcast } from '@/types/coreDam/Podcast'
 
+type DatatableItem = { raw: Podcast }
+
 const router = useRouter()
 const filter = usePodcastListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
@@ -31,7 +33,7 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const onRowClick = (event: unknown, { item }: { item: { raw: Podcast } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id) {
     router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: item.raw.id } })
   }
@@ -87,16 +89,16 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.attributes.lastImportStatus="{ item }">
+        <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
           <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatus" />
         </template>
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <ATableDetailButton

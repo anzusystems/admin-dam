@@ -236,7 +236,7 @@ onMounted(async () => {
       <span v-else>{{ t('common.button.add') }}</span>
     </VBtn>
     <VBtn
-      text
+      variant="text"
       @click.stop="closeDialog(false)"
     >
       {{ t('common.button.cancel') }}

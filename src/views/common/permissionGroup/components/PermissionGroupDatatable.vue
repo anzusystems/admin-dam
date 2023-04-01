@@ -4,7 +4,8 @@ import type { PermissionGroup } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
-  ADatatablePagination, ADatetime,
+  ADatatablePagination,
+  ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
@@ -22,6 +23,8 @@ import { usePermissionGroupActions } from '@/views/common/permissionGroup/compos
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
 import { damClient } from '@/services/api/clients/damClient'
 
+type DatatableItem = { raw: PermissionGroup }
+
 const router = useRouter()
 
 const filter = usePermissionGroupListFilter()
@@ -29,7 +32,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchPermissionGroupList, permissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(damClient)
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (event: unknown, { item }: { item: { raw: PermissionGroup } }) => {
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.raw.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
     router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: item.raw.id } })
   }
@@ -90,16 +93,16 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #item.permissions="{ item }">
+        <template #item.permissions="{ item }: { item: DatatableItem }">
           {{ Object.keys(item.raw.permissions).length }}
         </template>
-        <template #item.createdAt="{ item }">
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }">
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.raw.modifiedAt" />
         </template>
-        <template #item.actions="{ item }">
+        <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.raw.id" />
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">

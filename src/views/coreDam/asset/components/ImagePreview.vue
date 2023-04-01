@@ -199,7 +199,7 @@ watch(
         <VCardActions>
           <VSpacer />
           <VBtn
-            text
+            variant="text"
             data-cy="button-cancel"
             @click.stop="onCancel"
           >

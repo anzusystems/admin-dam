@@ -40,7 +40,6 @@ onBeforeUnmount(() => {
     </template>
   </ActionbarWrapper>
 
-  {{ userUpdate }}
   <ACard :loading="detailLoading">
     <VCardText>
       <UserEditForm />

@@ -113,7 +113,7 @@ const onRemove = () => {
         <VBtn
           v-if="showUnset"
           color="warning"
-          text
+          variant="text"
           data-cy="button-unset"
           @click.stop="onUnset"
         >
@@ -121,7 +121,7 @@ const onRemove = () => {
         </VBtn>
         <VBtn
           color="error"
-          text
+          variant="text"
           data-cy="button-remove"
           @click.stop="onRemove"
         >
@@ -129,7 +129,7 @@ const onRemove = () => {
         </VBtn>
         <VBtn
           color="secondary"
-          text
+          variant="text"
           data-cy="button-cancel"
           @click.stop="onCancel"
         >

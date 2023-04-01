@@ -43,7 +43,7 @@ module.exports = {
       'ignoreRegExpLiterals': true,
       ignorePattern: '^import .*|(class\\s*=\\s*"[^"]+")',
     }],
-    'vue/no-template-target-blank': ['error'],
+    'vue/no-template-target-blank': ['error']
   },
   overrides: [
     {

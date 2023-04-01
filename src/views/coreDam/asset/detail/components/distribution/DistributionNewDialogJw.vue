@@ -252,7 +252,6 @@ onMounted(async () => {
               v-model="distribution.texts.keywords"
               :label="t('coreDam.jwDistribution.model.texts.keywords')"
               :items="[]"
-              multiple
               chips
               closable-chips
             />
@@ -301,7 +300,7 @@ onMounted(async () => {
       <span v-else>{{ t('common.button.add') }}</span>
     </VBtn>
     <VBtn
-      text
+      variant="text"
       @click.stop="closeDialog(false)"
     >
       {{ t('common.button.cancel') }}
