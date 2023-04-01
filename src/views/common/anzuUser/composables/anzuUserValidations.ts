@@ -17,13 +17,13 @@ export function useAnzuUserValidation(anzuUser: Ref<AnzuUser>) {
         maxLength: maxLength(256),
       },
       person: {
-        firstName: { minLength: minLength(2), maxLength: maxLength(120) },
-        lastName: { minLength: minLength(2), maxLength: maxLength(120) },
-        fullName: { minLength: minLength(3), maxLength: maxLength(242) },
+        firstName: { required, minLength: minLength(2), maxLength: maxLength(120) },
+        lastName: { required, minLength: minLength(2), maxLength: maxLength(120) },
+        fullName: { required, minLength: minLength(3), maxLength: maxLength(242) },
       },
       avatar: {
         color: { minLength: minLength(7), maxLength: maxLength(7) },
-        text: { minLength: minLength(2), maxLength: maxLength(3) },
+        text: { required, minLength: minLength(2), maxLength: maxLength(3) },
       },
     },
   }
