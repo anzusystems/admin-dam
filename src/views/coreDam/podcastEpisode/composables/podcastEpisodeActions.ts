@@ -46,6 +46,7 @@ export const usePodcastEpisodeListActions = () => {
 
 export const usePodcastEpisodeRemoveActions = () => {
   const deletePodcast = async (id: DocId, onSuccessfulCallback: () => void) => {
+    detailLoading.value = true
     try {
       await deletePodcastEpisode(id)
       onSuccessfulCallback()

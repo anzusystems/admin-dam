@@ -22,8 +22,7 @@ const {
   deletePermissionGroup,
   fetchPermissionGroup,
   resetPermissionGroupStore,
-  loadingPermissionGroup,
-  loadingDeletePermissionGroup,
+  detailLoading,
 } = usePermissionGroupActions(damClient)
 
 const getDetail = () => {
@@ -43,21 +42,19 @@ onBeforeUnmount(() => {
   <ActionbarWrapper>
     <template #buttons>
       <Acl
-        v-if="!loadingPermissionGroup"
+        v-if="!detailLoading"
         :permission="ACL.DAM_PERMISSION_GROUP_UPDATE"
       >
         <AActionEditButton
           :record-id="id"
           :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
-          :loading="loadingDeletePermissionGroup"
         />
       </Acl>
       <Acl
-        v-if="!loadingPermissionGroup"
+        v-if="!detailLoading"
         :permission="ACL.DAM_PERMISSION_GROUP_DELETE"
       >
         <AActionDeleteButton
-          :loading="loadingDeletePermissionGroup"
           @delete-record="deletePermissionGroup(id)"
         />
       </Acl>
@@ -65,7 +62,7 @@ onBeforeUnmount(() => {
     </template>
   </ActionbarWrapper>
 
-  <ACard :loading="loadingPermissionGroup">
+  <ACard :loading="detailLoading">
     <VCardText>
       <PermissionGroupDetail :client="damClient" />
     </VCardText>
