@@ -48,16 +48,14 @@ const serviceRequirements = computed(() => {
       <VCol>
         {{ t('coreDam.distribution.common.status') }}:
         <DistributionStatusChip :status="item.status" />
-        <VBtn
+        <ABtnTertiary
           v-if="showRedistribute"
           class="ml-2"
-          variant="flat"
-          color="secondary"
           size="small"
           @click.stop="emit('openRedistribute')"
         >
           {{ t('coreDam.distribution.common.redistributeButton') }}
-        </VBtn>
+        </ABtnTertiary>
       </VCol>
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Failed">

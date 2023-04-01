@@ -42,12 +42,20 @@ const { t } = useI18n()
     <VBtn
       v-if="variant === 'small'"
       variant="text"
+      :width="26"
       :height="26"
+      icon
       class="mr-2"
       :data-cy="dataCy"
       @click.stop="onClick"
     >
-      {{ t('coreDam.asset.selected.clear') }}
+      <VIcon icon="mdi-close" />
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('coreDam.asset.selected.clear') }}
+      </VTooltip>
     </VBtn>
     <VBtn
       v-else-if="variant === 'normal'"

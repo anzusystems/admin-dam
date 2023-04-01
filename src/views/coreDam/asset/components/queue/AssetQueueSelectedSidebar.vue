@@ -299,8 +299,7 @@ onMounted(() => {
       <div class="sidebar-info__actions pa-2 d-flex align-center justify-center">
         <VBtn
           class="mr-2"
-          variant="flat"
-          color="secondary"
+          variant="text"
           size="small"
           @click.stop="fillAll(false)"
         >
@@ -308,16 +307,14 @@ onMounted(() => {
         </VBtn>
         <VBtn
           class="mr-2"
-          variant="flat"
-          color="secondary"
+          variant="text"
           size="small"
           @click.stop="fillAll(true)"
         >
           {{ t('coreDam.asset.massOperations.replaceAll') }}
         </VBtn>
         <VBtn
-          variant="flat"
-          color="secondary"
+          variant="text"
           size="small"
           @click.stop="clearForm"
         >

@@ -88,9 +88,8 @@ onMounted(async () => {
       >
         <template #actions-end>
           <VBtn
-            variant="flat"
+            variant="text"
             class="my-2 mr-2"
-            color="secondary"
             size="small"
             @click.stop="chooseImagePreviewFromDistributionDialog = true"
           >

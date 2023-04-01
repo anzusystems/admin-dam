@@ -49,23 +49,19 @@ const { t } = useI18n()
       />
     </div>
     <div v-else>
-      <VBtn
-        variant="flat"
+      <ABtnTertiary
         prepend-icon="mdi-rotate-right"
-        color="secondary"
         class="mr-2"
         @click.stop="rotate(90)"
       >
         {{ t('coreDam.asset.detail.roi.rotate.rotateClockwise') }}
-      </VBtn>
-      <VBtn
-        variant="flat"
+      </ABtnTertiary>
+      <ABtnTertiary
         prepend-icon="mdi-rotate-left"
-        color="secondary"
         @click.stop="rotate(270)"
       >
         {{ t('coreDam.asset.detail.roi.rotate.rotateCounterclockwise') }}
-      </VBtn>
+      </ABtnTertiary>
     </div>
   </div>
 </template>

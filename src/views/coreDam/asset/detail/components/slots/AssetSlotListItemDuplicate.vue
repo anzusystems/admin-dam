@@ -93,23 +93,19 @@ const onDuplicate = () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          color="primary"
-          variant="text"
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
           data-cy="button-unset"
           :disabled="targetOptions.length === 0 || targetSlot === null"
           @click.stop="onDuplicate"
         >
           {{ t('coreDam.asset.slots.actions.duplicate') }}
-        </VBtn>
-        <VBtn
-          color="secondary"
-          variant="text"
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
-          {{ t('common.button.cancel') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

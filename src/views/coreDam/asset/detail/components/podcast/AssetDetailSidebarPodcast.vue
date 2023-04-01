@@ -63,13 +63,11 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn
-      color="secondary"
-      variant="flat"
+    <ABtnPrimary
       @click.stop="addNew"
     >
       {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
-    </VBtn>
+    </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
   <div
     v-if="loading"

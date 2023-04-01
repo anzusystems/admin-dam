@@ -115,20 +115,18 @@ watch(
       #append
     >
       <div class="pa-2 d-flex align-center justify-center">
-        <VBtn
-          color="secondary"
-          variant="flat"
+        <ABtnSecondary
           class="mr-2"
           size="small"
           @click.stop="onEditMore"
         >
           {{ t('coreDam.asset.detail.info.edit') }}
-        </VBtn>
+        </ABtnSecondary>
         <Acl :permission="ACL.DAM_ASSET_UPDATE">
           <VBtn
-            :color="metadataAreTouched ? 'success' : 'secondary'"
+            color="primary"
             size="small"
-            variant="flat"
+            :variant="metadataAreTouched ? 'flat' : 'text'"
             :loading="saveButtonLoading"
             @click.stop="onSave"
           >
