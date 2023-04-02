@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupFilter } from '@/model/common/filter/PermissionGroupFilter'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -26,9 +26,18 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | number | string[] | number[]): void
+  (e: 'update:modelValue', data: string | number | string[] | number[] | null): void
 }>()
-const { modelValue } = useVModels(props, emit)
+
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: string | number | string[] | number[] | null) {
+    emit('update:modelValue', cloneDeep<string | number | string[] | number[] | null>(newValue))
+  },
+})
+
 const { fetchPermissionGroupOptions, fetchPermissionGroupOptionsByIds } = usePermissionGroupActions(props.client)
 
 const innerFilter = usePermissionGroupFilter()
@@ -36,7 +45,7 @@ const innerFilter = usePermissionGroupFilter()
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValue"
+    v-model="modelValueComputed"
     :required="required"
     :label="label"
     :fetch-items="fetchPermissionGroupOptions"

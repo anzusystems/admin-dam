@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
 import { usePodcastSelectActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/model/coreDam/filter/PodcastFilter'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -24,9 +24,17 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | null | string[]): void
+  (e: 'update:modelValue', data: string | null | string[] | any): void
 }>()
-const { modelValue } = useVModels(props, emit)
+
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: string | null | string[] | any) {
+    emit('update:modelValue', cloneDeep<string | null | string[] | any>(newValue))
+  },
+})
 
 const { fetchItems, fetchItemsByIds } = usePodcastSelectActions()
 
@@ -35,7 +43,7 @@ const innerFilter = usePodcastFilter()
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValue"
+    v-model="modelValueComputed"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"

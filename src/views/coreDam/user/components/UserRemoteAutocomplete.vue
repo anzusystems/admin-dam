@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
 import { useUserSelectActions } from '@/views/coreDam/user/composables/userActions'
 import { useUserFilter } from '@/model/coreDam/filter/UserFilter'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -26,7 +26,15 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'update:modelValue', data: number | null | number[]): void
 }>()
-const { modelValue } = useVModels(props, emit)
+
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: number | null | number[]) {
+    emit('update:modelValue', cloneDeep<number | null | number[]>(newValue))
+  },
+})
 
 const { fetchItems, fetchItemsByIds } = useUserSelectActions()
 
@@ -35,7 +43,7 @@ const innerFilter = useUserFilter()
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValue"
+    v-model="modelValueComputed"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
