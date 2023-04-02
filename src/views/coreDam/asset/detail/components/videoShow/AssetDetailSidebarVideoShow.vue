@@ -57,9 +57,7 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary
-      @click.stop="addNew"
-    >
+    <ABtnPrimary @click.stop="addNew">
       {{ t('coreDam.videoShowEpisode.common.addAssetToNewVideoShowEpisode') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>

@@ -8,7 +8,7 @@ import {
   ARow,
   ASystemEntityScope,
   isNull,
-  useAlerts
+  useAlerts,
 } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -171,9 +171,7 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          @click.stop="closeDialog(false)"
-        >
+        <ABtnTertiary @click.stop="closeDialog(false)">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

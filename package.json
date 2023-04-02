@@ -20,7 +20,7 @@
     "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "^0.0.47",
+    "@anzusystems/common-admin": "^0.0.48",
     "@mdi/font": "7.2.96",
     "@vuelidate/core": "^2.0.2",
     "@vuelidate/validators": "^2.0.2",

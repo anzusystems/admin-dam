@@ -7,7 +7,7 @@ import {
   type DocId,
   isNull,
   useAlerts,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
@@ -130,9 +130,7 @@ onMounted(async () => {
           {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>
         <VSpacer />
-        <ABtnTertiary
-          @click.stop="closeDialog"
-        >
+        <ABtnTertiary @click.stop="closeDialog">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
-import { useI18n } from 'vue-i18n'
 import {
   AFilterBooleanSelect,
   AFilterString,
@@ -31,8 +30,6 @@ const resetFilter = () => {
 const onAnyFilterUpdate = () => {
   touched.value = true
 }
-
-const { t } = useI18n()
 
 const { authorTypeOptions } = useAuthorType()
 </script>

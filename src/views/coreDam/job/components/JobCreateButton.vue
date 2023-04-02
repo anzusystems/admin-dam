@@ -2,7 +2,11 @@
 import { useI18n } from 'vue-i18n'
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
-import { JOB_RESOURCE_PODCAST_SYNCHRONIZER, type JobResource, useJobResource } from '@/model/coreDam/valueObject/JobResource'
+import {
+  JOB_RESOURCE_PODCAST_SYNCHRONIZER,
+  type JobResource,
+  useJobResource,
+} from '@/model/coreDam/valueObject/JobResource'
 import JobCreateFormPodcastSynchronizer from '@/views/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
 import JobCreateFormUserDataDelete from '@/views/coreDam/job/components/JobCreateFormUserDataDelete.vue'
 
