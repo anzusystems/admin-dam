@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
 import type { IntegerId } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
 import { useAssetLicenceSelectActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
 import { computed, watch } from 'vue'
@@ -30,9 +29,17 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: number | null | number[]): void
+  (e: 'update:modelValue', data: number | null | number[] | any): void
 }>()
-const { modelValue } = useVModels(props, emit)
+
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue:  number | null | number[] | any) {
+    emit('update:modelValue', cloneDeep<number | null | number[] | any>(newValue))
+  },
+})
 
 const { fetchItems, fetchItemsByIds } = useAssetLicenceSelectActions()
 
@@ -46,7 +53,7 @@ watch(
   selectedExtSystemId,
   (newValue, oldValue) => {
     if (newValue === oldValue) return
-    modelValue.value = null
+    modelValueComputed.value = null
     if (newValue) {
       innerFilter.extSystem.model = newValue
       return
@@ -60,7 +67,7 @@ watch(
 <template>
   <AFormRemoteAutocomplete
     :key="selectedExtSystemId + ''"
-    v-model="modelValue"
+    v-model="modelValueComputed"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"

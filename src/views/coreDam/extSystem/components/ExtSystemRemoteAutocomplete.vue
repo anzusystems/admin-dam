@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
-import { AFormRemoteAutocomplete, type IntegerId, type IntegerIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
 import { useExtSystemSelectActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemFilter } from '@/model/coreDam/filter/ExtSystemFilter'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -26,9 +26,17 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: IntegerIdNullable | IntegerId[]): void
+  (e: 'update:modelValue', data: number | null | number[] | any): void
 }>()
-const { modelValue } = useVModels(props, emit)
+
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: number | null | number[] | any) {
+    emit('update:modelValue', cloneDeep<number | null | number[] | any>(newValue))
+  },
+})
 
 const { fetchItems, fetchItemsByIds } = useExtSystemSelectActions()
 
@@ -37,7 +45,7 @@ const innerFilter = useExtSystemFilter()
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValue"
+    v-model="modelValueComputed"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
