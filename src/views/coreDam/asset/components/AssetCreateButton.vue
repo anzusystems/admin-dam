@@ -77,9 +77,7 @@ const { assetTypeOptions } = useAssetType()
     prepend-icon="mdi-plus"
     @click.stop="onClick"
   />
-  <VDialog
-    v-model="dialog"
-  >
+  <VDialog v-model="dialog">
     <VCard
       v-if="dialog"
       width="500"

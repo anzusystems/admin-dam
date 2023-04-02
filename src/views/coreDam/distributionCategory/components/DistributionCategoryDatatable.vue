@@ -18,9 +18,7 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import {
-  useDistributionCategoryListActions
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryListActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'

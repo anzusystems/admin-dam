@@ -92,9 +92,7 @@ const onConfirm = async () => {
   >
     {{ t(buttonT) }}
   </ABtnPrimary>
-  <VDialog
-    v-model="dialog"
-  >
+  <VDialog v-model="dialog">
     <VCard
       v-if="dialog"
       width="500"

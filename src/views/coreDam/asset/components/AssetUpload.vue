@@ -158,9 +158,7 @@ const { t } = useI18n()
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          @click.stop="onDialogCancel"
-        >
+        <ABtnTertiary @click.stop="onDialogCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

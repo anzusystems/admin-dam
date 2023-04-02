@@ -36,7 +36,7 @@ const modelValueComputed = computed({
   get() {
     return props.modelValue
   },
-  set(newValue:  number | null | number[] | any) {
+  set(newValue: number | null | number[] | any) {
     emit('update:modelValue', cloneDeep<number | null | number[] | any>(newValue))
   },
 })

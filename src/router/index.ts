@@ -21,7 +21,9 @@ import HomepageView from '@/views/system/HomepageView.vue'
 import { ANotFoundView } from '@anzusystems/common-admin'
 
 const vueRouter = createRouter({
-  end: undefined, sensitive: undefined, strict: undefined,
+  end: undefined,
+  sensitive: undefined,
+  strict: undefined,
   history: createWebHistory(),
   routes: [
     {

@@ -122,9 +122,7 @@ const onConfirm = async () => {
       {{ t('coreDam.keyword.button.add') }}
     </VTooltip>
   </VBtn>
-  <VDialog
-    v-model="dialog"
-  >
+  <VDialog v-model="dialog">
     <VCard
       v-if="dialog"
       width="500"
