@@ -25,6 +25,7 @@ import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAutho
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -502,6 +503,17 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         if (forceReplace || isUndefined(item.authors) || item.authors.length === 0) {
           item.authors = value
         }
+      }
+    },
+    updateAssetMetadata(asset: AssetDetailItemDto) {
+      for (const queueId in this.queues) {
+        this.queues[queueId].items.forEach((item) => {
+          if (item.assetId === asset.id) {
+            item.keywords = asset.keywords
+            item.authors = asset.authors
+            item.customData = asset.metadata.customData
+          }
+        })
       }
     },
     reset() {

@@ -230,8 +230,7 @@ const showCancel = computed(() => {
                 <VBtn
                   v-if="!item.isDuplicate"
                   size="small"
-                  :variant="item.canEditMetadata ? 'flat' : 'text'"
-                  :color="item.canEditMetadata ? 'secondary' : undefined"
+                  variant="text"
                   :disabled="!item.canEditMetadata"
                   @click.stop="showDetail"
                 >
@@ -261,7 +260,7 @@ const showCancel = computed(() => {
                   </VTooltip>
                 </VBtn>
                 <AActionDeleteButton
-                  variant="tertiary"
+                  variant="icon"
                   :disabled="!item.canEditMetadata && !item.isDuplicate"
                   button-class=""
                   @delete-record="remove"
