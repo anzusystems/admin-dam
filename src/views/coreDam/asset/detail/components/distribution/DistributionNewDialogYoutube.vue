@@ -60,7 +60,7 @@ const { t } = useI18n()
 
 const { createCreateDto } = useDistributionYoutubeFactory()
 const distribution = ref<DistributionYoutubeCreateRedistributeDto>(createCreateDto())
-const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
+const { redistributeMode, assetFileId, redistributeId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
@@ -75,6 +75,7 @@ const loadFormData = async () => {
   canDisplayForm.value = false
   if (!assetFileId.value) return
   filter.distributionService.model = props.distributionServiceName
+  filter.id.model = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionYoutubeItem>(
     assetFileId.value,
     pagination,

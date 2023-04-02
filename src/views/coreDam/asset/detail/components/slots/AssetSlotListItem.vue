@@ -17,6 +17,8 @@ import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
 import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
+import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
+import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
@@ -168,6 +170,13 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
       <VCol v-if="itemHasFile">
         <div class="font-weight-bold">
           {{ slotName }} <span v-if="item && item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
+          <div v-if="item.assetFile.fileAttributes.status === AssetFileProcessStatus.Failed">
+            {{ t('coreDam.distribution.common.failReason') }}:
+            <AssetFileFailReasonChip
+              class="ml-2"
+              :reason="item.assetFile.fileAttributes.failReason"
+            />
+          </div>
         </div>
         <div>{{ fileTitle }}</div>
         <AssetFilePublicLink

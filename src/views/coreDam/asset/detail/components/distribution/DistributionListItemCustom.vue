@@ -23,6 +23,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'openRedistribute'): void
+  (e: 'openCancel'): void
 }>()
 
 const { t } = useI18n()
@@ -55,6 +56,14 @@ const serviceRequirements = computed(() => {
           @click.stop="emit('openRedistribute')"
         >
           {{ t('coreDam.distribution.common.redistributeButton') }}
+        </ABtnTertiary>
+        <ABtnTertiary
+          v-if="item.status === DistributionStatus.Waiting"
+          class="ml-2"
+          size="small"
+          @click.stop="emit('openCancel')"
+        >
+          {{ t('coreDam.distribution.common.cancelDistributionButton') }}
         </ABtnTertiary>
       </VCol>
     </VRow>
