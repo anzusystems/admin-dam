@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { type DocId, isArray, useValidate } from '@anzusystems/common-admin'
+import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import type { Keyword } from '@/types/coreDam/Keyword'
 import { useVuelidate } from '@vuelidate/core'
-import AFormRemoteAutocompleteWithCached from '@/components/AFormRemoteAutocompleteWithCached.vue'
-import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
+import KeywordRemoteAutocompleteCachedKeywordChip
+  from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
   useCachedKeywordsForRemoteAutocomplete,
@@ -111,32 +111,38 @@ const itemSlotIsSelected = (item: DocId) => {
       :data-cy="dataCy"
       @search-change="searchChange"
     >
-      <template #item="{ props: itemProps, item }">
-        <VListItem v-bind="itemProps">
-          <template #prepend>
+      <template #item="{ props: itemSlotProps, item: itemSlotItem }">
+        <VListItem
+          v-bind="itemSlotProps"
+          @click.prevent=""
+        >
+          <template
+            v-if="multiple"
+            #prepend
+          >
             <VCheckboxBtn
-              :model-value="itemSlotIsSelected(item.value)"
+              :model-value="itemSlotIsSelected(itemSlotItem.value)"
               :ripple="false"
             />
           </template>
           <template #title>
-            <div v-if="item.title?.length > 0">
-              {{ item.title }}
-            </div>
             <KeywordRemoteAutocompleteCachedKeywordChip
-              v-else
-              :id="item.value"
-              :key="item.value"
+              :id="itemSlotItem.value"
+              :key="itemSlotItem.value"
               :queue-id="queueId"
+              :title="itemSlotItem.title"
+              text-only
             />
           </template>
         </VListItem>
       </template>
-      <template #chip="{ item }">
+      <template #chip="{ item: chipSlotItem }">
         <KeywordRemoteAutocompleteCachedKeywordChip
-          :id="item.value"
-          :key="item.value"
+          :id="chipSlotItem.value"
+          :key="chipSlotItem.value"
           :queue-id="queueId"
+          :title="chipSlotItem.title"
+          force-rounded
         />
       </template>
     </AFormRemoteAutocompleteWithCached>

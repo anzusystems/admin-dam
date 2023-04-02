@@ -1,20 +1,21 @@
 <script lang="ts" setup>
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { type DocId, isArray, useValidate } from '@anzusystems/common-admin'
+import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, onMounted, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import type { Author } from '@/types/coreDam/Author'
 import { useVuelidate } from '@vuelidate/core'
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import {
   useCachedAuthors,
   useCachedAuthorsForRemoteAutocomplete,
 } from '@/views/coreDam/author/composables/cachedAuthors'
-import AFormRemoteAutocompleteWithCached from '@/components/AFormRemoteAutocompleteWithCached.vue'
 import { useI18n } from 'vue-i18n'
-import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
+import AuthorRemoteAutocompleteCachedAuthorChipConflicts
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -129,8 +130,14 @@ onMounted(() => {
       @search-change="searchChange"
     >
       <template #item="{ props: itemSlotProps, item: itemSlotItem }">
-        <VListItem v-bind="itemSlotProps">
-          <template #prepend>
+        <VListItem
+          v-bind="itemSlotProps"
+          @click.prevent=""
+        >
+          <template
+            v-if="multiple"
+            #prepend
+          >
             <VCheckboxBtn
               :model-value="itemSlotIsSelected(itemSlotItem.value)"
               :ripple="false"
@@ -141,6 +148,8 @@ onMounted(() => {
               :id="itemSlotItem.value"
               :key="itemSlotItem.value"
               :queue-id="queueId"
+              :title="itemSlotItem.title"
+              text-only
             />
           </template>
         </VListItem>
@@ -150,6 +159,8 @@ onMounted(() => {
           :id="chipSlotItem.value"
           :key="chipSlotItem.value"
           :queue-id="queueId"
+          :title="chipSlotItem.title"
+          force-rounded
         />
       </template>
     </AFormRemoteAutocompleteWithCached>
