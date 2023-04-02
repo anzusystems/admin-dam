@@ -47,7 +47,7 @@ const { t } = useI18n()
 
 const { createCreateDto } = useDistributionCustomFactory()
 const distribution = ref<DistributionCustomCreateRedistributeDto>(createCreateDto())
-const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
+const { redistributeMode, assetFileId, redistributeId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
@@ -61,6 +61,7 @@ const loadFormData = async () => {
   if (!damConfigDistributionCustomFormElements.value[props.distributionServiceName]) return
   if (!assetFileId.value) return
   filter.distributionService.model = props.distributionServiceName
+  filter.id.model = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionCustomItem>(
     assetFileId.value,
     pagination,

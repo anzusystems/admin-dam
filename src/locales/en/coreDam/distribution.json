@@ -21,6 +21,7 @@
     "list": "List of distributions",
     "addButton": "Add new",
     "redistributeButton": "Redistribute",
+    "cancelDistributionButton": "Stop distribution",
     "addTitle": "Add new distribution",
     "redistributeTitle": "Redistribute",
     "noEntries": "Nothing to show",
