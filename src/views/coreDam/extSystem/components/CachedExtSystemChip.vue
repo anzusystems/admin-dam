@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACachedChip from '@/components/ACachedChip.vue'
+import { ACachedChip } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import type { IntegerId } from '@anzusystems/common-admin'

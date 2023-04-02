@@ -3,7 +3,7 @@ import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
-import ACachedAnzuUserChip from '@/components/ACachedAnzuUserChip.vue'
+import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 
 const { extSystem } = storeToRefs(useExtSystemOneStore())
 
@@ -22,7 +22,7 @@ const { t } = useI18n()
         :value="extSystem.slug"
       />
       <ARow :title="t('coreDam.extSystem.model.adminUsers')">
-        <ACachedAnzuUserChip
+        <CachedDamUserChip
           v-for="userId in extSystem.adminUsers"
           :id="userId"
           :key="userId"

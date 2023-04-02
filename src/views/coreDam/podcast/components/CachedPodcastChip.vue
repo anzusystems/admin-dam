@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ACachedChip from '@/components/ACachedChip.vue'
+import { ACachedChip } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 import type { DocId } from '@anzusystems/common-admin'
