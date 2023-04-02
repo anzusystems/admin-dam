@@ -12,6 +12,7 @@ import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDo
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ref } from 'vue'
 import { ACL } from '@/types/Permission'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
 withDefaults(
   defineProps<{
@@ -26,7 +27,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset } = useAssetDetailActions()
+const { asset, view } = useAssetDetailActions()
+const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
 
@@ -45,6 +47,9 @@ const onSave = async () => {
   }
   try {
     await updateAssetMetadata(asset.value)
+    if (view.value === 'queue') {
+      uploadQueueStore.updateAssetMetadata(asset.value)
+    }
     showRecordWas('updated')
   } catch (error) {
     showErrorsDefault(error)
