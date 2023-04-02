@@ -12,7 +12,7 @@ import logoNoText from '@/assets/logo-adam-no-text.svg'
 import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { ACL } from '@/types/Permission'
-import { ASystemBar } from '@anzusystems/common-admin'
+import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
 
 const { t } = useI18n()
@@ -60,6 +60,10 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
           <slot name="main-bar-right" />
           <AssetToolbarExtSystemLicence />
           <AssetToolbarOptions variant="main" />
+          <AAdminSwitcher
+            :config-url="envConfig.adminSwitcherConfigUrl"
+            class="mr-1"
+          />
           <CurrentUserDropdown />
         </div>
       </div>
