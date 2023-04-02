@@ -10,6 +10,7 @@ const { t } = useI18n()
   <VList
     density="compact"
     nav
+    color="primary"
   >
     <VListItem
       :to="{ name: ROUTE.DAM.ASSET.LIST }"
