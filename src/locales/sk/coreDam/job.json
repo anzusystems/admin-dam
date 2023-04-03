@@ -1,0 +1,9 @@
+{
+  "model": {
+    "podcastId": "Podcast Id",
+    "fullSync": "Full synchronization"
+  },
+  "jobResource": {
+    "jobPodcastSynchronizer": "Podcast synchronizer"
+  }
+}

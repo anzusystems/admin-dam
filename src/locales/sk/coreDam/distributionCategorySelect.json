@@ -1,0 +1,15 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "serviceSlug": "Distribution service",
+    "value": "Value",
+    "options": "Options",
+    "assignable": "Assignable"
+  },
+  "filter": {
+    "id": "ID",
+    "name": "Name",
+    "type": "Asset Type"
+  }
+}
