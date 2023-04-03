@@ -123,23 +123,67 @@ const assetMainFile = computed(() => {
 </script>
 
 <template>
-  <VDialog v-model="assetDetailStore.detail" fullscreen persistent no-click-animation>
-    <AssetDetailDialogLoader v-if="assetDetailStore.loader" @close-dialog="closeDialog" />
-    <VCard v-else-if="asset" class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
+  <VDialog
+    v-model="assetDetailStore.detail"
+    fullscreen
+  >
+    <AssetDetailDialogLoader
+      v-if="assetDetailStore.loader"
+      @close-dialog="closeDialog"
+    />
+    <VCard
+      v-else-if="asset"
+      class="dam-image-detail"
+      :class="{ 'dam-image-detail--sidebar-active': sidebar }"
+    >
       <div class="dam-image-detail__wrapper d-flex flex-column">
-        <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
+        <VToolbar
+          :color="toolbarColor"
+          density="compact"
+          :height="64"
+          class="system-border-b pr-1"
+        >
           <div v-if="assetDetailStore.view === 'list'">
-            <VBtn variant="text" icon class="mx-1" :width="36" :height="36" @click.stop="prevItem">
+            <VBtn
+              variant="text"
+              icon
+              class="mx-1"
+              :width="36"
+              :height="36"
+              @click.stop="prevItem"
+            >
               <VIcon icon="mdi-chevron-left" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.prev') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.list.prev') }}
+              </VTooltip>
             </VBtn>
-            <VBtn variant="text" icon class="mr-2" :width="36" :height="36" @click.stop="nextItem">
+            <VBtn
+              variant="text"
+              icon
+              class="mr-2"
+              :width="36"
+              :height="36"
+              @click.stop="nextItem"
+            >
               <VIcon icon="mdi-chevron-right" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.next') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.list.next') }}
+              </VTooltip>
             </VBtn>
           </div>
-          <div v-if="assetDetailStore.view === 'list'" class="text-subtitle-2 d-flex">
-            <div class="pr-4">{{ totalCountText }}</div>
+          <div
+            v-if="assetDetailStore.view === 'list'"
+            class="text-subtitle-2 d-flex"
+          >
+            <div class="pr-4">
+              {{ totalCountText }}
+            </div>
             <div>{{ toolbarTitle }}</div>
           </div>
           <VSpacer />
@@ -155,20 +199,43 @@ const assetMainFile = computed(() => {
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.detail.toggleInfo') }}
+              </VTooltip>
             </VBtn>
-            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
+            <VBtn
+              icon
+              variant="text"
+              :width="36"
+              :height="36"
+              class="mr-1"
+              @click.stop="closeDialog"
+            >
               <VIcon icon="mdi-close" />
-              <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('common.button.close') }}
+              </VTooltip>
             </VBtn>
           </div>
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
+            <div
+              v-if="activeTab === AssetDetailTab.ROI"
+              class="w-100 h-100 pa-2 d-flex align-center justify-center"
+            >
               <AssetImageRoiSelect />
             </div>
-            <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
+            <div
+              v-else
+              class="w-100 h-100 pa-2 d-flex align-center justify-center"
+            >
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"

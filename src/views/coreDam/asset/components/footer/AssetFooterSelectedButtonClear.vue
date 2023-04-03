@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { eventClickBlur } from '@anzusystems/common-admin'
+import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 withDefaults(
@@ -41,53 +41,66 @@ const { t } = useI18n()
   <div class="d-inline-flex">
     <VBtn
       v-if="variant === 'small'"
-      dark
-      variant="flat"
+      variant="text"
+      :width="26"
       :height="26"
+      icon
       class="mr-2"
-      color="secondary"
       :data-cy="dataCy"
       @click.stop="onClick"
     >
-      {{ t('coreDam.asset.selected.clear') }}
+      <VIcon icon="mdi-close" />
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('coreDam.asset.selected.clear') }}
+      </VTooltip>
     </VBtn>
     <VBtn
       v-else-if="variant === 'normal'"
-      color="secondary"
       :height="36"
-      variant="flat"
-      rounded="pill"
+      :width="36"
+      variant="text"
+      icon
       @click.stop="onClick"
     >
-      {{ t('coreDam.asset.selected.cancel') }}
+      <VIcon icon="mdi-close" />
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('coreDam.asset.selected.cancel') }}
+      </VTooltip>
     </VBtn>
-    <VDialog v-model="dialog" persistent :width="500" no-click-animation>
-      <VCard v-if="dialog" data-cy="delete-panel">
-        <VToolbar class="pl-2" density="compact">
-          <div class="d-block pl-0 w-100">
-            <div class="text-h6">{{ t('coreDam.asset.selected.clearOverlay.title') }}</div>
-          </div>
-          <VSpacer />
-          <VToolbarItems>
-            <VBtn
-              class="ml-2"
-              icon="mdi-close"
-              size="small"
-              variant="text"
-              data-cy="button-close"
-              @click.stop="onCancel"
-            />
-          </VToolbarItems>
-        </VToolbar>
-        <div class="pa-2">{{ t('coreDam.asset.selected.clearOverlay.description') }}</div>
+    <VDialog
+      v-model="dialog"
+      :width="500"
+    >
+      <VCard
+        v-if="dialog"
+        data-cy="delete-panel"
+      >
+        <ADialogToolbar @on-cancel="onCancel">
+          {{ t('coreDam.asset.selected.clearOverlay.title') }}
+        </ADialogToolbar>
+        <VCardText>
+          {{ t('coreDam.asset.selected.clearOverlay.description') }}
+        </VCardText>
         <VCardActions>
           <VSpacer />
-          <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+          <ABtnTertiary
+            data-cy="button-cancel"
+            @click.stop="onCancel"
+          >
             {{ t('common.button.cancel') }}
-          </VBtn>
-          <VBtn color="warning" data-cy="button-confirm" @click.stop="onConfirm">
+          </ABtnTertiary>
+          <ABtnPrimary
+            data-cy="button-confirm"
+            @click.stop="onConfirm"
+          >
             {{ t('coreDam.asset.selected.clearOverlay.confirm') }}
-          </VBtn>
+          </ABtnPrimary>
         </VCardActions>
       </VCard>
     </VDialog>

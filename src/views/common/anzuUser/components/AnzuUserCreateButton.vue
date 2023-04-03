@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
+  ADialogToolbar,
   AFormTextField,
   type AnzuUser,
   ARow,
@@ -9,7 +10,6 @@ import {
   isUndefined,
   useAlerts,
   useAnzuUserFactory,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'
@@ -17,7 +17,7 @@ import { useRouter } from 'vue-router'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
-import PermissionGroupSelect from '@/views/common/permissionGroup/components/PermissionGroupSelect.vue'
+import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -58,8 +58,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = useAnzuUserValidation(anzuUser)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -78,7 +77,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }
@@ -86,36 +85,50 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <VBtn
+  <ABtnPrimary
     :class="buttonClass"
     :data-cy="dataCy"
-    color="success"
     :disabled="disabled"
     rounded="pill"
     @click.stop="onClick"
   >
     {{ t(buttonT) }}
-  </VBtn>
-  <VDialog v-model="dialog" persistent>
-    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
-      <VCardTitle class="d-flex pr-2">
-        <span>{{ t('common.anzuUser.meta.create') }}</span>
-        <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
-      </VCardTitle>
-      <ASystemEntityScope system="common" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+  </ABtnPrimary>
+  <VDialog v-model="dialog">
+    <VCard
+      v-if="dialog"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('common.anzuUser.meta.create') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          system="common"
+          :subject="ENTITY"
+        >
           <ARow>
-            <AFormTextField v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
+            <AFormTextField
+              v-model.number="anzuUser.id"
+              :v="v$.anzuUser.id"
+            />
           </ARow>
           <ARow>
-            <AFormTextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
+            <AFormTextField
+              v-model="anzuUser.email"
+              :v="v$.anzuUser.email"
+            />
           </ARow>
           <ARow>
-            <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />
+            <AnzuUserRoleSelect
+              v-model="anzuUser.roles"
+              :client="client"
+            />
           </ARow>
           <ARow>
-            <PermissionGroupSelect
+            <PermissionGroupRemoteAutocomplete
               v-model="anzuUser.permissionGroups"
               :client="client"
               :label="t('common.anzuUser.model.permissionGroups')"
@@ -123,16 +136,23 @@ const onConfirm = async () => {
               clearable
             />
           </ARow>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="success" :loading="buttonLoading" data-cy="button-create-podcast" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="buttonLoading"
+          data-cy="button-create-podcast"
+          @click.stop="onConfirm"
+        >
           {{ t(buttonT) }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

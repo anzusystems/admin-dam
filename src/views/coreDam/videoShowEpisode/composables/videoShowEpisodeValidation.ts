@@ -2,11 +2,9 @@ import type { Ref } from 'vue'
 import { computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
-import { useValidateMaxLength, useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
+import { useValidate } from '@anzusystems/common-admin'
 
-const required = useValidateRequired()
-const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
+const { required, maxLength, minLength } = useValidate()
 
 export function useVideoShowEpisodeValidation(videoShowEpisode: Ref<VideoShowEpisode>) {
   const rules = computed(() => ({

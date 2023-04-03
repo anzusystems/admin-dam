@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { ExtSystem } from '@/types/coreDam/ExtSystem'
 import {
   fetchExtSystem,
@@ -13,13 +13,13 @@ import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -33,13 +33,14 @@ export const useExtSystemListActions = () => {
     try {
       listItems.value = await fetchExtSystemList(pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,
@@ -54,11 +55,11 @@ export const useExtSystemDetailActions = () => {
     detailLoading.value = true
     try {
       const extSystem = await fetchExtSystem(id)
-      extSystem.adminUsers.forEach((id) => addToLazyUserBuffer(id))
-      fetchLazyUser()
+      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+      fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -107,11 +108,11 @@ export const useExtSystemEditActions = () => {
     detailLoading.value = true
     try {
       const extSystem = await fetchExtSystem(id)
-      extSystem.adminUsers.forEach((id) => addToLazyUserBuffer(id))
-      fetchLazyUser()
+      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+      fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -132,7 +133,7 @@ export const useExtSystemEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.EXT_SYSTEM.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

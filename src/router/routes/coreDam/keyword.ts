@@ -1,38 +1,51 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
-
-const PATH = '/keyword'
+import { AEmptyRouterView } from '@anzusystems/common-admin'
 
 export const keywordRoutes: RouteRecordRaw[] = [
   {
-    path: PATH + '/list',
-    name: ROUTE.DAM.KEYWORD.LIST,
-    component: () => import('@/views/coreDam/keyword/KeywordListView.vue'),
+    path: '/keyword',
+    component: AEmptyRouterView,
     meta: {
       requiresAuth: true,
-      requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
-      layout: 'AppLayoutSidebar',
+      requiredPermissions: [],
+      layout: 'AppLayoutDrawer',
+      breadcrumbT: 'breadcrumb.coreDam.keyword.list',
     },
-  },
-  {
-    path: PATH + '/:id',
-    name: ROUTE.DAM.KEYWORD.DETAIL,
-    component: () => import('@/views/coreDam/keyword/KeywordDetailView.vue'),
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
-      layout: 'AppLayoutSidebar',
-    },
-  },
-  {
-    path: PATH + '/:id/edit',
-    name: ROUTE.DAM.KEYWORD.EDIT,
-    component: () => import('@/views/coreDam/keyword/KeywordEditView.vue'),
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [ACL.DAM_KEYWORD_VIEW, ACL.DAM_KEYWORD_UPDATE],
-      layout: 'AppLayoutSidebar',
-    },
+    children: [
+      {
+        path: '',
+        name: ROUTE.DAM.KEYWORD.LIST,
+        component: () => import('@/views/coreDam/keyword/KeywordListView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
+          layout: 'AppLayoutDrawer',
+        },
+      },
+      {
+        path: ':id/edit',
+        name: ROUTE.DAM.KEYWORD.EDIT,
+        component: () => import('@/views/coreDam/keyword/KeywordEditView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_KEYWORD_VIEW, ACL.DAM_KEYWORD_UPDATE],
+          layout: 'AppLayoutDrawer',
+          breadcrumbT: 'breadcrumb.coreDam.keyword.edit',
+        },
+      },
+      {
+        path: ':id',
+        name: ROUTE.DAM.KEYWORD.DETAIL,
+        component: () => import('@/views/coreDam/keyword/KeywordDetailView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
+          layout: 'AppLayoutDrawer',
+          breadcrumbT: 'breadcrumb.coreDam.keyword.detail',
+        },
+      },
+    ],
   },
 ]

@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubePlaylists } from '@/services/api/coreDam/distributionYoutubeApi'
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 import type { YoutubePlaylist } from '@/types/coreDam/Distribution'
-import { useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -28,7 +28,7 @@ const modelValueComputed = computed({
   },
 })
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const items = ref<YoutubePlaylist[]>([])
 const loading = ref(false)
@@ -44,7 +44,7 @@ const fetchItems = async (forceReload = false) => {
   try {
     items.value = await fetchYoutubePlaylists(props.distributionServiceName, forceReload)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   }
   loading.value = false
 }
@@ -55,9 +55,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <VSelect v-model="modelValueComputed" :label="label" :loading="loading" :items="itemsComputed">
+  <VSelect
+    v-model="modelValueComputed"
+    :label="label"
+    :loading="loading"
+    :items="itemsComputed"
+  >
     <template #append>
-      <VBtn class="ml-2" icon="mdi-refresh" size="small" variant="text" @click.stop="fetchItems(true)" />
+      <VBtn
+        class="ml-2"
+        icon="mdi-refresh"
+        size="small"
+        variant="text"
+        @click.stop="fetchItems(true)"
+      />
     </template>
   </VSelect>
 </template>

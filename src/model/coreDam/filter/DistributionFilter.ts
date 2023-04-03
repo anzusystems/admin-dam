@@ -7,6 +7,9 @@ const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 
 export function useDistributionFilter() {
   return reactive({
+    id: {
+      ...makeFilter({ name: 'id' }),
+    },
     distributionService: {
       ...makeFilter({ name: 'distributionService' }),
     },

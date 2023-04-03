@@ -92,20 +92,31 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <VCard :loading="loadingPermissionConfig" variant="flat">
+  <VCard
+    :loading="loadingPermissionConfig"
+    variant="flat"
+  >
     <VCardText>
       <VTable v-if="isPermissionConfigInitialized">
         <thead>
           <tr>
             <th>{{ t('common.anzuUser.table.grants') }}</th>
-            <th v-if="isEdit">{{ t('common.anzuUser.table.permissions') }}</th>
+            <th v-if="isEdit">
+              {{ t('common.anzuUser.table.permissions') }}
+            </th>
             <th>{{ t('common.anzuUser.table.resolvedPermissions') }}</th>
           </tr>
         </thead>
         <tbody>
-          <template v-for="permissionSubject in Object.keys(permissionConfig.config)" :key="permissionSubject">
+          <template
+            v-for="permissionSubject in Object.keys(permissionConfig.config)"
+            :key="permissionSubject"
+          >
             <tr>
-              <td :colspan="isEdit ? 3 : 2" class="text-h6">
+              <td
+                :colspan="isEdit ? 3 : 2"
+                class="text-h6"
+              >
                 {{ translatePermission('subjects', permissionSubject) }}
               </td>
             </tr>
@@ -115,7 +126,9 @@ const { t } = useI18n()
             >
               <td>
                 {{ translatePermission('actions', permissionAction) }}
-                <div class="text-caption text-disabled">{{ permissionSubject }}_{{ permissionAction }}</div>
+                <div class="text-caption text-disabled">
+                  {{ permissionSubject }}_{{ permissionAction }}
+                </div>
               </td>
               <td v-if="isEdit">
                 <PermissionGrantEditor

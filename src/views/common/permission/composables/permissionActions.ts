@@ -1,10 +1,10 @@
 import type { Permissions } from '@/types/Permission'
 import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
 import { isUndefined, objectGetValueByPath, objectSetValueByPath } from '@anzusystems/common-admin'
-import { useLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
+import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 export const usePermissionActions = () => {
-  const { get } = useLazyPermissionGroup()
+  const { getCachedPermissionGroup } = useCachedPermissionGroups()
   const resolvePermissions = (user: AnzuUser): Permissions => {
     return {
       ...resolveGroupPermissions(user.permissionGroups),
@@ -14,7 +14,7 @@ export const usePermissionActions = () => {
 
   const resolveGroupPermissions = (permissionGroupIDs: IntegerId[]): Permissions => {
     const permissions: Permissions = {}
-    const permissionGroups = permissionGroupIDs.map((permissionGroupId) => get(permissionGroupId))
+    const permissionGroups = permissionGroupIDs.map((permissionGroupId) => getCachedPermissionGroup(permissionGroupId))
 
     for (const permissionGroup of permissionGroups) {
       if (isUndefined(permissionGroup)) continue

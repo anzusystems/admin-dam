@@ -14,6 +14,7 @@ describe(`Test permission groups function, Env: ${Cypress.env('env')}`, () => {
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage('Record was created')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000)
     cy.getCy('copy_text')
       .invoke('text')
@@ -27,10 +28,13 @@ describe(`Test permission groups function, Env: ${Cypress.env('env')}`, () => {
   it('Edit asset licence', () => {
     cy.visit('permission-group/list')
     cy.getCy('filter-text').type(`${PERMISSION_GROUP}{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('permission-group-title').find('input').clear().type(`${PERMISSION_GROUP}-edit`)
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('permission-group-description')
       .find('input')
       .clear()
@@ -40,6 +44,7 @@ describe(`Test permission groups function, Env: ${Cypress.env('env')}`, () => {
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
     cy.getCy('filter-text').type(`${PERMISSION_GROUP}-edit{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.contains('td', `${PERMISSION_GROUP}-edit`)
     cy.getCyVisibleClick('filter-reset')

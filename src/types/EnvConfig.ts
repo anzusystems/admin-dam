@@ -1,4 +1,5 @@
 export interface EnvConfig {
+  adminSwitcherConfigUrl: string
   appEnvironment: string
   appVersion: string
   apiLogError: {

@@ -1,25 +1,25 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
 import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anzusystems/common-admin'
-import KeywordSelect from '@/views/coreDam/keyword/components/KeywordSelect.vue'
-import LazyUserChip from '@/views/coreDam/user/components/LazyUserChip.vue'
-import AuthorSelect from '@/views/coreDam/author/components/AuthorSelect.vue'
+import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
+import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/coreDam/File'
+import { isImageFile } from '@/types/coreDam/File'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import { isImageFile } from '@/types/coreDam/File'
 
 const { t } = useI18n()
 
 const panels = ref(['metadata', 'file'])
 
-const { asset, metadataTouch } = useAssetDetailActions()
+const { asset, authorConflicts, metadataTouch } = useAssetDetailActions()
 
 const assetType = computed(() => {
   return asset.value?.attributes.assetType || AssetType.Default
@@ -42,8 +42,17 @@ const onAnyMetadataChange = () => {
 </script>
 
 <template>
-  <VExpansionPanels v-if="asset" v-model="panels" multiple class="v-expansion-panels--compact">
-    <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.metadata')" value="metadata">
+  <VExpansionPanels
+    v-if="asset"
+    v-model="panels"
+    multiple
+    class="v-expansion-panels--compact"
+  >
+    <VExpansionPanel
+      elevation="0"
+      :title="t('coreDam.asset.detail.info.metadata')"
+      value="metadata"
+    >
       <VExpansionPanelText>
         <AssetCustomMetadataForm
           v-if="asset"
@@ -52,17 +61,21 @@ const onAnyMetadataChange = () => {
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
-            <VRow v-if="keywordEnabled" dense class="my-2">
+            <VRow
+              v-if="keywordEnabled"
+              dense
+              class="my-2"
+            >
               <VCol>
-                <ASystemEntityScope subject="keyword" system="dam">
-                  <KeywordSelect
+                <ASystemEntityScope
+                  subject="keyword"
+                  system="dam"
+                >
+                  <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
-                    label="Keywords"
-                    :suggestions="asset.metadata.keywordSuggestions"
-                    chips
+                    :label="t('coreDam.asset.model.keywords')"
                     clearable
                     multiple
-                    disable-init-fetch
                     :required="keywordRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -70,17 +83,22 @@ const onAnyMetadataChange = () => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow v-if="authorEnabled" dense class="my-2">
+            <VRow
+              v-if="authorEnabled"
+              dense
+              class="my-2"
+            >
               <VCol>
-                <ASystemEntityScope subject="author" system="dam">
-                  <AuthorSelect
+                <ASystemEntityScope
+                  subject="author"
+                  system="dam"
+                >
+                  <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
-                    label="Authors"
-                    :suggestions="asset.metadata.authorSuggestions"
-                    chips
+                    :label="t('coreDam.asset.model.authors')"
+                    :author-conflicts="authorConflicts"
                     clearable
                     multiple
-                    disable-init-fetch
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -92,38 +110,55 @@ const onAnyMetadataChange = () => {
         </AssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
-
-    <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.file')" value="file">
+    <VExpansionPanel
+      elevation="0"
+      :title="t('coreDam.asset.detail.info.file')"
+      value="file"
+    >
       <VExpansionPanelText class="text-caption">
         <!-- all types -->
         <VRow>
           <VCol>{{ t('coreDam.asset.detail.info.field.id') }}</VCol>
-          <VCol cols="9"><ACopyText :value="asset.id" /></VCol>
+          <VCol cols="9">
+            <ACopyText :value="asset.id" />
+          </VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('coreDam.asset.detail.info.field.type') }}</VCol>
-          <VCol cols="9">{{ asset.attributes.assetType }}</VCol>
+          <VCol cols="9">
+            {{ asset.attributes.assetType }}
+          </VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.created') }}</VCol>
-          <VCol cols="9"><LazyUserChip :id="asset.createdBy" /><br />{{ dateTimePretty(asset.createdAt) }}</VCol>
+          <VCol cols="9">
+            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
+          </VCol>
         </VRow>
         <VRow>
           <VCol>{{ t('common.model.tracking.modified') }}</VCol>
-          <VCol cols="9"><LazyUserChip :id="asset.modifiedBy" /><br />{{ dateTimePretty(asset.modifiedAt) }}</VCol>
+          <VCol cols="9">
+            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+          </VCol>
         </VRow>
         <div v-if="assetMainFile">
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.mainFileId') }}</VCol>
-            <VCol cols="9"><ACopyText :value="assetMainFile.id" /></VCol>
+            <VCol cols="9">
+              <ACopyText :value="assetMainFile.id" />
+            </VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.mimeType') }}</VCol>
-            <VCol cols="9">{{ assetMainFile.fileAttributes.mimeType }}</VCol>
+            <VCol cols="9">
+              {{ assetMainFile.fileAttributes.mimeType }}
+            </VCol>
           </VRow>
           <VRow>
             <VCol>{{ t('coreDam.asset.detail.info.field.size') }}</VCol>
-            <VCol cols="9">{{ prettyBytes(assetMainFile.fileAttributes.size) }}</VCol>
+            <VCol cols="9">
+              {{ prettyBytes(assetMainFile.fileAttributes.size) }}
+            </VCol>
           </VRow>
         </div>
         <!-- image -->

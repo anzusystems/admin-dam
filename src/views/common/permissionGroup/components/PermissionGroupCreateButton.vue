@@ -2,13 +2,13 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
+  ADialogToolbar,
   AFormTextField,
   ARow,
   ASystemEntityScope,
   isUndefined,
   type PermissionGroup,
   useAlerts,
-  useErrorHandler,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
@@ -56,8 +56,7 @@ const onCancel = () => {
 const router = useRouter()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 const { t } = useI18n()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   try {
@@ -76,7 +75,7 @@ const onConfirm = async () => {
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: res.id } })
     }
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }
@@ -84,25 +83,30 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <VBtn
+  <ABtnPrimary
     :class="buttonClass"
     :data-cy="dataCy"
-    color="success"
     :disabled="disabled"
     rounded="pill"
     @click.stop="onClick"
   >
     {{ t(buttonT) }}
-  </VBtn>
-  <VDialog v-model="dialog" persistent>
-    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
-      <VCardTitle class="d-flex pr-2">
-        <span>{{ t('common.permissionGroup.meta.create') }}</span>
-        <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
-      </VCardTitle>
-      <ASystemEntityScope system="common" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+  </ABtnPrimary>
+  <VDialog v-model="dialog">
+    <VCard
+      v-if="dialog"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('common.permissionGroup.meta.create') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          system="common"
+          :subject="ENTITY"
+        >
           <ARow>
             <AFormTextField
               v-model="permissionGroup.title"
@@ -117,16 +121,23 @@ const onConfirm = async () => {
               data-cy="permissionGroup-description"
             />
           </ARow>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="success" :loading="buttonLoading" data-cy="button-create-podcast" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="buttonLoading"
+          data-cy="button-create-podcast"
+          @click.stop="onConfirm"
+        >
           {{ t(buttonT) }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

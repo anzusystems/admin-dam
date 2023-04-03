@@ -1,6 +1,7 @@
 import type { EnvConfig } from '@/types/EnvConfig'
 
 export const envConfig: EnvConfig = {
+  adminSwitcherConfigUrl: '',
   appEnvironment: '',
   appVersion: '',
   apiLogError: {
@@ -26,6 +27,7 @@ export const envConfig: EnvConfig = {
 
 const setEnvConfig = (data: EnvConfig) => {
   try {
+    envConfig.adminSwitcherConfigUrl = data.adminSwitcherConfigUrl
     envConfig.appEnvironment = data.appEnvironment
     envConfig.appVersion = data.appVersion
     envConfig.apiLogError.enabled = data.apiLogError.enabled

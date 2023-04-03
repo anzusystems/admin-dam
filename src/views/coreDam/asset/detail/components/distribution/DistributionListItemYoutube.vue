@@ -30,25 +30,28 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div v-if="serviceRequirements" class="text-body-2">
+  <div
+    v-if="serviceRequirements"
+    class="text-body-2"
+  >
     <VRow>
       <VCol>
-        <div class="font-weight-bold">{{ serviceRequirements.title }}</div>
+        <div class="font-weight-bold">
+          {{ serviceRequirements.title }}
+        </div>
       </VCol>
     </VRow>
     <VRow>
       <VCol>
         {{ t('coreDam.distribution.common.status') }}: <DistributionStatusChip :status="item.status" />
-        <VBtn
+        <ABtnTertiary
           v-if="showRedistribute"
           class="ml-2"
-          variant="flat"
-          color="secondary"
           size="small"
           @click.stop="emit('openRedistribute')"
         >
-          Redistribute
-        </VBtn>
+          {{ t('coreDam.distribution.common.redistributeButton') }}
+        </ABtnTertiary>
       </VCol>
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Failed">
@@ -58,11 +61,19 @@ const serviceRequirements = computed(() => {
     </VRow>
     <VRow v-if="item.status === DistributionStatus.Distributed">
       <VCol>
-        <a :href="'https://www.youtube.com/watch?v=' + item.extId" target="_blank">
+        <a
+          :href="'https://www.youtube.com/watch?v=' + item.extId"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {{ t('coreDam.youtubeDistribution.videoPreviewLink') }}
         </a>
-        <br />
-        <a :href="'https://studio.youtube.com/video/' + item.extId + '/edit/basic'" target="_blank">
+        <br>
+        <a
+          :href="'https://studio.youtube.com/video/' + item.extId + '/edit/basic'"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {{ t('coreDam.youtubeDistribution.videoAdministrationLink') }}
         </a>
       </VCol>

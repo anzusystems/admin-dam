@@ -28,5 +28,8 @@ export function useDistributionCategoryFilter() {
     name: {
       ...makeFilter({ name: 'name', variant: 'startsWith' }),
     },
+    type: {
+      ...makeFilter<AssetType>({ name: 'type', default: AssetType.Default }),
+    },
   })
 }

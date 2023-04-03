@@ -1,21 +1,23 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
-import DistributionCategorySelect from '@/views/coreDam/distributionCategory/components/DistributionCategorySelect.vue'
+import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { ARow, ASystemEntityScope, isNull, useErrorHandler } from '@anzusystems/common-admin'
+import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
 import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: boolean
     categoryId?: DocIdNullable
     assetId: DocId
+    assetType: AssetType
   }>(),
   {
     modelValue: false,
@@ -45,7 +47,7 @@ const dialogComputed = computed({
   },
 })
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   saving.value = true
@@ -55,7 +57,7 @@ const onConfirm = async () => {
     dialogComputed.value = false
     emit('afterSave', idCache)
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     saving.value = false
   }
@@ -95,43 +97,55 @@ watch(
 </script>
 
 <template>
-  <VDialog v-model="dialogComputed" persistent :width="500" no-click-animation>
-    <VCard v-if="dialogComputed" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">Manage distribution category</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" @click.stop="onCancel" />
-        </VToolbarItems>
-      </VToolbar>
+  <VDialog
+    v-model="dialogComputed"
+    :width="500"
+  >
+    <VCard
+      v-if="dialogComputed"
+      data-cy="delete-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('coreDam.distributionCategory.manage') }}
+      </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-          <VContainer class="pa-4" fluid>
-            <ARow>
-              <DistributionCategorySelect
-                v-model="selectedCategoryId"
-                clearable
-                :label="t('coreDam.asset.model.distributionCategory')"
-              />
-            </ARow>
-            <ARow>
-              <div v-for="item in category.selectedOptionsDetail" :key="item.id">
-                <div>{{ item.serviceSlug }} - {{ item.name }}</div>
-              </div>
-            </ARow>
-          </VContainer>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
+          <ARow>
+            <DistributionCategoryRemoteAutocomplete
+              v-model="selectedCategoryId"
+              :asset-type="assetType"
+              clearable
+              :label="t('coreDam.asset.model.distributionCategory')"
+            />
+          </ARow>
+          <ARow>
+            <div
+              v-for="item in category.selectedOptionsDetail"
+              :key="item.id"
+            >
+              <div>{{ item.serviceSlug }} - {{ item.name }}</div>
+            </div>
+          </ARow>
         </ASystemEntityScope>
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="primary" :loading="saving" data-cy="button-confirm" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="saving"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t('common.button.confirm') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

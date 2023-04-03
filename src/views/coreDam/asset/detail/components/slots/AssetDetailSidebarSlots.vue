@@ -53,14 +53,26 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <VBtn :loading="assetSlotsStore.loader" color="secondary" variant="flat" @click.stop="getList">
+    <ABtnPrimary
+      :loading="assetSlotsStore.loader"
+      @click.stop="getList"
+    >
       {{ t('coreDam.asset.slots.actions.refreshList') }}
-    </VBtn>
+    </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
-  <div v-if="assetSlotsStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
-    <VProgressCircular indeterminate color="primary" />
+  <div
+    v-if="assetSlotsStore.loader"
+    class="d-flex w-100 h-100 justify-center align-center pa-2"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
   </div>
-  <div v-else-if="assetSlotsStore.assetSlotNames.length === 0" class="pa-4 text-caption">
+  <div
+    v-else-if="assetSlotsStore.assetSlotNames.length === 0"
+    class="pa-4 text-caption"
+  >
     {{ t('coreDam.asset.slots.noEntries') }}
   </div>
   <div v-else>
@@ -81,7 +93,12 @@ onMounted(async () => {
       @make-file-private="makeFilePrivate"
       @open-make-file-private-dialog="openMakeFilePrivateDialog"
     />
-    <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
+    <ADatatablePagination
+      v-if="showPagination"
+      v-model="pagination"
+      hide-records-per-page
+      @change="getList"
+    />
   </div>
   <AssetFilePublicLinkPrivateDialog
     v-if="assetDetailStore.asset"

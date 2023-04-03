@@ -43,5 +43,9 @@ const label = computed(() => {
 </script>
 
 <template>
-  <AFilterValueObjectOptionsSelect v-model="value" :label="label" :items="items" />
+  <AFilterValueObjectOptionsSelect
+    v-model="value"
+    :label="label"
+    :items="items"
+  />
 </template>

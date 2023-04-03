@@ -1,38 +1,51 @@
 import { ROUTE } from '@/router/routes'
 import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
-
-const PATH = '/anzu-user'
+import { AEmptyRouterView } from '@anzusystems/common-admin'
 
 export const anzuUserRoutes: RouteRecordRaw[] = [
   {
-    path: PATH + '/list',
-    name: ROUTE.COMMON.ANZU_USER.LIST,
-    component: () => import('@/views/common/anzuUser/AnzuUserListView.vue'),
+    path: '/anzu-user',
+    component: AEmptyRouterView,
     meta: {
       requiresAuth: true,
-      requiredPermissions: [ACL.DAM_USER_VIEW],
-      layout: 'AppLayoutSidebar',
+      requiredPermissions: [],
+      layout: 'AppLayoutDrawer',
+      breadcrumbT: 'breadcrumb.anzuUser.list',
     },
-  },
-  {
-    path: PATH + '/:id(\\d+)',
-    name: ROUTE.COMMON.ANZU_USER.DETAIL,
-    component: () => import('@/views/common/anzuUser/AnzuUserDetailView.vue'),
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [ACL.DAM_USER_VIEW],
-      layout: 'AppLayoutSidebar',
-    },
-  },
-  {
-    path: PATH + '/:id(\\d+)/edit',
-    name: ROUTE.COMMON.ANZU_USER.EDIT,
-    component: () => import('@/views/common/anzuUser/AnzuUserEditView.vue'),
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [ACL.DAM_USER_VIEW, ACL.DAM_USER_UPDATE],
-      layout: 'AppLayoutSidebar',
-    },
+    children: [
+      {
+        path: '',
+        name: ROUTE.COMMON.ANZU_USER.LIST,
+        component: () => import('@/views/common/anzuUser/AnzuUserListView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_USER_VIEW],
+          layout: 'AppLayoutDrawer',
+        },
+      },
+      {
+        path: ':id(\\d+)/edit',
+        name: ROUTE.COMMON.ANZU_USER.EDIT,
+        component: () => import('@/views/common/anzuUser/AnzuUserEditView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_USER_VIEW, ACL.DAM_USER_UPDATE],
+          layout: 'AppLayoutDrawer',
+          breadcrumbT: 'breadcrumb.anzuUser.edit',
+        },
+      },
+      {
+        path: ':id(\\d+)',
+        name: ROUTE.COMMON.ANZU_USER.DETAIL,
+        component: () => import('@/views/common/anzuUser/AnzuUserDetailView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_USER_VIEW],
+          layout: 'AppLayoutDrawer',
+          breadcrumbT: 'breadcrumb.anzuUser.detail',
+        },
+      },
+    ],
   },
 ]

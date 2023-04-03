@@ -12,14 +12,20 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.keyword.model.name')" :value="keyword.name" />
+      <ARow
+        :title="t('coreDam.keyword.model.name')"
+        :value="keyword.name"
+      />
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.keyword.model.id')">
         <ACopyText :value="keyword.id" />
       </ARow>
       <ARow :title="t('coreDam.keyword.model.flags.reviewed')">
-        <ABooleanValue chip :value="keyword.flags.reviewed" />
+        <ABooleanValue
+          chip
+          :value="keyword.flags.reviewed"
+        />
       </ARow>
       <AUserAndTimeTrackingFields :data="keyword" />
     </VCol>

@@ -4,7 +4,6 @@ import {
   browserHistoryReplaceUrlByRouter,
   isNull,
   useAlerts,
-  useErrorHandler,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
@@ -19,16 +18,15 @@ import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 
-const { handleError } = useErrorHandler()
-const { showWarning } = useAlerts()
+const { showWarning, showErrorsDefault } = useAlerts()
 
 const filter = useAssetListFilter()
 const pagination = usePagination()
@@ -46,7 +44,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
   const { resetFilter } = useFilterHelpers()
   const { currentAssetLicenceId } = useCurrentAssetLicence()
-  const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+  const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -75,7 +73,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       assetListStore.hideLoader('hard')
     }
@@ -100,7 +98,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       assetListStore.hideLoader('soft')
     }
@@ -151,13 +149,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
     const res = await fetchAsset(data.assetId)
     assetDetailStore.setAsset(res)
-    if (assetDetailStore.asset?.createdBy) {
-      addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-    }
-    if (assetDetailStore.asset?.modifiedBy) {
-      addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-    }
-    fetchLazyUser()
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
     assetDetailStore.hideLoader()
   }
 
@@ -171,6 +164,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
     const res = await fetchAsset(data.assetId)
     assetDetailStore.setAsset(res)
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
     assetDetailStore.hideLoader()
   }
 

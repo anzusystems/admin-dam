@@ -1,86 +1,127 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import {
-  ADatatable,
+  ADatatableConfigButton,
+  ADatatableOrdering,
   ADatatablePagination,
-  ASystemEntityScope,
+  ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  createDatatableColumnsConfig,
+  type DatatableOrderingOption,
   useAcl,
-  useDatatableColumns,
   useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useAssetLicenceListActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
-import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import AssetLicenceFilter from '@/views/coreDam/assetLicence/components/AssetLicenceFilter.vue'
 import { useAssetLicenceListFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
-import LazyExtSystemChip from '@/views/coreDam/extSystem/components/LazyExtSystemChip.vue'
+import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, type AclValue } from '@/types/Permission'
+import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+
+type DatatableItem = { raw: AssetLicence }
 
 const router = useRouter()
-const pagination = usePagination()
 const filter = useAssetLicenceListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
-const { fetchList, listItems } = useAssetLicenceListActions()
+const { fetchList, listItems, datatableHiddenColumns } = useAssetLicenceListActions()
 const getList = () => {
   fetchList(pagination, filter)
 }
 
-const columns = useDatatableColumns([
-  { name: 'name' },
-  { name: 'extSystem' },
-  { name: 'extId' },
-  { name: 'createdAt' },
-  { name: 'modifiedAt' },
-])
-
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (row: AssetLicence) => {
-  if (row.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
-    router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: row.id } })
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
+  if (item.raw.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
+    router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: item.raw.id } })
+}
+
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+  [{ key: 'id' }, { key: 'name' }, { key: 'extSystem' }, { key: 'extId' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  datatableHiddenColumns,
+  SYSTEM_CORE_DAM,
+  ENTITY
+)
+
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
 }
 
 onMounted(() => {
   getList()
 })
 
-const refresh = () => {
-  getList()
-}
-
 defineExpose({
-  refresh,
+  refresh: getList,
 })
 </script>
 
 <template>
-  <AssetLicenceFilter
-    @submit-filter="submitFilter(filter, pagination, getList)"
-    @reset-filter="resetFilter(filter, pagination, getList)"
-  />
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-    <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
-      <template #extSystem="{ data }">
-        <LazyExtSystemChip :id="data" variant="text" />
-      </template>
-      <template #actions="{ data }">
-        <Acl :permission="ACL.DAM_ASSET_LICENCE_VIEW">
-          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL" />
-        </Acl>
-        <ATableCopyIdButton :id="data.id" />
-        <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
-          <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT" />
-        </Acl>
-      </template>
-    </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList" />
-  </ASystemEntityScope>
+  <div>
+    <AssetLicenceFilter
+      @submit-filter="submitFilter(filter, pagination, getList)"
+      @reset-filter="resetFilter(filter, pagination, getList)"
+    />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
+        />
+      </div>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #extSystem="{ item }: { item: DatatableItem }">
+          <CachedExtSystemChip
+            :id="item.raw.extSystem"
+            variant="text"
+          />
+        </template>
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
+        <template #item.actions="{ item }: { item: DatatableItem }">
+          <div class="d-flex justify-end">
+            <ATableCopyIdButton :id="item.raw.id" />
+            <Acl :permission="ACL.DAM_ASSET_LICENCE_VIEW">
+              <ATableDetailButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL"
+              />
+            </Acl>
+            <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
+              <ATableEditButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT"
+              />
+            </Acl>
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
+  </div>
 </template>

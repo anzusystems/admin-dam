@@ -1,20 +1,16 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveAndCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorEditForm from '@/views/coreDam/author/components/AuthorEditForm.vue'
-
-const { t } = useI18n()
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, author } =
   useAuthorEditActions()
 
 const getData = () => {
@@ -31,23 +27,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.author.meta.edit')" />
-  <ActionbarButtonsWrapper>
-    <AActionSaveButton
-      v-if="!detailLoading"
-      :loading="saveButtonLoading"
-      :disabled="saveAndCloseButtonLoading"
-      @save-record="onUpdate"
-    />
-    <AActionSaveAndCloseButton
-      v-if="!detailLoading"
-      :loading="saveAndCloseButtonLoading"
-      :disabled="saveButtonLoading"
-      @save-record-and-close="onUpdate(true)"
-    />
-    <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="author.name">
+    <template #buttons>
+      <AActionSaveButton
+        v-if="!detailLoading"
+        :loading="saveButtonLoading"
+        :disabled="saveAndCloseButtonLoading"
+        @save-record="onUpdate"
+      />
+      <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <AuthorEditForm />
+    <VCardText>
+      <AuthorEditForm />
+    </VCardText>
   </ACard>
 </template>

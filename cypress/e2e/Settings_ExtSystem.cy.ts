@@ -7,6 +7,7 @@ describe(`Test ext system function, Env: ${Cypress.env('env')}`, () => {
     cy.visit('/settings')
     cy.verifySubPage('ext-system-settings', 'ext-system/list', 'List of External Systems')
     cy.getCy('filter-text').first().type(`${EXTERNAL_SYS[0]}{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.contains('td', `${EXTERNAL_SYS[0]}`).click()
     cy.getCy('copy_text')
@@ -16,6 +17,7 @@ describe(`Test ext system function, Env: ${Cypress.env('env')}`, () => {
       })
     cy.getCyVisibleClick('button-edit')
     cy.urlContains('/edit')
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('ext-system-name').find('input').clear().type('CMS system')
     cy.getCyVisibleClick('button-save-close')
     cy.alertMessage('Record was updated')

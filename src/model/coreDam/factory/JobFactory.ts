@@ -1,31 +1,21 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { dateTimeNow, JobStatus } from '@anzusystems/common-admin'
-import type { Job } from '@/types/coreDam/Job'
+import { useCommonJobFactory } from '@anzusystems/common-admin'
+import type { JobPodcastSynchronizer } from '@/types/coreDam/Job'
+import { JOB_RESOURCE_PODCAST_SYNCHRONIZER } from '@/model/coreDam/valueObject/JobResource'
 
 export function useJobFactory() {
-  const createDefault = (): Job => {
+  const { createBase } = useCommonJobFactory()
+  const createPodcastSynchronizer = (): JobPodcastSynchronizer => {
     return {
-      id: 0,
-      status: JobStatus.Default,
-      result: '',
-      podcastId: '',
-      fullSync: false,
-      anonymizeUser: false,
-      targetUserId: null,
-      batchProcessedIterationCount: 0,
-      finishedAt: null,
-      startedAt: null,
-      lastBatchProcessedRecord: '',
-      createdAt: dateTimeNow(),
-      modifiedAt: dateTimeNow(),
-      createdBy: null,
-      modifiedBy: null,
-      _resourceName: 'jobUserDataDelete',
-      _system: SYSTEM_CORE_DAM,
+      ...createBase(JOB_RESOURCE_PODCAST_SYNCHRONIZER, SYSTEM_CORE_DAM),
+      ...{
+        podcastId: null,
+        fullSync: false,
+      },
     }
   }
 
   return {
-    createDefault,
+    createPodcastSynchronizer,
   }
 }

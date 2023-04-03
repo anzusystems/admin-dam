@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
-import type { Author } from '@/types/coreDam/Author'
+import { useAlerts } from '@anzusystems/common-admin'
+import type { Author, AuthorMinimal } from '@/types/coreDam/Author'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
@@ -10,9 +10,9 @@ import { ROUTE } from '@/router/routes'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -28,13 +28,14 @@ export const useAuthorListActions = () => {
     try {
       listItems.value = await fetchAuthorList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,
@@ -51,7 +52,7 @@ export const useAuthorDetailActions = () => {
       const author = await fetchAuthor(id)
       authorOneStore.setAuthor(author)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -77,7 +78,7 @@ export const useAuthorEditActions = () => {
       const author = await fetchAuthor(id)
       authorOneStore.setAuthor(author)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -98,7 +99,7 @@ export const useAuthorEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.AUTHOR.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false
@@ -119,6 +120,12 @@ export const useAuthorEditActions = () => {
 export const useAuthorSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
 
+  const mapToMinimal = (author: Author): AuthorMinimal => ({
+    id: author.id,
+    name: author.name,
+    identifier: author.identifier,
+  })
+
   const mapToValueObject = (author: Author): ValueObjectOption<string> => ({
     title: author.name + (author.identifier ? ` (${author.identifier})` : ''),
     value: author.id,
@@ -128,8 +135,16 @@ export const useAuthorSelectActions = () => {
     return authors.map((author: Author) => mapToValueObject(author))
   }
 
+  const mapToMinimals = (authors: Author[]): AuthorMinimal[] => {
+    return authors.map((author: Author) => mapToMinimal(author))
+  }
+
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
     return mapToValueObjects(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
+  }
+
+  const fetchItemsMinimal = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToMinimals(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
@@ -140,5 +155,6 @@ export const useAuthorSelectActions = () => {
     mapToValueObject,
     fetchItems,
     fetchItemsByIds,
+    fetchItemsMinimal,
   }
 }

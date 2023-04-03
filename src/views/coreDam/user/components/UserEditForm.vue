@@ -5,10 +5,10 @@ import { AFormTextField, ARow, ASystemEntityScope, isUndefined } from '@anzusyst
 import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
-import ExtSystemSelect from '@/views/coreDam/extSystem/components/ExtSystemSelect.vue'
+import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
 import DistributionServiceSelect from '@/views/coreDam/distribution/components/DistributionServiceSelect.vue'
 import ExternalProviderAssetSelect from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
-import AssetLicenceSelect from '@/views/coreDam/assetLicence/components/AssetLicenceSelect.vue'
+import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
 import { damPubConfig } from '@/services/DamConfigService'
 import { UserAuthType } from '@/types/coreDam/DamConfig'
 
@@ -20,9 +20,15 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+  <ASystemEntityScope
+    :system="SYSTEM_CORE_DAM"
+    :subject="ENTITY"
+  >
     <VRow>
-      <VCol cols="12" md="8">
+      <VCol
+        cols="12"
+        md="8"
+      >
         <ARow
           v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials && !isUndefined(userUpdate.plainPassword)"
         >
@@ -34,7 +40,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AssetLicenceSelect
+          <AssetLicenceRemoteAutocomplete
             v-model="userUpdate.assetLicences"
             :label="t('coreDam.user.model.assetLicences')"
             :v="v$.userUpdate.assetLicences"
@@ -43,7 +49,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ExtSystemSelect
+          <ExtSystemRemoteAutocomplete
             v-model="userUpdate.adminToExtSystems"
             :label="t('coreDam.user.model.adminToExtSystems')"
             multiple

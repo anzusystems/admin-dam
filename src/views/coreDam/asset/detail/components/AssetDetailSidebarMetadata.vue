@@ -2,7 +2,7 @@
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { AActionDeleteButton, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import { useI18n } from 'vue-i18n'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
@@ -12,6 +12,7 @@ import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDo
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ref } from 'vue'
 import { ACL } from '@/types/Permission'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
 withDefaults(
   defineProps<{
@@ -26,12 +27,12 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset } = useAssetDetailActions()
+const { asset, view } = useAssetDetailActions()
+const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
@@ -46,9 +47,12 @@ const onSave = async () => {
   }
   try {
     await updateAssetMetadata(asset.value)
+    if (view.value === 'queue') {
+      uploadQueueStore.updateAssetMetadata(asset.value)
+    }
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -61,7 +65,7 @@ const onDelete = async () => {
     showRecordWas('deleted')
     emit('postDelete', asset.value.id)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   }
 }
 </script>
@@ -73,9 +77,14 @@ const onDelete = async () => {
       <AActionDeleteButton @delete-record="onDelete" />
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_UPDATE">
-      <VBtn color="success" type="submit" variant="flat" class="ml-2" :loading="saveButtonLoading" @click.stop="onSave">
+      <ABtnPrimary
+        type="submit"
+        class="ml-2"
+        :loading="saveButtonLoading"
+        @click.stop="onSave"
+      >
         {{ t('common.button.save') }}
-      </VBtn>
+      </ABtnPrimary>
     </Acl>
   </AssetDetailSidebarActionsWrapper>
   <AssetMetadata />

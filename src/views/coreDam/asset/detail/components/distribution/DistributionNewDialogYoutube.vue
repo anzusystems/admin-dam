@@ -9,12 +9,8 @@ import {
   AFormValueObjectOptionsSelect,
   ASystemEntityScope,
   useAlerts,
-  useErrorHandler,
   usePagination,
-  useValidateMaxLength,
-  useValidateMinLength,
-  useValidateRequired,
-  useValidateRequiredIf,
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionYoutubeCreateRedistributeDto, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
@@ -64,7 +60,7 @@ const { t } = useI18n()
 
 const { createCreateDto } = useDistributionYoutubeFactory()
 const distribution = ref<DistributionYoutubeCreateRedistributeDto>(createCreateDto())
-const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
+const { redistributeMode, assetFileId, redistributeId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
@@ -79,6 +75,7 @@ const loadFormData = async () => {
   canDisplayForm.value = false
   if (!assetFileId.value) return
   filter.distributionService.model = props.distributionServiceName
+  filter.id.model = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionYoutubeItem>(
     assetFileId.value,
     pagination,
@@ -135,14 +132,10 @@ const closeDialog = (reload = false) => {
   emit('closeDialog', reload)
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 const { distributionYoutubePrivacyOptions } = useDistributionYoutubePrivacy()
 
-const required = useValidateRequired()
-const requiredIf = useValidateRequiredIf()
-const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
+const { required, requiredIf, minLength, maxLength } = useValidate()
 
 const rules = computed(() => ({
   distribution: {
@@ -194,7 +187,7 @@ const submitRedistribute = async () => {
     showRecordWas('updated')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -214,7 +207,7 @@ const submitCreateNew = async () => {
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -259,7 +252,10 @@ onUnmounted(async () => {
 
 <template>
   <VCardText>
-    <VRow v-if="!redistributeMode && distributionAuthStatus === DistributionAuthStatus.Success" class="mb-6">
+    <VRow
+      v-if="!redistributeMode && distributionAuthStatus === DistributionAuthStatus.Success"
+      class="mb-6"
+    >
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
@@ -273,13 +269,23 @@ onUnmounted(async () => {
           :asset-type="assetType"
         />
       </div>
-      <div v-else-if="canDisplayForm" class="pa-4">
-        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+      <div
+        v-else-if="canDisplayForm"
+        class="pa-4"
+      >
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <VRow>
             <VCol cols="6">
               <VRow class="mb-2">
                 <VCol>
-                  <AFormTextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
+                  <AFormTextarea
+                    v-model="distribution.texts.title"
+                    :v="v$.distribution.texts.title"
+                    required
+                  />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -297,7 +303,6 @@ onUnmounted(async () => {
                     v-model="distribution.texts.keywords"
                     :label="t('coreDam.youtubeDistribution.model.texts.keywords')"
                     :items="[]"
-                    multiple
                     chips
                     closable-chips
                   />
@@ -312,13 +317,19 @@ onUnmounted(async () => {
                   />
                 </VCol>
               </VRow>
-              <VRow v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic" class="mb-2">
+              <VRow
+                v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic"
+                class="mb-2"
+              >
                 <VCol>
                   <AFormDatetimePicker v-model="distribution.publishAt" />
                 </VCol>
               </VRow>
             </VCol>
-            <VCol cols="6" class="pl-4">
+            <VCol
+              cols="6"
+              class="pl-4"
+            >
               <VRow class="mb-2">
                 <VCol>
                   <DistributionYoutubeLanguageSelect
@@ -377,22 +388,22 @@ onUnmounted(async () => {
               />
             </VCol>
           </VRow>
-          <VRow class="mb-2">
-            <VCol>
-              <AFormDatetimePicker
-                v-model="distribution.publishAt"
-                :label="t('coreDam.distribution.model.publishAt')"
-              />
-            </VCol>
-          </VRow>
         </ASystemEntityScope>
       </div>
       <div
         v-else-if="distributionAuthStatus === DistributionAuthStatus.WaitingForLogin && authUrl.length > 0"
         class="pa-2 text-center"
       >
-        <div class="pb-4">{{ t('coreDam.youtubeDistribution.loginDescription') }}</div>
-        <VBtn color="primary" variant="flat" :href="authUrl" target="_blank">
+        <div class="pb-4">
+          {{ t('coreDam.youtubeDistribution.loginDescription') }}
+        </div>
+        <VBtn
+          color="primary"
+          variant="flat"
+          :href="authUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {{ t('coreDam.youtubeDistribution.loginButton') }}
         </VBtn>
       </div>
@@ -402,18 +413,30 @@ onUnmounted(async () => {
       >
         {{ t('coreDam.distribution.common.error') }}
       </div>
-      <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
-        <VProgressCircular indeterminate color="primary" />
+      <div
+        v-else
+        class="d-flex w-100 h-100 justify-center align-center pa-2"
+      >
+        <VProgressCircular
+          indeterminate
+          color="primary"
+        />
       </div>
     </div>
     <DistributionYoutubeTermOfUse class="pa-4 text-caption" />
   </VCardText>
   <VCardActions>
     <VSpacer />
-    <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
+    <ABtnTertiary @click.stop="closeDialog(false)">
+      {{ t('common.button.cancel') }}
+    </ABtnTertiary>
+    <ABtnPrimary
+      v-if="canDisplayForm"
+      :loading="saving"
+      @click.stop="submit"
+    >
       <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
       <span v-else>{{ t('common.button.add') }}</span>
-    </VBtn>
-    <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
+    </ABtnPrimary>
   </VCardActions>
 </template>

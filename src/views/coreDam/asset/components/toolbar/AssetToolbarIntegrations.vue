@@ -37,7 +37,10 @@ const activeDisplayText = computed(() => {
 </script>
 
 <template>
-  <VMenu v-if="show" location="bottom">
+  <VMenu
+    v-if="show"
+    location="bottom"
+  >
     <template #activator="{ props }">
       <VBtn
         variant="text"
@@ -49,11 +52,19 @@ const activeDisplayText = computed(() => {
       >
         {{ activeDisplayText }}
         <VIcon icon="mdi-chevron-down" />
-        <VTooltip activator="parent" location="bottom">{{ t('system.mainBar.customIntegrations.title') }}</VTooltip>
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('system.mainBar.customIntegrations.title') }}
+        </VTooltip>
       </VBtn>
     </template>
     <VList>
-      <VListItem :title="t('system.mainBar.customIntegrations.assets')" @click="backToDam" />
+      <VListItem
+        :title="t('system.mainBar.customIntegrations.assets')"
+        @click="backToDam"
+      />
       <VListItem
         v-for="(value, key) in externalProviders"
         :key="key"
