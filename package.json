@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "production": "vite build --mode development --sourcemap",
+    "production": "vite build --mode production",
     "development": "vite build --mode development --sourcemap",
     "ci": "yarn lint:eslint",
     "preview": "vite preview",
