@@ -5,7 +5,7 @@ import { computed, isProxy, toRaw } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
-import { AFormBooleanToggle, isEmptyObject, useValidate } from '@anzusystems/common-admin'
+import { isEmptyObject, useValidate } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -142,11 +142,15 @@ const onBlur = () => {
       />
     </template>
   </VCombobox>
-  <AFormBooleanToggle
-    v-if="config.attributes.type === CustomFormType.Boolean"
+  <VSwitch
+    v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === true"
     :label="config.name"
     :model-value="modelValueComputed"
-    :required="config.attributes.required"
     @update:model-value="updateModelValue"
   />
+  <div
+    v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false"
+  >
+    optional boolean todo
+  </div>
 </template>

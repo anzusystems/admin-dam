@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormBooleanToggle, AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import type { JobPodcastSynchronizer } from '@/types/coreDam/Job'
@@ -70,7 +70,7 @@ const onConfirm = async () => {
       />
     </ARow>
     <ARow>
-      <AFormBooleanToggle
+      <VSwitch
         v-model="job.fullSync"
         :label="t('coreDam.job.model.fullSync')"
         data-cy="fullSync"
