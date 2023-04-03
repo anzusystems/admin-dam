@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {
-  AFormBooleanToggle,
   AFormTextField,
   ARow,
   type JobUserDataDelete,
@@ -78,7 +77,7 @@ const onConfirm = async () => {
       />
     </ARow>
     <ARow v-if="'jobUserDataDelete' === job._resourceName">
-      <AFormBooleanToggle
+      <VSwitch
         v-model="job.anonymizeUser"
         :label="t('common.job.model.anonymizeUser')"
         data-cy="anonymizeUser"
