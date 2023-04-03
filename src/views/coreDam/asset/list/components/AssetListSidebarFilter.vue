@@ -346,9 +346,9 @@ const onAnyFilterUpdate = () => {
     <template #append>
       <div class="pa-2 d-flex align-center justify-center">
         <VBtn
-          :color="filterIsTouched ? 'success' : 'secondary'"
+          color="primary"
           class="mr-2"
-          variant="flat"
+          :variant="filterIsTouched ? 'flat' : 'text'"
           size="small"
           @click.stop="submitFilter"
         >
