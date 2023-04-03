@@ -8,7 +8,10 @@ import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/co
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
 import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'
-import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
+import {
+  useAnzuUserCreateValidation,
+  useAnzuUserEditValidation
+} from '@/views/common/anzuUser/composables/anzuUserValidations'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 
 const props = defineProps<{
@@ -20,7 +23,7 @@ const { resolvePermissions } = usePermissionActions()
 const resolvedPermissions = computed(() => {
   return resolvePermissions(anzuUser.value)
 })
-const { v$ } = useAnzuUserValidation(anzuUser)
+const { v$ } = useAnzuUserEditValidation(anzuUser)
 const { t } = useI18n()
 
 const autoFillTexts = () => {
