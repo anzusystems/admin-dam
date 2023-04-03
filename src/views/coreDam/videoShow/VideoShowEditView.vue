@@ -1,20 +1,16 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveAndCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import { useVideoShowEditActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowEditForm from '@/views/coreDam/videoShow/components/VideoShowEditForm.vue'
-
-const { t } = useI18n()
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = route.params.id.toString()
 
-const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate } =
+const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, videoShow } =
   useVideoShowEditActions()
 
 const getData = () => {
@@ -31,23 +27,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('coreDam.videoShow.meta.edit')" />
-  <ActionbarButtonsWrapper>
-    <AActionSaveButton
-      v-if="!detailLoading"
-      :loading="saveButtonLoading"
-      :disabled="saveAndCloseButtonLoading"
-      @save-record="onUpdate"
-    />
-    <AActionSaveAndCloseButton
-      v-if="!detailLoading"
-      :loading="saveAndCloseButtonLoading"
-      :disabled="saveButtonLoading"
-      @save-record-and-close="onUpdate(true)"
-    />
-    <AActionCloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
-  </ActionbarButtonsWrapper>
+  <ActionbarWrapper :last-breadcrumb-title="videoShow.texts.title">
+    <template #buttons>
+      <AActionSaveButton
+        v-if="!detailLoading"
+        :loading="saveButtonLoading"
+        :disabled="saveAndCloseButtonLoading"
+        @save-record="onUpdate"
+      />
+      <AActionCloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
+    </template>
+  </ActionbarWrapper>
+
   <ACard :loading="detailLoading">
-    <VideoShowEditForm />
+    <VCardText>
+      <VideoShowEditForm />
+    </VCardText>
   </ACard>
 </template>

@@ -64,7 +64,12 @@ const enableShowHide = computed(() => {
 <template>
   <div class="w-100">
     <slot name="before-pinned" />
-    <VRow v-for="element in elementsPinned" :key="element.id" dense class="mt-1">
+    <VRow
+      v-for="element in elementsPinned"
+      :key="element.id"
+      dense
+      class="mt-1"
+    >
       <VCol>
         <AssetCustomMetadataElement
           :config="element"
@@ -77,8 +82,16 @@ const enableShowHide = computed(() => {
     </VRow>
     <slot name="after-pinned" />
   </div>
-  <div v-show="showAllMetadata" class="w-100">
-    <VRow v-for="element in elementsOther" :key="element.id" dense class="mt-1">
+  <div
+    v-show="showAllMetadata"
+    class="w-100"
+  >
+    <VRow
+      v-for="element in elementsOther"
+      :key="element.id"
+      dense
+      class="mt-1"
+    >
       <VCol>
         <AssetCustomMetadataElement
           :config="element"
@@ -89,7 +102,13 @@ const enableShowHide = computed(() => {
       </VCol>
     </VRow>
   </div>
-  <VBtn v-if="enableShowHide" variant="text" size="small" class="my-2" @click="toggleShowAllMetadata">
+  <VBtn
+    v-if="enableShowHide"
+    variant="text"
+    size="small"
+    class="my-2"
+    @click="toggleShowAllMetadata"
+  >
     <VIcon :icon="showHideButtonIcon" />
     {{ showHideButtonText }}
   </VBtn>

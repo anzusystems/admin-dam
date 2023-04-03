@@ -5,6 +5,7 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/syste
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { IntegerId } from '@anzusystems/common-admin'
 import {
+  ADialogToolbar,
   ASystemEntityScope,
   type IntegerIdNullable,
   isArray,
@@ -12,16 +13,14 @@ import {
   isNull,
   isUndefined,
   useAlerts,
-  useErrorHandler,
-  useValidateMinValue,
-  useValidateRequired,
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
 import { damConfig } from '@/services/DamConfigService'
-import ExtSystemSelect from '@/views/coreDam/extSystem/components/ExtSystemSelect.vue'
-import AssetLicenceSelect from '@/views/coreDam/assetLicence/components/AssetLicenceSelect.vue'
-import AssetLicenceByExtIdSelect from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdSelect.vue'
+import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
+import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
+import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
@@ -94,8 +93,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const required = useValidateRequired()
-const minValue = useValidateMinValue()
+const { required, minValue } = useValidate()
 
 const rulesLicence = computed(() => ({
   selectedLicence: {
@@ -111,8 +109,7 @@ const errorMessageLicence = computed(() => {
   return []
 })
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   saving.value = true
@@ -133,7 +130,7 @@ const onConfirm = async () => {
     showRecordWas('updated')
     window.location.reload()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -166,34 +163,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
+  <VDialog
+    v-model="dialog"
+    :width="500"
+  >
     <VCard v-if="dialog">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.mainBar.extSystemLicenceSwitch.title') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
+      </ADialogToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">
         <div class="mb-4 text-caption">
           {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
             extSystemName
-          }})<br />
+          }})<br>
           {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
             licenceName
-          }})<br />
+          }})<br>
         </div>
-        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <VRow>
             <VCol class="text-caption font-weight-bold mb-4">
               {{ t('system.mainBar.extSystemLicenceSwitch.filters') }}
@@ -201,7 +191,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol class="pt-2">
-              <ExtSystemSelect
+              <ExtSystemRemoteAutocomplete
                 v-model="selectedExtSystemSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
                 hide-details
@@ -218,7 +208,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <AssetLicenceSelect
+              <AssetLicenceRemoteAutocomplete
                 v-model="selectedLicenceSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
                 :ext-system-id="selectedExtSystem"
@@ -227,7 +217,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol>
-              <AssetLicenceByExtIdSelect
+              <AssetLicenceByExtIdRemoteAutocomplete
                 v-model="selectedLicenceSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
                 :ext-system-id="selectedExtSystem"
@@ -240,12 +230,19 @@ onMounted(async () => {
             <div class="text-caption font-weight-bold">
               {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
             </div>
-            <div class="w-100"><VTextField v-model="selectedLicence" hide-details /></div>
+            <div class="w-100">
+              <VTextField
+                v-model="selectedLicence"
+                hide-details
+              />
+            </div>
           </div>
         </ASystemEntityScope>
       </VCardText>
       <VCardText v-else-if="allowSelect">
-        <div class="mb-4">{{ t('system.mainBar.extSystemLicenceSwitch.description') }}</div>
+        <div class="mb-4">
+          {{ t('system.mainBar.extSystemLicenceSwitch.description') }}
+        </div>
         <VSelect
           v-model="selectedExtSystem"
           :items="extSystemsItems"
@@ -280,12 +277,19 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn v-if="allowSelect" color="warning" data-cy="button-confirm" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          v-if="allowSelect"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t('system.mainBar.extSystemLicenceSwitch.confirm') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

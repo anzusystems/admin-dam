@@ -2,12 +2,13 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { objectGetValues } from '@anzusystems/common-admin'
-import { loadLazyKeyword } from '@/views/coreDam/keyword/composables/lazyKeyword'
-import { loadLazyAuthor } from '@/views/coreDam/author/composables/lazyAuthor'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import { getAuthorConflicts } from '@/services/AssetSuggestionsService'
 
 interface State {
   asset: AssetDetailItemDto | null
+  authorConflicts: DocId[]
   loader: boolean
   detail: boolean
   view: 'list' | 'queue'
@@ -20,6 +21,7 @@ interface State {
 export const useAssetDetailStore = defineStore('damAssetDetailStore', {
   state: (): State => ({
     asset: null,
+    authorConflicts: [],
     loader: false,
     detail: false,
     view: 'list',
@@ -47,20 +49,19 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     setAsset(asset: AssetDetailItemDto) {
       this.metadataAreTouched = false // todo check
+      this.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
       this.prefetchLazyData(asset) // todo check
       this.asset = asset
     },
     prefetchLazyData(asset: AssetDetailItemDto) {
-      const { fetchLazyKeyword, addToLazyKeywordBuffer } = loadLazyKeyword()
-      const { fetchLazyAuthor, addToLazyAuthorBuffer } = loadLazyAuthor()
+      const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
+      const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
-      asset.keywords.forEach((id) => addToLazyKeywordBuffer(id))
-      asset.authors.forEach((id) => addToLazyAuthorBuffer(id))
-      objectGetValues(asset.metadata.authorSuggestions)
-        .filter((ids) => ids.length > 1)
-        .forEach((ids) => ids.filter((id) => addToLazyAuthorBuffer(id)))
-      fetchLazyKeyword()
-      fetchLazyAuthor()
+      addToCachedKeywords(asset.keywords)
+      addToCachedAuthors(asset.authors)
+      addToCachedAuthors(this.authorConflicts)
+      fetchCachedKeywords()
+      fetchCachedAuthors()
     },
     setView(value: 'list' | 'queue') {
       this.view = value
@@ -76,6 +77,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     reset() {
       this.asset = null
+      this.authorConflicts = []
       this.loader = false
       this.detail = false
       this.view = 'list'

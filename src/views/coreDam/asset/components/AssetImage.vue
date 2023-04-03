@@ -127,11 +127,23 @@ const showIconComputed = computed(() => {
   >
     <template #placeholder />
     <template #default>
-      <div v-if="showWaiting" class="asset-image__progress">
-        <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" />
-        <div class="text-caption text-center">{{ t('system.upload.waiting') }}</div>
+      <div
+        v-if="showWaiting"
+        class="asset-image__progress"
+      >
+        <VProgressCircular
+          indeterminate
+          :size="iconSize"
+          :width="iconSize / 10"
+        />
+        <div class="text-caption text-center">
+          {{ t('system.upload.waiting') }}
+        </div>
       </div>
-      <div v-if="showProcessing" class="asset-image__progress">
+      <div
+        v-if="showProcessing"
+        class="asset-image__progress"
+      >
         <VProgressCircular
           :color="processingColor"
           indeterminate
@@ -139,9 +151,17 @@ const showIconComputed = computed(() => {
           :width="iconSize / 10"
           class="ml-auto mr-auto"
         />
-        <div v-if="!disableProcessingText" class="text-caption text-center">{{ t('system.upload.processing') }}</div>
+        <div
+          v-if="!disableProcessingText"
+          class="text-caption text-center"
+        >
+          {{ t('system.upload.processing') }}
+        </div>
       </div>
-      <div v-else-if="showUploading" class="asset-image__progress">
+      <div
+        v-else-if="showUploading"
+        class="asset-image__progress"
+      >
         <VProgressCircular
           :color="uploadingColor"
           :size="iconSize"
@@ -151,7 +171,9 @@ const showIconComputed = computed(() => {
         >
           {{ uploadingPercentage }}
         </VProgressCircular>
-        <div class="text-caption text-center">{{ t('system.upload.uploading') }}</div>
+        <div class="text-caption text-center">
+          {{ t('system.upload.uploading') }}
+        </div>
       </div>
     </template>
   </VImg>
@@ -168,14 +190,34 @@ const showIconComputed = computed(() => {
   >
     <template #placeholder />
     <template #default>
-      <div v-if="showIconComputed" class="asset-image__icon-wrapper">
-        <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
-          <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" />
+      <div
+        v-if="showIconComputed"
+        class="asset-image__icon-wrapper"
+      >
+        <div
+          class="asset-image__icon-circle"
+          :style="{ padding: iconSize / 4 + 'px' }"
+        >
+          <VIcon
+            v-if="icon.length"
+            :size="iconSize"
+            :icon="icon"
+            :color="iconColor"
+          />
         </div>
       </div>
-      <div v-if="showDone" class="asset-image__progress asset-image__progress--animate-done">
-        <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
-        <div class="text-caption text-center">{{ t('system.upload.done') }}</div>
+      <div
+        v-if="showDone"
+        class="asset-image__progress asset-image__progress--animate-done"
+      >
+        <VIcon
+          icon="mdi-check-circle"
+          color="success"
+          :size="iconSize"
+        />
+        <div class="text-caption text-center">
+          {{ t('system.upload.done') }}
+        </div>
       </div>
       <AssetImageMetaIcons
         v-if="showMetaIcons && assetFileProperties"
@@ -184,7 +226,10 @@ const showIconComputed = computed(() => {
       />
     </template>
   </VImg>
-  <div v-else-if="assetStatus === AssetStatus.WithFile && src" class="asset-image asset-image--img position-relative">
+  <div
+    v-else-if="assetStatus === AssetStatus.WithFile && src"
+    class="asset-image asset-image--img position-relative"
+  >
     <img
       :src="srcComputed"
       :width="width"
@@ -192,10 +237,22 @@ const showIconComputed = computed(() => {
       alt=""
       :style="'background-color:' + backgroundColorComputed"
       @onerror="onError"
-    />
-    <div v-if="showIconComputed" class="asset-image__icon-wrapper">
-      <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
-        <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" class="asset-image__icon" />
+    >
+    <div
+      v-if="showIconComputed"
+      class="asset-image__icon-wrapper"
+    >
+      <div
+        class="asset-image__icon-circle"
+        :style="{ padding: iconSize / 4 + 'px' }"
+      >
+        <VIcon
+          v-if="icon.length"
+          :size="iconSize"
+          :icon="icon"
+          :color="iconColor"
+          class="asset-image__icon"
+        />
       </div>
     </div>
     <AssetImageMetaIcons
@@ -210,14 +267,35 @@ const showIconComputed = computed(() => {
     style="width: 100%"
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
-    <div v-if="showIconComputed" class="asset-image__icon-wrapper">
-      <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
-        <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" class="asset-image__icon" />
+    <div
+      v-if="showIconComputed"
+      class="asset-image__icon-wrapper"
+    >
+      <div
+        class="asset-image__icon-circle"
+        :style="{ padding: iconSize / 4 + 'px' }"
+      >
+        <VIcon
+          v-if="icon.length"
+          :size="iconSize"
+          :icon="icon"
+          :color="iconColor"
+          class="asset-image__icon"
+        />
       </div>
     </div>
-    <div v-if="showDone" class="asset-image__progress asset-image__progress--animate-done">
-      <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
-      <div class="text-caption text-center">{{ t('system.upload.done') }}</div>
+    <div
+      v-if="showDone"
+      class="asset-image__progress asset-image__progress--animate-done"
+    >
+      <VIcon
+        icon="mdi-check-circle"
+        color="success"
+        :size="iconSize"
+      />
+      <div class="text-caption text-center">
+        {{ t('system.upload.done') }}
+      </div>
     </div>
     <AssetImageMetaIcons
       v-if="showMetaIcons && assetFileProperties"

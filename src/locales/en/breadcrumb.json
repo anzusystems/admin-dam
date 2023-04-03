@@ -1,0 +1,78 @@
+{
+  "coreDam": {
+    "assetLicence": {
+      "list": "Asset licences",
+      "detail": "Licence",
+      "edit": "Licence"
+    },
+    "author": {
+      "list": "Authors",
+      "detail": "Author",
+      "edit": "Author"
+    },
+    "distributionCategory": {
+      "list": "Distribution categories",
+      "detail": "Category",
+      "edit": "Category"
+    },
+    "distributionCategorySelect": {
+      "list": "Distribution category selects",
+      "detail": "Select",
+      "edit": "Select"
+    },
+    "podcast": {
+      "list": "Podcasts",
+      "detail": "Podcast",
+      "edit": "Podcast"
+    },
+    "podcastEpisode": {
+      "list": "Episodes",
+      "detail": "Episode",
+      "edit": "Episode"
+    },
+    "videoShow": {
+      "list": "Video shows",
+      "detail": "Show",
+      "edit": "Show"
+    },
+    "videoShowEpisode": {
+      "list": "Episodes",
+      "detail": "Episode",
+      "edit": "Episode"
+    },
+    "extSystem": {
+      "list": "External systems",
+      "detail": "System",
+      "edit": "System"
+    },
+    "keyword": {
+      "list": "Keywords",
+      "detail": "Keyword",
+      "edit": "Keyword"
+    },
+    "user": {
+      "list": "Users",
+      "detail": "User",
+      "edit": "User"
+    },
+    "job": {
+      "list": "Jobs",
+      "detail": "Job"
+    }
+  },
+  "anzuUser": {
+    "list": "Permission users",
+    "detail": "User",
+    "edit": "User"
+  },
+  "log": {
+    "list": "Logs",
+    "detail": "Log"
+  },
+  "permissionGroup": {
+    "list": "Permission groups",
+    "detail": "Group",
+    "edit": "Group"
+  },
+  "settings": "Settings"
+}

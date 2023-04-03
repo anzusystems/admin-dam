@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { useVModel } from '@vueuse/core'
 import { useExternalProviderAssetType } from '@/model/coreDam/valueObject/ExternalProviderAssetType'
+import { computed } from 'vue'
+import { cloneDeep } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -21,10 +22,17 @@ const emit = defineEmits<{
   (e: 'blur', data: string[]): void
 }>()
 
-const modelValue = useVModel(props, 'modelValue', emit)
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: string[]) {
+    emit('update:modelValue', cloneDeep<string[]>(newValue))
+  },
+})
 
 const onBlur = () => {
-  emit('blur', modelValue.value)
+  emit('blur', modelValueComputed.value)
 }
 
 const { allExternalProviderAssetTypeOptions } = useExternalProviderAssetType()
@@ -32,7 +40,7 @@ const { allExternalProviderAssetTypeOptions } = useExternalProviderAssetType()
 
 <template>
   <VSelect
-    v-model="modelValue"
+    v-model="modelValueComputed"
     :items="allExternalProviderAssetTypeOptions"
     item-title="title"
     item-value="value"

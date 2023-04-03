@@ -237,18 +237,25 @@ watch(selectedFiles, (newValue, oldValue) => {
 </script>
 
 <template>
-  <div v-if="variant === 'icon'" class="dam-upload-icon d-inline-flex">
+  <div
+    v-if="variant === 'icon'"
+    class="dam-upload-icon d-inline-flex"
+  >
     <VBtn
       tabindex="-1"
       icon
-      variant="flat"
+      variant="text"
       :height="height"
       :width="height"
-      color="secondary"
       @click.stop="clickDropzone"
     >
       <VIcon icon="mdi-plus" />
-      <VTooltip activator="parent" location="bottom">{{ t('system.upload.add') }}</VTooltip>
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('system.upload.add') }}
+      </VTooltip>
     </VBtn>
   </div>
   <VBtn
@@ -260,11 +267,29 @@ watch(selectedFiles, (newValue, oldValue) => {
     :width="height"
     @click.stop="clickDropzone"
   >
-    <VIcon icon="mdi-plus" :size="18" />
-    <VTooltip activator="parent" location="bottom">{{ t('system.upload.add') }}</VTooltip>
+    <VIcon
+      icon="mdi-plus"
+      :size="18"
+    />
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.upload.add') }}
+    </VTooltip>
   </VBtn>
-  <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
-    <VBtn tabindex="-1" color="primary" rounded="pill" variant="flat" :height="height" @click.stop="clickDropzone">
+  <div
+    v-if="variant === 'button'"
+    class="dam-upload-button d-inline-flex"
+  >
+    <VBtn
+      tabindex="-1"
+      color="primary"
+      rounded="pill"
+      variant="flat"
+      :height="height"
+      @click.stop="clickDropzone"
+    >
       {{ buttonText }}
     </VBtn>
   </div>
@@ -275,7 +300,9 @@ watch(selectedFiles, (newValue, oldValue) => {
     @drop="onDrop"
     @click.stop="clickDropzone"
   >
-    <div class="text-h1">{{ t('system.upload.dragAndDrop') }}</div>
+    <div class="text-h1">
+      {{ t('system.upload.dragAndDrop') }}
+    </div>
   </div>
   <input
     ref="inputRef"
@@ -288,7 +315,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     type="file"
     @change="onFileChange"
     @reset="onReset"
-  />
+  >
 </template>
 
 <style lang="scss">

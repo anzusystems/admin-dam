@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
@@ -10,16 +10,16 @@ import {
   fetchAssetLicenceListByIds,
   updateAssetLicence,
 } from '@/services/api/coreDam/assetLicenceApi'
-import { loadLazyExtSystem } from '@/views/coreDam/extSystem/composables/lazyExtSystem'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
+import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 
-const { fetchLazyExtSystem, addToLazyExtSystemBuffer } = loadLazyExtSystem()
+const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -32,18 +32,17 @@ export const useAssetLicenceListActions = () => {
     listLoading.value = true
     try {
       listItems.value = await fetchAssetLicenceList(pagination, filterBag)
-      listItems.value.forEach((item) => {
-        if (item.extSystem) addToLazyExtSystemBuffer(item.extSystem)
-      })
-      fetchLazyExtSystem()
+      addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
+      fetchCachedExtSystems()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,
@@ -58,11 +57,11 @@ export const useAssetLicenceDetailActions = () => {
     detailLoading.value = true
     try {
       const assetLicence = await fetchAssetLicence(id)
-      if (assetLicence.extSystem) addToLazyExtSystemBuffer(assetLicence.extSystem)
-      fetchLazyExtSystem()
+      addToCachedExtSystems(assetLicence.extSystem)
+      fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -86,11 +85,11 @@ export const useAssetLicenceEditActions = () => {
     detailLoading.value = true
     try {
       const assetLicence = await fetchAssetLicence(id)
-      if (assetLicence.extSystem) addToLazyExtSystemBuffer(assetLicence.extSystem)
-      fetchLazyExtSystem()
+      addToCachedExtSystems(assetLicence.extSystem)
+      fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -111,7 +110,7 @@ export const useAssetLicenceEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.ASSET_LICENCE.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

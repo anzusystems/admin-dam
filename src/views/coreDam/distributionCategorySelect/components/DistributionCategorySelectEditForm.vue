@@ -29,20 +29,33 @@ const removeItem = (index: number) => {
 </script>
 
 <template>
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-    <Draggable v-model="distributionCategorySelect.options" item-key="position" @change="reorder">
+  <ASystemEntityScope
+    :system="SYSTEM_CORE_DAM"
+    :subject="ENTITY"
+  >
+    <Draggable
+      v-model="distributionCategorySelect.options"
+      item-key="position"
+      @change="reorder"
+    >
       <template #item="{ index }">
         <DistributionCategoryOptionEditForm
           :key="index"
           v-model="distributionCategorySelect.options[index]"
           class="draggable__item"
           @remove="() => removeItem(index)"
-        >
-        </DistributionCategoryOptionEditForm>
+        />
       </template>
       <template #footer>
-        <v-btn class="mx-2" fab dark color="indigo" @click="addOption">
-          <v-icon dark> mdi-plus </v-icon>
+        <v-btn
+          class="mx-2"
+          dark
+          color="indigo"
+          @click="addOption"
+        >
+          <v-icon dark>
+            mdi-plus
+          </v-icon>
         </v-btn>
       </template>
     </Draggable>

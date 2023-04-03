@@ -19,9 +19,18 @@ const imageSrc = computed(() => {
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.podcastEpisode.model.texts.title')" :value="podcastEpisode.texts.title" />
-      <ARow :title="t('coreDam.podcastEpisode.model.position')" :value="podcastEpisode.position" />
-      <ARow :title="t('coreDam.podcastEpisode.model.texts.description')" :value="podcastEpisode.texts.description" />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.texts.title')"
+        :value="podcastEpisode.texts.title"
+      />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.position')"
+        :value="podcastEpisode.position"
+      />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.texts.description')"
+        :value="podcastEpisode.texts.description"
+      />
       <ARow
         :title="t('coreDam.podcastEpisode.model.texts.rawDescription')"
         :value="podcastEpisode.texts.rawDescription"
@@ -34,7 +43,10 @@ const imageSrc = computed(() => {
         :title="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
         :value="podcastEpisode.attributes.episodeNumber"
       />
-      <ARow :title="t('coreDam.podcastEpisode.model.attributes.extId')" :value="podcastEpisode.attributes.extId" />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.extId')"
+        :value="podcastEpisode.attributes.extId"
+      />
       <ARow :title="t('coreDam.podcastEpisode.model.dates.publicationDate')">
         <ADatetime :date-time="podcastEpisode.dates.publicationDate" />
       </ARow>
@@ -46,8 +58,14 @@ const imageSrc = computed(() => {
       <ARow :title="t('coreDam.podcastEpisode.model.id')">
         <ACopyText :value="podcastEpisode.id" />
       </ARow>
-      <ARow v-if="imageSrc" title="Image">
-        <AssetImage :src="imageSrc" use-component />
+      <ARow
+        v-if="imageSrc"
+        title="Image"
+      >
+        <AssetImage
+          :src="imageSrc"
+          use-component
+        />
       </ARow>
       <ARow :title="t('coreDam.podcastEpisode.model.asset')">
         {{ podcastEpisode.asset }}

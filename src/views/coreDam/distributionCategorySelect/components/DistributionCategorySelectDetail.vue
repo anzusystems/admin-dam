@@ -13,7 +13,12 @@ const { t } = useI18n()
   <VRow>
     <VCol cols="8">
       <ARow :title="t('coreDam.distributionCategorySelect.model.options')">
-        <VListItem v-for="option in distributionCategorySelect.options" :key="option.id" class="mt-2 pl-0" two-line>
+        <VListItem
+          v-for="option in distributionCategorySelect.options"
+          :key="option.id"
+          class="mt-2 pl-0"
+          two-line
+        >
           <VListItemTitle>{{ option.name }}</VListItemTitle>
           <VListItemSubtitle>{{ option.value }}</VListItemSubtitle>
           <VDivider />

@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope,
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
@@ -71,24 +77,39 @@ const { assetTypeOptions } = useAssetType()
 </script>
 
 <template>
-  <VBtn :class="buttonClass" :data-cy="dataCy" color="success" rounded="pill" @click.stop="onClick">
+  <ABtnPrimary
+    :class="buttonClass"
+    :data-cy="dataCy"
+    rounded="pill"
+    @click.stop="onClick"
+  >
     {{ t(buttonT) }}
-  </VBtn>
-  <VDialog v-model="dialog" persistent no-click-animation>
+  </ABtnPrimary>
+  <VDialog
+    v-model="dialog"
+    :max-width="500"
+  >
     <VCard
       v-if="dialog"
-      :loading="!createFormDataLoaded"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <VCardTitle class="d-flex pr-2">
-        <span>{{ t('common.permissionGroup.meta.create') }}</span>
-        <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
-      </VCardTitle>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('common.permissionGroup.meta.create') }}
+      </ADialogToolbar>
+      <VCardText
+        v-if="!createFormDataLoaded"
+        class="d-flex w-100 align-center justify-center"
+      >
+        <VProgressCircular
+          indeterminate
+          color="primary"
+        />
+      </VCardText>
+      <VCardText v-else>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <ARow>
             <AFormValueObjectOptionsSelect
               v-model="distributionCategory.type"
@@ -111,19 +132,25 @@ const { assetTypeOptions } = useAssetType()
             <DistributionCategorySelectOptionSelect
               v-model="distributionCategorySelectedOptions[distributionCategorySelect.serviceSlug]"
               :select="distributionCategorySelect"
-            >
-            </DistributionCategorySelectOptionSelect>
+            />
           </ARow>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="success" :loading="createButtonLoading" data-cy="button-confirm" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="createButtonLoading"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t(buttonT) }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

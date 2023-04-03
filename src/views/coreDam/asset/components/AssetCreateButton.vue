@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import {
+  ADialogToolbar,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
   useAlerts,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
@@ -15,8 +15,8 @@ import { useI18n } from 'vue-i18n'
 import type { AssetCreateDto, AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { createAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void
@@ -24,6 +24,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const assetDetailStore = useAssetDetailStore()
+const { addToCachedUsers, fetchCachedUsers } = useCachedUsers()
 
 const { createCreateDto } = useAssetFactory()
 const asset = ref<AssetCreateDto>(createCreateDto())
@@ -39,21 +41,15 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const { showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const showDetail = async (asset: AssetDetailItemDto) => {
   assetDetailStore.setView('queue')
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
   assetDetailStore.setAsset(asset)
-  if (assetDetailStore.asset?.createdBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-  }
-  if (assetDetailStore.asset?.modifiedBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-  }
-  fetchLazyUser()
+  addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+  fetchCachedUsers()
   assetDetailStore.hideLoader()
 }
 
@@ -66,29 +62,38 @@ const onConfirm = async () => {
     emit('afterCreate', res)
     await showDetail(res)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }
 }
 
-const assetDetailStore = useAssetDetailStore()
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
-
 const { assetTypeOptions } = useAssetType()
 </script>
 
 <template>
-  <VListItem :title="t('coreDam.asset.meta.createEmpty')" prepend-icon="mdi-plus" @click.stop="onClick" />
-  <VDialog v-model="dialog" persistent>
-    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
-      <VCardTitle class="d-flex pr-2">
-        <span>{{ t('coreDam.asset.meta.createEmpty') }}</span>
-        <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
-      </VCardTitle>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+  <VListItem
+    :title="t('coreDam.asset.meta.createEmpty')"
+    prepend-icon="mdi-plus"
+    @click.stop="onClick"
+  />
+  <VDialog v-model="dialog">
+    <VCard
+      v-if="dialog"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        <slot name="title">
+          {{ t('coreDam.asset.meta.createEmpty') }}
+        </slot>
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <ARow>
             <AFormValueObjectOptionsSelect
               v-model="asset.type"
@@ -97,16 +102,23 @@ const { assetTypeOptions } = useAssetType()
               data-cy="author-type"
             />
           </ARow>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="success" :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="buttonLoading"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
           {{ t('common.button.create') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

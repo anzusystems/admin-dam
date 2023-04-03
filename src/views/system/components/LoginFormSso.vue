@@ -7,6 +7,12 @@ const url = envConfig.dam.apiUrl + AUTH_LOGIN_PATH
 
 <template>
   <div class="py-5">
-    <VBtn :href="url" color="primary" size="large">Log in</VBtn>
+    <VBtn
+      :href="url"
+      color="primary"
+      size="large"
+    >
+      Log in
+    </VBtn>
   </div>
 </template>

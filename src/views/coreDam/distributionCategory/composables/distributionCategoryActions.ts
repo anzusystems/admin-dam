@@ -1,5 +1,5 @@
 import type { DocId, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { cloneDeep, useAlerts, useErrorHandler, usePagination } from '@anzusystems/common-admin'
+import { cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   createDistributionCategory,
@@ -21,9 +21,9 @@ import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCa
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -41,13 +41,14 @@ export const useDistributionCategoryListActions = () => {
     try {
       listItems.value = await fetchDistributionCategoryList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,
@@ -67,7 +68,7 @@ export const useDistributionCategoryDetailActions = () => {
       const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -125,7 +126,7 @@ export const useDistributionCategoryCreateActions = () => {
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
       createFormDataLoaded.value = true
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     }
   }
 
@@ -146,7 +147,7 @@ export const useDistributionCategoryCreateActions = () => {
       if (successCallbackAction) successCallbackAction() // dialog.value = false
       router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST, params: { id: res.id } })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       createButtonLoading.value = false
     }
@@ -179,7 +180,7 @@ export const useDistributionCategoryEditActions = () => {
       const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -203,7 +204,7 @@ export const useDistributionCategoryEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false

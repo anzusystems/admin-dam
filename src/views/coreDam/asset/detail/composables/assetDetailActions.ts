@@ -9,7 +9,7 @@ export function useAssetDetailActions() {
   const sidebar = ref(true)
 
   const assetDetailStore = useAssetDetailStore()
-  const { asset, loader, metadataAreTouched } = storeToRefs(assetDetailStore)
+  const { asset, authorConflicts, loader, metadataAreTouched, view } = storeToRefs(assetDetailStore)
 
   const toggleSidebar = () => {
     sidebar.value = !sidebar.value
@@ -76,9 +76,11 @@ export function useAssetDetailActions() {
   })
 
   return {
+    view,
     sidebar,
     toggleSidebar,
     asset,
+    authorConflicts,
     loader,
     metadataAreTouched: readonly(metadataAreTouched),
     metadataTouch,

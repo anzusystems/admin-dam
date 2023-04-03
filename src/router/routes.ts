@@ -92,7 +92,6 @@ const routes = {
     LOGOUT: 'logout',
     NOT_FOUND: 'notfound',
     SETTINGS: 'settings',
-    BETA: 'beta',
     CLOSE_PAGE: 'close_page',
   },
 }

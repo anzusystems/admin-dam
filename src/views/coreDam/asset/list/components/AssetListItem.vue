@@ -90,9 +90,17 @@ const imageProperties = computed(() => {
     @click.shift.stop="selectMultiple"
   >
     <div class="dam-image-grid__item-card">
-      <div v-if="item.selected" class="selected-triangle">
+      <div
+        v-if="item.selected"
+        class="selected-triangle"
+      >
         <div class="selected-triangle__bg" />
-        <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="x-small" />
+        <VIcon
+          class="selected-triangle__icon"
+          icon="mdi-check"
+          color="white"
+          size="x-small"
+        />
       </div>
       <AssetImage
         :asset-type="assetType"
@@ -107,7 +115,9 @@ const imageProperties = computed(() => {
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">{{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
+          <div class="line-clamp-1">
+            {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
+          </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
               variant="flat"
@@ -118,9 +128,22 @@ const imageProperties = computed(() => {
               icon
               @click.stop="toggleSelected"
             >
-              <VIcon v-if="item.selected" icon="mdi-checkbox-outline" :size="20" />
-              <VIcon v-else icon="mdi-checkbox-blank-outline" :size="20" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.toggleSelect') }}</VTooltip>
+              <VIcon
+                v-if="item.selected"
+                icon="mdi-checkbox-outline"
+                :size="20"
+              />
+              <VIcon
+                v-else
+                icon="mdi-checkbox-blank-outline"
+                :size="20"
+              />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.list.toggleSelect') }}
+              </VTooltip>
             </VBtn>
             <VBtn
               variant="flat"
@@ -131,8 +154,16 @@ const imageProperties = computed(() => {
               icon
               @click.stop="showDetail"
             >
-              <VIcon icon="mdi-pencil" :size="20" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.edit') }}</VTooltip>
+              <VIcon
+                icon="mdi-pencil"
+                :size="20"
+              />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.list.edit') }}
+              </VTooltip>
             </VBtn>
           </div>
         </div>

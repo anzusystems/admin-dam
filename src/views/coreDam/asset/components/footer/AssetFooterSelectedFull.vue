@@ -2,11 +2,11 @@
 import { computed, ref, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
-import AssetQueueMassEditEditable from '@/views/coreDam/asset/components/queue/AssetQueueEditable.vue'
+import AssetQueueEditable from '@/views/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { bulkUpdateAssetsMetadata } from '@/services/api/coreDam/assetApi'
-import { useAlerts, useErrorHandler, useTheme } from '@anzusystems/common-admin'
+import { useAlerts, useTheme } from '@anzusystems/common-admin'
 import AssetFooterSelectedButtonClear from '@/views/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
@@ -50,8 +50,7 @@ const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate()
 
@@ -68,7 +67,7 @@ const onSave = async () => {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -88,7 +87,7 @@ const onSaveAndClose = async () => {
     showRecordWas('updated')
     await onClearConfirm()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveAndCloseButtonLoading.value = false
   }
@@ -101,17 +100,20 @@ const onSaveAndClose = async () => {
     :class="'asset-footer--' + footerViewSelected + ' asset-footer__selected--' + footerViewSelected"
   >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar class="w-100 system-border-b" :color="toolbarColor" density="compact" :height="64">
+      <VToolbar
+        class="w-100 system-border-b pr-1"
+        :color="toolbarColor"
+        density="compact"
+        :height="64"
+      >
         <div class="d-flex align-center pa-2">
           <div>
-            <span class="text-subtitle-2">Selected files: {{ queueTotalCount }}</span>
+            <span class="text-subtitle-2">{{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}</span>
           </div>
         </div>
         <VSpacer />
         <div class="d-flex align-center">
-          <VBtn
-            color="success"
-            variant="flat"
+          <ABtnPrimary
             :height="36"
             class="mr-2"
             rounded="pill"
@@ -120,23 +122,27 @@ const onSaveAndClose = async () => {
             @click.stop="onSaveAndClose"
           >
             {{ t('coreDam.asset.selected.saveAndClose') }}
-          </VBtn>
+          </ABtnPrimary>
           <VBtn
             icon
-            color="secondary"
-            variant="flat"
             :height="36"
             :width="36"
-            class="mr-2"
             :loading="saveButtonLoading"
             :disabled="saveAndCloseButtonLoading"
             @click.stop="onSave"
           >
             <VIcon icon="mdi-content-save" />
-            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.selected.save') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('coreDam.asset.selected.save') }}
+            </VTooltip>
           </VBtn>
-          <AssetFooterSelectedButtonClear variant="normal" @confirm="onClearConfirm" />
-          <VDivider vertical class="mx-4 my-2" />
+          <VDivider
+            vertical
+            class="mx-4 my-2"
+          />
           <VBtn
             :height="36"
             :width="36"
@@ -148,7 +154,12 @@ const onSaveAndClose = async () => {
             @click.stop="toggleMassOperations"
           >
             <VIcon icon="mdi-tag-text-outline" />
-            <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.massOperations.title') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('coreDam.asset.massOperations.title') }}
+            </VTooltip>
           </VBtn>
           <VBtn
             v-show="showMinimalSelected"
@@ -161,11 +172,20 @@ const onSaveAndClose = async () => {
             @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.system.modal.hide') }}</VTooltip>
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.hide') }}
+            </VTooltip>
           </VBtn>
+          <AssetFooterSelectedButtonClear
+            variant="normal"
+            @confirm="onClearConfirm"
+          />
         </div>
       </VToolbar>
-      <AssetQueueMassEditEditable
+      <AssetQueueEditable
         :queue-id="QUEUE_ID_MASS_EDIT"
         :mass-operations="massOperations"
         disable-done-animation

@@ -1,23 +1,24 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { Job } from '@/types/coreDam/Job'
-import { useJobFactory } from '@/model/coreDam/factory/JobFactory'
+import { useCommonJobFactory } from '@anzusystems/common-admin'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 
 interface State {
   job: Job
 }
 
-const { createDefault } = useJobFactory()
+const { createUserDataDelete } = useCommonJobFactory()
 
 export const useJobOneStore = defineStore('damJobOneStore', {
   state: (): State => ({
-    job: createDefault(),
+    job: createUserDataDelete(SYSTEM_CORE_DAM),
   }),
   actions: {
     setJob(job: Job) {
       this.job = job
     },
     reset() {
-      this.job = createDefault()
+      this.job = createUserDataDelete(SYSTEM_CORE_DAM)
     },
   },
 })

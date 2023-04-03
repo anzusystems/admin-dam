@@ -5,16 +5,7 @@ import { computed, isProxy, toRaw } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
-import {
-  AFormBooleanToggle,
-  isEmptyObject,
-  useValidateMaxLength,
-  useValidateMaxValue,
-  useValidateMinLength,
-  useValidateMinValue,
-  useValidateRequiredIf,
-  useValidateStringArrayItemLength,
-} from '@anzusystems/common-admin'
+import { AFormBooleanToggle, isEmptyObject, useValidate } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -42,12 +33,7 @@ const modelValueComputed = computed(() => {
   return value
 })
 
-const maxLength = useValidateMaxLength()
-const minLength = useValidateMinLength()
-const requiredIf = useValidateRequiredIf()
-const minValue = useValidateMinValue()
-const maxValue = useValidateMaxValue()
-const stringArrayItemLength = useValidateStringArrayItemLength()
+const { maxLength, minLength, requiredIf, minValue, maxValue, stringArrayItemLength } = useValidate()
 
 const rules = computed(() => {
   const dynamicRules: Record<string, any> = {
@@ -113,7 +99,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VTextarea>
   <VTextField
     v-else-if="config.attributes.type === CustomFormType.Number"
@@ -124,7 +116,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VTextField>
   <VCombobox
     v-else-if="config.attributes.type === CustomFormType.StringArray"
@@ -136,7 +134,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VCombobox>
   <AFormBooleanToggle
     v-if="config.attributes.type === CustomFormType.Boolean"

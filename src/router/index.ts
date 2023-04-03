@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { beforeEachRoute } from '@/router/beforeEachRoute'
-import NotFoundView from '@/views/system/NotFoundView.vue'
 import { systemRoutes } from '@/router/routes/system'
 import { ROUTE } from '@/router/routes'
 import { assetRoutes } from '@/router/routes/coreDam/asset'
@@ -15,15 +14,28 @@ import { distributionCategoryRoutes } from '@/router/routes/coreDam/distribution
 import { distributionCategorySelectRoutes } from '@/router/routes/coreDam/distributionCategorySelect'
 import { commonLogRoutes } from '@/router/common/log'
 import { podcastRoutes } from '@/router/routes/coreDam/podcast'
-import { podcastEpisodeRoutes } from '@/router/routes/coreDam/podcastEpisode'
 import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
 import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
-import { videoShowEpisodeRoutes } from '@/router/routes/coreDam/videoShowEpisode'
 import { jobRoutes } from '@/router/routes/coreDam/job'
+import HomepageView from '@/views/system/HomepageView.vue'
+import { ANotFoundView } from '@anzusystems/common-admin'
 
 const vueRouter = createRouter({
+  end: undefined,
+  sensitive: undefined,
+  strict: undefined,
   history: createWebHistory(),
   routes: [
+    {
+      path: '/',
+      component: HomepageView,
+      name: ROUTE.SYSTEM.HOMEPAGE,
+      meta: {
+        requiresAuth: true,
+        requiredPermissions: [],
+        layout: 'AppLayoutFullscreen',
+      },
+    },
     ...assetRoutes,
     ...externalProviderRoutes,
     ...userRoutes,
@@ -36,15 +48,14 @@ const vueRouter = createRouter({
     ...distributionCategoryRoutes,
     ...distributionCategorySelectRoutes,
     ...podcastRoutes,
-    ...podcastEpisodeRoutes,
     ...videoShowRoutes,
-    ...videoShowEpisodeRoutes,
     ...jobRoutes,
     ...commonLogRoutes,
     ...systemRoutes,
     {
       path: '/:pathMatch(.*)*',
-      component: NotFoundView,
+      component: ANotFoundView,
+      props: { returnRouteName: ROUTE.SYSTEM.HOMEPAGE },
       name: ROUTE.SYSTEM.NOT_FOUND,
       meta: {
         requiresAuth: false,

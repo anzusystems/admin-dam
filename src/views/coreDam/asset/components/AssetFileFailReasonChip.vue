@@ -16,7 +16,11 @@ const reasonOption = computed(() => {
 </script>
 
 <template>
-  <VChip v-if="reasonOption" label size="small">
+  <VChip
+    v-if="reasonOption"
+    label
+    size="small"
+  >
     {{ reasonOption.title }}
   </VChip>
 </template>

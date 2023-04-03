@@ -5,10 +5,13 @@ interface Flags {
   reviewed: boolean
 }
 
-export interface Author extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
+export interface AuthorMinimal {
   id: DocId
   name: string
   identifier: string
+}
+
+export interface Author extends AuthorMinimal, AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   extSystem: IntegerId
   flags: Flags
   type: AuthorType

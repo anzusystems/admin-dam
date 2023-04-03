@@ -31,11 +31,21 @@ const openDialog = () => {
 </script>
 
 <template>
-  <VBtn variant="text" size="small" class="mx-1" rounded="pill" :height="34" @click.stop="openDialog">
+  <VBtn
+    variant="text"
+    size="small"
+    class="mx-1"
+    rounded="pill"
+    :height="34"
+    @click.stop="openDialog"
+  >
     {{ displayTextLicence }}
     <VIcon icon="mdi-chevron-down" />
-    <VTooltip activator="parent" location="bottom">
-      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ displayTextExtSystem }}<br />
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ displayTextExtSystem }}<br>
       {{ t('system.mainBar.extSystemLicenceSwitch.licence') }}: {{ displayTextLicence }}
     </VTooltip>
   </VBtn>

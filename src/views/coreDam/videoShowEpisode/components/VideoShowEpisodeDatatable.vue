@@ -2,26 +2,27 @@
 import { onMounted } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import {
-  ADatatable,
+  ADatatableConfigButton,
   ADatatablePagination,
-  ASystemEntityScope,
+  ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  createDatatableColumnsConfig,
   useAcl,
-  useDatatableColumns,
   useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/videoShowEpisodeApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import type { Author } from '@/types/coreDam/Author'
 import { useVideoShowEpisodeListActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeListFilter } from '@/model/coreDam/filter/VideoShowEpisodeFilter'
 import VideoShowEpisodeFilter from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
 import { ACL, type AclValue } from '@/types/Permission'
+import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
+
+type DatatableItem = { raw: VideoShowEpisode }
 
 const props = withDefaults(
   defineProps<{
@@ -31,22 +32,29 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-const pagination = usePagination()
-pagination.sortBy = 'position'
 const filter = useVideoShowEpisodeListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
-const { fetchList, listItems } = useVideoShowEpisodeListActions()
-
-const columns = useDatatableColumns([{ name: 'texts.title' }, { name: 'createdAt' }, { name: 'modifiedAt' }])
+const { fetchList, listItems, datatableHiddenColumns } = useVideoShowEpisodeListActions()
 
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (row: Author) => {
-  if (row.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
-    router.push({ name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL, params: { id: row.id } })
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
+  if (item.raw.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
+    router.push({
+      name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL,
+      params: { id: props.videoShowId, episodeId: item.raw.id },
+    })
   }
 }
+
+const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+  [{ key: 'id' }, { key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  datatableHiddenColumns,
+  SYSTEM_CORE_DAM,
+  ENTITY
+)
+pagination.sortBy = 'position'
 
 const getList = () => {
   fetchList(props.videoShowId, pagination, filter)
@@ -55,25 +63,60 @@ const getList = () => {
 onMounted(() => {
   fetchList(props.videoShowId, pagination, filter)
 })
+
+defineExpose({
+  refresh: getList,
+})
 </script>
 
 <template>
-  <VideoShowEpisodeFilter
-    @submit-filter="submitFilter(filter, pagination, getList)"
-    @reset-filter="resetFilter(filter, pagination, getList)"
-  />
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-    <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
-      <template #actions="{ data }">
-        <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_VIEW">
-          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL" />
-        </Acl>
-        <ATableCopyIdButton :id="data.id" />
-        <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE">
-          <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT" />
-        </Acl>
-      </template>
-    </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList" />
-  </ASystemEntityScope>
+  <div>
+    <VideoShowEpisodeFilter
+      @submit-filter="submitFilter(filter, pagination, getList)"
+      @reset-filter="resetFilter(filter, pagination, getList)"
+    />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
+        />
+      </div>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
+        <template #item.actions="{ item }: { item: DatatableItem }">
+          <div class="d-flex justify-end">
+            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableDetailButton
+              :route-params="{ id: props.videoShowId, episodeId: item.raw.id }"
+              :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL"
+            />
+            <ATableEditButton
+              :route-params="{ id: props.videoShowId, episodeId: item.raw.id }"
+              :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT"
+            />
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
+  </div>
 </template>

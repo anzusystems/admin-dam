@@ -3,7 +3,7 @@ import { ref } from 'vue'
 export enum PodcastDetailTab {
   Detail = 'detail',
   Episodes = 'episodes',
-  Default = Detail,
+  Default = Episodes,
 }
 
 const activeTab = ref<PodcastDetailTab>(PodcastDetailTab.Default)

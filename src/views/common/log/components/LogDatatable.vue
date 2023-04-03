@@ -2,26 +2,25 @@
 import type { Log } from '@anzusystems/common-admin'
 import {
   ACopyText,
-  ADatatable,
+  ADatatableConfigButton,
   ADatatablePagination,
-  ALogLevelChip,
-  ASystemEntityScope,
+  ADatetime,
+  createDatatableColumnsConfig,
   isNull,
-  useDatatableColumns,
   useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ROUTE } from '@/router/routes'
-import { ENTITY } from '@/services/api/common/logApi'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import type { LogSystem } from '@/model/common/valueObject/LogSystem'
 
+type DatatableItem = { raw: Log }
+
 const props = withDefaults(
   defineProps<{
-    system: LogSystem
+    system: string
   }>(),
   {}
 )
@@ -31,11 +30,41 @@ const emit = defineEmits<{
 
 const router = useRouter()
 
-const pagination = usePagination()
-pagination.sortBy = 'id'
 const filter = useLogFilter()
 const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers()
-const { fetchList, listItems } = useLogListActions()
+const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
+
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
+  if (item.raw.id) {
+    router.push({
+      name: ROUTE.COMMON.LOG.DETAIL,
+      params: { id: item.raw.id, system: item.raw.context.appSystem, type: filter.type.model },
+    })
+  }
+}
+
+const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+  [
+    { key: 'id' },
+    { key: 'datetime' },
+    { key: 'levelName' },
+    { key: 'message' },
+    { key: 'context.appVersion' },
+    { key: 'context.contextId' },
+    { key: 'context.userId' },
+    { key: 'context.ip' },
+  ],
+  datatableHiddenColumns,
+  'common',
+  'log'
+)
+pagination.sortBy = 'id'
+
+const getList = async () => {
+  filter.contextAppSystem.model = props.system as LogSystem
+  await fetchList(props.system, pagination, filter)
+  emit('countChange', calculateCount())
+}
 
 const resetFilter = () => {
   resetFilterHelper(filter, pagination, getList)
@@ -43,15 +72,6 @@ const resetFilter = () => {
 
 const submitFilter = () => {
   submitFilterHelper(filter, pagination, getList)
-}
-
-const onRowClick = (row: Log) => {
-  if (row.id) {
-    router.push({
-      name: ROUTE.COMMON.LOG.DETAIL,
-      params: { id: row.id, system: row.context.appSystem, type: filter.type.model },
-    })
-  }
 }
 
 const calculateCount = () => {
@@ -62,27 +82,12 @@ const calculateCount = () => {
   return pagination.totalCount + ''
 }
 
-const getList = async () => {
-  filter.contextAppSystem.model = props.system
-  await fetchList(props.system, pagination, filter)
-  emit('countChange', calculateCount())
-}
-
 onMounted(() => {
   getList()
 })
 
-const columns = useDatatableColumns([
-  { name: 'datetime', type: 'datetime' },
-  { name: 'levelName' },
-  { name: 'message' },
-  { name: 'context.appVersion' },
-  { name: 'context.contextId' },
-  { name: 'context.userId' },
-  { name: 'context.ip' },
-])
-
 defineExpose({
+  refresh: getList,
   resetFilter,
   submitFilter,
 })
@@ -90,22 +95,65 @@ defineExpose({
 
 <template>
   <div>
-    <ASystemEntityScope system="common" :subject="ENTITY">
-      <ADatatable :columns="columns" :data="listItems" @row-click="onRowClick">
-        <template #levelName="{ data }">
-          <ALogLevelChip :level="data" />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <!--        <ADatatableOrdering @sort-by-change="sortByChange" />-->
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
+        />
+      </div>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #item.datetime="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.datetime" />
         </template>
-        <template #message="{ data }">
-          <div class="line-clamp-2">{{ data }}</div>
+        <template #item.levelName="{ item }: { item: DatatableItem }">
+          {{ item.raw.levelName }}
+          <!--          <LogLevelChip :level="item.raw.levelName" />-->
         </template>
-        <template #context-contextId="{ data }">
-          <ACopyText v-if="!isNull(data)" :value="data" />
+        <template #item.message="{ item }: { item: DatatableItem }">
+          <div class="line-clamp-2">
+            {{ item.raw.message }}
+          </div>
         </template>
-        <template #context-userId="{ data }">
-          <ACopyText v-if="!isNull(data)" :value="data" />
+        <template #item.context.contextId="{ item }: { item: DatatableItem }">
+          <ACopyText :value="item.raw.context.contextId" />
         </template>
-      </ADatatable>
-      <ADatatablePagination v-model="pagination" @change="getList" />
-    </ASystemEntityScope>
+        <template #item.context.userId="{ item }: { item: DatatableItem }">
+          <ACopyText
+            v-if="!isNull(item.raw.context.userId)"
+            :value="item.raw.context.userId"
+          />
+        </template>
+        <template #item.actions="{ item }: { item: DatatableItem }">
+          <div class="d-flex justify-end">
+            <VBtn
+              :to="{
+                name: ROUTE.COMMON.LOG.DETAIL,
+                params: { id: item.raw.id, system: system, type: filter.type.model },
+              }"
+              class="ml-1"
+              icon="mdi-information-outline"
+              size="x-small"
+              variant="text"
+            />
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
   </div>
 </template>

@@ -74,7 +74,10 @@ const data = computed(() => {
 </script>
 
 <template>
-  <div v-show="data.icons.length > 0" class="asset-image__meta-icons">
+  <div
+    v-show="data.icons.length > 0"
+    class="asset-image__meta-icons"
+  >
     <img
       v-for="(item, index) in data.icons"
       :key="item"
@@ -82,7 +85,7 @@ const data = computed(() => {
       :src="item"
       alt=""
       :title="data.titles[index] || ''"
-    />
+    >
   </div>
 </template>
 

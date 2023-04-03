@@ -4,7 +4,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 export const externalProviderRoutes: RouteRecordRaw[] = [
   {
-    path: '/external-provider/:provider/list',
+    path: '/external-provider/:provider',
     name: ROUTE.DAM.EXTERNAL_PROVIDER.LIST,
     component: () => import('@/views/coreDam/externalProviderAsset/ExternalProviderAssetListView.vue'),
     meta: {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { type PodcastMode, usePodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
+import { AChipNoLink } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -16,7 +17,7 @@ const modeOption = computed(() => {
 </script>
 
 <template>
-  <VChip v-if="modeOption" label size="small">
+  <AChipNoLink v-if="modeOption">
     {{ modeOption.title }}
-  </VChip>
+  </AChipNoLink>
 </template>

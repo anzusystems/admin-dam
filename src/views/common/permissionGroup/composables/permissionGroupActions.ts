@@ -1,5 +1,5 @@
 import type { FilterBag, IntegerId, Pagination, PermissionGroup, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
@@ -8,10 +8,14 @@ import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
-import { loadLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
+import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
-const { handleError } = useErrorHandler()
-const { showValidationError, showRecordWas } = useAlerts()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+const datatableHiddenColumns = ref<Array<string>>(['id'])
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
 
 export const usePermissionGroupActions = (client: () => AxiosInstance) => {
   const {
@@ -24,55 +28,53 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
   } = usePermissionGroupApi(client)
 
   const permissionGroupList = ref<PermissionGroup[]>([])
-  const loadingPermissionGroupList = ref(false)
   const fetchPermissionGroupList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loadingPermissionGroupList.value = true
+    listLoading.value = true
     try {
       permissionGroupList.value = await apiFetchPermissionGroupList(pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingPermissionGroupList.value = false
+      listLoading.value = false
     }
   }
 
   const permissionGroupOneStore = usePermissionGroupOneStore()
-  const { permissionGroup, loadingPermissionGroup } = storeToRefs(permissionGroupOneStore)
+  const { permissionGroup } = storeToRefs(permissionGroupOneStore)
   const fetchPermissionGroup = async (id: number) => {
-    permissionGroupOneStore.setLoadingPermissionGroup(true)
+    detailLoading.value = true
     try {
       const permissionGroupRes = await apiFetchPermissionGroup(id)
       permissionGroupOneStore.setPermissionGroup(permissionGroupRes)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      permissionGroupOneStore.setLoadingPermissionGroup(false)
+      detailLoading.value = false
     }
   }
 
   const router = useRouter()
-  const loadingDeletePermissionGroup = ref(false)
   const deletePermissionGroup = async (id: IntegerId) => {
+    detailLoading.value = true
     try {
-      loadingDeletePermissionGroup.value = true
       await apiDeletePermissionGroup(id)
       showRecordWas('deleted')
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingDeletePermissionGroup.value = false
+      detailLoading.value = false
     }
   }
 
   const v$ = useVuelidate()
-  const loadingUpdatePermissionGroup = ref(false)
   const updatePermissionGroup = async (close = false) => {
     try {
-      loadingUpdatePermissionGroup.value = true
+      saveButtonLoading.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
+        saveButtonLoading.value = false
         return
       }
       await apiUpdatePermissionGroup(
@@ -83,19 +85,19 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       if (!close) return
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingUpdatePermissionGroup.value = false
+      saveButtonLoading.value = false
     }
   }
 
-  const loadingCreatePermissionGroup = ref(false)
   const createPermissionGroup = async (close = false) => {
     try {
-      loadingCreatePermissionGroup.value = true
+      saveButtonLoading.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
+        saveButtonLoading.value = false
         return
       }
       const permissionGroupRes = await apiCreatePermissionGroup(permissionGroupOneStore.permissionGroup)
@@ -106,16 +108,16 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       }
       router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: permissionGroupRes.id } })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingCreatePermissionGroup.value = false
+      saveButtonLoading.value = false
     }
   }
 
-  const { manualAddLazyPermissionGroup } = loadLazyPermissionGroup(client)
+  const { addManualToCachedPermissionGroups } = useCachedPermissionGroups()
   const fetchPermissionGroupOptions = async (pagination: Pagination, filterBag: FilterBag) => {
     const permissionGroups = await apiFetchPermissionGroupList(pagination, filterBag)
-    permissionGroups.forEach((permissionGroup) => manualAddLazyPermissionGroup(permissionGroup))
+    permissionGroups.forEach((permissionGroup) => addManualToCachedPermissionGroups(permissionGroup))
 
     return <ValueObjectOption<number>[]>permissionGroups.map((permissionGroup: PermissionGroup) => ({
       title: permissionGroup.title,
@@ -125,7 +127,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
 
   const fetchPermissionGroupOptionsByIds = async (ids: IntegerId[]) => {
     const permissionGroups = await apiFetchPermissionGroupListByIds(ids)
-    permissionGroups.forEach((permissionGroup) => manualAddLazyPermissionGroup(permissionGroup))
+    permissionGroups.forEach((permissionGroup) => addManualToCachedPermissionGroups(permissionGroup))
 
     return <ValueObjectOption<number>[]>permissionGroups.map((permissionGroup: PermissionGroup) => ({
       title: permissionGroup.title,
@@ -134,6 +136,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
   }
 
   return {
+    datatableHiddenColumns,
     fetchPermissionGroupList,
     fetchPermissionGroup,
     createPermissionGroup,
@@ -143,11 +146,9 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
     fetchPermissionGroupOptionsByIds,
     permissionGroupList,
     permissionGroup,
-    loadingPermissionGroupList,
-    loadingPermissionGroup,
-    loadingCreatePermissionGroup,
-    loadingUpdatePermissionGroup,
-    loadingDeletePermissionGroup,
+    listLoading,
+    detailLoading,
+    saveButtonLoading,
     resetPermissionGroupStore: permissionGroupOneStore.reset,
   }
 }

@@ -4,7 +4,12 @@ import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
 import axios, { type CancelTokenSource } from 'axios'
-import { i18n, NEW_LINE_MARK, useErrorHandler, type ValidationResponseData } from '@anzusystems/common-admin'
+import {
+  type AnzuApiValidationResponseData,
+  axiosErrorResponseHasValidationData,
+  i18n,
+  NEW_LINE_MARK,
+} from '@anzusystems/common-admin'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
@@ -26,7 +31,7 @@ const handleValidationErrorMessage = (error: Error | any) => {
     // @ts-ignore
     return t('system.uploadErrors.unknownError')
   }
-  const data = error.response.data as ValidationResponseData
+  const data = error.response.data as AnzuApiValidationResponseData
   const errorMessages: string[] = []
   for (const [key, values] of Object.entries(data.fields)) {
     switch (key) {
@@ -40,6 +45,7 @@ const handleValidationErrorMessage = (error: Error | any) => {
         errorMessages.push(t('system.uploadErrors.mimeType'))
         break
       default:
+        // @ts-ignore
         errorMessages.push(t('system.uploadErrors.systemError') + ': ' + key + ' - ' + values.join(','))
     }
   }
@@ -66,8 +72,6 @@ const readFile = async (index: number, file: File, chunkSize: number): Promise<{
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
-
-const { isValidationError } = useErrorHandler()
 
 export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = undefined) {
   const chunkTotalCount = ref(0)
@@ -128,7 +132,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
       try {
         return await uploadChunk(chunkFile, offset)
       } catch (error) {
-        if (isValidationError(error)) {
+        if (axiosErrorResponseHasValidationData(error as Error)) {
           attempt = CHUNK_MAX_RETRY
           queueItem.error.message = handleValidationErrorMessage(error)
           return Promise.reject(error)

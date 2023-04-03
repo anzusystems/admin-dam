@@ -12,7 +12,10 @@ const submitFilter = () => {
 </script>
 
 <template>
-  <VForm name="search" @submit.prevent="submitFilter">
+  <VForm
+    name="search"
+    @submit.prevent="submitFilter"
+  >
     <VTextField
       v-model="filter.text.model"
       variant="outlined"

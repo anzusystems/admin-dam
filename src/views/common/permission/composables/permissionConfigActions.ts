@@ -1,11 +1,11 @@
 import type { PermissionTranslationGroup } from '@anzusystems/common-admin'
-import { objectGetValueByPath, useErrorHandler, useLanguageSettings } from '@anzusystems/common-admin'
+import { objectGetValueByPath, useAlerts, useLanguageSettings } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { storeToRefs } from 'pinia'
 import { usePermissionConfigApi } from '@/services/api/common/permissionConfigApi'
 import { usePermissionConfigStore } from '@/stores/common/permissionConfigStore'
 
-const { handleError } = useErrorHandler()
+const { showErrorsDefault } = useAlerts()
 
 export const usePermissionConfigActions = (client: () => AxiosInstance) => {
   const { apiFetchPermissionConfig } = usePermissionConfigApi(client)
@@ -23,7 +23,7 @@ export const usePermissionConfigActions = (client: () => AxiosInstance) => {
       permissionConfigStore.setPermissionConfig(permissionConfigRes)
       permissionConfigStore.setPermissionConfigInitialized(true)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       permissionConfigStore.setLoadingPermissionConfig(false)
     }
