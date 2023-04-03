@@ -65,7 +65,7 @@ const { openCancel } = useAssetDetailDistributionDialogCancel()
       :distribution-type="distributionType"
       :show-redistribute="showRedistribute"
       @open-redistribute="openRedistribute(item)"
-      @open-cancel="openCancel(item)"
+      @open-cancel="openCancel(item.id, distributionType)"
     />
   </div>
 </template>

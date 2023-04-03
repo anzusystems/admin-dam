@@ -1,51 +1,52 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import type { DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { ADialogToolbar, isNull, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
+import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
+import { DistributionServiceType } from '@/types/coreDam/DamConfig'
+import { cancelCustomDistribution } from '@/services/api/coreDam/distributionCustomApi'
 
-const props = withDefaults(
-  defineProps<{
-    modelValue: boolean
-    assetType: AssetType
-    assetId: DocId
-  }>(),
-  {}
-)
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
   (e: 'reloadList'): void
 }>()
-const modelValueComputed = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue: boolean) {
-    emit('update:modelValue', newValue)
-  },
-})
+
+const { dialogCancel, distributionIdToCancel, distributionTypeToCancel } = useAssetDetailDistributionDialogCancel()
 
 const { t } = useI18n()
 
 const buttonLoading = ref(false)
 
 const onCancel = () => {
-  modelValueComputed.value = false
+  dialogCancel.value = false
 }
+const { showErrorsDefault } = useAlerts()
 
-const onConfirm = () => {
-  // todo
+const onConfirm = async () => {
+  if (
+    isNull(distributionIdToCancel.value) ||
+    isNull(distributionTypeToCancel.value) ||
+    distributionTypeToCancel.value !== DistributionServiceType.Custom
+  )
+    return
+  buttonLoading.value = true
+  try {
+    await cancelCustomDistribution(distributionIdToCancel.value)
+    emit('reloadList')
+  } catch (e) {
+    showErrorsDefault(e)
+  } finally {
+    buttonLoading.value = false
+  }
 }
 </script>
 
 <template>
   <VDialog
-    v-model="modelValueComputed"
+    v-model="dialogCancel"
     scrollable
     :max-width="500"
   >
-    <VCard v-if="modelValueComputed">
+    <VCard v-if="dialogCancel">
       <ADialogToolbar @on-cancel="onCancel">
         todo stop/cancel distribution
       </ADialogToolbar>
@@ -67,6 +68,3 @@ const onConfirm = () => {
     </VCard>
   </VDialog>
 </template>
-
-<style lang="scss">
-</style>
