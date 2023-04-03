@@ -1,0 +1,15 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "extSystem": "External System",
+    "extId": "External ID"
+  },
+  "filter": {
+    "id": "ID",
+    "extId": "External ID"
+  },
+  "meta": {
+    "create": "Create license"
+  }
+}

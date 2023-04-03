@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "flags": {
+      "reviewed": "Reviewed"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "text": "Text",
+    "reviewed": "Reviewed"
+  },
+  "meta": {
+    "create": "Keyword create"
+  },
+  "button": {
+    "add": "Add new keyword"
+  }
+}

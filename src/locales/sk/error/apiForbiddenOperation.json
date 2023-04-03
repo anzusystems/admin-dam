@@ -1,3 +1,13 @@
 {
-  "todo_replace": "todo replace"
+  "invalid_state_transaction": "invalid_state_transaction error",
+  "invalid_asset_type": "invalid_asset_type error",
+  "asset_size_too_large": "asset_size_too_large error",
+  "invalid_asset_slot": "invalid_asset_slot error",
+  "bulk_size_exceeded": "bulk_size_exceeded error",
+  "custom_form_not_exists": "custom_form_not_exists error",
+  "asset_not_fully_uploaded": "asset_not_fully_uploaded error",
+  "not_allowed_download": "not_allowed_download error",
+  "licence_mismatch": "licence_mismatch error",
+  "asset_file_delete_during_reorder": "asset_file_delete_during_reorder error",
+  "file_upload_too_many_files": "file_upload_too_many_files error"
 }

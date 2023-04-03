@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "licence": "Licence",
+    "texts": {
+      "title": "Title"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "title": "Title"
+  },
+  "meta": {
+    "create": "Video show create"
+  },
+  "tabs": {
+    "detail": "Video show detail",
+    "episodes": "Video show episodes"
+  }
+}

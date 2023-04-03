@@ -1,0 +1,38 @@
+{
+  "model": {
+    "id": "ID",
+    "licence": "Licence",
+    "texts": {
+      "title": "Title",
+      "description": "Description"
+    },
+    "attributes": {
+      "rssUrl": "RSS URL",
+      "mode": "Mode",
+      "lastImportStatus": "Last import status"
+    },
+    "dates": {
+      "importFrom": "Import from"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "title": "Title"
+  },
+  "meta": {
+    "create": "Podcast create"
+  },
+  "tabs": {
+    "detail": "Podcast detail",
+    "episodes": "Podcast episodes"
+  },
+  "lastImportStatus": {
+    "notImported": "Not imported",
+    "imported": "Imported",
+    "importFailed": "Import failed"
+  },
+  "podcastMode": {
+    "import": "Import",
+    "notImport": "Not import"
+  }
+}

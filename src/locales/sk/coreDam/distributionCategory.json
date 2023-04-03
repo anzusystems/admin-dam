@@ -1,0 +1,14 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "type": "Type"
+  },
+  "filter": {
+    "id": "ID",
+    "name": "Name",
+    "type": "Asset Type"
+  },
+  "notSelected": "No distribution category selected",
+  "manage": "Manage distribution category"
+}
