@@ -13,7 +13,7 @@ import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionCancelDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionCancelDialog.vue'
 import {
-  assetDetailDistributionDialogCancel, useAssetDetailDistributionDialogCancel
+  useAssetDetailDistributionDialogCancel
 } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
 
 const props = withDefaults(
@@ -34,7 +34,6 @@ const filter = useDistributionFilter()
 const { showPagination } = usePaginationAutoHide(pagination)
 
 const { dialogNew, openNew, dialogKey } = useAssetDetailDistributionDialog()
-const { dialogCancel } = useAssetDetailDistributionDialogCancel()
 
 const getList = async () => {
   distributionListStore.showLoader()
@@ -105,6 +104,6 @@ onMounted(async () => {
       :asset-id="assetId"
       @reload-list="reloadList"
     />
-    <DistributionCancelDialog v-model="dialogCancel" />
+    <DistributionCancelDialog @reload-list="reloadList" />
   </div>
 </template>
