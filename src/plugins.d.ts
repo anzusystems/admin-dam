@@ -28,7 +28,6 @@ declare module '@vue/runtime-core' {
 
 declare module '@vue/runtime-core' {
   interface AllowedComponentProps {
-    id?: string
     dataCy?: string
   }
 }
