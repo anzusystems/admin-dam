@@ -26,6 +26,13 @@ declare module '@vue/runtime-core' {
   }
 }
 
+declare module '@vue/runtime-core' {
+  interface AllowedComponentProps {
+    id?: string
+    dataCy?: string
+  }
+}
+
 declare module '@anzusystems/common-admin' {
   export type AclValue = CustomAclValue
   export function can(acl: CustomAclValue, subject?: object): boolean
