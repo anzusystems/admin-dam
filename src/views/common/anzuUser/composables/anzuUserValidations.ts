@@ -5,7 +5,27 @@ import { useValidate } from '@anzusystems/common-admin'
 
 const { email, required, maxLength, minLength } = useValidate()
 
-export function useAnzuUserValidation(anzuUser: Ref<AnzuUser>) {
+export function useAnzuUserCreateValidation(anzuUser: Ref<AnzuUser>) {
+  const rules = {
+    anzuUser: {
+      id: {
+        required,
+      },
+      email: {
+        required,
+        email,
+        maxLength: maxLength(256),
+      },
+    },
+  }
+  const v$ = useVuelidate(rules, { anzuUser })
+
+  return {
+    v$,
+  }
+}
+
+export function useAnzuUserEditValidation(anzuUser: Ref<AnzuUser>) {
   const rules = {
     anzuUser: {
       id: {

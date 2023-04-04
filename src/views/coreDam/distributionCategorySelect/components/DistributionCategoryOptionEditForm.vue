@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { AFormBooleanToggle, AFormTextField, cloneDeep } from '@anzusystems/common-admin'
-import { useDistributionCategoryOptionValidation } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
+import { AFormTextField, cloneDeep } from '@anzusystems/common-admin'
+import {
+  useDistributionCategoryOptionValidation
+} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -52,7 +54,7 @@ const { t } = useI18n()
       cols="12"
       sm="1"
     >
-      <AFormBooleanToggle
+      <VSwitch
         v-model="modelValueComputed.assignable"
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
       />

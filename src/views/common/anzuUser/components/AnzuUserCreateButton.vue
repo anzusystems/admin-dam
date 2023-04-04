@@ -15,7 +15,7 @@ import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { AxiosInstance } from 'axios'
-import { useAnzuUserValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
+import { useAnzuUserCreateValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
 import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 
@@ -56,7 +56,7 @@ const onCancel = () => {
 }
 
 const router = useRouter()
-const { v$ } = useAnzuUserValidation(anzuUser)
+const { v$ } = useAnzuUserCreateValidation(anzuUser)
 const { t } = useI18n()
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
