@@ -5,9 +5,9 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@anzusystems/common-admin@npm:^0.0.51":
-  version: 0.0.51
-  resolution: "@anzusystems/common-admin@npm:0.0.51"
+"@anzusystems/common-admin@npm:^0.0.52":
+  version: 0.0.52
+  resolution: "@anzusystems/common-admin@npm:0.0.52"
   peerDependencies:
     "@vuelidate/core": ^2.0.1
     "@vuelidate/validators": ^2.0.1
@@ -36,7 +36,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 811ddaca49727081d7c3bde23c0e840bc02060204f0a4b0ce79ca411e0d9d7628d7791e4f21db1cc5b417e1de254946fd4702413d3a2fe07f1d1131c8905360a
+  checksum: 91675414dc173c6b87d51c81d1314c94c95f3cade41ddbcd1d12950148bf64c7630d5e245e87aab5a422f39da8d0a846f73a5599b710eaebb80de7ed1d644f89
   languageName: node
   linkType: hard
 
@@ -1348,7 +1348,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": ^0.0.51
+    "@anzusystems/common-admin": ^0.0.52
     "@cypress/grep": ^3.1.5
     "@intlify/unplugin-vue-i18n": ^0.10.0
     "@mdi/font": 7.2.96
@@ -1364,7 +1364,7 @@ __metadata:
     "@vuelidate/validators": ^2.0.2
     "@vueuse/core": 9.13.0
     "@vueuse/integrations": 9.13.0
-    axios: ^1.3.4
+    axios: ^1.3.5
     core-js: ^3.30.0
     cypress: ^12.9.0
     cypress-mochawesome-reporter: ^3.3.0
@@ -1613,14 +1613,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.3.4":
-  version: 1.3.4
-  resolution: "axios@npm:1.3.4"
+"axios@npm:^1.3.5":
+  version: 1.3.5
+  resolution: "axios@npm:1.3.5"
   dependencies:
     follow-redirects: ^1.15.0
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 7440edefcf8498bc3cdf39de00443e8101f249972c83b739c6e880d9d669fea9486372dbe8739e88b3bf8bb1ad15f6106693f206f078f4516fe8fd47b1c3093c
+  checksum: 4d6bcf933b1cdff86d4993752aaeeeedc4a7f7a4b1c942847f6884bb13fc6106610ff826b076acf0b08d8ced55dee9344bb9a11f3624c3e70ab1da1a40bb5506
   languageName: node
   linkType: hard
 
