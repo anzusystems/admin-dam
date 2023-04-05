@@ -63,6 +63,7 @@ const onBlur = () => {
     no-filter
     :error-messages="errorMessageComputed"
     data-cy="distribution-category-select"
+    return-object
     @blur="onBlur"
   >
     <template #label>
