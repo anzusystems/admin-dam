@@ -110,7 +110,6 @@ export const useDistributionCategoryManageActions = () => {
 }
 
 export const useDistributionCategoryCreateActions = () => {
-  const v$ = useVuelidate()
   const router = useRouter()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
   const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
