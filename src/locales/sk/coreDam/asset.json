@@ -7,7 +7,7 @@
   },
   "filter": {
     "text": "Text",
-    "type": "Type",
+    "type": "Typ",
     "inPodcast": "In podcast",
     "fromRss": "From RSS",
     "distributedInServices": "Distributed in services",
