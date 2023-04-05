@@ -17,6 +17,7 @@ export default defineConfig({
       // styles: 'expose',
     }),
     VueI18nPlugin({
+      runtimeOnly: false, // temp solution to fix interpolation in messages
       globalSFCScope: true,
       include: path.resolve(_dirname, './src/locales/**.json'),
     }),
