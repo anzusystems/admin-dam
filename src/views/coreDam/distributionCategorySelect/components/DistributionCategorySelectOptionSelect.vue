@@ -29,18 +29,17 @@ const modelValueComputed = computed({
   },
 })
 
-const isRequired = (): boolean =>
-  damConfigExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]?.categorySelect
-    ?.required ?? false
+const isRequired = computed(() => {
+  return (
+    damConfigExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]
+      ?.categorySelect?.required ?? false
+  )
+})
 
-const { required } = useValidate()
+const { requiredIf } = useValidate()
 
 // @ts-ignore
-const v$ = useVuelidate({ modelValue: isRequired() ? { required } : {} }, { modelValueComputed })
-
-const requiredComputed = computed(() => {
-  return v$.value.modelValue.required && v$.value.modelValue.required.$params.type === 'required'
-})
+const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired.value) } }, { modelValueComputed })
 
 const errorMessageComputed = computed(() => {
   if (v$.value.$errors?.length) return [v$.value.$errors.map((item: ErrorObject) => item.$message).join(' ')]
@@ -64,12 +63,13 @@ const onBlur = () => {
     no-filter
     :error-messages="errorMessageComputed"
     data-cy="distribution-category-select"
+    return-object
     @blur="onBlur"
   >
     <template #label>
       <span>{{ select.serviceSlug }}</span>
       <span
-        v-if="requiredComputed"
+        v-if="isRequired"
         class="required"
       />
     </template>
