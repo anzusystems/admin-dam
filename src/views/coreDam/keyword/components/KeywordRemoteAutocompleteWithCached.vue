@@ -106,6 +106,7 @@ const itemSlotIsSelected = (item: DocId) => {
       :multiple="multiple"
       :clearable="clearable"
       filter-by-field="text"
+      :filter-sort-by="null"
       item-title="name"
       item-value="id"
       :data-cy="dataCy"

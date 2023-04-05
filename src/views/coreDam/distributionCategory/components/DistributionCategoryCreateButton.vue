@@ -94,7 +94,7 @@ const { assetTypeOptions } = useAssetType()
       data-cy="create-panel"
     >
       <ADialogToolbar @on-cancel="onCancel">
-        {{ t('common.permissionGroup.meta.create') }}
+        {{ t('coreDam.distributionCategory.createButton') }}
       </ADialogToolbar>
       <VCardText
         v-if="!createFormDataLoaded"

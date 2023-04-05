@@ -124,6 +124,7 @@ onMounted(() => {
       :multiple="multiple"
       :clearable="clearable"
       filter-by-field="text"
+      :filter-sort-by="null"
       :data-cy="dataCy"
       item-title="name"
       item-value="id"
