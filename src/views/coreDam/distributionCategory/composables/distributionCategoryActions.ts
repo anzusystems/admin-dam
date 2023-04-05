@@ -133,12 +133,6 @@ export const useDistributionCategoryCreateActions = () => {
   const onCreate = async (successCallbackAction?: () => void) => {
     try {
       createButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        createButtonLoading.value = false
-        return
-      }
       distributionCategory.value.selectedOptions = Object.values(distributionCategorySelectedOptions.value)
         .map((option) => option?.id)
         .filter((id) => !!id) as string[]
