@@ -10,5 +10,6 @@
     "type": "Asset Type"
   },
   "notSelected": "No distribution category selected",
-  "manage": "Manage distribution category"
+  "manage": "Manage distribution category",
+  "createButton": "Create distribution category"
 }
