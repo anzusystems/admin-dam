@@ -304,6 +304,7 @@ onUnmounted(async () => {
                     :label="t('coreDam.youtubeDistribution.model.texts.keywords')"
                     :items="[]"
                     chips
+                    multiple
                     closable-chips
                   />
                 </VCol>
