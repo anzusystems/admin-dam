@@ -6,7 +6,7 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  ASystemEntityScope,
+  ASystemEntityScope, useAlerts,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
@@ -55,7 +55,14 @@ const onCancel = () => {
   resetStore()
 }
 
+const { showValidationError } = useAlerts()
+
 const onConfirm = () => {
+  v$.value.$touch()
+  if (v$.value.$invalid) {
+    showValidationError()
+    return
+  }
   onCreate(() => {
     emit('onCreateSuccess', distributionCategory.value.type)
     dialog.value = false
