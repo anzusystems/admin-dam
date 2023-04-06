@@ -1,12 +1,12 @@
 {
   "model": {
-    "distributionService": "Distribution service name",
+    "distributionService": "Meno distribučnej služby",
     "texts": {
-      "title": "Title",
-      "description": "Description",
-      "author": "Author",
-      "keywords": "Keywords"
+      "title": "Názov",
+      "description": "Popis",
+      "author": "Autor",
+      "keywords": "Kľúčové slová"
     }
   },
-  "videoAdministrationLink": "Video administration on JW Player"
+  "videoAdministrationLink": "Administrácia v JW Player"
 }
