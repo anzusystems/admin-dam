@@ -9,7 +9,7 @@
     "attributes": {
       "rssUrl": "RSS URL",
       "mode": "Mód",
-      "lastImportStatus": "Posledný status importu"
+      "lastImportStatus": "Posledný stav importu"
     },
     "dates": {
       "importFrom": "Import od"
