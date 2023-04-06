@@ -86,11 +86,11 @@
       "masonry": "Masonry",
       "thumbnail": "Mriežka"
     },
-    "infoToggle": "Info prepínača",
-    "filterToggle": "Toggle filters",
+    "infoToggle": "Info karta",
+    "filterToggle": "Filtre",
     "filters": "Filtre",
     "allTypes": "Všetky typy",
-    "toggleSelect": "Toggle select",
+    "toggleSelect": "Vybrať",
     "preview": "Náhľad",
     "edit": "Úprava",
     "prev": "Predchádzajúci asset",
@@ -99,7 +99,7 @@
   },
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
-    "toggleInfo": "Toggle info",
+    "toggleInfo": "Info karta",
     "metadataToggle": {
       "show": "Skryť viac detailov",
       "hide": "Zobraziť viac detailov"
