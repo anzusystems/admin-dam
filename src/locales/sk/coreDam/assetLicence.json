@@ -1,15 +1,15 @@
 {
   "model": {
     "id": "ID",
-    "name": "Name",
-    "extSystem": "External System",
-    "extId": "External ID"
+    "name": "Meno",
+    "extSystem": "Externý systém",
+    "extId": "Externé ID"
   },
   "filter": {
     "id": "ID",
-    "extId": "External ID"
+    "extId": "Externé ID"
   },
   "meta": {
-    "create": "Create license"
+    "create": "Vytvoriť licenciu"
   }
 }
