@@ -1,28 +1,28 @@
 {
   "model": {
-    "distributionService": "Distribution service name",
-    "privacy": "Privacy",
-    "language": "Language",
+    "distributionService": "Meno distribučného servisu",
+    "privacy": "Súkromný",
+    "language": "Jazyk",
     "playlist": "Playlist",
     "texts": {
-      "title": "Title",
-      "description": "Description",
-      "keywords": "Keywords"
+      "title": "Nadpis",
+      "description": "Popis",
+      "keywords": "Kľúčové slovo"
     },
     "flags": {
-      "embeddable": "Embeddable",
-      "forKids": "For kids",
-      "notifySubscribers": "Notify subscribers"
+      "embeddable": "Embedovateľný",
+      "forKids": "Pre deti",
+      "notifySubscribers": "Notifikovať odberateľov"
     }
   },
   "privacy": {
-    "private": "Private",
-    "public": "Public",
-    "unlisted": "Unlisted",
-    "dynamic": "Dynamic"
+    "private": "Súkromný",
+    "public": "Verejný",
+    "unlisted": "Nezalistovaný",
+    "dynamic": "Dynamický"
   },
-  "videoPreviewLink": "Video preview on YouTube",
-  "videoAdministrationLink": "Video administration on YouTube",
-  "loginDescription": "Login on new tab/window, then return to this screen",
-  "loginButton": "YouTube Login"
+  "videoPreviewLink": "Video náhľad na YouTube",
+  "videoAdministrationLink": "Administrácia videa na YouTube",
+  "loginDescription": "Prihlásiť sa na novom tabe / okne a vrátiť sa naspäť",
+  "loginButton": "YouTube prihlásenie"
 }
