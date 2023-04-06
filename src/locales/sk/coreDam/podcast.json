@@ -1,38 +1,38 @@
 {
   "model": {
     "id": "ID",
-    "licence": "Licence",
+    "licence": "Licencia",
     "texts": {
-      "title": "Title",
-      "description": "Description"
+      "title": "Nadpis",
+      "description": "Popis"
     },
     "attributes": {
       "rssUrl": "RSS URL",
-      "mode": "Mode",
-      "lastImportStatus": "Last import status"
+      "mode": "Mód",
+      "lastImportStatus": "Posledný status importu"
     },
     "dates": {
-      "importFrom": "Import from"
+      "importFrom": "Import od"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Title"
+    "title": "Nadpis"
   },
   "meta": {
-    "create": "Podcast create"
+    "create": "Vytvoriť podcast"
   },
   "tabs": {
-    "detail": "Podcast detail",
-    "episodes": "Podcast episodes"
+    "detail": "Detail podcastu",
+    "episodes": "Epizóda podcastu"
   },
   "lastImportStatus": {
-    "notImported": "Not imported",
-    "imported": "Imported",
-    "importFailed": "Import failed"
+    "notImported": "Neimportované",
+    "imported": "Importované",
+    "importFailed": "Importovanie zlyhalo"
   },
   "podcastMode": {
-    "import": "Import",
-    "notImport": "Not import"
+    "import": "Importovaný",
+    "notImport": "Neimportovaný"
   }
 }
