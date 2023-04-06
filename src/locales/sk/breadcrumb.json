@@ -1,78 +1,78 @@
 {
   "coreDam": {
     "assetLicence": {
-      "list": "Asset licences",
-      "detail": "Licence",
-      "edit": "Licence"
+      "list": "Licencie assetov",
+      "detail": "Licencie",
+      "edit": "Licencie"
     },
     "author": {
-      "list": "Authors",
-      "detail": "Author",
-      "edit": "Author"
+      "list": "Autori",
+      "detail": "Autor",
+      "edit": "Autor"
     },
     "distributionCategory": {
-      "list": "Distribution categories",
-      "detail": "Category",
-      "edit": "Category"
+      "list": "Kategórie distribúcie",
+      "detail": "Kategórie",
+      "edit": "Kategórie"
     },
     "distributionCategorySelect": {
-      "list": "Distribution category selects",
-      "detail": "Select",
-      "edit": "Select"
+      "list": "Výbery v distribučných kategóriách",
+      "detail": "Výbery",
+      "edit": "Výbery"
     },
     "podcast": {
-      "list": "Podcasts",
+      "list": "Podcasty",
       "detail": "Podcast",
       "edit": "Podcast"
     },
     "podcastEpisode": {
-      "list": "Episodes",
-      "detail": "Episode",
-      "edit": "Episode"
+      "list": "Epizódy",
+      "detail": "Epizóda",
+      "edit": "Epizóda"
     },
     "videoShow": {
-      "list": "Video shows",
-      "detail": "Show",
-      "edit": "Show"
+      "list": "Video relácie",
+      "detail": "Relácia",
+      "edit": "Relácia"
     },
     "videoShowEpisode": {
-      "list": "Episodes",
-      "detail": "Episode",
-      "edit": "Episode"
+      "list": "Epizódy",
+      "detail": "Epizóda",
+      "edit": "Epizóda"
     },
     "extSystem": {
-      "list": "External systems",
-      "detail": "System",
-      "edit": "System"
+      "list": "Externé systémy",
+      "detail": "Systém",
+      "edit": "Systém"
     },
     "keyword": {
-      "list": "Keywords",
-      "detail": "Keyword",
-      "edit": "Keyword"
+      "list": "Kľúčové slová",
+      "detail": "Kľúčové slovo",
+      "edit": "Kľúčové slovo"
     },
     "user": {
-      "list": "Users",
-      "detail": "User",
-      "edit": "User"
+      "list": "Používatelia",
+      "detail": "Používateľ",
+      "edit": "Používateľ"
     },
     "job": {
-      "list": "Jobs",
-      "detail": "Job"
+      "list": "Systémové úlohy",
+      "detail": "Systémová úloha"
     }
   },
   "anzuUser": {
-    "list": "Permission users",
-    "detail": "User",
-    "edit": "User"
+    "list": "Oprávnenia používateľov",
+    "detail": "Používateľ",
+    "edit": "Používateľ"
   },
   "log": {
-    "list": "Logs",
+    "list": "Logy",
     "detail": "Log"
   },
   "permissionGroup": {
-    "list": "Permission groups",
-    "detail": "Group",
-    "edit": "Group"
+    "list": "Skupiny oprávnení",
+    "detail": "Skupina",
+    "edit": "Skupina"
   },
-  "settings": "Settings"
+  "settings": "Nastavenia"
 }

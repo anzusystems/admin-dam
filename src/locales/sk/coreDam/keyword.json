@@ -1,20 +1,20 @@
 {
   "model": {
     "id": "ID",
-    "name": "Name",
+    "name": "Meno",
     "flags": {
-      "reviewed": "Reviewed"
+      "reviewed": "Overený"
     }
   },
   "filter": {
     "id": "ID",
     "text": "Text",
-    "reviewed": "Reviewed"
+    "reviewed": "Overený"
   },
   "meta": {
-    "create": "Keyword create"
+    "create": "Vytvoriť kľúčové slovo"
   },
   "button": {
-    "add": "Add new keyword"
+    "add": "Pridať kľúčové slovo"
   }
 }
