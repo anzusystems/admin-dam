@@ -3,11 +3,11 @@
   "invalid_asset_type": "Nevalidný typ digitálneho média.",
   "asset_size_too_large": "Súbor je príliš veľký.",
   "invalid_asset_slot": "Operácia s neplatným slotom média.",
-  "bulk_size_exceeded": "Prekročená veľkosť posielanej časti súboru. V prípade potreby kontaktujte administrátora.",
-  "custom_form_not_exists": "Dané pole neexistuje.",
+  "bulk_size_exceeded": "Príliš veľa posielaných objektov súčasne. V prípade potreby kontaktujte administrátora.",
+  "custom_form_not_exists": "Daný formulár neexistuje.",
   "asset_not_fully_uploaded": "Súbor nebol kompletne nahraný.",
   "not_allowed_download": "Stiahnutie súboru nie je povolené.",
   "licence_mismatch": "Pri akcii práca s nekorektným ID licencie (ID mismatch). V prípade potreby kontaktuje administrátora.",
-  "asset_file_delete_during_reorder": "Súbor bol vymazaný počas preusporiadávania.",
+  "asset_file_delete_during_reorder": "Nastala chyba počas preusporiadávania. V prípade potreby kontaktuje administrátora.",
   "file_upload_too_many_files": "Prekročený limit počtu nahrávaných súborov."
 }
