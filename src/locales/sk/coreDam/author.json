@@ -1,31 +1,31 @@
 {
   "model": {
     "id": "ID",
-    "name": "Name",
-    "identifier": "Identifier",
-    "type": "Type",
+    "name": "Meno",
+    "identifier": "Identifikátor",
+    "type": "Typ",
     "flags": {
-      "reviewed": "Reviewed"
+      "reviewed": "Skontrolovaný"
     }
   },
   "filter": {
     "id": "ID",
     "text": "Text",
-    "identifier": "Identifier",
-    "type": "Type",
-    "reviewed": "Reviewed"
+    "identifier": "Identifikátor",
+    "type": "Typ",
+    "reviewed": "Skontrolovaný"
   },
   "authorType": {
-    "none": "None",
-    "internal": "Internal",
-    "external": "External",
-    "agency": "Agency"
+    "none": "Žiaden",
+    "internal": "Interný",
+    "external": "Externý",
+    "agency": "Agentúra"
   },
   "meta": {
-    "create": "Author Create"
+    "create": "Vytvorenie autora"
   },
   "button": {
-    "add": "Add new author"
+    "add": "Pridať nového autora"
   },
-  "conflicts": "Authors conflicts"
+  "conflicts": "Konflikt autorov"
 }
