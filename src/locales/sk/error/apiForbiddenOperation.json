@@ -1,13 +1,13 @@
 {
-  "invalid_state_transaction": "invalid_state_transaction error",
-  "invalid_asset_type": "invalid_asset_type error",
-  "asset_size_too_large": "asset_size_too_large error",
-  "invalid_asset_slot": "invalid_asset_slot error",
-  "bulk_size_exceeded": "bulk_size_exceeded error",
-  "custom_form_not_exists": "custom_form_not_exists error",
-  "asset_not_fully_uploaded": "asset_not_fully_uploaded error",
-  "not_allowed_download": "not_allowed_download error",
-  "licence_mismatch": "licence_mismatch error",
-  "asset_file_delete_during_reorder": "asset_file_delete_during_reorder error",
-  "file_upload_too_many_files": "file_upload_too_many_files error"
+  "invalid_state_transaction": "Nastala chyba pri zmene stavu.",
+  "invalid_asset_type": "Nevalidný typ digitálneho média.",
+  "asset_size_too_large": "Súbor je príliš veľký.",
+  "invalid_asset_slot": "Operácia s neplatným slotom média.",
+  "bulk_size_exceeded": "Prekročená veľkosť posielanej časti súboru. V prípade potreby kontaktujte administrátora.",
+  "custom_form_not_exists": "Dané pole neexistuje.",
+  "asset_not_fully_uploaded": "Súbor nebol kompletne nahraný.",
+  "not_allowed_download": "Stiahnutie súboru nie je povolené.",
+  "licence_mismatch": "Pri akcii práca s nekorektným ID licencie (ID mismatch). V prípade potreby kontaktuje administrátora.",
+  "asset_file_delete_during_reorder": "Súbor bol vymazaný počas preusporiadávania.",
+  "file_upload_too_many_files": "Prekročený limit počtu nahrávaných súborov."
 }
