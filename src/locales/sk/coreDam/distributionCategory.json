@@ -1,14 +1,14 @@
 {
   "model": {
     "id": "ID",
-    "name": "Name",
-    "type": "Type"
+    "name": "Meno",
+    "type": "Typ"
   },
   "filter": {
     "id": "ID",
-    "name": "Name",
-    "type": "Asset Type"
+    "name": "Meno",
+    "type": "Typ assetu"
   },
-  "notSelected": "No distribution category selected",
-  "manage": "Manage distribution category"
+  "notSelected": "Nie je vybraná žiadna distribučná kategória",
+  "manage": "Výber distribučnej kategórie"
 }
