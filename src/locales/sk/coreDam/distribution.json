@@ -1,34 +1,34 @@
 {
   "model": {
-    "publishAt": "Publish at"
+    "publishAt": "Publikované o"
   },
   "distributionStatus": {
-    "waiting": "Waiting",
-    "distributing": "Distributing",
-    "remoteProcessing": "Remote processing",
-    "distributed": "Distributed",
-    "failed": "Failed"
+    "waiting": "Čaká",
+    "distributing": "Distribuovaný",
+    "remoteProcessing": "Vzdialené spracovávanie",
+    "distributed": "Distribuovaný",
+    "failed": "Chyba"
   },
   "failReason": {
-    "none": "None",
-    "unknown": "Unknown",
-    "quotaReached": "Quota reached",
-    "remoteProcessFailed": "Remote process failed",
-    "validationFailed": "Validation failed"
+    "none": "Žiaden",
+    "unknown": "Neznámy",
+    "quotaReached": "Dosiahnutá kvóta",
+    "remoteProcessFailed": "Vzdialené spracovávanie zlyhalo",
+    "validationFailed": "Chyba pri validácii"
   },
   "common": {
-    "select": "Distribution category",
-    "list": "List of distributions",
-    "addButton": "Add new",
-    "redistributeButton": "Redistribute",
-    "cancelDistributionButton": "Stop distribution",
-    "addTitle": "Add new distribution",
-    "redistributeTitle": "Redistribute",
-    "noEntries": "Nothing to show",
-    "status": "Status",
-    "error": "An error occurred",
-    "blockedByDistribution": "Blocked by distribution",
-    "extId": "Ext ID",
-    "failReason": "Fail reason"
+    "select": "Kategória distribúcie",
+    "list": "Zoznam distribúcií",
+    "addButton": "Pridať novú",
+    "redistributeButton": "Znovu distribuovať",
+    "cancelDistributionButton": "Zastaviť distribúciu",
+    "addTitle": "Pridať novú distribúciu",
+    "redistributeTitle": "Znovu distribuovať",
+    "noEntries": "Nie je čo zobraziť",
+    "status": "Stav",
+    "error": "Nastala chyba",
+    "blockedByDistribution": "Blokované distribúciou",
+    "extId": "Externé ID",
+    "failReason": "Dôvod zlyhania"
   }
 }
