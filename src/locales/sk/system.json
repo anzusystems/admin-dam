@@ -1,101 +1,101 @@
 {
   "upload": {
-    "add": "Add to upload",
-    "dragAndDrop": "Drag and drop files for upload",
-    "incorrectFormatSize": "Incorrect format or size",
-    "stop": "Close",
-    "stopConfirmQuestion": "Are you sure you want to stop upload",
-    "waiting": "Waiting",
-    "processing": "Processing",
-    "uploading": "Uploading",
-    "done": "Done",
+    "add": "Pridať do nahrávania",
+    "dragAndDrop": "Sem pretiahni nahrávané súbory",
+    "incorrectFormatSize": "Nesprávny formát alebo veľkosť",
+    "stop": "Zatvoriť",
+    "stopConfirmQuestion": "Chcete ukončiť nahrávanie?",
+    "waiting": "Čakanie",
+    "processing": "Procesovanie",
+    "uploading": "Nahrávanie",
+    "done": "Hotovo",
     "limits": {
-      "uploadWarning": "Upload warning",
-      "onUploadLimit": "You are already on upload limit ({limit}). Finish upload, then try again.",
-      "addingOverLimit": "You are trying to upload additional {count} files",
-      "countAlreadyInProgress": "{count} file(s) are already in progress.",
-      "onlyAllowedAtOnce": "Only {count} are allowed to upload at once",
-      "cancelOrUploadFirst": "Do you want to cancel or upload only first {count} file(s)?",
-      "actionAddFirstItems": "Add first {count} file(s)"
+      "uploadWarning": "Varovanie pri nahrávaní",
+      "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova",
+      "addingOverLimit": "Pokúšate sa nahrať ďalšie súbory ({count}).",
+      "countAlreadyInProgress": "{count} súbor(y) prebiehajú.",
+      "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
+      "cancelOrUploadFirst": "Chcete zrušiť alebo nahraž ina prvých {count} súborov?",
+      "actionAddFirstItems": "Pridať prvých {count} súborov"
     }
   },
   "download": {
-    "downloadOriginalFile": "Download original file"
+    "downloadOriginalFile": "Stiahnuť originálny súbor"
   },
   "imagePreview": {
-    "selected": "Selected",
+    "selected": "Vybrané",
     "model": {
-      "fileId": "Image file ID"
+      "fileId": "ID obrázku"
     },
     "status": {
-      "isProcessingInfo": "Image is processing, please check again later",
-      "isFailedInfo": "Image processing failed"
+      "isProcessingInfo": "Obrázok sa procesuje, skúste neskôr",
+      "isFailedInfo": "Procesovanie obrázka zlyhalo"
     },
     "actions": {
-      "unassign": "Unassign image",
-      "replaceByFileId": "Replace by file ID",
-      "chooseFromDistribution": "Choose from distribution"
+      "unassign": "Zrušiť priradenie obrázka",
+      "replaceByFileId": "Nahradiť ID súboru",
+      "chooseFromDistribution": "Vybrať z distribúcie"
     }
   },
   "mainBar": {
-    "upload": "Upload",
-    "search": "Search",
-    "backToAssets": "Back to assets",
-    "options": "Options",
-    "userOptions": "Account",
+    "upload": "Nahrať",
+    "search": "Vyhľadať",
+    "backToAssets": "Návrat na assety",
+    "options": "Nastavenia",
+    "userOptions": "Konto",
     "customIntegrations": {
-      "title": "Custom integrations",
-      "assets": "Assets"
+      "title": "Vlastné integrácie",
+      "assets": "Assety"
     },
-    "podcasts": "Podcasts",
+    "podcasts": "Podcasty",
     "extSystemLicenceSwitch": {
-      "filters": "Filters",
+      "filters": "filtre",
       "filter": {
-        "extSystemName": "External system name",
-        "extSystemId": "External system ID",
+        "extSystemName": "Meno externého systému",
+        "extSystemId": "ID externého systému",
         "licenceName": "Licence name",
-        "licenceExtId": "Licence Ext ID"
+        "licenceExtId": "Externé ID licencie"
       },
-      "currentExtSystem": "Current ext system",
-      "currentLicence": "Current licence",
-      "extSystem": "External system",
-      "licence": "Licence",
-      "title": "Switch DAM ext system and asset licence",
-      "description": "Important: Please finish all work first, any progress will be lost!",
-      "confirm": "Confirm and reload admin",
-      "changeToLicenceId": "Change to licence ID"
+      "currentExtSystem": "Aktuálny externý system",
+      "currentLicence": "Aktuálna licencia",
+      "extSystem": "Externý systém",
+      "licence": "Licencie",
+      "title": "Prepnutie externého systému a licencie pre ADAM",
+      "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
+      "confirm": "Potvrdiť a znovu načítať ADAM",
+      "changeToLicenceId": "Zmena na ID licencie"
     }
   },
   "settings": {
-    "locale": "Locale",
-    "theme": "Theme"
+    "locale": "Lokalizácia",
+    "theme": "Téma"
   },
   "currentUser": {
-    "settings": "Settings",
-    "backToAssets": "Back to assets",
-    "logout": "Logout"
+    "settings": "Nastavenia",
+    "backToAssets": "Späť na assety",
+    "logout": "Odhlásenie"
   },
   "uploadErrors": {
-    "unknownError": "System error, try again later or contact administrator",
-    "systemError": "Error",
-    "size": "Incorrect size",
-    "offset": "Incorrect offset",
-    "mimeType": "Incorrect mime type"
+    "unknownError": "Systémova chyba. Skúste neskôr alebo kontaktujte administrátora.",
+    "systemError": "Chyba",
+    "size": "Nesprávna veľkosť",
+    "offset": "Nesprávny offset",
+    "mimeType": "Nesprávny formát súboru"
   },
   "closePage": {
-    "title": "This page/tab can be safely closed."
+    "title": "Tento tab môže nbyť korektne zavretý."
   },
   "notFoundPage": {
-    "title": "Ops, 404",
-    "subTitle": "This site doesn't exist",
-    "return": "Return me to homepage"
+    "title": "Ops, chyba 404.",
+    "subTitle": "Táto stránka neexistuje. Pokiaľ by mala, kontaktujte administrátora.",
+    "return": "Návrat na domovskú obrazovku"
   },
   "unauthorizedPage": {
-    "title": "Ops, 401",
-    "subTitle": "You dont have access to this page",
-    "return": "Return me to homepage"
+    "title": "Ops, chyba 401",
+    "subTitle": "Nemáte oprávnenie na danú stránku. Pokiaľ oprávnenie vyžadujete, kontaktuje administrátora.",
+    "return": "Návrat na domovskú obrazovku"
   },
   "error": {
-    "notificationsNotConnected": "Notification service is not working, some elements of admin will not work correctly."
+    "notificationsNotConnected": "Notifikačná služba má dočasný výpadok, niektoré funkcie sa nemusia správať korektne."
   }
 }
