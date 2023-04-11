@@ -36,7 +36,7 @@
     "bitrateUntil": "Bitrate do",
     "shortestDimensionFrom": "Najkratšia dimenzia od",
     "shortestDimensionUntil": "Najkratšia dimenzia do",
-    "slotsCountFrom": "Pošet slotov od",
+    "slotsCountFrom": "Počet slotov od",
     "slotsCountUntil": "Počet slotov do",
     "createdAtFrom": "Vytvorené od",
     "createdAtUntil": "Vytvorené do"
@@ -174,7 +174,7 @@
     },
     "cancel": "Zrušiť",
     "save": "Uložiť a pokračovať",
-    "saveAndClose": "Uložiť a skoncčiť"
+    "saveAndClose": "Uložiť a skončiť"
   },
   "massOperations": {
     "title": "Hromadné operácie",
