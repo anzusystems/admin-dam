@@ -71,9 +71,9 @@
     "none": "Žiadny",
     "unknown": "Neznámy",
     "invalidChecksum": "Nevalidný checksum",
-    "invalidMimeType": "Nevalidný typ súboru",
+    "invalidMimeType": "Neplatný typ súboru",
     "downloadFailed": "Sťahovanie zlyhalo",
-    "invalidSize": "Nevalidná veľkosť"
+    "invalidSize": "Neplatná veľkosť"
   },
   "imageOrientation": {
     "landscape": "šírkový",
@@ -119,7 +119,7 @@
         "duplicate": "Hlavný súbor je duplikát.",
         "draft": "Neobsahuje žiaden súbor.",
         "deleting": "Čoskoro bude zmazaný.",
-        "failed": "Procesovanie súboru zlyhalo."
+        "failed": "Spracovávanie súboru zlyhalo."
       },
       "metadata": "Meta dáta",
       "file": "Info o súbore",
@@ -168,7 +168,7 @@
     "more": "Viac detailov",
     "import": "Nahrať do ADAM",
     "clearOverlay": {
-      "title": "Vybratie súborov bude ukončené. Chcete pokračovať?",
+      "title": "Vybratie súborov sa zruší.",
       "description": "Neuložená práca bude stratená. Chcete pokračovať?",
       "confirm": "Vymazať označenie"
     },
