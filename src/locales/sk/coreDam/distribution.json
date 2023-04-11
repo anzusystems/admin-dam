@@ -29,6 +29,7 @@
     "error": "Nastala chyba",
     "blockedByDistribution": "Blokované distribúciou",
     "extId": "Externé ID",
-    "failReason": "Dôvod zlyhania"
+    "failReason": "Dôvod zlyhania",
+    "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
   }
 }
