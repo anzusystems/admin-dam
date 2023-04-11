@@ -26,6 +26,7 @@ import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKey
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
+import { fileTypeFix } from '@/services/fileType'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -120,7 +121,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async addByFiles(queueId: string, files: File[]) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
-        const type = getAssetTypeByMimeType(file.type)
+        const type = getAssetTypeByMimeType(fileTypeFix(file))
         if (!type) continue
         const queueItem = createDefault(
           'file_' + file.name,
