@@ -178,7 +178,7 @@
   },
   "massOperations": {
     "title": "Hromadné operácie",
-    "description": "Hromadné operácie nad meta dátami. Máte možnosť pri každom poli aplikovať zmeny stlačením tlačidla vedľa poľa alebo hromadne na všetky polia naraz použitím tlačidiel dole.",
+    "description": "Hromadná úprava metaúdajov. Ak chcete upravovať metaúdaje po riadkoch, použite tlačidlo vedľa riadka. Ak chcete upraviť všetky riadky naraz, použite tlačidlá úplne dole.",
     "fillOneEmpty": "Vyplňte prázdne pole",
     "fillAllEmpty": "Vyplniť všetky prázdne polia",
     "replaceOne": "Nahradiť všade",
