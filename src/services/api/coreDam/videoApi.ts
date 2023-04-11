@@ -15,6 +15,7 @@ import { QueueItemType } from '@/types/coreDam/UploadQueue'
 import type { FileDownloadLink, VideoFile } from '@/types/coreDam/File'
 import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
+import { fileTypeFix } from '@/services/fileType'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -32,7 +33,7 @@ export const uploadStart = (item: UploadQueueItem) => {
       .post(
         url,
         JSON.stringify({
-          mimeType: item.file?.type,
+          mimeType: fileTypeFix(item.file),
           size: item.file?.size,
         })
       )

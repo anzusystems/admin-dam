@@ -6,6 +6,7 @@ import { ENTITY } from '@/services/api/coreDam/assetApi'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemType } from '@/types/coreDam/UploadQueue'
 import type { AudioFile, FileDownloadLink } from '@/types/coreDam/File'
+import { fileTypeFix } from '@/services/fileType'
 
 const END_POINT = '/adm/v1/audio'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -23,7 +24,7 @@ export const uploadStart = (item: UploadQueueItem) => {
       .post(
         url,
         JSON.stringify({
-          mimeType: item.file?.type,
+          mimeType: fileTypeFix(item.file),
           size: item.file?.size,
         })
       )

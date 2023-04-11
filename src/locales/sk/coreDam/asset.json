@@ -36,7 +36,7 @@
     "bitrateUntil": "Bitrate do",
     "shortestDimensionFrom": "Najkratšia dimenzia od",
     "shortestDimensionUntil": "Najkratšia dimenzia do",
-    "slotsCountFrom": "Pošet slotov od",
+    "slotsCountFrom": "Počet slotov od",
     "slotsCountUntil": "Počet slotov do",
     "createdAtFrom": "Vytvorené od",
     "createdAtUntil": "Vytvorené do"
@@ -71,9 +71,9 @@
     "none": "Žiadny",
     "unknown": "Neznámy",
     "invalidChecksum": "Nevalidný checksum",
-    "invalidMimeType": "Nevalidný typ súboru",
+    "invalidMimeType": "Neplatný typ súboru",
     "downloadFailed": "Sťahovanie zlyhalo",
-    "invalidSize": "Nevalidná veľkosť"
+    "invalidSize": "Neplatná veľkosť"
   },
   "imageOrientation": {
     "landscape": "šírkový",
@@ -119,9 +119,9 @@
         "duplicate": "Hlavný súbor je duplikát.",
         "draft": "Neobsahuje žiaden súbor.",
         "deleting": "Čoskoro bude zmazaný.",
-        "failed": "Procesovanie súboru zlyhalo."
+        "failed": "Spracovávanie súboru zlyhalo."
       },
-      "metadata": "Meta dáta",
+      "metadata": "Metaúdaje",
       "file": "Info o súbore",
       "podcast": "Podcast",
       "edit": "Upraviť",
@@ -168,17 +168,17 @@
     "more": "Viac detailov",
     "import": "Nahrať do ADAM",
     "clearOverlay": {
-      "title": "Vybratie súborov bude ukončené. Chcete pokračovať?",
+      "title": "Vybratie súborov sa zruší.",
       "description": "Neuložená práca bude stratená. Chcete pokračovať?",
       "confirm": "Vymazať označenie"
     },
     "cancel": "Zrušiť",
     "save": "Uložiť a pokračovať",
-    "saveAndClose": "Uložiť a skoncčiť"
+    "saveAndClose": "Uložiť a skončiť"
   },
   "massOperations": {
     "title": "Hromadné operácie",
-    "description": "Hromadné operácie nad meta dátami. Máte možnosť pri každom poli aplikovať zmeny stlačením tlačidla vedľa poľa alebo hromadne na všetky polia naraz použitím tlačidiel dole.",
+    "description": "Hromadná úprava metaúdajov. Ak chcete upravovať metaúdaje po riadkoch, použite tlačidlo vedľa riadka. Ak chcete upraviť všetky riadky naraz, použite tlačidlá úplne dole.",
     "fillOneEmpty": "Vyplňte prázdne pole",
     "fillAllEmpty": "Vyplniť všetky prázdne polia",
     "replaceOne": "Nahradiť všade",
