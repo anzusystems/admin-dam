@@ -254,6 +254,7 @@ onMounted(async () => {
               :label="t('coreDam.jwDistribution.model.texts.keywords')"
               :items="[]"
               chips
+              multiple
               closable-chips
             />
           </VCol>

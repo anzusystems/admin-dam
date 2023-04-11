@@ -1,26 +1,26 @@
 {
   "model": {
     "id": "ID",
-    "videoShow": "Video show",
+    "videoShow": "Video relácie",
     "asset": "Asset",
-    "position": "Position",
+    "position": "Pozícia",
     "texts": {
-      "title": "Title"
+      "title": "Nadpis"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Title"
+    "title": "Nadpis"
   },
   "button": {
-    "create": "Add Episode",
-    "addNewVideoShowEpisode": "Add new video show episode"
+    "create": "Pridať epizódu",
+    "addNewVideoShowEpisode": "Pridať novú epizódu"
   },
   "meta": {
-    "create": "Add Episode"
+    "create": "Pridať novú epizódu"
   },
   "common": {
-    "addAssetToNewVideoShowEpisode": "Add asset to new Video show episode",
-    "noEntries": "Nothing to show"
+    "addAssetToNewVideoShowEpisode": "Pridať súbor do novej video epizódy",
+    "noEntries": "Nie je čo zobraziť"
   }
 }

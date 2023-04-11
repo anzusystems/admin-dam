@@ -1,20 +1,20 @@
 {
   "settings": {
-    "backToAssets": "Back to assets",
-    "settings": "Personal",
-    "users": "Users",
-    "podcasts": "Podcasts",
-    "videoShows": "Video shows",
-    "permissionGroups": "Permission Groups",
-    "anzuUser": "Permission Users",
-    "extSystems": "External Systems",
-    "assetLicences": "Asset Licences",
-    "keywords": "Keywords",
-    "authors": "Authors",
-    "distributionCategory": "Distribution Categories",
-    "distributionCategorySelect": "Distribution Categories Selects",
-    "log": "Logs",
+    "backToAssets": "Návrat na assety",
+    "settings": "Osobné",
+    "users": "Používatelia",
+    "podcasts": "Podcasty",
+    "videoShows": "Video relácie",
+    "permissionGroups": "Skupiny oprávnení",
+    "anzuUser": "Oprávnenia používateľov",
+    "extSystems": "Externé systémy",
+    "assetLicences": "Licensie assetov",
+    "keywords": "Kľúčové slová",
+    "authors": "Autori",
+    "distributionCategory": "Kategórie distribúcií",
+    "distributionCategorySelect": "Výbery kategórie distribúcií",
+    "log": "Logy",
     "beta": "Beta",
-    "job": "System jobs"
+    "job": "Systémové úlohy"
   }
 }

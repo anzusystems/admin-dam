@@ -1,15 +1,15 @@
 {
   "model": {
     "id": "ID",
-    "name": "Name",
-    "serviceSlug": "Distribution service",
-    "value": "Value",
-    "options": "Options",
-    "assignable": "Assignable"
+    "name": "Meno",
+    "serviceSlug": "Distribučná služba",
+    "value": "Hodnota",
+    "options": "Nastavenie",
+    "assignable": "Priraditeľné"
   },
   "filter": {
     "id": "ID",
-    "name": "Name",
-    "type": "Asset Type"
+    "name": "Meno",
+    "type": "Typ assetu"
   }
 }

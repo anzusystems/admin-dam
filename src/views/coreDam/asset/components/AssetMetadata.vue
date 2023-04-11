@@ -118,44 +118,58 @@ const onAnyMetadataChange = () => {
       <VExpansionPanelText class="text-caption">
         <!-- all types -->
         <VRow>
-          <VCol>{{ t('coreDam.asset.detail.info.field.id') }}</VCol>
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.field.id') }}
+          </VCol>
           <VCol cols="9">
             <ACopyText :value="asset.id" />
           </VCol>
         </VRow>
         <VRow>
-          <VCol>{{ t('coreDam.asset.detail.info.field.type') }}</VCol>
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.field.type') }}
+          </VCol>
           <VCol cols="9">
             {{ asset.attributes.assetType }}
           </VCol>
         </VRow>
         <VRow>
-          <VCol>{{ t('common.model.tracking.created') }}</VCol>
+          <VCol cols="3">
+            {{ t('common.model.tracking.created') }}
+          </VCol>
           <VCol cols="9">
             {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
           </VCol>
         </VRow>
         <VRow>
-          <VCol>{{ t('common.model.tracking.modified') }}</VCol>
+          <VCol cols="3">
+            {{ t('common.model.tracking.modified') }}
+          </VCol>
           <VCol cols="9">
             {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">
           <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.mainFileId') }}</VCol>
+            <VCol cols="3">
+              {{ t('coreDam.asset.detail.info.field.mainFileId') }}
+            </VCol>
             <VCol cols="9">
               <ACopyText :value="assetMainFile.id" />
             </VCol>
           </VRow>
           <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.mimeType') }}</VCol>
+            <VCol cols="3">
+              {{ t('coreDam.asset.detail.info.field.mimeType') }}
+            </VCol>
             <VCol cols="9">
               {{ assetMainFile.fileAttributes.mimeType }}
             </VCol>
           </VRow>
           <VRow>
-            <VCol>{{ t('coreDam.asset.detail.info.field.size') }}</VCol>
+            <VCol cols="3">
+              {{ t('coreDam.asset.detail.info.field.size') }}
+            </VCol>
             <VCol cols="9">
               {{ prettyBytes(assetMainFile.fileAttributes.size) }}
             </VCol>
