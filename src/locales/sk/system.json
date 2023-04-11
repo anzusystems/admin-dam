@@ -1,12 +1,12 @@
 {
   "upload": {
     "add": "Pridať do nahrávania",
-    "dragAndDrop": "Sem pretiahni nahrávané súbory",
+    "dragAndDrop": "Sem presuň nahrávané súbory",
     "incorrectFormatSize": "Nesprávny formát alebo veľkosť",
     "stop": "Zatvoriť",
     "stopConfirmQuestion": "Chcete ukončiť nahrávanie?",
     "waiting": "Čakanie",
-    "processing": "Procesovanie",
+    "processing": "Spracováva sa",
     "uploading": "Nahrávanie",
     "done": "Hotovo",
     "limits": {
@@ -15,7 +15,7 @@
       "addingOverLimit": "Pokúšate sa nahrať ďalšie súbory ({count}).",
       "countAlreadyInProgress": "{count} súbor(y) prebiehajú.",
       "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
-      "cancelOrUploadFirst": "Chcete zrušiť alebo nahraž ina prvých {count} súborov?",
+      "cancelOrUploadFirst": "Chcete zrušiť alebo nahrať iba prvých {count} súborov?",
       "actionAddFirstItems": "Pridať prvých {count} súborov"
     }
   },
@@ -28,8 +28,8 @@
       "fileId": "ID obrázku"
     },
     "status": {
-      "isProcessingInfo": "Obrázok sa procesuje, skúste neskôr",
-      "isFailedInfo": "Procesovanie obrázka zlyhalo"
+      "isProcessingInfo": "Obrázok sa spracováva, skúste neskôr",
+      "isFailedInfo": "Spracovanie obrázka zlyhalo"
     },
     "actions": {
       "unassign": "Zrušiť priradenie obrázka",
@@ -53,7 +53,7 @@
       "filter": {
         "extSystemName": "Meno externého systému",
         "extSystemId": "ID externého systému",
-        "licenceName": "Licence name",
+        "licenceName": "Meno licencie",
         "licenceExtId": "Externé ID licencie"
       },
       "currentExtSystem": "Aktuálny externý system",
