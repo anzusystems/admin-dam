@@ -7,7 +7,7 @@
     "attributes": {
       "seasonNumber": "Číslo sezóny",
       "episodeNumber": "Číslo epizódy",
-      "extId": "Exterbé id",
+      "extId": "Externé ID",
       "lastImportStatus": "Posledný stav importu"
     },
     "texts": {
@@ -27,7 +27,7 @@
     "create": "Pridať epizódu"
   },
   "common": {
-    "addAssetToNewPodcastEpisode": "Pridať asset do noveh podcastovej epizódy",
+    "addAssetToNewPodcastEpisode": "Pridať asset do novej podcastovej epizódy",
     "noEntries": "Nie je čo zobraziť"
   }
 }

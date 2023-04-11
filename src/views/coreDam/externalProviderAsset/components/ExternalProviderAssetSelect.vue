@@ -47,6 +47,7 @@ const { allExternalProviderAssetTypeOptions } = useExternalProviderAssetType()
     :label="label"
     :multiple="multiple"
     clearable
+    chips
     no-filter
     :data-cy="dataCy"
     @blur="onBlur"
