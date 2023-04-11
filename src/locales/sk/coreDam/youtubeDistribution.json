@@ -10,7 +10,7 @@
       "keywords": "Kľúčové slovo"
     },
     "flags": {
-      "embeddable": "Embedovateľný",
+      "embeddable": "Povoliť vkladanie",
       "forKids": "Pre deti",
       "notifySubscribers": "Notifikovať odberateľov"
     }
@@ -23,6 +23,6 @@
   },
   "videoPreviewLink": "Video náhľad na YouTube",
   "videoAdministrationLink": "Administrácia videa na YouTube",
-  "loginDescription": "Prihlásiť sa na novom tabe / okne a vrátiť sa naspäť",
+  "loginDescription": "Prihlásiť sa na novej karte / okne a vrátiť sa naspäť",
   "loginButton": "YouTube prihlásenie"
 }
