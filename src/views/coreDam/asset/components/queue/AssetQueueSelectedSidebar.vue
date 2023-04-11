@@ -265,6 +265,8 @@ onMounted(() => {
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.video"
                 :asset-type="AssetType.Video"
+                @fill-empty-field="fillEmptyField"
+                @replace-field="replaceField"
               />
             </VExpansionPanelText>
           </VExpansionPanel>
@@ -278,6 +280,8 @@ onMounted(() => {
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.audio"
                 :asset-type="AssetType.Audio"
+                @fill-empty-field="fillEmptyField"
+                @replace-field="replaceField"
               />
             </VExpansionPanelText>
           </VExpansionPanel>
@@ -291,6 +295,8 @@ onMounted(() => {
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.document"
                 :asset-type="AssetType.Document"
+                @fill-empty-field="fillEmptyField"
+                @replace-field="replaceField"
               />
             </VExpansionPanelText>
           </VExpansionPanel>

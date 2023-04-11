@@ -45,6 +45,7 @@ const { t } = useI18n()
             :label="t('coreDam.user.model.assetLicences')"
             :v="v$.userUpdate.assetLicences"
             multiple
+            clearable
             data-cy="user-asset-licences"
           />
         </ARow>
@@ -53,6 +54,7 @@ const { t } = useI18n()
             v-model="userUpdate.adminToExtSystems"
             :label="t('coreDam.user.model.adminToExtSystems')"
             multiple
+            clearable
             data-cy="user-admin-to-ext-systems"
           />
         </ARow>
@@ -61,6 +63,7 @@ const { t } = useI18n()
             v-model="userUpdate.allowedAssetExternalProviders"
             :label="t('coreDam.user.model.allowedAssetExternalProviders')"
             multiple
+            clearable
             data-cy="user-allowed-asset-external-providers"
           />
         </ARow>
@@ -69,6 +72,7 @@ const { t } = useI18n()
             v-model="userUpdate.allowedDistributionServices"
             :label="t('coreDam.user.model.allowedDistributionServices')"
             multiple
+            clearable
             data-cy="user-allowed-distribution-services"
           />
         </ARow>
