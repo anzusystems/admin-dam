@@ -1,13 +1,13 @@
 {
   "model": {
     "id": "ID",
-    "name": "Name",
+    "name": "Meno",
     "slug": "Slug",
-    "adminUsers": "Administrators"
+    "adminUsers": "Administrátori"
   },
   "filter": {
     "id": "ID",
-    "name": "Name",
+    "name": "Meno",
     "slug": "Slug"
   }
 }
