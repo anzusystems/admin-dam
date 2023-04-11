@@ -29,6 +29,7 @@
     },
     "status": {
       "isProcessingInfo": "Obrázok sa procesuje, skúste neskôr",
+      "isDuplicateInfo": "Image is duplicate",
       "isFailedInfo": "Procesovanie obrázka zlyhalo"
     },
     "actions": {
