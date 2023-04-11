@@ -48,6 +48,7 @@ const { allDistributionServiceTypeOptions } = useDistributionServiceType()
     :multiple="multiple"
     clearable
     no-filter
+    chips
     :data-cy="dataCy"
     @blur="onBlur"
   />

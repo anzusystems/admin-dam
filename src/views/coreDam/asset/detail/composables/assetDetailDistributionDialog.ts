@@ -3,6 +3,7 @@ import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import type { DocIdNullable } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const dialogKey = ref(1)
 const dialogNew = ref(false)
@@ -10,6 +11,7 @@ const activeDistributionName = ref<DistributionServiceName | null>(null)
 const showTabs = ref(false)
 const redistributeMode = ref(false)
 const assetFileId = ref<DocIdNullable>(null)
+const assetFileStatus = ref<AssetFileProcessStatus>(AssetFileProcessStatus.Processed)
 const redistributeId = ref<DocIdNullable>(null)
 
 export function useAssetDetailDistributionDialog() {
@@ -42,6 +44,7 @@ export function useAssetDetailDistributionDialog() {
 
   return {
     assetFileId,
+    assetFileStatus,
     dialogKey,
     dialogNew,
     showTabs,
