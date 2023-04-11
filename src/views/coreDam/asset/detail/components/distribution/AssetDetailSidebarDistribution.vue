@@ -6,23 +6,27 @@ import { fetchAssetDistributionList } from '@/services/api/coreDam/distributionA
 import type { DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
-import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper
+  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialog.vue'
 import { useI18n } from 'vue-i18n'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
-import DistributionCancelDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionCancelDialog.vue'
 import {
-  useAssetDetailDistributionDialogCancel
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
+  useAssetDetailDistributionDialog
+} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionCancelDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionCancelDialog.vue'
+import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
     isActive: boolean
     assetType: AssetType
     assetId: DocId
+    assetMainFileStatus?: AssetFileProcessStatus | undefined
   }>(),
-  {}
+  {
+    assetMainFileStatus: undefined,
+  }
 )
 
 const { t } = useI18n()
@@ -58,7 +62,10 @@ onMounted(async () => {
 <template>
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
-      <ABtnPrimary @click.stop="addNew">
+      <ABtnPrimary
+        :disabled="assetMainFileStatus === undefined"
+        @click.stop="addNew"
+      >
         {{ t('coreDam.distribution.common.addButton') }}
       </ABtnPrimary>
     </AssetDetailSidebarActionsWrapper>

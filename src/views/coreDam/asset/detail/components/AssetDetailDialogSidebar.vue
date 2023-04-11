@@ -133,6 +133,7 @@ const typeHasDistributions = computed(() => {
               :asset-id="assetId"
               :is-active="activeTab === AssetDetailTab.Distribution"
               :asset-type="assetType"
+              :asset-main-file-status="assetMainFileStatus"
             />
           </div>
         </Acl>

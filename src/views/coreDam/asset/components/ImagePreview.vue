@@ -54,18 +54,24 @@ const src = computed(() => {
   return placeholder16x9
 })
 
-const isProcessing = computed(() => {
-  if (
-    imageFile.value &&
-    imageFile.value.fileAttributes?.status !== AssetFileProcessStatus.Processed &&
-    imageFile.value.fileAttributes?.status !== AssetFileProcessStatus.Failed
-  )
-    return true
+const isDuplicate = computed(() => {
+  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Duplicate) return true
   return false
 })
+
 const isFailed = computed(() => {
   if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Failed) return true
   return false
+})
+
+const isProcessed = computed(() => {
+  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) return true
+  return false
+})
+
+const isProcessing = computed(() => {
+  if (isProcessed.value || isFailed.value) return false
+  return true
 })
 
 const unassignImage = () => {
@@ -102,6 +108,12 @@ watch(
     class="text-caption"
   >
     {{ t('system.imagePreview.status.isFailedInfo') }}
+  </div>
+  <div
+    v-if="isDuplicate"
+    class="text-caption"
+  >
+    {{ t('system.imagePreview.status.isDuplicateInfo') }}
   </div>
   <div
     v-else-if="isProcessing"

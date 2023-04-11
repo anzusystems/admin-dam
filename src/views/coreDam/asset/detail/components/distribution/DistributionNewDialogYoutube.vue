@@ -40,6 +40,7 @@ import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
+import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
@@ -60,7 +61,7 @@ const { t } = useI18n()
 
 const { createCreateDto } = useDistributionYoutubeFactory()
 const distribution = ref<DistributionYoutubeCreateRedistributeDto>(createCreateDto())
-const { redistributeMode, assetFileId, redistributeId } = useAssetDetailDistributionDialog()
+const { redistributeMode, assetFileId, assetFileStatus, redistributeId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
@@ -73,7 +74,7 @@ const distributionListStore = useDistributionListStore()
 
 const loadFormData = async () => {
   canDisplayForm.value = false
-  if (!assetFileId.value) return
+  if (!assetFileId.value || assetFileStatus.value !== AssetFileProcessStatus.Processed) return
   filter.distributionService.model = props.distributionServiceName
   filter.id.model = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionYoutubeItem>(
@@ -236,6 +237,7 @@ watch(distributionAuthStatus, async (newValue) => {
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
   assetFileId.value = slot.assetFile.id
+  assetFileStatus.value = slot.assetFile.fileAttributes.status
   existingDistributions.value = []
   await loadFormData()
 }
@@ -261,7 +263,13 @@ onUnmounted(async () => {
       </VCol>
     </VRow>
     <div>
-      <div v-if="!redistributeMode && existingDistributions.length > 0">
+      <div
+        v-if="assetFileStatus !== AssetFileProcessStatus.Processed"
+        class="d-flex w-100 h-100 justify-center align-center pa-2"
+      >
+        {{ t('coreDam.distribution.common.assetFileStatusCantDistribute') }}
+      </div>
+      <div v-else-if="!redistributeMode && existingDistributions.length > 0">
         <DistributionListItem
           v-for="item in existingDistributions"
           :key="item.id"
