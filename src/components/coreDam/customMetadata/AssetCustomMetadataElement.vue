@@ -23,8 +23,15 @@ const emit = defineEmits<{
   (e: 'blur', data: any): void
 }>()
 
+const fixValue = (value: any) => {
+  if (props.config.attributes.type === CustomFormType.Number) {
+    return parseFloat(value)
+  }
+  return value
+}
+
 const updateModelValue = (value: any) => {
-  emit('update:modelValue', { key: props.elementKey, value })
+  emit('update:modelValue', { key: props.elementKey, value: fixValue(value) })
 }
 
 const modelValueComputed = computed(() => {
