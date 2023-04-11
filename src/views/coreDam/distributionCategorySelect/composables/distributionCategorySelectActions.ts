@@ -1,5 +1,5 @@
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { isAnzuApiValidationError, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import {
@@ -14,7 +14,7 @@ import { storeToRefs } from 'pinia'
 import { ROUTE } from '@/router/routes'
 import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showValidationError, showRecordWas, showErrorsDefault, showApiValidationError } = useAlerts()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -106,7 +106,22 @@ export const useDistributionCategorySelectEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST })
     } catch (error) {
-      showErrorsDefault(error)
+      if (isAnzuApiValidationError(error)) {
+        const updatedErrors = new Map<string, string[]>()
+        const regex = /^coreDam\.distributionCategorySelect\.model\.options.*/
+        error.fields.forEach((item) => {
+          const checkArrayField = regex.test(item.field)
+          if (checkArrayField) {
+            updatedErrors.set('coreDam.distributionCategorySelect.model.options', item.errors)
+          } else {
+            updatedErrors.set(item.field, item.errors)
+          }
+        })
+        const updatedErrorsArray = Array.from(updatedErrors, ([key, value]) => ({ field: key, errors: value }))
+        showApiValidationError(updatedErrorsArray)
+      } else {
+        showErrorsDefault(error)
+      }
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false
