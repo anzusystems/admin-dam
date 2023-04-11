@@ -1,4 +1,4 @@
 {
-  "error_invalid_key": "Nevalidný kľúč.",
-  "error_invalid_licence": "Nevalidná licencia."
+  "error_invalid_key": "Neplatný kľúč.",
+  "error_invalid_licence": "Neplatná licencia."
 }
