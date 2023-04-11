@@ -180,10 +180,10 @@
     "title": "Hromadné operácie",
     "description": "Hromadná úprava metaúdajov. Ak chcete upravovať metaúdaje po riadkoch, použite tlačidlo vedľa riadka. Ak chcete upraviť všetky riadky naraz, použite tlačidlá úplne dole.",
     "fillOneEmpty": "Vyplňte prázdne pole",
-    "fillAllEmpty": "Vyplniť všetky prázdne polia",
+    "fillAllEmpty": "Vyplniť len prázdne",
     "replaceOne": "Nahradiť všade",
     "replaceAll": "Nahradiť všetko",
-    "clearForm": "Vyčistiť formulár",
+    "clearForm": "Vyčistiť",
     "general": "Hlavné"
   },
   "externalProvider": {
