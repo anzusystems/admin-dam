@@ -1,19 +1,26 @@
 <script lang="ts" setup>
-import { ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { usePodcastEpisodeOneStore } from '@/stores/coreDam/podcastEpisodeStore'
 import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
+import { useRouter } from 'vue-router'
+import { ROUTE } from '@/router/routes'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
 const { t } = useI18n()
+const router = useRouter()
 
 const imageSrc = computed(() => {
   return podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined
 })
+
+const onAssetChipClick = () => {
+  router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: podcastEpisode.value.asset } })
+}
 </script>
 
 <template>
@@ -68,7 +75,14 @@ const imageSrc = computed(() => {
         />
       </ARow>
       <ARow :title="t('coreDam.podcastEpisode.model.asset')">
-        {{ podcastEpisode.asset }}
+        <VChip
+          size="small"
+          :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
+          label
+          @click.stop="onAssetChipClick"
+        >
+          {{ podcastEpisode.asset }}
+        </VChip>
       </ARow>
       <AUserAndTimeTrackingFields :data="podcastEpisode" />
     </VCol>
