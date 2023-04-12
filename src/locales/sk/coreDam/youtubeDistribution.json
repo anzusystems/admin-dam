@@ -1,9 +1,9 @@
 {
   "model": {
     "distributionService": "Meno distribučného servisu",
-    "privacy": "Súkromný",
+    "privacy": "Uložiť alebo zverejniť ako:",
     "language": "Jazyk",
-    "playlist": "Playlist",
+    "playlist": "Zoznam videí",
     "texts": {
       "title": "Nadpis",
       "description": "Popis",
@@ -16,10 +16,10 @@
     }
   },
   "privacy": {
-    "private": "Súkromný",
-    "public": "Verejný",
-    "unlisted": "Nezalistovaný",
-    "dynamic": "Dynamický"
+    "private": "Súkromné",
+    "public": "Verejné",
+    "unlisted": "Nezaradené",
+    "dynamic": "Harmonogram"
   },
   "videoPreviewLink": "Video náhľad na YouTube",
   "videoAdministrationLink": "Administrácia videa na YouTube",
