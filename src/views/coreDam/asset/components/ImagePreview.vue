@@ -71,7 +71,7 @@ const isProcessed = computed(() => {
 
 const isProcessing = computed(() => {
   if (imagePreviewModel.value === null) return false
-  if (isProcessed.value || isFailed.value) return false
+  if (isProcessed.value || isFailed.value || isDuplicate.value) return false
   return true
 })
 
