@@ -149,7 +149,7 @@ const classComputed = computed(() => {
         :height="48"
       >
         <div class="ml-2 text-caption">
-          Asset slots upload
+          {{ t('coreDam.asset.upload.slotsUploadOverlayTitle') }}
         </div>
         <VSpacer />
         <div class="d-flex">
