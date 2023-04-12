@@ -36,8 +36,7 @@ const imageFile = ref<null | ImageFile>(null)
 
 const fetchImage = async (id: DocId) => {
   loading.value = true
-  imageFile.value = JSON.parse('{"imageAttributes":{"ratioWidth":0,"ratioHeight":0,"width":0,"height":0,"rotation":0,"mostDominantColor":"#000000"},"metadata":{"exifData":{},"id":"1edd865a-bad9-6408-9cb9-a7df8fa31da5","createdAt":"2023-04-11T12:37:50.000000Z","modifiedAt":"2023-04-11T12:37:50.000000Z","createdBy":1763600,"modifiedBy":1763600},"assetMetadata":{"keywordSuggestions":{},"authorSuggestions":{},"customData":{}},"asset":"1edd865a-bae0-6c3a-be91-a7df8fa31da5","fileAttributes":{"status":"duplicate","failReason":"none","mimeType":"image\\/jpeg","size":81047,"originFileName":"","originUrl":null},"id":"1edd865a-badf-689e-b968-a7df8fa31da5","links":[],"originAssetFile":"1edd8389-69b3-6db8-b3b7-6fc86b59927a","_resourceName":"imageFile","_system":"coreDam","createdAt":"2023-04-11T12:37:50.000000Z","modifiedAt":"2023-04-11T12:37:50.000000Z","createdBy":1763600,"modifiedBy":1763600}')
-  // imageFile.value = await fetchImageFile(id)
+  imageFile.value = await fetchImageFile(id)
   loading.value = false
 }
 
