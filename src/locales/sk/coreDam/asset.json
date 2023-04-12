@@ -70,7 +70,7 @@
   "assetFileFailReason": {
     "none": "Žiadny",
     "unknown": "Neznámy",
-    "invalidChecksum": "Nevalidný checksum",
+    "invalidChecksum": "Neplatný kontrolný súčet",
     "invalidMimeType": "Neplatný typ súboru",
     "downloadFailed": "Sťahovanie zlyhalo",
     "invalidSize": "Neplatná veľkosť"
@@ -106,13 +106,13 @@
     },
     "noAssetSelected": "Žiadne vybrané assety",
     "tabs": {
-      "info": "Meta",
-      "roi": "Zameranie",
+      "info": "Metaúdaje",
+      "roi": "Fókus",
       "distribution": "Distribúcia",
       "slots": "Sloty",
       "podcast": "Podcasty",
       "videoShow": "Video relácie",
-      "imagePreview": "Náhľadový obrázok"
+      "imagePreview": "Miniatúra"
     },
     "info": {
       "status": {
@@ -143,13 +143,13 @@
       "refresh": "Znovu načítať náhľady",
       "rotate": {
         "rotateMainFileImage": "Otočenie obrázku (hlavného súboru)",
-        "rotateClockwise": "Rotovať doprava",
-        "rotateCounterclockwise": "Rotovať doľava"
+        "rotateClockwise": "Otočiť doprava",
+        "rotateCounterclockwise": "Otočiť doľava"
       }
     }
   },
   "upload": {
-    "title": "Nahratie",
+    "title": "Nahrávanie",
     "titleDone": "Nahrávanie ukončené",
     "edit": "Pridať popis",
     "save": "Uložiť a pokračovať",
@@ -159,7 +159,9 @@
     "stopOverlay": {
       "title": "Nahrávanie súboru bude ukončené. Chcete pokračovať?",
       "confirm": "Ukončiť nahrávanie"
-    }
+    },
+    "newAssetsUploadOverlayTitle": "New assets upload",
+    "slotsUploadOverlayTitle": "Asset slots upload"
   },
   "selected": {
     "selectedFiles": "Vybrané súbory",
@@ -170,7 +172,7 @@
     "clearOverlay": {
       "title": "Vybratie súborov sa zruší.",
       "description": "Neuložená práca bude stratená. Chcete pokračovať?",
-      "confirm": "Vymazať označenie"
+      "confirm": "Zrušiť výber"
     },
     "cancel": "Zrušiť",
     "save": "Uložiť a pokračovať",
@@ -205,8 +207,8 @@
       "slug": "Slug"
     },
     "actions": {
-      "makePrivate": "Spraviť súkromné",
-      "makePublic": "Spraviť verejné",
+      "makePrivate": "Nastaviť ako súkromné",
+      "makePublic": "Nastaviť ako verejné",
       "openOnNewTab": "Otvoriť"
     },
     "status": {
