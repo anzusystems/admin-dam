@@ -5,9 +5,9 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@anzusystems/common-admin@npm:^0.0.55":
-  version: 0.0.55
-  resolution: "@anzusystems/common-admin@npm:0.0.55"
+"@anzusystems/common-admin@npm:^0.0.56":
+  version: 0.0.56
+  resolution: "@anzusystems/common-admin@npm:0.0.56"
   peerDependencies:
     "@vuelidate/core": ^2.0.1
     "@vuelidate/validators": ^2.0.1
@@ -34,7 +34,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 79a8939b6fc4cdfd4d89ccda3853e12d6abb4b1d35d27961eafa1058b17f64c4d8bd27e549cf5e930654ba0acc98549948e49ba91d349d9db5170ab9e118725a
+  checksum: 0857b5990bd2f68a490e4ff4f22310e8344c3aea3eabe6fd0d25c5a484795b37615bcdd0421c254f8539b87b24596bf4188d209539e2492bbd341b6f3170208e
   languageName: node
   linkType: hard
 
@@ -1346,7 +1346,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": ^0.0.55
+    "@anzusystems/common-admin": ^0.0.56
     "@cypress/grep": ^3.1.5
     "@intlify/unplugin-vue-i18n": ^0.10.0
     "@mdi/font": 7.2.96
@@ -1375,7 +1375,7 @@ __metadata:
     postcss: ^8.4.21
     postcss-html: ^1.5.0
     prettier: ^2.8.7
-    sass: ^1.61.0
+    sass: ^1.62.0
     stylelint: ^15.4.0
     stylelint-config-recommended-vue: ^1.4.0
     stylelint-config-standard-scss: ^8.0.0
@@ -5572,16 +5572,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.61.0":
-  version: 1.61.0
-  resolution: "sass@npm:1.61.0"
+"sass@npm:^1.62.0":
+  version: 1.62.0
+  resolution: "sass@npm:1.62.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 31bfb3719f1bb1299bec7b8918bcbca77efa7328b8030cc8e665ed55a02bc5498a3e543b4eb0d06d55ceda8b2f5b2b3176f0678854a8277cb19a59addf65533f
+  checksum: d5f606aa25afdf3ed9f316602811a40cf3b29f64cb70ea02f4198ae4288f9687de6fcef9f4fd2d58e06c28282d859aa249bdbf7d7d97a3a6a582eeaa8e5607fa
   languageName: node
   linkType: hard
 
