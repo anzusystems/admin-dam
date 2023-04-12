@@ -70,6 +70,7 @@ const isProcessed = computed(() => {
 })
 
 const isProcessing = computed(() => {
+  if (imagePreviewModel.value === null) return false
   if (isProcessed.value || isFailed.value) return false
   return true
 })
@@ -116,7 +117,7 @@ watch(
     {{ t('system.imagePreview.status.isDuplicateInfo') }}
   </div>
   <div
-    v-else-if="isProcessing"
+    v-if="isProcessing"
     class="text-caption"
   >
     {{ t('system.imagePreview.status.isProcessingInfo') }}
