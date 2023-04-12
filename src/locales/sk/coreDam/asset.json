@@ -159,7 +159,9 @@
     "stopOverlay": {
       "title": "Nahrávanie súboru bude ukončené. Chcete pokračovať?",
       "confirm": "Ukončiť nahrávanie"
-    }
+    },
+    "newAssetsUploadOverlayTitle": "New assets upload",
+    "slotsUploadOverlayTitle": "Asset slots upload"
   },
   "selected": {
     "selectedFiles": "Vybrané súbory",

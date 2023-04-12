@@ -129,7 +129,7 @@ const isUploading = computed(() => {
         :height="48"
       >
         <div class="ml-2 text-caption">
-          New assets upload
+          {{ t('coreDam.asset.upload.newAssetsUploadOverlayTitle') }}
         </div>
         <VSpacer />
         <div class="d-flex">
