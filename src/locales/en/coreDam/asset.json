@@ -159,7 +159,9 @@
     "stopOverlay": {
       "title": "Are you sure you want to stop upload?",
       "confirm": "Stop upload"
-    }
+    },
+    "newAssetsUploadOverlayTitle": "New assets upload",
+    "slotsUploadOverlayTitle": "Asset slots upload"
   },
   "selected": {
     "selectedFiles": "Selected files",
