@@ -68,7 +68,7 @@ function docker_env_vars() {
 
     # Create local docker environment file from example/dist docker environment file if not yet created
     if [ ! -f "${ENV_DOCKER_FILE}" ]; then
-        cp "${ENV_DOCKER_FILE_DIST}" "${ENV_DOCKER_FILE}"
+        echo -e "### Docker configuration\n\n# Docker others\n#DOCKER_USER=user\n#DOCKER_USER_ID=1000\n#DOCKER_GROUP_ID=1000\n#DOCKER_SSH_PRV_KEY_FILE=~/.ssh/id_rsa" > "${ENV_DOCKER_FILE}"
     fi
 
     # Export all environment variables from dist and local docker environment files if exists
