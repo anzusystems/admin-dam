@@ -3,7 +3,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import { isNull, isUndefined } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { computed, shallowRef, watch } from 'vue'
-import type { CachedItem } from '@/composables/system/defineCached'
+import type { CachedItem } from '@anzusystems/common-admin'
 import type { AuthorMinimal } from '@/types/coreDam/Author'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
