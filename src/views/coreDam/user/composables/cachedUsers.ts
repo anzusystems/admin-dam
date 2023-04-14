@@ -1,7 +1,7 @@
 import type { User, UserMinimal } from '@/types/coreDam/User'
 import { fetchUserListByIds } from '@/services/api/coreDam/userApi'
 import type { IntegerId } from '@anzusystems/common-admin'
-import { defineCached } from '@/composables/system/defineCached'
+import { defineCached } from '@anzusystems/common-admin'
 
 const mapFullToMinimal = (source: User): UserMinimal => {
   return { id: source.id, email: source.email, avatar: source.avatar, person: source.person }
