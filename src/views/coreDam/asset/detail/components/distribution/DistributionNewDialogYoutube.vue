@@ -41,6 +41,7 @@ import DistributionListItem from '@/views/coreDam/asset/detail/components/distri
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
+import YoutubeLogo from '@/views/coreDam/asset/detail/components/distribution/YoutubeLogo.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -405,6 +406,9 @@ onUnmounted(async () => {
       >
         <div class="pb-4">
           {{ t('coreDam.youtubeDistribution.loginDescription') }}
+        </div>
+        <div class="w-100 d-flex align-center justify-center pa-6">
+          <YoutubeLogo />
         </div>
         <VBtn
           color="primary"
