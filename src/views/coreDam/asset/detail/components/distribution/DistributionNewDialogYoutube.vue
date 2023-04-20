@@ -407,7 +407,7 @@ onUnmounted(async () => {
         <div class="pb-4">
           {{ t('coreDam.youtubeDistribution.loginDescription') }}
         </div>
-        <div class="w-100 d-flex align-center justify-center pa-6">
+        <div class="w-100 d-flex align-center justify-center pa-6 pb-8">
           <YoutubeLogo />
         </div>
         <VBtn
