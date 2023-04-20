@@ -2,7 +2,7 @@
 import type { DocId } from '@anzusystems/common-admin'
 import { isNull, isUndefined } from '@anzusystems/common-admin'
 import { computed, shallowRef, watch } from 'vue'
-import type { CachedItem } from '@/composables/system/defineCached'
+import type { CachedItem } from '@anzusystems/common-admin'
 import type { KeywordMinimal } from '@/types/coreDam/Keyword'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
