@@ -19,7 +19,7 @@ import { useI18n } from 'vue-i18n'
 import {
   createYoutubeDistribution,
   ENTITY,
-  getYoutubeAuthUrl,
+  getYoutubeAuthUrl, logoutYoutube,
   prepareFormDataYoutubeDistribution,
   redistributeYoutubeDistribution,
 } from '@/services/api/coreDam/distributionYoutubeApi'
@@ -221,6 +221,15 @@ const submit = () => {
     return
   }
   submitCreateNew()
+}
+
+const logout = async () => {
+  try {
+    await logoutYoutube(props.distributionServiceName)
+    closeDialog(true)
+  } catch (error) {
+    showErrorsDefault(error)
+  }
 }
 
 const distributionAuthStatus = computed(() => {
@@ -439,6 +448,12 @@ onUnmounted(async () => {
     <DistributionYoutubeTermOfUse class="pa-4 text-caption" />
   </VCardText>
   <VCardActions>
+    <ABtnTertiary
+      v-if="distributionAuthStatus !== DistributionAuthStatus.WaitingForLogin"
+      @click.stop="logout"
+    >
+      {{ t('coreDam.youtubeDistribution.logoutButton') }}
+    </ABtnTertiary>
     <VSpacer />
     <ABtnTertiary @click.stop="closeDialog(false)">
       {{ t('common.button.cancel') }}
