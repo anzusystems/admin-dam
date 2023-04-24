@@ -15,7 +15,7 @@ import {
   useAssetDetailDistributionDialog
 } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionCancelDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionCancelDialog.vue'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
+import type { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
