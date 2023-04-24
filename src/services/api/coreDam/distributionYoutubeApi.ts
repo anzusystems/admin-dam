@@ -90,3 +90,12 @@ export const fetchYoutubePlaylists = (distributionServiceName: DistributionServi
     ENTITY
   )
 }
+
+export const logoutYoutube = (distributionServiceName: DistributionServiceName) =>
+  apiFetchOne<any>(
+    damClient,
+    END_POINT + '/:distributionServiceName/logout',
+    { distributionServiceName },
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
