@@ -25,5 +25,11 @@
   "videoAdministrationLink": "Administrácia videa na YouTube",
   "loginDescription": "Prihlásiť sa na novej karte / okne a vrátiť sa naspäť",
   "loginButton": "Prihlásenie",
-  "logoutButton": "Odhlásiť YouTube kanál"
+  "logoutButton": "Odhlásiť YouTube kanál",
+  "logout": {
+    "logoutTitle": "Odhlásiť YouTube kanál",
+    "logoutText": "Skutočne sa chcete odhlásiť z tohto youtube kanála?",
+    "logoutOpen": "Odhlásiť YouTube kanál",
+    "logoutConfirm": "Potvrdiť odhlásenie"
+  }
 }
