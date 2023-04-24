@@ -24,5 +24,6 @@
   "videoPreviewLink": "Video preview on YouTube",
   "videoAdministrationLink": "Video administration on YouTube",
   "loginDescription": "Login on new tab/window, then return to this screen",
-  "loginButton": "Login"
+  "loginButton": "Login",
+  "logoutButton": "YouTube channel logout"
 }
