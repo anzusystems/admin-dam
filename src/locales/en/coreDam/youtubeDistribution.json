@@ -25,5 +25,10 @@
   "videoAdministrationLink": "Video administration on YouTube",
   "loginDescription": "Login on new tab/window, then return to this screen",
   "loginButton": "Login",
-  "logoutButton": "YouTube channel logout"
+  "logout": {
+    "logoutTitle": "YouTube channel logout",
+    "logoutText": "Do you want to logout on this YouTube channel?",
+    "logoutOpen": "YouTube channel logout",
+    "logoutConfirm": "Confirm logout"
+  }
 }
