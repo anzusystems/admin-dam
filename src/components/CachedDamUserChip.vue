@@ -57,6 +57,7 @@ watch(
       @click.stop="onClick"
     >
       <AAnzuUserAvatar
+        v-if="loaded"
         :user="cached ?? undefined"
         container-class="mr-1"
         :size="20"
