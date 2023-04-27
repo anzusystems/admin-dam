@@ -58,7 +58,6 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
   'common',
   'log'
 )
-pagination.sortBy = 'id'
 
 const getList = async () => {
   filter.contextAppSystem.model = props.system as LogSystem
@@ -83,6 +82,7 @@ const calculateCount = () => {
 }
 
 onMounted(() => {
+  pagination.sortBy = 'id'
   getList()
 })
 
