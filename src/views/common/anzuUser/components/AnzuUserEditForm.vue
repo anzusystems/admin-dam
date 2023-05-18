@@ -8,10 +8,7 @@ import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/co
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
 import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'
-import {
-  useAnzuUserCreateValidation,
-  useAnzuUserEditValidation
-} from '@/views/common/anzuUser/composables/anzuUserValidations'
+import { useAnzuUserEditValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 
 const props = defineProps<{

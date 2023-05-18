@@ -40,13 +40,5 @@ export const prepareFormDataCustomDistribution = (
     ENTITY
   )
 
-export const cancelCustomDistribution = (
-  distributionId: DocId
-) =>
-  apiDeleteOne(
-    damClient,
-    END_POINT + '/:distributionId',
-    { distributionId },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const cancelCustomDistribution = (distributionId: DocId) =>
+  apiDeleteOne(damClient, END_POINT + '/:distributionId', { distributionId }, SYSTEM_CORE_DAM, ENTITY)

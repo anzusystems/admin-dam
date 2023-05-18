@@ -6,7 +6,8 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  ASystemEntityScope, useAlerts,
+  ASystemEntityScope,
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'

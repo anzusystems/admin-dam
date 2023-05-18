@@ -155,9 +155,7 @@ const onBlur = () => {
     :model-value="modelValueComputed"
     @update:model-value="updateModelValue"
   />
-  <div
-    v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false"
-  >
+  <div v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false">
     optional boolean todo
   </div>
 </template>
