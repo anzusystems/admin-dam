@@ -52,7 +52,7 @@ const vueRouter = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: ANotFoundView,
-      props: { 'returnRouteName': ROUTE.SYSTEM.HOMEPAGE },
+      props: { returnRouteName: ROUTE.SYSTEM.HOMEPAGE },
       name: ROUTE.SYSTEM.NOT_FOUND,
       meta: {
         requiresAuth: false,
