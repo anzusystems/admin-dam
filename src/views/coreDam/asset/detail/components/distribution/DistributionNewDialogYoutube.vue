@@ -19,7 +19,7 @@ import { useI18n } from 'vue-i18n'
 import {
   createYoutubeDistribution,
   ENTITY,
-  getYoutubeAuthUrl, logoutYoutube,
+  getYoutubeAuthUrl,
   prepareFormDataYoutubeDistribution,
   redistributeYoutubeDistribution,
 } from '@/services/api/coreDam/distributionYoutubeApi'
@@ -29,26 +29,20 @@ import {
   DistributionYoutubePrivacy,
   useDistributionYoutubePrivacy,
 } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
-import DistributionYoutubeLanguageSelect
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
-import DistributionYoutubeTermOfUse
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
-import DistributionYoutubePlaylistSelect
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
+import DistributionYoutubeLanguageSelect from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
+import DistributionYoutubeTermOfUse from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
+import DistributionYoutubePlaylistSelect from '@/views/coreDam/asset/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import YoutubeLogo from '@/views/coreDam/asset/detail/components/distribution/YoutubeLogo.vue'
-import DistributionNewDialogYoutubeLogoutButton
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutubeLogoutButton.vue'
+import DistributionNewDialogYoutubeLogoutButton from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutubeLogoutButton.vue'
 
 const props = withDefaults(
   defineProps<{
