@@ -33,6 +33,7 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   dates: Dates
   links?: Links
   imagePreview: ImagePreviewNullable
+  altImage: ImagePreviewNullable
 }
 
 export interface PodcastMinimal {

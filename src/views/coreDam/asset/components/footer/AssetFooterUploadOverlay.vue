@@ -30,6 +30,10 @@ const queueProcessedCount = computed(() => {
   return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
 })
 
+const uploadSpeed = computed(() => {
+  return uploadQueuesStore.uploadSpeed
+})
+
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
     autoShowUpload()
@@ -75,6 +79,12 @@ const isUploading = computed(() => {
             v-if="isUploading"
             class="text-caption mr-2 d-flex align-center"
           >
+            <div>
+              Remaing time {{ uploadQueuesStore.totalSizeToUpload }}
+            </div>
+<!--            <div>-->
+<!--              Upload speed {{ uploadSpeed }}-->
+<!--            </div>-->
             <VProgressCircular
               indeterminate
               color="primary"

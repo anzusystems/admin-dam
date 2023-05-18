@@ -81,6 +81,19 @@
     "square": "štvorcový"
   },
   "list": {
+    "table": {
+      "thead": {
+        "thumbnail": "thumbnail",
+        "title": "title",
+        "createdDate": "createdDate",
+        "advanced": "advanced",
+        "format": "format",
+        "size": "size",
+        "createdBy": "createdBy",
+        "slot": "slot",
+        "actions": "actions"
+      }
+    },
     "noTitle": "žiadny nadpis",
     "gridView": {
       "masonry": "Dlaždice",
@@ -97,6 +110,7 @@
     "next": "Nasledujúci asset",
     "refresh": "Znovu načítať zoznam"
   },
+
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
     "toggleInfo": "Info karta",

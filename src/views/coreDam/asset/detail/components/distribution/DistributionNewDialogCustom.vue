@@ -117,7 +117,7 @@ const submitRedistribute = async () => {
   try {
     await redistributeCustomDistribution(existingDistributions.value[0].id, distribution.value)
     showRecordWas('updated')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -137,7 +137,7 @@ const submitCreateNew = async () => {
   try {
     await createCustomDistribution(assetFileId.value, distribution.value)
     showRecordWas('created')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
     showErrorsDefault(error)
   } finally {

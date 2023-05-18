@@ -31,7 +31,7 @@ const filter = reactive({
     ...makeFilter({ name: 'orientation', default: [] }),
   },
   described: {
-    ...makeFilter({ name: 'described', default: true }),
+    ...makeFilter({ name: 'described', default: null }),
   },
   visible: {
     ...makeFilter({ name: 'visible', default: true }),

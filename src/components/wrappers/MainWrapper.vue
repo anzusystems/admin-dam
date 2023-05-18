@@ -5,7 +5,6 @@ import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
-import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 import AssetFooterUploadSlotsOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
@@ -58,7 +57,13 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         </div>
         <div class="d-flex align-center">
           <slot name="main-bar-right" />
-          <AssetToolbarExtSystemLicence />
+          <Acl :permission="ACL.DAM_PODCAST_UI">
+            <VListItem
+              :to="{ name: ROUTE.DAM.PODCAST.LIST }"
+              :title="t('system.mainBar.podcasts')"
+              prepend-icon="mdi-podcast"
+            />
+          </Acl>
           <AssetToolbarOptions variant="main" />
           <AAdminSwitcher
             :config-url="envConfig.adminSwitcherConfigUrl"

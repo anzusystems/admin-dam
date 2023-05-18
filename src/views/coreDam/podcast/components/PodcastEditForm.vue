@@ -80,6 +80,10 @@ const { podcastModeOptions } = usePodcastMode()
             v-model="podcast.imagePreview"
             show-actions
           />
+          <ImagePreview
+            v-model="podcast.altImage"
+            show-actions
+          />
         </ARow>
       </VCol>
     </VRow>
