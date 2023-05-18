@@ -100,7 +100,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="config.strategy === DistributionRequirementStrategy.AtLeastOne">
+  <div v-if="config.blockedBy.length > 0">
     <VSelect
       v-model="value"
       multiple

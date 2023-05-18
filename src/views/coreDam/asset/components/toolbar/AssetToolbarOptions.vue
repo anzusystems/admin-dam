@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
+import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 import { ACL } from '@/types/Permission'
+import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 
 withDefaults(
   defineProps<{
@@ -30,13 +31,7 @@ const { t } = useI18n()
           <Acl :permission="ACL.DAM_ASSET_CREATE">
             <AssetCreateButton />
           </Acl>
-          <Acl :permission="ACL.DAM_PODCAST_UI">
-            <VListItem
-              :to="{ name: ROUTE.DAM.PODCAST.LIST }"
-              :title="t('system.mainBar.podcasts')"
-              prepend-icon="mdi-podcast"
-            />
-          </Acl>
+          <AssetToolbarExtSystemLicence />
           <VDivider />
           <VListItem
             v-show="variant === 'main'"

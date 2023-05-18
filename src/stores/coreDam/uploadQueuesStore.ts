@@ -30,7 +30,9 @@ import { fileTypeFix } from '@/services/fileType'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
-  uploadSpeed: null | number
+  uploadSpeed: null | number,
+  remainingTime: null | number,
+  totalSizeToUpload: number,
 }
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
@@ -44,6 +46,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   state: (): State => ({
     queues: {},
     uploadSpeed: null,
+    remainingTime: null,
+    totalSizeToUpload: 0,
   }),
   getters: {
     getQueueFileInputKey: (state) => {
@@ -121,6 +125,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async addByFiles(queueId: string, files: File[]) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
+
+        this.totalSizeToUpload += file.size
+
+        console.log(this.totalSizeToUpload / 1024 / 1024)
+
         const type = getAssetTypeByMimeType(fileTypeFix(file))
         if (!type) continue
         const queueItem = createDefault(

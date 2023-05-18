@@ -116,9 +116,11 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
       // @ts-ignore
       apiUploadChunk(queueItem, queueItem.fileId, chunkFile, chunkFile.size, offset, progressCallback)
         .then((result) => {
+          console.log('Uploaded chunk')
           resolve(result)
         })
         .catch((exception) => {
+          console.log('Failed to upload')
           reject(exception)
         })
     })

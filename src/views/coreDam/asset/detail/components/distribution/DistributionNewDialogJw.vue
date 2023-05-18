@@ -149,7 +149,7 @@ const submitRedistribute = async () => {
   try {
     await redistributeJwDistribution(existingDistributions.value[0].id, distribution.value)
     showRecordWas('updated')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -169,7 +169,7 @@ const submitCreateNew = async () => {
   try {
     await createJwDistribution(assetFileId.value, distribution.value)
     showRecordWas('created')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
     showErrorsDefault(error)
   } finally {

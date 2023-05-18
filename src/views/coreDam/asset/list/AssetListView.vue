@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
-import { useGridView } from '@/composables/system/gridView'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { GridView, useGridView } from '@/composables/system/gridView'
 import AssetDetailDialog from '@/views/coreDam/asset/detail/components/AssetDetailDialog.vue'
-import AssetListItem from '@/views/coreDam/asset/list/components/AssetListItem.vue'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
@@ -19,6 +18,10 @@ import AssetFooterUploadOverlayFull from '@/views/coreDam/asset/components/foote
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { onKeyUp } from '@vueuse/core'
+import AssetListTableView from '@/views/coreDam/asset/list/components/AssetListTableView.vue'
+import DistributionNewDialogEmpty
+  from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
+import AssetListTilesView from '@/views/coreDam/asset/list/components/AssetListTilesView.vue'
 
 const { t } = useI18n()
 
@@ -35,15 +38,10 @@ const {
   fetchNextPage,
   listMounted,
   listUnmounted,
-  showDetail,
-  onItemClick,
-  toggleSelected,
-  selectMultiple,
   prevItem,
   nextItem,
   onArrowRight,
   onArrowLeft,
-  showMetaIcons,
 } = useAssetListActions(sidebarRight)
 
 const { footerViewSelected } = useAssetFooterSelectedView()
@@ -67,9 +65,21 @@ onMounted(async () => {
   await listMounted()
 })
 
+const componentComputed = computed<string>(() => {
+  switch (gridView.value) {
+    case GridView.Table:
+      return AssetListTableView
+    case GridView.Masonry:
+    case GridView.Thumbnail:
+    default:
+      return AssetListTilesView
+  }
+})
+
 onUnmounted(() => {
   listUnmounted()
 })
+
 </script>
 
 <template>
@@ -85,20 +95,9 @@ onUnmounted(() => {
         />
       </div>
       <div v-else-if="items.length">
-        <div
-          class="dam-image-grid"
-          :class="'dam-image-grid--' + gridView"
-        >
-          <AssetListItem
-            v-for="(item, index) in items"
-            :key="item.asset.id"
-            :index="index"
-            :item="item"
-            :show-meta-icons="showMetaIcons"
-            @show-detail="showDetail"
-            @item-click="onItemClick"
-            @toggle-selected="toggleSelected"
-            @select-multiple="selectMultiple"
+        <div>
+          <component
+            :is="componentComputed"
           />
           <div
             v-if="loader.soft"
@@ -128,7 +127,7 @@ onUnmounted(() => {
       </div>
     </template>
     <template #main-bar-left>
-      <AssetToolbarSearch />
+      <AssetToolbarSearch/>
       <AssetUpload
         variant="button"
         :button-text="t('system.mainBar.upload')"
@@ -139,7 +138,7 @@ onUnmounted(() => {
         vertical
         class="ml-1 mr-2 my-2"
       />
-      <AssetToolbarTypeFilters />
+      <AssetToolbarTypeFilters/>
     </template>
     <template #second-bar-right>
       <VBtn
@@ -149,7 +148,7 @@ onUnmounted(() => {
         class="ml-1"
         @click.stop="fetchAssetList"
       >
-        <VIcon icon="mdi-refresh" />
+        <VIcon icon="mdi-refresh"/>
         <VTooltip
           activator="parent"
           location="bottom"
@@ -161,25 +160,25 @@ onUnmounted(() => {
         vertical
         class="mx-1 my-2 hidden-xs"
       />
-      <GridViewToggle class="hidden-xs" />
+      <GridViewToggle class="hidden-xs"/>
       <VDivider
         vertical
         class="mx-1 my-2"
       />
     </template>
     <template #sidebar-left>
-      <AssetListSidebarFilter />
+      <AssetListSidebarFilter/>
     </template>
     <template #sidebar-right>
-      <AssetListSidebarMetadata />
+      <AssetListSidebarMetadata/>
     </template>
     <template #custom-footer>
-      <AssetFooterSelected />
+      <AssetFooterSelected/>
     </template>
     <template #custom-dialog>
       <div class="asset-footer d-flex flex-column justify-space-between w-100 h-100">
-        <AssetFooterSelectedFull v-if="footerViewSelected === FooterViewSelected.Full" />
-        <AssetFooterUploadOverlayFull v-else-if="footerViewUpload === FooterViewUpload.Full" />
+        <AssetFooterSelectedFull v-if="footerViewSelected === FooterViewSelected.Full"/>
+        <AssetFooterUploadOverlayFull v-else-if="footerViewUpload === FooterViewUpload.Full"/>
       </div>
     </template>
   </MainWrapper>
