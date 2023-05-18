@@ -87,7 +87,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Ass
   const switchSlot = async (data: { sourceSlotName: string; targetSlotName: string }) => {
     const cloned = cloneDeep<Record<string, null | AssetSlot>>(assetSlotsStore.getPositionedSlots)
     {
-      [cloned[data.sourceSlotName], cloned[data.targetSlotName]] = [
+      ;[cloned[data.sourceSlotName], cloned[data.targetSlotName]] = [
         cloned[data.targetSlotName],
         cloned[data.sourceSlotName],
       ]
