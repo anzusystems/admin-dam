@@ -53,6 +53,7 @@ const { openCancel } = useAssetDetailDistributionDialogCancel()
   <div class="d-flex flex-column mb-8">
     <component
       :is="componentComputed"
+      v-if="distributionType"
       :item="item"
       :asset-type="assetType"
       :distribution-type="distributionType"
