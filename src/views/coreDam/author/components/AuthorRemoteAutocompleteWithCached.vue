@@ -7,15 +7,13 @@ import { computed, onMounted, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import type { Author } from '@/types/coreDam/Author'
 import { useVuelidate } from '@vuelidate/core'
-import AuthorRemoteAutocompleteCachedAuthorChip
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import {
   useCachedAuthors,
   useCachedAuthorsForRemoteAutocomplete,
 } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useI18n } from 'vue-i18n'
-import AuthorRemoteAutocompleteCachedAuthorChipConflicts
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
+import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
 
 const props = withDefaults(
   defineProps<{

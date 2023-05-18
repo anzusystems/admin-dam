@@ -19,7 +19,7 @@ const dialog = ref(false)
 const buttonLoading = ref(false)
 
 const { t } = useI18n()
-const {  showErrorsDefault } = useAlerts()
+const { showErrorsDefault } = useAlerts()
 
 const openDialog = () => {
   dialog.value = true
@@ -36,17 +36,14 @@ const confirmLogout = async () => {
     emit('onSuccessLogout')
   } catch (error) {
     showErrorsDefault(error)
-  }
-  finally {
+  } finally {
     buttonLoading.value = false
   }
 }
 </script>
 
 <template>
-  <ABtnTertiary
-    @click.stop="openDialog"
-  >
+  <ABtnTertiary @click.stop="openDialog">
     {{ t('coreDam.youtubeDistribution.logout.logoutOpen') }}
   </ABtnTertiary>
   <VDialog v-model="dialog">
