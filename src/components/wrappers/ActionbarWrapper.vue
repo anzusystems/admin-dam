@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/composables/system/actionbar'
 import { computed } from 'vue'
-import { isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
+import { isString, isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
 import { type RouteParams, type RouteRecordName, useRoute } from 'vue-router'
 
 const props = withDefaults(
@@ -74,7 +74,7 @@ const breadcrumbs = computed(() => {
             &raquo;
           </VBreadcrumbsDivider>
           <VBreadcrumbs
-            :key="route.name"
+            :key="isString(route.name) ? route.name : route.fullPath"
             class="pl-1 min-width-0"
             density="compact"
           >
