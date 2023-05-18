@@ -19,6 +19,7 @@ import { useClipboard } from '@vueuse/core'
 import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 
 const props = withDefaults(
   defineProps<{
@@ -167,14 +168,14 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
       </VCol>
     </VRow>
     <VRow v-else>
-      <VCol v-if="itemHasFile">
+      <VCol v-if="itemHasFile && item && item.assetFile">
         <div class="font-weight-bold">
           {{ slotName }} <span v-if="item && item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
-          <div v-if="item.assetFile.fileAttributes.status === AssetFileProcessStatus.Failed">
+          <div v-if="item?.assetFile?.fileAttributes.status === AssetFileProcessStatus.Failed">
             {{ t('coreDam.distribution.common.failReason') }}:
             <AssetFileFailReasonChip
               class="ml-2"
-              :reason="item.assetFile.fileAttributes.failReason"
+              :reason="item?.assetFile?.fileAttributes.failReason as AssetFileFailReason"
             />
           </div>
         </div>
