@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
+import { AAssetSelect, ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImageFile } from '@/types/coreDam/File'
@@ -143,7 +143,7 @@ watch(
       class="my-2 mr-2"
       @click.stop="dialog = true"
     >
-      {{ t('system.imagePreview.actions.replaceByFileId') }}
+      {{ t('system.imagePreview.actions.selectImage') }}
     </VBtn>
     <VBtn
       v-if="fileIdModel !== null"
@@ -164,12 +164,12 @@ watch(
       data-cy="delete-panel"
     >
       <ADialogToolbar @on-cancel="onCancel">
-        {{ t('system.imagePreview.actions.replaceByFileId') }}
+        {{ t('system.imagePreview.actions.selectImage') }}
       </ADialogToolbar>
       <VCardText>
         <VTextField
           v-model="newFileId"
-          :label="t('system.imagePreview.actions.replaceByFileId')"
+          :label="t('system.imagePreview.actions.selectImage')"
         />
       </VCardText>
       <VCardActions>

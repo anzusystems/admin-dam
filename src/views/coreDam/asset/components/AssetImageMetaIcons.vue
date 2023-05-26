@@ -90,15 +90,15 @@ const data = computed(() => {
 </template>
 
 <style lang="scss">
-//.asset-image__meta-icons {
-//  position: absolute;
-//  left: 6px;
-//  top: 163px;
-//  display: flex;
-//
+.asset-image__meta-icons {
+  position: absolute;
+  left: 6px;
+  top: 163px;
+  display: flex;
+
   img.img-svg {
     height: 30px;
     padding: 2px;
   }
-//}
+}
 </style>

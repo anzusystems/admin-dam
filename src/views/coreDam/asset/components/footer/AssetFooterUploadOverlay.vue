@@ -4,7 +4,7 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { computed, watch } from 'vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueUploadList from '@/views/coreDam/asset/components/queue/AssetQueueUploadList.vue'
-import { useTheme } from '@anzusystems/common-admin'
+import { prettyBytes, useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -28,6 +28,10 @@ const queueTotalCount = computed(() => {
 })
 const queueProcessedCount = computed(() => {
   return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
+})
+
+const queueWaitingFilesSize = computed(() => {
+  return uploadQueuesStore.getQueue(QUEUE_ID_UPLOAD_GLOBAL)?.waitingFilesSize || 0
 })
 
 const uploadSpeed = computed(() => {
@@ -79,12 +83,6 @@ const isUploading = computed(() => {
             v-if="isUploading"
             class="text-caption mr-2 d-flex align-center"
           >
-            <div>
-              Remaing time {{ uploadQueuesStore.totalSizeToUpload }}
-            </div>
-<!--            <div>-->
-<!--              Upload speed {{ uploadSpeed }}-->
-<!--            </div>-->
             <VProgressCircular
               indeterminate
               color="primary"

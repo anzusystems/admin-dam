@@ -10,10 +10,16 @@ import {
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { onMounted } from 'vue'
+import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
+import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 
 const { t } = useI18n()
 
 const IMAGE_HEIGHT = 70
+
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
 const props = withDefaults(
   defineProps<{
@@ -30,8 +36,13 @@ const {
   asset,
   assetType,
   assetStatus,
-  imageProperties,
+  tableImageProperties,
 } = useAssetItemActions(props.item)
+
+const {
+  addToCachedPodcasts,
+  fetchCachedPodcasts,
+} = useCachedPodcasts()
 
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
@@ -55,10 +66,20 @@ const toggleSelected = () => {
 const selectMultiple = () => {
   emit('selectMultiple', { assetId: asset.value.id, index: props.index })
 }
+
+onMounted(() => {
+  addToCachedUsers(props.item.asset.createdBy)
+  fetchCachedUsers() // todo add to list
+  addToCachedPodcasts(props.item.asset.podcasts)
+  fetchCachedPodcasts()
+})
+
 </script>
 
 <template>
   <tr
+    class="a-table__row"
+    :class="{ 'a-table__row--selected': item.selected, 'a-table__row--active': item.active }"
     @click.stop.exact="onItemClick"
     @dblclick.stop.exact="showDetail"
     @click.ctrl.stop="toggleSelected"
@@ -68,9 +89,9 @@ const selectMultiple = () => {
       <AssetImage
         :asset-type="assetType"
         :asset-status="assetStatus"
-        :src="imageProperties.url"
-        :background-color="imageProperties.bgColor"
-        :width="imageProperties.width"
+        :src="tableImageProperties.url"
+        :background-color="tableImageProperties.bgColor"
+        :width="tableImageProperties.width"
         :height="IMAGE_HEIGHT"
         :icon-size="20"
         :fallback-height="IMAGE_HEIGHT"
@@ -78,7 +99,6 @@ const selectMultiple = () => {
       />
     </td>
     <td>
-      {{ item.active }}
       {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
     </td>
     <td>
@@ -88,6 +108,12 @@ const selectMultiple = () => {
       <AssetImageMetaIcons
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
+      />
+      <CachedPodcastChip
+        v-for="podcastItem in item.asset.podcasts"
+        :id="podcastItem"
+        :key="podcastItem"
+        :item="podcastItem"
       />
     </td>
     <td>

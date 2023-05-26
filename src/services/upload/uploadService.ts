@@ -116,11 +116,9 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
       // @ts-ignore
       apiUploadChunk(queueItem, queueItem.fileId, chunkFile, chunkFile.size, offset, progressCallback)
         .then((result) => {
-          console.log('Uploaded chunk')
           resolve(result)
         })
         .catch((exception) => {
-          console.log('Failed to upload')
           reject(exception)
         })
     })
@@ -149,15 +147,14 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   function speedCheck() {
     function speedCheckRun() {
       speedStack = speedStack.slice(-15)
-
-      // if (speedStack.length > 7) {
       if (speedStack.length > 0) {
-        const avgSpeed = speedStack.reduce((sum, current) => sum + current) / speedStack.length
+        const avgSpeed = Math.ceil(speedStack.reduce((sum, current) => sum + current) / speedStack.length)
+        const remainingBytes = Math.ceil(fileSize.value * ((100 - progress.value) / 100))
 
         uploadCallback(
           progress.value,
-          avgSpeed / 1024,
-          Math.ceil((fileSize.value / avgSpeed) * (100 - progress.value)) * 10
+          avgSpeed,
+          Math.ceil(remainingBytes / avgSpeed)
         )
       }
 
@@ -214,5 +211,6 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
 }
 
 export const uploadStop = (cancelTokenSource: CancelTokenSource) => {
+  // todo stop speed check
   cancelTokenSource.cancel('axios request cancelled')
 }
