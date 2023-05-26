@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { useI18n } from 'vue-i18n'
+import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider'
+import { prettyBytes, timePretty, useRemainingTime } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -38,6 +40,8 @@ const cancelItem = () => {
 const showCancel = computed(() => {
   return [QueueItemStatus.Loading, QueueItemStatus.Waiting, QueueItemStatus.Uploading].includes(props.item.status)
 })
+
+const { remainingTime } = useRemainingTime()
 </script>
 
 <template>
@@ -98,7 +102,10 @@ const showCancel = computed(() => {
           </VBtn>
         </div>
         <div class="text-caption line-clamp-1">
-          {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
+          <b v-if="item.progress.remainingTime && item.progress.remainingTime > 0">
+            {{ remainingTime(item.progress.remainingTime) }}
+          </b>
+           {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
         </div>
       </div>
     </div>

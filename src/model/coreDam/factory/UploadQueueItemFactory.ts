@@ -41,6 +41,7 @@ export function useUploadQueueItemFactory() {
       progress: {
         remainingTime: null,
         progressPercent: null,
+        speed: null,
       },
       canEditMetadata: false,
       error: {

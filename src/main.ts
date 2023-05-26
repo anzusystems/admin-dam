@@ -20,6 +20,7 @@ import {
 import { useCurrentUser } from '@/composables/system/currentUser'
 import type { AclValue } from '@/types/Permission'
 import '@anzusystems/common-admin/styles'
+import { damClient } from '@/services/api/clients/damClient'
 
 export const DEFAULT_LANGUAGE: LanguageCode = 'sk'
 export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['en', 'sk']
@@ -39,6 +40,9 @@ loadEnvConfig(() => {
       languages: {
         available: AVAILABLE_LANGUAGES,
         default: DEFAULT_LANGUAGE,
+      },
+      coreDam: {
+        client: damClient,
       },
     })
     .component('AppLayoutLoader', AppLayoutLoader)

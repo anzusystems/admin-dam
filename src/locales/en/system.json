@@ -34,7 +34,7 @@
     },
     "actions": {
       "unassign": "Unassign image",
-      "replaceByFileId": "Replace by file ID",
+      "selectImage": "Select image",
       "chooseFromDistribution": "Choose from distribution"
     }
   },

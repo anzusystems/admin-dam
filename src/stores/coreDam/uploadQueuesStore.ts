@@ -32,7 +32,6 @@ interface State {
   queues: { [queueId: string]: UploadQueue }
   uploadSpeed: null | number,
   remainingTime: null | number,
-  totalSizeToUpload: number,
 }
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
@@ -47,7 +46,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     queues: {},
     uploadSpeed: null,
     remainingTime: null,
-    totalSizeToUpload: 0,
   }),
   getters: {
     getQueueFileInputKey: (state) => {
@@ -125,11 +123,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async addByFiles(queueId: string, files: File[]) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
-
-        this.totalSizeToUpload += file.size
-
-        console.log(this.totalSizeToUpload / 1024 / 1024)
-
         const type = getAssetTypeByMimeType(fileTypeFix(file))
         if (!type) continue
         const queueItem = createDefault(
@@ -347,6 +340,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       })
       try {
         await uploadInit()
+        this.recalculateWaitingFilesSize(queueId)
         await upload()
         this.processUpload(queueId)
       } catch (e) {
@@ -466,6 +460,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     setUploadSpeed(item: UploadQueueItem, progress: number, speed: number, estimate: number) {
       item.progress.progressPercent = progress
       item.progress.remainingTime = estimate
+      item.progress.speed = speed
       this.uploadSpeed = speed
     },
     recalculateQueueCounts(queueId: string) {
@@ -473,6 +468,21 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       this.queues[queueId].processedCount =
         this.getQueueItemsByStatus(queueId, QueueItemStatus.Uploaded).length +
         this.getQueueItemsByStatus(queueId, QueueItemStatus.Failed).length
+    },
+    recalculateWaitingFilesSize(queueId: string) {
+      const queue = this.getQueue(queueId)
+
+      if (null === queue) {
+        return
+      }
+
+      let totalFileSizeToUpload = 0
+      this.getQueueItemsByStatus(queueId, QueueItemStatus.Waiting).map(
+        function (item: UploadQueueItem) {
+          totalFileSizeToUpload += item.file?.size || 0
+        }
+      )
+      queue.waitingFilesSize = totalFileSizeToUpload
     },
     clearQueue(queueId: string) {
       this.queues[queueId] = {

@@ -21,6 +21,7 @@ const {
 
 <template>
   <v-table
+    class="a-table"
     fixed-header
   >
     <thead>
