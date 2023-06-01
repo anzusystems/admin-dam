@@ -13,6 +13,7 @@ import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/A
 import { ACL } from '@/types/Permission'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
+import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 
 const { t } = useI18n()
 
@@ -57,13 +58,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         </div>
         <div class="d-flex align-center">
           <slot name="main-bar-right" />
-          <Acl :permission="ACL.DAM_PODCAST_UI">
-            <VListItem
-              :to="{ name: ROUTE.DAM.PODCAST.LIST }"
-              :title="t('system.mainBar.podcasts')"
-              prepend-icon="mdi-podcast"
-            />
-          </Acl>
+          <AssetToolbarExtSystemLicence />
           <AssetToolbarOptions variant="main" />
           <AAdminSwitcher
             :config-url="envConfig.adminSwitcherConfigUrl"

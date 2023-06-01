@@ -3,8 +3,7 @@ import { computed } from 'vue'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { useI18n } from 'vue-i18n'
-import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider'
-import { prettyBytes, timePretty, useRemainingTime } from '@anzusystems/common-admin'
+import { useRemainingTime } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -41,11 +40,11 @@ const showCancel = computed(() => {
   return [QueueItemStatus.Loading, QueueItemStatus.Waiting, QueueItemStatus.Uploading].includes(props.item.status)
 })
 
-const { remainingTime } = useRemainingTime()
+const { remainingTimeShort } = useRemainingTime()
 </script>
 
 <template>
-  <div class="dam-upload-queue__item d-flex">
+  <div class="dam-upload-queue__item">
     <div class="dam-upload-queue__item-card">
       <div class="d-flex align-center w-100">
         <div class="position-relative pr-1">
@@ -101,11 +100,21 @@ const { remainingTime } = useRemainingTime()
             </VTooltip>
           </VBtn>
         </div>
-        <div class="text-caption line-clamp-1">
-          <b v-if="item.progress.remainingTime && item.progress.remainingTime > 0">
-            {{ remainingTime(item.progress.remainingTime) }}
-          </b>
-           {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
+        <div class="text-caption text-truncate">
+          {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
+          <VTooltip
+            v-if="item.displayTitle"
+            activator="parent"
+            location="bottom"
+          >
+            {{ item.displayTitle }}
+          </VTooltip>
+        </div>
+        <div
+          v-if="item.progress.remainingTime && item.progress.remainingTime > 0"
+          class="ml-auto text-caption font-weight-bold text-no-wrap"
+        >
+          {{ remainingTimeShort(item.progress.remainingTime) }}
         </div>
       </div>
     </div>

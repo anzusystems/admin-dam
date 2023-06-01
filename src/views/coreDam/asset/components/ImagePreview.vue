@@ -9,6 +9,7 @@ import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { AssetType as AssetTypeValue } from '@/model/coreDam/valueObject/AssetType'
 
 const props = withDefaults(
   defineProps<{
@@ -173,7 +174,11 @@ watch(
       </VBtn>
       <AAssetSelect
         :asset-licence-id="currentAssetLicenceId"
-        @on-confirm="selectAsset">
+        :min-count="1"
+        :max-count="1"
+        :asset-type="AssetTypeValue.Image"
+        @on-confirm="selectAsset"
+      >
         <template #button-open-dialog="{ activator }">
           <VBtn
             variant="text"

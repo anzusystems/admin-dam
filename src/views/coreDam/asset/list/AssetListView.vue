@@ -19,8 +19,6 @@ import { FooterViewSelected, useAssetFooterSelectedView } from '@/composables/sy
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { onKeyUp } from '@vueuse/core'
 import AssetListTableView from '@/views/coreDam/asset/list/components/AssetListTableView.vue'
-import DistributionNewDialogEmpty
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import AssetListTilesView from '@/views/coreDam/asset/list/components/AssetListTilesView.vue'
 
 const { t } = useI18n()
@@ -65,7 +63,7 @@ onMounted(async () => {
   await listMounted()
 })
 
-const componentComputed = computed<string>(() => {
+const componentComputed = computed(() => {
   switch (gridView.value) {
     case GridView.Table:
       return AssetListTableView
@@ -79,7 +77,6 @@ const componentComputed = computed<string>(() => {
 onUnmounted(() => {
   listUnmounted()
 })
-
 </script>
 
 <template>
@@ -96,9 +93,7 @@ onUnmounted(() => {
       </div>
       <div v-else-if="items.length">
         <div>
-          <component
-            :is="componentComputed"
-          />
+          <component :is="componentComputed" />
           <div
             v-if="loader.soft"
             class="w-100 d-flex align-center justify-center pa-4"
@@ -127,7 +122,7 @@ onUnmounted(() => {
       </div>
     </template>
     <template #main-bar-left>
-      <AssetToolbarSearch/>
+      <AssetToolbarSearch />
       <AssetUpload
         variant="button"
         :button-text="t('system.mainBar.upload')"
@@ -138,7 +133,7 @@ onUnmounted(() => {
         vertical
         class="ml-1 mr-2 my-2"
       />
-      <AssetToolbarTypeFilters/>
+      <AssetToolbarTypeFilters />
     </template>
     <template #second-bar-right>
       <VBtn
@@ -148,7 +143,7 @@ onUnmounted(() => {
         class="ml-1"
         @click.stop="fetchAssetList"
       >
-        <VIcon icon="mdi-refresh"/>
+        <VIcon icon="mdi-refresh" />
         <VTooltip
           activator="parent"
           location="bottom"
@@ -160,25 +155,25 @@ onUnmounted(() => {
         vertical
         class="mx-1 my-2 hidden-xs"
       />
-      <GridViewToggle class="hidden-xs"/>
+      <GridViewToggle class="hidden-xs" />
       <VDivider
         vertical
         class="mx-1 my-2"
       />
     </template>
     <template #sidebar-left>
-      <AssetListSidebarFilter/>
+      <AssetListSidebarFilter />
     </template>
     <template #sidebar-right>
-      <AssetListSidebarMetadata/>
+      <AssetListSidebarMetadata />
     </template>
     <template #custom-footer>
-      <AssetFooterSelected/>
+      <AssetFooterSelected />
     </template>
     <template #custom-dialog>
       <div class="asset-footer d-flex flex-column justify-space-between w-100 h-100">
-        <AssetFooterSelectedFull v-if="footerViewSelected === FooterViewSelected.Full"/>
-        <AssetFooterUploadOverlayFull v-else-if="footerViewUpload === FooterViewUpload.Full"/>
+        <AssetFooterSelectedFull v-if="footerViewSelected === FooterViewSelected.Full" />
+        <AssetFooterUploadOverlayFull v-else-if="footerViewUpload === FooterViewUpload.Full" />
       </div>
     </template>
   </MainWrapper>

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import type { AssetListItem } from '@/stores/coreDam/assetListStore'
-import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
 import type { DocId } from '@anzusystems/common-admin'
-import { isImageFile } from '@/types/coreDam/File'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
@@ -11,7 +8,6 @@ import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/asse
 const { t } = useI18n()
 
 const IMAGE_HEIGHT = 200
-const IMAGE_BG_COLOR_DEFAULT = '#ccc'
 
 const props = withDefaults(
   defineProps<{
@@ -24,12 +20,7 @@ const props = withDefaults(
   }
 )
 
-const {
-  asset,
-  assetType,
-  assetStatus,
-  imageProperties,
-} = useAssetItemActions(props.item)
+const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
 
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
@@ -53,7 +44,6 @@ const toggleSelected = () => {
 const selectMultiple = () => {
   emit('selectMultiple', { assetId: asset.value.id, index: props.index })
 }
-
 </script>
 
 <template>

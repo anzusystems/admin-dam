@@ -263,8 +263,7 @@ const showIconComputed = computed(() => {
   </div>
   <div
     v-else
-    :style="{ height: fallbackHeight + 'px', backgroundColor: backgroundColorComputed }"
-    style="width: 100%"
+    :style="{ height: fallbackHeight + 'px', backgroundColor: backgroundColorComputed, width: width + 'px' }"
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
     <div
