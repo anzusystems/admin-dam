@@ -1,26 +1,15 @@
 <script lang="ts" setup>
-
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { useI18n } from 'vue-i18n'
 import { useGridView } from '@/composables/system/gridView'
 import AssetListItem from '@/views/coreDam/asset/list/components/AssetListItem.vue'
 
 const { sidebarRight } = useMainWrapper()
 
-const { t } = useI18n()
-
 const { gridView } = useGridView()
 
-const {
-  items,
-  showDetail,
-  onItemClick,
-  toggleSelected,
-  selectMultiple,
-  showMetaIcons,
-} = useAssetListActions(sidebarRight)
-
+const { items, showDetail, onItemClick, toggleSelected, selectMultiple, showMetaIcons } =
+  useAssetListActions(sidebarRight)
 </script>
 
 <template>

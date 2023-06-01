@@ -51,9 +51,9 @@ export function useAssetItemActions(item: AssetListItem) {
   })
 
   const getBgColor = () => {
-    return  isImageFile(asset.value.mainFile) &&
-    asset.value.mainFile.imageAttributes &&
-    asset.value.mainFile.imageAttributes.mostDominantColor
+    return isImageFile(asset.value.mainFile) &&
+      asset.value.mainFile.imageAttributes &&
+      asset.value.mainFile.imageAttributes.mostDominantColor
       ? asset.value.mainFile.imageAttributes.mostDominantColor
       : IMAGE_BG_COLOR_DEFAULT
   }

@@ -59,7 +59,7 @@ export interface UploadQueueItem {
   progress: {
     remainingTime: null | number
     progressPercent: null | number
-    speed: null | number,
+    speed: null | number
   }
   error: {
     hasError: boolean
@@ -73,7 +73,6 @@ export interface UploadQueueItem {
 
 export interface UploadQueue {
   items: UploadQueueItem[]
-  waitingFilesSize: number,
   totalCount: number
   processedCount: number
   fileInputKey: number // used to reset html input file element
