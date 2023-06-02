@@ -97,7 +97,8 @@
     "noTitle": "žiadny nadpis",
     "gridView": {
       "masonry": "Dlaždice",
-      "thumbnail": "Mriežka"
+      "thumbnail": "Mriežka",
+      "table": "Zoznam"
     },
     "infoToggle": "Info karta",
     "filterToggle": "Filtre",
