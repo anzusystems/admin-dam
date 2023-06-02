@@ -55,10 +55,19 @@ const altImgSrc = computed(() => {
       </ARow>
       <ARow
         v-if="imageSrc"
-        title="Image"
+        :title="t('coreDam.podcast.model.imagePreview')"
       >
         <AssetImage
           :src="imageSrc"
+          use-component
+        />
+      </ARow>
+      <ARow
+        v-if="altImgSrc"
+        :title="t('coreDam.podcast.model.altImage')"
+      >
+        <AssetImage
+          :src="altImgSrc"
           use-component
         />
       </ARow>

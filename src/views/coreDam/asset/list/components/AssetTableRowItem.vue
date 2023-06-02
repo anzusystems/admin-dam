@@ -3,7 +3,7 @@ import type { AssetListItem } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { DocId } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { ADatetime, ATableCopyIdButton, ATableEditButton, prettyBytes } from '@anzusystems/common-admin'
+import { AChipNoLink, ADatetime, ATableCopyIdButton, ATableEditButton, prettyBytes } from '@anzusystems/common-admin'
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
@@ -111,10 +111,10 @@ onMounted(() => {
         disable-absolute
       />
       <CachedPodcastChip
-        class="pr-1"
         v-for="podcastItem in item.asset.podcasts"
         :id="podcastItem"
         :key="podcastItem"
+        class="pr-1"
         :item="podcastItem"
       />
     </td>
@@ -128,10 +128,13 @@ onMounted(() => {
       <CachedDamUserChip :id="asset.createdBy" />
     </td>
     <td>
-      <span
+      <AChipNoLink
         v-for="text in asset.assetFileProperties.slotNames"
         :key="text"
-      >{{ text }}</span>
+        class="mr-1"
+      >
+        {{ text }}
+      </AChipNoLink>
     </td>
     <td>
       <div class="d-flex justify-end">

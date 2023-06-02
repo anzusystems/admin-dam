@@ -97,7 +97,8 @@
     "noTitle": "no title",
     "gridView": {
       "masonry": "Masonry",
-      "thumbnail": "Grid"
+      "thumbnail": "Grid",
+      "table": "List"
     },
     "infoToggle": "Toggle info",
     "filterToggle": "Toggle filters",
