@@ -6,8 +6,8 @@ import { envConfig } from '@/services/EnvConfigService'
 const chunkSize = ref<number | undefined>(undefined)
 
 export function useChunkSizeService() {
-  // todo default chunk size between min/max
   const lastChunkSize = ref(chunkSize.value || damConfig.settings.imageChunkConfig.minSize)
+
   const minUploadTimeThreshold = envConfig.dam.apiTimeout / 5
   const idealUploadTimeThreshold = envConfig.dam.apiTimeout / 4
   const maxUploadTimeThreshold = envConfig.dam.apiTimeout / 2
