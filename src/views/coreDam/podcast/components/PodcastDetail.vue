@@ -15,6 +15,10 @@ const { t } = useI18n()
 const imageSrc = computed(() => {
   return podcast.value.links ? podcast.value.links.image_list.url : undefined
 })
+const altImgSrc = computed(() => {
+  return podcast.value.altLinks ? podcast.value.altLinks.image_list.url : undefined
+})
+
 </script>
 
 <template>

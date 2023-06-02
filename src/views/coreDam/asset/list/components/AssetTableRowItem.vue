@@ -102,7 +102,6 @@ onMounted(() => {
       {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
     </td>
     <td>
-      -
       <ADatetime :date-time="item.asset.createdAt" />
     </td>
     <td>
@@ -112,6 +111,7 @@ onMounted(() => {
         disable-absolute
       />
       <CachedPodcastChip
+        class="pr-1"
         v-for="podcastItem in item.asset.podcasts"
         :id="podcastItem"
         :key="podcastItem"

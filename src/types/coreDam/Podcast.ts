@@ -32,6 +32,7 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   attributes: Attributes
   dates: Dates
   links?: Links
+  altLinks?: Links
   imagePreview: ImagePreviewNullable
   altImage: ImagePreviewNullable
 }
