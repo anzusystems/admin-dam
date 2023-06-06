@@ -90,8 +90,7 @@
         "format": "format",
         "size": "size",
         "createdBy": "createdBy",
-        "slot": "slot",
-        "actions": "actions"
+        "slot": "slot"
       }
     },
     "noTitle": "no title",

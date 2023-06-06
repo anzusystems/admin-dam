@@ -83,15 +83,14 @@
   "list": {
     "table": {
       "thead": {
-        "thumbnail": "thumbnail",
-        "title": "title",
-        "createdDate": "createdDate",
-        "advanced": "advanced",
-        "format": "format",
-        "size": "size",
-        "createdBy": "createdBy",
-        "slot": "slot",
-        "actions": "actions"
+        "thumbnail": "Náhľad",
+        "title": "Titulok",
+        "createdDate": "Vytvorené",
+        "advanced": "Pokročilé",
+        "format": "Formát",
+        "size": "Veľkosť",
+        "createdBy": "Vytvoril",
+        "slot": "Sloty"
       }
     },
     "noTitle": "žiadny nadpis",
