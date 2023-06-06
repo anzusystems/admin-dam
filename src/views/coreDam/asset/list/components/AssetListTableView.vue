@@ -12,7 +12,7 @@ const { items, showDetail, onItemClick, toggleSelected, selectMultiple } = useAs
 </script>
 
 <template>
-  <v-table
+  <VTable
     class="a-table"
     fixed-header
   >
@@ -58,5 +58,5 @@ const { items, showDetail, onItemClick, toggleSelected, selectMultiple } = useAs
         @select-multiple="selectMultiple"
       />
     </tbody>
-  </v-table>
+  </VTable>
 </template>
