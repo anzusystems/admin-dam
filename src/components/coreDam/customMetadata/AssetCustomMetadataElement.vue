@@ -117,7 +117,6 @@ const onBlur = () => {
         class="required"
       />
     </template>
-    asd
   </VTextarea>
   <VTextField
     v-else-if="config.attributes.type === CustomFormType.Number"
