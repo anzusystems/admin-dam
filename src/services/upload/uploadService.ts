@@ -3,13 +3,16 @@ import sha1 from 'js-sha1'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
-import axios, { type CancelTokenSource } from 'axios'
+import type { CancelTokenSource } from 'axios'
 import {
   type AnzuApiValidationResponseData,
   axiosErrorResponseHasValidationData,
   i18n,
+  isUndefined,
   NEW_LINE_MARK,
 } from '@anzusystems/common-admin'
+import { useChunkSizeService } from '@/services/upload/chunkSizeService'
+import axios from 'axios'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
@@ -52,10 +55,9 @@ const handleValidationErrorMessage = (error: Error | any) => {
   return errorMessages.length > 0 ? errorMessages.join(NEW_LINE_MARK) : t('system.uploadErrors.unknownError')
 }
 
-const readFile = async (index: number, file: File, chunkSize: number): Promise<{ data: string; offset: number }> => {
+const readFile = async (offset: number, size: number, file: File): Promise<{ data: string; offset: number }> => {
   return new Promise((resolve, reject) => {
-    const offset = index * chunkSize
-    const partial = file.slice(offset, offset + chunkSize)
+    const partial = file.slice(offset, offset + size)
     const reader = new FileReader()
     reader.onload = function (e) {
       if (e.target?.readyState === FileReader.DONE) {
@@ -74,19 +76,24 @@ const sleep = (ms: number) => {
 }
 
 export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = undefined) {
-  const chunkTotalCount = ref(0)
   const fileSize = ref(0)
 
   const progress = ref(0)
+
   let speedStack: any[] = []
   let lastTimestamp = 0
   let endTimestamp = 0
   let lastLoaded = 0
   const assetAlgo = sha1.create()
+  const { updateChunkSize, lastChunkSize } = useChunkSizeService()
+
+  const getCurrentTimestamp = () => {
+    return Date.now() / 1000
+  }
 
   // @ts-ignore
   function progressCallback(progressEvent) {
-    const currentStamp = Date.now() / 1000
+    const currentStamp = getCurrentTimestamp()
     if (lastTimestamp === 0) {
       lastTimestamp = currentStamp
 
@@ -98,17 +105,6 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
     speedStack.push(dataSent / (currentStamp - lastTimestamp))
 
     lastTimestamp = currentStamp
-  }
-
-  const processChunk = async (index: number) => {
-    queueItem.currentChunkIndex = index
-    const arrayBuffer = await readFile(index, queueItem.file!, queueItem.chunkSize)
-    assetAlgo.update(arrayBuffer.data)
-    const chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
-    const cancelToken = axios.CancelToken
-    queueItem.chunks[index] = { cancelTokenSource: cancelToken.source() }
-
-    return await uploadChunkRetryable(chunkFile, arrayBuffer.offset)
   }
 
   const uploadChunk = async (chunkFile: File, offset: number) => {
@@ -124,19 +120,37 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
     })
   }
 
-  const uploadChunkRetryable = async (chunkFile: File, offset: number) => {
+  const processAndUploadChunk = async (offset: number): Promise<File> => {
+    updateChunkSize(queueItem.progress.speed)
+    let arrayBuffer = await readFile(offset, lastChunkSize.value, queueItem.file!)
+    let chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
+
+    queueItem.currentChunkIndex = offset
+    const cancelToken = axios.CancelToken
+    queueItem.chunks[offset] = { cancelTokenSource: cancelToken.source() }
+
     let sleepTime = CHUNK_RETRY_INTERVAL
     let attempt = 0
     do {
       attempt++
       try {
-        return await uploadChunk(chunkFile, offset)
+        await uploadChunk(chunkFile, offset)
+        assetAlgo.update(arrayBuffer.data)
+
+        return chunkFile
       } catch (error) {
+        // in error recompute
         if (axiosErrorResponseHasValidationData(error as Error)) {
           attempt = CHUNK_MAX_RETRY
           queueItem.error.message = handleValidationErrorMessage(error)
           return Promise.reject(error)
         }
+
+        if (updateChunkSize(queueItem.progress.speed)) {
+          arrayBuffer = await readFile(offset, lastChunkSize.value, queueItem.file!)
+          chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
+        }
+
         await sleep(sleepTime)
         attempt === CHUNK_MAX_RETRY - 1 ? (sleepTime = 1) : (sleepTime *= CHUNK_RETRY_MULTIPLY)
       }
@@ -147,16 +161,11 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   function speedCheck() {
     function speedCheckRun() {
       speedStack = speedStack.slice(-15)
-
-      // if (speedStack.length > 7) {
       if (speedStack.length > 0) {
-        const avgSpeed = speedStack.reduce((sum, current) => sum + current) / speedStack.length
+        const avgSpeed = Math.ceil(speedStack.reduce((sum, current) => sum + current) / speedStack.length)
+        const remainingBytes = Math.ceil(fileSize.value * ((100 - progress.value) / 100))
 
-        uploadCallback(
-          progress.value,
-          avgSpeed / 1024,
-          Math.ceil((fileSize.value / avgSpeed) * (100 - progress.value)) * 10
-        )
+        uploadCallback(progress.value, avgSpeed, Math.ceil(remainingBytes / avgSpeed))
       }
 
       if (endTimestamp === 0) {
@@ -176,7 +185,6 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
         return
       }
       fileSize.value = queueItem.file ? queueItem.file.size : 0
-      chunkTotalCount.value = Math.ceil(fileSize.value / queueItem.chunkSize)
       queueItem.status = QueueItemStatus.Uploading
       // todo
       uploadStart(queueItem)
@@ -195,13 +203,18 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
     if (uploadCallback) {
       speedCheck()
     }
-    queueItem.chunkTotalCount = chunkTotalCount.value
-    for (let i = 0; i < chunkTotalCount.value; i++) {
-      await processChunk(i)
-      progress.value = ((i + 1) / chunkTotalCount.value) * 100
+
+    const filesize = queueItem.file?.size
+    if (isUndefined(filesize)) return Promise.reject()
+
+    let i = 0
+    while (i < filesize) {
+      const uploadedChunk = await processAndUploadChunk(i)
+      i += uploadedChunk.size
+      progress.value = (i / filesize) * 100
     }
+
     endTimestamp = Date.now() / 1000
-    if (chunkTotalCount.value === 0) return Promise.reject()
     return await finishUpload(queueItem, assetAlgo.hex())
   }
 
@@ -212,5 +225,6 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
 }
 
 export const uploadStop = (cancelTokenSource: CancelTokenSource) => {
+  // todo stop speed check
   cancelTokenSource.cancel('axios request cancelled')
 }

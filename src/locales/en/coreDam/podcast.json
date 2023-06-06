@@ -13,7 +13,9 @@
     },
     "dates": {
       "importFrom": "Import from"
-    }
+    },
+    "imagePreview": "Image",
+    "altImage": "Alt Image"
   },
   "filter": {
     "id": "ID",

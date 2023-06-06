@@ -20,6 +20,7 @@ import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFi
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
+import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -72,6 +73,10 @@ const uploadQueueItemInAnyProgressIndex = computed(() => {
         item.assetId === uploadQueueItemInAnyProgress.value?.assetId &&
         item.slotName === uploadQueueItemInAnyProgress.value?.slotName
     )
+})
+
+const statusComputed = computed(() => {
+  return props.item?.assetFile?.fileAttributes.status
 })
 
 const filePublicLink = computed(() => {
@@ -171,7 +176,11 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
       <VCol v-if="itemHasFile && item && item.assetFile">
         <div class="font-weight-bold">
           {{ slotName }} <span v-if="item && item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
-          <div v-if="item?.assetFile?.fileAttributes.status === AssetFileProcessStatus.Failed">
+          <AssetFileDuplicateChip
+            v-if="statusComputed === AssetFileProcessStatus.Duplicate"
+            class="ml-2"
+          />
+          <div v-if="statusComputed === AssetFileProcessStatus.Failed">
             {{ t('coreDam.distribution.common.failReason') }}:
             <AssetFileFailReasonChip
               class="ml-2"
@@ -181,7 +190,11 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div>{{ fileTitle }}</div>
         <AssetFilePublicLink
-          v-if="assetType === AssetType.Audio && item && item.assetFile"
+          v-if="
+            assetType === AssetType.Audio &&
+              item &&
+              item.assetFile &&
+              statusComputed === AssetFileProcessStatus.Processed"
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"
           @open-make-public-dialog="openMakeFilePrivateDialog"

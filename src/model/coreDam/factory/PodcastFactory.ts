@@ -29,6 +29,7 @@ export function usePodcastFactory() {
       createdBy: 1,
       modifiedBy: 1,
       imagePreview: null,
+      altImage: null,
       _resourceName: ENTITY,
       _system: SYSTEM_CORE_DAM,
     }

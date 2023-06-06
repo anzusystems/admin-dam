@@ -37,5 +37,19 @@ const { setGridView } = useGridView()
         {{ t('coreDam.asset.list.gridView.thumbnail') }}
       </VTooltip>
     </VBtn>
+    <VBtn
+      size="x-small"
+      icon
+      variant="text"
+      @click.stop="setGridView(GridView.Table)"
+    >
+      <VIcon icon="mdi-view-headline" />
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('coreDam.asset.list.gridView.table') }}
+      </VTooltip>
+    </VBtn>
   </div>
 </template>
