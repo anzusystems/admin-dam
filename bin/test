@@ -6,7 +6,6 @@
 #######################################################################################################################
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
-DATE_EPOCH_TIME="$(date +%s)"
 BROWSER_OPTIONS=""
 BROWSER="electron"
 ENV="local"
@@ -17,6 +16,14 @@ RUNNER="yarn run"
 DASHBOARD_OPTIONS=""
 
 cd "${PROJECT_ROOT}" || exit 1
+# Initialize default variables
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+# Initialize functions
+# shellcheck disable=SC1091
+. ./bin/docker-libfunctions
+docker_env_vars
+
 # Go through all command line arguments and setup variables accordingly
 while [ "$#" -gt 0 ]; do
     case $1 in
@@ -109,4 +116,4 @@ if [ -f /.dockerenv ]; then
          ${TEST_SPEC} \
          ${DASHBOARD_OPTIONS}
 fi
-bin/docker-compose exec --user node app bash -c \'bin/test "${ARGS}"\'
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'

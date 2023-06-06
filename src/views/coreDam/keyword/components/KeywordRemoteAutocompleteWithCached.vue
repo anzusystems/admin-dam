@@ -7,8 +7,7 @@ import { computed, ref } from 'vue'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import type { Keyword } from '@/types/coreDam/Keyword'
 import { useVuelidate } from '@vuelidate/core'
-import KeywordRemoteAutocompleteCachedKeywordChip
-  from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
+import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
   useCachedKeywordsForRemoteAutocomplete,
