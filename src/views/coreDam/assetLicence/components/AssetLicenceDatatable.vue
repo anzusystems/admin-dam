@@ -86,7 +86,7 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
-        <template #extSystem="{ item }: { item: DatatableItem }">
+        <template #item.extSystem="{ item }: { item: DatatableItem }">
           <CachedExtSystemChip
             :id="item.raw.extSystem"
             variant="text"

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// @ts-nocheck
+// todo remove nocheck
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -101,6 +103,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           :columns-all="columnsAll"
         />
       </div>
+      <!-- @vue-ignore -->
       <VDataTableServer
         class="a-datatable"
         :headers="columnsVisible"
@@ -115,7 +118,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           #[dynamicDistributionServiceSlugSlot(distributionServiceSlug)]="{ item }: { item: DatatableItem }"
         >
           <DistributionCategorySelectedOptionChip
-            :distribution-category="item.raw"
+            :distribution-category="item.raw as any"
             :service-slug="distributionServiceSlug"
           />
         </template>
