@@ -34,7 +34,7 @@
     },
     "actions": {
       "unassign": "Zrušiť priradenie obrázka",
-      "replaceByFileId": "Nahradiť ID súboru",
+      "selectImage": "Vyberťe obrázok",
       "chooseFromDistribution": "Vybrať z distribúcie"
     }
   },

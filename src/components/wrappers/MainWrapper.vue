@@ -5,7 +5,6 @@ import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useI18n } from 'vue-i18n'
-import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 import AssetFooterUploadSlotsOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
@@ -14,6 +13,7 @@ import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/A
 import { ACL } from '@/types/Permission'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
+import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 
 const { t } = useI18n()
 

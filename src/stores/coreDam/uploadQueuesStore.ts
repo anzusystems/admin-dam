@@ -30,7 +30,6 @@ import { fileTypeFix } from '@/services/fileType'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
-  uploadSpeed: null | number
 }
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
@@ -43,7 +42,6 @@ const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   state: (): State => ({
     queues: {},
-    uploadSpeed: null,
   }),
   getters: {
     getQueueFileInputKey: (state) => {
@@ -457,7 +455,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     setUploadSpeed(item: UploadQueueItem, progress: number, speed: number, estimate: number) {
       item.progress.progressPercent = progress
       item.progress.remainingTime = estimate
-      this.uploadSpeed = speed
+      item.progress.speed = speed
     },
     recalculateQueueCounts(queueId: string) {
       this.queues[queueId].totalCount = this.queues[queueId].items.length
