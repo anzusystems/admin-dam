@@ -20,7 +20,7 @@ jobs:
         platform:
           - ubuntu-latest
 
-    name: CI Lint
+    name: Lint
     runs-on: ${{ matrix.platform }}
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     steps:
