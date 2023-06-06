@@ -9,7 +9,7 @@
     "production": "vite build --mode production",
     "development": "vite build --mode development --sourcemap",
     "preview": "vite preview",
-    "ci": "run-s --print-name --continue-on-error lint:tsc lint:eslint lint:stylelint",
+    "ci": "run-s --print-name lint:tsc lint:eslint lint:stylelint",
     "lint": "yarn ci",
     "lint:tsc": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "lint:eslint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
