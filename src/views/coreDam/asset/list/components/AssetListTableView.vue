@@ -43,9 +43,7 @@ const { items, showDetail, onItemClick, toggleSelected, selectMultiple } = useAs
         <th class="text-left">
           {{ t('coreDam.asset.list.table.thead.slot') }}
         </th>
-        <th class="text-left">
-          {{ t('coreDam.asset.list.table.thead.actions') }}
-        </th>
+        <th />
       </tr>
     </thead>
     <tbody>
