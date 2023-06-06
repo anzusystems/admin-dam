@@ -1,8 +1,5 @@
-name: 'ci'
+name: 'CI Lint'
 on:
-  push:
-    branches:
-      - '**'
   pull_request:
     branches:
       - main
@@ -13,8 +10,15 @@ permissions:
 
 jobs:
   lint:
-    name: CI Lint
-    runs-on: 'ubuntu-latest'
+    strategy:
+      matrix:
+        node-version:
+          - '18'
+        platform:
+          - ubuntu-latest
+
+    name: CI Lint ${{ matrix.node-version }} on ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - name: Checkout
@@ -23,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node-version }}
           cache: 'yarn'
           cache-dependency-path: 'yarn.lock'
 
@@ -35,3 +39,6 @@ jobs:
 
       - name: Run Yarn CI
         run: yarn ci
+
+      - name: Run Security check
+        run: yarn npm audit
