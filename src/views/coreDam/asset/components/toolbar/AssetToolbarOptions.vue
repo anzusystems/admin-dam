@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 import { ACL } from '@/types/Permission'
+import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 
 withDefaults(
   defineProps<{

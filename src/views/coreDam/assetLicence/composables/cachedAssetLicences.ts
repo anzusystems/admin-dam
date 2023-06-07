@@ -1,7 +1,7 @@
 import type { AssetLicence, AssetLicenceMinimal } from '@/types/coreDam/AssetLicence'
 import { fetchAssetLicenceListByIds } from '@/services/api/coreDam/assetLicenceApi'
 import type { IntegerId } from '@anzusystems/common-admin'
-import { defineCached } from '@/composables/system/defineCached'
+import { defineCached } from '@anzusystems/common-admin'
 
 const mapFullToMinimal = (assetLicence: AssetLicence): AssetLicenceMinimal => ({
   id: assetLicence.id,

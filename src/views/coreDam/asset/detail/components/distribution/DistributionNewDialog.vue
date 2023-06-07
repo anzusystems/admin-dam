@@ -103,7 +103,7 @@ const componentComputed = computed(() => {
       </div>
       <component
         :is="componentComputed"
-        v-if="activeDistributionName"
+        v-if="activeDistributionName && activeConfig"
         :key="activeDistributionName"
         :asset-id="assetId"
         :asset-type="assetType"

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { CustomFormType } from '@/types/coreDam/DamConfigAssetCustomForm'
-import { computed, isProxy, toRaw } from 'vue'
+import { computed, isProxy, ref, toRaw } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
@@ -89,6 +89,9 @@ const errorMessageComputed = computed(() => {
   return []
 })
 
+const counter = ref<number | undefined>(undefined)
+counter.value = props.config.attributes.maxValue ?? undefined
+
 const onBlur = () => {
   emit('blur', props.modelValue)
   v$.value.$touch()
@@ -103,6 +106,7 @@ const onBlur = () => {
     :rows="1"
     :label="config.name"
     :error-messages="errorMessageComputed"
+    :counter="counter"
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
@@ -155,9 +159,7 @@ const onBlur = () => {
     :model-value="modelValueComputed"
     @update:model-value="updateModelValue"
   />
-  <div
-    v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false"
-  >
+  <div v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false">
     optional boolean todo
   </div>
 </template>

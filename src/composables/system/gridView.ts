@@ -3,6 +3,7 @@ import { readonly, ref } from 'vue'
 export enum GridView {
   Masonry = 'masonry',
   Thumbnail = 'thumbnail',
+  Table = 'table',
   Default = Masonry,
 }
 

@@ -1,7 +1,7 @@
 import type { VideoShow, VideoShowMinimal } from '@/types/coreDam/VideoShow'
 import { fetchVideoShowListByIds } from '@/services/api/coreDam/videoShowApi'
 import type { DocId } from '@anzusystems/common-admin'
-import { defineCached } from '@/composables/system/defineCached'
+import { defineCached } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const mapFullToMinimal = (videoShow: VideoShow): VideoShowMinimal => ({

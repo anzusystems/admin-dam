@@ -7,6 +7,13 @@ RUN_YARN_INSTALL=true
 CLEAR_VITE_DEPS=false
 
 cd "${PROJECT_ROOT}" || exit 1
+# Initialize default variables
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+# Initialize functions
+# shellcheck disable=SC1091
+. ./bin/docker-libfunctions
+docker_env_vars
 
 function help() {
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
@@ -55,4 +62,4 @@ if [ -f /.dockerenv ]; then
     exit
 fi
 
-bin/docker-compose exec --user node app bash -c \'bin/dev "${ARGS}"\'
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/dev "${ARGS}"\'

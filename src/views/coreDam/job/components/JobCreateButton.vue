@@ -9,6 +9,7 @@ import {
 } from '@/model/coreDam/valueObject/JobResource'
 import JobCreateFormPodcastSynchronizer from '@/views/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
 import JobCreateFormUserDataDelete from '@/views/coreDam/job/components/JobCreateFormUserDataDelete.vue'
+import JobCreateFormDefault from '@/views/coreDam/job/components/JobCreateFormDefault.vue'
 
 withDefaults(
   defineProps<{
@@ -40,7 +41,7 @@ const jobComponent = computed(() => {
       return JobCreateFormPodcastSynchronizer
     default:
       console.error('Unsupported type.')
-      return null
+      return JobCreateFormDefault
   }
 })
 

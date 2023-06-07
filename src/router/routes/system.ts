@@ -1,5 +1,6 @@
 import { ROUTE } from '@/router/routes'
-import { AUnauthorizedView } from '@anzusystems/common-admin'
+import { ALogoutView, AUnauthorizedView } from '@anzusystems/common-admin'
+import { envConfig } from '@/services/EnvConfigService'
 
 export const systemRoutes = [
   {
@@ -35,7 +36,10 @@ export const systemRoutes = [
   },
   {
     path: '/logout',
-    component: () => import('@/views/system/LogoutView.vue'),
+    component: ALogoutView,
+    props: {
+      logoutUrl: () => envConfig.logoutCoreDamUrl,
+    },
     name: ROUTE.SYSTEM.LOGOUT,
     meta: {
       requiresAuth: false,

@@ -59,6 +59,7 @@ export interface UploadQueueItem {
   progress: {
     remainingTime: null | number
     progressPercent: null | number
+    speed: null | number
   }
   error: {
     hasError: boolean
@@ -75,6 +76,7 @@ export interface UploadQueue {
   totalCount: number
   processedCount: number
   fileInputKey: number // used to reset html input file element
+
   suggestions: {
     newKeywordNames: Set<string>
     newAuthorNames: Set<string>

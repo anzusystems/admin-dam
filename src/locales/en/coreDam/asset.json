@@ -81,10 +81,23 @@
     "square": "square"
   },
   "list": {
+    "table": {
+      "thead": {
+        "thumbnail": "thumbnail",
+        "title": "title",
+        "createdDate": "createdDate",
+        "advanced": "advanced",
+        "format": "format",
+        "size": "size",
+        "createdBy": "createdBy",
+        "slot": "slot"
+      }
+    },
     "noTitle": "no title",
     "gridView": {
       "masonry": "Masonry",
-      "thumbnail": "Grid"
+      "thumbnail": "Grid",
+      "table": "List"
     },
     "infoToggle": "Toggle info",
     "filterToggle": "Toggle filters",

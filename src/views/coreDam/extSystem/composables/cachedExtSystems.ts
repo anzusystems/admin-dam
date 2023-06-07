@@ -1,7 +1,7 @@
 import type { ExtSystem, ExtSystemMinimal } from '@/types/coreDam/ExtSystem'
 import { fetchExtSystemListByIds } from '@/services/api/coreDam/extSystemApi'
 import type { IntegerId } from '@anzusystems/common-admin'
-import { defineCached } from '@/composables/system/defineCached'
+import { defineCached } from '@anzusystems/common-admin'
 
 const mapFullToMinimal = (extSystem: ExtSystem): ExtSystemMinimal => ({
   id: extSystem.id,
