@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// @ts-nocheck
+// todo remove nocheck
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -18,14 +20,11 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import {
-  useDistributionCategoryListActions
-} from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryListActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryFilter from '@/views/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
-import DistributionCategorySelectedOptionChip
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import DistributionCategorySelectedOptionChip from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 
 type DatatableItem = { raw: DistributionCategory }
 
@@ -104,6 +103,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           :columns-all="columnsAll"
         />
       </div>
+      <!-- @vue-ignore -->
       <VDataTableServer
         class="a-datatable"
         :headers="columnsVisible"
@@ -118,7 +118,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           #[dynamicDistributionServiceSlugSlot(distributionServiceSlug)]="{ item }: { item: DatatableItem }"
         >
           <DistributionCategorySelectedOptionChip
-            :distribution-category="item.raw"
+            :distribution-category="item.raw as any"
             :service-slug="distributionServiceSlug"
           />
         </template>

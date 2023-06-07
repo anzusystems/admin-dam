@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
-import { useGridView } from '@/composables/system/gridView'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { GridView, useGridView } from '@/composables/system/gridView'
 import AssetDetailDialog from '@/views/coreDam/asset/detail/components/AssetDetailDialog.vue'
-import AssetListItem from '@/views/coreDam/asset/list/components/AssetListItem.vue'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
@@ -19,6 +18,8 @@ import AssetFooterUploadOverlayFull from '@/views/coreDam/asset/components/foote
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { onKeyUp } from '@vueuse/core'
+import AssetListTableView from '@/views/coreDam/asset/list/components/AssetListTableView.vue'
+import AssetListTilesView from '@/views/coreDam/asset/list/components/AssetListTilesView.vue'
 
 const { t } = useI18n()
 
@@ -35,15 +36,10 @@ const {
   fetchNextPage,
   listMounted,
   listUnmounted,
-  showDetail,
-  onItemClick,
-  toggleSelected,
-  selectMultiple,
   prevItem,
   nextItem,
   onArrowRight,
   onArrowLeft,
-  showMetaIcons,
 } = useAssetListActions(sidebarRight)
 
 const { footerViewSelected } = useAssetFooterSelectedView()
@@ -67,6 +63,17 @@ onMounted(async () => {
   await listMounted()
 })
 
+const componentComputed = computed(() => {
+  switch (gridView.value) {
+    case GridView.Table:
+      return AssetListTableView
+    case GridView.Masonry:
+    case GridView.Thumbnail:
+    default:
+      return AssetListTilesView
+  }
+})
+
 onUnmounted(() => {
   listUnmounted()
 })
@@ -85,21 +92,8 @@ onUnmounted(() => {
         />
       </div>
       <div v-else-if="items.length">
-        <div
-          class="dam-image-grid"
-          :class="'dam-image-grid--' + gridView"
-        >
-          <AssetListItem
-            v-for="(item, index) in items"
-            :key="item.asset.id"
-            :index="index"
-            :item="item"
-            :show-meta-icons="showMetaIcons"
-            @show-detail="showDetail"
-            @item-click="onItemClick"
-            @toggle-selected="toggleSelected"
-            @select-multiple="selectMultiple"
-          />
+        <div>
+          <component :is="componentComputed" />
           <div
             v-if="loader.soft"
             class="w-100 d-flex align-center justify-center pa-4"

@@ -96,6 +96,7 @@ export const useAssetListStore = defineStore('damAssetListStore', {
       this.list[index].active = true
       this.activeItemIndex = index
       if (isNull(oldActiveIndex)) return
+      if (!(oldActiveIndex in this.list)) return
       this.list[oldActiveIndex].active = false
     },
     setActiveNext() {

@@ -28,9 +28,7 @@ import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distribut
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
@@ -149,7 +147,7 @@ const submitRedistribute = async () => {
   try {
     await redistributeJwDistribution(existingDistributions.value[0].id, distribution.value)
     showRecordWas('updated')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -169,7 +167,7 @@ const submitCreateNew = async () => {
   try {
     await createJwDistribution(assetFileId.value, distribution.value)
     showRecordWas('created')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
     showErrorsDefault(error)
   } finally {

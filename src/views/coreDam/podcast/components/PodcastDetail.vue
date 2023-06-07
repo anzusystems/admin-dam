@@ -15,6 +15,10 @@ const { t } = useI18n()
 const imageSrc = computed(() => {
   return podcast.value.links ? podcast.value.links.image_list.url : undefined
 })
+const altImgSrc = computed(() => {
+  return podcast.value.altLinks ? podcast.value.altLinks.image_list.url : undefined
+})
+
 </script>
 
 <template>
@@ -51,10 +55,19 @@ const imageSrc = computed(() => {
       </ARow>
       <ARow
         v-if="imageSrc"
-        title="Image"
+        :title="t('coreDam.podcast.model.imagePreview')"
       >
         <AssetImage
           :src="imageSrc"
+          use-component
+        />
+      </ARow>
+      <ARow
+        v-if="altImgSrc"
+        :title="t('coreDam.podcast.model.altImage')"
+      >
+        <AssetImage
+          :src="altImgSrc"
           use-component
         />
       </ARow>

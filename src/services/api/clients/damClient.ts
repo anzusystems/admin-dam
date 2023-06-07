@@ -18,6 +18,7 @@ const damClient = function (
     mainInstance = axios.create({
       baseURL: envConfig.dam.apiUrl,
       timeout: timeoutBase * 1000,
+      // timeout: 10 * 1000,
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',

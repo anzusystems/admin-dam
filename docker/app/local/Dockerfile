@@ -8,20 +8,20 @@ ARG DOCKER_USER_ID
 ARG DOCKER_GROUP_ID
 # Versions
 # Nginx version
-ENV NGINX_VERSION=1.22.1 \
-    NGINX_NJS_VERSION=0.7.9 \
+ENV NGINX_VERSION=1.24.0 \
+    NGINX_NJS_VERSION=0.7.12 \
     NGINX_PKG_RELEASE=1~bullseye \
 # Supervisor version
     SUPERVISOR_VERSION=4.2.2 \
     SUPERVISOR_PKG_RELEASE=2 \
 # NPM version
-    NPM_VERSION=9.2.0 \
+    NPM_VERSION=9.6.4 \
 # Yarn version
-    DOCKER_YARN_VERSION=3.3.0 \
-    DOCKER_YARN_PLUGIN_OUTDATED=3.1.0 \
+    DOCKER_YARN_VERSION=3.5.0 \
+    DOCKER_YARN_PLUGIN_OUTDATED=3.2.3 \
 # Browsers version
-    CHROME_VERSION=108.0.5359.98 \
-    FIREFOX_VERSION=107.0.1
+    CHROME_VERSION=112.0.5615.49 \
+    FIREFOX_VERSION=112.0
 # Common environment variables
 ENV CONTAINER_STOP_LOG_FILE="/var/www/html/var/log/container_stop.log" \
     COREPACK_HOME="/usr/lib/node/corepack" \
@@ -164,7 +164,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*
 # Install Google Chrome
-RUN wget -q -O /usr/src/google-chrome-stable_current_amd64.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_107.0.5304.68-1_amd64.deb" && \
+RUN wget -q -O /usr/src/google-chrome-stable_current_amd64.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}-1_amd64.deb" && \
     apt-get update && \
     dpkg -i /usr/src/google-chrome-stable_current_amd64.deb ; \
     apt-get install -f -y && \
@@ -173,7 +173,7 @@ RUN wget -q -O /usr/src/google-chrome-stable_current_amd64.deb "https://dl.googl
     apt-get clean && \
     rm -r /var/lib/apt/lists/*
 # Install Firefox
-RUN wget -q -O /tmp/firefox.tar.bz2 "https://download-installer.cdn.mozilla.net/pub/firefox/releases/106.0.2/linux-x86_64/en-US/firefox-106.0.2.tar.bz2" && \
+RUN wget -q -O /tmp/firefox.tar.bz2 "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.bz2" && \
     tar -C /opt -xjf /tmp/firefox.tar.bz2 && \
     rm -f /tmp/firefox.tar.bz2 && \
     ln -fs /opt/firefox/firefox /usr/bin/firefox

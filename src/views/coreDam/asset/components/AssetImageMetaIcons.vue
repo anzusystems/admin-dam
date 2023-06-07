@@ -16,8 +16,11 @@ const props = withDefaults(
   defineProps<{
     assetType: AssetType
     assetFileProperties: AssetFileProperties
+    disableAbsolute?: boolean
   }>(),
-  {}
+  {
+    disableAbsolute: false,
+  }
 )
 
 const { t } = useI18n()
@@ -77,6 +80,7 @@ const data = computed(() => {
   <div
     v-show="data.icons.length > 0"
     class="asset-image__meta-icons"
+    :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
     <img
       v-for="(item, index) in data.icons"
@@ -90,10 +94,13 @@ const data = computed(() => {
 </template>
 
 <style lang="scss">
-.asset-image__meta-icons {
+.asset-image__meta-icons-absolute {
   position: absolute;
   left: 6px;
   top: 163px;
+}
+
+.asset-image__meta-icons {
   display: flex;
 
   img.img-svg {

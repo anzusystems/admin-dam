@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
+import { ADialogToolbar, isNull, AAssetSelect } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
@@ -8,6 +8,8 @@ import type { ImageFile } from '@/types/coreDam/File'
 import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { AssetType as AssetTypeValue } from '@/model/coreDam/valueObject/AssetType'
 
 const props = withDefaults(
   defineProps<{
@@ -39,6 +41,8 @@ const fetchImage = async (id: DocId) => {
   imageFile.value = await fetchImageFile(id)
   loading.value = false
 }
+
+const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const imagePreviewModel = computed({
   get() {
@@ -81,6 +85,7 @@ const unassignImage = () => {
   emit('changed', null)
 }
 
+// todo remove
 const onConfirm = () => {
   if (newFileId.value.length === 0) return
   imagePreviewModel.value = { imageFile: newFileId.value, position: 0 }
@@ -90,6 +95,12 @@ const onConfirm = () => {
 
 const onCancel = () => {
   dialog.value = false
+}
+
+const selectAsset = (data: DocId[]) => {
+  const imageId = data[0] || ''
+  imagePreviewModel.value = { imageFile: imageId, position: 0 }
+  emit('changed', { imageFile: imageId, position: 0 })
 }
 
 watch(
@@ -151,14 +162,7 @@ watch(
     />
     <div v-if="showActions">
       <slot name="actions-start" />
-      <VBtn
-        variant="text"
-        class="my-2 mr-2"
-        size="small"
-        @click.stop="dialog = true"
-      >
-        {{ t('system.imagePreview.actions.replaceByFileId') }}
-      </VBtn>
+
       <VBtn
         v-if="imagePreviewModel !== null"
         variant="text"
@@ -168,6 +172,24 @@ watch(
       >
         {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
+      <AAssetSelect
+        :asset-licence-id="currentAssetLicenceId"
+        :min-count="1"
+        :max-count="1"
+        :asset-type="AssetTypeValue.Image"
+        @on-confirm="selectAsset"
+      >
+        <template #button-open-dialog="{ activator }">
+          <VBtn
+            variant="text"
+            class="my-2 mr-2"
+            size="small"
+            @click.stop="activator"
+          >
+            {{ t('system.imagePreview.actions.selectImage') }}
+          </VBtn>
+        </template>
+      </AAssetSelect>
       <slot name="actions-end" />
     </div>
     <VDialog
@@ -179,7 +201,7 @@ watch(
         data-cy="delete-panel"
       >
         <ADialogToolbar @on-cancel="onCancel">
-          {{ t('system.imagePreview.actions.replaceByFileId') }}
+          {{ t('system.imagePreview.actions.selectImage') }}
         </ADialogToolbar>
         <VCardText>
           <VTextField

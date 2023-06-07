@@ -3,6 +3,13 @@
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 cd "${PROJECT_ROOT}" || exit 1
+# Initialize default variables
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+# Initialize functions
+# shellcheck disable=SC1091
+. ./bin/docker-libfunctions
+docker_env_vars
 
 if [ -f /.dockerenv ]; then
     env-config
@@ -12,4 +19,4 @@ if [ -f /.dockerenv ]; then
     exit
 fi
 
-bin/docker-compose exec --user node app bash -c \'bin/build\'
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/build\'
