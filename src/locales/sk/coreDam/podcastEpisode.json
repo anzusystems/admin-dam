@@ -1,0 +1,33 @@
+{
+  "model": {
+    "id": "ID",
+    "podcast": "Podcast",
+    "asset": "Asset",
+    "position": "Pozícia",
+    "attributes": {
+      "seasonNumber": "Číslo sezóny",
+      "episodeNumber": "Číslo epizódy",
+      "extId": "Externé ID",
+      "lastImportStatus": "Posledný stav importu"
+    },
+    "texts": {
+      "title": "Nadpis",
+      "description": "Popis",
+      "rawDescription": "Originálny popis"
+    },
+    "dates": {
+      "publicationDate": "Dátum publikácie"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "title": "Nadpis"
+  },
+  "button": {
+    "create": "Pridať epizódu"
+  },
+  "common": {
+    "addAssetToNewPodcastEpisode": "Pridať asset do novej podcastovej epizódy",
+    "noEntries": "Nie je čo zobraziť"
+  }
+}

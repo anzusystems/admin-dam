@@ -1,0 +1,32 @@
+{
+  "role": {
+    "admin": "Admin",
+    "user": "Používateľ"
+  },
+  "model": {
+    "id": "ID",
+    "firstName": "Meno",
+    "lastName": "Priezvisko",
+    "email": "Email",
+    "roles": "Role",
+    "enabled": "Povolený",
+    "plainPassword": "Nové heslo",
+    "assetLicences": "Licencie",
+    "userToExtSystems": "Používateľ externých systémov",
+    "adminToExtSystems": "Admin externých systémov",
+    "superAdmin": "Super admin",
+    "permissionGroups": "Skupina oprávnení",
+    "allowedAssetExternalProviders": "Povolení externí provideri",
+    "allowedDistributionServices": "Povolené distribučné služby"
+  },
+  "filter": {
+    "id": "ID",
+    "email": "Email"
+  },
+  "meta": {
+    "create": "Vytvoriť používateľa"
+  },
+  "button": {
+    "editPermissions": "Úprava oprávnení"
+  }
+}

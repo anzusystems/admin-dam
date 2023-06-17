@@ -1,0 +1,265 @@
+{
+  "model": {
+    "id": "ID",
+    "distributionCategory": "Kategória distribúcie",
+    "authors": "Autori",
+    "keywords": "Kľúčové slová"
+  },
+  "filter": {
+    "text": "Text",
+    "type": "Typ",
+    "inPodcast": "V podcastoch",
+    "fromRss": "Z RSS",
+    "distributedInServices": "Distribuované v službách",
+    "slotNames": "Mená slotov",
+    "visible": "Viditeľný",
+    "described": "Popísaný",
+    "generatedBySystem": "Generované systémom",
+    "status": "Stav",
+    "orientation": "Orientácia",
+    "closestMostDominantColor": "Najdominantnejšia farba",
+    "pixelSizeFrom": "Počet pixlov od",
+    "pixelSizeUntil": "Počet pixlov do",
+    "widthFrom": "Šírka od",
+    "widthUntil": "Šírka do",
+    "heightFrom": "Výška od",
+    "heightUntil": "Výška do",
+    "ratioWidthFrom": "Pomer šírky od",
+    "ratioWidthUntil": "Pomer šírky do",
+    "ratioHeightFrom": "Pomer výšky od",
+    "ratioHeightUntil": "Pomer výšky do",
+    "rotationFrom": "Rotácia od",
+    "rotationUntil": "Rotácia do",
+    "durationFrom": "Trvanie od",
+    "durationUntil": "Trvanie do",
+    "bitrateFrom": "Bitrate od",
+    "bitrateUntil": "Bitrate do",
+    "shortestDimensionFrom": "Najkratšia dimenzia od",
+    "shortestDimensionUntil": "Najkratšia dimenzia do",
+    "slotsCountFrom": "Počet slotov od",
+    "slotsCountUntil": "Počet slotov do",
+    "createdAtFrom": "Vytvorené od",
+    "createdAtUntil": "Vytvorené do"
+  },
+  "meta": {
+    "createEmpty": "Vytvoriť prázdny asset"
+  },
+  "metaIcons": {
+    "low": "Nízka kvalita",
+    "slots": "Sloty",
+    "rss": "RSS",
+    "fullHd": "FullHD",
+    "2k": "2K",
+    "qhd": "QHD",
+    "4k": "4K",
+    "8k": "8K"
+  },
+  "filterTitle": "Filter",
+  "noItemsFound": "Žiadne nájdené assety",
+  "assetType": {
+    "image": "Obrázok",
+    "audio": "Audio",
+    "video": "Video",
+    "document": "Dokument"
+  },
+  "assetStatus": {
+    "draft": "Koncept",
+    "withFile": "Obsahuje súbor",
+    "deleting": "Vymazávaný"
+  },
+  "assetFileFailReason": {
+    "none": "Žiadny",
+    "unknown": "Neznámy",
+    "invalidChecksum": "Neplatný kontrolný súčet",
+    "invalidMimeType": "Neplatný typ súboru",
+    "downloadFailed": "Sťahovanie zlyhalo",
+    "invalidSize": "Neplatná veľkosť"
+  },
+  "imageOrientation": {
+    "landscape": "šírkový",
+    "portrait": "výškový",
+    "square": "štvorcový"
+  },
+  "list": {
+    "table": {
+      "thead": {
+        "thumbnail": "Náhľad",
+        "title": "Titulok",
+        "createdDate": "Vytvorené",
+        "advanced": "Pokročilé",
+        "format": "Formát",
+        "size": "Veľkosť",
+        "createdBy": "Vytvoril",
+        "slot": "Sloty"
+      }
+    },
+    "noTitle": "žiadny nadpis",
+    "gridView": {
+      "masonry": "Dlaždice",
+      "thumbnail": "Mriežka",
+      "table": "Zoznam"
+    },
+    "infoToggle": "Info karta",
+    "filterToggle": "Filtre",
+    "filters": "Filtre",
+    "allTypes": "Všetky typy",
+    "toggleSelect": "Vybrať",
+    "preview": "Náhľad",
+    "edit": "Úprava",
+    "prev": "Predchádzajúci asset",
+    "next": "Nasledujúci asset",
+    "refresh": "Znovu načítať zoznam"
+  },
+
+  "detail": {
+    "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
+    "toggleInfo": "Info karta",
+    "metadataToggle": {
+      "show": "Skryť viac detailov",
+      "hide": "Zobraziť viac detailov"
+    },
+    "noAssetSelected": "Žiadne vybrané assety",
+    "tabs": {
+      "info": "Info",
+      "roi": "Fókus",
+      "distribution": "Distribúcia",
+      "slots": "Sloty",
+      "podcast": "Podcasty",
+      "videoShow": "Video relácie",
+      "imagePreview": "Miniatúra"
+    },
+    "info": {
+      "status": {
+        "duplicate": "Hlavný súbor je duplikát.",
+        "draft": "Neobsahuje žiaden súbor.",
+        "deleting": "Čoskoro bude zmazaný.",
+        "failed": "Spracovávanie súboru zlyhalo."
+      },
+      "metadata": "Metaúdaje",
+      "file": "Info o súbore",
+      "podcast": "Podcast",
+      "edit": "Upraviť",
+      "field": {
+        "id": "Asset ID",
+        "mainFileId": "ID hlavného súboru",
+        "type": "Typ",
+        "mimeType": "Formát",
+        "size": "Veľkosť",
+        "dominantColor": "Farba",
+        "width": "Šírka",
+        "height": "Výška",
+        "ratio": "Pomer strán"
+      }
+    },
+    "roi": {
+      "title": "Náhľady",
+      "description": "Náhľad obrázku na mobile, počítači alebo v aplikácii.",
+      "refresh": "Znovu načítať náhľady",
+      "rotate": {
+        "rotateMainFileImage": "Otočenie obrázku (hlavného súboru)",
+        "rotateClockwise": "Otočiť doprava",
+        "rotateCounterclockwise": "Otočiť doľava"
+      }
+    }
+  },
+  "upload": {
+    "title": "Nahrávanie",
+    "titleDone": "Nahrávanie ukončené",
+    "edit": "Pridať popis",
+    "save": "Uložiť a pokračovať",
+    "saveAndClose": "Uložiť a ukončiť",
+    "uploading": "Nahrávanie",
+    "clear": "Vyčistiť",
+    "stopOverlay": {
+      "title": "Nahrávanie súboru bude ukončené. Chcete pokračovať?",
+      "confirm": "Ukončiť nahrávanie"
+    },
+    "newAssetsUploadOverlayTitle": "New assets upload",
+    "slotsUploadOverlayTitle": "Asset slots upload"
+  },
+  "selected": {
+    "selectedFiles": "Vybrané súbory",
+    "edit": "Upraviť",
+    "clear": "Vyčistiť",
+    "more": "Viac detailov",
+    "import": "Nahrať do ADAM",
+    "clearOverlay": {
+      "title": "Vybratie súborov sa zruší.",
+      "description": "Neuložená práca bude stratená. Chcete pokračovať?",
+      "confirm": "Zrušiť výber"
+    },
+    "cancel": "Zrušiť",
+    "save": "Uložiť a pokračovať",
+    "saveAndClose": "Uložiť a skončiť"
+  },
+  "massOperations": {
+    "title": "Hromadné operácie",
+    "description": "Hromadná úprava metaúdajov. Ak chcete upravovať metaúdaje po riadkoch, použite tlačidlo vedľa riadka. Ak chcete upraviť všetky riadky naraz, použite tlačidlá úplne dole.",
+    "fillOneEmpty": "Vyplňte prázdne pole",
+    "fillAllEmpty": "Vyplniť len prázdne",
+    "replaceOne": "Nahradiť všade",
+    "replaceAll": "Nahradiť všetko",
+    "clearForm": "Vyčistiť",
+    "general": "Hlavné"
+  },
+  "externalProvider": {
+    "importToDam": "Nahratie do ADAM",
+    "viewDetail": "Zobraziť detail",
+    "id": "ID",
+    "title": "Nadpis"
+  },
+  "queueItem": {
+    "edit": "Upraviť",
+    "duplicate": "Duplikát",
+    "viewOriginal": "Zobraziť originál",
+    "displayTitle": "Meno originálu",
+    "error": "Chyba",
+    "copyAssetId": "Kopírovať asset ID"
+  },
+  "assetFilePublicLink": {
+    "model": {
+      "slug": "Slug"
+    },
+    "actions": {
+      "makePrivate": "Nastaviť ako súkromné",
+      "makePublic": "Nastaviť ako verejné",
+      "openOnNewTab": "Otvoriť"
+    },
+    "status": {
+      "private": "Súbor je súkromný",
+      "public": "Súbor je verejný"
+    }
+  },
+  "slots": {
+    "name": "Meno slotu",
+    "file": "Súbor",
+    "noFile": "Žiaden súbor",
+    "mainFile": "Hlavný súbor",
+    "noEntries": "Nie je čo zobraziť",
+    "assetSlot": "Asset slot",
+    "actions": {
+      "refreshList": "Znovu načítať sloty assetu",
+      "slotOptions": "Nastavenia slotu",
+      "duplicate": "Duplikovať do iného slotu",
+      "makeMainFile": "Spraviť ako hlavný súbor",
+      "switchSlots": "Vymeniť s iným slotom",
+      "remove": "Odstrániť",
+      "download": "Stiahnuť",
+      "copyFileId": "Kopírovať ID súboru"
+    },
+    "remove": {
+      "descriptionBothOptions": "Súbor sa používa vo viacerých slotoch. Chcete zrušiť nastavenie súboru iba z vybraného slotu alebo súbor natrvalo odstrániť?",
+      "descriptionOnlyRemove": "Súbor bude natrvalo odstránený zo systému. Chcete pokračovať?",
+      "removeFile": "Odstrániť súbor natrvalo",
+      "unsetSlot": "Odstrániť len prepojenie z daného slotu"
+    },
+    "duplicate": {
+      "to": "Duplikovať do slotu",
+      "onlyToEmptyWarning": "Súbor môže byť duplikovaný len do prázdneho slotu."
+    },
+    "switch": {
+      "to": "Vymeniť so slotom",
+      "noTargetSlots": "Žiaden cieľový slot nie je dostupný"
+    }
+  }
+}

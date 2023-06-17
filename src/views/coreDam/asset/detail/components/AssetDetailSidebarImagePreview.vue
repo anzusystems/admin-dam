@@ -8,7 +8,7 @@ import type { VideoFile } from '@/types/coreDam/File'
 import { isVideoFile } from '@/types/coreDam/File'
 import { fetchVideoFile, updatePreviewImage } from '@/services/api/coreDam/videoApi'
 import ImagePreview from '@/views/coreDam/asset/components/ImagePreview.vue'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
 import { useI18n } from 'vue-i18n'
 
@@ -26,8 +26,7 @@ const videoFile = ref<VideoFile | null>(null)
 const chooseImagePreviewFromDistributionDialog = ref(false)
 
 const assetDetailStore = useAssetDetailStore()
-const { handleError } = useErrorHandler()
-const { showRecordWas } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
@@ -54,7 +53,7 @@ const onSave = async () => {
     await updatePreviewImage(videoFile.value.id, videoFile.value.imagePreview)
     showRecordWas('updated')
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     saving.value = false
   }
@@ -66,19 +65,31 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AssetDetailSidebarActionsWrapper v-if="isActive"></AssetDetailSidebarActionsWrapper>
+  <AssetDetailSidebarActionsWrapper v-if="isActive" />
   <div class="px-3">
-    <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
-    <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
-      <VProgressCircular indeterminate color="primary" />
+    <AssetDetailSlotSelect
+      class="mt-4"
+      @active-slot-change="activeSlotChange"
+    />
+    <div
+      v-if="loading"
+      class="d-flex w-100 h-100 justify-center align-center pa-2"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
     <div v-else-if="videoFile">
-      <ImagePreview v-model="videoFile.imagePreview" show-actions @changed="onSave">
+      <ImagePreview
+        v-model="videoFile.imagePreview"
+        show-actions
+        @changed="onSave"
+      >
         <template #actions-end>
           <VBtn
-            variant="flat"
+            variant="text"
             class="my-2 mr-2"
-            color="secondary"
             size="small"
             @click.stop="chooseImagePreviewFromDistributionDialog = true"
           >

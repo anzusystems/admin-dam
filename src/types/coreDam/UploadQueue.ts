@@ -55,11 +55,11 @@ export interface UploadQueueItem {
   keywords: DocId[]
   authors: DocId[]
   customData: any
-  keywordSuggestions: Record<string, Array<string>>
-  authorSuggestions: Record<string, Array<string>>
+  authorConflicts: DocId[]
   progress: {
     remainingTime: null | number
     progressPercent: null | number
+    speed: null | number
   }
   error: {
     hasError: boolean
@@ -76,4 +76,9 @@ export interface UploadQueue {
   totalCount: number
   processedCount: number
   fileInputKey: number // used to reset html input file element
+
+  suggestions: {
+    newKeywordNames: Set<string>
+    newAuthorNames: Set<string>
+  }
 }

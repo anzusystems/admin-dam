@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 import { ACL } from '@/types/Permission'
+import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 
 withDefaults(
   defineProps<{
@@ -17,7 +17,12 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <VBtn variant="text" icon size="small" class="mx-1">
+  <VBtn
+    variant="text"
+    icon
+    size="small"
+    class="mx-1"
+  >
     <VIcon icon="mdi-cog" />
     <VMenu activator="parent">
       <VCard min-width="300">
@@ -49,6 +54,11 @@ const { t } = useI18n()
         </VList>
       </VCard>
     </VMenu>
-    <VTooltip activator="parent" location="bottom">{{ t('system.mainBar.options') }}</VTooltip>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.mainBar.options') }}
+    </VTooltip>
   </VBtn>
 </template>

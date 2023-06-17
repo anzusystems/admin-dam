@@ -1,6 +1,20 @@
 {
   "settings": {
+    "backToAssets": "Návrat na assety",
     "settings": "Osobné",
-    "users": "Používatelia"
+    "users": "Používatelia",
+    "podcasts": "Podcasty",
+    "videoShows": "Video relácie",
+    "permissionGroups": "Skupiny oprávnení",
+    "anzuUser": "Oprávnenia používateľov",
+    "extSystems": "Externé systémy",
+    "assetLicences": "Licencie assetov",
+    "keywords": "Kľúčové slová",
+    "authors": "Autori",
+    "distributionCategory": "Kategórie distribúcií",
+    "distributionCategorySelect": "Výbery kategórie distribúcií",
+    "log": "Logy",
+    "beta": "Beta",
+    "job": "Systémové úlohy"
   }
 }

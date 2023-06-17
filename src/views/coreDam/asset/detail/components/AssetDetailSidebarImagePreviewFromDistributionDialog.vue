@@ -3,10 +3,10 @@ import { computed, onMounted, ref } from 'vue'
 import {
   ACard,
   ADatatablePagination,
+  ADialogToolbar,
   type DocId,
   isNull,
   useAlerts,
-  useErrorHandler,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
@@ -52,8 +52,7 @@ const closeDialog = () => {
   emit('update:modelValue', false)
 }
 
-const { showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   if (isNull(lastSelectedItem.value)) return
@@ -64,7 +63,7 @@ const onConfirm = async () => {
     showRecordWas('updated')
     emit('afterSuccessfulConfirm')
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     saving.value = false
   }
@@ -83,30 +82,30 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog :model-value="modelValue" persistent no-click-animation scrollable :max-width="800">
+  <VDialog
+    :model-value="modelValue"
+    scrollable
+    :max-width="800"
+  >
     <VCard>
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('system.imagePreview.actions.chooseFromDistribution') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="closeDialog"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="closeDialog">
+        {{ t('system.imagePreview.actions.chooseFromDistribution') }}
+      </ADialogToolbar>
       <VCardText>
-        <ACard :loading="listLoading" inner-div-class="">
-          <div v-if="listItems.length === 0" class="text-center text-caption w-100 pa-2">
+        <ACard
+          :loading="listLoading"
+          inner-div-class=""
+        >
+          <div
+            v-if="listItems.length === 0"
+            class="text-center text-caption w-100 pa-2"
+          >
             {{ t('coreDam.distribution.common.noEntries') }}
           </div>
-          <div v-else class="dam-image-grid dam-image-grid--special">
+          <div
+            v-else
+            class="dam-image-grid dam-image-grid--special"
+          >
             <DistributionImagePreviewItem
               v-for="(item, index) in listItems"
               :key="item.id"
@@ -116,18 +115,31 @@ onMounted(async () => {
               @invalid-image="invalidImage"
             />
           </div>
-          <ADatatablePagination v-model="pagination" hide-records-per-page @change="getList" />
+          <ADatatablePagination
+            v-model="pagination"
+            hide-records-per-page
+            @change="getList"
+          />
         </ACard>
       </VCardText>
       <VCardActions>
-        <div v-if="lastSelectedItem" class="text-caption pl-2">
+        <div
+          v-if="lastSelectedItem"
+          class="text-caption pl-2"
+        >
           {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>
         <VSpacer />
-        <VBtn color="success" :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">
+        <ABtnTertiary @click.stop="closeDialog">
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="saving"
+          :disabled="!lastSelectedItem"
+          @click.stop="onConfirm"
+        >
           {{ t('common.button.confirm') }}
-        </VBtn>
-        <VBtn text @click.stop="closeDialog">{{ t('common.button.cancel') }}</VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

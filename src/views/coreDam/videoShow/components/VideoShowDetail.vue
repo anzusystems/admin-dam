@@ -16,11 +16,17 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow :title="t('coreDam.videoShow.model.texts.title')" :value="videoShow.texts.title" />
+      <ARow
+        :title="t('coreDam.videoShow.model.texts.title')"
+        :value="videoShow.texts.title"
+      />
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.videoShow.model.id')">
-        <ACopyText :value="videoShow.id" data-cy="video-show-id" />
+        <ACopyText
+          :value="videoShow.id"
+          data-cy="video-show-id"
+        />
       </ARow>
       <!--        <ARow v-if="imageSrc" title="Image">-->
       <!--          <AssetImage :src="imageSrc" use-component />-->

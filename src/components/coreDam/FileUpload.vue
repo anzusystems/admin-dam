@@ -3,6 +3,7 @@ import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragW
 import { computed, ref, watch } from 'vue'
 import { arrayFlatten, arrayFromArgs, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
+import { fileTypeFix } from '@/services/fileType'
 
 type InputRef = null | HTMLInputElement
 
@@ -179,9 +180,9 @@ const checkFormats = (file: File, accepts: string[]) => {
     } else {
       // type
       const splitType = accepts[i].split('/')
-      if (splitType[1] === '*' && file.type.startsWith(splitType[0] + '/')) {
+      if (splitType[1] === '*' && fileTypeFix(file).startsWith(splitType[0] + '/')) {
         return true
-      } else if (accepts[i] === file.type) {
+      } else if (accepts[i] === fileTypeFix(file)) {
         return true
       }
     }
@@ -202,9 +203,9 @@ const checkSizes = (file: File, keys: Array<string>, sizes: Record<string, numbe
     } else {
       // type
       const splitType = keys[j].split('/')
-      if (splitType[1] === '*' && file.type.startsWith(splitType[0] + '/') && sizes[keys[j]] > file.size) {
+      if (splitType[1] === '*' && fileTypeFix(file).startsWith(splitType[0] + '/') && sizes[keys[j]] > file.size) {
         return true
-      } else if (keys[j] === file.type && sizes[keys[j]] > file.size) {
+      } else if (keys[j] === fileTypeFix(file) && sizes[keys[j]] > file.size) {
         return true
       }
     }
@@ -237,18 +238,25 @@ watch(selectedFiles, (newValue, oldValue) => {
 </script>
 
 <template>
-  <div v-if="variant === 'icon'" class="dam-upload-icon d-inline-flex">
+  <div
+    v-if="variant === 'icon'"
+    class="dam-upload-icon d-inline-flex"
+  >
     <VBtn
       tabindex="-1"
       icon
-      variant="flat"
+      variant="text"
       :height="height"
       :width="height"
-      color="secondary"
       @click.stop="clickDropzone"
     >
       <VIcon icon="mdi-plus" />
-      <VTooltip activator="parent" location="bottom">{{ t('system.upload.add') }}</VTooltip>
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('system.upload.add') }}
+      </VTooltip>
     </VBtn>
   </div>
   <VBtn
@@ -260,11 +268,29 @@ watch(selectedFiles, (newValue, oldValue) => {
     :width="height"
     @click.stop="clickDropzone"
   >
-    <VIcon icon="mdi-plus" :size="18" />
-    <VTooltip activator="parent" location="bottom">{{ t('system.upload.add') }}</VTooltip>
+    <VIcon
+      icon="mdi-plus"
+      :size="18"
+    />
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.upload.add') }}
+    </VTooltip>
   </VBtn>
-  <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
-    <VBtn tabindex="-1" color="primary" rounded="pill" variant="flat" :height="height" @click.stop="clickDropzone">
+  <div
+    v-if="variant === 'button'"
+    class="dam-upload-button d-inline-flex"
+  >
+    <VBtn
+      tabindex="-1"
+      color="primary"
+      rounded="pill"
+      variant="flat"
+      :height="height"
+      @click.stop="clickDropzone"
+    >
       {{ buttonText }}
     </VBtn>
   </div>
@@ -275,7 +301,9 @@ watch(selectedFiles, (newValue, oldValue) => {
     @drop="onDrop"
     @click.stop="clickDropzone"
   >
-    <div class="text-h1">{{ t('system.upload.dragAndDrop') }}</div>
+    <div class="text-h1">
+      {{ t('system.upload.dragAndDrop') }}
+    </div>
   </div>
   <input
     ref="inputRef"
@@ -288,15 +316,12 @@ watch(selectedFiles, (newValue, oldValue) => {
     type="file"
     @change="onFileChange"
     @reset="onReset"
-  />
+  >
 </template>
 
 <style lang="scss">
 .dam-upload-dropzone {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   position: absolute;
   background-color: #e5edf1;
   outline: 2px dashed #bacfd4;

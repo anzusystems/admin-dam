@@ -1,26 +1,17 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import {
-  AActionCloseButton,
-  AActionSaveAndCloseButton,
-  AActionSaveButton,
-  stringToInt,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import ActionbarButtonsWrapper from '@/components/wrappers/ActionbarButtonsWrapper.vue'
-import ActionbarTitleWrapper from '@/components/wrappers/ActionbarTitleWrapper.vue'
 import PermissionGroupEditForm from '@/views/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { damClient } from '@/services/api/clients/damClient'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-
-const { t } = useI18n()
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = stringToInt(route.params.id)
 
-const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, loadingUpdatePermissionGroup } =
+const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, detailLoading, saveButtonLoading } =
   usePermissionGroupActions(damClient)
 
 const getData = () => {
@@ -37,14 +28,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarTitleWrapper :heading="t('common.permissionGroup.meta.edit')" />
-  <ActionbarButtonsWrapper>
-    <AActionSaveButton :loading="loadingUpdatePermissionGroup" @save-record="updatePermissionGroup" />
-    <AActionSaveAndCloseButton
-      :loading="loadingUpdatePermissionGroup"
-      @save-record-and-close="updatePermissionGroup(true)"
-    />
-    <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
-  </ActionbarButtonsWrapper>
-  <PermissionGroupEditForm :client="damClient" />
+  <ActionbarWrapper>
+    <template #buttons>
+      <AActionSaveButton
+        :loading="saveButtonLoading"
+        @save-record="updatePermissionGroup"
+      />
+      <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
+    </template>
+  </ActionbarWrapper>
+
+  <ACard :loading="detailLoading">
+    <VCardText>
+      <PermissionGroupEditForm :client="damClient" />
+    </VCardText>
+  </ACard>
 </template>

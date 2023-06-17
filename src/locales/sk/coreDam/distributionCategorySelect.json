@@ -1,0 +1,15 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Meno",
+    "serviceSlug": "Distribučná služba",
+    "value": "Hodnota",
+    "options": "Nastavenie",
+    "assignable": "Priraditeľné"
+  },
+  "filter": {
+    "id": "ID",
+    "name": "Meno",
+    "type": "Typ assetu"
+  }
+}

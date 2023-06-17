@@ -1,0 +1,15 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Meno",
+    "type": "Typ"
+  },
+  "filter": {
+    "id": "ID",
+    "name": "Meno",
+    "type": "Typ assetu"
+  },
+  "notSelected": "Nie je vybraná žiadna distribučná kategória",
+  "manage": "Výber distribučnej kategórie",
+  "createButton": "Vytvoriť distribučnú kategóriu"
+}

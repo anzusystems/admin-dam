@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
-import { AFormTextarea, ARow, ASystemEntityScope, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextarea, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpisodeFactory'
@@ -13,7 +13,7 @@ import {
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useVideoShowEpisodeValidation } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
 import { useI18n } from 'vue-i18n'
-import VideoShowSelect from '@/views/coreDam/videoShow/components/VideoShowSelect.vue'
+import VideoShowRemoteAutocomplete from '@/views/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -37,8 +37,7 @@ const value = computed({
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { createDefault } = useVideoShowEpisodeFactory()
 const videoShowEpisode = ref<VideoShowEpisode>(createDefault(currentExtSystemId.value))
@@ -66,7 +65,7 @@ const submit = async () => {
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -96,35 +95,34 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation :width="500">
+  <VDialog
+    v-model="value"
+    :width="500"
+  >
     <VCard v-if="value">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="closeDialog(false)"
-          />
-        </VToolbarItems>
-      </VToolbar>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+      <ADialogToolbar @on-cancel="closeDialog(false)">
+        {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <ARow>
-            <VideoShowSelect
+            <VideoShowRemoteAutocomplete
               v-model="videoShowEpisode.videoShow"
               required
               :label="t('coreDam.videoShowEpisode.model.videoShow')"
             />
           </ARow>
-          <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
-            <VProgressCircular indeterminate color="primary" />
+          <div
+            v-if="loadingFormData"
+            class="d-flex w-100 justify-center align-center pa-2"
+          >
+            <VProgressCircular
+              indeterminate
+              color="primary"
+            />
           </div>
           <template v-if="videoShowEpisode.videoShow && !loadingFormData">
             <ARow>
@@ -135,12 +133,19 @@ onMounted(async () => {
               />
             </ARow>
           </template>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="success" :loading="saving" @click.stop="submit">{{ t('common.button.add') }}</VBtn>
-        <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
+        <ABtnTertiary @click.stop="closeDialog(false)">
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="saving"
+          @click.stop="submit"
+        >
+          {{ t('common.button.add') }}
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

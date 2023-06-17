@@ -1,0 +1,35 @@
+{
+  "model": {
+    "publishAt": "Publikované o"
+  },
+  "distributionStatus": {
+    "waiting": "Čaká",
+    "distributing": "Distribuovaný",
+    "remoteProcessing": "Vzdialené spracovávanie",
+    "distributed": "Distribuovaný",
+    "failed": "Chyba"
+  },
+  "failReason": {
+    "none": "Žiaden",
+    "unknown": "Neznámy",
+    "quotaReached": "Dosiahnutá kvóta",
+    "remoteProcessFailed": "Vzdialené spracovávanie zlyhalo",
+    "validationFailed": "Chyba pri validácii"
+  },
+  "common": {
+    "select": "Kategória distribúcie",
+    "list": "Zoznam distribúcií",
+    "addButton": "Pridať novú",
+    "redistributeButton": "Znovu distribuovať",
+    "cancelDistributionButton": "Zastaviť distribúciu",
+    "addTitle": "Pridať novú distribúciu",
+    "redistributeTitle": "Znovu distribuovať",
+    "noEntries": "Nie je čo zobraziť",
+    "status": "Stav",
+    "error": "Nastala chyba",
+    "blockedByDistribution": "Blokované distribúciou",
+    "extId": "Externé ID",
+    "failReason": "Dôvod zlyhania",
+    "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
+  }
+}

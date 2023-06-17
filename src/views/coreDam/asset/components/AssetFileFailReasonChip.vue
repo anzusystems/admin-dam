@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { type AssetFileFailReason, useAssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
+import { AChipNoLink } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -16,7 +17,9 @@ const reasonOption = computed(() => {
 </script>
 
 <template>
-  <VChip v-if="reasonOption" label size="small">
+  <AChipNoLink
+    v-if="reasonOption"
+  >
     {{ reasonOption.title }}
-  </VChip>
+  </AChipNoLink>
 </template>

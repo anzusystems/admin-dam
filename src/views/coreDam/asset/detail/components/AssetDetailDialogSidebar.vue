@@ -57,19 +57,47 @@ const typeHasDistributions = computed(() => {
 <template>
   <div class="sidebar-info d-flex w-100 h-100 flex-column">
     <div class="w-100 d-flex flex-column">
-      <VTabs v-model="activeTab" class="sidebar-info__tabs">
-        <VTab :value="AssetDetailTab.Info">{{ t('coreDam.asset.detail.tabs.info') }}</VTab>
-        <VTab v-if="isImage" :value="AssetDetailTab.ROI">{{ t('coreDam.asset.detail.tabs.roi') }}</VTab>
+      <VTabs
+        v-model="activeTab"
+        class="sidebar-info__tabs"
+      >
+        <VTab :value="AssetDetailTab.Info">
+          {{ t('coreDam.asset.detail.tabs.info') }}
+        </VTab>
+        <VTab
+          v-if="isImage"
+          :value="AssetDetailTab.ROI"
+        >
+          {{ t('coreDam.asset.detail.tabs.roi') }}
+        </VTab>
         <Acl :permission="ACL.DAM_DISTRIBUTION_ACCESS">
-          <VTab v-if="typeHasDistributions" :value="AssetDetailTab.Distribution">
+          <VTab
+            v-if="typeHasDistributions"
+            :value="AssetDetailTab.Distribution"
+          >
             {{ t('coreDam.asset.detail.tabs.distribution') }}
           </VTab>
         </Acl>
-        <VTab v-if="isAudio" :value="AssetDetailTab.Podcast">{{ t('coreDam.asset.detail.tabs.podcast') }}</VTab>
-        <VTab v-if="isVideo" :value="AssetDetailTab.VideoShow">{{ t('coreDam.asset.detail.tabs.videoShow') }}</VTab>
-        <VTab :value="AssetDetailTab.Slots">{{ t('coreDam.asset.detail.tabs.slots') }}</VTab>
-        <VTab v-if="isVideo" :value="AssetDetailTab.ImagePreview"
-          >{{ t('coreDam.asset.detail.tabs.imagePreview') }}
+        <VTab
+          v-if="isAudio"
+          :value="AssetDetailTab.Podcast"
+        >
+          {{ t('coreDam.asset.detail.tabs.podcast') }}
+        </VTab>
+        <VTab
+          v-if="isVideo"
+          :value="AssetDetailTab.VideoShow"
+        >
+          {{ t('coreDam.asset.detail.tabs.videoShow') }}
+        </VTab>
+        <VTab :value="AssetDetailTab.Slots">
+          {{ t('coreDam.asset.detail.tabs.slots') }}
+        </VTab>
+        <VTab
+          v-if="isVideo"
+          :value="AssetDetailTab.ImagePreview"
+        >
+          {{ t('coreDam.asset.detail.tabs.imagePreview') }}
         </VTab>
       </VTabs>
 
@@ -79,40 +107,68 @@ const typeHasDistributions = computed(() => {
           :asset-main-file-status="assetMainFileStatus"
           :asset-main-file-fail-reason="assetMainFileFailReason"
         />
-        <div v-if="activeTab === AssetDetailTab.Info" class="py-2">
+        <div
+          v-if="activeTab === AssetDetailTab.Info"
+          class="py-2"
+        >
           <AssetDetailSidebarMetadata
             :is-active="activeTab === AssetDetailTab.Info"
             :asset-type="assetType"
             @post-delete="postDelete"
           />
         </div>
-        <div v-if="isImage && activeTab === AssetDetailTab.ROI" class="py-2">
+        <div
+          v-if="isImage && activeTab === AssetDetailTab.ROI"
+          class="py-2"
+        >
           <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
         </div>
         <Acl :permission="ACL.DAM_DISTRIBUTION_ACCESS">
-          <div v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution" class="py-2">
+          <div
+            v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution"
+            class="py-2"
+          >
             <DistributionCategoryWidget class="px-4 mb-4" />
             <AssetDetailSidebarDistribution
               :asset-id="assetId"
               :is-active="activeTab === AssetDetailTab.Distribution"
               :asset-type="assetType"
+              :asset-main-file-status="assetMainFileStatus"
             />
           </div>
         </Acl>
-        <div v-if="isAudio && activeTab === AssetDetailTab.Podcast" class="py-2">
-          <AssetDetailSidebarPodcast :asset-id="assetId" :is-active="activeTab === AssetDetailTab.Podcast" />
+        <div
+          v-if="isAudio && activeTab === AssetDetailTab.Podcast"
+          class="py-2"
+        >
+          <AssetDetailSidebarPodcast
+            :asset-id="assetId"
+            :is-active="activeTab === AssetDetailTab.Podcast"
+          />
         </div>
-        <div v-if="isVideo && activeTab === AssetDetailTab.VideoShow" class="py-2">
-          <AssetDetailSidebarVideoShow :asset-id="assetId" :is-active="activeTab === AssetDetailTab.VideoShow" />
+        <div
+          v-if="isVideo && activeTab === AssetDetailTab.VideoShow"
+          class="py-2"
+        >
+          <AssetDetailSidebarVideoShow
+            :asset-id="assetId"
+            :is-active="activeTab === AssetDetailTab.VideoShow"
+          />
         </div>
-        <div v-if="activeTab === AssetDetailTab.Slots" class="py-2">
+        <div
+          v-if="activeTab === AssetDetailTab.Slots"
+          class="py-2"
+        >
           <AssetDetailSidebarSlots
             :asset-id="assetId"
             :is-active="activeTab === AssetDetailTab.Slots"
             :asset-type="assetType"
           />
         </div>
-        <div v-if="isVideo && activeTab === AssetDetailTab.ImagePreview" class="py-2">
+        <div
+          v-if="isVideo && activeTab === AssetDetailTab.ImagePreview"
+          class="py-2"
+        >
           <AssetDetailSidebarImagePreview :is-active="activeTab === AssetDetailTab.ImagePreview" />
         </div>
       </div>

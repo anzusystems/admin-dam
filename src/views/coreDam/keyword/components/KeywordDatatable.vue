@@ -1,82 +1,128 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import {
-  ADatatable,
+  ABooleanValue,
+  ADatatableConfigButton,
+  ADatatableOrdering,
   ADatatablePagination,
-  ASystemEntityScope,
+  ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
+  createDatatableColumnsConfig,
+  type DatatableOrderingOption,
   useAcl,
-  useDatatableColumns,
   useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/keywordApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL, type AclValue } from '@/types/Permission'
-import type { Author } from '@/types/coreDam/Author'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
 import KeywordFilter from '@/views/coreDam/keyword/components/KeywordFilter.vue'
+import type { Keyword } from '@/types/coreDam/Keyword'
+
+type DatatableItem = { raw: Keyword }
 
 const router = useRouter()
-const pagination = usePagination()
 const filter = useKeywordListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 
-const { fetchList, listItems } = useKeywordListActions()
+const { fetchList, listItems, datatableHiddenColumns } = useKeywordListActions()
 const getList = () => {
   fetchList(pagination, filter)
 }
 
-const columns = useDatatableColumns([
-  { name: 'name' },
-  { name: 'flags.reviewed' },
-  { name: 'createdAt' },
-  { name: 'modifiedAt' },
-])
-
 const { can } = useAcl<AclValue>()
 
-const onRowClick = (row: Author) => {
-  if (row.id && can(ACL.DAM_KEYWORD_VIEW)) {
-    router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: row.id } })
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
+  if (item.raw.id && can(ACL.DAM_KEYWORD_VIEW)) {
+    router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: item.raw.id } })
   }
+}
+
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+  [{ key: 'id' }, { key: 'name' }, { key: 'flags.reviewed' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+  datatableHiddenColumns,
+  SYSTEM_CORE_DAM,
+  ENTITY
+)
+
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
 }
 
 onMounted(() => {
   getList()
 })
 
-const refresh = () => {
-  getList()
-}
-
 defineExpose({
-  refresh,
+  refresh: getList,
 })
 </script>
 
 <template>
-  <KeywordFilter
-    @submit-filter="submitFilter(filter, pagination, getList)"
-    @reset-filter="resetFilter(filter, pagination, getList)"
-  />
-  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-    <ADatatable :data="listItems" :columns="columns" @row-click="onRowClick">
-      <template #actions="{ data }">
-        <Acl :permission="ACL.DAM_KEYWORD_VIEW">
-          <ATableDetailButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.DETAIL" />
-        </Acl>
-        <ATableCopyIdButton :id="data.id" />
-        <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
-          <ATableEditButton :record-id="data.id" :route-name="ROUTE.DAM.KEYWORD.EDIT" />
-        </Acl>
-      </template>
-    </ADatatable>
-    <ADatatablePagination v-model="pagination" @change="getList" />
-  </ASystemEntityScope>
+  <div>
+    <KeywordFilter
+      @submit-filter="submitFilter(filter, pagination, getList)"
+      @reset-filter="resetFilter(filter, pagination, getList)"
+    />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
+        />
+      </div>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #item.flags.reviewed="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.raw.flags.reviewed"
+          />
+        </template>
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.raw.modifiedAt" />
+        </template>
+        <template #item.actions="{ item }: { item: DatatableItem }">
+          <div class="d-flex justify-end">
+            <ATableCopyIdButton :id="item.raw.id" />
+            <Acl :permission="ACL.DAM_KEYWORD_VIEW">
+              <ATableDetailButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.DAM.KEYWORD.DETAIL"
+              />
+            </Acl>
+            <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
+              <ATableEditButton
+                :record-id="item.raw.id"
+                :route-name="ROUTE.DAM.KEYWORD.EDIT"
+              />
+            </Acl>
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
+  </div>
 </template>

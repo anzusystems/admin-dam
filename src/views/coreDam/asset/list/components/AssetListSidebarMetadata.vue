@@ -2,9 +2,8 @@
 import { computed, ref, watch } from 'vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { browserHistoryReplaceUrlByRouter, isNull, useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { browserHistoryReplaceUrlByRouter, isNull, useAlerts } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
@@ -15,6 +14,7 @@ import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { sidebarRight } = useMainWrapper()
 const router = useRouter()
@@ -25,12 +25,11 @@ const { t } = useI18n()
 
 const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
 
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const onEditMore = async () => {
   assetDetailStore.showDetail()
@@ -54,7 +53,7 @@ const onSave = async () => {
     await updateAssetMetadata(asset.value)
     showRecordWas('updated')
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -72,9 +71,9 @@ watch(
   asset,
   (newValue, oldValue) => {
     if (newValue !== oldValue && newValue !== null) {
-      if (newValue.createdBy) addToLazyUserBuffer(newValue.createdBy)
-      if (newValue.modifiedBy) addToLazyUserBuffer(newValue.modifiedBy)
-      fetchLazyUser()
+      if (newValue.createdBy) addToCachedUsers(newValue.createdBy)
+      if (newValue.modifiedBy) addToCachedUsers(newValue.modifiedBy)
+      fetchCachedUsers()
     }
   },
   { immediate: true }
@@ -82,11 +81,25 @@ watch(
 </script>
 
 <template>
-  <VNavigationDrawer v-model="sidebarRight" permanent location="right" :width="300">
-    <div v-if="loader" class="d-flex w-100 h-100 align-center justify-center">
-      <VProgressCircular indeterminate color="primary" />
+  <VNavigationDrawer
+    v-model="sidebarRight"
+    permanent
+    location="right"
+    :width="300"
+  >
+    <div
+      v-if="loader"
+      class="d-flex w-100 h-100 align-center justify-center"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
-    <div v-else-if="!asset" class="d-flex w-100 h-100 align-center justify-center">
+    <div
+      v-else-if="!asset"
+      class="d-flex w-100 h-100 align-center justify-center"
+    >
       {{ t('coreDam.asset.detail.noAssetSelected') }}
     </div>
     <div v-else>
@@ -97,16 +110,23 @@ watch(
       />
       <AssetMetadata />
     </div>
-    <template v-if="!loader && asset" #append>
+    <template
+      v-if="!loader && asset"
+      #append
+    >
       <div class="pa-2 d-flex align-center justify-center">
-        <VBtn color="secondary" variant="flat" class="mr-2" size="small" @click.stop="onEditMore">
+        <ABtnSecondary
+          class="mr-2"
+          size="small"
+          @click.stop="onEditMore"
+        >
           {{ t('coreDam.asset.detail.info.edit') }}
-        </VBtn>
+        </ABtnSecondary>
         <Acl :permission="ACL.DAM_ASSET_UPDATE">
           <VBtn
-            :color="metadataAreTouched ? 'success' : 'secondary'"
+            color="primary"
             size="small"
-            variant="flat"
+            :variant="metadataAreTouched ? 'flat' : 'text'"
             :loading="saveButtonLoading"
             @click.stop="onSave"
           >

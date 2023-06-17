@@ -24,6 +24,7 @@ describe(`Test Podcast function, Env: ${Cypress.env('cfg')}`, () => {
   it('Create episode', () => {
     cy.visit('/podcast/list')
     cy.contains('[data-cy="filter-text"]', 'Title').should('be.visible').type(`${PODCAST_TITLE}{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.contains('td', `${PODCAST_TITLE}`).should('be.visible').click()
     cy.getCy('podcast-id').should('be.visible')
@@ -37,6 +38,7 @@ describe(`Test Podcast function, Env: ${Cypress.env('cfg')}`, () => {
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage('Record was created')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.getCy('button-close').click()
     cy.getCy('podcast-list').should('be.visible')

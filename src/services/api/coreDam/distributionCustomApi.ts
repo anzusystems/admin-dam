@@ -1,5 +1,5 @@
 import type { DocId } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import { apiCreateOne, apiDeleteOne, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
@@ -39,3 +39,6 @@ export const prepareFormDataCustomDistribution = (
     SYSTEM_CORE_DAM,
     ENTITY
   )
+
+export const cancelCustomDistribution = (distributionId: DocId) =>
+  apiDeleteOne(damClient, END_POINT + '/:distributionId', { distributionId }, SYSTEM_CORE_DAM, ENTITY)

@@ -1,18 +1,27 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DocId, DocIdNullable, FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
 import {
+  AnzuApiForbiddenError,
+  AnzuApiForbiddenOperationError,
   AnzuApiValidationError,
+  type AnzuApiValidationResponseData,
+  AnzuFatalError,
   apiAnyRequest,
   apiCreateOne,
   apiDeleteOne,
-  type ApiErrors,
   apiFetchList,
   apiFetchOne,
+  axiosErrorResponseHasForbiddenOperationData,
+  axiosErrorResponseHasValidationData,
+  axiosErrorResponseIsForbidden,
+  type DocId,
+  type DocIdNullable,
+  type FilterBag,
   HTTP_STATUS_OK,
+  type IntegerId,
   isNull,
+  type Pagination,
   useAlerts,
-  useErrorHandler,
-  type ValidationResponseData,
+  type ValidationError,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
@@ -38,8 +47,6 @@ const BULK_METADATA_LIMIT = 10
 const END_POINT = '/adm/v1/asset'
 export const ENTITY = 'asset'
 const FETCH_BY_IDS_MAX_LIMIT = 25
-
-const { isValidationError } = useErrorHandler()
 
 export const fetchAssetList = (licenceId: number, pagination: Pagination, filterBag: FilterBag) =>
   apiFetchList<AssetSearchListItemDto[]>(
@@ -157,13 +164,13 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
   })
 }
 
-const { showUnknownError, showApiError } = useAlerts()
+const { showUnknownError, showApiValidationError } = useAlerts()
 
 // todo add type
 const handleMetadataValidationError = (error: any, assetType: AssetType) => {
   if (!error || !error.response || !error.response.data) return
-  const data = error.response.data as ValidationResponseData
-  const items = [] as ApiErrors[]
+  const data = error.response.data as AnzuApiValidationResponseData
+  const items = [] as ValidationError[]
   for (const [key, values] of Object.entries(data.fields)) {
     const field = key.split('.').pop()
     const found = damConfigAssetCustomFormElements[assetType].find((item) => item.key === field)
@@ -175,7 +182,7 @@ const handleMetadataValidationError = (error: any, assetType: AssetType) => {
     }
   }
   if (items.length) {
-    showApiError(items, -1, true)
+    showApiValidationError(items, -1, true)
     return
   }
   showUnknownError()
@@ -201,11 +208,17 @@ export const updateAssetMetadata = (asset: AssetDetailItemDto) => {
         }
       })
       .catch((err) => {
-        if (isValidationError(err)) {
-          handleMetadataValidationError(err, asset.attributes.assetType)
-          reject(new AnzuApiValidationError())
+        if (axiosErrorResponseIsForbidden(err)) {
+          return reject(new AnzuApiForbiddenError(err))
         }
-        reject(err)
+        if (axiosErrorResponseHasValidationData(err)) {
+          handleMetadataValidationError(err, asset.attributes.assetType)
+          return reject(new AnzuApiValidationError(err, SYSTEM_CORE_DAM, ENTITY, err))
+        }
+        if (axiosErrorResponseHasForbiddenOperationData(err)) {
+          return reject(new AnzuApiForbiddenOperationError(err, err))
+        }
+        return reject(new AnzuFatalError(err))
       })
   })
 }

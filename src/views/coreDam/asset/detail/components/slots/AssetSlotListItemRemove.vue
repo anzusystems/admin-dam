@@ -3,6 +3,7 @@ import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
+import { ADialogToolbar } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -47,48 +48,70 @@ const onRemove = () => {
 </script>
 
 <template>
-  <VListItem :title="t('coreDam.asset.slots.actions.remove')" @click.stop="openDialog" />
-  <VDialog v-model="dialog" persistent :width="600" no-click-animation>
+  <VListItem
+    :title="t('coreDam.asset.slots.actions.remove')"
+    @click.stop="openDialog"
+  />
+  <VDialog
+    v-model="dialog"
+    :width="600"
+  >
     <VCard v-if="dialog">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('common.modal.system.confirmDelete') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('common.modal.system.confirmDelete') }}
+      </ADialogToolbar>
       <VCardText>
-        <div v-if="showUnset" class="mb-2">{{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}</div>
-        <div v-else class="mb-2">{{ t('coreDam.asset.slots.remove.descriptionOnlyRemove') }}</div>
-        <div v-if="item" class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
+        <div
+          v-if="showUnset"
+          class="mb-2"
+        >
+          {{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}
+        </div>
+        <div
+          v-else
+          class="mb-2"
+        >
+          {{ t('coreDam.asset.slots.remove.descriptionOnlyRemove') }}
+        </div>
+        <div
+          v-if="item"
+          class="mb-1"
+        >
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.name') }}:
+          </div>
           {{ item.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.file') }}:
+          </div>
           {{ fileTitle }}
         </div>
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn v-if="showUnset" color="warning" text data-cy="button-unset" @click.stop="onUnset">
-          {{ t('coreDam.asset.slots.remove.unsetSlot') }}
-        </VBtn>
-        <VBtn color="error" text data-cy="button-remove" @click.stop="onRemove">
-          {{ t('coreDam.asset.slots.remove.removeFile') }}
-        </VBtn>
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
+        </ABtnTertiary>
+        <ABtnPrimary
+          v-if="showUnset"
+          color="warning"
+          data-cy="button-unset"
+          @click.stop="onUnset"
+        >
+          {{ t('coreDam.asset.slots.remove.unsetSlot') }}
+        </ABtnPrimary>
+        <ABtnPrimary
+          color="error"
+          data-cy="button-remove"
+          @click.stop="onRemove"
+        >
+          {{ t('coreDam.asset.slots.remove.removeFile') }}
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

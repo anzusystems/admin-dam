@@ -29,11 +29,12 @@
     },
     "status": {
       "isProcessingInfo": "Image is processing, please check again later",
+      "isDuplicateInfo": "Image is duplicate",
       "isFailedInfo": "Image processing failed"
     },
     "actions": {
       "unassign": "Unassign image",
-      "replaceByFileId": "Unassign image",
+      "selectImage": "Select image",
       "chooseFromDistribution": "Choose from distribution"
     }
   },

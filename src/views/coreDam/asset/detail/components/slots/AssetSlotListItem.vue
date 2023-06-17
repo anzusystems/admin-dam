@@ -17,6 +17,10 @@ import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
 import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
+import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
+import { AssetFileProcessStatus } from '@/types/coreDam/File'
+import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
+import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -69,6 +73,10 @@ const uploadQueueItemInAnyProgressIndex = computed(() => {
         item.assetId === uploadQueueItemInAnyProgress.value?.assetId &&
         item.slotName === uploadQueueItemInAnyProgress.value?.slotName
     )
+})
+
+const statusComputed = computed(() => {
+  return props.item?.assetFile?.fileAttributes.status
 })
 
 const filePublicLink = computed(() => {
@@ -165,13 +173,28 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
       </VCol>
     </VRow>
     <VRow v-else>
-      <VCol v-if="itemHasFile">
+      <VCol v-if="itemHasFile && item && item.assetFile">
         <div class="font-weight-bold">
           {{ slotName }} <span v-if="item && item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
+          <AssetFileDuplicateChip
+            v-if="statusComputed === AssetFileProcessStatus.Duplicate"
+            class="ml-2"
+          />
+          <div v-if="statusComputed === AssetFileProcessStatus.Failed">
+            {{ t('coreDam.distribution.common.failReason') }}:
+            <AssetFileFailReasonChip
+              class="ml-2"
+              :reason="item?.assetFile?.fileAttributes.failReason as AssetFileFailReason"
+            />
+          </div>
         </div>
         <div>{{ fileTitle }}</div>
         <AssetFilePublicLink
-          v-if="assetType === AssetType.Audio && item && item.assetFile"
+          v-if="
+            assetType === AssetType.Audio &&
+              item &&
+              item.assetFile &&
+              statusComputed === AssetFileProcessStatus.Processed"
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"
           @open-make-public-dialog="openMakeFilePrivateDialog"
@@ -188,7 +211,10 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div>{{ t('coreDam.asset.slots.noFile') }}</div>
       </VCol>
-      <VCol cols="3" class="text-right">
+      <VCol
+        cols="3"
+        class="text-right"
+      >
         <AssetUpload
           v-if="!itemHasFile"
           :height="40"
@@ -200,7 +226,13 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :multiple="false"
           :asset-type="assetType"
         />
-        <VBtn v-if="itemHasFile" variant="text" icon size="small" class="mx-1">
+        <VBtn
+          v-if="itemHasFile"
+          variant="text"
+          icon
+          size="small"
+          class="mx-1"
+        >
           <VIcon icon="mdi-dots-horizontal" />
           <VMenu activator="parent">
             <VCard min-width="300">
@@ -210,7 +242,10 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                   :title="t('coreDam.asset.slots.actions.copyFileId')"
                   @click.stop="copyFileId"
                 />
-                <VListItem :title="t('coreDam.asset.slots.actions.download')" @click.stop="downloadFile" />
+                <VListItem
+                  :title="t('coreDam.asset.slots.actions.download')"
+                  @click.stop="downloadFile"
+                />
                 <VListItem
                   v-if="totalSlotCount > 1 && item && !item.main"
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
@@ -237,7 +272,12 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
               </VList>
             </VCard>
           </VMenu>
-          <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.slots.actions.slotOptions') }}</VTooltip>
+          <VTooltip
+            activator="parent"
+            location="bottom"
+          >
+            {{ t('coreDam.asset.slots.actions.slotOptions') }}
+          </VTooltip>
         </VBtn>
       </VCol>
     </VRow>

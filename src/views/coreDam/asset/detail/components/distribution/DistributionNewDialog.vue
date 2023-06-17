@@ -8,7 +8,7 @@ import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components
 import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import type { DocId } from '@anzusystems/common-admin'
-import { isNull } from '@anzusystems/common-admin'
+import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
@@ -75,33 +75,35 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation scrollable :max-width="1400" class="dialog-distribution">
+  <VDialog
+    v-model="value"
+    scrollable
+    :max-width="1400"
+    class="dialog-distribution"
+  >
     <VCard v-if="value">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div v-if="redistributeMode" class="text-h6">{{ t('coreDam.distribution.common.redistributeTitle') }}</div>
-          <div v-else class="text-h6">{{ t('coreDam.distribution.common.addTitle') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="closeDialog(false)"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="closeDialog(false)">
+        <span v-if="redistributeMode">{{ t('coreDam.distribution.common.redistributeTitle') }}</span>
+        <span v-else>{{ t('coreDam.distribution.common.addTitle') }}</span>
+      </ADialogToolbar>
       <div v-if="showTabs">
-        <VTabs v-model="activeDistributionName" density="compact" class="sidebar-info__tabs">
-          <VTab v-for="(requirement, key) in serviceRequirements" :key="key" :value="key">{{ requirement.title }}</VTab>
+        <VTabs
+          v-model="activeDistributionName"
+          density="compact"
+          class="sidebar-info__tabs"
+        >
+          <VTab
+            v-for="(requirement, key) in serviceRequirements"
+            :key="key"
+            :value="key"
+          >
+            {{ requirement.title }}
+          </VTab>
         </VTabs>
       </div>
       <component
         :is="componentComputed"
-        v-if="activeDistributionName"
+        v-if="activeDistributionName && activeConfig"
         :key="activeDistributionName"
         :asset-id="assetId"
         :asset-type="assetType"

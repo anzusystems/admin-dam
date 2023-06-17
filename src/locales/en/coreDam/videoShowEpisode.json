@@ -17,9 +17,7 @@
     "addNewVideoShowEpisode": "Add new video show episode"
   },
   "meta": {
-    "create": "Add Episode",
-    "edit": "Video show Episode Edit",
-    "detail": "Video show Episode Detail"
+    "create": "Add Episode"
   },
   "common": {
     "addAssetToNewVideoShowEpisode": "Add asset to new Video show episode",

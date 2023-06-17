@@ -2,15 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormTextField,
-  stringToSlug,
-  useAlerts,
-  useErrorHandler,
-  useValidateMaxLength,
-  useValidateMinLength,
-  useValidateRequired,
-} from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextField, stringToSlug, useAlerts, useValidate } from '@anzusystems/common-admin'
 import { makePublic } from '@/services/api/coreDam/audioApi'
 import useVuelidate from '@vuelidate/core'
 
@@ -36,8 +28,7 @@ const onCancel = () => {
   emit('update:modelValue', false)
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const modelValueComputed = computed(() => {
   return props.modelValue
@@ -49,9 +40,7 @@ watch(modelValueComputed, async (newValue) => {
   }
 })
 
-const required = useValidateRequired()
-const minLength = useValidateMinLength()
-const maxLength = useValidateMaxLength()
+const { required, minLength, maxLength } = useValidate()
 
 const rules = computed(() => {
   return {
@@ -77,7 +66,7 @@ const onConfirm = async () => {
     await makePublic(props.fileId, stringToSlug(slug.value))
     showRecordWas('updated')
   } catch (e) {
-    handleError(e)
+    showErrorsDefault(e)
   } finally {
     buttonLoading.value = false
     onCancel()
@@ -87,24 +76,40 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <VDialog :model-value="modelValue" persistent @update:model-value="emit('update:modelValue', $event)">
-    <VCard v-if="modelValue" width="500" class="mt-0 mr-auto ml-auto">
-      <VCardTitle class="d-flex pr-2">
-        <span>{{ t('coreDam.asset.assetFilePublicLink.actions.makePublic') }}</span>
-        <VSpacer />
-        <VBtn class="ml-2" icon="mdi-close" size="small" variant="text" data-cy="button-close" @click.stop="onCancel" />
-      </VCardTitle>
+  <VDialog
+    :model-value="modelValue"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
+    <VCard
+      v-if="modelValue"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('coreDam.asset.assetFilePublicLink.actions.makePublic') }}
+      </ADialogToolbar>
       <VCardText>
-        <AFormTextField v-model="slug" :label="t('coreDam.asset.assetFilePublicLink.model.slug')" :v="v$" />
+        <AFormTextField
+          v-model="slug"
+          :label="t('coreDam.asset.assetFilePublicLink.model.slug')"
+          :v="v$"
+        />
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="secondary" variant="text" data-cy="button-cancel" @click.stop="onCancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
-        </VBtn>
-        <VBtn color="success" :loading="buttonLoading" data-cy="button-create-podcast" @click.stop="onConfirm">
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="buttonLoading"
+          data-cy="button-create-podcast"
+          @click.stop="onConfirm"
+        >
           {{ t('common.button.confirm') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

@@ -10,21 +10,23 @@
       "rssUrl": "RSS URL",
       "mode": "Mode",
       "lastImportStatus": "Last import status"
-    }
+    },
+    "dates": {
+      "importFrom": "Import from"
+    },
+    "imagePreview": "Image",
+    "altImage": "Alt Image"
   },
   "filter": {
     "id": "ID",
     "title": "Title"
   },
   "meta": {
-    "create": "Podcast Create",
-    "edit": "Podcast Edit",
-    "detail": "Podcast Detail",
-    "list": "Podcasts List"
+    "create": "Podcast create"
   },
   "tabs": {
-    "detail": "Detail",
-    "episodes": "Episodes"
+    "detail": "Podcast detail",
+    "episodes": "Podcast episodes"
   },
   "lastImportStatus": {
     "notImported": "Not imported",

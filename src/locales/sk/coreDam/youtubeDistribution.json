@@ -1,0 +1,35 @@
+{
+  "model": {
+    "distributionService": "Meno distribučného servisu",
+    "privacy": "Uložiť alebo zverejniť ako:",
+    "language": "Jazyk",
+    "playlist": "Zoznam videí",
+    "texts": {
+      "title": "Nadpis",
+      "description": "Popis",
+      "keywords": "Kľúčové slovo"
+    },
+    "flags": {
+      "embeddable": "Povoliť vkladanie",
+      "forKids": "Pre deti",
+      "notifySubscribers": "Notifikovať odberateľov"
+    }
+  },
+  "privacy": {
+    "private": "Súkromné",
+    "public": "Verejné",
+    "unlisted": "Nezaradené",
+    "dynamic": "Harmonogram"
+  },
+  "videoPreviewLink": "Video náhľad na YouTube",
+  "videoAdministrationLink": "Administrácia videa na YouTube",
+  "loginDescription": "Prihlásiť sa na novej karte / okne a vrátiť sa naspäť",
+  "loginButton": "Prihlásenie",
+  "logoutButton": "Odhlásiť YouTube kanál",
+  "logout": {
+    "logoutTitle": "Odhlásiť YouTube kanál",
+    "logoutText": "Skutočne sa chcete odhlásiť z tohto youtube kanála?",
+    "logoutOpen": "Odhlásiť YouTube kanál",
+    "logoutConfirm": "Potvrdiť odhlásenie"
+  }
+}

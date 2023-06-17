@@ -1,0 +1,31 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Meno",
+    "identifier": "Identifikátor",
+    "type": "Typ",
+    "flags": {
+      "reviewed": "Skontrolovaný"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "text": "Text",
+    "identifier": "Identifikátor",
+    "type": "Typ",
+    "reviewed": "Skontrolovaný"
+  },
+  "authorType": {
+    "none": "Žiaden",
+    "internal": "Interný",
+    "external": "Externý",
+    "agency": "Agentúra"
+  },
+  "meta": {
+    "create": "Vytvorenie autora"
+  },
+  "button": {
+    "add": "Pridať nového autora"
+  },
+  "conflicts": "Konflikt autorov"
+}

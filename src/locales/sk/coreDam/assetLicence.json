@@ -1,0 +1,15 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Meno",
+    "extSystem": "Externý systém",
+    "extId": "Externé ID"
+  },
+  "filter": {
+    "id": "ID",
+    "extId": "Externé ID"
+  },
+  "meta": {
+    "create": "Vytvoriť licenciu"
+  }
+}

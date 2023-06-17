@@ -23,6 +23,11 @@ const style = computed(() => {
 
 <template>
   <div :style="style">
-    <VTooltip activator="parent" location="bottom">{{ color }}</VTooltip>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ color }}
+    </VTooltip>
   </div>
 </template>

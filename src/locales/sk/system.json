@@ -1,0 +1,102 @@
+{
+  "upload": {
+    "add": "Pridať do nahrávania",
+    "dragAndDrop": "Sem presuň nahrávané súbory",
+    "incorrectFormatSize": "Nesprávny formát alebo veľkosť",
+    "stop": "Zatvoriť",
+    "stopConfirmQuestion": "Chcete ukončiť nahrávanie?",
+    "waiting": "Čakanie",
+    "processing": "Spracováva sa",
+    "uploading": "Nahrávanie",
+    "done": "Hotovo",
+    "limits": {
+      "uploadWarning": "Varovanie pri nahrávaní",
+      "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova",
+      "addingOverLimit": "Pokúšate sa nahrať ďalšie súbory ({count}).",
+      "countAlreadyInProgress": "{count} súbor(y) prebiehajú.",
+      "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
+      "cancelOrUploadFirst": "Chcete zrušiť alebo nahrať iba prvých {count} súborov?",
+      "actionAddFirstItems": "Pridať prvých {count} súborov"
+    }
+  },
+  "download": {
+    "downloadOriginalFile": "Stiahnuť originálny súbor"
+  },
+  "imagePreview": {
+    "selected": "Vybrané",
+    "model": {
+      "fileId": "ID obrázku"
+    },
+    "status": {
+      "isProcessingInfo": "Obrázok sa spracováva, skúste neskôr",
+      "isDuplicateInfo": "Obrázok je duplicitný",
+      "isFailedInfo": "Spracovanie obrázka zlyhalo"
+    },
+    "actions": {
+      "unassign": "Zrušiť priradenie obrázka",
+      "selectImage": "Vyberťe obrázok",
+      "chooseFromDistribution": "Vybrať z distribúcie"
+    }
+  },
+  "mainBar": {
+    "upload": "Nahrať",
+    "search": "Vyhľadať",
+    "backToAssets": "Návrat na assety",
+    "options": "Nastavenia",
+    "userOptions": "Konto",
+    "customIntegrations": {
+      "title": "Vlastné integrácie",
+      "assets": "Assety"
+    },
+    "podcasts": "Podcasty",
+    "extSystemLicenceSwitch": {
+      "filters": "filtre",
+      "filter": {
+        "extSystemName": "Meno externého systému",
+        "extSystemId": "ID externého systému",
+        "licenceName": "Meno licencie",
+        "licenceExtId": "Externé ID licencie"
+      },
+      "currentExtSystem": "Aktuálny externý system",
+      "currentLicence": "Aktuálna licencia",
+      "extSystem": "Externý systém",
+      "licence": "Licencie",
+      "title": "Prepnutie externého systému a licencie",
+      "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
+      "confirm": "Potvrdiť a znovu načítať ADAM",
+      "changeToLicenceId": "Zmena na ID licencie"
+    }
+  },
+  "settings": {
+    "locale": "Lokalizácia",
+    "theme": "Téma"
+  },
+  "currentUser": {
+    "settings": "Nastavenia",
+    "backToAssets": "Späť na assety",
+    "logout": "Odhlásenie"
+  },
+  "uploadErrors": {
+    "unknownError": "Systémova chyba. Skúste neskôr alebo kontaktujte administrátora.",
+    "systemError": "Chyba",
+    "size": "Nesprávna veľkosť",
+    "offset": "Nesprávny offset",
+    "mimeType": "Nesprávny formát súboru"
+  },
+  "closePage": {
+    "title": "Táto stránka/karta môže byť bezpečne zatvorená."
+  },
+  "notFoundPage": {
+    "title": "Ops, chyba 404.",
+    "subTitle": "Táto stránka neexistuje. Pokiaľ by mala, kontaktujte administrátora.",
+    "return": "Návrat na domovskú obrazovku"
+  },
+  "unauthorizedPage": {
+    "title": "Ops, chyba 401",
+    "subTitle": "Nemáte oprávnenie na danú stránku. Pokiaľ oprávnenie vyžadujete, kontaktuje administrátora.",
+    "return": "Návrat na domovskú obrazovku"
+  },
+  "error": {
+    "notificationsNotConnected": "Notifikačná služba má dočasný výpadok, niektoré funkcie sa nemusia správať korektne."
+  }
+}

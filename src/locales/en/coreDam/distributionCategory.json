@@ -9,10 +9,7 @@
     "name": "Name",
     "type": "Asset Type"
   },
-  "meta": {
-    "edit": "Edit Distribution category",
-    "detail": "Detail Distribution category",
-    "list": "List of Distribution category"
-  },
-  "notSelected": "No distribution category selected"
+  "notSelected": "No distribution category selected",
+  "manage": "Manage distribution category",
+  "createButton": "Create distribution category"
 }

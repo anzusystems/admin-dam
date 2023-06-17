@@ -5,6 +5,13 @@ PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 USER_SWITCH="--user node"
 
 cd "${PROJECT_ROOT}" || exit 1
+# Initialize default variables
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+# Initialize functions
+# shellcheck disable=SC1091
+. ./bin/docker-libfunctions
+docker_env_vars
 
 function help() {
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
@@ -37,4 +44,4 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-bin/docker-compose exec "${USER_SWITCH}" app bash
+bin/docker-compose exec "${USER_SWITCH}" "${DOCKER_COMPOSE_SERVICE_NAME}" bash

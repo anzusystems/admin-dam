@@ -13,6 +13,7 @@ describe(`Test keyword function, Env: ${Cypress.env('cfg')}`, () => {
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage('Record was created')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000)
     cy.getCy('copy_text')
       .invoke('text')
@@ -26,9 +27,11 @@ describe(`Test keyword function, Env: ${Cypress.env('cfg')}`, () => {
   it('Edit keyword', () => {
     cy.visit('keyword/list')
     cy.getCy('filter-text').last().type(`${USER_FIRST_NAME}{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('keyword-name').find('input').clear().type(`${USER_FIRST_NAME}-edit`)
     cy.getCyVisibleClick('toggle-false')
     cy.getCyVisibleClick('button-save-close')
@@ -36,6 +39,7 @@ describe(`Test keyword function, Env: ${Cypress.env('cfg')}`, () => {
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
     cy.getCy('filter-text').last().type(`${USER_FIRST_NAME}-edit{ENTER}`)
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500)
     cy.contains('td', `${USER_FIRST_NAME}-edit`)
     cy.getCyVisibleClick('filter-reset')

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
-import { eventClickBlur } from '@anzusystems/common-admin'
+import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
@@ -60,42 +60,64 @@ const onCancel = () => {
 </script>
 
 <template>
-  <VBtn icon size="small" variant="text" @click.stop="onClick">
+  <VBtn
+    icon
+    size="small"
+    variant="text"
+    @click.stop="onClick"
+  >
     <VIcon icon="mdi-download" />
-    <VTooltip activator="parent" location="bottom">{{ t('common.button.download') }}</VTooltip>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('common.button.download') }}
+    </VTooltip>
   </VBtn>
-  <VDialog v-model="dialog" persistent :width="500" no-click-animation>
-    <VCard v-if="dialog" data-cy="delete-panel">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('common.button.download') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+  <VDialog
+    v-model="dialog"
+    :width="500"
+  >
+    <VCard
+      v-if="dialog"
+      data-cy="delete-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('common.button.download') }}
+      </ADialogToolbar>
       <VCardText>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
-        <div v-if="loading" class="w-100 h-100 d-flex align-center justify-center">
-          <VProgressCircular indeterminate color="primary" />
+        <div
+          v-if="loading"
+          class="w-100 h-100 d-flex align-center justify-center"
+        >
+          <VProgressCircular
+            indeterminate
+            color="primary"
+          />
         </div>
-        <div v-else-if="link" class="w-100 text-center mt-4">
-          <VBtn color="primary" prepend-icon="mdi-download" :href="link">
+        <div
+          v-else-if="link"
+          class="w-100 text-center mt-4"
+        >
+          <VBtn
+            color="primary"
+            prepend-icon="mdi-download"
+            :href="link"
+          >
             {{ t('system.download.downloadOriginalFile') }}
           </VBtn>
         </div>
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn text data-cy="button-cancel" @click.stop="onCancel">{{ t('common.button.close') }}</VBtn>
+        <VBtn
+          variant="text"
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
+          {{ t('common.button.close') }}
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>

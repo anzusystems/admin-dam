@@ -1,0 +1,9 @@
+{
+  "model": {
+    "podcastId": "Podcast Id",
+    "fullSync": "Plná synchronizácia"
+  },
+  "jobResource": {
+    "jobPodcastSynchronizer": "Podcastový synchronizátor"
+  }
+}

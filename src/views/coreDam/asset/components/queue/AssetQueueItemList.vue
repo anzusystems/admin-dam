@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { useI18n } from 'vue-i18n'
+import { useRemainingTime } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -38,10 +39,12 @@ const cancelItem = () => {
 const showCancel = computed(() => {
   return [QueueItemStatus.Loading, QueueItemStatus.Waiting, QueueItemStatus.Uploading].includes(props.item.status)
 })
+
+const { remainingTimeShort } = useRemainingTime()
 </script>
 
 <template>
-  <div class="dam-upload-queue__item d-flex">
+  <div class="dam-upload-queue__item">
     <div class="dam-upload-queue__item-card">
       <div class="d-flex align-center w-100">
         <div class="position-relative pr-1">
@@ -56,11 +59,25 @@ const showCancel = computed(() => {
               :size="16"
               :width="3"
               :model-value="loadingProgress ? loadingProgress : undefined"
-            >
-            </VProgressCircular>
-            <VIcon v-else-if="item.error.hasError" icon="mdi-alert" color="error" :size="16" />
-            <VIcon v-else-if="item.isDuplicate" icon="mdi-alert" color="warning" :size="16" />
-            <VIcon v-else icon="mdi-check" color="success" :size="16" />
+            />
+            <VIcon
+              v-else-if="item.error.hasError"
+              icon="mdi-alert"
+              color="error"
+              :size="16"
+            />
+            <VIcon
+              v-else-if="item.isDuplicate"
+              icon="mdi-alert"
+              color="warning"
+              :size="16"
+            />
+            <VIcon
+              v-else
+              icon="mdi-check"
+              color="success"
+              :size="16"
+            />
           </div>
           <VBtn
             v-if="showCancel"
@@ -71,11 +88,34 @@ const showCancel = computed(() => {
             class="dam-upload-queue__item-remove"
             @click.stop="cancelItem"
           >
-            <VIcon icon="mdi-close-circle-outline" :size="16" />
-            <VTooltip activator="parent" location="bottom">{{ t('common.button.cancel') }}</VTooltip>
+            <VIcon
+              icon="mdi-close-circle-outline"
+              :size="16"
+            />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.cancel') }}
+            </VTooltip>
           </VBtn>
         </div>
-        <div class="text-caption line-clamp-1">{{ item.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
+        <div class="text-caption text-truncate">
+          {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
+          <VTooltip
+            v-if="item.displayTitle"
+            activator="parent"
+            location="bottom"
+          >
+            {{ item.displayTitle }}
+          </VTooltip>
+        </div>
+        <div
+          v-if="item.progress.remainingTime && item.progress.remainingTime > 0"
+          class="ml-auto text-caption font-weight-bold text-no-wrap"
+        >
+          {{ remainingTimeShort(item.progress.remainingTime) }}
+        </div>
       </div>
     </div>
   </div>

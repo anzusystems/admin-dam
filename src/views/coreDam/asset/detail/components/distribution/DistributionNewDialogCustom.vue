@@ -4,14 +4,7 @@ import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormDatetimePicker,
-  ASystemEntityScope,
-  cloneDeep,
-  useAlerts,
-  useErrorHandler,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { AFormDatetimePicker, ASystemEntityScope, cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -34,6 +27,7 @@ import {
 import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
+import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
@@ -54,7 +48,7 @@ const { t } = useI18n()
 
 const { createCreateDto } = useDistributionCustomFactory()
 const distribution = ref<DistributionCustomCreateRedistributeDto>(createCreateDto())
-const { redistributeMode, assetFileId } = useAssetDetailDistributionDialog()
+const { redistributeMode, assetFileId, assetFileStatus, redistributeId } = useAssetDetailDistributionDialog()
 
 const canDisplayForm = ref(false)
 const saving = ref(false)
@@ -66,8 +60,9 @@ const loadFormData = async () => {
   canDisplayForm.value = false
   await loadDamConfigDistributionCustomFormElements(props.distributionServiceName)
   if (!damConfigDistributionCustomFormElements.value[props.distributionServiceName]) return
-  if (!assetFileId.value) return
+  if (!assetFileId.value || assetFileStatus.value !== AssetFileProcessStatus.Processed) return
   filter.distributionService.model = props.distributionServiceName
+  filter.id.model = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionCustomItem>(
     assetFileId.value,
     pagination,
@@ -100,8 +95,7 @@ const closeDialog = (reload = false) => {
   emit('closeDialog', reload)
 }
 
-const { showRecordWas, showValidationError } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const rules = computed(() => ({
   distribution: {
@@ -123,9 +117,9 @@ const submitRedistribute = async () => {
   try {
     await redistributeCustomDistribution(existingDistributions.value[0].id, distribution.value)
     showRecordWas('updated')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -143,9 +137,9 @@ const submitCreateNew = async () => {
   try {
     await createCustomDistribution(assetFileId.value, distribution.value)
     showRecordWas('created')
-    closeDialog(true)
+    await loadFormData()
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -162,6 +156,7 @@ const submit = () => {
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
   assetFileId.value = slot.assetFile.id
+  assetFileStatus.value = slot.assetFile.fileAttributes.status
   existingDistributions.value = []
   await loadFormData()
 }
@@ -173,16 +168,36 @@ onMounted(async () => {
 
 <template>
   <VCardText>
-    <VRow v-if="!redistributeMode" class="mb-6">
+    <VRow
+      v-if="!redistributeMode"
+      class="mb-6"
+    >
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
     </VRow>
-    <div v-if="!redistributeMode && existingDistributions.length > 0">
-      <DistributionListItem v-for="item in existingDistributions" :key="item.id" :item="item" :asset-type="assetType" />
+    <div
+      v-if="assetFileStatus !== AssetFileProcessStatus.Processed"
+      class="d-flex w-100 h-100 justify-center align-center pa-2"
+    >
+      {{ t('coreDam.distribution.common.assetFileStatusCantDistribute') }}
     </div>
-    <div v-else-if="canDisplayForm" class="pa-4">
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
+    <div v-else-if="!redistributeMode && existingDistributions.length > 0">
+      <DistributionListItem
+        v-for="item in existingDistributions"
+        :key="item.id"
+        :item="item"
+        :asset-type="assetType"
+      />
+    </div>
+    <div
+      v-else-if="canDisplayForm"
+      class="pa-4"
+    >
+      <ASystemEntityScope
+        :system="SYSTEM_CORE_DAM"
+        :subject="ENTITY"
+      >
         <DistributionCustomMetadataForm
           v-model="distribution.customData"
           :distribution-service-name="distributionServiceName"
@@ -200,21 +215,39 @@ onMounted(async () => {
         </VRow>
         <VRow class="mb-2">
           <VCol>
-            <AFormDatetimePicker v-model="distribution.publishAt" :label="t('coreDam.distribution.model.publishAt')" />
+            <AFormDatetimePicker
+              v-model="distribution.publishAt"
+              :label="t('coreDam.distribution.model.publishAt')"
+            />
           </VCol>
         </VRow>
       </ASystemEntityScope>
     </div>
-    <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
-      <VProgressCircular indeterminate color="primary" />
+    <div
+      v-else
+      class="d-flex w-100 h-100 justify-center align-center pa-2"
+    >
+      <VProgressCircular
+        indeterminate
+        color="primary"
+      />
     </div>
   </VCardText>
   <VCardActions>
     <VSpacer />
-    <VBtn v-if="canDisplayForm" color="success" :loading="saving" @click.stop="submit">
+    <ABtnTertiary
+      variant="text"
+      @click.stop="closeDialog(false)"
+    >
+      {{ t('common.button.cancel') }}
+    </ABtnTertiary>
+    <ABtnPrimary
+      v-if="canDisplayForm"
+      :loading="saving"
+      @click.stop="submit"
+    >
       <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
       <span v-else>{{ t('common.button.add') }}</span>
-    </VBtn>
-    <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
+    </ABtnPrimary>
   </VCardActions>
 </template>

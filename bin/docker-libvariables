@@ -25,6 +25,8 @@ export USER_ID="1000"
 export GROUP_ID="1000"
 # Whether to enable docker compose script wrapper debug log output
 export DOCKER_COMPOSE_DEBUG=false
+# Whether to create docker network
+export DOCKER_COMPOSE_SERVICE_NAME="app"
 # Docker network subnet
 export DOCKER_NETWORK_SUBNET=172.30.40.0/24
 # Whether the script should try to delete docker network

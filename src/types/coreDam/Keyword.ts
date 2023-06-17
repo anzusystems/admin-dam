@@ -10,3 +10,8 @@ export interface Keyword extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   extSystem: IntegerId
   flags: Flags
 }
+
+export interface KeywordMinimal {
+  id: DocId
+  name: string
+}

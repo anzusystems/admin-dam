@@ -1,20 +1,11 @@
 <script lang="ts" setup>
 import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { CustomFormType } from '@/types/coreDam/DamConfigAssetCustomForm'
-import { computed, isProxy, toRaw } from 'vue'
+import { computed, isProxy, ref, toRaw } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
-import {
-  AFormBooleanToggle,
-  isEmptyObject,
-  useValidateMaxLength,
-  useValidateMaxValue,
-  useValidateMinLength,
-  useValidateMinValue,
-  useValidateRequiredIf,
-  useValidateStringArrayItemLength,
-} from '@anzusystems/common-admin'
+import { isEmptyObject, useValidate } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -32,8 +23,15 @@ const emit = defineEmits<{
   (e: 'blur', data: any): void
 }>()
 
+const fixValue = (value: any) => {
+  if (props.config.attributes.type === CustomFormType.Number) {
+    return parseFloat(value)
+  }
+  return value
+}
+
 const updateModelValue = (value: any) => {
-  emit('update:modelValue', { key: props.elementKey, value })
+  emit('update:modelValue', { key: props.elementKey, value: fixValue(value) })
 }
 
 const modelValueComputed = computed(() => {
@@ -42,12 +40,7 @@ const modelValueComputed = computed(() => {
   return value
 })
 
-const maxLength = useValidateMaxLength()
-const minLength = useValidateMinLength()
-const requiredIf = useValidateRequiredIf()
-const minValue = useValidateMinValue()
-const maxValue = useValidateMaxValue()
-const stringArrayItemLength = useValidateStringArrayItemLength()
+const { maxLength, minLength, requiredIf, minValue, maxValue, stringArrayItemLength } = useValidate()
 
 const rules = computed(() => {
   const dynamicRules: Record<string, any> = {
@@ -96,6 +89,9 @@ const errorMessageComputed = computed(() => {
   return []
 })
 
+const counter = ref<number | undefined>(undefined)
+counter.value = props.config.attributes.maxValue ?? undefined
+
 const onBlur = () => {
   emit('blur', props.modelValue)
   v$.value.$touch()
@@ -110,10 +106,17 @@ const onBlur = () => {
     :rows="1"
     :label="config.name"
     :error-messages="errorMessageComputed"
+    :counter="counter"
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VTextarea>
   <VTextField
     v-else-if="config.attributes.type === CustomFormType.Number"
@@ -124,7 +127,13 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VTextField>
   <VCombobox
     v-else-if="config.attributes.type === CustomFormType.StringArray"
@@ -136,13 +145,21 @@ const onBlur = () => {
     @update:model-value="updateModelValue"
     @blur="onBlur"
   >
-    <template #label>{{ config.name }}<span v-if="config.attributes.required" class="required" /></template>
+    <template #label>
+      {{ config.name
+      }}<span
+        v-if="config.attributes.required"
+        class="required"
+      />
+    </template>
   </VCombobox>
-  <AFormBooleanToggle
-    v-if="config.attributes.type === CustomFormType.Boolean"
+  <VSwitch
+    v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === true"
     :label="config.name"
     :model-value="modelValueComputed"
-    :required="config.attributes.required"
     @update:model-value="updateModelValue"
   />
+  <div v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false">
+    optional boolean todo
+  </div>
 </template>

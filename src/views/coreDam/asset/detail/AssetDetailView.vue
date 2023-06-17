@@ -9,11 +9,11 @@ import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDet
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
-import { loadLazyUser } from '@/views/coreDam/user/composables/lazyUser'
 import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const { t } = useI18n()
 const { showErrorT } = useAlerts()
@@ -24,7 +24,7 @@ const assetListStore = useAssetListStore()
 const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
-const { fetchLazyUser, addToLazyUserBuffer } = loadLazyUser()
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 const {
   toggleSidebar,
   sidebar,
@@ -55,13 +55,8 @@ const getDetail = async () => {
   if (assetDetailStore.directDetailLoad) {
     assetDetailStore.setView('list')
     assetDetailStore.showDetail()
-    if (assetDetailStore.asset?.createdBy) {
-      addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-    }
-    if (assetDetailStore.asset?.modifiedBy) {
-      addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-    }
-    fetchLazyUser()
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
     nextTick(() => {
       assetDetailStore.directDetailLoad = false
     })
@@ -77,13 +72,8 @@ const getDetail = async () => {
   assetDetailStore.showDetail()
   const res = await fetchAsset(id.value)
   assetDetailStore.setAsset(res)
-  if (assetDetailStore.asset?.createdBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.createdBy)
-  }
-  if (assetDetailStore.asset?.modifiedBy) {
-    addToLazyUserBuffer(assetDetailStore.asset.modifiedBy)
-  }
-  fetchLazyUser()
+  addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+  fetchCachedUsers()
   assetDetailStore.hideLoader()
 }
 
@@ -93,13 +83,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="assetDetailStore.loader" class="d-flex w-100 h-100 justify-center align-center">
-    <VProgressCircular indeterminate color="primary" />
+  <div
+    v-if="assetDetailStore.loader"
+    class="d-flex w-100 h-100 justify-center align-center"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
   </div>
   <div v-else-if="asset">
-    <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
+    <VCard
+      class="dam-image-detail"
+      :class="{ 'dam-image-detail--sidebar-active': sidebar }"
+    >
       <div class="dam-image-detail__wrapper d-flex flex-column">
-        <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
+        <VToolbar
+          :color="toolbarColor"
+          density="compact"
+          :height="64"
+          class="system-border-b pr-1"
+        >
           <div class="text-subtitle-2 d-flex pl-2">
             <div>{{ toolbarTitle }}</div>
           </div>
@@ -116,20 +120,43 @@ onMounted(() => {
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.detail.toggleInfo') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.detail.toggleInfo') }}
+              </VTooltip>
             </VBtn>
-            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
+            <VBtn
+              icon
+              variant="text"
+              :width="36"
+              :height="36"
+              class="mr-1"
+              @click.stop="closeDialog"
+            >
               <VIcon icon="mdi-close" />
-              <VTooltip activator="parent" location="bottom">{{ t('common.button.close') }}</VTooltip>
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('common.button.close') }}
+              </VTooltip>
             </VBtn>
           </div>
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
+            <div
+              v-if="activeTab === AssetDetailTab.ROI"
+              class="w-100 h-100 pa-2 d-flex align-center justify-center"
+            >
               <AssetImageRoiSelect />
             </div>
-            <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
+            <div
+              v-else
+              class="w-100 h-100 pa-2 d-flex align-center justify-center"
+            >
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"

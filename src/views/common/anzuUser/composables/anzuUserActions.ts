@@ -1,5 +1,5 @@
 import type { AnzuUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
@@ -8,57 +8,59 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
-import { loadLazyPermissionGroup } from '@/views/common/permissionGroup/composables/lazyPermissionGroup'
+import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
-const { handleError } = useErrorHandler()
-const { showValidationError, showRecordWas } = useAlerts()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+const datatableHiddenColumns = ref<Array<string>>(['id'])
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
 
 export const useAnzuUserActions = (client: () => AxiosInstance) => {
   const { apiFetchAnzuUserList, apiFetchAnzuUser, apiUpdateAnzuUser, apiCreateAnzuUser } = useAnzuUserApi(client)
-  const { addToLazyPermissionGroupBuffer, fetchLazyPermissionGroup } = loadLazyPermissionGroup(client)
+  const { addToCachedPermissionGroups, fetchCachedPermissionGroups } = useCachedPermissionGroups()
 
   const anzuUserList = ref<AnzuUser[]>([])
-  const loadingAnzuUserList = ref(false)
   const fetchAnzuUserList = async (pagination: Pagination, filterBag: FilterBag) => {
-    loadingAnzuUserList.value = true
+    listLoading.value = true
     try {
       anzuUserList.value = await apiFetchAnzuUserList(pagination, filterBag)
-      anzuUserList.value.forEach((anzuUser) =>
-        anzuUser.permissionGroups.forEach((permissionGroup) => addToLazyPermissionGroupBuffer(permissionGroup))
-      )
-      fetchLazyPermissionGroup()
+      anzuUserList.value.forEach((anzuUser) => addToCachedPermissionGroups(anzuUser.permissionGroups))
+      fetchCachedPermissionGroups()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingAnzuUserList.value = false
+      listLoading.value = false
     }
   }
 
   const anzuUserOneStore = useAnzuUserOneStore()
-  const { anzuUser, loadingAnzuUser } = storeToRefs(anzuUserOneStore)
+  const { anzuUser } = storeToRefs(anzuUserOneStore)
+
   const fetchAnzuUser = async (id: number) => {
-    anzuUserOneStore.setLoadingAnzuUser(true)
+    detailLoading.value = true
     try {
       const anzuUserRes = await apiFetchAnzuUser(id)
       anzuUserOneStore.setAnzuUser(anzuUserRes)
-      anzuUserRes.permissionGroups.forEach((permissionGroup) => addToLazyPermissionGroupBuffer(permissionGroup))
-      await fetchLazyPermissionGroup()
+      addToCachedPermissionGroups(anzuUserRes.permissionGroups)
+      fetchCachedPermissionGroups()
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      anzuUserOneStore.setLoadingAnzuUser(false)
+      detailLoading.value = false
     }
   }
 
   const router = useRouter()
   const v$ = useVuelidate()
-  const loadingUpdateAnzuUser = ref(false)
   const updateAnzuUser = async (close = false) => {
     try {
-      loadingUpdateAnzuUser.value = true
+      saveButtonLoading.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
+        saveButtonLoading.value = false
         return
       }
       await apiUpdateAnzuUser(anzuUserOneStore.anzuUser.id, anzuUserOneStore.anzuUser)
@@ -66,19 +68,19 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       if (!close) return
       router.push({ name: ROUTE.COMMON.ANZU_USER.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingUpdateAnzuUser.value = false
+      saveButtonLoading.value = false
     }
   }
 
-  const loadingCreateAnzuUser = ref(false)
   const createAnzuUser = async (close = false) => {
+    saveButtonLoading.value = true
     try {
-      loadingCreateAnzuUser.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
+        saveButtonLoading.value = false
         return
       }
       const anzuUserRes = await apiCreateAnzuUser(anzuUserOneStore.anzuUser)
@@ -89,23 +91,23 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       }
       router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: anzuUserRes.id } })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
-      loadingCreateAnzuUser.value = false
+      saveButtonLoading.value = false
     }
   }
 
   return {
+    datatableHiddenColumns,
     fetchAnzuUserList,
     fetchAnzuUser,
     updateAnzuUser,
     createAnzuUser,
     anzuUserList,
     anzuUser,
-    loadingAnzuUserList,
-    loadingAnzuUser,
-    loadingUpdateAnzuUser,
-    loadingCreateAnzuUser,
+    listLoading,
+    detailLoading,
+    saveButtonLoading,
     resetAnzuUserStore: anzuUserOneStore.reset,
   }
 }

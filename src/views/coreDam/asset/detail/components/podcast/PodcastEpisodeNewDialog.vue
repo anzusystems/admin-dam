@@ -2,13 +2,13 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import type { DocId } from '@anzusystems/common-admin'
 import {
+  ADialogToolbar,
   AFormTextarea,
   AFormTextField,
   ARow,
   ASystemEntityScope,
   isNull,
   useAlerts,
-  useErrorHandler,
 } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -17,7 +17,7 @@ import { createPodcastEpisode, ENTITY, prepareFormDataPodcastEpisode } from '@/s
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { usePodcastEpisodeValidation } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
 import { useI18n } from 'vue-i18n'
-import PodcastSelect from '@/views/coreDam/podcast/components/PodcastSelect.vue'
+import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -41,8 +41,7 @@ const value = computed({
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
@@ -70,7 +69,7 @@ const submit = async () => {
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
-    handleError(error)
+    showErrorsDefault(error)
   } finally {
     saving.value = false
   }
@@ -105,35 +104,34 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog v-model="value" persistent no-click-animation :width="500">
+  <VDialog
+    v-model="value"
+    :width="500"
+  >
     <VCard v-if="value">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="closeDialog(false)"
-          />
-        </VToolbarItems>
-      </VToolbar>
-      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
-        <VContainer class="pa-4" fluid>
+      <ADialogToolbar @on-cancel="closeDialog(false)">
+        {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
           <ARow>
-            <PodcastSelect
+            <PodcastRemoteAutocomplete
               v-model="podcastEpisode.podcast"
               required
               :label="t('coreDam.podcastEpisode.model.podcast')"
             />
           </ARow>
-          <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
-            <VProgressCircular indeterminate color="primary" />
+          <div
+            v-if="loadingFormData"
+            class="d-flex w-100 justify-center align-center pa-2"
+          >
+            <VProgressCircular
+              indeterminate
+              color="primary"
+            />
           </div>
           <template v-if="podcastEpisode.podcast && !loadingFormData">
             <ARow>
@@ -169,12 +167,19 @@ onMounted(async () => {
               />
             </ARow>
           </template>
-        </VContainer>
-      </ASystemEntityScope>
+        </ASystemEntityScope>
+      </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn color="success" :loading="saving" @click.stop="submit">{{ t('common.button.add') }}</VBtn>
-        <VBtn text @click.stop="closeDialog(false)">{{ t('common.button.cancel') }}</VBtn>
+        <ABtnTertiary @click.stop="closeDialog(false)">
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="saving"
+          @click.stop="submit"
+        >
+          {{ t('common.button.add') }}
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

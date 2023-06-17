@@ -1,5 +1,4 @@
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import type { QueueItemStatus, QueueItemType } from '@/types/coreDam/UploadQueue'
+import type { QueueItemStatus, QueueItemType, UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
@@ -31,8 +30,7 @@ export function useUploadQueueItemFactory() {
       externalProviderMetadata: {},
       keywords: [],
       authors: [],
-      keywordSuggestions: {},
-      authorSuggestions: {},
+      authorConflicts: [],
       customData: {},
       chunks: [],
       chunkSize: chunkSize,
@@ -43,6 +41,7 @@ export function useUploadQueueItemFactory() {
       progress: {
         remainingTime: null,
         progressPercent: null,
+        speed: null,
       },
       canEditMetadata: false,
       error: {

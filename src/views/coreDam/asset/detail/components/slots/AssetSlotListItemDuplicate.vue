@@ -3,6 +3,7 @@ import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
+import { ADialogToolbar } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -48,55 +49,63 @@ const onDuplicate = () => {
 </script>
 
 <template>
-  <VListItem :title="t('coreDam.asset.slots.actions.duplicate')" @click.stop="openDialog" />
-  <VDialog v-model="dialog" persistent :width="600" no-click-animation>
+  <VListItem
+    :title="t('coreDam.asset.slots.actions.duplicate')"
+    @click.stop="openDialog"
+  />
+  <VDialog
+    v-model="dialog"
+    :width="600"
+  >
     <VCard v-if="dialog">
-      <VToolbar class="pl-2" density="compact">
-        <div class="d-block pl-0 w-100">
-          <div class="text-h6">{{ t('coreDam.asset.slots.actions.duplicate') }}</div>
-        </div>
-        <VSpacer />
-        <VToolbarItems>
-          <VBtn
-            class="ml-2"
-            icon="mdi-close"
-            size="small"
-            variant="text"
-            data-cy="button-close"
-            @click.stop="onCancel"
-          />
-        </VToolbarItems>
-      </VToolbar>
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('coreDam.asset.slots.actions.duplicate') }}
+      </ADialogToolbar>
       <VCardText>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.name') }}:
+          </div>
           {{ item?.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.file') }}:
+          </div>
           {{ fileTitle }}
         </div>
-        <div v-if="targetOptions.length === 0" class="my-2 text-warning">
+        <div
+          v-if="targetOptions.length === 0"
+          class="my-2 text-warning"
+        >
           {{ t('coreDam.asset.slots.duplicate.onlyToEmptyWarning') }}
         </div>
-        <div v-else class="my-2">
-          <VSelect v-model="targetSlot" :label="t('coreDam.asset.slots.duplicate.to')" :items="targetOptions" />
+        <div
+          v-else
+          class="my-2"
+        >
+          <VSelect
+            v-model="targetSlot"
+            :label="t('coreDam.asset.slots.duplicate.to')"
+            :items="targetOptions"
+          />
         </div>
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <VBtn
-          color="primary"
-          text
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
           data-cy="button-unset"
           :disabled="targetOptions.length === 0 || targetSlot === null"
           @click.stop="onDuplicate"
         >
           {{ t('coreDam.asset.slots.actions.duplicate') }}
-        </VBtn>
-        <VBtn color="secondary" text data-cy="button-cancel" @click.stop="onCancel">
-          {{ t('common.button.cancel') }}
-        </VBtn>
+        </ABtnPrimary>
       </VCardActions>
     </VCard>
   </VDialog>

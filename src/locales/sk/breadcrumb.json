@@ -1,0 +1,78 @@
+{
+  "coreDam": {
+    "assetLicence": {
+      "list": "Licencie assetov",
+      "detail": "Licencie",
+      "edit": "Licencie"
+    },
+    "author": {
+      "list": "Autori",
+      "detail": "Autor",
+      "edit": "Autor"
+    },
+    "distributionCategory": {
+      "list": "Kategórie distribúcie",
+      "detail": "Kategórie",
+      "edit": "Kategórie"
+    },
+    "distributionCategorySelect": {
+      "list": "Výbery v distribučných kategóriách",
+      "detail": "Výbery",
+      "edit": "Výbery"
+    },
+    "podcast": {
+      "list": "Podcasty",
+      "detail": "Podcast",
+      "edit": "Podcast"
+    },
+    "podcastEpisode": {
+      "list": "Epizódy",
+      "detail": "Epizóda",
+      "edit": "Epizóda"
+    },
+    "videoShow": {
+      "list": "Video relácie",
+      "detail": "Relácia",
+      "edit": "Relácia"
+    },
+    "videoShowEpisode": {
+      "list": "Epizódy",
+      "detail": "Epizóda",
+      "edit": "Epizóda"
+    },
+    "extSystem": {
+      "list": "Externé systémy",
+      "detail": "Systém",
+      "edit": "Systém"
+    },
+    "keyword": {
+      "list": "Kľúčové slová",
+      "detail": "Kľúčové slovo",
+      "edit": "Kľúčové slovo"
+    },
+    "user": {
+      "list": "Používatelia",
+      "detail": "Používateľ",
+      "edit": "Používateľ"
+    },
+    "job": {
+      "list": "Systémové úlohy",
+      "detail": "Systémová úloha"
+    }
+  },
+  "anzuUser": {
+    "list": "Oprávnenia používateľov",
+    "detail": "Používateľ",
+    "edit": "Používateľ"
+  },
+  "log": {
+    "list": "Logy",
+    "detail": "Log"
+  },
+  "permissionGroup": {
+    "list": "Skupiny oprávnení",
+    "detail": "Skupina",
+    "edit": "Skupina"
+  },
+  "settings": "Nastavenia"
+}

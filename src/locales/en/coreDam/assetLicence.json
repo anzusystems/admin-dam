@@ -10,9 +10,6 @@
     "extId": "External ID"
   },
   "meta": {
-    "create": "Create license",
-    "edit": "Edit license",
-    "detail": "License detail",
-    "list": "List of Licenses"
+    "create": "Create license"
   }
 }

@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import type { AssetListItem } from '@/stores/coreDam/assetListStore'
-import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
 import type { DocId } from '@anzusystems/common-admin'
-import { isImageFile } from '@/types/coreDam/File'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
+import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 
 const { t } = useI18n()
 
 const IMAGE_HEIGHT = 200
-const IMAGE_BG_COLOR_DEFAULT = '#ccc'
 
 const props = withDefaults(
   defineProps<{
@@ -22,24 +19,15 @@ const props = withDefaults(
     showMetaIcons: false,
   }
 )
+
+const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
+
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
   (e: 'itemClick', data: { assetId: DocId; index: number }): void
   (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
   (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
 }>()
-
-const asset = computed<AssetSearchListItemDto>(() => {
-  return props.item.asset
-})
-
-const assetType = computed(() => {
-  return asset.value.attributes.assetType
-})
-
-const assetStatus = computed(() => {
-  return asset.value.attributes.assetStatus
-})
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
@@ -56,28 +44,6 @@ const toggleSelected = () => {
 const selectMultiple = () => {
   emit('selectMultiple', { assetId: asset.value.id, index: props.index })
 }
-
-const imageProperties = computed(() => {
-  if (asset.value.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_list) {
-    return {
-      url: asset.value.mainFile.links.image_list.url,
-      width: asset.value.mainFile.links.image_list.width,
-      height: asset.value.mainFile.links.image_list.height,
-      bgColor:
-        isImageFile(asset.value.mainFile) &&
-        asset.value.mainFile.imageAttributes &&
-        asset.value.mainFile.imageAttributes.mostDominantColor
-          ? asset.value.mainFile.imageAttributes.mostDominantColor
-          : IMAGE_BG_COLOR_DEFAULT,
-    }
-  }
-  return {
-    url: undefined,
-    width: undefined,
-    height: IMAGE_HEIGHT,
-    bgColor: IMAGE_BG_COLOR_DEFAULT,
-  }
-})
 </script>
 
 <template>
@@ -90,9 +56,17 @@ const imageProperties = computed(() => {
     @click.shift.stop="selectMultiple"
   >
     <div class="dam-image-grid__item-card">
-      <div v-if="item.selected" class="selected-triangle">
+      <div
+        v-if="item.selected"
+        class="selected-triangle"
+      >
         <div class="selected-triangle__bg" />
-        <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="x-small" />
+        <VIcon
+          class="selected-triangle__icon"
+          icon="mdi-check"
+          color="white"
+          size="x-small"
+        />
       </div>
       <AssetImage
         :asset-type="assetType"
@@ -107,7 +81,9 @@ const imageProperties = computed(() => {
       />
       <div class="dam-image-grid__item-text text-caption px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">{{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}</div>
+          <div class="line-clamp-1">
+            {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
+          </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
               variant="flat"
@@ -118,9 +94,22 @@ const imageProperties = computed(() => {
               icon
               @click.stop="toggleSelected"
             >
-              <VIcon v-if="item.selected" icon="mdi-checkbox-outline" :size="20" />
-              <VIcon v-else icon="mdi-checkbox-blank-outline" :size="20" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.toggleSelect') }}</VTooltip>
+              <VIcon
+                v-if="item.selected"
+                icon="mdi-checkbox-outline"
+                :size="20"
+              />
+              <VIcon
+                v-else
+                icon="mdi-checkbox-blank-outline"
+                :size="20"
+              />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.list.toggleSelect') }}
+              </VTooltip>
             </VBtn>
             <VBtn
               variant="flat"
@@ -131,8 +120,16 @@ const imageProperties = computed(() => {
               icon
               @click.stop="showDetail"
             >
-              <VIcon icon="mdi-pencil" :size="20" />
-              <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.edit') }}</VTooltip>
+              <VIcon
+                icon="mdi-pencil"
+                :size="20"
+              />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.list.edit') }}
+              </VTooltip>
             </VBtn>
           </div>
         </div>

@@ -21,6 +21,7 @@
     "list": "List of distributions",
     "addButton": "Add new",
     "redistributeButton": "Redistribute",
+    "cancelDistributionButton": "Stop distribution",
     "addTitle": "Add new distribution",
     "redistributeTitle": "Redistribute",
     "noEntries": "Nothing to show",
@@ -28,6 +29,8 @@
     "error": "An error occurred",
     "blockedByDistribution": "Blocked by distribution",
     "extId": "Ext ID",
-    "failReason": "Fail reason"
+    "failReason": "Fail reason",
+    "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
+
   }
 }

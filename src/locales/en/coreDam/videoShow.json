@@ -11,13 +11,10 @@
     "title": "Title"
   },
   "meta": {
-    "create": "Video show Create",
-    "edit": "Video show Edit",
-    "detail": "Video show Detail",
-    "list": "Video show List"
+    "create": "Video show create"
   },
   "tabs": {
-    "detail": "Detail",
-    "episodes": "Episodes"
+    "detail": "Video show detail",
+    "episodes": "Video show episodes"
   }
 }

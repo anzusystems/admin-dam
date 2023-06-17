@@ -2,7 +2,7 @@
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
 import { computed, ref, watch } from 'vue'
-import { cloneDeep, type DocIdNullable, usePagination, useValidateRequired } from '@anzusystems/common-admin'
+import { cloneDeep, type DocIdNullable, usePagination, useValidate } from '@anzusystems/common-admin'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
@@ -66,7 +66,7 @@ const itemsComputed = computed(() => {
   })
 })
 
-const required = useValidateRequired()
+const { required } = useValidate()
 
 const rules = computed(() => {
   if (props.config.strategy === DistributionRequirementStrategy.AtLeastOne) {
@@ -100,10 +100,18 @@ watch(
 </script>
 
 <template>
-  <div v-if="config.strategy === DistributionRequirementStrategy.AtLeastOne">
-    <VSelect v-model="value" multiple :items="itemsComputed" :error-messages="errorMessageComputed" @blur="onBlur">
-      <template #label>{{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" /></template>
+  <div v-if="config.blockedBy.length > 0">
+    <VSelect
+      v-model="value"
+      multiple
+      :items="itemsComputed"
+      :error-messages="errorMessageComputed"
+      @blur="onBlur"
+    >
+      <template #label>
+        {{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" />
+      </template>
     </VSelect>
   </div>
-  <div v-else></div>
+  <div v-else />
 </template>

@@ -1,17 +1,8 @@
-import HomepageView from '@/views/system/HomepageView.vue'
 import { ROUTE } from '@/router/routes'
+import { ALogoutView, AUnauthorizedView } from '@anzusystems/common-admin'
+import { envConfig } from '@/services/EnvConfigService'
 
 export const systemRoutes = [
-  {
-    path: '/',
-    component: HomepageView,
-    name: ROUTE.SYSTEM.HOMEPAGE,
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [],
-      layout: 'AppLayoutFullscreen',
-    },
-  },
   {
     path: '/settings',
     component: () => import('@/views/system/settings/SettingsView.vue'),
@@ -19,29 +10,10 @@ export const systemRoutes = [
     meta: {
       requiresAuth: true,
       requiredPermissions: [],
-      layout: 'AppLayoutSidebar',
+      layout: 'AppLayoutDrawer',
+      breadcrumbT: 'breadcrumb.settings',
     },
   },
-  {
-    path: '/beta',
-    component: () => import('@/views/system/beta/BetaView.vue'),
-    name: ROUTE.SYSTEM.BETA,
-    meta: {
-      requiresAuth: true,
-      requiredPermissions: [],
-      layout: 'AppLayoutSidebar',
-    },
-  },
-  // {
-  //   path: '/test-grid2',
-  //   component: () => import('@/views/system/beta/grid2/Test2View.vue'),
-  //   name: 'grid2',
-  //   meta: {
-  //     requiresAuth: false,
-  //     requiredPermissions: [],
-  //     layout: 'AppLayoutBlank',
-  //   },
-  // },
   {
     path: '/login',
     component: () => import('@/views/system/LoginView.vue'),
@@ -64,7 +36,10 @@ export const systemRoutes = [
   },
   {
     path: '/logout',
-    component: () => import('@/views/system/LogoutView.vue'),
+    component: ALogoutView,
+    props: {
+      logoutUrl: () => envConfig.logoutCoreDamUrl,
+    },
     name: ROUTE.SYSTEM.LOGOUT,
     meta: {
       requiresAuth: false,
@@ -74,7 +49,8 @@ export const systemRoutes = [
   },
   {
     path: '/unauthorized',
-    component: () => import('@/views/system/UnauthorizedView.vue'),
+    component: AUnauthorizedView,
+    props: { returnRouteName: ROUTE.SYSTEM.LOGIN },
     name: ROUTE.SYSTEM.UNAUTHORIZED,
     meta: {
       requiresAuth: false,

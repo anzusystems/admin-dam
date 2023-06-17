@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
-import { useGridView } from '@/composables/system/gridView'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { GridView, useGridView } from '@/composables/system/gridView'
 import AssetDetailDialog from '@/views/coreDam/asset/detail/components/AssetDetailDialog.vue'
-import AssetListItem from '@/views/coreDam/asset/list/components/AssetListItem.vue'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
@@ -19,6 +18,8 @@ import AssetFooterUploadOverlayFull from '@/views/coreDam/asset/components/foote
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { onKeyUp } from '@vueuse/core'
+import AssetListTableView from '@/views/coreDam/asset/list/components/AssetListTableView.vue'
+import AssetListTilesView from '@/views/coreDam/asset/list/components/AssetListTilesView.vue'
 
 const { t } = useI18n()
 
@@ -35,15 +36,10 @@ const {
   fetchNextPage,
   listMounted,
   listUnmounted,
-  showDetail,
-  onItemClick,
-  toggleSelected,
-  selectMultiple,
   prevItem,
   nextItem,
   onArrowRight,
   onArrowLeft,
-  showMetaIcons,
 } = useAssetListActions(sidebarRight)
 
 const { footerViewSelected } = useAssetFooterSelectedView()
@@ -67,6 +63,17 @@ onMounted(async () => {
   await listMounted()
 })
 
+const componentComputed = computed(() => {
+  switch (gridView.value) {
+    case GridView.Table:
+      return AssetListTableView
+    case GridView.Masonry:
+    case GridView.Thumbnail:
+    default:
+      return AssetListTilesView
+  }
+})
+
 onUnmounted(() => {
   listUnmounted()
 })
@@ -75,49 +82,84 @@ onUnmounted(() => {
 <template>
   <MainWrapper>
     <template #default>
-      <div v-if="loader.hard" class="d-flex w-100 h-100 align-center justify-center">
-        <VProgressCircular indeterminate color="primary" />
+      <div
+        v-if="loader.hard"
+        class="d-flex w-100 h-100 align-center justify-center"
+      >
+        <VProgressCircular
+          indeterminate
+          color="primary"
+        />
       </div>
       <div v-else-if="items.length">
-        <div class="dam-image-grid" :class="'dam-image-grid--' + gridView">
-          <AssetListItem
-            v-for="(item, index) in items"
-            :key="item.asset.id"
-            :index="index"
-            :item="item"
-            :show-meta-icons="showMetaIcons"
-            @show-detail="showDetail"
-            @item-click="onItemClick"
-            @toggle-selected="toggleSelected"
-            @select-multiple="selectMultiple"
-          />
-          <div v-if="loader.soft" class="w-100 d-flex align-center justify-center pa-4">
-            <VProgressCircular indeterminate color="primary" />
+        <div>
+          <component :is="componentComputed" />
+          <div
+            v-if="loader.soft"
+            class="w-100 d-flex align-center justify-center pa-4"
+          >
+            <VProgressCircular
+              indeterminate
+              color="primary"
+            />
           </div>
-          <div v-if="loadOnScroll" v-intersect="autoloadOnIntersect" class="w-100" />
+          <div
+            v-if="loadOnScroll"
+            v-intersect="autoloadOnIntersect"
+            class="w-100"
+          />
         </div>
-        <AssetDetailDialog @prev-item="prevItem" @next-item="nextItem" />
+        <AssetDetailDialog
+          @prev-item="prevItem"
+          @next-item="nextItem"
+        />
       </div>
-      <div v-else class="text-h6 text-medium-emphasis d-flex w-100 h-100 align-center justify-center">
+      <div
+        v-else
+        class="text-h6 text-medium-emphasis d-flex w-100 h-100 align-center justify-center"
+      >
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
     </template>
     <template #main-bar-left>
       <AssetToolbarSearch />
-      <AssetUpload variant="button" :button-text="t('system.mainBar.upload')" />
+      <AssetUpload
+        variant="button"
+        :button-text="t('system.mainBar.upload')"
+      />
     </template>
     <template #second-bar-left>
-      <VDivider vertical class="ml-1 mr-2 my-2" />
+      <VDivider
+        vertical
+        class="ml-1 mr-2 my-2"
+      />
       <AssetToolbarTypeFilters />
     </template>
     <template #second-bar-right>
-      <VBtn variant="text" icon size="x-small" class="ml-1" @click.stop="fetchAssetList">
+      <VBtn
+        variant="text"
+        icon
+        size="x-small"
+        class="ml-1"
+        @click.stop="fetchAssetList"
+      >
         <VIcon icon="mdi-refresh" />
-        <VTooltip activator="parent" location="bottom">{{ t('coreDam.asset.list.refresh') }}</VTooltip>
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('coreDam.asset.list.refresh') }}
+        </VTooltip>
       </VBtn>
-      <VDivider vertical class="mx-1 my-2 hidden-xs" />
+      <VDivider
+        vertical
+        class="mx-1 my-2 hidden-xs"
+      />
       <GridViewToggle class="hidden-xs" />
-      <VDivider vertical class="mx-1 my-2" />
+      <VDivider
+        vertical
+        class="mx-1 my-2"
+      />
     </template>
     <template #sidebar-left>
       <AssetListSidebarFilter />

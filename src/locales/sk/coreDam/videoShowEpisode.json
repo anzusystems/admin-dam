@@ -1,0 +1,26 @@
+{
+  "model": {
+    "id": "ID",
+    "videoShow": "Video relácie",
+    "asset": "Asset",
+    "position": "Pozícia",
+    "texts": {
+      "title": "Nadpis"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "title": "Nadpis"
+  },
+  "button": {
+    "create": "Pridať epizódu",
+    "addNewVideoShowEpisode": "Pridať novú epizódu"
+  },
+  "meta": {
+    "create": "Pridať novú epizódu"
+  },
+  "common": {
+    "addAssetToNewVideoShowEpisode": "Pridať súbor do novej video epizódy",
+    "noEntries": "Nie je čo zobraziť"
+  }
+}

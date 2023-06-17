@@ -22,7 +22,9 @@ const { t } = useI18n()
   <div class="sidebar-info d-flex w-100 h-100 flex-column">
     <div class="w-100 d-flex flex-column">
       <VTabs class="sidebar-info__tabs">
-        <VTab :value="AssetDetailTab.Info">{{ t('coreDam.asset.detail.tabs.info') }}</VTab>
+        <VTab :value="AssetDetailTab.Info">
+          {{ t('coreDam.asset.detail.tabs.info') }}
+        </VTab>
       </VTabs>
 
       <div class="sidebar-info__content">

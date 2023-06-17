@@ -1,7 +1,9 @@
 {
   "model": {
     "id": "ID",
-    "distributionCategory": "Distribution Category"
+    "distributionCategory": "Distribution Category",
+    "authors": "Authors",
+    "keywords": "Keywords"
   },
   "filter": {
     "text": "Text",
@@ -79,10 +81,23 @@
     "square": "square"
   },
   "list": {
+    "table": {
+      "thead": {
+        "thumbnail": "thumbnail",
+        "title": "title",
+        "createdDate": "createdDate",
+        "advanced": "advanced",
+        "format": "format",
+        "size": "size",
+        "createdBy": "createdBy",
+        "slot": "slot"
+      }
+    },
     "noTitle": "no title",
     "gridView": {
       "masonry": "Masonry",
-      "thumbnail": "Grid"
+      "thumbnail": "Grid",
+      "table": "List"
     },
     "infoToggle": "Toggle info",
     "filterToggle": "Toggle filters",
@@ -157,7 +172,9 @@
     "stopOverlay": {
       "title": "Are you sure you want to stop upload?",
       "confirm": "Stop upload"
-    }
+    },
+    "newAssetsUploadOverlayTitle": "New assets upload",
+    "slotsUploadOverlayTitle": "Asset slots upload"
   },
   "selected": {
     "selectedFiles": "Selected files",
@@ -186,6 +203,7 @@
   },
   "externalProvider": {
     "importToDam": "Import to DAM",
+    "viewDetail": "View detail",
     "id": "ID",
     "title": "Title"
   },

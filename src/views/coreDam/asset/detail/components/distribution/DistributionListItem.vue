@@ -9,6 +9,7 @@ import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeIte
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
 
 const props = withDefaults(
   defineProps<{
@@ -45,17 +46,20 @@ const componentComputed = computed(() => {
 })
 
 const { openRedistribute } = useAssetDetailDistributionDialog()
+const { openCancel } = useAssetDetailDistributionDialogCancel()
 </script>
 
 <template>
   <div class="d-flex flex-column mb-8">
     <component
       :is="componentComputed"
+      v-if="distributionType"
       :item="item"
       :asset-type="assetType"
       :distribution-type="distributionType"
       :show-redistribute="showRedistribute"
       @open-redistribute="openRedistribute(item)"
+      @open-cancel="openCancel(item.id, distributionType)"
     />
   </div>
 </template>

@@ -1,18 +1,18 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts, useErrorHandler } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/coreDam/keywordApi'
-import type { Keyword } from '@/types/coreDam/Keyword'
+import type { Keyword, KeywordMinimal } from '@/types/coreDam/Keyword'
 import { storeToRefs } from 'pinia'
 import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 
-const { showValidationError, showRecordWas } = useAlerts()
-const { handleError } = useErrorHandler()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -27,13 +27,14 @@ export const useKeywordListActions = () => {
     try {
       listItems.value = await fetchKeywordList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       listLoading.value = false
     }
   }
 
   return {
+    datatableHiddenColumns,
     listLoading,
     listItems,
     fetchList,
@@ -50,7 +51,7 @@ export const useKeywordDetailActions = () => {
       const keyword = await fetchKeyword(id)
       keywordOneStore.setKeyword(keyword)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -76,7 +77,7 @@ export const useKeywordEditActions = () => {
       const keyword = await fetchKeyword(id)
       keywordOneStore.setKeyword(keyword)
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       detailLoading.value = false
     }
@@ -97,7 +98,7 @@ export const useKeywordEditActions = () => {
       if (!close) return
       router.push({ name: ROUTE.DAM.KEYWORD.LIST })
     } catch (error) {
-      handleError(error)
+      showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
       saveAndCloseButtonLoading.value = false
@@ -123,12 +124,25 @@ export const useKeywordSelectActions = () => {
     value: keyword.id,
   })
 
+  const mapToMinimal = (keyword: Keyword): KeywordMinimal => ({
+    id: keyword.id,
+    name: keyword.name,
+  })
+
   const mapToValueObjects = (keywords: Keyword[]): ValueObjectOption<string>[] => {
     return keywords.map((keyword: Keyword) => mapToValueObject(keyword))
   }
 
+  const mapToMinimals = (keywords: Keyword[]): KeywordMinimal[] => {
+    return keywords.map((keyword: Keyword) => mapToMinimal(keyword))
+  }
+
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
     return mapToValueObjects(await fetchKeywordList(currentExtSystemId.value, pagination, filterBag))
+  }
+
+  const fetchItemsMinimal = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToMinimals(await fetchKeywordList(currentExtSystemId.value, pagination, filterBag))
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
@@ -139,5 +153,6 @@ export const useKeywordSelectActions = () => {
     mapToValueObject,
     fetchItems,
     fetchItemsByIds,
+    fetchItemsMinimal,
   }
 }

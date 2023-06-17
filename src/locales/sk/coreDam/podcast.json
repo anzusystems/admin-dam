@@ -1,0 +1,40 @@
+{
+  "model": {
+    "id": "ID",
+    "licence": "Licencia",
+    "texts": {
+      "title": "Nadpis",
+      "description": "Popis"
+    },
+    "attributes": {
+      "rssUrl": "RSS URL",
+      "mode": "Mód",
+      "lastImportStatus": "Posledný stav importu"
+    },
+    "dates": {
+      "importFrom": "Import od"
+    },
+    "imagePreview": "Obrázok",
+    "altImage": "Alt Obrázok"
+  },
+  "filter": {
+    "id": "ID",
+    "title": "Nadpis"
+  },
+  "meta": {
+    "create": "Vytvoriť podcast"
+  },
+  "tabs": {
+    "detail": "Detail podcastu",
+    "episodes": "Epizóda podcastu"
+  },
+  "lastImportStatus": {
+    "notImported": "Neimportované",
+    "imported": "Importované",
+    "importFailed": "Importovanie zlyhalo"
+  },
+  "podcastMode": {
+    "import": "Importovaný",
+    "notImport": "Neimportovaný"
+  }
+}

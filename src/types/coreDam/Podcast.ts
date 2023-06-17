@@ -1,5 +1,6 @@
 import type {
   AnzuUserAndTimeTrackingAware,
+  DatetimeUTCNullable,
   DocId,
   IntegerIdNullable,
   ResourceNameSystemAware,
@@ -20,13 +21,20 @@ export interface Attributes {
   lastImportStatus: PodcastLastImportStatus
 }
 
+interface Dates {
+  importFrom: DatetimeUTCNullable
+}
+
 export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   licence: IntegerIdNullable
   texts: Texts
   attributes: Attributes
+  dates: Dates
   links?: Links
+  altLinks?: Links
   imagePreview: ImagePreviewNullable
+  altImage: ImagePreviewNullable
 }
 
 export interface PodcastMinimal {

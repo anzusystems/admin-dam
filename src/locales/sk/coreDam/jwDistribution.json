@@ -1,0 +1,12 @@
+{
+  "model": {
+    "distributionService": "Meno distribučnej služby",
+    "texts": {
+      "title": "Názov",
+      "description": "Popis",
+      "author": "Autor",
+      "keywords": "Kľúčové slová"
+    }
+  },
+  "videoAdministrationLink": "Administrácia v JW Player"
+}

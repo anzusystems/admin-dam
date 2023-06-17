@@ -3,10 +3,9 @@ import { computed } from 'vue'
 import type { UpdateUser } from '@/types/coreDam/User'
 import useVuelidate from '@vuelidate/core'
 import { UserAuthType } from '@/types/coreDam/DamConfig'
-import { useValidateMinLength, useValidateRequired } from '@anzusystems/common-admin'
+import { useValidate } from '@anzusystems/common-admin'
 
-const required = useValidateRequired()
-const minLength = useValidateMinLength()
+const { required, minLength } = useValidate()
 
 export function useUpdateUserValidation(userUpdate: Ref<UpdateUser>, userAuthType: UserAuthType) {
   const rulesRaw = {} as Record<string, any> // todo find better type

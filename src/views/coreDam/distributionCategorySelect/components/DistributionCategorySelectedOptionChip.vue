@@ -16,6 +16,11 @@ const selectedOption = computed(() =>
 </script>
 
 <template>
-  <VChip v-if="selectedOption" size="small">{{ selectedOption.name }}</VChip>
+  <VChip
+    v-if="selectedOption"
+    size="small"
+  >
+    {{ selectedOption.name }}
+  </VChip>
   <span v-else>-</span>
 </template>

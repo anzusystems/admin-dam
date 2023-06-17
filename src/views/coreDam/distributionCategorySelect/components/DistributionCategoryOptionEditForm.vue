@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { AFormBooleanToggle, AFormTextField } from '@anzusystems/common-admin'
+import { AFormTextField, cloneDeep } from '@anzusystems/common-admin'
 import { useDistributionCategoryOptionValidation } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
-import { useVModel } from '@vueuse/core'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -18,9 +17,16 @@ const emit = defineEmits<{
   (e: 'remove'): void
 }>()
 
-const modelValue = useVModel(props, 'modelValue', emit)
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: DistributionCategoryOption) {
+    emit('update:modelValue', cloneDeep<DistributionCategoryOption>(newValue))
+  },
+})
 
-const { v$ } = useDistributionCategoryOptionValidation(modelValue)
+const { v$ } = useDistributionCategoryOptionValidation(modelValueComputed)
 
 onMounted(() => {
   v$.value.$touch()
@@ -31,23 +37,32 @@ const { t } = useI18n()
 
 <template>
   <VRow class="mt-5">
-    <VCol cols="12" sm="5">
+    <VCol
+      cols="12"
+      sm="5"
+    >
       <AFormTextField
-        v-model="modelValue.name"
+        v-model="modelValueComputed.name"
         prepend-icon="mdi-drag"
         :v="v$.distributionCategoryOption.name"
         data-cy="ext-system-name"
       />
     </VCol>
-    <VCol cols="12" sm="1">
-      <AFormBooleanToggle
-        v-model="modelValue.assignable"
+    <VCol
+      cols="12"
+      sm="1"
+    >
+      <VSwitch
+        v-model="modelValueComputed.assignable"
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
       />
     </VCol>
-    <VCol cols="12" sm="6">
+    <VCol
+      cols="12"
+      sm="6"
+    >
       <AFormTextField
-        v-model="modelValue.value"
+        v-model="modelValueComputed.value"
         append-icon="mdi-trash-can-outline"
         :v="v$.distributionCategoryOption.value"
         data-cy="ext-system-name"

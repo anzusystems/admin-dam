@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "licence": "Licencie",
+    "texts": {
+      "title": "Nadpis"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "title": "Nadpis"
+  },
+  "meta": {
+    "create": "Vytvoriť video reláciu"
+  },
+  "tabs": {
+    "detail": "Detail video relácie",
+    "episodes": "Epizódy video relácie"
+  }
+}
