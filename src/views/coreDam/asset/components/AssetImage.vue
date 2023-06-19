@@ -7,6 +7,7 @@ import { isUndefined } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
 import type { AssetFileProperties } from '@/types/coreDam/Asset'
+import { useRemainingTime } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +30,7 @@ const props = withDefaults(
     processingColor?: string
     disableProcessingText?: boolean
     uploadingProgress?: number | null
+    remainingTime?: number | null
     hideIcon?: boolean
     showMetaIcons?: boolean
     assetFileProperties?: AssetFileProperties
@@ -53,6 +55,7 @@ const props = withDefaults(
     processingColor: 'primary',
     disableProcessingText: false,
     uploadingProgress: null,
+    remainingTime: null,
     hideIcon: false,
     showMetaIcons: false,
     assetFileProperties: undefined,
@@ -111,6 +114,8 @@ const showIconComputed = computed(() => {
   else if (props.assetType === AssetType.Image && props.src) return false
   return true
 })
+
+const { remainingTimeShort } = useRemainingTime()
 </script>
 
 <template>
@@ -173,6 +178,12 @@ const showIconComputed = computed(() => {
         </VProgressCircular>
         <div class="text-caption text-center">
           {{ t('system.upload.uploading') }}
+          <span
+            v-if="remainingTime"
+            class="font-weight-bold"
+          >
+            {{ remainingTimeShort(remainingTime) }}
+          </span>
         </div>
       </div>
     </template>

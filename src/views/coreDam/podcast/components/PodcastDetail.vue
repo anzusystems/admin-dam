@@ -18,7 +18,6 @@ const imageSrc = computed(() => {
 const altImgSrc = computed(() => {
   return podcast.value.altLinks ? podcast.value.altLinks.image_list.url : undefined
 })
-
 </script>
 
 <template>
