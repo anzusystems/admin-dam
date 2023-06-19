@@ -72,7 +72,10 @@ onMounted(() => {
         </VRow>
       </div>
     </div>
-    <div class="asset-queue-editable__sidebar system-border-l">
+    <div
+      v-if="list.length > 1"
+      class="asset-queue-editable__sidebar system-border-l"
+    >
       <AssetQueueSelectedSidebar :queue-id="queueId" />
     </div>
   </div>

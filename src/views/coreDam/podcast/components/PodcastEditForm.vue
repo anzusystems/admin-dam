@@ -75,17 +75,13 @@ const { podcastModeOptions } = usePodcastMode()
         cols="12"
         md="4"
       >
-        <ARow
-          :title="t('coreDam.podcast.model.imagePreview')"
-        >
+        <ARow :title="t('coreDam.podcast.model.imagePreview')">
           <ImagePreview
             v-model="podcast.imagePreview"
             show-actions
           />
         </ARow>
-        <ARow
-          :title="t('coreDam.podcast.model.altImage')"
-        >
+        <ARow :title="t('coreDam.podcast.model.altImage')">
           <ImagePreview
             v-model="podcast.altImage"
             show-actions

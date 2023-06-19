@@ -194,7 +194,8 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
             assetType === AssetType.Audio &&
               item &&
               item.assetFile &&
-              statusComputed === AssetFileProcessStatus.Processed"
+              statusComputed === AssetFileProcessStatus.Processed
+          "
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"
           @open-make-public-dialog="openMakeFilePrivateDialog"

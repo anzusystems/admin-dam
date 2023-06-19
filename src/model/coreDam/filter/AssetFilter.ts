@@ -17,7 +17,7 @@ const filter = reactive({
     ...makeFilter({ name: 'type', default: [] }),
   },
   status: {
-    ...makeFilter({ name: 'status', default: [ AssetStatus.WithFile ] }),
+    ...makeFilter({ name: 'status', default: [AssetStatus.WithFile] }),
   },
   mostDominantColor: {
     ...makeFilter({ name: 'mostDominantColor', default: [] }),
