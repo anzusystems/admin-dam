@@ -165,6 +165,7 @@ const showCancel = computed(() => {
             :show-waiting="waiting"
             :show-done="done"
             :uploading-progress="uploadProgress"
+            :remaining-time="item.progress.remainingTime"
             use-component
             cover
             :aspect-ratio="IMAGE_ASPECT_RATIO"
