@@ -17,9 +17,7 @@ const reasonOption = computed(() => {
 </script>
 
 <template>
-  <AChipNoLink
-    v-if="reasonOption"
-  >
+  <AChipNoLink v-if="reasonOption">
     {{ reasonOption.title }}
   </AChipNoLink>
 </template>

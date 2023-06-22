@@ -34,7 +34,7 @@
     },
     "actions": {
       "unassign": "Zrušiť priradenie obrázka",
-      "selectImage": "Vyberťe obrázok",
+      "selectImage": "Vybrať obrázok",
       "chooseFromDistribution": "Vybrať z distribúcie"
     }
   },
