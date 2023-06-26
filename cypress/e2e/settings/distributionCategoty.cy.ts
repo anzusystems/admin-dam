@@ -1,16 +1,15 @@
 /// <reference types="cypress" />
 
-import { USER_FIRST_NAME } from './support/constants'
+import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/common'
 
-describe(`Test distribution category function, Env: ${Cypress.env('env')}`, () => {
+let CATEGOTY_ID = ''
+describe(`Test distribution category function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false } }, () => {
   it('Create distribution category', () => {
     cy.visit('/settings')
-    cy.verifySubPage('distribution-category-settings', 'distribution-category/list', 'List of Distribution category')
+    cy.visitSubpage('distribution-category-settings', 'distribution-category', 'Kategórie distribúcie')
     cy.getCyVisibleClick('button-create')
     cy.getCy('create-panel').should('be.visible')
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
-    cy.getCy('category-name').type(USER_FIRST_NAME)
+    cy.getCy('category-name').should('be.visible').type(USER_FIRST_NAME)
     cy.getCy('distribution-category-select').eq(0).click()
     cy.contains('.v-list-item-title', /^Dokumenty$/).click()
     cy.getCy('distribution-category-select').eq(1).click()
@@ -20,23 +19,24 @@ describe(`Test distribution category function, Env: ${Cypress.env('env')}`, () =
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
-    cy.alertMessage('Record was created')
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000)
-    cy.getCy('copy_text')
+    cy.alertMessage(ALERT_CREATE)
+    cy.getCy('filter-submit').click() // until bug is fixed
+    cy.contains(`${USER_FIRST_NAME}`).click() // until bug is fixed
+    cy.cardLoad()
+    cy.getCy('copy-text')
       .invoke('text')
       .then((text) => {
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/asset-licence/list')
+        cy.urlContains('/distribution-category')
+        CATEGOTY_ID = text
       })
   })
   it('Edit distribution category', () => {
-    cy.visit('distribution-category/list')
-    cy.getCy('filter-text').last().type(`${USER_FIRST_NAME}{ENTER}`)
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
+    cy.visit('distribution-category')
+    cy.getCy('filter-string').first().type(`${CATEGOTY_ID}{ENTER}`)
+    cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
     // eslint-disable-next-line cypress/unsafe-to-chain-command
@@ -48,12 +48,11 @@ describe(`Test distribution category function, Env: ${Cypress.env('env')}`, () =
     cy.getCy('distribution-category-select').eq(2).click()
     cy.contains('.v-list-item-title', /^Drama$/).click()
     cy.getCyVisibleClick('button-save-close')
-    cy.alertMessage('Record was updated')
+    cy.alertMessage(ALERT_UPDATE)
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
-    cy.getCy('filter-text').type(`${USER_FIRST_NAME}-edit{ENTER}`)
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
+    cy.getCy('filter-string').last().type(`${USER_FIRST_NAME}-edit{ENTER}`)
+    cy.cardLoad()
     cy.contains('td', `${USER_FIRST_NAME}-edit`)
     cy.getCyVisibleClick('filter-reset')
   })

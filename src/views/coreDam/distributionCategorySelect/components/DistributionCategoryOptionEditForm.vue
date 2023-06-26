@@ -45,7 +45,7 @@ const { t } = useI18n()
         v-model="modelValueComputed.name"
         prepend-icon="mdi-drag"
         :v="v$.distributionCategoryOption.name"
-        data-cy="ext-system-name"
+        data-cy="option-name"
       />
     </VCol>
     <VCol
@@ -55,6 +55,7 @@ const { t } = useI18n()
       <VSwitch
         v-model="modelValueComputed.assignable"
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
+        data-cy="option-assignable"
       />
     </VCol>
     <VCol
@@ -65,7 +66,7 @@ const { t } = useI18n()
         v-model="modelValueComputed.value"
         append-icon="mdi-trash-can-outline"
         :v="v$.distributionCategoryOption.value"
-        data-cy="ext-system-name"
+        data-cy="option-id"
         @click:append="emit('remove')"
       />
     </VCol>

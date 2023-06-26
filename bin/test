@@ -1,41 +1,53 @@
 #!/bin/bash
-# Script used to run the tests inside the application docker container
-
+#Script used to run the tests inside the application docker container
 #######################################################################################################################
 # Default variables
 #######################################################################################################################
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
-BROWSER_OPTIONS=""
-BROWSER="electron"
+DOCKER_CONTAINER="admin-dam"
+BROWSER="chrome"
 ENV="local"
-TAGS=""
+FILTER=""
 TAG=""
-TEST_SPEC=""
-RUNNER="yarn run"
-DASHBOARD_OPTIONS=""
+RUNNER="yarn"
+DASHBOARD_OPTIONS="--record false"
+CONFIG_FILE="cypress/config/cypress.config.ts"
 
 cd "${PROJECT_ROOT}" || exit 1
-# Initialize default variables
-# shellcheck disable=SC1091
-. ./bin/docker-libvariables
-# Initialize functions
-# shellcheck disable=SC1091
-. ./bin/docker-libfunctions
-docker_env_vars
 
+function help() {
+    echo "
+    $(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    Options:
+      -e --env     [(Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)]
+      -b --browser [(Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)]
+      -f --filter  [(Optional) Comma separated list of filters (Default: n/a - all tests)]
+      -t --tag     [(Optional) Only for dashboard runs tags for cypress dashboard list]
+      -d           [(Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder]
+
+    Example:
+      $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @ --tag Docker,Web -d
+    "
+}
+
+#######################################################################################################################
 # Go through all command line arguments and setup variables accordingly
+#######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
+    admin-dam)
+        DOCKER_CONTAINER=$1
+        shift 1
+        continue
+        ;;
     -b)
         BROWSER="$2"
-        BROWSER_OPTIONS="--browser ${BROWSER}"
         shift 2
         continue
         ;;
     --browser*)
         BROWSER="${1#*=}"
-        BROWSER_OPTIONS="--browser ${BROWSER}"
         shift 1
         continue
         ;;
@@ -49,71 +61,62 @@ while [ "$#" -gt 0 ]; do
         shift 1
         continue
         ;;
-    -s)
-        TEST_SPEC="--spec $2,"
+    -f)
+        FILTER=$2
         shift 2
         continue
         ;;
-    --spec*)
-        TEST_SPEC="--spec ${1#*=},"
+    --filter*)
+        FILTER="${1#*=}"
         shift 1
         continue
         ;;
     -t)
-        TAGS=$2
-        shift 2
-        continue
-        ;;
-    --tags*)
-        TAGS="${1#*=}"
-        shift 1
-        continue
-        ;;
-    --tag)
         TAG=$2
         shift 2
         continue
         ;;
-    --tag=*)
+    --tag*)
         TAG="${1#*=}"
         shift 1
         continue
         ;;
-    --dashboard)
-        DASHBOARD_OPTIONS="--record --key ${CYPRESS_DASHBOARD_KEY} --tag ${ENV},${TAGS},${TAG}"
+    -d)
+        DASHBOARD_OPTIONS="--record --tag ${ENV},${TAG},${FILTER}"
         shift 1
         continue
         ;;
     *)
         echo "[WARN] Unknown command line switch: $1"
-        shift 1
+        help
+        exit
         ;;
     esac
 done
 
-# Ensure that the user has provided the terraform environment
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$ ]]; then
-    echo "[ERROR] Invalid value using '-b, --browser' option"
+if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
+    echo "[ERROR] Invalid value: '${BROWSER}' using '-b, --browser' option"
     help
     exit
 fi
 
-# Ensure that the user has provided the terraform environment
-if [[ ! ${ENV} =~ ^local$ ]] && [ ! -f "cypress/config/${ENV}.ts" ]; then
-    echo "[ERROR] config file ${ENV}.ts does not exist in cypress/config"
+if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
+    echo "[ERROR] Config file '${ENV}.ts' does not exist in cypress/config folder"
+    help
     exit
 fi
 
 if [ -f /.dockerenv ]; then
-      if ! yarn cypress verify >/dev/null 2>&1; then
-          yarn cypress install --force
-      fi
-      # shellcheck disable=SC2086
-      TZ=Europe/Bratislava dbus-launch ${RUNNER} cypress run \
-         --config-file cypress/config/cypress.config.ts\
-         --env env=${ENV},grepTags=${TAGS} \
-         ${BROWSER_OPTIONS} \
-         ${TEST_SPEC} \
-         ${DASHBOARD_OPTIONS}
+    if [ ! -d "${CYPRESS_CACHE_FOLDER}" ] ; then
+        ${RUNNER} cypress install --force
+    fi
+    # shellcheck disable=SC2086
+    CYPRESS_grepTags=${FILTER} \
+    dbus-launch ${RUNNER} cypress run \
+    --config-file ${CONFIG_FILE} \
+    --env cfg=${ENV} \
+    --browser ${BROWSER} \
+    ${DASHBOARD_OPTIONS}
+    exit
 fi
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'
+bin/docker-compose exec --user node "${DOCKER_CONTAINER}" bash -c \'bin/test ${ARGS}\'

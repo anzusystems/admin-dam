@@ -51,11 +51,10 @@ const removeItem = (index: number) => {
           class="mx-2"
           dark
           color="indigo"
+          data-cy="button-add-option"
           @click="addOption"
         >
-          <v-icon dark>
-            mdi-plus
-          </v-icon>
+          <v-icon dark> mdi-plus </v-icon>
         </v-btn>
       </template>
     </Draggable>

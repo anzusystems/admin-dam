@@ -34,7 +34,7 @@ Script used to run tests inside the application docker container:
 
     bin/test --env=local --browser=chrome
     bin/test --tags=@ --dashboard
-    bin/test --browser=chrome --spec=cypress/e2e/Log-out.cy.ts --tag=Log-out --dashboard
+    bin/test --browser=chrome --spec=cypress/e2e/logOut.cy.ts --tag=Log-out --dashboard
 
 ### Support for multiple environments
     

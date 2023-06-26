@@ -1,11 +1,12 @@
 /// <reference types="cypress" />
 
-import { EXTERNAL_SYS, RAND_NUM } from './support/constants'
+import { ALERT_CREATE, ALERT_UPDATE, CY, EXTERNAL_SYS, RAND_NUM } from '../../utils/common'
 
-describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'test' }, () => {
+let LICENCE_ID = ''
+describe(`Test asset licences function, Env: ${CY.cfg}`, { tags: 'test', env: { visitBaseUrl: false } }, () => {
   it('Create asset licence', () => {
     cy.visit('/settings')
-    cy.verifySubPage('asset-licence-settings', 'asset-licence/list', 'List of Licenses')
+    cy.visitSubpage('asset-licence-settings', 'asset-licence', 'Licencie assetov')
     cy.getCyVisibleClick('button-create')
     cy.getCy('create-panel').should('be.visible')
     cy.getCy('asset-licence-name').type(`${EXTERNAL_SYS[0]}${RAND_NUM}`)
@@ -14,24 +15,25 @@ describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'te
     cy.contains('.v-list-item-title', EXTERNAL_SYS[0]).click()
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
-    cy.getCyVisibleClick('button-confirm')
-    cy.alertMessage('Record was created')
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000)
-    cy.getCy('copy_text')
+    cy.getCy('button-create').last().click()
+    cy.alertMessage(ALERT_CREATE)
+    cy.getCy('filter-submit').click() // until bug is fixed
+    cy.contains(`${EXTERNAL_SYS[0]}${RAND_NUM}`).click() // until bug is fixed
+    cy.cardLoad()
+    cy.getCy('copy-text')
       .invoke('text')
       .then((text) => {
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/asset-licence/list')
+        cy.urlContains('/asset-licence')
+        LICENCE_ID = text
       })
   })
   it('Edit asset licence', () => {
-    cy.visit('asset-licence/list')
-    cy.getCy('filter-text').type(`${Cypress._.repeat(RAND_NUM, 2)}{ENTER}`)
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
+    cy.visit('asset-licence')
+    cy.getCy('filter-string', 10000).first().type(`${LICENCE_ID}{ENTER}`)
+    cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
     // eslint-disable-next-line cypress/unsafe-to-chain-command
@@ -43,13 +45,16 @@ describe(`Test asset licences function, Env: ${Cypress.env('env')}`, { tags: 'te
       .type(`${Cypress._.repeat(RAND_NUM, 2)}-edit`)
     cy.getCy('asset-licence-ext-system').click()
     cy.contains('.v-list-item-title', EXTERNAL_SYS[1]).click()
-    cy.getCyVisibleClick('button-save-close')
-    cy.alertMessage('Record was updated')
+    cy.getCyVisibleClick('button-save')
+    cy.alertMessage(ALERT_UPDATE)
+    cy.getCyVisibleClick('button-close')
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
-    cy.getCy('filter-text').type(`${Cypress._.repeat(RAND_NUM, 2)}-edit{ENTER}`)
+    cy.getCy('filter-string')
+      .last()
+      .type(`${Cypress._.repeat(RAND_NUM, 2)}-edit{ENTER}`)
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
+    cy.cardLoad()
     cy.contains('td', `${EXTERNAL_SYS[0]}${RAND_NUM}-edit`)
     cy.getCyVisibleClick('filter-reset')
   })

@@ -113,18 +113,21 @@ const onConfirm = async () => {
             <AFormTextField
               v-model.number="anzuUser.id"
               :v="v$.anzuUser.id"
+              data-cy="user-id"
             />
           </ARow>
           <ARow>
             <AFormTextField
               v-model="anzuUser.email"
               :v="v$.anzuUser.email"
+              data-cy="user-email"
             />
           </ARow>
           <ARow>
             <AnzuUserRoleSelect
               v-model="anzuUser.roles"
               :client="client"
+              data-cy="user-roles"
             />
           </ARow>
           <ARow>
@@ -134,6 +137,7 @@ const onConfirm = async () => {
               :label="t('common.anzuUser.model.permissionGroups')"
               multiple
               clearable
+              data-cy="user-permissionGroups"
             />
           </ARow>
         </ASystemEntityScope>
@@ -148,7 +152,7 @@ const onConfirm = async () => {
         </ABtnTertiary>
         <ABtnPrimary
           :loading="buttonLoading"
-          data-cy="button-create-podcast"
+          data-cy="button-confirm"
           @click.stop="onConfirm"
         >
           {{ t(buttonT) }}
