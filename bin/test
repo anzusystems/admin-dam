@@ -15,6 +15,13 @@ DASHBOARD_OPTIONS="--record false"
 CONFIG_FILE="cypress/config/cypress.config.ts"
 
 cd "${PROJECT_ROOT}" || exit 1
+# Initialize default variables
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+# Initialize functions
+# shellcheck disable=SC1091
+. ./bin/docker-libfunctions
+docker_env_vars
 
 function help() {
     echo "
@@ -119,4 +126,4 @@ if [ -f /.dockerenv ]; then
     ${DASHBOARD_OPTIONS}
     exit
 fi
-bin/docker-compose exec --user node "${DOCKER_CONTAINER}" bash -c \'bin/test ${ARGS}\'
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test ${ARGS}\'

@@ -2,7 +2,7 @@
 
 import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME } from '../../utils/common'
 let USER_ID = ''
-describe(`Test authors function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false } }, () => {
+describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visitBaseUrl: false } }, () => {
   it('Create author', () => {
     cy.visit('/settings')
     cy.visitSubpage('author-settings', 'author', 'Autori')
@@ -16,7 +16,8 @@ describe(`Test authors function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false }
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-submit').click() // until bug is fixed
+    cy.getCy('filter-reset').click() // until bug is fixed
+    cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`)
     cy.contains(`${USER_FIRST_NAME}`).click() // until bug is fixed
     cy.cardLoad()
     cy.getCy('copy-text')

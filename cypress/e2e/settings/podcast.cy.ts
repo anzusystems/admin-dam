@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
 import { ALERT_CREATE, ALERT_UPDATE, CY, EPISODE_TITLE, PODCAST_TITLE } from '../../utils/common'
-let PODCAST_ID = '1ee119cd-a1a4-6230-825d-3bc846d5b059'
+let PODCAST_ID = ''
 let EPISODE_ID = ''
-describe(`Test Podcast function, Env: ${CY.cfg}}`, { env: { visitBaseUrl: false } }, () => {
+describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { visitBaseUrl: false } }, () => {
   it('Create podcast', () => {
     cy.visit('/settings')
     cy.visitSubpage('podcast-settings', 'podcast', 'Podcasty')
@@ -20,7 +20,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}}`, { env: { visitBaseUrl: false 
     cy.get('[data-index="0"]').click()
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
-    cy.getCy('button-create').last().click()
+    cy.getCy('button-confirm').click()
     cy.alertMessage(ALERT_CREATE)
     cy.getCy('filter-submit').click() // until bug is fixed
     cy.contains(`${PODCAST_TITLE}`).click() // until bug is fixed
@@ -75,7 +75,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}}`, { env: { visitBaseUrl: false 
     cy.getCy('episode-number').type(`${Cypress._.random(1, 1000)}`)
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
-    cy.getCy('button-create').last().click()
+    cy.getCy('button-confirm').click()
     cy.alertMessage(ALERT_CREATE)
     cy.getCy('filter-submit').click() // until bug is fixed
     cy.contains(`${EPISODE_TITLE}`).click() // until bug is fixed
