@@ -13,13 +13,13 @@ services:
     external_links:
       - local-proxy:core-dam.anzusystems.localhost
       - local-proxy:admin-dam.anzusystems.localhost
+      - local-proxy:notification-server.anzusystems.localhost
     env_file:
       - .env.docker.dist
       - .env.docker.local
     volumes:
       - .:/var/www/html:cached
     ports:
-      - ${DOCKER_CYPRESS_PORT:-8152}:${DOCKER_CYPRESS_PORT:-8152}
       - ${DOCKER_VUE_DEV_PORT:-8150}:${DOCKER_VUE_DEV_PORT:-8150}
       - ${NGINX_PORT:-8151}:8080
     hostname: admin-dam.anzusystems.localhost

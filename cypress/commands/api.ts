@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { CY } from '../utils/common'
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -16,11 +18,10 @@ Cypress.Commands.add('testApi', () => {
   cy.log('testApi')
 })
 
-const CORE_DAM_ASSET = (id?: string) =>
-  `${Cypress.env('url').proto}://core-dam.${Cypress.env('url').domain}/api/adm/v1/asset/${id}`
+const CORE_DAM_ASSET = (id?: string) => `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/${id}`
 Cypress.Commands.add('api_getFileID', (seconds?: number) => {
   cy.intercept('GET', CORE_DAM_ASSET('*')).as('uploadApi')
-  cy.wait('@uploadApi', { timeout: seconds * 1000 }).then((data) => {
+  cy.wait('@uploadApi', { timeout: seconds * 2000 }).then((data) => {
     return cy.wrap(data.response.body.id)
   })
 })

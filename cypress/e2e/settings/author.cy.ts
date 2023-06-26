@@ -1,53 +1,54 @@
 /// <reference types="cypress" />
 
-import { RAND_NUM, USER_FIRST_NAME } from './var/constants'
-
-describe(`Test authors function, Env: ${Cypress.env('cfg')}`, () => {
+import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME } from '../../utils/common'
+let USER_ID = ''
+describe(`Test authors function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false } }, () => {
   it('Create author', () => {
     cy.visit('/settings')
-    cy.verifySubPage('author-settings', 'author/list', 'Authors List')
+    cy.visitSubpage('author-settings', 'author', 'Autori')
     cy.getCyVisibleClick('button-create')
     cy.getCy('create-panel').should('be.visible')
     cy.getCy('author-name').type(`${USER_FIRST_NAME}`)
     cy.getCy('author-identifier').type(`${RAND_NUM}`)
     cy.getCy('author-type').click()
-    cy.contains('.v-list-item-title', /^Internal$/).click()
+    cy.contains('.v-list-item-title', /^Interný$/).click()
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
-    cy.alertMessage('Record was created')
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000)
-    cy.getCy('copy_text')
+    cy.alertMessage(ALERT_CREATE)
+    cy.getCy('filter-submit').click() // until bug is fixed
+    cy.contains(`${USER_FIRST_NAME}`).click() // until bug is fixed
+    cy.cardLoad()
+    cy.getCy('copy-text')
       .invoke('text')
       .then((text) => {
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/author/list')
+        cy.urlContains('/author')
+        USER_ID = text
       })
   })
   it('Edit author', () => {
-    cy.visit('author/list')
-    cy.getCy('filter-text').eq(2).type(`${RAND_NUM}{ENTER}`)
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
+    cy.visit('/author')
+    cy.getCy('filter-string').first().type(`${USER_ID}{ENTER}`)
+    cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
     // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('author-name').find('input').clear().type(`${USER_FIRST_NAME}-edit`)
     // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('author-identifier').find('input').clear().type(`${RAND_NUM}-edit`)
-    cy.getCy('toggle-false').click()
+    cy.getCy('author-flags-reviewed').click()
     cy.getCy('author-type').click()
-    cy.contains('.v-list-item-title', /^External$/).click()
-    cy.getCyVisibleClick('button-save-close')
-    cy.alertMessage('Record was updated')
+    cy.contains('.v-list-item-title', /^Externý$/).click()
+    cy.getCyVisibleClick('button-save')
+    cy.alertMessage(ALERT_UPDATE)
+    cy.getCyVisibleClick('button-close')
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
-    cy.getCy('filter-text').eq(2).type(`${RAND_NUM}-edit{ENTER}`)
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500)
+    cy.getCy('filter-string').eq(1).type(`${RAND_NUM}-edit{ENTER}`)
+    cy.cardLoad()
     cy.contains('td', `${USER_FIRST_NAME}-edit`)
     cy.getCyVisibleClick('filter-reset')
   })

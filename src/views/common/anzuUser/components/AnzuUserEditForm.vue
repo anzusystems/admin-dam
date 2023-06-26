@@ -77,6 +77,7 @@ const autoFillTexts = () => {
               :label="t('common.anzuUser.model.enabled')"
               color="success"
               density="compact"
+              data-cy="enable-switch"
               hide-details
             />
           </VCol>
@@ -89,6 +90,7 @@ const autoFillTexts = () => {
             <AFormTextField
               v-model="anzuUser.person.firstName"
               :v="v$.anzuUser.person.firstName"
+              data-cy="user-first-name"
               @focusout="autoFillTexts()"
             />
           </VCol>
@@ -99,6 +101,7 @@ const autoFillTexts = () => {
             <AFormTextField
               v-model="anzuUser.person.lastName"
               :v="v$.anzuUser.person.lastName"
+              data-cy="user-last-name"
               @focusout="autoFillTexts()"
             />
           </VCol>

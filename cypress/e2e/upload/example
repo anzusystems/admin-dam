@@ -1,0 +1,6 @@
+it('Image: Verify is deleted', { env: { visitBaseUrl: false } }, () => {
+  cy.wait(1000)
+  cy.getImg(imgId, false).then((response) => {
+    expect(response.status).to.eq(404)
+  })
+})

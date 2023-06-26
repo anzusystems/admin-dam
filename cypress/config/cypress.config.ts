@@ -17,9 +17,6 @@ export default defineConfig({
   watchForFileChanges: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
-  retries: {
-    runMode: 1,
-  },
   env: {
     cfg: 'local',
     loginUser: 'admin',

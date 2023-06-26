@@ -29,6 +29,7 @@ const { t } = useI18n()
             v-model="podcastEpisode.texts.title"
             :label="t('coreDam.podcastEpisode.model.texts.title')"
             :v="v$.podcastEpisode.texts.title"
+            data-cy="episode-title"
           />
         </ARow>
         <ARow>
@@ -36,6 +37,7 @@ const { t } = useI18n()
             v-model="podcastEpisode.texts.description"
             :label="t('coreDam.podcastEpisode.model.texts.description')"
             :v="v$.podcastEpisode.texts.description"
+            data-cy="episode-description"
           />
         </ARow>
         <ARow>
@@ -45,6 +47,7 @@ const { t } = useI18n()
             :v="v$.podcastEpisode.attributes.seasonNumber"
             type="number"
             :step="1"
+            data-cy="episode-season-number"
           />
         </ARow>
         <ARow>
@@ -54,6 +57,7 @@ const { t } = useI18n()
             :v="v$.podcastEpisode.attributes.episodeNumber"
             type="number"
             :step="1"
+            data-cy="episode-number"
           />
         </ARow>
         <ARow>
@@ -61,6 +65,7 @@ const { t } = useI18n()
             v-model="podcastEpisode.attributes.extId"
             :label="t('coreDam.podcastEpisode.model.attributes.extId')"
             :v="v$.podcastEpisode.attributes.extId"
+            data-cy="episode-ext-id"
           />
         </ARow>
         <ARow>
@@ -78,6 +83,7 @@ const { t } = useI18n()
           <ImagePreview
             v-model="podcastEpisode.imagePreview"
             show-actions
+            data-cy="select-image-preview"
           />
         </ARow>
       </VCol>

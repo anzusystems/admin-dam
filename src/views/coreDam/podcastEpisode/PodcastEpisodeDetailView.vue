@@ -56,6 +56,7 @@ onBeforeUnmount(() => {
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
         <AActionDeleteButton
           v-if="!detailLoading"
+          data-cy="button-delete"
           @delete-record="deletePodcast(id, onSuccessfulCallback)"
         />
       </Acl>

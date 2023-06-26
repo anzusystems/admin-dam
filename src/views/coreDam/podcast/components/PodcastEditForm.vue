@@ -39,6 +39,7 @@ const { podcastModeOptions } = usePodcastMode()
             v-model="podcast.texts.title"
             :label="t('coreDam.podcast.model.texts.title')"
             :v="v$.podcast.texts.title"
+            data-cy="podcast-title"
           />
         </ARow>
         <ARow>
@@ -46,6 +47,7 @@ const { podcastModeOptions } = usePodcastMode()
             v-model="podcast.texts.description"
             :label="t('coreDam.podcast.model.texts.description')"
             :v="v$.podcast.texts.description"
+            data-cy="podcast-description"
           />
         </ARow>
         <ARow>
@@ -53,6 +55,7 @@ const { podcastModeOptions } = usePodcastMode()
             v-model="podcast.attributes.mode"
             :label="t('coreDam.podcast.model.attributes.mode')"
             :items="podcastModeOptions"
+            data-cy="podcast-mode"
           />
         </ARow>
         <ARow>
@@ -60,6 +63,7 @@ const { podcastModeOptions } = usePodcastMode()
             v-model="podcast.attributes.rssUrl"
             :label="t('coreDam.podcast.model.attributes.rssUrl')"
             :v="v$.podcast.attributes.rssUrl"
+            data-cy="podcast-rss-url"
           />
         </ARow>
         <ARow>
@@ -75,13 +79,19 @@ const { podcastModeOptions } = usePodcastMode()
         cols="12"
         md="4"
       >
-        <ARow :title="t('coreDam.podcast.model.imagePreview')">
+        <ARow
+          :title="t('coreDam.podcast.model.imagePreview')"
+          data-cy="select-image-preview"
+        >
           <ImagePreview
             v-model="podcast.imagePreview"
             show-actions
           />
         </ARow>
-        <ARow :title="t('coreDam.podcast.model.altImage')">
+        <ARow
+          :title="t('coreDam.podcast.model.altImage')"
+          data-cy="select-image-alt"
+        >
           <ImagePreview
             v-model="podcast.altImage"
             show-actions

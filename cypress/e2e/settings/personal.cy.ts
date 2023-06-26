@@ -1,13 +1,14 @@
 /// <reference types="cypress" />
 
-import { LENGUAGE_SK, LENGUAGE_EN, THEME_LIGHT, THEME_DARK, THEME_AUTO } from './var/constants'
+import { LENGUAGE_SK, LENGUAGE_EN, THEME_LIGHT, THEME_DARK, THEME_AUTO, CY } from '../../utils/common'
 
-describe(`Test user settings, Env: ${Cypress.env('cfg')}`, () => {
+describe(`Test user settings, Env: ${CY.cfg}`, () => {
   it('Test user settings', () => {
-    cy.visit('/')
-    cy.getCyVisibleClick('button-user')
-    cy.getCyVisibleClick('button-settings')
-    cy.verifySubPage('personal-settings', '/settings', 'Personal')
+    cy.getCyVisibleClick('navbar-user', 10000)
+    cy.getCyVisibleClick('navbar-user-settings')
+    cy.get('.v-breadcrumbs-item__text').should('contain.text', 'Nastavenia')
+    cy.get('.v-container').should('exist').and('be.visible')
+    cy.urlContains('/settings')
     cy.getCyVisibleClick('settings-language')
     cy.contains('.v-list-item-title', `${LENGUAGE_SK}`).click()
     cy.getCy('personal-settings').should('contain', 'Osobné')

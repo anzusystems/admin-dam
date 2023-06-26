@@ -20,14 +20,14 @@ function help() {
     echo "
     $(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
     Options:
-      -e --env     [(Optional) Environment of the project (Allowed values: local | dev | stg, Default: stg)]
+      -e --env     [(Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)]
       -b --browser [(Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)]
       -f --filter  [(Optional) Comma separated list of filters (Default: n/a - all tests)]
       -t --tag     [(Optional) Only for dashboard runs tags for cypress dashboard list]
       -d           [(Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder]
 
     Example:
-      $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @datepicker,@nl --tag Docker,Web -d
+      $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @ --tag Docker,Web -d
     "
 }
 
@@ -94,14 +94,12 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-# Ensure that the user has provided the terraform environment
 if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
     echo "[ERROR] Invalid value: '${BROWSER}' using '-b, --browser' option"
     help
     exit
 fi
 
-# Ensure that the user has provided the terraform environment
 if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
     echo "[ERROR] Config file '${ENV}.ts' does not exist in cypress/config folder"
     help
@@ -113,9 +111,10 @@ if [ -f /.dockerenv ]; then
         ${RUNNER} cypress install --force
     fi
     # shellcheck disable=SC2086
+    CYPRESS_grepTags=${FILTER} \
     dbus-launch ${RUNNER} cypress run \
     --config-file ${CONFIG_FILE} \
-    --env cfg=${ENV},grepTags=${FILTER} \
+    --env cfg=${ENV} \
     --browser ${BROWSER} \
     ${DASHBOARD_OPTIONS}
     exit

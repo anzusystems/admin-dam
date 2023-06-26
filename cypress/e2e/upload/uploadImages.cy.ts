@@ -1,14 +1,15 @@
 /// <reference types="cypress" />
 
 import { IMAGE_TYPES, UPLOAD_TYPES } from '../../utils/upload'
-const fileID: Array<string> = []
-describe(`Test upload of various images, Env: ${Cypress.env('cfg')}`, { tags: '@image' }, () => {
+import { CY } from '../../utils/common'
+const FILE_ID: Array<string> = []
+describe(`Test upload of various images, Env: ${CY.cfg}`, { tags: '@image' }, () => {
   IMAGE_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Image: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {
         cy.uploadFile(`image/sample.${fileType}`, uploadType)
         cy.api_getFileID().then((responseID) => {
-          fileID.push(responseID)
+          FILE_ID.push(responseID)
           cy.waitForUpload(10)
           cy.verifyFileType(responseID, 'image', fileType)
         })
@@ -16,6 +17,6 @@ describe(`Test upload of various images, Env: ${Cypress.env('cfg')}`, { tags: '@
     })
   })
   it('Image: Delete', { env: { visitBaseUrl: false } }, () => {
-    cy.deleteFile(fileID)
+    cy.deleteFile(FILE_ID)
   })
 })

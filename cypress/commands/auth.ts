@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { CY } from '../utils/common'
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -25,9 +27,9 @@ declare global {
 }
 
 Cypress.Commands.add('protectionCookie', () => {
-  if (Cypress.env('cookie') != undefined) {
-    cy.setCookie(Cypress.env('cookie').name, Cypress.env('cookie').value, {
-      domain: Cypress.env('url').domain,
+  if (CY.cookie != undefined) {
+    cy.setCookie(CY.cookie.name, CY.cookie.value, {
+      domain: CY.url.domain,
       log: false,
     })
   }
@@ -35,13 +37,13 @@ Cypress.Commands.add('protectionCookie', () => {
 
 Cypress.Commands.add('login', (user: string, password?: string, timeout?: number) => {
   if (user != 'anonym') {
-    if ('forceLoginLink' in Cypress.env('credentials')[user]) {
-      cy.visit(Cypress.env('credentials')[user].forceLoginLink, { timeout: timeout })
+    if ('forceLoginLink' in CY.credential[user]) {
+      cy.visit(CY.credential[user].forceLoginLink, { timeout: timeout })
     } else {
       cy.visit('/')
       cy.getCy('login-form').should('be.visible')
-      cy.getCy('username').type(Cypress.env('credentials')[user].username || user)
-      cy.getCy('password').type(Cypress.env('credentials')[user].password || password)
+      cy.getCy('username').type(CY.credential[user].name || user)
+      cy.getCy('password').type(CY.credential[user].password || password)
       cy.getCyVisibleClick('button-login')
     }
   }
