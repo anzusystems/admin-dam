@@ -24,7 +24,7 @@ coverage
 cypress/report
 cypress/config
 cypress/downloads
-cypress/e2e/fixtures
+cypress/fixtures
 !cypress/config/cypress.config.ts
 
 # Managed by yarn
