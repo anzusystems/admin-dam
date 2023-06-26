@@ -2,8 +2,8 @@
 
 import { LENGUAGE_SK, LENGUAGE_EN, THEME_LIGHT, THEME_DARK, THEME_AUTO, CY } from '../../utils/common'
 
-describe(`Test user settings, Env: ${CY.cfg}`, () => {
-  it('Test user settings', () => {
+describe(`Test personal settings, Env: ${CY.cfg}`, { tags: '@personal' }, () => {
+  it('Personal settings', () => {
     cy.getCyVisibleClick('navbar-user', 10000)
     cy.getCyVisibleClick('navbar-user-settings')
     cy.get('.v-breadcrumbs-item__text').should('contain.text', 'Nastavenia')

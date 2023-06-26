@@ -9,14 +9,14 @@ import {
   ALERT_UPDATE,
 } from '../../utils/common'
 let USER_ID = ''
-describe(`Test user function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false } }, () => {
+describe(`Test user function, Env: ${CY.cfg}`, { tags: '@user', env: { visitBaseUrl: false } }, () => {
   it('Edit User', () => {
     cy.visit('/settings')
     cy.visitSubpage('user-settings', 'user', 'Používatelia')
-    cy.getCy('filter-string').last().type('user1.anzu@smeonline.sk{ENTER}')
+    cy.getCy('filter-string').last().type(`${CY.credential.admin.email}{ENTER}`)
     cy.getCyVisibleClick('filter-submit')
     cy.cardLoad()
-    cy.contains('user1.anzu@smeonline.sk').click()
+    cy.contains(`${CY.credential.admin.email}`).click()
     cy.cardLoad()
     cy.getCy('copy-text')
       .invoke('text')
@@ -26,6 +26,7 @@ describe(`Test user function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false } },
     cy.getCy('button-edit').first().click()
     cy.getCy('user-asset-licences').click()
     USER_LICENCE.forEach((licence) => {
+      cy.getCy('user-asset-licences').type(`${licence}`)
       cy.contains('.v-list-item-title', `${licence}`).click()
     })
     cy.get('#anzu-actionbar').click()
@@ -65,6 +66,7 @@ describe(`Test user function, Env: ${CY.cfg}`, { env: { visitBaseUrl: false } },
     cy.get('#anzu-actionbar').click()
     cy.getCy('user-asset-licences').click()
     USER_LICENCE.forEach((licence) => {
+      cy.getCy('user-asset-licences').type(`${licence}`)
       cy.contains('.v-list-item-title', `${licence}`).click()
     })
     cy.getCyVisibleClick('button-save')

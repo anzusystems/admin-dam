@@ -7,7 +7,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       api_getFile(id: string, failOnStatusCode?: boolean): Chainable<any>
-      api_getFileID(seconds?: number): Chainable<string>
+      api_getFileID(timeout?: number): Chainable<string>
       api_getFileType(id: string): Chainable<string>
       api_deleteFile(id: string): Chainable<any>
       testApi(): Chainable<any>
@@ -19,9 +19,9 @@ Cypress.Commands.add('testApi', () => {
 })
 
 const CORE_DAM_ASSET = (id?: string) => `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/${id}`
-Cypress.Commands.add('api_getFileID', (seconds?: number) => {
+Cypress.Commands.add('api_getFileID', (timeout?: number) => {
   cy.intercept('GET', CORE_DAM_ASSET('*')).as('uploadApi')
-  cy.wait('@uploadApi', { timeout: seconds * 2000 }).then((data) => {
+  cy.wait('@uploadApi', { timeout: timeout | 10000 }).then((data) => {
     return cy.wrap(data.response.body.id)
   })
 })
