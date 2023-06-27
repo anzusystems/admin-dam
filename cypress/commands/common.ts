@@ -49,14 +49,6 @@ declare global {
        * @param value - [true/false] if true visit base url
        */
       visitBaseUrl(value: boolean, timeout?: number): Chainable<any>
-
-      /**
-       * Navigate tu subpage in setting menu and check if url and title are correct
-       * @param selector - data-cy value as string
-       * @param url - url of subpage
-       * @param title - title of subpage
-       */
-      verifySubPage(selector: string, url: string, title: string): Chainable<any>
       /**
        * Decide if cypress fails on uncaught exception in console.
        * @param option - true or false
@@ -103,13 +95,6 @@ Cypress.Commands.add('visitBaseUrl', (value?: boolean, timeout?: number) => {
   if (value) {
     cy.visit('/', { timeout: timeout })
   }
-})
-
-Cypress.Commands.add('verifySubPage', (selector: string, url: string, title: string) => {
-  if (url.includes('/settings') === false) cy.visit('/settings')
-  cy.getCyVisibleClick(selector)
-  cy.urlContains(url)
-  cy.contains('[data-cy="page-title"]', title)
 })
 
 Cypress.Commands.add('failOnUncaughtException', (option) => {
