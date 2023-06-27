@@ -5,7 +5,7 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/com
 let CATEGOTY_ID = ''
 describe(
   `Test distribution category function, Env: ${CY.cfg}`,
-  { tags: '@distCategory', env: { visitBaseUrl: false } },
+  { tags: '@distributionCategory', env: { visitBaseUrl: false } },
   () => {
     it('Create distribution category', () => {
       cy.visit('/settings')
