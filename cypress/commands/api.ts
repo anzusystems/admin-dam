@@ -10,13 +10,9 @@ declare global {
       api_getFileID(timeout?: number): Chainable<string>
       api_getFileType(id: string): Chainable<string>
       api_deleteFile(id: string): Chainable<any>
-      testApi(): Chainable<any>
     }
   }
 }
-Cypress.Commands.add('testApi', () => {
-  cy.log('testApi')
-})
 
 const CORE_DAM_ASSET = (id?: string) => `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/${id}`
 Cypress.Commands.add('api_getFileID', (timeout?: number) => {
