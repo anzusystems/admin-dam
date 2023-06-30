@@ -179,12 +179,12 @@ watch(
         :asset-type="AssetTypeValue.Image"
         @on-confirm="selectAsset"
       >
-        <template #button-open-dialog="{ activator }">
+        <template #activator="{ props: assetSelectProps }">
           <VBtn
             variant="text"
             class="my-2 mr-2"
             size="small"
-            @click.stop="activator"
+            v-bind="assetSelectProps"
           >
             {{ t('system.imagePreview.actions.selectImage') }}
           </VBtn>
