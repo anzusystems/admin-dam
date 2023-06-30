@@ -10,7 +10,7 @@ import DistributionCategoryOptionEditForm
   from '@/views/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
 import { useSortable } from '@vueuse/integrations/useSortable'
 import { nextTick, ref } from 'vue'
-import { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
+import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 
 const { distributionCategorySelect } = useDistributionCategorySelectEditActions()
 const { createDefault } = useDistributionCategoryOptionFactory()
