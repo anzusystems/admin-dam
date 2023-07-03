@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { DocId } from '@anzusystems/common-admin'
+import type { AssetSelectReturnData, DocId } from '@anzusystems/common-admin'
 import { ADialogToolbar, isNull, AAssetSelect } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
@@ -85,7 +85,6 @@ const unassignImage = () => {
   emit('changed', null)
 }
 
-// todo remove
 const onConfirm = () => {
   if (newFileId.value.length === 0) return
   imagePreviewModel.value = { imageFile: newFileId.value, position: 0 }
@@ -97,10 +96,12 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const selectAsset = (data: DocId[]) => {
-  const imageId = data[0] || ''
-  imagePreviewModel.value = { imageFile: imageId, position: 0 }
-  emit('changed', { imageFile: imageId, position: 0 })
+const selectAsset = (data: AssetSelectReturnData) => {
+  if (data.type === 'mainFileId') {
+    const imageId = data.value[0] || ''
+    imagePreviewModel.value = { imageFile: imageId, position: 0 }
+    emit('changed', { imageFile: imageId, position: 0 })
+  }
 }
 
 watch(
@@ -179,12 +180,12 @@ watch(
         :asset-type="AssetTypeValue.Image"
         @on-confirm="selectAsset"
       >
-        <template #button-open-dialog="{ activator }">
+        <template #activator="{ props: assetSelectProps }">
           <VBtn
             variant="text"
             class="my-2 mr-2"
             size="small"
-            @click.stop="activator"
+            v-bind="assetSelectProps"
           >
             {{ t('system.imagePreview.actions.selectImage') }}
           </VBtn>
