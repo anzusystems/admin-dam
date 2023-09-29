@@ -37,16 +37,17 @@ Cypress.Commands.add('protectionCookie', () => {
 
 Cypress.Commands.add('login', (user: string, password?: string, timeout?: number) => {
   if (user != 'anonym') {
-    if ('forceLoginLink' in CY.credential[user]) {
-      cy.visit(CY.credential[user].forceLoginLink, { timeout: timeout })
+    if (CY.credentials[user].isForceLogin === true) {
+      cy.visit(CY.credentials[user].forceLoginLink, { timeout: timeout })
     } else {
       cy.visit('/')
-      cy.getCy('login-form').should('be.visible')
-      cy.getCy('username').type(CY.credential[user].name || user)
-      cy.getCy('password').type(CY.credential[user].password || password)
+      cy.getCy('login-form').should('be.visible') // central.sme.localhost
+      cy.getCy('username').type(CY.credentials[user].name || user)
+      cy.getCy('password').type(CY.credentials[user].password || password)
       cy.getCyVisibleClick('button-login')
     }
   }
+
 })
 
 export {}

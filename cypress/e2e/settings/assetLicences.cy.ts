@@ -20,8 +20,7 @@ describe(
       cy.getCy('button-cancel').should('be.visible')
       cy.getCy('button-confirm').click()
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-submit').click() // until bug is fixed
-      cy.contains(`${EXTERNAL_SYS[0]}${RAND_NUM}`).click() // until bug is fixed
+      cy.contains(`${EXTERNAL_SYS[0]}${RAND_NUM}`).click()
       cy.cardLoad()
       cy.getCy('copy-text')
         .invoke('text')

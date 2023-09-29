@@ -16,9 +16,8 @@ describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visi
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-reset').click() // until bug is fixed
     cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`)
-    cy.contains(`${USER_FIRST_NAME}`).click() // until bug is fixed
+    cy.contains(`${USER_FIRST_NAME}`).click()
     cy.cardLoad()
     cy.getCy('copy-text')
       .invoke('text')
