@@ -22,8 +22,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('button-cancel').should('be.visible')
     cy.getCy('button-confirm').click()
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-submit').click() // until bug is fixed
-    cy.contains(`${PODCAST_TITLE}`).click() // until bug is fixed
+    cy.contains(`${PODCAST_TITLE}`).click()
     cy.cardLoad()
     cy.getCyVisibleClick('podcast-list')
     cy.getCy('podcast-id')
@@ -56,7 +55,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     // })
     // cy.getCy('select-image-alt').within(() => {
     //   cy.get('button').click()
-    //   cy.get('.asset-list-tiles__item').eq(1).click()
+    //   cy.get('.asset-list-tiles__item).eq(1).click()
     //   cy.contains('button', 'Zvoliť').click()
     // })
     cy.getCyVisibleClick('button-save')
@@ -77,8 +76,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('button-cancel').should('be.visible')
     cy.getCy('button-confirm').click()
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-submit').click() // until bug is fixed
-    cy.contains(`${EPISODE_TITLE}`).click() // until bug is fixed
+    cy.contains(`${EPISODE_TITLE}`).click()
     cy.cardLoad()
     cy.getCy('copy-text')
       .invoke('text')

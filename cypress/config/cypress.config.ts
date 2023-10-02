@@ -18,7 +18,7 @@ export default defineConfig({
   viewportHeight: 1080,
   viewportWidth: 1920,
   env: {
-    cfg: 'local',
+    cfg: 'qa', // local...
     loginUser: 'admin',
     failOnUncaughtException: false,
     visitBaseUrl: true,
@@ -27,7 +27,7 @@ export default defineConfig({
     grepIntegrationFolder: '../../',
   },
   e2e: {
-    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
+    baseUrl: 'http://LoremIpsum',
     specPattern: 'cypress/e2e/**/*.cy.ts',
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on)

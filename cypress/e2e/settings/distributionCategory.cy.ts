@@ -2,7 +2,7 @@
 
 import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/common'
 
-let CATEGOTY_ID = ''
+//let CATEGORY_ID = ''
 describe(
   `Test distribution category function, Env: ${CY.cfg}`,
   { tags: '@distributionCategory', env: { visitBaseUrl: false } },
@@ -19,12 +19,12 @@ describe(
       cy.get('.v-overlay__content > .v-list > .v-list-item').first().click()
       cy.getCy('distribution-category-select').eq(2).click()
       cy.get('.v-overlay__content > .v-list > .v-list-item').first().click()
+      cy.get('body').type('{ESC}')
       cy.getCy('button-close').should('be.visible')
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-submit').click() // until bug is fixed
-      cy.contains(`${USER_FIRST_NAME}`).click() // until bug is fixed
+      cy.contains(`${USER_FIRST_NAME}`).click()
       cy.cardLoad()
       cy.getCy('copy-text')
         .invoke('text')
@@ -33,12 +33,13 @@ describe(
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(text)
           cy.urlContains('/distribution-category')
-          CATEGOTY_ID = text
+          //CATEGORY_ID = text
         })
     })
     it('Edit distribution category', () => {
       cy.visit('distribution-category')
-      cy.getCy('filter-string').first().type(`${CATEGOTY_ID}{ENTER}`)
+      //cy.getCy('filter-string').first().type(`${CATEGORY_ID}{ENTER}`)  //todo ctrl-v(paste) in ID-filed is not working
+      cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`) //todo until bug is fixed
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
@@ -50,8 +51,10 @@ describe(
       cy.contains('.v-list-item-title', /^Science$/).click()
       cy.getCy('distribution-category-select').eq(2).click()
       cy.contains('.v-list-item-title', /^Drama$/).click()
-      cy.getCyVisibleClick('button-save-close')
+      cy.getCy('button-close').should('be.visible')
+      cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)
+      cy.getCyVisibleClick('button-close')
       cy.urlNotContains('/edit')
       cy.getCyVisibleClick('filter-reset')
       cy.getCy('filter-string').last().type(`${USER_FIRST_NAME}-edit{ENTER}`)

@@ -13,9 +13,11 @@ docker_env_vars
 
 if [ -f /.dockerenv ]; then
     env-config
-    echo "[INFO] Starting yarn install and build"
+    echo "[INFO] Starting yarn install"
     yarn install
+    echo "[INFO] Starting yarn build"
     yarn build
+    echo -e "\n\033[1;33m[INFO] Build ready:\033[0m http://$(hostname):${NGINX_PORT}\n"
     exit
 fi
 

@@ -13,8 +13,7 @@ describe(`Test keyword function, Env: ${CY.cfg}`, { tags: '@keyword', env: { vis
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-submit').click() // until bug is fixed
-    cy.contains(`${USER_FIRST_NAME}`).click() // until bug is fixed
+    cy.contains(`${USER_FIRST_NAME}`).click()
     cy.cardLoad()
     cy.getCy('copy-text')
       .invoke('text')
