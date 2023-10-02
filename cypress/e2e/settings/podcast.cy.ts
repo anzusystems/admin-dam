@@ -49,11 +49,9 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     //eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('podcast-rss-url').find('input').clear().type(`https://${PODCAST_TITLE}-edit.com`)
     cy.get('[data-cy=select-image-preview]').find('button').click()
-    cy.wait(1000)
     cy.get('.asset-list-tiles > :nth-child(1)').click()
     cy.contains('button', 'Zvoliť').click()
     cy.get('[data-cy=select-image-alt]').find('button').click()
-    cy.wait(1000)
     cy.get('.asset-list-tiles > :nth-child(1)').click()
     cy.contains('button', 'Zvoliť').click()
     cy.getCyVisibleClick('button-save')
@@ -110,7 +108,6 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.get('[data-index="0"]').click()
     cy.get('body').type('{ESC}')
     cy.get(':nth-child(1) > :nth-child(2) > .v-btn').click()
-    cy.wait(1000)
     cy.get('.asset-list-tiles > :nth-child(2)').click()
     cy.contains('button', 'Zvoliť').click()
 
