@@ -22,8 +22,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('button-cancel').should('be.visible')
     cy.getCy('button-confirm').click()
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-submit').click() // until bug is fixed
-    cy.contains(`${PODCAST_TITLE}`).click() // until bug is fixed
+    cy.contains(`${PODCAST_TITLE}`).click()
     cy.cardLoad()
     cy.getCyVisibleClick('podcast-list')
     cy.getCy('podcast-id')
@@ -49,16 +48,12 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('podcast-description').clear().type(`${PODCAST_TITLE}-edit-description`)
     //eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('podcast-rss-url').find('input').clear().type(`https://${PODCAST_TITLE}-edit.com`)
-    // cy.getCy('select-image-preview').within(() => {
-    //   cy.get('button').click()
-    //   cy.get('.asset-list-tiles').first().click()
-    //   cy.contains('button', 'Zvoliť').click()
-    // })
-    // cy.getCy('select-image-alt').within(() => {
-    //   cy.get('button').click()
-    //   cy.get('.asset-list-tiles__item').eq(1).click()
-    //   cy.contains('button', 'Zvoliť').click()
-    // })
+    cy.get('[data-cy=select-image-preview]').find('button').click()
+    cy.get('.asset-list-tiles > :nth-child(1)').click()
+    cy.contains('button', 'Zvoliť').click()
+    cy.get('[data-cy=select-image-alt]').find('button').click()
+    cy.get('.asset-list-tiles > :nth-child(1)').click()
+    cy.contains('button', 'Zvoliť').click()
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)
     cy.getCyVisibleClick('button-close')
@@ -77,8 +72,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('button-cancel').should('be.visible')
     cy.getCy('button-confirm').click()
     cy.alertMessage(ALERT_CREATE)
-    cy.getCy('filter-submit').click() // until bug is fixed
-    cy.contains(`${EPISODE_TITLE}`).click() // until bug is fixed
+    cy.contains(`${EPISODE_TITLE}`).click()
     cy.cardLoad()
     cy.getCy('copy-text')
       .invoke('text')
@@ -112,11 +106,11 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('episode-ext-id').type(`${Cypress._.random(1, 1000)}`)
     cy.get('.mdi-calendar').click()
     cy.get('[data-index="0"]').click()
-    // cy.getCy('select-image-preview').within(() => {
-    //   cy.get('button').click()
-    //   cy.get('.asset-list-tiles').first().click()
-    //   cy.contains('button', 'Zvoliť').click()
-    // })
+    cy.get('body').type('{ESC}')
+    cy.get(':nth-child(1) > :nth-child(2) > .v-btn').click()
+    cy.get('.asset-list-tiles > :nth-child(2)').click()
+    cy.contains('button', 'Zvoliť').click()
+
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)
     cy.getCyVisibleClick('button-close')

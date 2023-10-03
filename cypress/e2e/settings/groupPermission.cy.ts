@@ -17,8 +17,7 @@ describe(
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-submit').click() // until bug is fixed
-      cy.contains(`${PERMISSION_GROUP}`).click() // until bug is fixed
+      cy.contains(`${PERMISSION_GROUP}`).click()
       cy.cardLoad()
       cy.getCy('copy-text')
         .invoke('text')

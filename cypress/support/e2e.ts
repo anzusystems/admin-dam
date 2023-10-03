@@ -20,7 +20,7 @@ beforeEach(function () {
     CY.loginUser,
     () => {
       //Setup protection cookie based on env
-      cy.protectionCookie()
+      //cy.protectionCookie()
       //Login with provided user
       cy.login(CY.loginUser)
     },

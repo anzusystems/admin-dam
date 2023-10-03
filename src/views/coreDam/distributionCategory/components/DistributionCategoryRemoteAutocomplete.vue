@@ -7,7 +7,7 @@ import { onMounted } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | null | string[] | any
+    modelValue: string | number | null | string[] | number[]
     assetType: AssetType
     label?: string | undefined
     required?: boolean | undefined
@@ -26,7 +26,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | null | string[]): void
+  (e: 'update:modelValue', data: string | number | null | string[] | number[]): void
 }>()
 
 const { fetchItems, fetchItemsByIds } = useDistributionCategorySelectActions()

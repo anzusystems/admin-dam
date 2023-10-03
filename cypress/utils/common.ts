@@ -12,7 +12,8 @@ export const USER_PASSWORD = `pwd${RAND_NUM}`
 export const USER_LICENCE = ['CMS licence']
 export const EXTERNAL_SYS = ['cms', 'blog', 'tools']
 export const EXTERNAL_PROVIDER = 'Unsplash'
-export const DISTRIBUTION_SERVICE = ['Youtube', 'Youtube Fičí', 'JwVideo']
+export const DISTRIBUTION_SERVICE = ['Youtube CMS', 'Youtube Fičí', 'JwVideo', 'Artemis Video CMS',
+  'Artemis Podcast CMS']
 export const PERMISSION_GROUP_TITLE = `TestGroup${RAND_NUM}`
 export const PODCAST_TITLE = `TestPodcast${RAND_NUM}`
 export const EPISODE_TITLE = `TestEpisode${RAND_NUM}`

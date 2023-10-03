@@ -88,7 +88,7 @@ Cypress.Commands.add('urlNotContains', (string: string) => {
 Cypress.Commands.add('alertMessage', (message: string) => {
   cy.log(`Expect alert message: ${message}`)
   cy.get('.v-alert').should('be.visible').and('contain.text', `${message}`)
-  cy.get('.v-alert__close').click()
+  cy.get('.mdi-close').eq(0).click()
 })
 
 Cypress.Commands.add('visitBaseUrl', (value?: boolean, timeout?: number) => {

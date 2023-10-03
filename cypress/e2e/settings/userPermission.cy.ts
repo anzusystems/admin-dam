@@ -23,8 +23,8 @@ describe(
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-submit').click() // until bug is fixed
-      cy.contains(`${USER_EMAIL}`).click() // until bug is fixed
+      cy.get('[value="50"]').click()
+      cy.contains(`${USER_EMAIL}`).click()
       cy.cardLoad()
       cy.getCy('copy-text')
         .invoke('text')
@@ -45,7 +45,7 @@ describe(
       cy.cardLoad()
       cy.getCy('user-first-name').type('test')
       cy.getCy('user-last-name').type('test')
-      cy.getCy('enable-switch').click()
+      cy.get('.v-selection-control > .v-label').click()
       cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)
       cy.getCyVisibleClick('button-close')
@@ -60,7 +60,7 @@ describe(
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
       cy.cardLoad()
-      cy.getCy('enable-switch').click()
+      cy.get('.v-selection-control > .v-label').click()
       cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)
       cy.getCyVisibleClick('button-close')
