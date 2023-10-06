@@ -20,7 +20,17 @@ export interface DamConfigAssetCustomFormAttributes {
 
 export interface DamConfigAssetCustomFormElement extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
-  key: string
+  property: string
+  name: string
+  position: number
+  attributes: DamConfigAssetCustomFormAttributes
+}
+
+// todo will be removed once rename  key => property will be implemented
+export interface DamConfigAssetCustomFormElementTemp extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
+  id: DocId
+  key?: string
+  property?: string
   name: string
   position: number
   attributes: DamConfigAssetCustomFormAttributes

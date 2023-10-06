@@ -1,8 +1,12 @@
 import { ref } from 'vue'
-import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
+import type {
+  DamConfigAssetCustomFormElement,
+  DamConfigAssetCustomFormElementTemp
+} from '@/types/coreDam/DamConfigAssetCustomForm'
 import { fetchAssetCustomFormElements } from '@/services/api/coreDam/assetCustomFormApi'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { mapElementsWithKeyToProperty } from '@/services/TempMapCustomFormElementHelper'
 
 export const damConfigAssetCustomFormElementsInitialized = ref(false)
 
@@ -15,12 +19,12 @@ export const damConfigAssetCustomFormElements: {
   document: [],
 }
 
-const setDamConfigAssetCustomFormElements = (responses: Awaited<{ data: DamConfigAssetCustomFormElement[] }>[]) => {
+const setDamConfigAssetCustomFormElements = (responses: Awaited<{ data: DamConfigAssetCustomFormElementTemp[] }>[]) => {
   try {
-    damConfigAssetCustomFormElements.image = responses[0].data
-    damConfigAssetCustomFormElements.audio = responses[1].data
-    damConfigAssetCustomFormElements.video = responses[2].data
-    damConfigAssetCustomFormElements.document = responses[3].data
+    damConfigAssetCustomFormElements.image = mapElementsWithKeyToProperty(responses[0].data)
+    damConfigAssetCustomFormElements.audio = mapElementsWithKeyToProperty(responses[1].data)
+    damConfigAssetCustomFormElements.video = mapElementsWithKeyToProperty(responses[2].data)
+    damConfigAssetCustomFormElements.document = mapElementsWithKeyToProperty(responses[3].data)
 
     damConfigAssetCustomFormElementsInitialized.value = true
   } catch (err) {
