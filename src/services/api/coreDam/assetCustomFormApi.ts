@@ -3,11 +3,8 @@ import { apiFetchOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import type { DamConfigAssetCustomFormElement } from '@/types/coreDam/DamConfigAssetCustomForm'
+import type { DamConfigAssetCustomFormElementTemp } from '@/types/coreDam/DamConfigAssetCustomForm'
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
-import type {
-  DamConfigAssetCustomFormElementTemp
-} from '@/types/coreDam/DamConfigAssetCustomForm'
 
 const END_POINT = '/adm/v1/asset-custom-form'
 const ENTITY = 'assetCustomForm'
