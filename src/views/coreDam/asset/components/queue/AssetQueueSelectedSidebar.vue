@@ -25,10 +25,10 @@ const panels = ref<Array<string>>(['general'])
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const fillEmptyField = (data: { assetType: AssetType; elementKey: string; value: any }) => {
+const fillEmptyField = (data: { assetType: AssetType; elementProperty: string; value: any }) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data)
 }
-const replaceField = (data: { assetType: AssetType; elementKey: string; value: any }) => {
+const replaceField = (data: { assetType: AssetType; elementProperty: string; value: any }) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data, true)
 }
 const fillEmptyKeywords = () => {
@@ -44,45 +44,45 @@ const replaceAuthors = () => {
   uploadQueuesStore.queueItemsReplaceEmptyAuthors(props.queueId, massOperationsAuthors.value, true)
 }
 const fillAll = (forceReplace = false) => {
-  for (const [elementKey, value] of Object.entries(massOperationsData.value.image)) {
+  for (const [elementProperty, value] of Object.entries(massOperationsData.value.image)) {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
         assetType: AssetType.Image,
-        elementKey,
+        elementProperty,
         value,
       },
       forceReplace
     )
   }
-  for (const [elementKey, value] of Object.entries(massOperationsData.value.video)) {
+  for (const [elementProperty, value] of Object.entries(massOperationsData.value.video)) {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
         assetType: AssetType.Video,
-        elementKey,
+        elementProperty,
         value,
       },
       forceReplace
     )
   }
-  for (const [elementKey, value] of Object.entries(massOperationsData.value.audio)) {
+  for (const [elementProperty, value] of Object.entries(massOperationsData.value.audio)) {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
         assetType: AssetType.Audio,
-        elementKey,
+        elementProperty,
         value,
       },
       forceReplace
     )
   }
-  for (const [elementKey, value] of Object.entries(massOperationsData.value.document)) {
+  for (const [elementProperty, value] of Object.entries(massOperationsData.value.document)) {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
         assetType: AssetType.Document,
-        elementKey,
+        elementProperty,
         value,
       },
       forceReplace
