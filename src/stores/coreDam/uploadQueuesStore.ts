@@ -480,7 +480,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       for (let i = 0; i < items.length; i++) {
         const item = items[i]
         if (item.assetType !== data.assetType) continue
-        if (forceReplace || isUndefined(item.customData[data.elementProperty]) || item.customData[data.elementProperty] === '') {
+        if (
+          forceReplace ||
+          isUndefined(item.customData[data.elementProperty]) ||
+          item.customData[data.elementProperty] === ''
+        ) {
           item.customData[data.elementProperty] = data.value
         }
       }
