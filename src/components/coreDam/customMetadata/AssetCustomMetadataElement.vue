@@ -11,7 +11,7 @@ const props = withDefaults(
   defineProps<{
     modelValue: any
     config: DamConfigAssetCustomFormElement
-    elementKey: string
+    elementProperty: string
     validationScope?: ValidationScope
   }>(),
   {
@@ -19,7 +19,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: { key: string; value: any }): void
+  (e: 'update:modelValue', data: { property: string; value: any }): void
   (e: 'blur', data: any): void
 }>()
 
@@ -31,7 +31,7 @@ const fixValue = (value: any) => {
 }
 
 const updateModelValue = (value: any) => {
-  emit('update:modelValue', { key: props.elementKey, value: fixValue(value) })
+  emit('update:modelValue', { property: props.elementProperty, value: fixValue(value) })
 }
 
 const modelValueComputed = computed(() => {

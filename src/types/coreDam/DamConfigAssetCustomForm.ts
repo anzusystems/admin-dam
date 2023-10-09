@@ -20,7 +20,16 @@ export interface DamConfigAssetCustomFormAttributes {
 
 export interface DamConfigAssetCustomFormElement extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
-  key: string
+  property: string
+  name: string
+  position: number
+  attributes: DamConfigAssetCustomFormAttributes
+}
+
+export interface DamConfigAssetCustomFormElementTemp extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
+  id: DocId
+  key?: string
+  property?: string
   name: string
   position: number
   attributes: DamConfigAssetCustomFormAttributes
