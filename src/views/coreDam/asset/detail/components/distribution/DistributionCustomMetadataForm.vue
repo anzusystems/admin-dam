@@ -19,9 +19,9 @@ const emit = defineEmits<{
   (e: 'anyChange'): void
 }>()
 
-const updateModelValue = (data: { key: string; value: any }) => {
+const updateModelValue = (data: { property: string; value: any }) => {
   const updated = {} as { [key: string]: any }
-  updated[data.key] = data.value
+  updated[data.property] = data.value
   emit('update:modelValue', { ...props.modelValue, ...updated })
   emit('anyChange')
 }
@@ -42,8 +42,8 @@ const elements = computed(() => {
       <VCol>
         <AssetCustomMetadataElement
           :config="element"
-          :element-key="element.key"
-          :model-value="modelValue[element.key]"
+          :element-property="element.property"
+          :model-value="modelValue[element.property]"
           :validation-scope="AssetMetadataValidationScopeSymbol"
           @update:model-value="updateModelValue"
         />

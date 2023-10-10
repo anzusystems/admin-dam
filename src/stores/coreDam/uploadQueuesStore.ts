@@ -8,7 +8,7 @@ import type { UploadQueue, UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import { QueueItemStatus, QueueItemType } from '@/types/coreDam/UploadQueue'
 import type { AssetFileNullable } from '@/types/coreDam/File'
 import { LinkType } from '@/types/coreDam/File'
-import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
+import type { AssetDetailItemDto, AssetSearchListItemDto } from '@/types/coreDam/Asset'
 import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import { getAssetTypeByMimeType } from '@/services/upload/mimeTypeService'
 import { AssetType } from '@/model/coreDam/valueObject/AssetType'
@@ -25,7 +25,6 @@ import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAutho
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
 import { fileTypeFix } from '@/services/fileType'
 
 interface State {
@@ -474,15 +473,19 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
     queueItemsReplaceEmptyCustomDataValue(
       queueId: string,
-      data: { assetType: AssetType; elementKey: string; value: any },
+      data: { assetType: AssetType; elementProperty: string; value: any },
       forceReplace = false
     ) {
       const items = this.queues[queueId].items
       for (let i = 0; i < items.length; i++) {
         const item = items[i]
         if (item.assetType !== data.assetType) continue
-        if (forceReplace || isUndefined(item.customData[data.elementKey]) || item.customData[data.elementKey] === '') {
-          item.customData[data.elementKey] = data.value
+        if (
+          forceReplace ||
+          isUndefined(item.customData[data.elementProperty]) ||
+          item.customData[data.elementProperty] === ''
+        ) {
+          item.customData[data.elementProperty] = data.value
         }
       }
     },
