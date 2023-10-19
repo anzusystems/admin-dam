@@ -11,6 +11,7 @@ import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
+import { useDisplay } from 'vuetify'
 
 const { t } = useI18n()
 
@@ -37,7 +38,8 @@ watch(queueTotalCount, (newValue, oldValue) => {
   }
 })
 
-const massOperations = ref(true)
+const { mobile } = useDisplay()
+const massOperations = ref(!mobile.value)
 
 const list = computed(() => {
   return uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL)

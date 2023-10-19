@@ -1,0 +1,9 @@
+{
+  "model": {
+    "videoAttributes": {
+      "codecName": "Codec",
+      "duration": "Duration",
+      "bitrate": "Bitrate"
+    }
+  }
+}

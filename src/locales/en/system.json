@@ -49,6 +49,7 @@
       "assets": "Assets"
     },
     "podcasts": "Podcasts",
+    "videoShows": "Video shows",
     "extSystemLicenceSwitch": {
       "filters": "Filters",
       "filter": {
@@ -64,7 +65,8 @@
       "title": "Switch DAM ext system and asset licence",
       "description": "Important: Please finish all work first, any progress will be lost!",
       "confirm": "Confirm and reload admin",
-      "changeToLicenceId": "Change to licence ID"
+      "changeToLicenceId": "Change to licence ID",
+      "changeLicence": "Change licence: {currentLicence}"
     }
   },
   "settings": {

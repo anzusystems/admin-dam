@@ -9,6 +9,7 @@
     "text": "Text",
     "type": "Type",
     "inPodcast": "In podcast",
+    "keywordIds": "Keyword ids",
     "fromRss": "From RSS",
     "distributedInServices": "Distributed in services",
     "slotNames": "Slot names",

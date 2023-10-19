@@ -128,8 +128,10 @@ onUnmounted(() => {
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
     </template>
-    <template #main-bar-left>
+    <template #main-bar-middle>
       <ExternalProviderAssetToolbarSearch />
+    </template>
+    <template #main-bar-right>
       <AssetUpload
         variant="button"
         :button-text="t('system.mainBar.upload')"
