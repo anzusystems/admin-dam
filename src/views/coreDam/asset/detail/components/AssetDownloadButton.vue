@@ -67,8 +67,8 @@ const onCancel = () => {
     icon
     size="small"
     variant="text"
-    @click.stop="onClick"
     data-cy="button-download"
+    @click.stop="onClick"
   >
     <VIcon icon="mdi-download" />
     <VTooltip

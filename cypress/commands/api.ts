@@ -25,7 +25,7 @@ Cypress.Commands.add('api_getFileID', (idx?: number = 0, timeout?: number) => {
   cy.intercept({
     method: 'GET',
     url: CORE_DAM_ASSET('*'),
-    times: 1
+    times: 1,
   }).as(`uploadApi${idx}`)
   cy.wait(`@uploadApi${idx}`, { timeout: timeout | 60000 }).then((data) => {
     return cy.wrap(data.response.body.id)
@@ -58,18 +58,17 @@ Cypress.Commands.add('api_waitPageLoad', (pagePart: string = 'main', idLicence?:
       url = `http://core-dam.sme.localhost/api/adm/v1/asset/licence/${idLicence}/search?*`
       break
     case 'asset-edit':
-      url = `http://core-dam.sme.localhost/api/adm/v1/user?*`
+      url = 'http://core-dam.sme.localhost/api/adm/v1/user?*'
       break
     case 'licence-unknown':
-      url = `http://core-dam.sme.localhost/api/adm/v1/configuration/ext-system/*`
+      url = 'http://core-dam.sme.localhost/api/adm/v1/configuration/ext-system/*'
       break
     default:
       throw new Error(`${pagePart} is unknown param`)
   }
   cy.intercept('GET', url)
     .as('loadPage')
-  cy.wait('@loadPage', {timeout: 30000})
+  cy.wait('@loadPage', { timeout: 30000 })
 })
-
 
 export {}

@@ -21,7 +21,8 @@ Cypress.Commands.add('deleteFile', (fileID: Array<string>) => {
     })
   })
 })
-Cypress.Commands.add('verifyFileType', (fileID: string, fileGroup: 'image' | 'audio' | 'video' | 'document', fileType: string) => {
+Cypress.Commands.add('verifyFileType',
+  (fileID: string, fileGroup: 'image' | 'audio' | 'video' | 'document', fileType: string) => {
   const getFileType = (fileType: string): string => {
     if (fileType.includes('mp3')) return 'mpeg'
     else if (fileType.includes('mov')) return 'quicktime'

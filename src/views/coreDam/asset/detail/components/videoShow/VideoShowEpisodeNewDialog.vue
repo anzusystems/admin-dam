@@ -142,7 +142,10 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="closeDialog(false)" data-cy="button-cancel">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="closeDialog(false)"
+        >
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

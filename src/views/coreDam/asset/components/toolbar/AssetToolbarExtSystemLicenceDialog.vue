@@ -171,7 +171,10 @@ onMounted(async () => {
     :width="500"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onCancel" data-cy="button-close">
+      <ADialogToolbar
+        data-cy="button-close"
+        @on-cancel="onCancel"
+      >
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">

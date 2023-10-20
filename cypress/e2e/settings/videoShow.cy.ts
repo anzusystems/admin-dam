@@ -46,6 +46,7 @@ describe(`Test video shows function, Env: ${CY.cfg}`,{ tags: '@videoShow', env: 
   it('Create episode', () =>{
     cy.visit(`/video-show/${VIDEO_SHOW_ID}`)
     cy.getCy('button-create').click()
+    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('episode-title').find('input').clear().type(`${EPISODE_TITLE}-edit`)
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')

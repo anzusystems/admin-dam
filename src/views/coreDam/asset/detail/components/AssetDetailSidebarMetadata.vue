@@ -83,9 +83,9 @@ const onDelete = async () => {
       <ABtnPrimary
         type="submit"
         class="ml-2"
+        data-cy="button-save"
         :loading="saveButtonLoading"
         @click.stop="onSave"
-        data-cy="button-save"
       >
         {{ t('common.button.save') }}
       </ABtnPrimary>

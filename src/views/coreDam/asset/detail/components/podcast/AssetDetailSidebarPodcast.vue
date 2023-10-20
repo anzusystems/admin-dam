@@ -67,8 +67,9 @@ onMounted(async () => {
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <ABtnPrimary
+      data-cy="button-add-new-podcast-episode"
       @click.stop="addNew"
-      data-cy="button-add-new-podcast-episode">
+    >
       {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>

@@ -113,7 +113,7 @@ Cypress.Commands.add('failOnUncaughtException', (option) => {
 })
 
 Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, FILE_ID: string[])=>{
-  cy.exec( '[ -f cypress/fixtures/'+path+' ] && echo "file exists"', {failOnNonZeroExit: false} )
+  cy.exec( '[ -f cypress/fixtures/'+path+' ] && echo "file exists"', { failOnNonZeroExit: false } )
     .then( (res) => {
       if( res.stdout != 'file exists' ) {
         cy.downloadFile(`https://storage.googleapis.com/anzu-e2e-test-data-devel-bel/${path}`,
@@ -128,6 +128,5 @@ Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, FILE_ID:
       }
   })
 })
-
 
 export {}

@@ -32,7 +32,7 @@ const props = withDefaults(
     dataCy?: string
   }>(),
   {
-    dataCy: undefined
+    dataCy: undefined,
   }
 )
 
@@ -237,7 +237,10 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           size="small"
           class="mx-1"
         >
-          <VIcon icon="mdi-dots-horizontal" data-cy="button-slot-actions"/>
+          <VIcon
+            icon="mdi-dots-horizontal"
+            data-cy="button-slot-actions"
+          />
           <VMenu activator="parent">
             <VCard min-width="300">
               <VList>

@@ -33,7 +33,7 @@ declare global {
 }
 
 Cypress.Commands.add('duplicateShouldExist', (value: boolean) => {
-  cy.get('.dam-upload-queue--list', {timeout: 20000})
+  cy.get('.dam-upload-queue--list', { timeout: 20000 })
     .find('[data-cy="icon-duplicate"]')
     .should(($element)=>{
       value ? expect($element).to.exist : expect($element).to.not.exist
@@ -64,6 +64,5 @@ Cypress.Commands.add('finishUpload', () => {
   cy.getCy('button-add-description').should('be.visible').click()
   cy.getCy('button-close').should('be.visible').click()
 })
-
 
 export {}

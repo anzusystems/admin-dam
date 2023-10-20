@@ -7,7 +7,7 @@ import {
   ASSET_DESCRIPTION,
   ALERT_CREATE, RAND_NUM
 } from '../../utils/common'
-let ASSET_ID: Array<string> = []
+const ASSET_ID: Array<string> = []
 
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
   { tags: '@assetAudioToPodcast' }, () => {
@@ -17,10 +17,12 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
     it('Add audio asset to podcast episode', () => {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad()
-      cy.get(`[data-cy="custom-field-title"] textarea`)
-        .first().clear({force: true}).type(`${ASSET_TITLE}`)
-      cy.get(`[data-cy="custom-field-description"] textarea`)
-        .first().clear({force: true}).type(`${ASSET_DESCRIPTION}`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
+      cy.get('[data-cy="custom-field-title"] textarea')
+        .first().clear({ force: true }).type(`${ASSET_TITLE}`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
+      cy.get('[data-cy="custom-field-description"] textarea')
+        .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
       cy.getCy('button-save').should('be.visible').click()
       cy.alertMessage(ALERT_UPDATE)
       cy.getCy('button-podcast').should('be.visible').click()
@@ -29,9 +31,13 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(500)
       cy.get('.v-list-item').first().click()
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-title-podcast').clear().type(`${ASSET_TITLE}-edit`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-description-podcast').clear().type(`${ASSET_DESCRIPTION}-edit`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-season-num-podcast').clear().type( `${RAND_NUM}`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-episode-num-podcast').clear().type(`${RAND_NUM}`)
       cy.getCy('button-add').should('be.visible').click()
       cy.alertMessage(ALERT_CREATE)

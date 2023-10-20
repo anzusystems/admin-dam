@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { CY } from '../../utils/common'
-let ASSET_ID: Array<string> = []
+const ASSET_ID: Array<string> = []
 
 describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env: { visitBaseUrl: false } }, () => {
   it('Prepare Test Data', () => {
@@ -47,14 +47,14 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.get('.v-list').eq(1).click()
     cy.getCyVisibleClick('button-unset')
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
         cy.contains('Súbor je súkromný')
         cy.contains('Nastaviť ako verejné')
         cy.contains('premium')
         cy.contains('Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
       cy.contains('Súbor je súkromný')
       cy.contains('Nastaviť ako verejné')
       cy.contains('premium')
@@ -62,14 +62,14 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     })
     cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').click()
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
       cy.contains('Súbor je súkromný')
       cy.contains('Nastaviť ako verejné')
       cy.contains('premium')
       cy.contains('Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
       cy.contains('Súbor je súkromný')
       cy.contains('Nastaviť ako verejné')
       cy.contains('premium')
@@ -78,14 +78,14 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.getCyVisibleClick('button-podcast')
     cy.getCyVisibleClick('button-slots')
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
       cy.contains('Súbor je súkromný')
       cy.contains('Nastaviť ako verejné')
       cy.contains('free')
       cy.contains('Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
       cy.contains('Súbor je súkromný')
       cy.contains('Nastaviť ako verejné')
       cy.contains('premium')
@@ -109,7 +109,7 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
       expect(text).not.to.include('Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
+      .invoke('text').then(()=>{
       cy.contains('Súbor je súkromný')
       cy.contains('Nastaviť ako verejné')
       cy.contains('premium')
@@ -123,12 +123,12 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.get('input[type="file"]', { timeout: 10000 })
       .first()
       .selectFile(
-        { contents: `cypress/fixtures/audio/sample2.mp3` },
+        { contents: 'cypress/fixtures/audio/sample2.mp3' },
         { waitForAnimations: true, force: true, action: 'drag-drop' }
       )
     cy.intercept('GET', `http://core-dam.sme.localhost/api/adm/v1/asset-slot/asset/${ASSET_ID}?*`)
-      .as(`uploadApi`)
-    cy.wait(`@uploadApi`, { timeout: 30000 })
+      .as('uploadApi')
+    cy.wait('@uploadApi', { timeout: 30000 })
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
         .invoke('text').then((text)=>{
         cy.contains('free')
@@ -145,7 +145,7 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.get('button.v-btn:contains("Nastaviť ako verejné")').eq(1).click()
     cy.getCy('button-confirm').should('be.visible').click()
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-        .invoke('text').then((text)=>{
+        .invoke('text').then(()=>{
         cy.contains('Súbor je verejný')
         cy.contains('Nastaviť ako súkromné')
         cy.contains('premium')
