@@ -54,6 +54,14 @@ declare global {
        * @param option - true or false
        */
       failOnUncaughtException(option: boolean): Chainable<any>
+      /**
+       * Download needed data from cloud to project dir if not already exists
+       * Uploads to assets and returns id
+       * @param path - file name, dataType and format - (audio/sample.mp3)
+       * @param withUpload - if true - uploads file on server, saves ID
+       * @param FILE_ID - Array where to file id will be saved
+       */
+      prepareData(path: string, withUpload: boolean, FILE_ID?: string[]): Chainable<any>
     }
   }
 }
@@ -103,5 +111,23 @@ Cypress.Commands.add('failOnUncaughtException', (option) => {
     return option
   })
 })
+
+Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, FILE_ID: string[])=>{
+  cy.exec( '[ -f cypress/fixtures/'+path+' ] && echo "file exists"', {failOnNonZeroExit: false} )
+    .then( (res) => {
+      if( res.stdout != 'file exists' ) {
+        cy.downloadFile(`https://storage.googleapis.com/anzu-e2e-test-data-devel-bel/${path}`,
+          `../fixtures/${path.split('/')[0]}`, `${path.split('/')[1]}`)
+      }
+      if (withUpload == true){
+        cy.uploadFile(`${path}`, 'select')
+        cy.api_getFileID()
+          .then((responseID) => {
+            FILE_ID.push(responseID)
+          })
+      }
+  })
+})
+
 
 export {}

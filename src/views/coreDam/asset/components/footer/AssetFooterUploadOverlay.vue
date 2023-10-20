@@ -49,6 +49,7 @@ const isUploading = computed(() => {
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar
         class="w-100"
+        data-cy="upload-overlay-title"
         :color="toolbarColor"
         density="compact"
         :height="48"
@@ -137,6 +138,7 @@ const isUploading = computed(() => {
             v-show="showFullUpload"
             color="primary"
             variant="flat"
+            data-cy="button-add-description"
             :height="26"
             class="mr-2"
             @click.stop="setFullUpload"

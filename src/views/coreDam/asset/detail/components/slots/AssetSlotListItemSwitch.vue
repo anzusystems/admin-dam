@@ -9,8 +9,11 @@ const props = withDefaults(
   defineProps<{
     item: AssetSlot | null
     fileTitle: string
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'switchSlot', targetName: string): void
@@ -51,6 +54,7 @@ const onSwitch = () => {
 <template>
   <VListItem
     :title="t('coreDam.asset.slots.actions.switchSlots')"
+    data-cy="button-slot-switch"
     @click.stop="openDialog"
   />
   <VDialog
@@ -87,6 +91,7 @@ const onSwitch = () => {
           <VSelect
             v-model="targetSlot"
             :label="t('coreDam.asset.slots.switch.to')"
+            data-cy="button-choose-slot"
             :items="targetOptions"
           />
         </div>

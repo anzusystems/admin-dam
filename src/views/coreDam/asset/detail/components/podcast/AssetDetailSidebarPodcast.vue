@@ -15,9 +15,12 @@ import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPod
 const props = withDefaults(
   defineProps<{
     isActive: boolean
+    dataCy?: string
     assetId: DocId
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 
 const { t } = useI18n()
@@ -63,7 +66,9 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary @click.stop="addNew">
+    <ABtnPrimary
+      @click.stop="addNew"
+      data-cy="button-add-new-podcast-episode">
       {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>

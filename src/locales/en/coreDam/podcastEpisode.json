@@ -26,6 +26,9 @@
   "button": {
     "create": "Add Episode"
   },
+  "meta": {
+    "create": "Add Episode"
+  },
   "common": {
     "addAssetToNewPodcastEpisode": "Add asset to new podcast episode",
     "noEntries": "Nothing to show"

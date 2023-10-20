@@ -2,7 +2,6 @@
 
 import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/common'
 
-//let CATEGORY_ID = ''
 describe(
   `Test distribution category function, Env: ${CY.cfg}`,
   { tags: '@distributionCategory', env: { visitBaseUrl: false } },
@@ -33,13 +32,11 @@ describe(
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(text)
           cy.urlContains('/distribution-category')
-          //CATEGORY_ID = text
         })
     })
     it('Edit distribution category', () => {
       cy.visit('distribution-category')
-      //cy.getCy('filter-string').first().type(`${CATEGORY_ID}{ENTER}`)  //todo ctrl-v(paste) in ID-filed is not working
-      cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`) //todo until bug is fixed
+      cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')

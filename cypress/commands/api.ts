@@ -7,17 +7,27 @@ declare global {
   namespace Cypress {
     interface Chainable {
       api_getFile(id: string, failOnStatusCode?: boolean): Chainable<any>
-      api_getFileID(timeout?: number): Chainable<string>
+      api_getFileID(idx?: number = 0, timeout?: number): Chainable<string>
       api_getFileType(id: string): Chainable<string>
       api_deleteFile(id: string): Chainable<any>
+      /**
+       * Waits until page is loaded
+       * @param pagePart - type of page that loads. main (asset's page) || asset-edit (asset edit page)
+       * @param idLicence - ID of licence, default - CMS licence
+       */
+      api_waitPageLoad(pagePart: string = 'main', idLicence?: string = '100000'): Chainable<any>
     }
   }
 }
 
 const CORE_DAM_ASSET = (id?: string) => `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/${id}`
-Cypress.Commands.add('api_getFileID', (timeout?: number) => {
-  cy.intercept('GET', CORE_DAM_ASSET('*')).as('uploadApi')
-  cy.wait('@uploadApi', { timeout: timeout | 10000 }).then((data) => {
+Cypress.Commands.add('api_getFileID', (idx?: number = 0, timeout?: number) => {
+  cy.intercept({
+    method: 'GET',
+    url: CORE_DAM_ASSET('*'),
+    times: 1
+  }).as(`uploadApi${idx}`)
+  cy.wait(`@uploadApi${idx}`, { timeout: timeout | 60000 }).then((data) => {
     return cy.wrap(data.response.body.id)
   })
 })
@@ -40,5 +50,26 @@ Cypress.Commands.add('api_getFileType', (id: string) => {
     return cy.wrap(response.body.mainFile.fileAttributes.mimeType)
   })
 })
+
+Cypress.Commands.add('api_waitPageLoad', (pagePart: string = 'main', idLicence?: string = '100000') => {
+  let url = ''
+  switch (pagePart){
+    case 'main':
+      url = `http://core-dam.sme.localhost/api/adm/v1/asset/licence/${idLicence}/search?*`
+      break
+    case 'asset-edit':
+      url = `http://core-dam.sme.localhost/api/adm/v1/user?*`
+      break
+    case 'licence-unknown':
+      url = `http://core-dam.sme.localhost/api/adm/v1/configuration/ext-system/*`
+      break
+    default:
+      throw new Error(`${pagePart} is unknown param`)
+  }
+  cy.intercept('GET', url)
+    .as('loadPage')
+  cy.wait('@loadPage', {timeout: 30000})
+})
+
 
 export {}

@@ -228,6 +228,7 @@ const onSaveAndClose = async () => {
             </VTooltip>
           </VBtn>
           <AssetFooterUploadButtonStop
+            data-cy="button-close"
             :button-size="36"
             :is-uploading="isUploading"
             @confirm="onStopConfirm"

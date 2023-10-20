@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+require('cypress-downloadfile/lib/downloadFileCommand')
 
 // commands
 import '../commands/admin'
@@ -6,6 +7,7 @@ import '../commands/auth'
 import '../commands/common'
 import '../commands/api'
 import '../commands/upload'
+import '../commands/license'
 
 // plugins
 import '@cypress/grep'

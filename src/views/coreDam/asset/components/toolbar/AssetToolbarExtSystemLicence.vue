@@ -36,6 +36,7 @@ const openDialog = () => {
     size="small"
     class="mx-1"
     rounded="pill"
+    data-cy="button-manage-licence"
     :height="34"
     @click.stop="openDialog"
   >

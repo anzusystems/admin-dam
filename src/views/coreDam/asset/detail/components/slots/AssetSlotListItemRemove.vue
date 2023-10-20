@@ -9,8 +9,11 @@ const props = withDefaults(
   defineProps<{
     item: AssetSlot | null
     fileTitle: string
+    dataCy: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'unsetSlot'): void
@@ -50,6 +53,7 @@ const onRemove = () => {
 <template>
   <VListItem
     :title="t('coreDam.asset.slots.actions.remove')"
+    data-cy="button-slot-remove"
     @click.stop="openDialog"
   />
   <VDialog

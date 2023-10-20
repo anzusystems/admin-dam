@@ -32,7 +32,7 @@ const props = withDefaults(
     disabled: undefined,
     multiple: false,
     clearable: false,
-    dataCy: '',
+    dataCy: undefined,
     validationScope: undefined,
   }
 )
@@ -149,6 +149,7 @@ const itemSlotIsSelected = (item: DocId) => {
     <div>
       <KeywordCreateButton
         variant="icon"
+        data-cy="add-keyword"
         :initial-value="addNewKeywordText"
         disable-redirect
         :disabled="disabled"

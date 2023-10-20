@@ -9,8 +9,11 @@ const props = withDefaults(
   defineProps<{
     item: AssetSlot | null
     fileTitle: string
+    dataCy: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'duplicateSlot', targetName: string): void
@@ -51,6 +54,7 @@ const onDuplicate = () => {
 <template>
   <VListItem
     :title="t('coreDam.asset.slots.actions.duplicate')"
+    data-cy="button-slot-duplicate"
     @click.stop="openDialog"
   />
   <VDialog
@@ -86,6 +90,7 @@ const onDuplicate = () => {
         >
           <VSelect
             v-model="targetSlot"
+            data-cy="button-choose-slot"
             :label="t('coreDam.asset.slots.duplicate.to')"
             :items="targetOptions"
           />

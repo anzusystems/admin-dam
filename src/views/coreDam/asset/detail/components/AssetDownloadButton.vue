@@ -12,8 +12,11 @@ import { useI18n } from 'vue-i18n'
 const props = withDefaults(
   defineProps<{
     assetType: AssetType
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 
 const { t } = useI18n()
@@ -65,6 +68,7 @@ const onCancel = () => {
     size="small"
     variant="text"
     @click.stop="onClick"
+    data-cy="button-download"
   >
     <VIcon icon="mdi-download" />
     <VTooltip
@@ -104,6 +108,7 @@ const onCancel = () => {
             color="primary"
             prepend-icon="mdi-download"
             :href="link"
+            data-cy="button-download-file"
           >
             {{ t('system.download.downloadOriginalFile') }}
           </VBtn>

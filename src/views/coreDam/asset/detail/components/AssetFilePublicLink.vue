@@ -4,8 +4,11 @@ import { useI18n } from 'vue-i18n'
 withDefaults(
   defineProps<{
     previewLink: string | null
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'openMakePublicDialog'): void
@@ -36,6 +39,7 @@ const { t } = useI18n()
       <VBtn
         variant="text"
         size="small"
+        data-cy="button-open-link"
         :href="previewLink"
         target="_blank"
         rel="noopener noreferrer"

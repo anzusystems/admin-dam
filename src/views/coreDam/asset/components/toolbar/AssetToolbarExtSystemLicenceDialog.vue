@@ -30,8 +30,11 @@ const props = withDefaults(
     modelValue: boolean
     extSystemName: string
     licenceName: string
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: boolean): void
@@ -168,7 +171,7 @@ onMounted(async () => {
     :width="500"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @on-cancel="onCancel" data-cy="button-close">
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
       <VCardText v-if="currentUserIsSuperAdmin">
@@ -195,6 +198,7 @@ onMounted(async () => {
                 v-model="selectedExtSystemSearch"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
                 hide-details
+                data-cy="field-name-ext-sys"
                 @update:model-value="onSelectedExtSystemSearchChange"
               />
             </VCol>
@@ -202,6 +206,7 @@ onMounted(async () => {
               <VTextField
                 v-model="selectedExtSystem"
                 hide-details
+                data-cy="field-id-ext-sys"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemId')"
               />
             </VCol>
@@ -213,6 +218,7 @@ onMounted(async () => {
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
                 :ext-system-id="selectedExtSystem"
                 hide-details
+                data-cy="field-name-licence"
                 @update:model-value="onSelectedLicenceSearchChange"
               />
             </VCol>
@@ -222,6 +228,7 @@ onMounted(async () => {
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
                 :ext-system-id="selectedExtSystem"
                 hide-details
+                data-cy="field-id-licence"
                 @update:model-value="onSelectedLicenceSearchChange"
               />
             </VCol>
@@ -233,6 +240,7 @@ onMounted(async () => {
             <div class="w-100">
               <VTextField
                 v-model="selectedLicence"
+                data-cy="field-change-on-id-licence"
                 hide-details
               />
             </div>

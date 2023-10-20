@@ -27,6 +27,7 @@ const props = withDefaults(
     isAudio: boolean
     isImage: boolean
     isDocument: boolean
+    dataCy?: string
     assetStatus: AssetStatus
     assetType: AssetType
     assetMainFileStatus?: AssetFileProcessStatus | undefined
@@ -35,6 +36,7 @@ const props = withDefaults(
   {
     assetMainFileStatus: undefined,
     assetMainFileFailReason: undefined,
+    dataCy: undefined,
   }
 )
 const emit = defineEmits<{
@@ -61,12 +63,16 @@ const typeHasDistributions = computed(() => {
         v-model="activeTab"
         class="sidebar-info__tabs"
       >
-        <VTab :value="AssetDetailTab.Info">
+        <VTab
+          :value="AssetDetailTab.Info"
+          data-cy="button-meta"
+        >
           {{ t('coreDam.asset.detail.tabs.info') }}
         </VTab>
         <VTab
           v-if="isImage"
           :value="AssetDetailTab.ROI"
+          data-cy="button-focus"
         >
           {{ t('coreDam.asset.detail.tabs.roi') }}
         </VTab>
@@ -74,6 +80,7 @@ const typeHasDistributions = computed(() => {
           <VTab
             v-if="typeHasDistributions"
             :value="AssetDetailTab.Distribution"
+            data-cy="button-distribution"
           >
             {{ t('coreDam.asset.detail.tabs.distribution') }}
           </VTab>
@@ -81,21 +88,27 @@ const typeHasDistributions = computed(() => {
         <VTab
           v-if="isAudio"
           :value="AssetDetailTab.Podcast"
+          data-cy="button-podcast"
         >
           {{ t('coreDam.asset.detail.tabs.podcast') }}
         </VTab>
         <VTab
           v-if="isVideo"
           :value="AssetDetailTab.VideoShow"
+          data-cy="button-video-show"
         >
           {{ t('coreDam.asset.detail.tabs.videoShow') }}
         </VTab>
-        <VTab :value="AssetDetailTab.Slots">
+        <VTab
+          :value="AssetDetailTab.Slots"
+          data-cy="button-slots"
+        >
           {{ t('coreDam.asset.detail.tabs.slots') }}
         </VTab>
         <VTab
           v-if="isVideo"
           :value="AssetDetailTab.ImagePreview"
+          data-cy="button-image-preview"
         >
           {{ t('coreDam.asset.detail.tabs.imagePreview') }}
         </VTab>

@@ -29,8 +29,11 @@ const props = withDefaults(
     assetType: AssetType
     totalSlotCount: number
     assetId: DocId
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined
+  }
 )
 
 const emit = defineEmits<{
@@ -234,17 +237,19 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           size="small"
           class="mx-1"
         >
-          <VIcon icon="mdi-dots-horizontal" />
+          <VIcon icon="mdi-dots-horizontal" data-cy="button-slot-actions"/>
           <VMenu activator="parent">
             <VCard min-width="300">
               <VList>
                 <VListItem
                   v-if="clipboardCopyIsSupported"
                   :title="t('coreDam.asset.slots.actions.copyFileId')"
+                  data-cy="button-slot-copy-id"
                   @click.stop="copyFileId"
                 />
                 <VListItem
                   :title="t('coreDam.asset.slots.actions.download')"
+                  data-cy="button-slot-download"
                   @click.stop="downloadFile"
                 />
                 <VListItem

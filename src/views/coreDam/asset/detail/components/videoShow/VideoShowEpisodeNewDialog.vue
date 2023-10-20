@@ -18,9 +18,12 @@ import VideoShowRemoteAutocomplete from '@/views/coreDam/videoShow/components/Vi
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
+    dataCy?: string
     assetId: DocId
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: boolean): void
@@ -112,6 +115,7 @@ onMounted(async () => {
             <VideoShowRemoteAutocomplete
               v-model="videoShowEpisode.videoShow"
               required
+              data-cy="field-choose-video-show"
               :label="t('coreDam.videoShowEpisode.model.videoShow')"
             />
           </ARow>
@@ -128,6 +132,7 @@ onMounted(async () => {
             <ARow>
               <AFormTextarea
                 v-model="videoShowEpisode.texts.title"
+                data-cy="field-title-episode"
                 :label="t('coreDam.videoShowEpisode.model.texts.title')"
                 :v="v$.videoShowEpisode.texts.title"
               />
@@ -137,10 +142,11 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="closeDialog(false)">
+        <ABtnTertiary @click.stop="closeDialog(false)" data-cy="button-cancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary
+          data-cy="button-add"
           :loading="saving"
           @click.stop="submit"
         >
