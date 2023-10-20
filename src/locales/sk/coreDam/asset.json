@@ -149,7 +149,8 @@
         "dominantColor": "Farba",
         "width": "Šírka",
         "height": "Výška",
-        "ratio": "Pomer strán"
+        "ratio": "Pomer strán",
+        "animated": "Animované"
       }
     },
     "roi": {

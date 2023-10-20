@@ -148,7 +148,8 @@
         "dominantColor": "Color",
         "width": "Width",
         "height": "Height",
-        "ratio": "Ratio"
+        "ratio": "Ratio",
+        "animated": "Animated"
       }
     },
     "roi": {
