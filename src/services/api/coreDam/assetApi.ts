@@ -173,7 +173,7 @@ const handleMetadataValidationError = (error: any, assetType: AssetType) => {
   const items = [] as ValidationError[]
   for (const [key, values] of Object.entries(data.fields)) {
     const field = key.split('.').pop()
-    const found = damConfigAssetCustomFormElements[assetType].find((item) => item.key === field)
+    const found = damConfigAssetCustomFormElements[assetType].find((item) => item.property === field)
     if (found) {
       items.push({
         field: found.name,
