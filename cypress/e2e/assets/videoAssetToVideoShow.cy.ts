@@ -31,7 +31,7 @@ describe(`Test add video asset to video show episode  function, Env: ${CY.cfg}`,
       cy.getCy('button-add').should('be.visible').click()
       cy.alertMessage(ALERT_CREATE)
     })
-    it('Delete podcast', ()=>{
+    it('Delete video-show episode', ()=>{
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-video-show').should('be.visible').click()

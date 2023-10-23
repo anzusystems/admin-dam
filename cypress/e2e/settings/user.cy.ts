@@ -29,22 +29,20 @@ describe(`Test user function, Env: ${CY.cfg}`, { tags: '@user', env: { visitBase
       cy.getCy('user-asset-licences').type(`${licence}`)
       cy.contains('.v-list-item-title', `${licence}`).click()
     })
-    cy.get('i[aria-label="Zatvoriť"]').click()
+    cy.get('body').type('{esc}')
     cy.getCy('user-admin-to-ext-systems').click()
     EXTERNAL_SYS.forEach((admin) => {
       cy.contains('.v-list-item-title', `${admin}`).click()
     })
-    cy.get('i[aria-label="Zatvoriť"]').click()
+    cy.get('body').type('{esc}')
     cy.getCy('user-allowed-asset-external-providers').click()
     cy.contains('.v-list-item-title', `${EXTERNAL_PROVIDER}`).click()
-    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true') // until aria-label,
-                                                                                                // aria-title is added
+    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')
     cy.getCy('user-allowed-distribution-services').click()
     DISTRIBUTION_SERVICE.forEach((service) => {
       cy.contains('.v-list-item-title', `${service}`).click()
     })
-    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')  // until aria-label,
-                                                                                                // aria-title is added
+    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)
     cy.getCyVisibleClick('button-close')
@@ -57,17 +55,15 @@ describe(`Test user function, Env: ${CY.cfg}`, { tags: '@user', env: { visitBase
     EXTERNAL_SYS.forEach((admin) => {
       cy.contains('.v-list-item-title', `${admin}`).click()
     })
-    cy.get('i[aria-label="Zatvoriť"]').click()
+    cy.get('body').type('{esc}')
     cy.getCy('user-allowed-asset-external-providers').click()
     cy.contains('.v-list-item-title', `${EXTERNAL_PROVIDER}`).click()
-    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')  // until aria-label,
-                                                                                                // aria-title is added
+    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')
     cy.getCy('user-allowed-distribution-services').click()
     DISTRIBUTION_SERVICE.forEach((service) => {
       cy.contains('.v-list-item-title', `${service}`).click()
     })
-    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')  // until aria-label,
-                                                                                                // aria-title is added
+    cy.get('[aria-expanded="false"]').invoke('attr', 'aria-expanded', 'true')
     cy.getCy('user-asset-licences').click()
     USER_LICENCE.forEach((licence) => {
       cy.getCy('user-asset-licences').type(`${licence}`)

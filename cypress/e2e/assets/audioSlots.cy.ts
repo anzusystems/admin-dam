@@ -154,6 +154,8 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.getCy('button-slot-actions').eq(1).click()
     cy.getCyVisibleClick('button-slot-switch')
     cy.getCyVisibleClick('button-choose-slot')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(3000)
     cy.get('.v-overlay__content > .v-list').should('include.text', 'freebonus')
     cy.get('.v-overlay__content > .v-list > :nth-child(2)').click()
     cy.getCyVisibleClick('button-unset')

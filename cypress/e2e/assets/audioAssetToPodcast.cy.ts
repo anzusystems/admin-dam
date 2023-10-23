@@ -16,7 +16,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
     })
     it('Add audio asset to podcast episode', () => {
       cy.visit(`/asset/${ASSET_ID}`)
-      cy.api_waitPageLoad()
+      cy.api_waitPageLoad('asset-edit')
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
@@ -44,7 +44,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
     })
     it('Delete podcast', ()=>{
       cy.visit(`/asset/${ASSET_ID}`)
-      cy.api_waitPageLoad()
+      cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-podcast').should('be.visible').click()
       cy.get('.text-body-2').contains(`${ASSET_TITLE}-edit`).should('exist')
       cy.getCy('button-delete').first().should('be.visible').click()
