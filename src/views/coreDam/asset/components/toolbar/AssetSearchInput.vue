@@ -6,7 +6,7 @@ const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string
+    modelValue: string | null
   }>(),
   {
   }
