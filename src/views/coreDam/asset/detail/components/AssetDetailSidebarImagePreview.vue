@@ -15,8 +15,11 @@ import { useI18n } from 'vue-i18n'
 withDefaults(
   defineProps<{
     isActive: boolean
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 
 const { t } = useI18n()
@@ -91,6 +94,7 @@ onMounted(async () => {
             variant="text"
             class="my-2 mr-2"
             size="small"
+            data-cy="button-from-distribution"
             @click.stop="chooseImagePreviewFromDistributionDialog = true"
           >
             {{ t('system.imagePreview.actions.chooseFromDistribution') }}

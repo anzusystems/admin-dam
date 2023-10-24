@@ -17,9 +17,12 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 withDefaults(
   defineProps<{
     isActive: boolean
+    dataCy?: string
     assetType: AssetType
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'postDelete', data: DocId): void
@@ -80,6 +83,7 @@ const onDelete = async () => {
       <ABtnPrimary
         type="submit"
         class="ml-2"
+        data-cy="button-save"
         :loading="saveButtonLoading"
         @click.stop="onSave"
       >

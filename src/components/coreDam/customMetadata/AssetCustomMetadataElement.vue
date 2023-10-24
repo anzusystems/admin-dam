@@ -103,6 +103,7 @@ const onBlur = () => {
     v-if="config.attributes.type === CustomFormType.String"
     :model-value="modelValue"
     auto-grow
+    :data-cy="'custom-field-' + elementProperty"
     :rows="1"
     :label="config.name"
     :error-messages="errorMessageComputed"
@@ -122,6 +123,7 @@ const onBlur = () => {
     v-else-if="config.attributes.type === CustomFormType.Number"
     :model-value="modelValueComputed"
     type="number"
+    :data-cy="'custom-field-' + elementProperty"
     :label="config.name"
     :error-messages="errorMessageComputed"
     @update:model-value="updateModelValue"
@@ -139,6 +141,7 @@ const onBlur = () => {
     v-else-if="config.attributes.type === CustomFormType.StringArray"
     :model-value="modelValueComputed"
     :label="config.name"
+    :data-cy="'custom-field-' + elementProperty"
     multiple
     chips
     :error-messages="errorMessageComputed"
@@ -157,6 +160,7 @@ const onBlur = () => {
     v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === true"
     :label="config.name"
     :model-value="modelValueComputed"
+    :data-cy="'custom-field-' + elementProperty"
     @update:model-value="updateModelValue"
   />
   <div v-if="config.attributes.type === CustomFormType.Boolean && config.attributes.required === false">

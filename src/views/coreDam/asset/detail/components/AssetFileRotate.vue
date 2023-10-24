@@ -8,8 +8,11 @@ import { useI18n } from 'vue-i18n'
 const props = withDefaults(
   defineProps<{
     imageId: DocId
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'afterRotate'): void
@@ -52,12 +55,14 @@ const { t } = useI18n()
       <ABtnTertiary
         prepend-icon="mdi-rotate-right"
         class="mr-2"
+        data-cy="button-rotate-right"
         @click.stop="rotate(90)"
       >
         {{ t('coreDam.asset.detail.roi.rotate.rotateClockwise') }}
       </ABtnTertiary>
       <ABtnTertiary
         prepend-icon="mdi-rotate-left"
+        data-cy="button-rotate-left"
         @click.stop="rotate(270)"
       >
         {{ t('coreDam.asset.detail.roi.rotate.rotateCounterclockwise') }}

@@ -14,8 +14,11 @@ const props = withDefaults(
   defineProps<{
     assetType: AssetType
     modelValue: { [key: string]: any }
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: any): void
@@ -107,6 +110,7 @@ const enableShowHide = computed(() => {
     variant="text"
     size="small"
     class="my-2"
+    data-cy="button-more-metadata"
     @click="toggleShowAllMetadata"
   >
     <VIcon :icon="showHideButtonIcon" />

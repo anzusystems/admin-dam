@@ -22,9 +22,12 @@ import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/Podcas
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
+    dataCy?: string
     assetId: DocId
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: boolean): void
@@ -121,6 +124,7 @@ onMounted(async () => {
             <PodcastRemoteAutocomplete
               v-model="podcastEpisode.podcast"
               required
+              data-cy="field-choose-podcast"
               :label="t('coreDam.podcastEpisode.model.podcast')"
             />
           </ARow>
@@ -139,6 +143,7 @@ onMounted(async () => {
                 v-model="podcastEpisode.texts.title"
                 :label="t('coreDam.podcastEpisode.model.texts.title')"
                 :v="v$.podcastEpisode.texts.title"
+                data-cy="field-title-podcast"
               />
             </ARow>
             <ARow>
@@ -146,6 +151,7 @@ onMounted(async () => {
                 v-model="podcastEpisode.texts.description"
                 :label="t('coreDam.podcastEpisode.model.texts.description')"
                 :v="v$.podcastEpisode.texts.description"
+                data-cy="field-description-podcast"
               />
             </ARow>
             <ARow>
@@ -155,6 +161,7 @@ onMounted(async () => {
                 :v="v$.podcastEpisode.attributes.seasonNumber"
                 type="number"
                 :step="1"
+                data-cy="field-season-num-podcast"
               />
             </ARow>
             <ARow>
@@ -164,6 +171,7 @@ onMounted(async () => {
                 :v="v$.podcastEpisode.attributes.episodeNumber"
                 type="number"
                 :step="1"
+                data-cy="field-episode-num-podcast"
               />
             </ARow>
           </template>
@@ -171,11 +179,15 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="closeDialog(false)">
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="closeDialog(false)"
+        >
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary
           :loading="saving"
+          data-cy="button-add"
           @click.stop="submit"
         >
           {{ t('common.button.add') }}

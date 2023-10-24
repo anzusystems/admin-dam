@@ -20,9 +20,11 @@ const props = withDefaults(
     assetType: AssetType
     assetId: DocId
     assetMainFileStatus?: AssetFileProcessStatus | undefined
+    dataCy?: string
   }>(),
   {
     assetMainFileStatus: undefined,
+    dataCy: undefined,
   }
 )
 
@@ -61,6 +63,7 @@ onMounted(async () => {
     <AssetDetailSidebarActionsWrapper v-if="isActive">
       <ABtnPrimary
         :disabled="assetMainFileStatus === undefined"
+        data-cy="add-new-distribution"
         @click.stop="addNew"
       >
         {{ t('coreDam.distribution.common.addButton') }}

@@ -39,7 +39,7 @@ const props = withDefaults(
     variant: 'button',
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
-    dataCy: '',
+    dataCy: undefined,
     disabled: undefined,
     validationScope: AuthorCreateValidationScopeSymbol,
   }

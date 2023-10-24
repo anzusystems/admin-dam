@@ -70,6 +70,7 @@ const { remainingTimeShort } = useRemainingTime()
               v-else-if="item.isDuplicate"
               icon="mdi-alert"
               color="warning"
+              data-cy="icon-duplicate"
               :size="16"
             />
             <VIcon

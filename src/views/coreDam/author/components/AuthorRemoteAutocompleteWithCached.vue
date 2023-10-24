@@ -36,7 +36,7 @@ const props = withDefaults(
     multiple: false,
     clearable: false,
     authorConflicts: undefined,
-    dataCy: '',
+    dataCy: undefined,
     validationScope: undefined,
   }
 )
@@ -166,6 +166,7 @@ onMounted(() => {
     <div>
       <AuthorCreateButton
         variant="icon"
+        data-cy="add-author"
         :initial-value="addNewAuthorText"
         disable-redirect
         :disabled="disabled"

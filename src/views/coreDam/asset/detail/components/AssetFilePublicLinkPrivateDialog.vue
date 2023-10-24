@@ -105,7 +105,7 @@ const onConfirm = async () => {
         </ABtnTertiary>
         <ABtnPrimary
           :loading="buttonLoading"
-          data-cy="button-create-podcast"
+          data-cy="button-confirm"
           @click.stop="onConfirm"
         >
           {{ t('common.button.confirm') }}

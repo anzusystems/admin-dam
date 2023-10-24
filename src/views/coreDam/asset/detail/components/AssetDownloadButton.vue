@@ -12,8 +12,11 @@ import { useI18n } from 'vue-i18n'
 const props = withDefaults(
   defineProps<{
     assetType: AssetType
+    dataCy?: string
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 
 const { t } = useI18n()
@@ -64,6 +67,7 @@ const onCancel = () => {
     icon
     size="small"
     variant="text"
+    data-cy="button-download"
     @click.stop="onClick"
   >
     <VIcon icon="mdi-download" />
@@ -104,6 +108,7 @@ const onCancel = () => {
             color="primary"
             prepend-icon="mdi-download"
             :href="link"
+            data-cy="button-download-file"
           >
             {{ t('system.download.downloadOriginalFile') }}
           </VBtn>

@@ -74,6 +74,7 @@ const onAnyMetadataChange = () => {
                   <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
                     :label="t('coreDam.asset.model.keywords')"
+                    data-cy="custom-field-keywords"
                     clearable
                     multiple
                     :required="keywordRequired"
@@ -97,6 +98,7 @@ const onAnyMetadataChange = () => {
                     v-model="asset.authors"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
+                    data-cy="custom-field-authors"
                     clearable
                     multiple
                     :required="authorRequired"

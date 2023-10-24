@@ -35,6 +35,7 @@ const isPodcastActive = computed(() => {
     icon
     size="x-small"
     class="mr-1"
+    data-cy="button-all-types"
     @click.stop="setTypeAndFetch()"
   >
     <VIcon
@@ -52,6 +53,7 @@ const isPodcastActive = computed(() => {
     icon
     size="x-small"
     class="mr-1"
+    data-cy="button-image-types"
     :active="isImageActive"
     :color="isImageActive ? 'secondary' : ''"
     :variant="isImageActive ? 'flat' : 'text'"
@@ -72,6 +74,7 @@ const isPodcastActive = computed(() => {
     icon
     size="x-small"
     class="mr-1"
+    data-cy="button-video-types"
     :active="isVideoActive"
     :color="isVideoActive ? 'secondary' : ''"
     :variant="isVideoActive ? 'flat' : 'text'"
@@ -92,6 +95,7 @@ const isPodcastActive = computed(() => {
     icon
     size="x-small"
     class="mr-1"
+    data-cy="button-audio-types"
     :active="isAudioActive"
     :color="isAudioActive ? 'secondary' : ''"
     :variant="isAudioActive ? 'flat' : 'text'"
@@ -111,6 +115,7 @@ const isPodcastActive = computed(() => {
   <VBtn
     icon
     size="x-small"
+    data-cy="button-document-types"
     :active="isDocumentActive"
     :color="isDocumentActive ? 'secondary' : ''"
     :variant="isDocumentActive ? 'flat' : 'text'"
@@ -130,6 +135,7 @@ const isPodcastActive = computed(() => {
   <VBtn
     icon
     size="x-small"
+    data-cy="button-in-podcast-types"
     :active="isPodcastActive"
     :color="isPodcastActive ? 'secondary' : ''"
     :variant="isPodcastActive ? 'flat' : 'text'"

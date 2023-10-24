@@ -1,5 +1,5 @@
 export const CY = Cypress.env('')
-export const RAND_NUM = `${Cypress._.random(10000, 99999)}`
+export const RAND_NUM = `${Cypress._.random(1000, 9999)}`
 export const LENGUAGE_SK = 'Slovensky'
 export const LENGUAGE_EN = 'English'
 export const THEME_LIGHT = 'Light'
@@ -11,12 +11,17 @@ export const USER_LAST_NAME = `Last${RAND_NUM}`
 export const USER_PASSWORD = `pwd${RAND_NUM}`
 export const USER_LICENCE = ['CMS licence']
 export const EXTERNAL_SYS = ['cms', 'blog', 'tools']
+export const KEYWORDS = ['TestKeyword1', 'TestKeyword2']
+export const AUTHORS = ['TestAuthor1', 'TestAuthor2', 'TestAuthor3']
 export const EXTERNAL_PROVIDER = 'Unsplash'
 export const DISTRIBUTION_SERVICE = ['Youtube CMS', 'Youtube Fičí', 'JwVideo', 'Artemis Video CMS',
   'Artemis Podcast CMS']
 export const PERMISSION_GROUP_TITLE = `TestGroup${RAND_NUM}`
 export const PODCAST_TITLE = `TestPodcast${RAND_NUM}`
 export const EPISODE_TITLE = `TestEpisode${RAND_NUM}`
+export const ASSET_TITLE = `TestAssetTitle${RAND_NUM}`
+export const VIDEO_SHOW_TITLE = `TestVideoShow${RAND_NUM}`
+export const ASSET_DESCRIPTION = `TestDescription${RAND_NUM}`
 export const PERMISSION_GROUP = `TestGroup${RAND_NUM}`
 export const ALERT_CREATE = 'Záznam bol vytvorený.'
 export const ALERT_UPDATE = 'Záznam bol upravený'

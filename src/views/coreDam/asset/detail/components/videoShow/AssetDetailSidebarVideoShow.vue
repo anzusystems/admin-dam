@@ -14,9 +14,12 @@ import { useCachedVideoShows } from '@/views/coreDam/videoShow/composables/cache
 const props = withDefaults(
   defineProps<{
     isActive: boolean
+    dataCy?: string
     assetId: DocId
   }>(),
-  {}
+  {
+    dataCy: undefined,
+  }
 )
 
 const { t } = useI18n()
@@ -57,7 +60,10 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary @click.stop="addNew">
+    <ABtnPrimary
+      data-cy="button-add-new-vs-episode"
+      @click.stop="addNew"
+    >
       {{ t('coreDam.videoShowEpisode.common.addAssetToNewVideoShowEpisode') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
