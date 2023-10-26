@@ -9,6 +9,7 @@
     "text": "Text",
     "type": "Type",
     "inPodcast": "In podcast",
+    "keywordIds": "Keyword ids",
     "fromRss": "From RSS",
     "distributedInServices": "Distributed in services",
     "slotNames": "Slot names",
@@ -147,7 +148,8 @@
         "dominantColor": "Color",
         "width": "Width",
         "height": "Height",
-        "ratio": "Ratio"
+        "ratio": "Ratio",
+        "animated": "Animated"
       }
     },
     "roi": {

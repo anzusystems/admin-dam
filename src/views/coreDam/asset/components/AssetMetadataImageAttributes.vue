@@ -2,6 +2,7 @@
 import ColorBox from '@/components/coreDam/ColorBox.vue'
 import { useI18n } from 'vue-i18n'
 import type { ImageFile } from '@/types/coreDam/File'
+import { ABooleanValue } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
@@ -36,6 +37,12 @@ const { t } = useI18n()
     <VCol>{{ t('coreDam.asset.detail.info.field.ratio') }}</VCol>
     <VCol cols="9">
       {{ file.imageAttributes.ratioWidth }} / {{ file.imageAttributes.ratioHeight }}
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>{{ t('coreDam.asset.detail.info.field.animated') }}</VCol>
+    <VCol cols="9">
+      <ABooleanValue :value="file.imageAttributes.animated" />
     </VCol>
   </VRow>
 </template>

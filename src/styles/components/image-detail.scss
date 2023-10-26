@@ -1,3 +1,5 @@
+@use 'vuetify/lib/styles/settings/_variables.scss' as vars;
+
 $class-name-root: 'dam-image-detail';
 $sidebar-width: 600px;
 $toolbar-height: 50px;
@@ -28,7 +30,14 @@ $bg-sidebar-color-dark: #1a1a1a;
     position: absolute;
     top: 0;
     right: 0;
-    width: $sidebar-width;
+
+    @media #{map-get(vars.$display-breakpoints, 'sm-and-down')} {
+      width: 100%;
+    }
+
+    @media #{map-get(vars.$display-breakpoints, 'md-and-up')} {
+      width: $sidebar-width;
+    }
   }
 
   &__left {
@@ -51,7 +60,13 @@ $bg-sidebar-color-dark: #1a1a1a;
     }
 
     .#{$class-name-root}__left {
-      padding-right: $sidebar-width;
+      @media #{map-get(vars.$display-breakpoints, 'sm-and-down')} {
+        width: 100%;
+      }
+
+      @media #{map-get(vars.$display-breakpoints, 'md-and-up')} {
+        padding-right: $sidebar-width;
+      }
     }
   }
 }

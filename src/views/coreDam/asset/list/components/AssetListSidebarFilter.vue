@@ -15,6 +15,7 @@ import {
   AFilterString,
   AFilterValueObjectOptionsSelect,
 } from '@anzusystems/common-admin'
+import KeywordTitleFilter from '@/views/coreDam/keyword/components/KeywordTitleRemoteSelect.vue'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -61,6 +62,14 @@ const onAnyFilterUpdate = () => {
               v-model="filter.text"
               @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <KeywordTitleFilter
+              v-model="filter.keywordIds"
+              @update:model-value="onAnyFilterUpdate"
             />
           </VCol>
         </VRow>
