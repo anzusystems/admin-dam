@@ -2,9 +2,9 @@
 
 import { CY } from '../../utils/common'
 import { VIDEO_TYPES } from '../../utils/upload'
-let idLicence = ''
 const FILE_ID: Array<string> = []
-
+const main_licence = '100000'
+const cms32630_licence = '200010'
 describe(`Test asset video licence duplicate function, Env: ${CY.cfg}`,
   { tags: '@assetVideoLicence', env: { visitBaseUrl: false } }, () => {
     it('Prepare Test Data', ()=> {
@@ -13,16 +13,7 @@ describe(`Test asset video licence duplicate function, Env: ${CY.cfg}`,
     })
     it('Cms-sys | CMS licence', () => {
       cy.visit('/asset')
-      cy.api_waitPageLoad('licence-unknown')
-      idLicence = '100000'
-      cy.getCy('button-manage-licence', 6000).should('be.visible')
-        .invoke('text')
-        .then((text)=>{
-          const actualLicence = text.trim()
-          if (actualLicence !== 'CMS licence'){
-            cy.changeLicence('main', idLicence)
-          }
-        })
+      cy.api_waitPageLoad('main', main_licence)
       let idx = 0
       VIDEO_TYPES.forEach((dataFormat)=>{
         cy.checkDuplicate('video', dataFormat, idx, FILE_ID)
@@ -32,9 +23,8 @@ describe(`Test asset video licence duplicate function, Env: ${CY.cfg}`,
     })
     it('CMS-sys | cms32630',()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', idLicence)
-      idLicence = '200010'  // cms32630
-      cy.changeLicence(idLicence)
+      cy.api_waitPageLoad('main', main_licence)
+      cy.changeLicence(cms32630_licence)
       let idx = 0
       VIDEO_TYPES.forEach((dataFormat)=>{
         cy.checkDuplicate('video', dataFormat, idx, FILE_ID)
@@ -47,8 +37,7 @@ describe(`Test asset video licence duplicate function, Env: ${CY.cfg}`,
     })
     it('Back to main cms licence', ()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', idLicence)
-      idLicence = '100000'
-      cy.changeLicence(idLicence)
+      cy.api_waitPageLoad('main', cms32630_licence)
+      cy.changeLicence(main_licence)
     })
   })

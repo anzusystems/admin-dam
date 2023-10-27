@@ -55,13 +55,19 @@ Cypress.Commands.add('api_waitPageLoad', (pagePart: string = 'main', idLicence?:
   let url = ''
   switch (pagePart){
     case 'main':
-      url = `http://core-dam.sme.localhost/api/adm/v1/asset/licence/${idLicence}/search?*`
+      url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/licence/${idLicence}/search?*`
       break
     case 'asset-edit':
-      url = 'http://core-dam.sme.localhost/api/adm/v1/user?*'
+      url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/user?*`
       break
     case 'licence-unknown':
-      url = 'http://core-dam.sme.localhost/api/adm/v1/configuration/ext-system/*'
+      url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/configuration/ext-system/*`
+      break
+    case 'keyword':
+      url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/keyword/*`
+      break
+    case 'author':
+      url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/author/*`
       break
     default:
       throw new Error(`${pagePart} is unknown param`)

@@ -11,9 +11,11 @@ import AssetToolbarExtSystemLicenceDialog
 withDefaults(
   defineProps<{
     variant?: 'main' | 'settings'
+    dataCy?: string
   }>(),
   {
     variant: 'main',
+    dataCy: undefined,
   }
 )
 
@@ -50,6 +52,7 @@ const openDialog = () => {
     icon
     size="small"
     class="mx-1"
+    data-cy="button-main"
   >
     <VIcon icon="mdi-view-grid-plus-outline" />
     <VMenu activator="parent">
@@ -64,6 +67,7 @@ const openDialog = () => {
               :to="{ name: ROUTE.DAM.PODCAST.LIST }"
               :title="t('system.mainBar.podcasts')"
               prepend-icon="mdi-podcast"
+              data-cy="button-main-podcast"
             />
           </Acl>
           <Acl :permission="ACL.DAM_VIDEO_SHOW_UI">
@@ -71,6 +75,7 @@ const openDialog = () => {
               :to="{ name: ROUTE.DAM.VIDEO_SHOW.LIST }"
               :title="t('system.mainBar.videoShows')"
               prepend-icon="mdi-video"
+              data-cy="button-main-video-show"
             />
           </Acl>
           <VDivider />

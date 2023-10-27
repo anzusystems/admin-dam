@@ -11,7 +11,7 @@ describe(`Test job function, Env: ${CY.cfg}`, { tags: '@job', env: { visitBaseUr
     cy.contains('.v-list-item', JOB_SYNC)
     cy.contains('.v-list-item', JOB_DELETE).click()
     cy.getCy('targetUser').type(CY.credentials.admin.id)
-    cy.get('#switch-92').click()
+    cy.get('.v-input__control [id^=switch-]').click()
     cy.get('.v-card-actions > .bg-primary').click()
     cy.alertMessage(ALERT_CREATE)
     cy.getCyVisibleClick('filter-reset')
