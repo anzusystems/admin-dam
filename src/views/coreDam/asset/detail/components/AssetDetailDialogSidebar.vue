@@ -61,6 +61,7 @@ const typeHasDistributions = computed(() => {
     <div class="w-100 d-flex flex-column">
       <VTabs
         v-model="activeTab"
+        show-arrows
         class="sidebar-info__tabs"
       >
         <VTab

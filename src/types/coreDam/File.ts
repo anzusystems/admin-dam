@@ -18,6 +18,7 @@ interface ImageAttributes {
   height: number
   rotation: number
   mostDominantColor: string
+  animated: boolean
 }
 
 interface AudioAttributes {

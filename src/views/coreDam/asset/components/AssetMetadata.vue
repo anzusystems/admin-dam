@@ -14,6 +14,9 @@ import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/k
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
+import { isVideoFile, isAudioFile } from '@/types/coreDam/File'
+import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
+import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 
 const { t } = useI18n()
 
@@ -27,6 +30,14 @@ const assetType = computed(() => {
 
 const isTypeImage = computed(() => {
   return assetType.value === AssetType.Image
+})
+
+const isTypeAudio = computed(() => {
+  return assetType.value === AssetType.Audio
+})
+
+const isTypeVideo = computed(() => {
+  return assetType.value === AssetType.Video
 })
 
 const assetMainFile = computed<null | ImageFile | AudioFile | DocumentFile | VideoFile>(() => {
@@ -176,12 +187,22 @@ const onAnyMetadataChange = () => {
               {{ prettyBytes(assetMainFile.fileAttributes.size) }}
             </VCol>
           </VRow>
+          <!-- image -->
+          <AssetMetadataImageAttributes
+            v-if="isTypeImage && isImageFile(assetMainFile)"
+            :file="assetMainFile"
+          />
+          <!-- video -->
+          <AssetMetadataVideoAttributes
+            v-if="isTypeVideo && isVideoFile(assetMainFile)"
+            :file="assetMainFile"
+          />
+          <!-- audio -->
+          <AssetMetadataAudioAttributes
+            v-if="isTypeAudio && isAudioFile(assetMainFile)"
+            :file="assetMainFile"
+          />
         </div>
-        <!-- image -->
-        <AssetMetadataImageAttributes
-          v-if="assetMainFile && isTypeImage && isImageFile(assetMainFile)"
-          :file="assetMainFile"
-        />
       </VExpansionPanelText>
     </VExpansionPanel>
   </VExpansionPanels>

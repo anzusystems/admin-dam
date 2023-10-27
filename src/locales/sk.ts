@@ -23,6 +23,8 @@ import apiValidation from '@/locales/sk/error/apiValidation.json'
 import apiForbiddenOperation from '@/locales/sk/error/apiForbiddenOperation.json'
 import jsValidation from '@/locales/sk/error/jsValidation.json'
 import breadcrumb from '@/locales/sk/breadcrumb.json'
+import audioFile from '@/locales/sk/coreDam/audioFile.json'
+import videoFile from '@/locales/sk/coreDam/videoFile.json'
 
 export default {
   common: messagesSk.common,
@@ -45,6 +47,8 @@ export default {
     user,
     videoShow,
     videoShowEpisode,
+    audioFile,
+    videoFile,
   },
   auth,
   sidebar,

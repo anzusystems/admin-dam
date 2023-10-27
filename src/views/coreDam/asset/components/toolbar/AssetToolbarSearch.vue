@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
+import AssetSearchInput from '@/views/coreDam/asset/components/toolbar/AssetSearchInput.vue'
 
 const { filter, fetchAssetList } = useAssetListActions()
 
@@ -16,28 +14,9 @@ const submitFilter = () => {
     name="search"
     @submit.prevent="submitFilter"
   >
-    <VTextField
+    <AssetSearchInput
       v-model="filter.text.model"
-      variant="outlined"
-      :placeholder="t('system.mainBar.search')"
-      hide-details
-      prepend-inner-icon="mdi-magnify"
-      class="mr-2 v-text-field--pill"
-      density="compact"
-      color="grey"
-      clearable
+      @submit="submitFilter"
     />
   </VForm>
 </template>
-
-<style lang="scss" scoped>
-@use 'vuetify/lib/styles/settings/_variables.scss' as vars;
-
-.v-text-field--pill {
-  min-width: 120px;
-
-  @media #{map-get(vars.$display-breakpoints, 'sm-and-up')} {
-    min-width: 300px;
-  }
-}
-</style>

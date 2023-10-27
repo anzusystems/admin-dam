@@ -10,6 +10,8 @@ import distributionCategorySelect from '@/locales/en/coreDam/distributionCategor
 import jwDistribution from '@/locales/en/coreDam/jwDistribution.json'
 import customDistribution from '@/locales/en/coreDam/customDistribution.json'
 import youtubeDistribution from '@/locales/en/coreDam/youtubeDistribution.json'
+import audioFile from '@/locales/en/coreDam/audioFile.json'
+import videoFile from '@/locales/en/coreDam/videoFile.json'
 import extSystem from '@/locales/en/coreDam/extSystem.json'
 import job from '@/locales/en/coreDam/job.json'
 import keyword from '@/locales/en/coreDam/keyword.json'
@@ -45,6 +47,8 @@ export default {
     user,
     videoShow,
     videoShowEpisode,
+    audioFile,
+    videoFile,
   },
   auth,
   sidebar,

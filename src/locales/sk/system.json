@@ -49,6 +49,7 @@
       "assets": "Assety"
     },
     "podcasts": "Podcasty",
+    "videoShows": "Video relácie",
     "extSystemLicenceSwitch": {
       "filters": "filtre",
       "filter": {
@@ -64,7 +65,8 @@
       "title": "Prepnutie externého systému a licencie",
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
-      "changeToLicenceId": "Zmena na ID licencie"
+      "changeToLicenceId": "Zmena na ID licencie",
+      "changeLicence": "Zmeniť licenciu: {currentLicence}"
     }
   },
   "settings": {

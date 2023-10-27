@@ -38,9 +38,9 @@ const { t } = useI18n()
 
 const { activeDistributionName, showTabs, redistributeMode } = useAssetDetailDistributionDialog()
 
-const closeDialog = (reloadList = false) => {
+const closeDialog = () => {
   value.value = false
-  if (reloadList) emit('reloadList')
+  emit('reloadList')
 }
 
 const serviceRequirements = computed(() => {
@@ -82,7 +82,7 @@ const componentComputed = computed(() => {
     class="dialog-distribution"
   >
     <VCard v-if="value">
-      <ADialogToolbar @on-cancel="closeDialog(false)">
+      <ADialogToolbar @on-cancel="closeDialog">
         <span v-if="redistributeMode">{{ t('coreDam.distribution.common.redistributeTitle') }}</span>
         <span v-else>{{ t('coreDam.distribution.common.addTitle') }}</span>
       </ADialogToolbar>

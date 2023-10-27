@@ -13,7 +13,6 @@ import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/A
 import { ACL } from '@/types/Permission'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
-import AssetToolbarExtSystemLicence from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue'
 
 const { t } = useI18n()
 
@@ -51,14 +50,18 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
               >
             </RouterLink>
           </div>
+          <slot name="main-bar-left" />
+        </div>
+
+        <div class="d-flex align-center">
           <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
             <AssetToolbarIntegrations />
           </Acl>
-          <slot name="main-bar-left" />
+          <slot name="main-bar-middle" />
         </div>
+
         <div class="d-flex align-center">
           <slot name="main-bar-right" />
-          <AssetToolbarExtSystemLicence />
           <AssetToolbarOptions variant="main" />
           <AAdminSwitcher
             :config-url="envConfig.adminSwitcherConfigUrl"
@@ -100,6 +103,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
               </VBtn>
               <slot name="second-bar-left" />
             </div>
+
             <div class="d-flex align-center">
               <slot name="second-bar-right" />
               <VBtn
