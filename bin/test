@@ -5,7 +5,6 @@
 #######################################################################################################################
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
-DOCKER_CONTAINER="admin-dam"
 BROWSER="chrome"
 ENV="local"
 FILTER=""
@@ -43,18 +42,13 @@ function help() {
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    admin-dam)
-        DOCKER_CONTAINER=$1
-        shift 1
-        continue
-        ;;
     -b)
-        BROWSER="$2"
+        BROWSER=$2
         shift 2
         continue
         ;;
     --browser*)
-        BROWSER="${1#*=}"
+        BROWSER=${1#*=}
         shift 1
         continue
         ;;
@@ -64,7 +58,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     --env*)
-        ENV="${1#*=}"
+        ENV=${1#*=}
         shift 1
         continue
         ;;
@@ -74,7 +68,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     --filter*)
-        FILTER="${1#*=}"
+        FILTER=${1#*=}
         shift 1
         continue
         ;;
@@ -84,7 +78,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     --tag*)
-        TAG="${1#*=}"
+        TAG=${1#*=}
         shift 1
         continue
         ;;
@@ -120,10 +114,11 @@ if [ -f /.dockerenv ]; then
     # shellcheck disable=SC2086
     CYPRESS_grepTags=${FILTER} \
     dbus-launch ${RUNNER} cypress run \
-    --config-file ${CONFIG_FILE} \
-    --env cfg=${ENV} \
-    --browser ${BROWSER} \
-    ${DASHBOARD_OPTIONS}
+        --config-file ${CONFIG_FILE} \
+        --env cfg=${ENV} \
+        --browser ${BROWSER} \
+        ${DASHBOARD_OPTIONS}
     exit
 fi
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test ${ARGS}\'
+
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'
