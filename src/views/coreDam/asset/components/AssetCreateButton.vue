@@ -75,6 +75,7 @@ const { assetTypeOptions } = useAssetType()
   <VListItem
     :title="t('coreDam.asset.meta.createEmpty')"
     prepend-icon="mdi-plus"
+    data-cy="button-main-empty-asset"
     @click.stop="onClick"
   />
   <VDialog v-model="dialog">

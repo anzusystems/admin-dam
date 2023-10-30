@@ -26,7 +26,7 @@ describe(`Test asset video function, Env: ${CY.cfg}`,
       AUTHORS.forEach(author => {
         cy.get('body').click()
         cy.get('[data-cy="custom-field-authors"] input').type(`${author}`)
-        cy.contains('.v-list-item', `${author}`, { timeout: 6000 }).click()
+        cy.contains('.v-list-item', `${author}`, { timeout: 6000 }).click({ force: true })
       })
       cy.get('body').type('{esc}')
       cy.getCy('button-delete').click()

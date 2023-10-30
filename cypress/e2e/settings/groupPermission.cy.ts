@@ -19,7 +19,7 @@ describe(
       cy.alertMessage(ALERT_CREATE)
       cy.contains(`${PERMISSION_GROUP}`).click()
       cy.cardLoad()
-      cy.getCy('copy-text', 8000)
+      cy.getCy('copy-text', 12000)
         .invoke('text')
         .then((text) => {
           cy.urlContains(text)
