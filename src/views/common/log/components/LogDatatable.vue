@@ -16,7 +16,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import type { LogSystem } from '@/model/common/valueObject/LogSystem'
 
-type DatatableItem = { raw: Log }
+type DatatableItem = Log
 
 const props = withDefaults(
   defineProps<{
@@ -35,10 +35,10 @@ const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = use
 const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id) {
+  if (item.id) {
     router.push({
       name: ROUTE.COMMON.LOG.DETAIL,
-      params: { id: item.raw.id, system: item.raw.context.appSystem, type: filter.type.model },
+      params: { id: item.id, system: item.context.appSystem, type: filter.type.model },
     })
   }
 }
@@ -113,24 +113,24 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.datetime="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.datetime" />
+          <ADatetime :date-time="item.datetime" />
         </template>
         <template #item.levelName="{ item }: { item: DatatableItem }">
-          {{ item.raw.levelName }}
-          <!--          <LogLevelChip :level="item.raw.levelName" />-->
+          {{ item.levelName }}
+          <!--          <LogLevelChip :level="item.levelName" />-->
         </template>
         <template #item.message="{ item }: { item: DatatableItem }">
           <div class="line-clamp-2">
-            {{ item.raw.message }}
+            {{ item.message }}
           </div>
         </template>
         <template #item.context.contextId="{ item }: { item: DatatableItem }">
-          <ACopyText :value="item.raw.context.contextId" />
+          <ACopyText :value="item.context.contextId" />
         </template>
         <template #item.context.userId="{ item }: { item: DatatableItem }">
           <ACopyText
-            v-if="!isNull(item.raw.context.userId)"
-            :value="item.raw.context.userId"
+            v-if="!isNull(item.context.userId)"
+            :value="item.context.userId"
           />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
@@ -138,7 +138,7 @@ defineExpose({
             <VBtn
               :to="{
                 name: ROUTE.COMMON.LOG.DETAIL,
-                params: { id: item.raw.id, system: system, type: filter.type.model },
+                params: { id: item.id, system: system, type: filter.type.model },
               }"
               class="ml-1"
               icon="mdi-information-outline"

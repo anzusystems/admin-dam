@@ -23,7 +23,7 @@ import VideoShowFilter from '@/views/coreDam/videoShow/components/VideoShowFilte
 import { useVideoShowListFilter } from '@/model/coreDam/filter/VideoShowFilter'
 import type { VideoShow } from '@/types/coreDam/VideoShow'
 
-type DatatableItem = { raw: VideoShow }
+type DatatableItem = VideoShow
 
 const router = useRouter()
 const filter = useVideoShowListFilter()
@@ -37,8 +37,8 @@ const getList = () => {
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_VIDEO_SHOW_VIEW)) {
-    router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_VIDEO_SHOW_VIEW)) {
+    router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -87,20 +87,20 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
-              :record-id="item.raw.id"
+              :record-id="item.id"
               :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL"
             />
             <ATableEditButton
-              :record-id="item.raw.id"
+              :record-id="item.id"
               :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT"
             />
           </div>

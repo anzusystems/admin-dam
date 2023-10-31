@@ -47,8 +47,7 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
 }
 
 .#{$class-name-root} {
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
   margin-top: 1px;
 
   &--simple {
@@ -69,8 +68,7 @@ $duplicate-bg-color-dark: rgb(0 0 0 / 70%);
   }
 
   &--list {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden auto;
 
     .#{$class-name-root}__item {
       min-width: auto;

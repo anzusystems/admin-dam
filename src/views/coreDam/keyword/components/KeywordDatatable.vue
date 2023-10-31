@@ -24,7 +24,7 @@ import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
 import KeywordFilter from '@/views/coreDam/keyword/components/KeywordFilter.vue'
 import type { Keyword } from '@/types/coreDam/Keyword'
 
-type DatatableItem = { raw: Keyword }
+type DatatableItem = Keyword
 
 const router = useRouter()
 const filter = useKeywordListFilter()
@@ -38,8 +38,8 @@ const getList = () => {
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_KEYWORD_VIEW)) {
-    router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_KEYWORD_VIEW)) {
+    router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -90,27 +90,27 @@ defineExpose({
         <template #item.flags.reviewed="{ item }: { item: DatatableItem }">
           <ABooleanValue
             chip
-            :value="item.raw.flags.reviewed"
+            :value="item.flags.reviewed"
           />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_KEYWORD_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.KEYWORD.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.KEYWORD.EDIT"
               />
             </Acl>
