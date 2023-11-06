@@ -9,19 +9,19 @@ ARG DOCKER_GROUP_ID
 # Versions
 # Nginx version
 ENV NGINX_VERSION=1.24.0 \
-    NGINX_NJS_VERSION=0.7.12 \
+    NGINX_NJS_VERSION=0.8.1 \
     NGINX_PKG_RELEASE=1~bookworm \
 # Supervisor version
     SUPERVISOR_VERSION=4.2.5 \
     SUPERVISOR_PKG_RELEASE=1 \
 # NPM version
-    NPM_VERSION=9.8.1 \
+    NPM_VERSION=10.2.1 \
 # Yarn version
-    DOCKER_YARN_VERSION=3.6.0 \
+    DOCKER_YARN_VERSION=3.6.4 \
     DOCKER_YARN_PLUGIN_OUTDATED=3.2.4 \
 # Browsers version
-    CHROME_VERSION=114.0.5735.133 \
-    FIREFOX_VERSION=114.0.1
+    CHROME_VERSION=118.0.5993.117 \
+    FIREFOX_VERSION=119.0
 # Common environment variables
 ENV CONTAINER_STOP_LOG_FILE="/var/www/html/var/log/container_stop.log" \
     COREPACK_HOME="/usr/lib/node/corepack" \
