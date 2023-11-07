@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script used to run node dev server in the application docker container
+# Script used to run node dev server in the application container
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
@@ -17,7 +17,7 @@ docker_env_vars
 
 function help() {
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nScript used to run node dev server in the application docker container.
+    \nScript used to run node dev server in the application container.
 
     Options:
         -ni | --no-install (Optional) Run dev server without 'yarn install'
