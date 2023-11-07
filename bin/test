@@ -1,5 +1,5 @@
 #!/bin/bash
-#Script used to run the tests inside the application docker container
+# Script used to run the tests in the application container
 #######################################################################################################################
 # Default variables
 #######################################################################################################################
@@ -23,18 +23,19 @@ cd "${PROJECT_ROOT}" || exit 1
 docker_env_vars
 
 function help() {
-    echo "
-    $(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    Options:
-      -e --env     [(Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)]
-      -b --browser [(Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)]
-      -f --filter  [(Optional) Comma separated list of filters (Default: n/a - all tests)]
-      -t --tag     [(Optional) Only for dashboard runs tags for cypress dashboard list]
-      -d           [(Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder]
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    \nBash script used to run the tests in the application container
 
-    Example:
-      $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @ --tag Docker,Web -d
-    "
+    Options:
+        -e --env     (Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)
+        -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
+        -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
+        -t --tag     (Optional) Only for dashboard runs tags for cypress dashboard list
+        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder
+
+    Examples:
+        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @datepicker,@nl --tag Docker,Web -d
+    \n"
 }
 
 #######################################################################################################################
