@@ -1,8 +1,8 @@
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
-export const useAuthorAssetTypeConfig = (assetType: AssetType) => {
+export const useAuthorAssetTypeConfig = (assetType: DamAssetType) => {
   const authorEnabled = computed(() => {
     return damConfigExtSystem[assetType].authors.enabled
   })

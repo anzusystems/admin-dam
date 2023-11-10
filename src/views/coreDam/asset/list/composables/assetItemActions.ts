@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { isImageFile } from '@/types/coreDam/File'
 import type { AssetListItem } from '@/stores/coreDam/assetListStore'
-import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
+import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'

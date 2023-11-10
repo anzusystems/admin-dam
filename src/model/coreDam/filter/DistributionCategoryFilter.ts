@@ -3,7 +3,7 @@ import { makeFilterHelper, type MakeFilterOptions } from '@anzusystems/common-ad
 import { reactive } from 'vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 
 const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 
@@ -15,7 +15,7 @@ const filter = reactive({
     ...makeFilter({ name: 'name', variant: 'startsWith' }),
   },
   type: {
-    ...makeFilter<AssetType>({ name: 'type', mandatory: true, default: AssetType.Video }),
+    ...makeFilter<DamAssetType>({ name: 'type', mandatory: true, default: DamAssetType.Video }),
   },
 })
 
@@ -29,7 +29,7 @@ export function useDistributionCategoryFilter() {
       ...makeFilter({ name: 'name', variant: 'startsWith' }),
     },
     type: {
-      ...makeFilter<AssetType>({ name: 'type', default: AssetType.Default }),
+      ...makeFilter<DamAssetType>({ name: 'type', default: DamAssetType.Default }),
     },
   })
 }

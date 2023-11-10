@@ -9,7 +9,7 @@ import { useDistributionCategoryFactory } from '@/model/coreDam/factory/Distribu
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useI18n } from 'vue-i18n'
 import DistributionCategoryWidgetDialog from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 
 const { t } = useI18n()
 
@@ -34,7 +34,7 @@ const distributionCategoryId = computed(() => {
 const assetType = computed(() => {
   return assetDetailStore.asset && assetDetailStore.asset.attributes.assetType
     ? assetDetailStore.asset.attributes.assetType
-    : AssetType.Default
+    : DamAssetType.Default
 })
 
 const loadCategory = async (id: DocId) => {

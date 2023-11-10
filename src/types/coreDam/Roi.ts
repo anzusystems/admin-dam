@@ -1,5 +1,5 @@
 import type { AnzuUserAndTimeTrackingAware, DocId, ResourceNameSystemAware } from '@anzusystems/common-admin'
-import type { Link } from '@/types/coreDam/File'
+import type { AssetFileLink } from '@/types/coreDam/File'
 
 export interface RegionOfInterest extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
@@ -11,6 +11,6 @@ export interface RegionOfInterest extends AnzuUserAndTimeTrackingAware, Resource
   percentageWidth: number
   percentageHeight: number
   links: {
-    image_roi_example: Link[]
+    image_roi_example: AssetFileLink[]
   }
 }

@@ -10,14 +10,14 @@ import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: boolean
     categoryId?: DocIdNullable
     assetId: DocId
-    assetType: AssetType
+    assetType: DamAssetType
   }>(),
   {
     modelValue: false,

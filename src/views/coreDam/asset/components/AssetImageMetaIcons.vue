@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import type { AssetFileProperties } from '@/types/coreDam/Asset'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { AssetFileProperties } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import {
   DIMENSIONS_CONFIG,
@@ -14,7 +14,7 @@ import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    assetType: AssetType
+    assetType: DamAssetType
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
   }>(),
@@ -34,7 +34,7 @@ const checkDimensions = (icons: string[], titles: string[]) => {
     titles.push(t('coreDam.asset.metaIcons.low'))
     return
   }
-  if (props.assetType !== AssetType.Video) return
+  if (props.assetType !== DamAssetType.Video) return
   for (let i = 0; i < DIMENSIONS_CONFIG.length; i++) {
     if (
       props.assetFileProperties.width === DIMENSIONS_CONFIG[i].width &&

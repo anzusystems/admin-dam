@@ -1,8 +1,8 @@
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
-export const useKeywordAssetTypeConfig = (assetType: AssetType) => {
+export const useKeywordAssetTypeConfig = (assetType: DamAssetType) => {
   const keywordEnabled = computed(() => {
     return damConfigExtSystem[assetType].keywords.enabled
   })

@@ -4,7 +4,7 @@ import DistributionListItemJw from '@/views/coreDam/asset/detail/components/dist
 import DistributionListItemYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
 import DistributionListItemCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustom.vue'
 import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { damConfig } from '@/services/DamConfigService'
@@ -14,7 +14,7 @@ import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/de
 const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: AssetType
+    assetType: DamAssetType
   }>(),
   {}
 )

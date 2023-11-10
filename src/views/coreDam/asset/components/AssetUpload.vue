@@ -5,7 +5,7 @@ import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DocId } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { ADialogToolbar } from '@anzusystems/common-admin'
@@ -20,7 +20,7 @@ const props = withDefaults(
     assetId?: DocId
     slotName?: string
     multiple?: boolean
-    assetType?: AssetType
+    assetType?: DamAssetType
   }>(),
   {
     variant: 'dropzone-fullscreen',
@@ -92,7 +92,7 @@ const onDialogConfirm = async () => {
   uploadDialog.value = false
 }
 
-const createSizesByAssetType = (assetType: AssetType) => {
+const createSizesByAssetType = (assetType: DamAssetType) => {
   const sizes: Record<string, number> = {}
   for (let i = 0; i < damConfigExtSystem[assetType].mimeTypes.length; i++) {
     sizes[damConfigExtSystem[assetType].mimeTypes[i]] = damConfigExtSystem[assetType].sizeLimit
@@ -107,10 +107,10 @@ const uploadSizes = computed(() => {
     }
   }
   return {
-    ...createSizesByAssetType(AssetType.Image),
-    ...createSizesByAssetType(AssetType.Audio),
-    ...createSizesByAssetType(AssetType.Video),
-    ...createSizesByAssetType(AssetType.Document),
+    ...createSizesByAssetType(DamAssetType.Image),
+    ...createSizesByAssetType(DamAssetType.Audio),
+    ...createSizesByAssetType(DamAssetType.Video),
+    ...createSizesByAssetType(DamAssetType.Document),
   }
 })
 

@@ -1,14 +1,14 @@
 import { ref } from 'vue'
 import type { DamConfigAssetCustomFormElement, DamConfigAssetCustomFormElementTemp } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { fetchAssetCustomFormElements } from '@/services/api/coreDam/assetCustomFormApi'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { mapElementsWithKeyToProperty } from '@/services/TempMapCustomFormElementHelper'
 
 export const damConfigAssetCustomFormElementsInitialized = ref(false)
 
 export const damConfigAssetCustomFormElements: {
-  [key in AssetType]: DamConfigAssetCustomFormElement[]
+  [key in DamAssetType]: DamConfigAssetCustomFormElement[]
 } = {
   image: [],
   audio: [],
@@ -38,10 +38,10 @@ export const loadDamConfigAssetCustomFormElements = () => {
   return new Promise((resolve, reject) => {
     const { currentExtSystemId } = useCurrentExtSystem()
     const promises = [
-      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Image),
-      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Audio),
-      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Video),
-      fetchAssetCustomFormElements(currentExtSystemId.value, AssetType.Document),
+      fetchAssetCustomFormElements(currentExtSystemId.value, DamAssetType.Image),
+      fetchAssetCustomFormElements(currentExtSystemId.value, DamAssetType.Audio),
+      fetchAssetCustomFormElements(currentExtSystemId.value, DamAssetType.Video),
+      fetchAssetCustomFormElements(currentExtSystemId.value, DamAssetType.Document),
     ]
 
     Promise.all(promises)

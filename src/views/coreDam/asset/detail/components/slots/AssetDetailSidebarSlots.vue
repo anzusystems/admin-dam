@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
@@ -14,7 +14,7 @@ import { useI18n } from 'vue-i18n'
 const props = withDefaults(
   defineProps<{
     isActive: boolean
-    assetType: AssetType
+    assetType: DamAssetType
     assetId: DocId
   }>(),
   {}

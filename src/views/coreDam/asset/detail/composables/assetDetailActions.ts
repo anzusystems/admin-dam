@@ -1,8 +1,8 @@
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import { isImageFile } from '@/types/coreDam/File'
 
 export function useAssetDetailActions() {
@@ -23,25 +23,25 @@ export function useAssetDetailActions() {
   }
 
   const assetType = computed(() => {
-    return asset.value?.attributes.assetType || AssetType.Default
+    return asset.value?.attributes.assetType || DamAssetType.Default
   })
 
   const assetStatus = computed(() => {
-    if (!asset.value) return AssetStatus.Default
+    if (!asset.value) return DamAssetStatus.Default
     return asset.value.attributes.assetStatus
   })
 
   const isTypeImage = computed(() => {
-    return assetType.value === AssetType.Image
+    return assetType.value === DamAssetType.Image
   })
   const isTypeVideo = computed(() => {
-    return assetType.value === AssetType.Video
+    return assetType.value === DamAssetType.Video
   })
   const isTypeAudio = computed(() => {
-    return assetType.value === AssetType.Audio
+    return assetType.value === DamAssetType.Audio
   })
   const isTypeDocument = computed(() => {
-    return assetType.value === AssetType.Document
+    return assetType.value === DamAssetType.Document
   })
 
   const assetMainFile = computed(() => {

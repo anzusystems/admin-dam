@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import { useI18n } from 'vue-i18n'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
-import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
+import type { AssetFileFailReason, AssetFileProcessStatus } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
-    assetStatus: AssetStatus
+    assetStatus: DamAssetStatus
     assetMainFileStatus?: AssetFileProcessStatus | undefined
     assetMainFileFailReason?: AssetFileFailReason | undefined
   }>(),
@@ -47,7 +46,7 @@ const { t } = useI18n()
     </VAlert>
   </div>
   <div
-    v-else-if="assetStatus === AssetStatus.Deleting"
+    v-else-if="assetStatus === DamAssetStatus.Deleting"
     class="w-100 pa-2 text-caption"
   >
     <VAlert
@@ -58,7 +57,7 @@ const { t } = useI18n()
     </VAlert>
   </div>
   <div
-    v-else-if="assetStatus === AssetStatus.Draft"
+    v-else-if="assetStatus === DamAssetStatus.Draft"
     class="w-100 pa-2 text-caption"
   >
     <VAlert

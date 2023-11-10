@@ -1,4 +1,4 @@
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 
 export enum DistributionServiceType {
@@ -96,7 +96,7 @@ export interface ExtSystemConfig {
   slots: string[]
 }
 
-export interface DamConfigExtSystem extends Record<AssetType, ExtSystemConfig> {
+export interface DamConfigExtSystem extends Record<DamAssetType, ExtSystemConfig> {
   assetExternalProviders: ExternalProviderAssetConfig
   audio: ExtSystemConfig
   video: ExtSystemConfig

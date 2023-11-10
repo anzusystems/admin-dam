@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
@@ -15,7 +15,7 @@ import { ACopyText } from '@anzusystems/common-admin'
 const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: AssetType
+    assetType: DamAssetType
     distributionType: DistributionServiceType | null
     showRedistribute: boolean
   }>(),

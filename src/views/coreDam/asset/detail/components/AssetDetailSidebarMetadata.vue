@@ -9,7 +9,7 @@ import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
 import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { ref } from 'vue'
 import { ACL } from '@/types/Permission'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
@@ -18,7 +18,7 @@ withDefaults(
   defineProps<{
     isActive: boolean
     dataCy?: string
-    assetType: AssetType
+    assetType: DamAssetType
   }>(),
   {
     dataCy: undefined,

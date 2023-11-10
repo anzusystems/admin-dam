@@ -10,13 +10,14 @@ import {
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { useAssetFactory } from '@/model/coreDam/factory/AssetFactory'
-import { useAssetType } from '@/model/coreDam/valueObject/AssetType'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { useI18n } from 'vue-i18n'
-import type { AssetCreateDto, AssetDetailItemDto } from '@/types/coreDam/Asset'
+import type { AssetDetailItemDto } from '@anzusystems/common-admin'
 import { createAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import type { AssetCreateDto } from '@/types/coreDam/Asset'
 
 const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void

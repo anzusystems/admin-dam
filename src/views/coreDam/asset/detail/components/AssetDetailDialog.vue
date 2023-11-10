@@ -7,9 +7,9 @@ import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/Ass
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { isImageFile } from '@/types/coreDam/File'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { DocId } from '@anzusystems/common-admin'
 import { browserHistoryReplaceUrlByRouter, isNull, useTheme } from '@anzusystems/common-admin'
@@ -67,25 +67,25 @@ const prevItem = () => {
 }
 
 const assetType = computed(() => {
-  return asset.value?.attributes.assetType || AssetType.Default
+  return asset.value?.attributes.assetType || DamAssetType.Default
 })
 
 const assetStatus = computed(() => {
-  if (!asset.value) return AssetStatus.Default
+  if (!asset.value) return DamAssetStatus.Default
   return asset.value.attributes.assetStatus
 })
 
 const isTypeImage = computed(() => {
-  return assetType.value === AssetType.Image
+  return assetType.value === DamAssetType.Image
 })
 const isTypeVideo = computed(() => {
-  return assetType.value === AssetType.Video
+  return assetType.value === DamAssetType.Video
 })
 const isTypeAudio = computed(() => {
-  return assetType.value === AssetType.Audio
+  return assetType.value === DamAssetType.Audio
 })
 const isTypeDocument = computed(() => {
-  return assetType.value === AssetType.Document
+  return assetType.value === DamAssetType.Document
 })
 
 const imageProperties = computed(() => {

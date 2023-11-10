@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
@@ -16,7 +16,7 @@ import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/c
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
-    assetType: AssetType
+    assetType: DamAssetType
     assetId: DocId
   }>(),
   {}

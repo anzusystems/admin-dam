@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { useAssetType } from '@/model/coreDam/valueObject/AssetType'
-import { useAssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { useAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import { useI18n } from 'vue-i18n'
 import { useImageOrientation } from '@/model/coreDam/valueObject/ImageOrientation'
 import FilterClosestColor from '@/components/filter/FilterClosestColor.vue'

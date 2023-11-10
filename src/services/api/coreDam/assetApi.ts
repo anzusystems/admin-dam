@@ -19,21 +19,20 @@ import {
   HTTP_STATUS_OK,
   type IntegerId,
   isNull,
-  type Pagination,
+  type Pagination, type UploadQueueItem,
   useAlerts,
   type ValidationError,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
-  AssetCreateDto,
   AssetCustomData,
   AssetDetailItemDto,
   AssetMetadataDto,
   AssetSearchListItemDto,
-} from '@/types/coreDam/Asset'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
+} from '@anzusystems/common-admin'
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { AssetCreateDto } from '@/types/coreDam/Asset'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -167,7 +166,7 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
 const { showUnknownError, showApiValidationError } = useAlerts()
 
 // todo add type
-const handleMetadataValidationError = (error: any, assetType: AssetType) => {
+const handleMetadataValidationError = (error: any, assetType: DamAssetType) => {
   if (!error || !error.response || !error.response.data) return
   const data = error.response.data as AnzuApiValidationResponseData
   const items = [] as ValidationError[]

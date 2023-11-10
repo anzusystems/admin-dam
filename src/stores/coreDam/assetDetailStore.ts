@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import type { AssetDetailItemDto } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
@@ -73,7 +73,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     setDeleting() {
       if (!this.asset) return
-      this.asset.attributes.assetStatus = AssetStatus.Deleting
+      this.asset.attributes.assetStatus = DamAssetStatus.Deleting
     },
     reset() {
       this.asset = null

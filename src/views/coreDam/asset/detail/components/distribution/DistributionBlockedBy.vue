@@ -8,7 +8,7 @@ import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeIte
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 
@@ -20,7 +20,7 @@ const props = withDefaults(
     distributionServiceName: DistributionServiceName
     config: DistributionRequirementsConfig
     assetFileId: DocIdNullable
-    assetType: AssetType
+    assetType: DamAssetType
   }>(),
   {}
 )

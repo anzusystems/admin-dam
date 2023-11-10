@@ -2,13 +2,13 @@
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { onMounted } from 'vue'
 
 const props = withDefaults(
   defineProps<{
     modelValue: string | number | null | string[] | number[]
-    assetType: AssetType
+    assetType: DamAssetType
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean

@@ -7,7 +7,7 @@ import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/component
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/coreDam/File'
 import { isImageFile } from '@/types/coreDam/File'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
@@ -25,19 +25,19 @@ const panels = ref(['metadata', 'file'])
 const { asset, authorConflicts, metadataTouch } = useAssetDetailActions()
 
 const assetType = computed(() => {
-  return asset.value?.attributes.assetType || AssetType.Default
+  return asset.value?.attributes.assetType || DamAssetType.Default
 })
 
 const isTypeImage = computed(() => {
-  return assetType.value === AssetType.Image
+  return assetType.value === DamAssetType.Image
 })
 
 const isTypeAudio = computed(() => {
-  return assetType.value === AssetType.Audio
+  return assetType.value === DamAssetType.Audio
 })
 
 const isTypeVideo = computed(() => {
-  return assetType.value === AssetType.Video
+  return assetType.value === DamAssetType.Video
 })
 
 const assetMainFile = computed<null | ImageFile | AudioFile | DocumentFile | VideoFile>(() => {

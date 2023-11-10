@@ -9,11 +9,11 @@ import {
   makeMainFile as apiMakeMainFile,
   unsetAssetSlot,
 } from '@/services/api/coreDam/fileApi'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { makePrivate } from '@/services/api/coreDam/audioApi'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 
-export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: AssetType) {
+export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetType) {
   const assetSlotsStore = useAssetSlotsStore()
   const { showErrorsDefault } = useAlerts()
 

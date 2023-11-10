@@ -10,7 +10,7 @@ import {
 } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
@@ -85,7 +85,7 @@ export const useDistributionCategoryDetailActions = () => {
 }
 
 export const useDistributionCategoryManageActions = () => {
-  const getAvailableDistributionServiceSlugs = (assetType: AssetType) => {
+  const getAvailableDistributionServiceSlugs = (assetType: DamAssetType) => {
     const serviceSlugs: string[] = []
     Object.entries(damConfigExtSystem[assetType].distribution.distributionRequirements).forEach(([service, config]) => {
       if (config.categorySelect.enabled) {
@@ -95,7 +95,7 @@ export const useDistributionCategoryManageActions = () => {
     return serviceSlugs
   }
 
-  const fetchDistributionCategorySelectsData = async (assetType: AssetType) => {
+  const fetchDistributionCategorySelectsData = async (assetType: DamAssetType) => {
     const pagination = usePagination()
     const filter = cloneDeep(useDistributionCategorySelectListFilter())
     filter.serviceSlug.model = getAvailableDistributionServiceSlugs(assetType)
@@ -116,7 +116,7 @@ export const useDistributionCategoryCreateActions = () => {
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const prepareData = async (assetType: AssetType) => {
+  const prepareData = async (assetType: DamAssetType) => {
     try {
       createFormDataLoaded.value = false
       const { createDefault } = useDistributionCategoryFactory()

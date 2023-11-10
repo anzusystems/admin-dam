@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import {
   createJwDistribution,
@@ -8,7 +8,7 @@ import {
   prepareFormDataJwDistribution,
   redistributeJwDistribution,
 } from '@/services/api/coreDam/distributionJwApi'
-import type { DocId } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, type DocId } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AFormTextarea,
@@ -30,12 +30,11 @@ import DistributionListItem from '@/views/coreDam/asset/detail/components/distri
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
     distributionServiceName: DistributionServiceName
-    assetType: AssetType
+    assetType: DamAssetType
     config: DistributionRequirementsConfig
     assetId: DocId
   }>(),

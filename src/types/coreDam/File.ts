@@ -1,15 +1,12 @@
-import type { AnzuUserAndTimeTrackingAware, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  AssetFileFailReason,
+  AssetFileLinkType,
+  AssetFileProcessStatus,
+  DocId,
+  DocIdNullable,
+} from '@anzusystems/common-admin'
 import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
-import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
-
-export enum AssetFileProcessStatus {
-  Uploading = 'uploading', // file entity created and ready to receive chunks
-  Uploaded = 'uploaded', // all chunks were sent
-  Stored = 'stored', // File is stored and ready to processing
-  Duplicate = 'duplicate', // AssetFile is duplicate of another asset
-  Processed = 'processed', // file processed and ready to serve
-  Failed = 'failed',
-}
 
 interface ImageAttributes {
   ratioWidth: number
@@ -60,23 +57,19 @@ interface FileAttributes {
   failReason: AssetFileFailReason
 }
 
-export enum LinkType {
-  Image = 'image',
-  Audio = 'audio',
-  Default = Image,
-}
-
-export interface Link {
+export interface AssetFileLink {
   width: number
   height: number
   requestedWidth: number
   requestedHeight: number
   url: string
   title: string
-  type: LinkType
+  type: AssetFileLinkType
 }
 
-export type Links = Record<'image_list' | 'image_table' | 'image_detail' | 'audio', Link> | Record<string, never>
+export type AssetFileLinks =
+  | Record<'image_list' | 'image_table' | 'image_detail' | 'audio', AssetFileLink>
+  | Record<string, never>
 
 export interface ImageFile extends AnzuUserAndTimeTrackingAware {
   id: DocId
@@ -84,7 +77,7 @@ export interface ImageFile extends AnzuUserAndTimeTrackingAware {
   fileAttributes: FileAttributes
   imageAttributes: ImageAttributes
   originAssetFile: DocIdNullable
-  links?: Links
+  links?: AssetFileLinks
   metadata: Metadata
   _resourceName: 'imageFile'
 }
@@ -95,7 +88,7 @@ export interface AudioFile extends AnzuUserAndTimeTrackingAware {
   fileAttributes: FileAttributes
   audioAttributes: AudioAttributes
   originAssetFile: DocIdNullable
-  links?: Links
+  links?: AssetFileLinks
   _resourceName: 'audioFile'
 }
 
@@ -105,7 +98,7 @@ export interface VideoFile extends AnzuUserAndTimeTrackingAware {
   fileAttributes: FileAttributes
   videoAttributes: VideoAttributes
   originAssetFile: DocIdNullable
-  links?: Links
+  links?: AssetFileLinks
   imagePreview: ImagePreviewNullable
   _resourceName: 'videoFile'
 }
@@ -116,7 +109,7 @@ export interface DocumentFile extends AnzuUserAndTimeTrackingAware {
   fileAttributes: FileAttributes
   documentAttributes: DocumentAttributes
   originAssetFile: DocIdNullable
-  links?: Links
+  links?: AssetFileLinks
   _resourceName: 'documentFile'
 }
 

@@ -1,18 +1,18 @@
 import { ref } from 'vue'
 import sha1 from 'js-sha1'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
-import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
-import type { CancelTokenSource } from 'axios'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
 import {
   type AnzuApiValidationResponseData,
   axiosErrorResponseHasValidationData,
   i18n,
   isUndefined,
   NEW_LINE_MARK,
+  UploadQueueItemStatus,
 } from '@anzusystems/common-admin'
-import { useChunkSizeService } from '@/services/upload/chunkSizeService'
+import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
+import type { CancelTokenSource } from 'axios'
 import axios from 'axios'
+import { useChunkSizeService } from '@/services/upload/chunkSizeService'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
@@ -185,7 +185,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
         return
       }
       fileSize.value = queueItem.file ? queueItem.file.size : 0
-      queueItem.status = QueueItemStatus.Uploading
+      queueItem.status = UploadQueueItemStatus.Uploading
       // todo
       uploadStart(queueItem)
         .then((res) => {

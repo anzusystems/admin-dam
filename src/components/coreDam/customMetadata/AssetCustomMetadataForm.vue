@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { computed } from 'vue'
 import AssetCustomMetadataElement from '@/components/coreDam/customMetadata/AssetCustomMetadataElement.vue'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
@@ -12,7 +12,7 @@ const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{
-    assetType: AssetType
+    assetType: DamAssetType
     modelValue: { [key: string]: any }
     dataCy?: string
   }>(),

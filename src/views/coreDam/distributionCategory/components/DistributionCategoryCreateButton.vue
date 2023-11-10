@@ -13,12 +13,12 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
 import { useDistributionCategoryCreateActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import { AssetType, useAssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType, useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import DistributionCategorySelectOptionSelect from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 
 const props = withDefaults(
   defineProps<{
-    initialAssetType: AssetType
+    initialAssetType: DamAssetType
     buttonT?: string
     buttonClass?: string
     dataCy?: string
@@ -30,7 +30,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onCreateSuccess', data: AssetType): void
+  (e: 'onCreateSuccess', data: DamAssetType): void
 }>()
 
 const dialog = ref(false)

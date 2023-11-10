@@ -1,10 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
-import type { DocId } from '@anzusystems/common-admin'
-import { isNull } from '@anzusystems/common-admin'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemType } from '@/types/coreDam/UploadQueue'
+import type { AssetSearchListItemDto, DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import { isNull, UploadQueueItemType } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 
 export type ListLoader = 'soft' | 'hard'
 
@@ -44,7 +41,7 @@ export const useAssetListStore = defineStore('damAssetListStore', {
     appendList(assets: AssetSearchListItemDto[], selectedItems: UploadQueueItem[] = []) {
       const selectedIds: Array<DocId> = []
       for (let i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i].type === QueueItemType.Asset && selectedItems[i].assetId) {
+        if (selectedItems[i].type === UploadQueueItemType.Asset && selectedItems[i].assetId) {
           selectedIds.push(selectedItems[i].assetId as DocId)
         }
       }
@@ -60,7 +57,7 @@ export const useAssetListStore = defineStore('damAssetListStore', {
     setList(assets: AssetSearchListItemDto[], selectedItems: UploadQueueItem[] = []) {
       const selectedIds: Array<DocId> = []
       for (let i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i].type === QueueItemType.Asset && selectedItems[i].assetId) {
+        if (selectedItems[i].type === UploadQueueItemType.Asset && selectedItems[i].assetId) {
           selectedIds.push(selectedItems[i].assetId as DocId)
         }
       }
@@ -75,7 +72,7 @@ export const useAssetListStore = defineStore('damAssetListStore', {
     setDeletingById(id: DocId) {
       const foundIndex = this.list.findIndex((item) => item.asset.id === id)
       if (foundIndex > -1) {
-        this.list[foundIndex].asset.attributes.assetStatus = AssetStatus.Deleting
+        this.list[foundIndex].asset.attributes.assetStatus = DamAssetStatus.Deleting
       }
     },
     toggleSelectedByIndex(index: number) {

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
-import type { DocId } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, type DocId } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AFormTextarea,
@@ -40,14 +40,13 @@ import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import YoutubeLogo from '@/views/coreDam/asset/detail/components/distribution/YoutubeLogo.vue'
 import DistributionNewDialogYoutubeLogoutButton from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutubeLogoutButton.vue'
 
 const props = withDefaults(
   defineProps<{
     distributionServiceName: DistributionServiceName
-    assetType: AssetType
+    assetType: DamAssetType
     config: DistributionRequirementsConfig
     assetId: DocId
   }>(),

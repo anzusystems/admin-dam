@@ -2,30 +2,27 @@
 import { computed } from 'vue'
 import { deleteAsset, fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import type { DocId } from '@anzusystems/common-admin'
+import { type AssetCustomData, AssetFileFailReason, type DocId, type UploadQueueItem } from '@anzusystems/common-admin'
 import {
   AActionDeleteButton,
   ASystemEntityScope,
   ATableCopyIdButton,
   isNull,
   prettyBytes,
+  UploadQueueItemStatus,
   useAlerts,
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useI18n } from 'vue-i18n'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import type { AssetCustomData } from '@/types/coreDam/Asset'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetLink from '@/views/coreDam/asset/components/AssetLink.vue'
-import { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9
@@ -87,16 +84,16 @@ const assetListStore = useAssetListStore()
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const processing = computed(() => {
-  return [QueueItemStatus.Processing, QueueItemStatus.Loading].includes(props.item.status)
+  return [UploadQueueItemStatus.Processing, UploadQueueItemStatus.Loading].includes(props.item.status)
 })
 const waiting = computed(() => {
-  return props.item.status === QueueItemStatus.Waiting
+  return props.item.status === UploadQueueItemStatus.Waiting
 })
 const done = computed(() => {
-  return !props.disableDoneAnimation && props.item.status === QueueItemStatus.Uploaded
+  return !props.disableDoneAnimation && props.item.status === UploadQueueItemStatus.Uploaded
 })
 const uploading = computed(() => {
-  return props.item.status === QueueItemStatus.Uploading
+  return props.item.status === UploadQueueItemStatus.Uploading
 })
 const uploadProgress = computed(() => {
   return props.item.progress.progressPercent
@@ -128,7 +125,7 @@ const assetType = computed(() => {
   return props.item.assetType
 })
 const status = computed(() => {
-  if (!props.item) return AssetStatus.Default
+  if (!props.item) return DamAssetStatus.Default
   return props.item.assetStatus
 })
 
@@ -140,7 +137,9 @@ const cancelItem = () => {
 }
 
 const showCancel = computed(() => {
-  return [QueueItemStatus.Loading, QueueItemStatus.Waiting, QueueItemStatus.Uploading].includes(props.item.status)
+  return [UploadQueueItemStatus.Loading, UploadQueueItemStatus.Waiting, UploadQueueItemStatus.Uploading].includes(
+    props.item.status
+  )
 })
 </script>
 

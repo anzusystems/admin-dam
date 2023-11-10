@@ -1,9 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { isNull } from '@anzusystems/common-admin'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { isNull, UploadQueueItemType } from '@anzusystems/common-admin'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import type { ListLoader } from '@/stores/coreDam/assetListStore'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemType } from '@/types/coreDam/UploadQueue'
 
 export interface ExternalProviderAssetListItem {
   asset: AssetExternalProviderListDto
@@ -41,7 +40,7 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     appendList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
       const selectedIds: Array<AssetExternalProviderId> = []
       for (let i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i].type === QueueItemType.ExternalProviderAsset && selectedItems[i].externalProviderAssetId) {
+        if (selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset && selectedItems[i].externalProviderAssetId) {
           selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
         }
       }
@@ -57,7 +56,7 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     setList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
       const selectedIds: Array<AssetExternalProviderId> = []
       for (let i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i].type === QueueItemType.ExternalProviderAsset && selectedItems[i].externalProviderAssetId) {
+        if (selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset && selectedItems[i].externalProviderAssetId) {
           selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
         }
       }

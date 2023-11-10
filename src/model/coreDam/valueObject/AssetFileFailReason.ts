@@ -1,16 +1,6 @@
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
-export enum AssetFileFailReason {
-  None = 'none',
-  Unknown = 'unknown',
-  InvalidChecksum = 'invalid_checksum',
-  InvalidMimeType = 'invalid_mime_type',
-  DownloadFailed = 'download_failed',
-  InvalidSize = 'invalid_size',
-  Default = None,
-}
+import { AssetFileFailReason, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useAssetFileFailReason() {
   const { t } = useI18n()

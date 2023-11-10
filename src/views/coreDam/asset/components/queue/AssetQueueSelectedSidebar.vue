@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { useI18n } from 'vue-i18n'
 import AssetCustomMetadataFormMassOperations from '@/components/coreDam/customMetadata/AssetCustomMetadataFormMassOperations.vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
@@ -25,10 +25,10 @@ const panels = ref<Array<string>>(['general'])
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const fillEmptyField = (data: { assetType: AssetType; elementProperty: string; value: any }) => {
+const fillEmptyField = (data: { assetType: DamAssetType; elementProperty: string; value: any }) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data)
 }
-const replaceField = (data: { assetType: AssetType; elementProperty: string; value: any }) => {
+const replaceField = (data: { assetType: DamAssetType; elementProperty: string; value: any }) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data, true)
 }
 const fillEmptyKeywords = () => {
@@ -48,7 +48,7 @@ const fillAll = (forceReplace = false) => {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
-        assetType: AssetType.Image,
+        assetType: DamAssetType.Image,
         elementProperty,
         value,
       },
@@ -59,7 +59,7 @@ const fillAll = (forceReplace = false) => {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
-        assetType: AssetType.Video,
+        assetType: DamAssetType.Video,
         elementProperty,
         value,
       },
@@ -70,7 +70,7 @@ const fillAll = (forceReplace = false) => {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
-        assetType: AssetType.Audio,
+        assetType: DamAssetType.Audio,
         elementProperty,
         value,
       },
@@ -81,7 +81,7 @@ const fillAll = (forceReplace = false) => {
     uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(
       props.queueId,
       {
-        assetType: AssetType.Document,
+        assetType: DamAssetType.Document,
         elementProperty,
         value,
       },
@@ -241,60 +241,60 @@ onMounted(() => {
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
-            v-if="assetTypes.includes(AssetType.Image)"
+            v-if="assetTypes.includes(DamAssetType.Image)"
             elevation="0"
             :title="t('coreDam.asset.assetType.image')"
-            :value="AssetType.Image"
+            :value="DamAssetType.Image"
           >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.image"
-                :asset-type="AssetType.Image"
+                :asset-type="DamAssetType.Image"
                 @fill-empty-field="fillEmptyField"
                 @replace-field="replaceField"
               />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
-            v-if="assetTypes.includes(AssetType.Video)"
+            v-if="assetTypes.includes(DamAssetType.Video)"
             elevation="0"
             :title="t('coreDam.asset.assetType.video')"
-            :value="AssetType.Video"
+            :value="DamAssetType.Video"
           >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.video"
-                :asset-type="AssetType.Video"
+                :asset-type="DamAssetType.Video"
                 @fill-empty-field="fillEmptyField"
                 @replace-field="replaceField"
               />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
-            v-if="assetTypes.includes(AssetType.Audio)"
+            v-if="assetTypes.includes(DamAssetType.Audio)"
             elevation="0"
             :title="t('coreDam.asset.assetType.audio')"
-            :value="AssetType.Audio"
+            :value="DamAssetType.Audio"
           >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.audio"
-                :asset-type="AssetType.Audio"
+                :asset-type="DamAssetType.Audio"
                 @fill-empty-field="fillEmptyField"
                 @replace-field="replaceField"
               />
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
-            v-if="assetTypes.includes(AssetType.Document)"
+            v-if="assetTypes.includes(DamAssetType.Document)"
             elevation="0"
             :title="t('coreDam.asset.assetType.document')"
-            :value="AssetType.Document"
+            :value="DamAssetType.Document"
           >
             <VExpansionPanelText>
               <AssetCustomMetadataFormMassOperations
                 v-model="massOperationsData.document"
-                :asset-type="AssetType.Document"
+                :asset-type="DamAssetType.Document"
                 @fill-empty-field="fillEmptyField"
                 @replace-field="replaceField"
               />

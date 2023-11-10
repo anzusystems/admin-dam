@@ -1,15 +1,19 @@
-import type { QueueItemStatus, QueueItemType, UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import type { IntegerId } from '@anzusystems/common-admin'
+import {
+  AssetFileFailReason,
+  type IntegerId,
+  type UploadQueueItem,
+  type UploadQueueItemStatus,
+  type UploadQueueItemType
+} from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 
 export function useUploadQueueItemFactory() {
   const createDefault = (
     key: string,
-    type: QueueItemType,
-    status: QueueItemStatus,
-    assetType: AssetType,
+    type: UploadQueueItemType,
+    status: UploadQueueItemStatus,
+    assetType: DamAssetType,
     chunkSize: number,
     licenceId: IntegerId
   ): UploadQueueItem => {
@@ -21,7 +25,7 @@ export function useUploadQueueItemFactory() {
       isDuplicate: false,
       duplicateAssetId: null,
       assetType: assetType,
-      assetStatus: AssetStatus.Default,
+      assetStatus: DamAssetStatus.Default,
       displayTitle: '',
       assetId: null,
       fileId: null,
