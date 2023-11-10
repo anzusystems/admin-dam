@@ -40,7 +40,7 @@ Arguments:
 
 ## 5. Open your application
 
-Open http://admin-dam.anzusystems.localhost in your browser.
+Open http://admin-dam.anzusystems.local in your browser.
 
 # Scripts
 

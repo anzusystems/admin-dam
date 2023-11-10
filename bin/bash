@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script used to run bash in the application docker container
+# Script used to run bash in the application container
 
 PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 USER_SWITCH="--user node"
@@ -15,10 +15,10 @@ docker_env_vars
 
 function help() {
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nScript used to run bash in the application docker container
+    \nScript used to run bash in the application container
 
     Options:
-        --root    (Optional) Run bash as root in the docker container
+        --root    (Optional) Run bash as root in the application container
 
     Examples:
         $(printf %q "${BASH_SOURCE[0]}") --root

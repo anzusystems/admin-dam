@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to run setup inside the container
+# Script used to run start setup inside the container
 set -e
 
 cd /var/www/html || exit 1

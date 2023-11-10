@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script used to run build in the application docker container
+# Script used to run build in the application container
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 cd "${PROJECT_ROOT}" || exit 1
