@@ -2,13 +2,16 @@
 import { computed } from 'vue'
 import { deleteAsset, fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { type AssetCustomData, AssetFileFailReason, type DocId, type UploadQueueItem } from '@anzusystems/common-admin'
 import {
   AActionDeleteButton,
+  type AssetCustomData,
+  AssetFileFailReason,
   ASystemEntityScope,
   ATableCopyIdButton,
+  type DocId,
   isNull,
   prettyBytes,
+  type UploadQueueItem,
   UploadQueueItemStatus,
   useAlerts,
 } from '@anzusystems/common-admin'

@@ -292,9 +292,7 @@ watch(selectedFiles, (newValue, oldValue) => {
       @click.stop="clickDropzone"
     >
       <template #prepend>
-        <VIcon
-          icon="mdi-upload"
-        />
+        <VIcon icon="mdi-upload" />
       </template>
       {{ buttonText }}
     </VBtn>

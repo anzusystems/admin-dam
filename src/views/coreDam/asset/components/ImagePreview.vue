@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-import { AssetFileProcessStatus, type AssetSelectReturnData, type DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, isNull, AAssetSelect } from '@anzusystems/common-admin'
+import type { AssetFileImage, AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
+import {
+  AAssetSelect,
+  ADialogToolbar,
+  AssetFileProcessStatus,
+  type AssetSelectReturnData,
+  type DocId,
+  isNull,
+} from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
-import type { AssetFileImage } from '@anzusystems/common-admin'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'

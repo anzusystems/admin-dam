@@ -2,17 +2,17 @@
 
 import type {
   DamConfigAssetCustomFormElement,
-  DamConfigAssetCustomFormElementTemp
+  DamConfigAssetCustomFormElementTemp,
 } from '@/types/coreDam/DamConfigAssetCustomForm'
 import { isDefined } from '@anzusystems/common-admin'
 
-export function mapElementsWithKeyToProperty
-(items: Array<DamConfigAssetCustomFormElementTemp>
+export function mapElementsWithKeyToProperty(
+  items: Array<DamConfigAssetCustomFormElementTemp>
 ): Array<DamConfigAssetCustomFormElement> {
-  return items.map(item => {
+  return items.map((item) => {
     return {
       id: item.id,
-      property: isDefined(item.property) ? item.property as string : item.key as string,
+      property: isDefined(item.property) ? (item.property as string) : (item.key as string),
       name: item.name,
       position: item.position,
       attributes: item.attributes,
@@ -24,5 +24,4 @@ export function mapElementsWithKeyToProperty
       _resourceName: item._resourceName,
     }
   })
-
 }

@@ -3,11 +3,10 @@ import { computed } from 'vue'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import { useI18n } from 'vue-i18n'
-import { isUndefined } from '@anzusystems/common-admin'
+import type { AssetFileProperties } from '@anzusystems/common-admin'
+import { isUndefined, useRemainingTime } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
-import type { AssetFileProperties } from '@anzusystems/common-admin'
-import { useRemainingTime } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

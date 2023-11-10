@@ -1,4 +1,4 @@
-import type { DocId } from '@anzusystems/common-admin'
+import type { AssetSearchListItemDto, DocId } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
   browserHistoryReplaceUrlByRouter,
@@ -16,7 +16,6 @@ import { readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'

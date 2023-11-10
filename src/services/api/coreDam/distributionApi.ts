@@ -38,7 +38,7 @@ export const fetchAssetDistributionList = <T = DistributionJwItem | Distribution
   )
 
 export const fetchAssetFileDistributionList = <
-  T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
+  T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem,
 >(
   assetFileId: DocId,
   pagination: Pagination,

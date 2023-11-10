@@ -40,7 +40,10 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     appendList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
       const selectedIds: Array<AssetExternalProviderId> = []
       for (let i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset && selectedItems[i].externalProviderAssetId) {
+        if (
+          selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset &&
+          selectedItems[i].externalProviderAssetId
+        ) {
           selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
         }
       }
@@ -56,7 +59,10 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     setList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
       const selectedIds: Array<AssetExternalProviderId> = []
       for (let i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset && selectedItems[i].externalProviderAssetId) {
+        if (
+          selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset &&
+          selectedItems[i].externalProviderAssetId
+        ) {
           selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
         }
       }

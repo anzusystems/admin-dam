@@ -8,8 +8,7 @@ const props = withDefaults(
   defineProps<{
     modelValue: string | null
   }>(),
-  {
-  }
+  {}
 )
 
 const emit = defineEmits<{
@@ -25,7 +24,6 @@ const modelValueComputed = computed({
     emit('update:modelValue', newValue)
   },
 })
-
 </script>
 
 <template>

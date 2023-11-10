@@ -1,12 +1,12 @@
 import type {
   AnzuUserAndTimeTrackingAware,
+  AssetFileImagePreviewNullable,
+  AssetFileLinks,
   DatetimeUTCNullable,
   DocId,
   DocIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { AssetFileLinks } from '@anzusystems/common-admin'
-import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
 import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {

@@ -7,8 +7,8 @@ import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DocId } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import { ADialogToolbar } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{

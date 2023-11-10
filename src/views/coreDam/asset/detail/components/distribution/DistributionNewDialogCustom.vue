@@ -3,8 +3,15 @@ import { computed, onMounted, ref } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
-import { AssetFileProcessStatus, type DocId } from '@anzusystems/common-admin'
-import { AFormDatetimePicker, ASystemEntityScope, cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
+import {
+  AFormDatetimePicker,
+  AssetFileProcessStatus,
+  ASystemEntityScope,
+  cloneDeep,
+  type DocId,
+  useAlerts,
+  usePagination,
+} from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

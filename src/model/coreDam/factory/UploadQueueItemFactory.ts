@@ -3,7 +3,7 @@ import {
   type IntegerId,
   type UploadQueueItem,
   type UploadQueueItemStatus,
-  type UploadQueueItemType
+  type UploadQueueItemType,
 } from '@anzusystems/common-admin'
 import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'

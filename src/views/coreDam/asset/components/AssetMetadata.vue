@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anzusystems/common-admin'
+import type { AssetFile } from '@anzusystems/common-admin'
+import {
+  ACopyText,
+  assetFileIsAudioFile,
+  assetFileIsImageFile,
+  assetFileIsVideoFile,
+  ASystemEntityScope,
+  dateTimePretty,
+  prettyBytes,
+} from '@anzusystems/common-admin'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
@@ -8,13 +17,10 @@ import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { AssetFile, AssetFileAudio, AssetFileDocument, AssetFileImage, AssetFileVideo } from '@anzusystems/common-admin'
-import { assetFileIsImageFile } from '@anzusystems/common-admin'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import { assetFileIsVideoFile, assetFileIsAudioFile } from '@anzusystems/common-admin'
 import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 
@@ -41,7 +47,7 @@ const isTypeVideo = computed(() => {
 })
 
 const assetMainFile = computed<null | AssetFile>(() => {
-  return asset.value && asset.value.mainFile ? asset.value.mainFile as AssetFile : null
+  return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
 })
 
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)

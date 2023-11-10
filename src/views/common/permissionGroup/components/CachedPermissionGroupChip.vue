@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { IntegerId } from '@anzusystems/common-admin'
 import { ACachedChip } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import type { IntegerId } from '@anzusystems/common-admin'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 withDefaults(

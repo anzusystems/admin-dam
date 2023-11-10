@@ -15,14 +15,14 @@ declare module 'vue-router' {
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    ABtnPrimary: typeof import('vuetify/components')['VBtn']
-    ABtnSecondary: typeof import('vuetify/components')['VBtn']
-    ABtnTertiary: typeof import('vuetify/components')['VBtn']
-    ABtnIcon: typeof import('vuetify/components')['VBtn']
-    RouterLink: typeof import('vue-router')['RouterLink']
-    RouterView: typeof import('vue-router')['RouterView']
+    ABtnPrimary: (typeof import('vuetify/components'))['VBtn']
+    ABtnSecondary: (typeof import('vuetify/components'))['VBtn']
+    ABtnTertiary: (typeof import('vuetify/components'))['VBtn']
+    ABtnIcon: (typeof import('vuetify/components'))['VBtn']
+    RouterLink: (typeof import('vue-router'))['RouterLink']
+    RouterView: (typeof import('vue-router'))['RouterView']
     Notifications: any // todo
-    Acl: typeof import('@anzusystems/common-admin')['Acl']
+    Acl: (typeof import('@anzusystems/common-admin'))['Acl']
   }
 }
 

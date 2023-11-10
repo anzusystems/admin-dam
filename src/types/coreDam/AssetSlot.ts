@@ -1,5 +1,9 @@
-import type { AnzuUserAndTimeTrackingAware, DocId, ResourceNameSystemAware } from '@anzusystems/common-admin'
-import type { AssetFileNullable } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  AssetFileNullable,
+  DocId,
+  ResourceNameSystemAware,
+} from '@anzusystems/common-admin'
 
 export interface AssetSlot extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId

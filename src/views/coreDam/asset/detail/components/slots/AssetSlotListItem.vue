@@ -6,8 +6,15 @@ import { computed, watch } from 'vue'
 import AssetSlotListItemRemove from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemDuplicate from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
-import { type AssetFileFailReason, AssetFileProcessStatus, type DocId } from '@anzusystems/common-admin'
-import { isUndefined, type UploadQueueItem, UploadQueueItemStatus, useAlerts } from '@anzusystems/common-admin'
+import {
+  type AssetFileFailReason,
+  AssetFileProcessStatus,
+  type DocId,
+  isUndefined,
+  type UploadQueueItem,
+  UploadQueueItemStatus,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import type { AssetDetailItemDto } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormValueObjectOptionsSelect,
@@ -12,7 +13,6 @@ import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { useAssetFactory } from '@/model/coreDam/factory/AssetFactory'
 import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { useI18n } from 'vue-i18n'
-import type { AssetDetailItemDto } from '@anzusystems/common-admin'
 import { createAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'

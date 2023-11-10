@@ -2,12 +2,13 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
-import { AssetFileProcessStatus, type DocId } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AFormTextarea,
   AFormValueObjectOptionsSelect,
+  AssetFileProcessStatus,
   ASystemEntityScope,
+  type DocId,
   useAlerts,
   usePagination,
   useValidate,
