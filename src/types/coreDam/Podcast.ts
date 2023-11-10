@@ -7,8 +7,8 @@ import type {
 } from '@anzusystems/common-admin'
 import type { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
-import type { AssetFileLinks } from '@/types/coreDam/File'
-import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
+import type { AssetFileLinks } from '@anzusystems/common-admin'
+import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
 
 interface Texts {
   title: string
@@ -33,8 +33,8 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   dates: Dates
   links?: AssetFileLinks
   altLinks?: AssetFileLinks
-  imagePreview: ImagePreviewNullable
-  altImage: ImagePreviewNullable
+  imagePreview: AssetFileImagePreviewNullable
+  altImage: AssetFileImagePreviewNullable
 }
 
 export interface PodcastMinimal {

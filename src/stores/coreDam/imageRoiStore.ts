@@ -1,9 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { RegionOfInterest } from '@/types/coreDam/Roi'
-import type { ImageFile } from '@/types/coreDam/File'
+import type { AssetFileImage } from '@anzusystems/common-admin'
 
 interface State {
-  imageFile: null | ImageFile
+  imageFile: null | AssetFileImage
   loader: boolean
   roi: null | RegionOfInterest
   timestampCropper: number
@@ -19,7 +19,7 @@ export const useImageRoiStore = defineStore('damImageRoiStore', {
     timestampRoiPreviews: Date.now(),
   }),
   actions: {
-    setImageFile(file: ImageFile | null) {
+    setImageFile(file: AssetFileImage | null) {
       this.imageFile = file
     },
     setRoi(roi: RegionOfInterest | null) {

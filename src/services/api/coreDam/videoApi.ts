@@ -11,8 +11,8 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { FileDownloadLink, VideoFile } from '@/types/coreDam/File'
-import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
+import type { AssetFileDownloadLink, AssetFileVideo } from '@anzusystems/common-admin'
+import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
 import { fileTypeFix } from '@/services/fileType'
 
@@ -20,7 +20,7 @@ const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
 export const fetchVideoFile = (id: DocId) =>
-  apiFetchOne<VideoFile>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchOne<AssetFileVideo>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
@@ -229,7 +229,7 @@ export const existingVideoToSlot = (videoId: DocId, assetId: DocId, slotName: st
 }
 
 export const downloadLink = (videoId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + videoId + '/download-link'
     damClient()
       .get(url)
@@ -248,7 +248,7 @@ export const downloadLink = (videoId: DocId) => {
   })
 }
 
-export const updatePreviewImage = (fileId: DocId, imagePreview: ImagePreviewNullable) => {
+export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePreviewNullable) => {
   return new Promise((resolve, reject) => {
     damClient()
       .put(

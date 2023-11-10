@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
-import type { AudioFile } from '@/types/coreDam/File'
+import type { AssetFileAudio } from '@anzusystems/common-admin'
 import { prettyDuration } from '@/utils/file'
 
 withDefaults(
   defineProps<{
-    file: AudioFile
+    file: AssetFileAudio
   }>(),
   {}
 )

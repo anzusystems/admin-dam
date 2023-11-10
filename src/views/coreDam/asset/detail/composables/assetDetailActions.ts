@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
-import { isImageFile } from '@/types/coreDam/File'
+import { assetFileIsImageFile } from '@anzusystems/common-admin'
 
 export function useAssetDetailActions() {
   const sidebar = ref(true)
@@ -55,7 +55,7 @@ export function useAssetDetailActions() {
         width: asset.value.mainFile.links.image_detail.width,
         height: asset.value.mainFile.links.image_detail.height,
         bgColor:
-          isImageFile(asset.value.mainFile) &&
+          assetFileIsImageFile(asset.value.mainFile) &&
           asset.value.mainFile.imageAttributes &&
           asset.value.mainFile.imageAttributes.mostDominantColor
             ? asset.value.mainFile.imageAttributes.mostDominantColor

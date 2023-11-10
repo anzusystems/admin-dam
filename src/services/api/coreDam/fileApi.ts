@@ -46,7 +46,7 @@ import {
 } from '@/services/api/coreDam/documentApi'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
-import type { FileDownloadLink } from '@/types/coreDam/File'
+import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
 
@@ -411,7 +411,7 @@ export const existingFileToSlot = (assetType: DamAssetType, fileId: DocId, asset
 }
 
 export const fileDownloadLink = (assetType: DamAssetType, fileId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageDownloadLink(fileId)

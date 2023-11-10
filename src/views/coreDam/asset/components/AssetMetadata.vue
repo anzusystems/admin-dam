@@ -8,13 +8,13 @@ import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/coreDam/File'
-import { isImageFile } from '@/types/coreDam/File'
+import type { AssetFile, AssetFileAudio, AssetFileDocument, AssetFileImage, AssetFileVideo } from '@anzusystems/common-admin'
+import { assetFileIsImageFile } from '@anzusystems/common-admin'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import { isVideoFile, isAudioFile } from '@/types/coreDam/File'
+import { assetFileIsVideoFile, assetFileIsAudioFile } from '@anzusystems/common-admin'
 import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 
@@ -40,8 +40,8 @@ const isTypeVideo = computed(() => {
   return assetType.value === DamAssetType.Video
 })
 
-const assetMainFile = computed<null | ImageFile | AudioFile | DocumentFile | VideoFile>(() => {
-  return asset.value && asset.value.mainFile ? asset.value.mainFile : null
+const assetMainFile = computed<null | AssetFile>(() => {
+  return asset.value && asset.value.mainFile ? asset.value.mainFile as AssetFile : null
 })
 
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
@@ -189,17 +189,17 @@ const onAnyMetadataChange = () => {
           </VRow>
           <!-- image -->
           <AssetMetadataImageAttributes
-            v-if="isTypeImage && isImageFile(assetMainFile)"
+            v-if="isTypeImage && assetFileIsImageFile(assetMainFile)"
             :file="assetMainFile"
           />
           <!-- video -->
           <AssetMetadataVideoAttributes
-            v-if="isTypeVideo && isVideoFile(assetMainFile)"
+            v-if="isTypeVideo && assetFileIsVideoFile(assetMainFile)"
             :file="assetMainFile"
           />
           <!-- audio -->
           <AssetMetadataAudioAttributes
-            v-if="isTypeAudio && isAudioFile(assetMainFile)"
+            v-if="isTypeAudio && assetFileIsAudioFile(assetMainFile)"
             :file="assetMainFile"
           />
         </div>

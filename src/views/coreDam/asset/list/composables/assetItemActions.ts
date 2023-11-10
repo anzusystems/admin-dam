@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { isImageFile } from '@/types/coreDam/File'
+import { assetFileIsImageFile } from '@anzusystems/common-admin'
 import type { AssetListItem } from '@/stores/coreDam/assetListStore'
 import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 
@@ -51,7 +51,7 @@ export function useAssetItemActions(item: AssetListItem) {
   })
 
   const getBgColor = () => {
-    return isImageFile(asset.value.mainFile) &&
+    return assetFileIsImageFile(asset.value.mainFile) &&
       asset.value.mainFile.imageAttributes &&
       asset.value.mainFile.imageAttributes.mostDominantColor
       ? asset.value.mainFile.imageAttributes.mostDominantColor

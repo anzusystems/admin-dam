@@ -9,14 +9,14 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { AudioFile, FileDownloadLink } from '@/types/coreDam/File'
+import type { AssetFileAudio, AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { fileTypeFix } from '@/services/fileType'
 
 const END_POINT = '/adm/v1/audio'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
 export const fetchAudioFile = (id: DocId) =>
-  apiFetchOne<AudioFile>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchOne<AssetFileAudio>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
@@ -225,7 +225,7 @@ export const existingAudioToSlot = (audioId: DocId, assetId: DocId, slotName: st
 }
 
 export const downloadLink = (audioId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + audioId + '/download-link'
     damClient()
       .get(url)
@@ -245,7 +245,7 @@ export const downloadLink = (audioId: DocId) => {
 }
 
 export const makePublic = (audioId: DocId, slug: string) => {
-  return new Promise<AudioFile>((resolve, reject) => {
+  return new Promise<AssetFileAudio>((resolve, reject) => {
     const url = END_POINT + '/' + audioId + '/make-public'
     damClient()
       .patch(
@@ -270,7 +270,7 @@ export const makePublic = (audioId: DocId, slug: string) => {
 }
 
 export const makePrivate = (audioId: DocId) => {
-  return new Promise<AudioFile>((resolve, reject) => {
+  return new Promise<AssetFileAudio>((resolve, reject) => {
     const url = END_POINT + '/' + audioId + '/make-private'
     damClient()
       .patch(url)

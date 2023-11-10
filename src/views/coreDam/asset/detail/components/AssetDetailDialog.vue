@@ -8,7 +8,7 @@ import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import { isImageFile } from '@/types/coreDam/File'
+import { assetFileIsImageFile } from '@anzusystems/common-admin'
 import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { DocId } from '@anzusystems/common-admin'
@@ -95,7 +95,7 @@ const imageProperties = computed(() => {
       width: asset.value.mainFile.links.image_detail.width,
       height: asset.value.mainFile.links.image_detail.height,
       bgColor:
-        isImageFile(asset.value.mainFile) &&
+        assetFileIsImageFile(asset.value.mainFile) &&
         asset.value.mainFile.imageAttributes &&
         asset.value.mainFile.imageAttributes.mostDominantColor
           ? asset.value.mainFile.imageAttributes.mostDominantColor

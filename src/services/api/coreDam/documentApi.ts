@@ -9,14 +9,14 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { DocumentFile, FileDownloadLink } from '@/types/coreDam/File'
+import type { AssetFileDocument, AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { fileTypeFix } from '@/services/fileType'
 
 const END_POINT = '/adm/v1/document'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
 export const fetchDocumentFile = (id: DocId) =>
-  apiFetchOne<DocumentFile>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchOne<AssetFileDocument>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
@@ -225,7 +225,7 @@ export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotNa
 }
 
 export const downloadLink = (documentId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + documentId + '/download-link'
     damClient()
       .get(url)

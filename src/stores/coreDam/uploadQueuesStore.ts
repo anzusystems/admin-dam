@@ -1,17 +1,21 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import type { AssetFileNullable } from '@anzusystems/common-admin'
 import {
-  type AssetDetailItemDto, type AssetFileFailReason, AssetFileLinkType,
+  type AssetDetailItemDto,
+  type AssetFileFailReason,
+  AssetFileLinkType,
   type AssetSearchListItemDto,
   type DocId,
   type DocIdNullable,
+  isUndefined,
   type UploadQueueItem,
+  UploadQueueItemStatus,
+  UploadQueueItemType,
 } from '@anzusystems/common-admin'
-import { isUndefined, UploadQueueItemStatus, UploadQueueItemType } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
 import type { UploadQueue } from '@/types/coreDam/UploadQueue'
-import type { AssetFileNullable } from '@/types/coreDam/File'
 import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import { getAssetTypeByMimeType } from '@/services/upload/mimeTypeService'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'

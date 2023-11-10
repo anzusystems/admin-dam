@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import ColorBox from '@/components/coreDam/ColorBox.vue'
 import { useI18n } from 'vue-i18n'
-import type { ImageFile } from '@/types/coreDam/File'
+import type { AssetFileImage } from '@anzusystems/common-admin'
 import { ABooleanValue } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
-    file: ImageFile
+    file: AssetFileImage
   }>(),
   {}
 )

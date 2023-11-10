@@ -3,7 +3,7 @@ import { AssetFileProcessStatus, type DocId, type DocIdNullable } from '@anzusys
 import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import type { ImageFile } from '@/types/coreDam/File'
+import type { AssetFileImage } from '@anzusystems/common-admin'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
 import AssetByImageIdLink from '@/views/coreDam/asset/components/AssetByImageIdLink.vue'
@@ -30,7 +30,7 @@ const { t } = useI18n()
 const loading = ref(false)
 const dialog = ref(false)
 const newFileId = ref<DocId>('')
-const imageFile = ref<null | ImageFile>(null)
+const imageFile = ref<null | AssetFileImage>(null)
 
 const fetchImage = async (id: DocId) => {
   loading.value = true
