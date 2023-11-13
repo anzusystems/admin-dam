@@ -2,8 +2,8 @@
 import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { computed } from 'vue'
-import AssetCustomMetadataElement from '@/components/coreDam/customMetadata/AssetCustomMetadataElement.vue'
 import { useI18n } from 'vue-i18n'
+import { ACustomDataFormElement } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -48,9 +48,8 @@ const elements = computed(() => {
     >
       <VCol>
         <div class="d-flex">
-          <AssetCustomMetadataElement
+          <ACustomDataFormElement
             :config="element"
-            :element-property="element.property"
             :model-value="modelValue[element.property]"
             @update:model-value="updateModelValue"
           />

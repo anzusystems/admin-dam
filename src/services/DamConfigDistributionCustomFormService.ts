@@ -1,7 +1,6 @@
 import { type Ref, ref } from 'vue'
 import { fetchDistributionCustomFormElements } from '@/services/api/coreDam/assetCustomFormApi'
 import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
-import { mapElementsWithKeyToProperty } from '@/services/TempMapCustomFormElementHelper'
 
 export const damConfigDistributionCustomFormElements: Ref<Record<DistributionServiceName, any>> = ref({})
 
@@ -13,7 +12,7 @@ export const loadDamConfigDistributionCustomFormElements = (distributionServiceN
     }
     fetchDistributionCustomFormElements(distributionServiceName)
       .then((res) => {
-        damConfigDistributionCustomFormElements.value[distributionServiceName] = mapElementsWithKeyToProperty(res.data)
+        damConfigDistributionCustomFormElements.value[distributionServiceName] = res.data
         resolve(true)
         return
       })
