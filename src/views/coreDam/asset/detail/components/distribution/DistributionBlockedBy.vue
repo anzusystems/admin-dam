@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
 import { computed, ref, watch } from 'vue'
 import { cloneDeep, type DocIdNullable, usePagination, useValidate } from '@anzusystems/common-admin'
@@ -17,7 +18,7 @@ import { useI18n } from 'vue-i18n'
 const props = withDefaults(
   defineProps<{
     modelValue: any
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     config: DistributionRequirementsConfig
     assetFileId: DocIdNullable
     assetType: DamAssetType

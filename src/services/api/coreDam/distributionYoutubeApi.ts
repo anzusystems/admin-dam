@@ -9,7 +9,7 @@ import {
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type {
   DistributionAuthUrl,
   DistributionYoutubeCreateRedistributeDto,
@@ -46,7 +46,7 @@ export const redistributeYoutubeDistribution = (
 
 export const prepareFormDataYoutubeDistribution = (
   assetFileId: DocId,
-  distributionServiceName: DistributionServiceName
+  distributionServiceName: DamDistributionServiceName
 ) =>
   apiFetchOne<DistributionYoutubeItem>(
     damClient,
@@ -56,7 +56,7 @@ export const prepareFormDataYoutubeDistribution = (
     ENTITY
   )
 
-export const getYoutubeAuthUrl = (distributionServiceName: DistributionServiceName) =>
+export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName) =>
   apiFetchOne<DistributionAuthUrl>(
     damClient,
     END_POINT + '/:distributionServiceName/auth-url',
@@ -65,7 +65,7 @@ export const getYoutubeAuthUrl = (distributionServiceName: DistributionServiceNa
     ENTITY
   )
 
-export const fetchYoutubeLanguages = (distributionServiceName: DistributionServiceName) => {
+export const fetchYoutubeLanguages = (distributionServiceName: DamDistributionServiceName) => {
   const pagination = usePagination()
   return apiFetchList<YoutubeLanguage[]>(
     damClient,
@@ -78,7 +78,7 @@ export const fetchYoutubeLanguages = (distributionServiceName: DistributionServi
   )
 }
 
-export const fetchYoutubePlaylists = (distributionServiceName: DistributionServiceName, forceReload = false) => {
+export const fetchYoutubePlaylists = (distributionServiceName: DamDistributionServiceName, forceReload = false) => {
   const pagination = usePagination()
   return apiFetchList<YoutubePlaylist[]>(
     damClient,
@@ -91,7 +91,7 @@ export const fetchYoutubePlaylists = (distributionServiceName: DistributionServi
   )
 }
 
-export const logoutYoutube = (distributionServiceName: DistributionServiceName) =>
+export const logoutYoutube = (distributionServiceName: DamDistributionServiceName) =>
   apiFetchOne<any>(
     damClient,
     END_POINT + '/:distributionServiceName/logout',

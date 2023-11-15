@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
-import { damConfigDistributionCustomFormElements } from '@/services/DamConfigDistributionCustomFormService'
-import { ACustomDataFormElement } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 
 // damConfigDistributionCustomFormElements must be loaded before using this component
 
 const props = withDefaults(
   defineProps<{
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     modelValue: { [key: string]: any }
   }>(),
   {}
@@ -25,6 +24,7 @@ const updateModelValue = (data: { property: string; value: any }) => {
   emit('update:modelValue', { ...props.modelValue, ...updated })
   emit('anyChange')
 }
+const { damConfigDistributionCustomFormElements } = useDamConfigState()
 
 const elements = computed(() => {
   return damConfigDistributionCustomFormElements.value[props.distributionServiceName]

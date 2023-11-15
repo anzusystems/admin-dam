@@ -1,12 +1,12 @@
 import { ref } from 'vue'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { AssetFileProcessStatus, type DocIdNullable } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const dialogKey = ref(1)
 const dialogNew = ref(false)
-const activeDistributionName = ref<DistributionServiceName | null>(null)
+const activeDistributionName = ref<DamDistributionServiceName | null>(null)
 const showTabs = ref(false)
 const redistributeMode = ref(false)
 const assetFileId = ref<DocIdNullable>(null)

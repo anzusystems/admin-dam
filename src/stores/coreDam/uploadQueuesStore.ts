@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { AssetFileNullable } from '@anzusystems/common-admin'
+import { type AssetFileNullable, getAssetTypeByMimeType, useUploadQueueItemFactory } from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
   type AssetFileFailReason,
@@ -15,9 +15,8 @@ import {
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
-import type { UploadQueue } from '@/types/coreDam/UploadQueue'
+import type { UploadQueue } from '@anzusystems/common-admin'
 import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
-import { getAssetTypeByMimeType } from '@/services/upload/mimeTypeService'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { fetchAudioFile } from '@/services/api/coreDam/audioApi'
 import { fetchVideoFile } from '@/services/api/coreDam/videoApi'
@@ -26,12 +25,12 @@ import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/ty
 import { externalProviderImport } from '@/services/upload/externalProviderImportService'
 import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { useUploadQueueItemFactory } from '@/model/coreDam/factory/UploadQueueItemFactory'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { fileTypeFix } from '@/services/fileType'
+import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -124,7 +123,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async addByFiles(queueId: string, files: File[]) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
-        const type = getAssetTypeByMimeType(fileTypeFix(file))
+        const type = getAssetTypeByMimeType(fileTypeFix(file), damConfigExtSystem)
         if (!type) continue
         const queueItem = createDefault(
           'file_' + file.name,

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubePlaylists } from '@/services/api/coreDam/distributionYoutubeApi'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type { YoutubePlaylist } from '@/types/coreDam/Distribution'
 import { useAlerts } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
     modelValue: string
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     label?: string
   }>(),
   {

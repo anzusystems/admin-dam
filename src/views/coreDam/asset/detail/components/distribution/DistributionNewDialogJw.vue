@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import type { DistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
 import {
   createJwDistribution,
   ENTITY,
@@ -34,7 +35,7 @@ import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distr
 
 const props = withDefaults(
   defineProps<{
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     assetType: DamAssetType
     config: DistributionRequirementsConfig
     assetId: DocId

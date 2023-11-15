@@ -8,7 +8,7 @@ import type {
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/types/coreDam/Distribution'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/distribution'
 export const ENTITY = 'distribution'
@@ -54,7 +54,7 @@ export const fetchAssetFileDistributionList = <
     ENTITY
   )
 
-export const distributionIsAuthorized = (distributionServiceName: DistributionServiceName) =>
+export const distributionIsAuthorized = (distributionServiceName: DamDistributionServiceName) =>
   apiFetchOne<DistributionAuthorized>(
     damClient,
     END_POINT + '/:distributionServiceName/authorized',

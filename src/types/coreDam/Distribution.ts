@@ -1,4 +1,4 @@
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
 import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
@@ -38,7 +38,7 @@ interface FlagsYoutube {
 
 export interface DistributionAuthorized {
   authorized: boolean
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
 }
 
 export interface DistributionAuthUrl {
@@ -50,7 +50,7 @@ export interface DistributionItem {
   assetId: DocId
   assetFileId: DocId
   extId: string
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   status: DistributionStatus
   failReason: DistributionFailReason
   blockedBy: DocId[]
@@ -62,7 +62,7 @@ export interface DistributionJwCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
   texts: TextsJw
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   blockedBy: DocId[]
 }
 
@@ -72,7 +72,7 @@ export interface DistributionCustomCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
   customData: Record<string, any>
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   blockedBy: DocId[]
 }
 
@@ -80,7 +80,7 @@ export interface DistributionYoutubeCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
   texts: TextsYoutube
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   privacy: DistributionYoutubePrivacy
   language: string
   playlist: string

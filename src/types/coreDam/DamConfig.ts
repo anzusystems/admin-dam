@@ -1,5 +1,6 @@
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 
 export enum DistributionServiceType {
   Youtube = 'youtubeDistribution',
@@ -47,8 +48,6 @@ export enum UserAuthType {
   Default = JsonCredentials,
 }
 
-export type DistributionServiceName = string
-
 export type ExternalProviderAssetName = string
 
 export type ExternalProviderAssetConfig = Record<ExternalProviderAssetName, { listingLimit: number; title: string }>
@@ -74,14 +73,14 @@ export enum DistributionRequirementStrategy {
 export interface DistributionRequirementsConfig {
   title: string
   requiredAuth: boolean
-  blockedBy: Array<DistributionServiceName>
+  blockedBy: Array<DamDistributionServiceName>
   categorySelect: DistributionRequirementsCategorySelectConfig
   strategy: DistributionRequirementStrategy
 }
 
 export interface DistributionConfig {
-  distributionServices: Array<DistributionServiceName>
-  distributionRequirements: Record<DistributionServiceName, DistributionRequirementsConfig>
+  distributionServices: Array<DamDistributionServiceName>
+  distributionRequirements: Record<DamDistributionServiceName, DistributionRequirementsConfig>
 }
 
 export interface ExtSystemConfig {

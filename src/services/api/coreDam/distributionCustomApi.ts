@@ -2,7 +2,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import { apiCreateOne, apiDeleteOne, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 
 const END_POINT = '/adm/v1/custom-distribution'
@@ -30,7 +30,7 @@ export const redistributeCustomDistribution = (distributionId: DocId, data: Dist
 
 export const prepareFormDataCustomDistribution = (
   assetFileId: DocId,
-  distributionServiceName: DistributionServiceName
+  distributionServiceName: DamDistributionServiceName
 ) =>
   apiFetchOne<DistributionCustomItem>(
     damClient,

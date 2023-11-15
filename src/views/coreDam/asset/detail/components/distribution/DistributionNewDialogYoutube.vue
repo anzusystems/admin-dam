@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DistributionRequirementsConfig, DamDistributionServiceName } from '@/types/coreDam/DamConfig'
 import {
   AFormDatetimePicker,
   AFormTextarea,
@@ -46,7 +46,7 @@ import DistributionNewDialogYoutubeLogoutButton from '@/views/coreDam/asset/deta
 
 const props = withDefaults(
   defineProps<{
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     assetType: DamAssetType
     config: DistributionRequirementsConfig
     assetId: DocId
