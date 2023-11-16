@@ -1,4 +1,9 @@
-import { AssetFileProcessStatus, type DocId, type UploadQueueItem } from '@anzusystems/common-admin'
+import {
+  AssetFileProcessStatus,
+  type DamUploadStartResponse,
+  type DocId,
+  type UploadQueueItem
+} from '@anzusystems/common-admin'
 import { UploadQueueItemStatus } from '@anzusystems/common-admin'
 import {
   deleteImage,
@@ -50,42 +55,37 @@ import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
 
-interface UploadStartResponse {
-  id: DocId
-  asset: DocId
-}
-
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
 
-export const uploadStart: (item: UploadQueueItem) => Promise<UploadStartResponse> = (item: UploadQueueItem) => {
+export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
-      case DamAssetType.Image:
+      case DamAssetType.Image:''
         imageUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
       case DamAssetType.Audio:
         audioUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
       case DamAssetType.Video:
         videoUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
       case DamAssetType.Document:
         documentUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
@@ -232,7 +232,7 @@ export const uploadChunk = (
   })
 }
 
-export const externalProviderUpload: (item: UploadQueueItem) => Promise<UploadStartResponse> = (
+export const externalProviderUpload: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (
   item: UploadQueueItem
 ) => {
   return new Promise((resolve, reject) => {
@@ -240,14 +240,14 @@ export const externalProviderUpload: (item: UploadQueueItem) => Promise<UploadSt
       case DamAssetType.Image:
         imageExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
       case DamAssetType.Audio:
         audioExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
 
@@ -255,14 +255,14 @@ export const externalProviderUpload: (item: UploadQueueItem) => Promise<UploadSt
       case DamAssetType.Video:
         videoExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
       case DamAssetType.Document:
         documentExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
