@@ -7,9 +7,9 @@ import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/d
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
-import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
+import { useDamConfigState } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -19,15 +19,17 @@ const props = withDefaults(
   {}
 )
 
+const { damPrvConfig } = useDamConfigState()
+
 const distributionType = computed(() => {
-  if (damConfig.distributionServices[props.item.distributionService]) {
-    return damConfig.distributionServices[props.item.distributionService].type
+  if (damPrvConfig.value.distributionServices[props.item.distributionService]) {
+    return damPrvConfig.value.distributionServices[props.item.distributionService].type
   }
   return null
 })
 
 const showRedistribute = computed(() => {
-  return damConfig.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
+  return damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
     props.item.status
   )
 })

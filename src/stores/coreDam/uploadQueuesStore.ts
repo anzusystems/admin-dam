@@ -1,5 +1,10 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { type AssetFileNullable, getAssetTypeByMimeType, useUploadQueueItemFactory } from '@anzusystems/common-admin'
+import {
+  type AssetFileNullable,
+  getAssetTypeByMimeType,
+  useDamConfigState,
+  useUploadQueueItemFactory
+} from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
   type AssetFileFailReason,
@@ -30,7 +35,6 @@ import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKey
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { fileTypeFix } from '@/services/fileType'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -121,9 +125,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   },
   actions: {
     async addByFiles(queueId: string, files: File[]) {
+      const { damConfigExtSystem } = useDamConfigState()
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
-        const type = getAssetTypeByMimeType(fileTypeFix(file), damConfigExtSystem)
+        const type = getAssetTypeByMimeType(fileTypeFix(file), damConfigExtSystem.value)
         if (!type) continue
         const queueItem = createDefault(
           'file_' + file.name,

@@ -1,5 +1,13 @@
-import type { DocId, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
+import {
+  cloneDeep,
+  type DocId,
+  type FilterBag,
+  type Pagination,
+  useAlerts,
+  useDamConfigState,
+  usePagination,
+  type ValueObjectOption,
+} from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   createDistributionCategory,
@@ -11,7 +19,6 @@ import {
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -85,13 +92,17 @@ export const useDistributionCategoryDetailActions = () => {
 }
 
 export const useDistributionCategoryManageActions = () => {
+  const { damConfigExtSystem } = useDamConfigState()
+
   const getAvailableDistributionServiceSlugs = (assetType: DamAssetType) => {
     const serviceSlugs: string[] = []
-    Object.entries(damConfigExtSystem[assetType].distribution.distributionRequirements).forEach(([service, config]) => {
-      if (config.categorySelect.enabled) {
-        serviceSlugs.push(service)
+    Object.entries(damConfigExtSystem.value[assetType].distribution.distributionRequirements).forEach(
+      ([service, config]) => {
+        if (config.categorySelect.enabled) {
+          serviceSlugs.push(service)
+        }
       }
-    })
+    )
     return serviceSlugs
   }
 

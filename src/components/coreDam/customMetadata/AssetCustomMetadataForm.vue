@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { ACustomDataForm } from '@anzusystems/common-admin'
+import { ACustomDataForm, useDamConfigState } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -20,12 +18,16 @@ const emit = defineEmits<{
   (e: 'anyChange'): void
 }>()
 
+const { damConfigAssetCustomFormElements } = useDamConfigState()
+
 const elements = computed(() => {
-  return damConfigAssetCustomFormElements[props.assetType]
+  return damConfigAssetCustomFormElements.value[props.assetType]
 })
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const pinnedCount = computed(() => {
-  return damConfigExtSystem[props.assetType].customMetadataPinnedAmount
+  return damConfigExtSystem.value[props.assetType].customMetadataPinnedAmount
 })
 </script>
 

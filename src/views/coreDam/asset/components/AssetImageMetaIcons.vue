@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { AssetFileProperties } from '@anzusystems/common-admin'
+import { type AssetFileProperties, useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import {
   DIMENSIONS_CONFIG,
@@ -9,7 +9,6 @@ import {
   ICON_SLOTS,
   LOW_DIMENSION,
 } from '@/views/coreDam/asset/components/assetImageIconsConfig'
-import { damConfig } from '@/services/DamConfigService'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -48,11 +47,13 @@ const checkDimensions = (icons: string[], titles: string[]) => {
 }
 
 const checkDistributions = (icons: string[], titles: string[]) => {
+  const { damPrvConfig } = useDamConfigState()
   for (let i = 0; i < props.assetFileProperties.distributesInServices.length; i++) {
-    const iconPath = damConfig.distributionServices[props.assetFileProperties.distributesInServices[i]]?.iconPath
+    const iconPath =
+      damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]]?.iconPath
     if (iconPath.length > 0 && !icons.includes(iconPath)) {
       icons.push(iconPath)
-      titles.push(damConfig.distributionServices[props.assetFileProperties.distributesInServices[i]].title)
+      titles.push(damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]].title)
     }
   }
 }

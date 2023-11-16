@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ACustomDataFormElement } from '@anzusystems/common-admin'
+import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -33,8 +32,10 @@ const replaceField = (elementProperty: string, value: any) => {
   emit('replaceField', { assetType: props.assetType, elementProperty, value })
 }
 
+const { damConfigAssetCustomFormElements } = useDamConfigState()
+
 const elements = computed(() => {
-  return damConfigAssetCustomFormElements[props.assetType]
+  return damConfigAssetCustomFormElements.value[props.assetType]
 })
 </script>
 

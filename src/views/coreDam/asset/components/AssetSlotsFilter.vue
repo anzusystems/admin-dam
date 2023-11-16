@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import type { Filter } from '@anzusystems/common-admin'
+import { type Filter, useDamConfigState } from '@anzusystems/common-admin'
 import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -24,12 +23,14 @@ const value = computed({
   },
 })
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const items = computed(() => {
   return [
-    ...damConfigExtSystem.audio.slots,
-    ...damConfigExtSystem.image.slots,
-    ...damConfigExtSystem.video.slots,
-    ...damConfigExtSystem.document.slots,
+    ...damConfigExtSystem.value.audio.slots,
+    ...damConfigExtSystem.value.image.slots,
+    ...damConfigExtSystem.value.video.slots,
+    ...damConfigExtSystem.value.document.slots,
   ]
     .filter((value, index, array) => array.indexOf(value) === index)
     .map((item) => ({ title: item, value: item }))

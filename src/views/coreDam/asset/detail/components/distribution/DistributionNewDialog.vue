@@ -1,16 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import { DistributionServiceType } from '@/types/coreDam/DamConfig'
-import type { DocId } from '@anzusystems/common-admin'
+import { type DocId, useDamConfigState } from '@anzusystems/common-admin'
 import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 
 const props = withDefaults(
@@ -43,8 +41,10 @@ const closeDialog = () => {
   emit('reloadList')
 }
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const serviceRequirements = computed(() => {
-  return damConfigExtSystem[props.assetType].distribution.distributionRequirements
+  return damConfigExtSystem.value[props.assetType].distribution.distributionRequirements
 })
 
 const activeConfig = computed(() => {
@@ -52,10 +52,12 @@ const activeConfig = computed(() => {
   return serviceRequirements.value[activeDistributionName.value]
 })
 
+const { damPrvConfig } = useDamConfigState()
+
 const activeDistributionType = computed(() => {
   if (isNull(activeDistributionName.value)) return null
-  if (damConfig.distributionServices[activeDistributionName.value]) {
-    return damConfig.distributionServices[activeDistributionName.value].type
+  if (damPrvConfig.value.distributionServices[activeDistributionName.value]) {
+    return damPrvConfig.value.distributionServices[activeDistributionName.value].type
   }
   return null
 })

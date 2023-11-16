@@ -4,9 +4,8 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { DocId } from '@anzusystems/common-admin'
+import { type DocId, useDamConfigState } from '@anzusystems/common-admin'
 import { ADialogToolbar } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -92,10 +91,12 @@ const onDialogConfirm = async () => {
   uploadDialog.value = false
 }
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const createSizesByAssetType = (assetType: DamAssetType) => {
   const sizes: Record<string, number> = {}
-  for (let i = 0; i < damConfigExtSystem[assetType].mimeTypes.length; i++) {
-    sizes[damConfigExtSystem[assetType].mimeTypes[i]] = damConfigExtSystem[assetType].sizeLimit
+  for (let i = 0; i < damConfigExtSystem.value[assetType].mimeTypes.length; i++) {
+    sizes[damConfigExtSystem.value[assetType].mimeTypes[i]] = damConfigExtSystem.value[assetType].sizeLimit
   }
   return sizes
 }

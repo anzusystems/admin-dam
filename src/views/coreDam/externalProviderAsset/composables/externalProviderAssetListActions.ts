@@ -1,4 +1,11 @@
-import { isNull, isString, useAlerts, useFilterHelpers, usePagination } from '@anzusystems/common-admin'
+import {
+  isNull,
+  isString,
+  useAlerts,
+  useDamConfigState,
+  useFilterHelpers,
+  usePagination
+} from '@anzusystems/common-admin'
 import { useExternalProviderAssetListFilter } from '@/model/coreDam/filter/ExternalProviderAssetFilter'
 import { storeToRefs } from 'pinia'
 import {
@@ -8,7 +15,6 @@ import {
 import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 import { readonly, type Ref, ref } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
@@ -27,6 +33,7 @@ const { activeExternalProvider } = useExternalProviders()
 const filterIsTouched = ref(false)
 
 export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> | null = null) {
+  const { damConfigExtSystem } = useDamConfigState()
   const assetDetailStore = useExternalProviderAssetDetailStore()
   const externalProviderAssetListStore = useExternalProviderAssetListStore()
   const uploadQueuesStore = useUploadQueuesStore()
@@ -37,7 +44,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const fetchAssetList = async () => {
     if (!activeExternalProvider.value) return
     pagination.page = 1
-    pagination.rowsPerPage = damConfigExtSystem.assetExternalProviders[activeExternalProvider.value].listingLimit
+    pagination.rowsPerPage = damConfigExtSystem.value.assetExternalProviders[activeExternalProvider.value].listingLimit
     try {
       externalProviderAssetListStore.showLoader('hard')
       externalProviderAssetListStore.setList(
@@ -64,7 +71,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
     if (!activeExternalProvider.value) return
     pagination.page = pagination.page + 1
-    pagination.rowsPerPage = damConfigExtSystem.assetExternalProviders[activeExternalProvider.value].listingLimit
+    pagination.rowsPerPage = damConfigExtSystem.value.assetExternalProviders[activeExternalProvider.value].listingLimit
     try {
       externalProviderAssetListStore.showLoader('soft')
       externalProviderAssetListStore.appendList(
@@ -195,7 +202,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const route = useRoute()
   const router = useRouter()
   const validateRouteProvider = async () => {
-    if (!(isString(route.params.provider) && damConfigExtSystem.assetExternalProviders[route.params.provider])) {
+    if (!(isString(route.params.provider) && damConfigExtSystem.value.assetExternalProviders[route.params.provider])) {
       await router.push({ name: ROUTE.SYSTEM.NOT_FOUND })
       return
     }

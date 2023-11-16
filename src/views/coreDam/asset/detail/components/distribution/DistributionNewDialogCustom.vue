@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { type DamDistributionServiceName, useDamConfigState } from '@anzusystems/common-admin'
 import type { DistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import {
@@ -28,10 +28,6 @@ import {
   redistributeCustomDistribution,
 } from '@/services/api/coreDam/distributionCustomApi'
 import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
-import {
-  damConfigDistributionCustomFormElements,
-  loadDamConfigDistributionCustomFormElements,
-} from '@/services/DamConfigDistributionCustomFormService'
 import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
@@ -62,6 +58,8 @@ const saving = ref(false)
 
 const pagination = usePagination()
 const filter = useDistributionFilter()
+
+const { loadDamConfigDistributionCustomFormElements, damConfigDistributionCustomFormElements } = useDamConfigState()
 
 const loadFormData = async () => {
   canDisplayForm.value = false

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/userApi'
-import { AFormTextField, ARow, ASystemEntityScope, isUndefined } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
@@ -9,12 +9,13 @@ import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/Ex
 import DistributionServiceSelect from '@/views/coreDam/distribution/components/DistributionServiceSelect.vue'
 import ExternalProviderAssetSelect from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
 import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
-import { damPubConfig } from '@/services/DamConfigService'
 import { UserAuthType } from '@/types/coreDam/DamConfig'
 
 const { userUpdate } = useUserEditActions()
 
-const { v$ } = useUpdateUserValidation(userUpdate, damPubConfig.userAuthType)
+const { damPubConfig } = useDamConfigState()
+
+const { v$ } = useUpdateUserValidation(userUpdate, damPubConfig.value.userAuthType)
 
 const { t } = useI18n()
 </script>

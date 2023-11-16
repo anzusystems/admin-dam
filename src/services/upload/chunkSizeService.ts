@@ -1,12 +1,12 @@
-import { damConfig } from '@/services/DamConfigService'
 import { ref } from 'vue'
-import { isNull } from '@anzusystems/common-admin'
+import { isNull, useDamConfigState } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
 
 const chunkSize = ref<number | undefined>(undefined)
 
 export function useChunkSizeService() {
-  const lastChunkSize = ref(chunkSize.value || damConfig.settings.imageChunkConfig.minSize)
+  const { damPrvConfig } = useDamConfigState()
+  const lastChunkSize = ref(chunkSize.value || damPrvConfig.value.settings.imageChunkConfig.minSize)
 
   const minUploadTimeThreshold = envConfig.dam.apiTimeout / 5
   const idealUploadTimeThreshold = envConfig.dam.apiTimeout / 4
@@ -35,11 +35,11 @@ export function useChunkSizeService() {
   }
 
   const returnFromRange = (value: number) => {
-    if (value > damConfig.settings.imageChunkConfig.maxSize) {
-      return damConfig.settings.imageChunkConfig.maxSize
+    if (value > damPrvConfig.value.settings.imageChunkConfig.maxSize) {
+      return damPrvConfig.value.settings.imageChunkConfig.maxSize
     }
-    if (value < damConfig.settings.imageChunkConfig.minSize) {
-      return damConfig.settings.imageChunkConfig.minSize
+    if (value < damPrvConfig.value.settings.imageChunkConfig.minSize) {
+      return damPrvConfig.value.settings.imageChunkConfig.minSize
     }
 
     return value

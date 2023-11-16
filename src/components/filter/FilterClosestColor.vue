@@ -1,8 +1,13 @@
 <script lang="ts" setup>
-import type { Filter } from '@anzusystems/common-admin'
-import { arrayItemToggle, cloneDeep, isArray, useFilterHelpers } from '@anzusystems/common-admin'
+import {
+  arrayItemToggle,
+  cloneDeep,
+  type Filter,
+  isArray,
+  useDamConfigState,
+  useFilterHelpers,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { damConfig } from '@/services/DamConfigService'
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'
 import { useI18n } from 'vue-i18n'
 
@@ -30,14 +35,16 @@ const value = computed({
   },
 })
 
+const { damPrvConfig } = useDamConfigState()
+
 const items = computed(() => {
-  return Object.keys(damConfig.colorSet).map((key) => ({
+  return Object.keys(damPrvConfig.value.colorSet).map((key) => ({
     name: key,
-    color: damConfig.colorSet[key],
+    color: damPrvConfig.value.colorSet[key],
     selected: isArray(value.value)
-      ? value.value.includes(damConfig.colorSet[key])
-      : value.value === damConfig.colorSet[key],
-    iconColor: pickTextColorBasedOnBgColor(damConfig.colorSet[key], '#fff', '#000'),
+      ? value.value.includes(damPrvConfig.value.colorSet[key])
+      : value.value === damPrvConfig.value.colorSet[key],
+    iconColor: pickTextColorBasedOnBgColor(damPrvConfig.value.colorSet[key], '#fff', '#000'),
   }))
 })
 

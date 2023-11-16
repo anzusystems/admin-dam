@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import type { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useI18n } from 'vue-i18n'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
+import { useDamConfigState } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -24,8 +24,10 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const serviceRequirements = computed(() => {
-  return damConfigExtSystem[props.assetType].distribution.distributionRequirements[props.item.distributionService]
+  return damConfigExtSystem.value[props.assetType].distribution.distributionRequirements[props.item.distributionService]
 })
 </script>
 

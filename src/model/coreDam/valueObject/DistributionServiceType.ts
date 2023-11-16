@@ -1,14 +1,16 @@
 import { ref } from 'vue'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-import { damConfig } from '@/services/DamConfigService'
+import { useDamConfigState, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useDistributionServiceType() {
-  const all = Object.entries(damConfig.distributionServices).map(([serviceName, value]): ValueObjectOption<string> => {
-    return {
-      value: serviceName,
-      title: value.title,
+  const { damPrvConfig } = useDamConfigState()
+  const all = Object.entries(damPrvConfig.value.distributionServices).map(
+    ([serviceName, value]): ValueObjectOption<string> => {
+      return {
+        value: serviceName,
+        title: value.title,
+      }
     }
-  })
+  )
 
   const allDistributionServiceTypeOptions = ref<ValueObjectOption<string>[]>(all)
 

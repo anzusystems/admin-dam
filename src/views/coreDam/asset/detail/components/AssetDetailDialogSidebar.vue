@@ -6,11 +6,15 @@ import type { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import { useI18n } from 'vue-i18n'
-import type { AssetFileFailReason, AssetFileProcessStatus, DocId } from '@anzusystems/common-admin'
+import {
+  type AssetFileFailReason,
+  type AssetFileProcessStatus,
+  type DocId,
+  useDamConfigState
+} from '@anzusystems/common-admin'
 import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
 import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
 import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
@@ -49,8 +53,10 @@ const { t } = useI18n()
 
 const { activeTab } = useAssetDetailTab()
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const typeHasDistributions = computed(() => {
-  return damConfigExtSystem[props.assetType].distribution.distributionServices.length > 0
+  return damConfigExtSystem.value[props.assetType].distribution.distributionServices.length > 0
 })
 </script>
 

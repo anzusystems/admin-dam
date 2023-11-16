@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { type DamDistributionServiceName, useDamConfigState } from '@anzusystems/common-admin'
 import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
 import { computed, ref, watch } from 'vue'
 import { cloneDeep, type DocIdNullable, usePagination, useValidate } from '@anzusystems/common-admin'
@@ -8,7 +8,6 @@ import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distribut
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
@@ -56,11 +55,13 @@ const assetFileIdComputed = computed(() => {
   return props.assetFileId
 })
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const itemsComputed = computed(() => {
   return distributions.value.map((item) => {
     return {
       title:
-        (damConfigExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]?.title ||
+        (damConfigExtSystem.value[props.assetType]?.distribution.distributionRequirements[item.distributionService]?.title ||
           item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
       value: item.id,
     }
