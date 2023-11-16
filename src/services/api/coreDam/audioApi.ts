@@ -10,7 +10,7 @@ import {
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
 import type { AssetFileAudio, AssetFileDownloadLink } from '@anzusystems/common-admin'
-import { fileTypeFix } from '@/services/fileType'
+import { damFileTypeFix } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/audio'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -28,7 +28,7 @@ export const uploadStart = (item: UploadQueueItem) => {
       .post(
         url,
         JSON.stringify({
-          mimeType: fileTypeFix(item.file),
+          mimeType: damFileTypeFix(item.file),
           size: item.file?.size,
         })
       )

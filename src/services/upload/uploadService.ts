@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import sha1 from 'js-sha1'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { type UploadQueueItem, useDamUploadChunkSize } from '@anzusystems/common-admin'
 import {
   type AnzuApiValidationResponseData,
   axiosErrorResponseHasValidationData,
@@ -12,7 +12,7 @@ import {
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
 import type { CancelTokenSource } from 'axios'
 import axios from 'axios'
-import { useChunkSizeService } from '@/services/upload/chunkSizeService'
+import { envConfig } from '@/services/EnvConfigService'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
@@ -85,7 +85,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   let endTimestamp = 0
   let lastLoaded = 0
   const assetAlgo = sha1.create()
-  const { updateChunkSize, lastChunkSize } = useChunkSizeService()
+  const { updateChunkSize, lastChunkSize } = useDamUploadChunkSize(envConfig.dam.apiTimeout)
 
   const getCurrentTimestamp = () => {
     return Date.now() / 1000

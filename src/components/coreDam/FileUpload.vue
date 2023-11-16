@@ -3,7 +3,7 @@ import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragW
 import { computed, ref, watch } from 'vue'
 import { arrayFlatten, arrayFromArgs, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { fileTypeFix } from '@/services/fileType'
+import { damFileTypeFix } from '@anzusystems/common-admin'
 
 type InputRef = null | HTMLInputElement
 
@@ -180,9 +180,9 @@ const checkFormats = (file: File, accepts: string[]) => {
     } else {
       // type
       const splitType = accepts[i].split('/')
-      if (splitType[1] === '*' && fileTypeFix(file).startsWith(splitType[0] + '/')) {
+      if (splitType[1] === '*' && damFileTypeFix(file).startsWith(splitType[0] + '/')) {
         return true
-      } else if (accepts[i] === fileTypeFix(file)) {
+      } else if (accepts[i] === damFileTypeFix(file)) {
         return true
       }
     }
@@ -203,9 +203,9 @@ const checkSizes = (file: File, keys: Array<string>, sizes: Record<string, numbe
     } else {
       // type
       const splitType = keys[j].split('/')
-      if (splitType[1] === '*' && fileTypeFix(file).startsWith(splitType[0] + '/') && sizes[keys[j]] > file.size) {
+      if (splitType[1] === '*' && damFileTypeFix(file).startsWith(splitType[0] + '/') && sizes[keys[j]] > file.size) {
         return true
-      } else if (keys[j] === fileTypeFix(file) && sizes[keys[j]] > file.size) {
+      } else if (keys[j] === damFileTypeFix(file) && sizes[keys[j]] > file.size) {
         return true
       }
     }

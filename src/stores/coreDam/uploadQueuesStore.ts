@@ -34,7 +34,7 @@ import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAutho
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { fileTypeFix } from '@/services/fileType'
+import { damFileTypeFix } from '@anzusystems/common-admin'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -128,7 +128,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       const { damConfigExtSystem } = useDamConfigState()
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
-        const type = getAssetTypeByMimeType(fileTypeFix(file), damConfigExtSystem.value)
+        const type = getAssetTypeByMimeType(damFileTypeFix(file), damConfigExtSystem.value)
         if (!type) continue
         const queueItem = createDefault(
           'file_' + file.name,

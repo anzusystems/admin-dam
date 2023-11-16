@@ -14,7 +14,7 @@ import { ENTITY } from '@/services/api/coreDam/assetApi'
 import type { AssetFileDownloadLink, AssetFileVideo } from '@anzusystems/common-admin'
 import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
-import { fileTypeFix } from '@/services/fileType'
+import { damFileTypeFix } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -32,7 +32,7 @@ export const uploadStart = (item: UploadQueueItem) => {
       .post(
         url,
         JSON.stringify({
-          mimeType: fileTypeFix(item.file),
+          mimeType: damFileTypeFix(item.file),
           size: item.file?.size,
         })
       )
