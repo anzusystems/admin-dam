@@ -46,7 +46,11 @@ loadEnvConfig(() => {
         default: DEFAULT_LANGUAGE,
       },
       coreDam: {
-        client: damClient,
+        configs: {
+          default: {
+            client: damClient,
+          },
+        },
       },
     })
     .component('AppLayoutLoader', AppLayoutLoader)
