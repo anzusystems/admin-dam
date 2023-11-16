@@ -61,7 +61,7 @@ const NOTIFICATION_FALLBACK_MAX_TRIES = 3
 export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
-      case DamAssetType.Image:''
+      case DamAssetType.Image:
         imageUploadStart(item)
           .then((res) => {
             resolve(res as DamUploadStartResponse)
