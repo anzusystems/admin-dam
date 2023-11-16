@@ -1,7 +1,7 @@
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
-import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import type { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
 
@@ -51,7 +51,7 @@ export interface DistributionItem {
   assetFileId: DocId
   extId: string
   distributionService: DamDistributionServiceName
-  status: DistributionStatus
+  status: DamDistributionStatus
   failReason: DistributionFailReason
   blockedBy: DocId[]
   publishAt: DatetimeUTCNullable

@@ -6,7 +6,7 @@ import DistributionListItemCustom from '@/views/coreDam/asset/detail/components/
 import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import { DistributionServiceType } from '@/types/coreDam/DamConfig'
+import { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
 import { useDamConfigState } from '@anzusystems/common-admin'
@@ -36,11 +36,11 @@ const showRedistribute = computed(() => {
 
 const componentComputed = computed(() => {
   switch (distributionType.value) {
-    case DistributionServiceType.Jw:
+    case DamDistributionServiceType.Jw:
       return DistributionListItemJw
-    case DistributionServiceType.Youtube:
+    case DamDistributionServiceType.Youtube:
       return DistributionListItemYoutube
-    case DistributionServiceType.Custom:
+    case DamDistributionServiceType.Custom:
       return DistributionListItemCustom
     default:
       return DistributionListItemEmpty

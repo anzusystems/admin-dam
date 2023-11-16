@@ -4,9 +4,9 @@ import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
-import type { DistributionServiceType } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useI18n } from 'vue-i18n'
-import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
 import { ACopyText, useDamConfigState } from '@anzusystems/common-admin'
@@ -15,7 +15,7 @@ const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
     assetType: DamAssetType
-    distributionType: DistributionServiceType | null
+    distributionType: DamDistributionServiceType | null
     showRedistribute: boolean
   }>(),
   {}
@@ -59,7 +59,7 @@ const serviceRequirements = computed(() => {
           {{ t('coreDam.distribution.common.redistributeButton') }}
         </ABtnTertiary>
         <ABtnTertiary
-          v-if="item.status === DistributionStatus.Waiting"
+          v-if="item.status === DamDistributionStatus.Waiting"
           class="ml-2"
           size="small"
           @click.stop="emit('openCancel')"
@@ -68,7 +68,7 @@ const serviceRequirements = computed(() => {
         </ABtnTertiary>
       </VCol>
     </VRow>
-    <VRow v-if="item.status === DistributionStatus.Failed">
+    <VRow v-if="item.status === DamDistributionStatus.Failed">
       <VCol>
         {{ t('coreDam.distribution.common.failReason') }}:
         <DistributionFailReasonChip :status="item.failReason" />

@@ -3,7 +3,7 @@ import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeIte
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { isNull } from '@anzusystems/common-admin'
-import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import { fetchDistribution } from '@/services/api/coreDam/distributionApi'
 import type { DistributionAuth } from '@/types/coreDam/DistributionAuth'
 import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
@@ -50,10 +50,10 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
         status: success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error,
       })
     },
-    async listItemMessageUpdate(distributionId: DocId, status: DistributionStatus) {
+    async listItemMessageUpdate(distributionId: DocId, status: DamDistributionStatus) {
       switch (status) {
-        case DistributionStatus.Distributing:
-        case DistributionStatus.RemoteProcessing:
+        case DamDistributionStatus.Distributing:
+        case DamDistributionStatus.RemoteProcessing:
           {
             const foundIndex = this.list.findIndex((item) => item.id === distributionId)
             if (foundIndex > -1) {

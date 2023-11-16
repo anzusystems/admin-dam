@@ -1,14 +1,14 @@
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import type { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 
-export enum DistributionServiceType {
+export enum DamDistributionServiceType {
   Youtube = 'youtubeDistribution',
   Jw = 'jwDistribution',
   Custom = 'customDistribution',
 }
 
-export interface DamConfig {
+export interface DamPrvConfig {
   assetExternalProviders: {
     [key: string]: { title: string }
   }
@@ -16,8 +16,8 @@ export interface DamConfig {
     [key: string]: {
       title: string
       iconPath: string
-      type: DistributionServiceType
-      allowedRedistributeStatuses: Array<DistributionStatus>
+      type: DamDistributionServiceType
+      allowedRedistributeStatuses: Array<DamDistributionStatus>
     }
   }
   colorSet: {
@@ -48,21 +48,27 @@ export enum UserAuthType {
   Default = JsonCredentials,
 }
 
-export type ExternalProviderAssetName = string
+export type DamExternalProviderAssetName = string
 
-export type ExternalProviderAssetConfig = Record<ExternalProviderAssetName, { listingLimit: number; title: string }>
+export type DamExternalProviderAssetConfig = Record<
+  DamExternalProviderAssetName,
+  {
+    listingLimit: number
+    title: string
+  }
+>
 
-export interface ExtSystemAssetTypeExifMetadata {
+export interface DamExtSystemAssetTypeExifMetadata {
   enabled: boolean
   required: boolean
 }
 
-export interface DistributionRequirementsCategorySelectConfig {
+export interface DamDistributionRequirementsCategorySelectConfig {
   enabled: boolean
   required: boolean
 }
 
-export enum DistributionRequirementStrategy {
+export enum DamDistributionRequirementStrategy {
   None = 'none',
   AtLeastOne = 'at_least_one',
   OneFromType = 'one_from_type',
@@ -70,35 +76,35 @@ export enum DistributionRequirementStrategy {
   Default = None,
 }
 
-export interface DistributionRequirementsConfig {
+export interface DamDistributionRequirementsConfig {
   title: string
   requiredAuth: boolean
   blockedBy: Array<DamDistributionServiceName>
-  categorySelect: DistributionRequirementsCategorySelectConfig
-  strategy: DistributionRequirementStrategy
+  categorySelect: DamDistributionRequirementsCategorySelectConfig
+  strategy: DamDistributionRequirementStrategy
 }
 
-export interface DistributionConfig {
+export interface DamDistributionConfig {
   distributionServices: Array<DamDistributionServiceName>
-  distributionRequirements: Record<DamDistributionServiceName, DistributionRequirementsConfig>
+  distributionRequirements: Record<DamDistributionServiceName, DamDistributionRequirementsConfig>
 }
 
-export interface ExtSystemConfig {
+export interface DamExtSystemConfigItem {
   sizeLimit: number
   defaultFileVersion: string
   versions: Array<string>
   mimeTypes: Array<string>
-  distribution: DistributionConfig
-  authors: ExtSystemAssetTypeExifMetadata
-  keywords: ExtSystemAssetTypeExifMetadata
+  distribution: DamDistributionConfig
+  authors: DamExtSystemAssetTypeExifMetadata
+  keywords: DamExtSystemAssetTypeExifMetadata
   customMetadataPinnedAmount: number
   slots: string[]
 }
 
-export interface DamConfigExtSystem extends Record<DamAssetType, ExtSystemConfig> {
-  assetExternalProviders: ExternalProviderAssetConfig
-  audio: ExtSystemConfig
-  video: ExtSystemConfig
-  image: ExtSystemConfig
-  document: ExtSystemConfig
+export interface DamExtSystemConfig extends Record<DamAssetType, DamExtSystemConfigItem> {
+  assetExternalProviders: DamExternalProviderAssetConfig
+  audio: DamExtSystemConfigItem
+  video: DamExtSystemConfigItem
+  image: DamExtSystemConfigItem
+  document: DamExtSystemConfigItem
 }

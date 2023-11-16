@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { type DistributionStatus, useDistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import { type DamDistributionStatus, useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 
 const props = withDefaults(
   defineProps<{
-    status: DistributionStatus
+    status: DamDistributionStatus
   }>(),
   {}
 )

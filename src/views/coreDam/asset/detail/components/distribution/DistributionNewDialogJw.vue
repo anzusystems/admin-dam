@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import type { DistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
+import type { DamDistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
 import {
   createJwDistribution,
   ENTITY,
@@ -37,7 +37,7 @@ const props = withDefaults(
   defineProps<{
     distributionServiceName: DamDistributionServiceName
     assetType: DamAssetType
-    config: DistributionRequirementsConfig
+    config: DamDistributionRequirementsConfig
     assetId: DocId
   }>(),
   {}

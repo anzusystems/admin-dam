@@ -5,7 +5,7 @@ import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/component
 import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
-import { DistributionServiceType } from '@/types/coreDam/DamConfig'
+import { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
 import { type DocId, useDamConfigState } from '@anzusystems/common-admin'
 import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
@@ -64,11 +64,11 @@ const activeDistributionType = computed(() => {
 
 const componentComputed = computed(() => {
   switch (activeDistributionType.value) {
-    case DistributionServiceType.Youtube:
+    case DamDistributionServiceType.Youtube:
       return DistributionNewDialogYoutube
-    case DistributionServiceType.Jw:
+    case DamDistributionServiceType.Jw:
       return DistributionNewDialogJw
-    case DistributionServiceType.Custom:
+    case DamDistributionServiceType.Custom:
       return DistributionNewDialogCustom
     default:
       return DistributionNewDialogEmpty

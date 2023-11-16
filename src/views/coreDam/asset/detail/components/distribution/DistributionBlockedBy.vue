@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { DistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
-import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
+import type { DamDistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
+import { DamDistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
 import {
   cloneDeep,
   type DamDistributionServiceName,
@@ -13,7 +13,7 @@ import { computed, ref, watch } from 'vue'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
-import { useDistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
@@ -24,7 +24,7 @@ const props = withDefaults(
   defineProps<{
     modelValue: any
     distributionServiceName: DamDistributionServiceName
-    config: DistributionRequirementsConfig
+    config: DamDistributionRequirementsConfig
     assetFileId: DocIdNullable
     assetType: DamAssetType
   }>(),
@@ -77,7 +77,7 @@ const itemsComputed = computed(() => {
 const { required } = useValidate()
 
 const rules = computed(() => {
-  if (props.config.strategy === DistributionRequirementStrategy.AtLeastOne) {
+  if (props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne) {
     return {
       required,
     }

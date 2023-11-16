@@ -2,7 +2,7 @@ import { useNotification } from '@/composables/system/notifications'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { updateCurrentUser } from '@/composables/system/currentUser'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
-import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
+import { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 
 export const initAppNotificationListeners = () => {
   const { openConnection, addNotificationListener } = useNotification()
@@ -39,22 +39,22 @@ export const initAppNotificationListeners = () => {
   const distributionListStore = useDistributionListStore()
   addNotificationListener('distribution_distributing', (message: Event) => {
     if (message instanceof CustomEvent) {
-      distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.Distributing)
+      distributionListStore.listItemMessageUpdate(message.detail.id, DamDistributionStatus.Distributing)
     }
   })
   addNotificationListener('distribution_remote_processing', (message: Event) => {
     if (message instanceof CustomEvent) {
-      distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.RemoteProcessing)
+      distributionListStore.listItemMessageUpdate(message.detail.id, DamDistributionStatus.RemoteProcessing)
     }
   })
   addNotificationListener('distribution_distributed', (message: Event) => {
     if (message instanceof CustomEvent) {
-      distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.Distributed)
+      distributionListStore.listItemMessageUpdate(message.detail.id, DamDistributionStatus.Distributed)
     }
   })
   addNotificationListener('distribution_failed', (message: Event) => {
     if (message instanceof CustomEvent) {
-      distributionListStore.listItemMessageUpdate(message.detail.id, DistributionStatus.Failed)
+      distributionListStore.listItemMessageUpdate(message.detail.id, DamDistributionStatus.Failed)
     }
   })
   addNotificationListener('distribution_authorized', (message: Event) => {
