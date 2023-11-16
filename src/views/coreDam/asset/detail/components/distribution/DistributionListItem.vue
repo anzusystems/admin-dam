@@ -5,11 +5,10 @@ import DistributionListItemYoutube from '@/views/coreDam/asset/detail/components
 import DistributionListItemCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustom.vue'
 import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
 import type { DamAssetType } from '@anzusystems/common-admin'
+import { DamDistributionServiceType, useDamConfigState } from '@anzusystems/common-admin'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import { DamDistributionServiceType } from '@anzusystems/common-admin'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
-import { useDamConfigState } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

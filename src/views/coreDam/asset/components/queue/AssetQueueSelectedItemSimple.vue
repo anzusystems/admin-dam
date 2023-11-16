@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { DamAssetStatus } from '@anzusystems/common-admin'
-import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
-import { UploadQueueItemStatus } from '@anzusystems/common-admin'
+import { DamAssetStatus, UploadQueueItemStatus } from '@anzusystems/common-admin'
+import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import type { DamAssetType } from '@anzusystems/common-admin'
+import type { AssetFileProcessStatus, DamAssetType, DocId } from '@anzusystems/common-admin'
+import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { fetchAssetDistributionList } from '@/services/api/coreDam/distributionApi'
-import type { AssetFileProcessStatus, DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
@@ -68,9 +67,7 @@ onMounted(async () => {
         {{ t('coreDam.distribution.common.addButton') }}
       </ABtnPrimary>
     </AssetDetailSidebarActionsWrapper>
-    <div class="px-4 text-caption">
-      {{ t('coreDam.distribution.common.list') }}:
-    </div>
+    <div class="px-4 text-caption">{{ t('coreDam.distribution.common.list') }}:</div>
     <div
       v-if="distributionListStore.loader"
       class="d-flex w-100 h-100 justify-center align-center pa-2"

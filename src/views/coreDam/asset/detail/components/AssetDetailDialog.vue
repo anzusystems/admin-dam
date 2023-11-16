@@ -7,9 +7,15 @@ import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/Ass
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { assetFileIsImageFile, browserHistoryReplaceUrlByRouter, isNull, useTheme } from '@anzusystems/common-admin'
+import {
+  assetFileIsImageFile,
+  browserHistoryReplaceUrlByRouter,
+  DamAssetStatus,
+  DamAssetType,
+  isNull,
+  useTheme,
+} from '@anzusystems/common-admin'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'

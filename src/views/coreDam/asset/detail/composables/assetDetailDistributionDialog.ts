@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { AssetFileProcessStatus, type DocIdNullable } from '@anzusystems/common-admin'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const dialogKey = ref(1)

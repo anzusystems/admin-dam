@@ -46,7 +46,7 @@ const openDialog = () => {
       activator="parent"
       location="bottom"
     >
-      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ displayTextExtSystem }}<br>
+      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ displayTextExtSystem }}<br />
       {{ t('system.mainBar.extSystemLicenceSwitch.licence') }}: {{ displayTextLicence }}
     </VTooltip>
   </VBtn>

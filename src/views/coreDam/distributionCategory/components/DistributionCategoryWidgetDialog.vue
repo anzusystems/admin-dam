@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
 import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
-import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
+import type { DamAssetType, DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
@@ -10,7 +10,6 @@ import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { DamAssetType } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

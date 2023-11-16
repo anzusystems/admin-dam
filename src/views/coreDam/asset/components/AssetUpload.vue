@@ -4,9 +4,7 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import { DamAssetType } from '@anzusystems/common-admin'
-import { type DocId, useDamConfigState } from '@anzusystems/common-admin'
-import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ADialogToolbar, DamAssetType, type DocId, useDamConfigState } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -153,7 +151,7 @@ const { t } = useI18n()
           <span v-if="uploadQueueTotalCount > 0">{{
             t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
           }}</span>
-          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
           {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </VCardText>

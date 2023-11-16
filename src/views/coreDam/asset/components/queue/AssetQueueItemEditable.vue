@@ -8,6 +8,7 @@ import {
   AssetFileFailReason,
   ASystemEntityScope,
   ATableCopyIdButton,
+  DamAssetStatus,
   type DocId,
   isNull,
   prettyBytes,
@@ -16,7 +17,6 @@ import {
   useAlerts,
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
-import { DamAssetStatus } from '@anzusystems/common-admin'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'

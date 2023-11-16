@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { DamAssetType } from '@anzusystems/common-admin'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { useI18n } from 'vue-i18n'
-import { computed, watch } from 'vue'
-import AssetSlotListItemRemove from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
-import AssetSlotListItemDuplicate from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
-import AssetSlotListItemSwitch from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
 import {
   type AssetFileFailReason,
   AssetFileProcessStatus,
+  DamAssetType,
   type DocId,
   isUndefined,
   type UploadQueueItem,
   UploadQueueItemStatus,
   useAlerts,
 } from '@anzusystems/common-admin'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import { useI18n } from 'vue-i18n'
+import { computed, watch } from 'vue'
+import AssetSlotListItemRemove from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
+import AssetSlotListItemDuplicate from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
+import AssetSlotListItemSwitch from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
@@ -199,9 +199,9 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         <AssetFilePublicLink
           v-if="
             assetType === DamAssetType.Audio &&
-              item &&
-              item.assetFile &&
-              statusComputed === AssetFileProcessStatus.Processed
+            item &&
+            item.assetFile &&
+            statusComputed === AssetFileProcessStatus.Processed
           "
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"

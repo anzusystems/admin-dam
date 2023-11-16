@@ -6,7 +6,8 @@ import {
   ADialogToolbar,
   type DocId,
   isNull,
-  useAlerts, useDamConfigState,
+  useAlerts,
+  useDamConfigState,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'

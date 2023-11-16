@@ -1,9 +1,7 @@
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
-import { DamAssetType } from '@anzusystems/common-admin'
-import { DamAssetStatus } from '@anzusystems/common-admin'
-import { assetFileIsImageFile } from '@anzusystems/common-admin'
+import { assetFileIsImageFile, DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
 
 export function useAssetDetailActions() {
   const sidebar = ref(true)

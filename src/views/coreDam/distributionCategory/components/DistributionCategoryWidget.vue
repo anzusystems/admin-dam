@@ -3,13 +3,12 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
 import { computed, ref, watch } from 'vue'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { isNull } from '@anzusystems/common-admin'
+import { DamAssetType, isNull } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useI18n } from 'vue-i18n'
 import DistributionCategoryWidgetDialog from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
-import { DamAssetType } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -64,9 +63,7 @@ watch(
 <template>
   <div class="d-flex flex-column w-100">
     <VRow align="center">
-      <VCol class="text-caption">
-        {{ t('coreDam.distribution.common.select') }}:
-      </VCol>
+      <VCol class="text-caption"> {{ t('coreDam.distribution.common.select') }}: </VCol>
     </VRow>
     <VRow v-if="!distributionCategoryId">
       <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>

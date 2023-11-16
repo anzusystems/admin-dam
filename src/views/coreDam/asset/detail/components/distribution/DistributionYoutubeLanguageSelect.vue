@@ -2,8 +2,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubeLanguages } from '@/services/api/coreDam/distributionYoutubeApi'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import type { YoutubeLanguage } from '@/types/coreDam/Distribution'
 import { useAlerts } from '@anzusystems/common-admin'
+import type { YoutubeLanguage } from '@/types/coreDam/Distribution'
 
 const props = withDefaults(
   defineProps<{

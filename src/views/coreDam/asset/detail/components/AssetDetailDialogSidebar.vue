@@ -3,14 +3,14 @@ import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/
 import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import type { DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
-import { useI18n } from 'vue-i18n'
 import {
   type AssetFileFailReason,
   type AssetFileProcessStatus,
   type DocId,
-  useDamConfigState
+  useDamConfigState,
 } from '@anzusystems/common-admin'
+import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
+import { useI18n } from 'vue-i18n'
 import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
 import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import { computed } from 'vue'

@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import type { DamAssetType } from '@anzusystems/common-admin'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import type { DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
+import type {
+  DamAssetType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+} from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AFormTextarea,

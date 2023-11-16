@@ -1,5 +1,5 @@
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import type { DocId } from '@anzusystems/common-admin'
+import type { DamAssetType, DocId } from '@anzusystems/common-admin'
 import { cloneDeep, useAlerts, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useAssetSlotFilter } from '@/model/coreDam/filter/AssetSlotFilter'
 import { fetchAssetSlotList, updateAssetSlots } from '@/services/api/coreDam/assetSlotApi'
@@ -9,7 +9,6 @@ import {
   makeMainFile as apiMakeMainFile,
   unsetAssetSlot,
 } from '@/services/api/coreDam/fileApi'
-import type { DamAssetType } from '@anzusystems/common-admin'
 import { makePrivate } from '@/services/api/coreDam/audioApi'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 

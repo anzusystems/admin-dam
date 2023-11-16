@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import type { DamAssetType } from '@anzusystems/common-admin'
-import { type DamDistributionServiceName, useDamConfigState } from '@anzusystems/common-admin'
-import type { DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
-import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
+import type { DamAssetType, DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AssetFileProcessStatus,
   ASystemEntityScope,
   cloneDeep,
+  type DamDistributionServiceName,
   type DocId,
   useAlerts,
+  useDamConfigState,
   usePagination,
 } from '@anzusystems/common-admin'
+import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import useVuelidate from '@vuelidate/core'
 import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

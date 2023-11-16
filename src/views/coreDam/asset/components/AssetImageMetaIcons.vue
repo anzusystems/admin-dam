@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { DamAssetType } from '@anzusystems/common-admin'
-import { type AssetFileProperties, useDamConfigState } from '@anzusystems/common-admin'
+import { type AssetFileProperties, DamAssetType, useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import {
   DIMENSIONS_CONFIG,
@@ -90,7 +89,7 @@ const data = computed(() => {
       :src="item"
       alt=""
       :title="data.titles[index] || ''"
-    >
+    />
   </div>
 </template>
 

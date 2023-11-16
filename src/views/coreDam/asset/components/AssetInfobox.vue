@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { DamAssetStatus } from '@anzusystems/common-admin'
+import { type AssetFileFailReason, AssetFileProcessStatus, DamAssetStatus } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
-import { type AssetFileFailReason, AssetFileProcessStatus } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
@@ -41,7 +40,7 @@ const { t } = useI18n()
     >
       {{ t('coreDam.asset.detail.info.status.failed') }}
       <div v-if="assetMainFileFailReason">
-        <br>
+        <br />
         <AssetFileFailReasonChip :reason="assetMainFileFailReason" />
       </div>
     </VAlert>

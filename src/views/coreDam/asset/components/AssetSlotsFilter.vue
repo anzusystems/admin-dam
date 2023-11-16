@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { type Filter, useDamConfigState } from '@anzusystems/common-admin'
-import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
+import { AFilterValueObjectOptionsSelect, type Filter, useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 

@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import type { DamAssetType } from '@anzusystems/common-admin'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import type { DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
-import {
-  createJwDistribution,
-  ENTITY,
-  prepareFormDataJwDistribution,
-  redistributeJwDistribution,
-} from '@/services/api/coreDam/distributionJwApi'
+import type {
+  DamAssetType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+} from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AFormTextarea,
@@ -20,6 +16,12 @@ import {
   usePagination,
   useValidate,
 } from '@anzusystems/common-admin'
+import {
+  createJwDistribution,
+  ENTITY,
+  prepareFormDataJwDistribution,
+  redistributeJwDistribution,
+} from '@/services/api/coreDam/distributionJwApi'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
 import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/coreDam/Distribution'

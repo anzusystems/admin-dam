@@ -24,6 +24,7 @@ const grantOriginOption = computed(() => getGrantOriginOption(props.grantOrigin)
     <span
       v-if="grantOrigin !== GrantOrigin.DefaultGrant"
       class="ml-1"
-    >({{ grantOriginOption.title }})</span>
+      >({{ grantOriginOption.title }})</span
+    >
   </VChip>
 </template>

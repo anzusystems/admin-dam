@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextField,
@@ -13,7 +14,6 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
 import { useDistributionCategoryCreateActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import type { DamAssetType } from '@anzusystems/common-admin'
 import DistributionCategorySelectOptionSelect from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 

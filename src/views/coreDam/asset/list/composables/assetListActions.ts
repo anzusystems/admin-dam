@@ -2,6 +2,7 @@ import type { AssetSearchListItemDto, DocId } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
   browserHistoryReplaceUrlByRouter,
+  DamAssetType,
   isNull,
   useAlerts,
   useFilterHelpers,
@@ -11,7 +12,6 @@ import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/coreDam/assetApi'
 import { useAssetListFilter } from '@/model/coreDam/filter/AssetFilter'
 import { storeToRefs } from 'pinia'
-import { DamAssetType } from '@anzusystems/common-admin'
 import { readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'

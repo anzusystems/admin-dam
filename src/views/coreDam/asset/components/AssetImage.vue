@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { DamAssetType } from '@anzusystems/common-admin'
-import { DamAssetStatus } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import type { AssetFileProperties } from '@anzusystems/common-admin'
-import { isUndefined, useRemainingTime } from '@anzusystems/common-admin'
+import { DamAssetStatus, DamAssetType, isUndefined, useRemainingTime } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
 
@@ -247,7 +245,7 @@ const { remainingTimeShort } = useRemainingTime()
       alt=""
       :style="'background-color:' + backgroundColorComputed"
       @onerror="onError"
-    >
+    />
     <div
       v-if="showIconComputed"
       class="asset-image__icon-wrapper"

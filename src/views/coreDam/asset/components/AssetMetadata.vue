@@ -7,6 +7,7 @@ import {
   assetFileIsImageFile,
   assetFileIsVideoFile,
   ASystemEntityScope,
+  DamAssetType,
   dateTimePretty,
   prettyBytes,
 } from '@anzusystems/common-admin'
@@ -16,7 +17,6 @@ import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/component
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { DamAssetType } from '@anzusystems/common-admin'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
@@ -156,16 +156,14 @@ const onAnyMetadataChange = () => {
           <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
-          <VCol cols="9">
-            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
-          </VCol>
+          <VCol cols="9"> {{ dateTimePretty(asset.createdAt) }}<br /><CachedDamUserChip :id="asset.createdBy" /> </VCol>
         </VRow>
         <VRow>
           <VCol cols="3">
             {{ t('common.model.tracking.modified') }}
           </VCol>
           <VCol cols="9">
-            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+            {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">

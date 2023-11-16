@@ -42,7 +42,7 @@ const icon = computed(() => {
     :width="width"
     alt=""
     :style="'background-color:' + backgroundColor"
-  >
+  />
   <div
     v-else
     :style="{ height: height + 'px', backgroundColor: '#ccc', width: '100%' }"

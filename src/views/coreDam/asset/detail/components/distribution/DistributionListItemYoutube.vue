@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { type DamAssetType, DamDistributionStatus } from '@anzusystems/common-admin'
+import type { DamDistributionServiceType } from '@anzusystems/common-admin'
+import { type DamAssetType, DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import type { DamDistributionServiceType } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
-import { useDamConfigState } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -69,7 +68,7 @@ const serviceRequirements = computed(() => {
         >
           {{ t('coreDam.youtubeDistribution.videoPreviewLink') }}
         </a>
-        <br>
+        <br />
         <a
           :href="'https://studio.youtube.com/video/' + item.extId + '/edit/basic'"
           target="_blank"

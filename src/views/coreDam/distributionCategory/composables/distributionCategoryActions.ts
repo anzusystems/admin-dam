@@ -1,3 +1,4 @@
+import type { DamAssetType } from '@anzusystems/common-admin'
 import {
   cloneDeep,
   type DocId,
@@ -18,7 +19,6 @@ import {
 } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { DamAssetType } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'

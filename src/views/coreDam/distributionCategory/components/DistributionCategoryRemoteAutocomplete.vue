@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import type { DamAssetType } from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 
 const props = withDefaults(
