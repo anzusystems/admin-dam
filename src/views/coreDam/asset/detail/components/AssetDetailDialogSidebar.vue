@@ -2,8 +2,7 @@
 import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/AssetDetailSidebarMetadata.vue'
 import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import type { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import { useI18n } from 'vue-i18n'
 import {

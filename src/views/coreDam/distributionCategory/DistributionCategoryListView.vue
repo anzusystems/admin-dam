@@ -8,7 +8,7 @@ import {
   useDistributionCategoryManageActions,
 } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryCreateButton from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 

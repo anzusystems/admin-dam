@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import { DamAssetType } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import type { AssetFileProperties } from '@anzusystems/common-admin'
 import { isUndefined, useRemainingTime } from '@anzusystems/common-admin'

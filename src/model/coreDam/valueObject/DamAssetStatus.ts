@@ -1,13 +1,6 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
-export enum DamAssetStatus {
-  Draft = 'draft',
-  WithFile = 'with_file',
-  Deleting = 'deleting',
-  Default = Draft,
-}
+import { DamAssetStatus, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useAssetStatus() {
   const { t } = useI18n()

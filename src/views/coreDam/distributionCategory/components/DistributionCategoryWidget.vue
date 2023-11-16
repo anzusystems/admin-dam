@@ -9,7 +9,7 @@ import { useDistributionCategoryFactory } from '@/model/coreDam/factory/Distribu
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useI18n } from 'vue-i18n'
 import DistributionCategoryWidgetDialog from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 

@@ -9,7 +9,7 @@ import {
   makeMainFile as apiMakeMainFile,
   unsetAssetSlot,
 } from '@/services/api/coreDam/fileApi'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { makePrivate } from '@/services/api/coreDam/audioApi'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 

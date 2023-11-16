@@ -1,15 +1,6 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
-export enum DamDistributionStatus {
-  Waiting = 'waiting',
-  Distributing = 'distributing',
-  RemoteProcessing = 'remote_processing',
-  Distributed = 'distributed',
-  Failed = 'failed',
-  Default = Waiting,
-}
+import { DamDistributionStatus, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useDistributionStatus() {
   const { t } = useI18n()

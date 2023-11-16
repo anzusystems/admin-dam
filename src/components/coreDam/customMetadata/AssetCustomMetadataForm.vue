@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { ACustomDataForm, useDamConfigState } from '@anzusystems/common-admin'
 

@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import { makeFilterHelper } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import { DamAssetStatus } from '@anzusystems/common-admin'
 
 const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 

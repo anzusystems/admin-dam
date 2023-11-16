@@ -2,7 +2,7 @@ import { useNotification } from '@/composables/system/notifications'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { updateCurrentUser } from '@/composables/system/currentUser'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
-import { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
+import { DamDistributionStatus } from '@anzusystems/common-admin'
 
 export const initAppNotificationListeners = () => {
   const { openConnection, addNotificationListener } = useNotification()

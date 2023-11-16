@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import type { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceType } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{

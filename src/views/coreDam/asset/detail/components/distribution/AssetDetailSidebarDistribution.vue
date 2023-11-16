@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { fetchAssetDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { AssetFileProcessStatus, DocId } from '@anzusystems/common-admin'

@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { cloneDeep, useDamConfigState } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 

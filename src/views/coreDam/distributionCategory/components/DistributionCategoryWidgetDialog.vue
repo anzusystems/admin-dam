@@ -10,7 +10,7 @@ import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

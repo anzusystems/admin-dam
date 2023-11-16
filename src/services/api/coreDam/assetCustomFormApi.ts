@@ -2,7 +2,7 @@ import type { CustomDataFormElement, IntegerId } from '@anzusystems/common-admin
 import { apiFetchOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/asset-custom-form'

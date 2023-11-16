@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { DamDistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
-import { DamDistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
+import type { DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
+import { DamDistributionRequirementStrategy } from '@anzusystems/common-admin'
 import {
   cloneDeep,
   type DamDistributionServiceName,
@@ -14,7 +14,7 @@ import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distribut
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 

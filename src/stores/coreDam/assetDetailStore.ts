@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetDetailItemDto } from '@anzusystems/common-admin'
-import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import { DamAssetStatus } from '@anzusystems/common-admin'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'

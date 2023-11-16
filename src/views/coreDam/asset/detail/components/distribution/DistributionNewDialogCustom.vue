@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { type DamDistributionServiceName, useDamConfigState } from '@anzusystems/common-admin'
-import type { DamDistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
+import type { DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import {
   AFormDatetimePicker,

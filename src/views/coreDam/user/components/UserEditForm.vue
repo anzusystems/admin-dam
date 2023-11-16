@@ -9,7 +9,7 @@ import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/Ex
 import DistributionServiceSelect from '@/views/coreDam/distribution/components/DistributionServiceSelect.vue'
 import ExternalProviderAssetSelect from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
 import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
-import { UserAuthType } from '@/types/coreDam/DamConfig'
+import { UserAuthType } from '@anzusystems/common-admin'
 
 const { userUpdate } = useUserEditActions()
 

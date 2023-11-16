@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
-import { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
+import { DamDistributionServiceType } from '@anzusystems/common-admin'
 import { type DocId, useDamConfigState } from '@anzusystems/common-admin'
 import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'

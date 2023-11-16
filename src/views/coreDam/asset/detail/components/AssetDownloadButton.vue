@@ -5,7 +5,7 @@ import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
 

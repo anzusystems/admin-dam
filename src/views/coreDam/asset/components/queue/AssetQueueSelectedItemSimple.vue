@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import { DamAssetStatus } from '@anzusystems/common-admin'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { UploadQueueItemStatus } from '@anzusystems/common-admin'

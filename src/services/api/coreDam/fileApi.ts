@@ -44,7 +44,7 @@ import {
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
 } from '@/services/api/coreDam/documentApi'
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'

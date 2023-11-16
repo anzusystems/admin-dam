@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import type { DamDistributionRequirementsConfig } from '@/types/coreDam/DamConfig'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 
 withDefaults(

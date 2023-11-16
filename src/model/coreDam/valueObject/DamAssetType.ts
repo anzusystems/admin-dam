@@ -1,14 +1,6 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
-export enum DamAssetType {
-  Image = 'image',
-  Audio = 'audio',
-  Video = 'video',
-  Document = 'document',
-  Default = Image,
-}
+import { DamAssetType, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useAssetType() {
   const { t } = useI18n()

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { type DamAssetType, DamDistributionStatus } from '@anzusystems/common-admin'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
-import { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import type { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceType } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import { useDamConfigState } from '@anzusystems/common-admin'

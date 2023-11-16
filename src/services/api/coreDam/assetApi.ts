@@ -32,7 +32,7 @@ import {
   type ValidationError,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import type { AssetCreateDto } from '@/types/coreDam/Asset'
 
 export interface AssetMetadataBulkItem {

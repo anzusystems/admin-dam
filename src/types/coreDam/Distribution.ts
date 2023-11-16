@@ -1,7 +1,6 @@
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DamDistributionStatus } from '@anzusystems/common-admin'
 import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
-import type { DamDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
 

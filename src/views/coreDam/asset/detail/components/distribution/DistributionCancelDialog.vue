@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { ADialogToolbar, isNull, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
-import { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
+import { DamDistributionServiceType } from '@anzusystems/common-admin'
 import { cancelCustomDistribution } from '@/services/api/coreDam/distributionCustomApi'
 
 const emit = defineEmits<{

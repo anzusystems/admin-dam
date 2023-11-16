@@ -13,7 +13,7 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { DamAssetType as AssetTypeValue } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetType as AssetTypeValue } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

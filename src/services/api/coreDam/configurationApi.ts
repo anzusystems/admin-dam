@@ -2,7 +2,7 @@ import { damClient } from '@/services/api/clients/damClient'
 import type { IntegerId } from '@anzusystems/common-admin'
 import { apiFetchOne } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamPrvConfig, DamExtSystemConfig, DamPubConfig } from '@/types/coreDam/DamConfig'
+import type { DamPrvConfig, DamExtSystemConfig, DamPubConfig } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/configuration'
 export const PUB_END_POINT_PREFIX = '/pub'

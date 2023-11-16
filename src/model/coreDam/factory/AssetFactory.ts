@@ -1,4 +1,4 @@
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 import type { AssetCreateDto } from '@/types/coreDam/Asset'
 
 export function useAssetFactory() {

@@ -1,4 +1,4 @@
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 
 export interface AssetCreateDto {
   type: DamAssetType

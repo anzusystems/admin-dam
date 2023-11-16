@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import type { DocIdNullable } from '@anzusystems/common-admin'
-import type { DamDistributionServiceType } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceType } from '@anzusystems/common-admin'
 
 const dialogCancel = ref(false)
 const distributionIdToCancel = ref<DocIdNullable>(null)

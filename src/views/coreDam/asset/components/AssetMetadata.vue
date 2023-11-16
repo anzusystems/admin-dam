@@ -16,7 +16,7 @@ import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/component
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'

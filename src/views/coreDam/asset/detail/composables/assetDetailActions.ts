@@ -1,8 +1,8 @@
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import { DamAssetType } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@anzusystems/common-admin'
 import { assetFileIsImageFile } from '@anzusystems/common-admin'
 
 export function useAssetDetailActions() {

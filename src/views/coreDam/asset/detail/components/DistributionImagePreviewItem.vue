@@ -3,8 +3,7 @@ import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionIm
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted } from 'vue'
-import { DamAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { DamAssetStatus, useDamConfigState } from '@anzusystems/common-admin'
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR = '#ccc'

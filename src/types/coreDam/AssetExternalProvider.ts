@@ -1,4 +1,4 @@
-import type { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 
 export type AssetExternalProviderId = string | number
 export type AssetExternalProviderIdNullable = AssetExternalProviderId | null

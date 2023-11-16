@@ -3,8 +3,7 @@ import { envConfig } from '@/services/EnvConfigService'
 import { useI18n } from 'vue-i18n'
 import LoginFormSimple from '@/views/system/components/LoginFormSimple.vue'
 import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
-import { UserAuthType } from '@/types/coreDam/DamConfig'
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { useDamConfigState, UserAuthType } from '@anzusystems/common-admin'
 
 const { damPubConfig } = useDamConfigState()
 

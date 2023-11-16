@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DamAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { computed, watch } from 'vue'
