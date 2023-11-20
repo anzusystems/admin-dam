@@ -4,7 +4,7 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import { ADialogToolbar, DamAssetType, type DocId, useDamConfigState } from '@anzusystems/common-admin'
+import { ADialogToolbar, DamAssetType, type DocId, useDamAcceptTypeAndSizeHelper } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -89,33 +89,7 @@ const onDialogConfirm = async () => {
   uploadDialog.value = false
 }
 
-const { damConfigExtSystem } = useDamConfigState()
-
-const createSizesByAssetType = (assetType: DamAssetType) => {
-  const sizes: Record<string, number> = {}
-  for (let i = 0; i < damConfigExtSystem.value[assetType].mimeTypes.length; i++) {
-    sizes[damConfigExtSystem.value[assetType].mimeTypes[i]] = damConfigExtSystem.value[assetType].sizeLimit
-  }
-  return sizes
-}
-
-const uploadSizes = computed(() => {
-  if (props.assetType) {
-    return {
-      ...createSizesByAssetType(props.assetType),
-    }
-  }
-  return {
-    ...createSizesByAssetType(DamAssetType.Image),
-    ...createSizesByAssetType(DamAssetType.Audio),
-    ...createSizesByAssetType(DamAssetType.Video),
-    ...createSizesByAssetType(DamAssetType.Document),
-  }
-})
-
-const uploadAccept = computed(() => {
-  return Object.keys(uploadSizes.value).join(',')
-})
+const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType)
 
 const { t } = useI18n()
 </script>
@@ -151,7 +125,7 @@ const { t } = useI18n()
           <span v-if="uploadQueueTotalCount > 0">{{
             t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
           }}</span>
-          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
           {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </VCardText>
