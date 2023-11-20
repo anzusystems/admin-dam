@@ -4,7 +4,13 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { computed, ref } from 'vue'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import { ADialogToolbar, DamAssetType, type DocId, useDamAcceptTypeAndSizeHelper } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  DamAssetType,
+  type DocId,
+  useDamAcceptTypeAndSizeHelper,
+  useDamConfigState
+} from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -89,7 +95,8 @@ const onDialogConfirm = async () => {
   uploadDialog.value = false
 }
 
-const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType)
+const { damConfigExtSystem } = useDamConfigState()
+const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, damConfigExtSystem.value)
 
 const { t } = useI18n()
 </script>
