@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { UploadQueue } from '@anzusystems/common-admin'
+import { type UploadQueue, useAssetSuggestions } from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
   type AssetFileFailReason,
@@ -31,7 +31,6 @@ import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 interface State {
@@ -235,6 +234,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       this.queues[queueId].fileInputKey++
     },
     async fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
+      const { getAuthorConflicts } = useAssetSuggestions()
       const res = await fetchAssetListByIds(assetIds, licenceId)
       for (let i = 0; i < res.length; i++) {
         const foundIndex = this.queues[queueId].items.findIndex((item) => item.assetId === res[i].id)
@@ -383,6 +383,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       }
     },
     async queueItemMetadataProcessed(assetId: DocId) {
+      const { updateNewNames, getAuthorConflicts } = useAssetSuggestions()
       const assetDetailStore = useAssetDetailStore()
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
