@@ -73,10 +73,7 @@ export const uploadChunk = (
 
     damClient(CHUNK_UPLOAD_TIMEOUT)
       .post(url, formData, {
-        cancelToken:
-          item.chunks[item.currentChunkIndex] && item.chunks[item.currentChunkIndex].cancelTokenSource
-            ? item.chunks[item.currentChunkIndex].cancelTokenSource.token
-            : undefined,
+        cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
         headers: {
           'Content-Type': 'multipart/form-data',
         },

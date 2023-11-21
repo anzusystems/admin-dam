@@ -1,7 +1,8 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import type { AssetFileAudio, AssetFileDownloadLink, DocId, UploadQueueItem } from '@anzusystems/common-admin'
 import {
   apiFetchOne,
+  damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
@@ -9,8 +10,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { AssetFileAudio, AssetFileDownloadLink } from '@anzusystems/common-admin'
-import { damFileTypeFix } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/audio'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -69,10 +68,7 @@ export const uploadChunk = (
 
     damClient(CHUNK_UPLOAD_TIMEOUT)
       .post(url, formData, {
-        cancelToken:
-          item.chunks[item.currentChunkIndex] && item.chunks[item.currentChunkIndex].cancelTokenSource
-            ? item.chunks[item.currentChunkIndex].cancelTokenSource.token
-            : undefined,
+        cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
         headers: {
           'Content-Type': 'multipart/form-data',
         },

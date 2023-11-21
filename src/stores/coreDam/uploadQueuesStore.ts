@@ -1,28 +1,27 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import {
-  type AssetFileNullable,
-  getAssetTypeByMimeType,
-  useDamConfigState,
-  useUploadQueueItemFactory
-} from '@anzusystems/common-admin'
+import type { UploadQueue } from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
   type AssetFileFailReason,
   AssetFileLinkType,
+  type AssetFileNullable,
   type AssetSearchListItemDto,
+  DamAssetStatus,
+  DamAssetType,
+  damFileTypeFix,
   type DocId,
   type DocIdNullable,
+  getAssetTypeByMimeType,
   isUndefined,
   type UploadQueueItem,
   UploadQueueItemStatus,
   UploadQueueItemType,
+  useDamConfigState,
+  useUploadQueueItemFactory,
 } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
-import type { UploadQueue } from '@anzusystems/common-admin'
-import { DamAssetStatus } from '@anzusystems/common-admin'
-import { DamAssetType } from '@anzusystems/common-admin'
 import { fetchAudioFile } from '@/services/api/coreDam/audioApi'
 import { fetchVideoFile } from '@/services/api/coreDam/videoApi'
 import { fetchDocumentFile } from '@/services/api/coreDam/documentApi'
@@ -34,7 +33,6 @@ import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAutho
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { getAuthorConflicts, updateNewNames } from '@/services/AssetSuggestionsService'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { damFileTypeFix } from '@anzusystems/common-admin'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -309,8 +307,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       })
       if (currentItems.length > 0) {
         currentItems.forEach((item) => {
-          if (item.chunks[item.currentChunkIndex] && item.chunks[item.currentChunkIndex].cancelTokenSource) {
-            uploadStop(item.chunks[item.currentChunkIndex].cancelTokenSource)
+          if (item.latestChunkCancelToken) {
+            uploadStop(item.latestChunkCancelToken)
           }
         })
       }
@@ -320,11 +318,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async stopItemUpload(queueId: string, queueItem: UploadQueueItem, index: number) {
       if (!this.queues[queueId] || this.queues[queueId].items.length === 0) return
       queueItem.status = UploadQueueItemStatus.Stop
-      if (
-        queueItem.chunks[queueItem.currentChunkIndex] &&
-        queueItem.chunks[queueItem.currentChunkIndex].cancelTokenSource
-      ) {
-        uploadStop(queueItem.chunks[queueItem.currentChunkIndex].cancelTokenSource)
+      if (queueItem.latestChunkCancelToken) {
+        uploadStop(queueItem.latestChunkCancelToken)
       }
       await this.removeByIndex(queueId, index)
       this.processUpload(queueId)

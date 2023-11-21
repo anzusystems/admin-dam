@@ -127,7 +127,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
 
     queueItem.currentChunkIndex = offset
     const cancelToken = axios.CancelToken
-    queueItem.chunks[offset] = { cancelTokenSource: cancelToken.source() }
+    queueItem.latestChunkCancelToken = cancelToken.source()
 
     let sleepTime = CHUNK_RETRY_INTERVAL
     let attempt = 0
