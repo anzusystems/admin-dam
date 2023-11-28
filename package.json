@@ -1,6 +1,6 @@
 {
   "name": "adam-admin",
-  "packageManager": "yarn@3.5.0",
+  "packageManager": "yarn@3.6.4",
   "license": "Apache-2.0",
   "version": "0.0.1",
   "scripts": {

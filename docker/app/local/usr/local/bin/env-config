@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to run the setup of config.json file using .env files and exported variables:
+# Script used to run the setup of config.json file using .env files and exported variables:
 # - if the variable is exported in system, then it is left untouched and not exported from any env file
 # - all missing variables are exported from main env file if exists
 # - all missing variables (the same as from main env file) are exported from local env file if exists

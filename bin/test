@@ -1,11 +1,10 @@
 #!/bin/bash
-#Script used to run the tests inside the application docker container
+# Script used to run the tests in the application container
 #######################################################################################################################
 # Default variables
 #######################################################################################################################
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 ARGS="$*"
-DOCKER_CONTAINER="admin-dam"
 BROWSER="chrome"
 ENV="local"
 FILTER=""
@@ -24,18 +23,19 @@ cd "${PROJECT_ROOT}" || exit 1
 docker_env_vars
 
 function help() {
-    echo "
-    $(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    Options:
-      -e --env     [(Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)]
-      -b --browser [(Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)]
-      -f --filter  [(Optional) Comma separated list of filters (Default: n/a - all tests)]
-      -t --tag     [(Optional) Only for dashboard runs tags for cypress dashboard list]
-      -d           [(Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder]
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    \nBash script used to run the tests in the application container
 
-    Example:
-      $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @ --tag Docker,Web -d
-    "
+    Options:
+        -e --env     (Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)
+        -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
+        -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
+        -t --tag     (Optional) Only for dashboard runs tags for cypress dashboard list
+        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder
+
+    Examples:
+        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @datepicker,@nl --tag Docker,Web -d
+    \n"
 }
 
 #######################################################################################################################
@@ -43,18 +43,13 @@ function help() {
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    admin-dam)
-        DOCKER_CONTAINER=$1
-        shift 1
-        continue
-        ;;
     -b)
-        BROWSER="$2"
+        BROWSER=$2
         shift 2
         continue
         ;;
     --browser*)
-        BROWSER="${1#*=}"
+        BROWSER=${1#*=}
         shift 1
         continue
         ;;
@@ -64,7 +59,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     --env*)
-        ENV="${1#*=}"
+        ENV=${1#*=}
         shift 1
         continue
         ;;
@@ -74,7 +69,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     --filter*)
-        FILTER="${1#*=}"
+        FILTER=${1#*=}
         shift 1
         continue
         ;;
@@ -84,7 +79,7 @@ while [ "$#" -gt 0 ]; do
         continue
         ;;
     --tag*)
-        TAG="${1#*=}"
+        TAG=${1#*=}
         shift 1
         continue
         ;;
@@ -120,10 +115,11 @@ if [ -f /.dockerenv ]; then
     # shellcheck disable=SC2086
     CYPRESS_grepTags=${FILTER} \
     dbus-launch ${RUNNER} cypress run \
-    --config-file ${CONFIG_FILE} \
-    --env cfg=${ENV} \
-    --browser ${BROWSER} \
-    ${DASHBOARD_OPTIONS}
+        --config-file ${CONFIG_FILE} \
+        --env cfg=${ENV} \
+        --browser ${BROWSER} \
+        ${DASHBOARD_OPTIONS}
     exit
 fi
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test ${ARGS}\'
+
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'

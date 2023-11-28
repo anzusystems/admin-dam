@@ -8,12 +8,12 @@ services:
       context: .
       dockerfile: ./docker/app/local/Dockerfile
     environment:
-      - VIRTUAL_HOST=admin-dam.anzusystems.localhost
+      - VIRTUAL_HOST=admin-dam.anzusystems.local
       - VIRTUAL_PORT=8080
     external_links:
-      - local-proxy:core-dam.anzusystems.localhost
-      - local-proxy:admin-dam.anzusystems.localhost
-      - local-proxy:notification-server.anzusystems.localhost
+      - local-proxy:core-dam.anzusystems.local
+      - local-proxy:admin-dam.anzusystems.local
+      - local-proxy:notification-server.anzusystems.local
     env_file:
       - .env.docker.dist
       - .env.docker.local
@@ -22,7 +22,7 @@ services:
     ports:
       - ${DOCKER_VUE_DEV_PORT:-8150}:${DOCKER_VUE_DEV_PORT:-8150}
       - ${NGINX_PORT:-8151}:8080
-    hostname: admin-dam.anzusystems.localhost
+    hostname: admin-dam.anzusystems.local
     privileged: true
     networks:
       anzusystems_network:
