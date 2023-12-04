@@ -19,12 +19,12 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
-import type { Author } from '@/types/coreDam/Author'
+import type { DamAuthor } from '@/types/coreDam/DamAuthor'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'
 
-type DatatableItem = Author
+type DatatableItem = DamAuthor
 
 const router = useRouter()
 const filter = useAuthorListFilter()

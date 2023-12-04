@@ -1,10 +1,10 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceApi'
-import type { Keyword } from '@/types/coreDam/Keyword'
+import type { DamKeyword } from '@/types/coreDam/DamKeyword'
 
 export function useKeywordFactory() {
-  const createDefault = (extSystemId: number, reviewed?: boolean): Keyword => {
+  const createDefault = (extSystemId: number, reviewed?: boolean): DamKeyword => {
     return {
       id: '',
       name: '',

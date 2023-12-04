@@ -5,7 +5,7 @@ import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/key
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
-import type { Keyword } from '@/types/coreDam/Keyword'
+import type { DamKeyword } from '@/types/coreDam/DamKeyword'
 import { useVuelidate } from '@vuelidate/core'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
@@ -73,7 +73,7 @@ const searchChange = (newValue: string) => {
 
 const { addManualToCachedKeywords } = useCachedKeywords()
 
-const afterCreate = (keyword: Keyword) => {
+const afterCreate = (keyword: DamKeyword) => {
   addManualToCachedKeywords(keyword)
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, keyword.id]

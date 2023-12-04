@@ -1,11 +1,11 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
 import { useExtSystemFactory } from '@/model/coreDam/factory/ExtSystemFactory'
 
 const { createDefault } = useExtSystemFactory()
 
 interface State {
-  extSystem: ExtSystem
+  extSystem: DamExtSystem
 }
 
 export const useExtSystemOneStore = defineStore('extSystemOneStore', {
@@ -13,7 +13,7 @@ export const useExtSystemOneStore = defineStore('extSystemOneStore', {
     extSystem: createDefault(),
   }),
   actions: {
-    setExtSystem(extSystem: ExtSystem) {
+    setExtSystem(extSystem: DamExtSystem) {
       this.extSystem = extSystem
     },
     reset() {

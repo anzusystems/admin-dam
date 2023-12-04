@@ -1,11 +1,11 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useKeywordFactory } from '@/model/coreDam/factory/KeywordFactory'
-import type { Keyword } from '@/types/coreDam/Keyword'
+import type { DamKeyword } from '@/types/coreDam/DamKeyword'
 
 const { createDefault } = useKeywordFactory()
 
 interface State {
-  keyword: Keyword
+  keyword: DamKeyword
 }
 
 export const useKeywordOneStore = defineStore('keywordOneStore', {
@@ -13,7 +13,7 @@ export const useKeywordOneStore = defineStore('keywordOneStore', {
     keyword: createDefault(0),
   }),
   actions: {
-    setKeyword(keyword: Keyword) {
+    setKeyword(keyword: DamKeyword) {
       this.keyword = keyword
     },
     reset() {

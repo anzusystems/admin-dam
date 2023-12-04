@@ -4,14 +4,14 @@ interface Flags {
   reviewed: boolean
 }
 
-export interface Keyword extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
+export interface DamKeyword extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   name: string
   extSystem: IntegerId
   flags: Flags
 }
 
-export interface KeywordMinimal {
+export interface DamKeywordMinimal {
   id: DocId
   name: string
 }

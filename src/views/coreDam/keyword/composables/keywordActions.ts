@@ -3,7 +3,7 @@ import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/comm
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/coreDam/keywordApi'
-import type { Keyword, KeywordMinimal } from '@/types/coreDam/Keyword'
+import type { DamKeyword, DamKeywordMinimal } from '@/types/coreDam/DamKeyword'
 import { storeToRefs } from 'pinia'
 import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
 import useVuelidate from '@vuelidate/core'
@@ -20,7 +20,7 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useKeywordListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const listItems = ref<Keyword[]>([])
+  const listItems = ref<DamKeyword[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
@@ -119,22 +119,22 @@ export const useKeywordEditActions = () => {
 export const useKeywordSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
 
-  const mapToValueObject = (keyword: Keyword): ValueObjectOption<string> => ({
+  const mapToValueObject = (keyword: DamKeyword): ValueObjectOption<string> => ({
     title: keyword.name,
     value: keyword.id,
   })
 
-  const mapToMinimal = (keyword: Keyword): KeywordMinimal => ({
+  const mapToMinimal = (keyword: DamKeyword): DamKeywordMinimal => ({
     id: keyword.id,
     name: keyword.name,
   })
 
-  const mapToValueObjects = (keywords: Keyword[]): ValueObjectOption<string>[] => {
-    return keywords.map((keyword: Keyword) => mapToValueObject(keyword))
+  const mapToValueObjects = (keywords: DamKeyword[]): ValueObjectOption<string>[] => {
+    return keywords.map((keyword: DamKeyword) => mapToValueObject(keyword))
   }
 
-  const mapToMinimals = (keywords: Keyword[]): KeywordMinimal[] => {
-    return keywords.map((keyword: Keyword) => mapToMinimal(keyword))
+  const mapToMinimals = (keywords: DamKeyword[]): DamKeywordMinimal[] => {
+    return keywords.map((keyword: DamKeyword) => mapToMinimal(keyword))
   }
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {

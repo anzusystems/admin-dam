@@ -1,5 +1,5 @@
 import { readonly, ref, watch } from 'vue'
-import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
 import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
@@ -9,7 +9,7 @@ import { isDocId, isString, useDamConfigState } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const currentExtSystemId = ref(0)
-const currentExtSystem = ref<ExtSystem>()
+const currentExtSystem = ref<DamExtSystem>()
 
 const currentAssetLicence = ref<AssetLicence>()
 const currentAssetLicenceId = ref(0)
@@ -93,7 +93,7 @@ export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: s
 
 export function useCurrentExtSystem() {
   return {
-    currentExtSystemId: readonly(currentExtSystemId),
+    currentExtSystemId: readonly(currentExtSystemId ),
     currentExtSystem: readonly(currentExtSystem),
   }
 }

@@ -5,7 +5,7 @@ import { useAuthorSelectActions } from '@/views/coreDam/author/composables/autho
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, onMounted, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
-import type { Author } from '@/types/coreDam/Author'
+import type { DamAuthor } from '@/types/coreDam/DamAuthor'
 import { useVuelidate } from '@vuelidate/core'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import {
@@ -86,7 +86,7 @@ const searchChange = (newValue: string) => {
 
 const { addManualToCachedAuthors } = useCachedAuthors()
 
-const afterCreate = (author: Author) => {
+const afterCreate = (author: DamAuthor) => {
   addManualToCachedAuthors(author)
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, author.id]

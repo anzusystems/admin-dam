@@ -16,7 +16,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createKeyword, ENTITY } from '@/services/api/coreDam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useKeywordFactory } from '@/model/coreDam/factory/KeywordFactory'
-import type { Keyword } from '@/types/coreDam/Keyword'
+import type { DamKeyword } from '@/types/coreDam/DamKeyword'
 import { useKeywordValidation } from '@/views/coreDam/keyword/composables/keywordValidation'
 import { KeywordCreateValidationScopeSymbol } from '@/components/validationScopes'
 
@@ -43,13 +43,13 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: Keyword): void
+  (e: 'onSuccess', data: DamKeyword): void
 }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const { createDefault } = useKeywordFactory()
-const keyword = ref<Keyword>(createDefault(currentExtSystemId.value))
+const keyword = ref<DamKeyword>(createDefault(currentExtSystemId.value))
 const dialog = ref(false)
 const buttonLoading = ref(false)
 

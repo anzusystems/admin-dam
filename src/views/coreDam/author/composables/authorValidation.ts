@@ -1,13 +1,13 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import type { Author } from '@/types/coreDam/Author'
+import type { DamAuthor } from '@/types/coreDam/DamAuthor'
 import type { ValidationScope } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
 
 const { required, minLength } = useValidate()
 
-export function useAuthorValidation(author: Ref<Author>, validationScope: ValidationScope = undefined) {
+export function useAuthorValidation(author: Ref<DamAuthor>, validationScope: ValidationScope = undefined) {
   const rules = computed(() => ({
     author: {
       name: {

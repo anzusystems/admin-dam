@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
 import {
   fetchExtSystem,
   fetchExtSystemList,
@@ -26,7 +26,7 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useExtSystemListActions = () => {
-  const listItems = ref<ExtSystem[]>([])
+  const listItems = ref<DamExtSystem[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
@@ -77,7 +77,7 @@ export const useExtSystemSelectActions = () => {
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
     const extSystems = await fetchExtSystemList(pagination, filterBag)
 
-    return <ValueObjectOption<number>[]>extSystems.map((extSystem: ExtSystem) => ({
+    return <ValueObjectOption<number>[]>extSystems.map((extSystem: DamExtSystem) => ({
       title: extSystem.slug,
       value: extSystem.id,
     }))
@@ -86,7 +86,7 @@ export const useExtSystemSelectActions = () => {
   const fetchItemsByIds = async (ids: number[]) => {
     const extSystems = await fetchExtSystemListByIds(ids)
 
-    return <ValueObjectOption<number>[]>extSystems.map((extSystem: ExtSystem) => ({
+    return <ValueObjectOption<number>[]>extSystems.map((extSystem: DamExtSystem) => ({
       title: extSystem.slug,
       value: extSystem.id,
     }))

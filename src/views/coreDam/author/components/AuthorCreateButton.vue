@@ -16,7 +16,7 @@ import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthor, ENTITY } from '@/services/api/coreDam/authorApi'
 import { useAuthorFactory } from '@/model/coreDam/factory/AuthorFactory'
-import type { Author } from '@/types/coreDam/Author'
+import type { DamAuthor } from '@/types/coreDam/DamAuthor'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
 import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -45,13 +45,13 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: Author): void
+  (e: 'onSuccess', data: DamAuthor): void
 }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const { createDefault } = useAuthorFactory()
-const author = ref<Author>(createDefault(currentExtSystemId.value))
+const author = ref<DamAuthor>(createDefault(currentExtSystemId.value))
 const dialog = ref(false)
 const buttonLoading = ref(false)
 

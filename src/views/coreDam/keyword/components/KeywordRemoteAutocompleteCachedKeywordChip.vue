@@ -2,7 +2,7 @@
 import type { CachedItem, DocId } from '@anzusystems/common-admin'
 import { isNull, isUndefined } from '@anzusystems/common-admin'
 import { computed, shallowRef, watch } from 'vue'
-import type { KeywordMinimal } from '@/types/coreDam/Keyword'
+import type { DamKeywordMinimal } from '@/types/coreDam/DamKeyword'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
@@ -29,7 +29,7 @@ const props = withDefaults(
 const { getCachedKeyword } = useCachedKeywords()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const cached = shallowRef<undefined | CachedItem<KeywordMinimal>>(undefined)
+const cached = shallowRef<undefined | CachedItem<DamKeywordMinimal>>(undefined)
 const loaded = shallowRef<boolean>(false)
 
 const item = computed(() => {
@@ -67,7 +67,9 @@ watch(
 <template>
   <div :class="containerClass">
     <template v-if="isNull(id) || isUndefined(id)">
-      <slot name="empty"> - </slot>
+      <slot name="empty">
+        -
+      </slot>
     </template>
     <div v-else-if="textOnly">
       {{ displayTitle }}

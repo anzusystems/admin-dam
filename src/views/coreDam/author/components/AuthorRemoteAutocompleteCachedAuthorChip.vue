@@ -3,7 +3,7 @@ import type { CachedItem, DocId } from '@anzusystems/common-admin'
 import { isNull, isUndefined } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { computed, shallowRef, watch } from 'vue'
-import type { AuthorMinimal } from '@/types/coreDam/Author'
+import type { DamAuthorMinimal } from '@/types/coreDam/DamAuthor'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
 const props = withDefaults(
@@ -29,7 +29,7 @@ const props = withDefaults(
 const { getCachedAuthor } = useCachedAuthors()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const cached = shallowRef<undefined | CachedItem<AuthorMinimal>>(undefined)
+const cached = shallowRef<undefined | CachedItem<DamAuthorMinimal>>(undefined)
 const loaded = shallowRef<boolean>(false)
 
 const item = computed(() => {
@@ -67,7 +67,9 @@ watch(
 <template>
   <div :class="containerClass">
     <template v-if="isNull(id) || isUndefined(id)">
-      <slot name="empty"> - </slot>
+      <slot name="empty">
+        -
+      </slot>
     </template>
     <div v-else-if="textOnly">
       {{ displayTitle }}

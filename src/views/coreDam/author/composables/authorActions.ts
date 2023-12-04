@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import type { Author, AuthorMinimal } from '@/types/coreDam/Author'
+import type { DamAuthor, DamAuthorMinimal } from '@/types/coreDam/DamAuthor'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
@@ -21,7 +21,7 @@ const saveAndCloseButtonLoading = ref(false)
 export const useAuthorListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
 
-  const listItems = ref<Author[]>([])
+  const listItems = ref<DamAuthor[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
@@ -120,23 +120,23 @@ export const useAuthorEditActions = () => {
 export const useAuthorSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
 
-  const mapToMinimal = (author: Author): AuthorMinimal => ({
+  const mapToMinimal = (author: DamAuthor): DamAuthorMinimal => ({
     id: author.id,
     name: author.name,
     identifier: author.identifier,
   })
 
-  const mapToValueObject = (author: Author): ValueObjectOption<string> => ({
+  const mapToValueObject = (author: DamAuthor): ValueObjectOption<string> => ({
     title: author.name + (author.identifier ? ` (${author.identifier})` : ''),
     value: author.id,
   })
 
-  const mapToValueObjects = (authors: Author[]): ValueObjectOption<string>[] => {
-    return authors.map((author: Author) => mapToValueObject(author))
+  const mapToValueObjects = (authors: DamAuthor[]): ValueObjectOption<string>[] => {
+    return authors.map((author: DamAuthor) => mapToValueObject(author))
   }
 
-  const mapToMinimals = (authors: Author[]): AuthorMinimal[] => {
-    return authors.map((author: Author) => mapToMinimal(author))
+  const mapToMinimals = (authors: DamAuthor[]): DamAuthorMinimal[] => {
+    return authors.map((author: DamAuthor) => mapToMinimal(author))
   }
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {

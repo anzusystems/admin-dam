@@ -19,10 +19,10 @@ import { useRouter } from 'vue-router'
 import { useExtSystemListFilter } from '@/model/coreDam/filter/ExtSystemFilter'
 import { useExtSystemListActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemFilter from '@/views/coreDam/extSystem/components/ExtSystemFilter.vue'
-import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
 import { ACL } from '@/types/Permission'
 
-type DatatableItem = ExtSystem
+type DatatableItem = DamExtSystem
 
 const router = useRouter()
 const filter = useExtSystemListFilter()
