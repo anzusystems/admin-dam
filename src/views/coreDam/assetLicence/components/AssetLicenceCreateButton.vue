@@ -35,7 +35,7 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  return await await createAssetLicence(assetLicence.value)
+  return await createAssetLicence(assetLicence.value)
 }
 </script>
 
