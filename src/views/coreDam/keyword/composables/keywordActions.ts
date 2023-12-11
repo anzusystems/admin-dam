@@ -3,7 +3,7 @@ import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/comm
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/coreDam/keywordApi'
-import type { DamKeyword, DamKeywordMinimal } from '@/types/coreDam/DamKeyword'
+import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
 import useVuelidate from '@vuelidate/core'

@@ -1,4 +1,4 @@
-import type { DamAuthor, DamAuthorMinimal } from '@/types/coreDam/DamAuthor'
+import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { fetchAuthorListByIds } from '@/services/api/coreDam/authorApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { defineCached } from '@anzusystems/common-admin'

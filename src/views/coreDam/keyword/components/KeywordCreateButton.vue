@@ -15,8 +15,8 @@ import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createKeyword, ENTITY } from '@/services/api/coreDam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useKeywordFactory } from '@/model/coreDam/factory/KeywordFactory'
-import type { DamKeyword } from '@/types/coreDam/DamKeyword'
+import { useDamKeywordFactory } from '@anzusystems/common-admin'
+import type { DamKeyword } from '@anzusystems/common-admin'
 import { useKeywordValidation } from '@/views/coreDam/keyword/composables/keywordValidation'
 import { KeywordCreateValidationScopeSymbol } from '@/components/validationScopes'
 
@@ -48,7 +48,7 @@ const emit = defineEmits<{
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
-const { createDefault } = useKeywordFactory()
+const { createDefault } = useDamKeywordFactory()
 const keyword = ref<DamKeyword>(createDefault(currentExtSystemId.value))
 const dialog = ref(false)
 const buttonLoading = ref(false)

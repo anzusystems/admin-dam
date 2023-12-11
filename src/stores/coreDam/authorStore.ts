@@ -1,8 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DamAuthor } from '@/types/coreDam/DamAuthor'
-import { useAuthorFactory } from '@/model/coreDam/factory/AuthorFactory'
+import type { DamAuthor } from '@anzusystems/common-admin'
+import { useDamAuthorFactory } from '@anzusystems/common-admin'
 
-const { createDefault } = useAuthorFactory()
+const { createDefault } = useDamAuthorFactory()
 
 interface State {
   author: DamAuthor

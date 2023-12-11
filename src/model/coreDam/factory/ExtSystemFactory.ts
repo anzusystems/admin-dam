@@ -1,6 +1,6 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@anzusystems/common-admin'
-import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 
 export function useExtSystemFactory() {

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-// @ts-ignore
-import VueCropper from 'vue-cropperjs'
-import type Cropper from 'cropperjs'
-import 'cropperjs/dist/cropper.css'
+import ACropperjs from '@anzusystems/common-admin'
 import { computed, onUnmounted, ref } from 'vue'
 import { updateRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
-import { cropToRegion, regionToCrop } from '@/services/CropperJsService'
+import { cropToRegion, regionToCrop } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
@@ -16,7 +13,7 @@ const cropperContainerStyle = { overflow: 'hidden', maxHeight: 'calc(100vh - 160
 
 const imageRoiStore = useImageRoiStore()
 
-const cropper = ref<Cropper | null>(null)
+const cropper = ref<any>(null) // fix any
 const cropperOpacityHide = ref(true)
 
 const imageUrl = computed(() => {
@@ -106,7 +103,7 @@ onUnmounted(() => {
     indeterminate
     color="primary"
   />
-  <VueCropper
+  <ACropperjs
     v-if="showCropper"
     :key="imageRoiStore.timestampCropper"
     ref="cropper"

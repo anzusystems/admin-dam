@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-import sha1 from 'js-sha1'
 import { type UploadQueueItem, useDamUploadChunkSize } from '@anzusystems/common-admin'
 import {
   type AnzuApiValidationResponseData,
@@ -13,6 +12,7 @@ import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/serv
 import type { CancelTokenSource } from 'axios'
 import axios from 'axios'
 import { envConfig } from '@/services/EnvConfigService'
+import rusha from 'rusha'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
@@ -84,7 +84,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
   let lastTimestamp = 0
   let endTimestamp = 0
   let lastLoaded = 0
-  const assetAlgo = sha1.create()
+  const sha = rusha.createHash()
   const { updateChunkSize, lastChunkSize } = useDamUploadChunkSize(envConfig.dam.apiTimeout)
 
   const getCurrentTimestamp = () => {
@@ -135,7 +135,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
       attempt++
       try {
         await uploadChunk(chunkFile, offset)
-        assetAlgo.update(arrayBuffer.data)
+        sha.update(arrayBuffer.data)
 
         return chunkFile
       } catch (error) {
@@ -215,7 +215,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
     }
 
     endTimestamp = Date.now() / 1000
-    return await finishUpload(queueItem, assetAlgo.hex())
+    return await finishUpload(queueItem, sha.digest('hex'))
   }
 
   return {

@@ -1,5 +1,5 @@
 import { readonly, ref, watch } from 'vue'
-import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { useCurrentUser } from '@/composables/system/currentUser'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'

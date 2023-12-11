@@ -2,7 +2,7 @@ import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
-import type { DamAuthor } from '@/types/coreDam/DamAuthor'
+import type { DamAuthor } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/author'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'

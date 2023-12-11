@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
-import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
+import { useDamAuthorType } from '@anzusystems/common-admin'
 import {
   AFilterBooleanSelect,
   AFilterString,
@@ -31,7 +31,7 @@ const onAnyFilterUpdate = () => {
   touched.value = true
 }
 
-const { authorTypeOptions } = useAuthorType()
+const { authorTypeOptions } = useDamAuthorType()
 </script>
 
 <template>

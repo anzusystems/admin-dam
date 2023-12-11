@@ -2,7 +2,7 @@ import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
-import type { DamKeyword } from '@/types/coreDam/DamKeyword'
+import type { DamKeyword } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/keyword'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'

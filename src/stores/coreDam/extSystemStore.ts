@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import { useExtSystemFactory } from '@/model/coreDam/factory/ExtSystemFactory'
 
 const { createDefault } = useExtSystemFactory()

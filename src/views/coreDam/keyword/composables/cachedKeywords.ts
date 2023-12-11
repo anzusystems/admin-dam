@@ -1,4 +1,4 @@
-import type { DamKeyword, DamKeywordMinimal } from '@/types/coreDam/DamKeyword'
+import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
 import { fetchKeywordListByIds } from '@/services/api/coreDam/keywordApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { defineCached } from '@anzusystems/common-admin'

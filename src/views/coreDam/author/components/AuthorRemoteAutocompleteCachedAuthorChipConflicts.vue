@@ -3,7 +3,7 @@ import type { CachedItem, DocId } from '@anzusystems/common-admin'
 import { isUndefined } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { computed, shallowRef, watch } from 'vue'
-import type { DamAuthorMinimal } from '@/types/coreDam/DamAuthor'
+import type { DamAuthorMinimal } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

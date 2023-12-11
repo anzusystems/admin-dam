@@ -22,7 +22,7 @@ import { ACL, type AclValue } from '@/types/Permission'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
 import KeywordFilter from '@/views/coreDam/keyword/components/KeywordFilter.vue'
-import type { DamKeyword } from '@/types/coreDam/DamKeyword'
+import type { DamKeyword } from '@anzusystems/common-admin'
 
 type DatatableItem = DamKeyword
 

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import type { DamAuthor, DamAuthorMinimal } from '@/types/coreDam/DamAuthor'
+import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import type { DamExtSystem } from '@/types/coreDam/DamExtSystem'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import {
   fetchExtSystem,
   fetchExtSystemList,

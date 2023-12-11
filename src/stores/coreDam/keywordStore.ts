@@ -1,8 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useKeywordFactory } from '@/model/coreDam/factory/KeywordFactory'
-import type { DamKeyword } from '@/types/coreDam/DamKeyword'
+import { useDamKeywordFactory } from '@anzusystems/common-admin'
+import type { DamKeyword } from '@anzusystems/common-admin'
 
-const { createDefault } = useKeywordFactory()
+const { createDefault } = useDamKeywordFactory()
 
 interface State {
   keyword: DamKeyword

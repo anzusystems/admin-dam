@@ -5,7 +5,7 @@ import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/key
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
-import type { DamKeyword } from '@/types/coreDam/DamKeyword'
+import type { DamKeyword } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {

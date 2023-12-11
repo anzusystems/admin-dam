@@ -1,4 +1,4 @@
-import type { DamExtSystem, DamExtSystemMinimal } from '@/types/coreDam/DamExtSystem'
+import type { DamExtSystem, DamExtSystemMinimal } from '@anzusystems/common-admin'
 import { fetchExtSystemListByIds } from '@/services/api/coreDam/extSystemApi'
 import type { IntegerId } from '@anzusystems/common-admin'
 import { defineCached } from '@anzusystems/common-admin'

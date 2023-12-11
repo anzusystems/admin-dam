@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
-import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
+import { useDamAuthorType } from '@anzusystems/common-admin'
 
 const { author } = useAuthorEditActions()
 
@@ -13,7 +13,7 @@ const { v$ } = useAuthorValidation(author)
 
 const { t } = useI18n()
 
-const { authorTypeOptions } = useAuthorType()
+const { authorTypeOptions } = useDamAuthorType()
 </script>
 
 <template>

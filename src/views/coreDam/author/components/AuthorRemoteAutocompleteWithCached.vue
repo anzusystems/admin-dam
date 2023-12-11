@@ -5,7 +5,7 @@ import { useAuthorSelectActions } from '@/views/coreDam/author/composables/autho
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, onMounted, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
-import type { DamAuthor } from '@/types/coreDam/DamAuthor'
+import type { DamAuthor } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import {
