@@ -183,10 +183,10 @@ onMounted(async () => {
         <div class="mb-4 text-caption">
           {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
             extSystemName
-          }})<br />
+          }})<br>
           {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
             licenceName
-          }})<br />
+          }})<br>
         </div>
         <ASystemEntityScope
           :system="SYSTEM_CORE_DAM"

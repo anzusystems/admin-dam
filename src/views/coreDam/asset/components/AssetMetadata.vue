@@ -156,14 +156,16 @@ const onAnyMetadataChange = () => {
           <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
-          <VCol cols="9"> {{ dateTimePretty(asset.createdAt) }}<br /><CachedDamUserChip :id="asset.createdBy" /> </VCol>
+          <VCol cols="9">
+            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
+          </VCol>
         </VRow>
         <VRow>
           <VCol cols="3">
             {{ t('common.model.tracking.modified') }}
           </VCol>
           <VCol cols="9">
-            {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
+            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">

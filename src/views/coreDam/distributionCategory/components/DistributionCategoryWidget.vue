@@ -63,7 +63,9 @@ watch(
 <template>
   <div class="d-flex flex-column w-100">
     <VRow align="center">
-      <VCol class="text-caption"> {{ t('coreDam.distribution.common.select') }}: </VCol>
+      <VCol class="text-caption">
+        {{ t('coreDam.distribution.common.select') }}:
+      </VCol>
     </VRow>
     <VRow v-if="!distributionCategoryId">
       <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>

@@ -2,7 +2,7 @@ import {
   AssetFileProcessStatus,
   type DamUploadStartResponse,
   type DocId,
-  type UploadQueueItem
+  type UploadQueueItem,
 } from '@anzusystems/common-admin'
 import { UploadQueueItemStatus } from '@anzusystems/common-admin'
 import {

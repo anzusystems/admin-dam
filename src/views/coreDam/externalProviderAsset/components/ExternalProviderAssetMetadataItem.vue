@@ -30,6 +30,6 @@ const valueComputed = computed(() => {
     :key="item + ''"
     class="d-inline-flex"
   >
-    <span>{{ item }}<br /></span>
+    <span>{{ item }}<br></span>
   </div>
 </template>

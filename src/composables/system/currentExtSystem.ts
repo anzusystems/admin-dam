@@ -93,7 +93,7 @@ export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: s
 
 export function useCurrentExtSystem() {
   return {
-    currentExtSystemId: readonly(currentExtSystemId ),
+    currentExtSystemId: readonly(currentExtSystemId),
     currentExtSystem: readonly(currentExtSystem),
   }
 }

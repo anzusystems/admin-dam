@@ -199,9 +199,9 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         <AssetFilePublicLink
           v-if="
             assetType === DamAssetType.Audio &&
-            item &&
-            item.assetFile &&
-            statusComputed === AssetFileProcessStatus.Processed
+              item &&
+              item.assetFile &&
+              statusComputed === AssetFileProcessStatus.Processed
           "
           :preview-link="filePublicLink"
           @make-private="makeFilePrivate"

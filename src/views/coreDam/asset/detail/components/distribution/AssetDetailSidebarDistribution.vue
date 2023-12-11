@@ -67,7 +67,9 @@ onMounted(async () => {
         {{ t('coreDam.distribution.common.addButton') }}
       </ABtnPrimary>
     </AssetDetailSidebarActionsWrapper>
-    <div class="px-4 text-caption">{{ t('coreDam.distribution.common.list') }}:</div>
+    <div class="px-4 text-caption">
+      {{ t('coreDam.distribution.common.list') }}:
+    </div>
     <div
       v-if="distributionListStore.loader"
       class="d-flex w-100 h-100 justify-center align-center pa-2"

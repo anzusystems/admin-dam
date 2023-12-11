@@ -67,11 +67,15 @@ const onSwitch = () => {
       </ADialogToolbar>
       <VCardText>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.name') }}:
+          </div>
           {{ item?.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
+          <div class="font-weight-bold">
+            {{ t('coreDam.asset.slots.file') }}:
+          </div>
           {{ fileTitle }}
         </div>
         <div

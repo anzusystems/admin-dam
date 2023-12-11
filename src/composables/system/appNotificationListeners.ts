@@ -5,7 +5,7 @@ import {
   DamDistributionStatus,
   DamNotificationName,
   initDamNotifications,
-  useDamNotifications
+  useDamNotifications,
 } from '@anzusystems/common-admin'
 
 export const initAppNotificationListeners = () => {
@@ -25,11 +25,7 @@ export const initAppNotificationListeners = () => {
         uploadQueuesStore.queueItemFailed(event.data.asset, event.data.failReason)
         break
       case DamNotificationName.AssetFileDuplicate:
-        uploadQueuesStore.queueItemDuplicate(
-          event.data.asset,
-          event.data.originAssetFile,
-          event.data.assetType
-        )
+        uploadQueuesStore.queueItemDuplicate(event.data.asset, event.data.originAssetFile, event.data.assetType)
         break
       case DamNotificationName.AssetMetadataProcessed:
         uploadQueuesStore.queueItemMetadataProcessed(event.data.asset)

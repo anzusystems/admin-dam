@@ -9,7 +9,7 @@ import {
   DamAssetType,
   type DocId,
   useDamAcceptTypeAndSizeHelper,
-  useDamConfigState
+  useDamConfigState,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
