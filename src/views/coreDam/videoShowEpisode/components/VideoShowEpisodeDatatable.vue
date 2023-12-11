@@ -22,7 +22,7 @@ import VideoShowEpisodeFilter from '@/views/coreDam/videoShowEpisode/components/
 import { ACL, type AclValue } from '@/types/Permission'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 
-type DatatableItem = { raw: VideoShowEpisode }
+type DatatableItem = VideoShowEpisode
 
 const props = withDefaults(
   defineProps<{
@@ -40,10 +40,10 @@ const { fetchList, listItems, datatableHiddenColumns } = useVideoShowEpisodeList
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
+  if (item.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
     router.push({
       name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL,
-      params: { id: props.videoShowId, episodeId: item.raw.id },
+      params: { id: props.videoShowId, episodeId: item.id },
     })
   }
 }
@@ -92,20 +92,20 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
-              :route-params="{ id: props.videoShowId, episodeId: item.raw.id }"
+              :route-params="{ id: props.videoShowId, episodeId: item.id }"
               :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL"
             />
             <ATableEditButton
-              :route-params="{ id: props.videoShowId, episodeId: item.raw.id }"
+              :route-params="{ id: props.videoShowId, episodeId: item.id }"
               :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT"
             />
           </div>

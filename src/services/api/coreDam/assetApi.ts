@@ -1,4 +1,10 @@
 import { damClient } from '@/services/api/clients/damClient'
+import type {
+  AssetCustomData,
+  AssetDetailItemDto,
+  AssetMetadataDto,
+  AssetSearchListItemDto,
+} from '@anzusystems/common-admin'
 import {
   AnzuApiForbiddenError,
   AnzuApiForbiddenOperationError,
@@ -20,20 +26,14 @@ import {
   type IntegerId,
   isNull,
   type Pagination,
+  type UploadQueueItem,
   useAlerts,
+  useDamConfigState,
   type ValidationError,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type {
-  AssetCreateDto,
-  AssetCustomData,
-  AssetDetailItemDto,
-  AssetMetadataDto,
-  AssetSearchListItemDto,
-} from '@/types/coreDam/Asset'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
+import type { AssetCreateDto } from '@/types/coreDam/Asset'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -81,7 +81,7 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
     fetchAssetListByIdsSequence(ids, licenceId)
       .then((responses) => {
         if (responses.length === 0) {
-          reject(responses) // todo check
+          reject(responses)
         } else if (
           responses.every((res) => {
             return res.status === HTTP_STATUS_OK
@@ -146,7 +146,7 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
     updateMetadataSequence(items)
       .then((responses) => {
         if (responses.length === 0) {
-          reject(responses) // todo check
+          reject(responses)
         } else if (
           responses.every((res) => {
             return res.status === HTTP_STATUS_OK
@@ -166,14 +166,14 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
 
 const { showUnknownError, showApiValidationError } = useAlerts()
 
-// todo add type
-const handleMetadataValidationError = (error: any, assetType: AssetType) => {
+const handleMetadataValidationError = (error: any, assetType: DamAssetType) => {
+  const { damConfigAssetCustomFormElements } = useDamConfigState()
   if (!error || !error.response || !error.response.data) return
   const data = error.response.data as AnzuApiValidationResponseData
   const items = [] as ValidationError[]
   for (const [key, values] of Object.entries(data.fields)) {
     const field = key.split('.').pop()
-    const found = damConfigAssetCustomFormElements[assetType].find((item) => item.property === field)
+    const found = damConfigAssetCustomFormElements.value[assetType].find((item) => item.property === field)
     if (found) {
       items.push({
         field: found.name,

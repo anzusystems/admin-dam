@@ -2,12 +2,9 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategorySelectApi'
 import { ASystemEntityScope, isUndefined } from '@anzusystems/common-admin'
-import {
-  useDistributionCategorySelectEditActions
-} from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import { useDistributionCategorySelectEditActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategoryOptionFactory } from '@/model/coreDam/factory/DistributionCategoryOptionFactory'
-import DistributionCategoryOptionEditForm
-  from '@/views/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
+import DistributionCategoryOptionEditForm from '@/views/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
 import { useSortable } from '@vueuse/integrations/useSortable'
 import { nextTick, ref } from 'vue'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
@@ -18,7 +15,7 @@ const { createDefault } = useDistributionCategoryOptionFactory()
 const customSortableUpdate = (
   items: DistributionCategoryOption[],
   from: number | undefined,
-  to: number | undefined,
+  to: number | undefined
 ) => {
   if (isUndefined(from) || isUndefined(to)) return
   if (to >= 0 && to < items.length) {

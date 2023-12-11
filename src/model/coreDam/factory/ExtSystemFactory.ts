@@ -1,10 +1,10 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
-import type { ExtSystem } from '@/types/coreDam/ExtSystem'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 
 export function useExtSystemFactory() {
-  const createDefault = (): ExtSystem => {
+  const createDefault = (): DamExtSystem => {
     return {
       id: 0,
       name: '',

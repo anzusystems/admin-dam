@@ -1,7 +1,8 @@
-import type { DocId } from '@anzusystems/common-admin'
+import type { AssetSearchListItemDto, DocId } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
   browserHistoryReplaceUrlByRouter,
+  DamAssetType,
   isNull,
   useAlerts,
   useFilterHelpers,
@@ -11,12 +12,10 @@ import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/coreDam/assetApi'
 import { useAssetListFilter } from '@/model/coreDam/filter/AssetFilter'
 import { storeToRefs } from 'pinia'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import type { AssetSearchListItemDto } from '@/types/coreDam/Asset'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
@@ -104,7 +103,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
-  const setTypeAndFetch = async (type: null | AssetType = null) => {
+  const setTypeAndFetch = async (type: null | DamAssetType = null) => {
     if (isNull(type)) {
       filter.type.model = []
       filter.inPodcast.model = null
@@ -112,7 +111,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       return
     }
     arrayItemToggle(filter.type.model, type)
-    if (!filter.type.model.includes(AssetType.Audio) && filter.inPodcast.model) {
+    if (!filter.type.model.includes(DamAssetType.Audio) && filter.inPodcast.model) {
       filter.inPodcast.model = null
     }
     await fetchAssetList()
@@ -125,7 +124,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       return
     }
     filter.inPodcast.model = true
-    filter.type.model = [AssetType.Audio]
+    filter.type.model = [DamAssetType.Audio]
     await fetchAssetList()
   }
 

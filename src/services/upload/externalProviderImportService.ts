@@ -1,16 +1,16 @@
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
-import { externalProviderUpload } from '@/services/api/coreDam/fileApi'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
 import {
   type AnzuApiValidationResponseData,
   axiosErrorResponseHasValidationData,
+  UploadQueueItemStatus,
   useAlerts,
 } from '@anzusystems/common-admin'
+import { externalProviderUpload } from '@/services/api/coreDam/fileApi'
 
 export function externalProviderImport(queueItem: UploadQueueItem) {
   const importInit = async () => {
     return new Promise((resolve) => {
-      queueItem.status = QueueItemStatus.Uploading
+      queueItem.status = UploadQueueItemStatus.Uploading
       externalProviderUpload(queueItem)
         .then((res) => {
           queueItem.assetId = res.asset
@@ -25,7 +25,7 @@ export function externalProviderImport(queueItem: UploadQueueItem) {
             }
             const data = error.response.data as AnzuApiValidationResponseData
             if (data.fields.id && data.fields.id.includes('error_field_not_unique')) {
-              queueItem.status = QueueItemStatus.Failed
+              queueItem.status = UploadQueueItemStatus.Failed
               queueItem.isDuplicate = true
               return resolve(queueItem)
             }

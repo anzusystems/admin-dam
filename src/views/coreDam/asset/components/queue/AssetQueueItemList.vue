@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { useRemainingTime } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -21,10 +20,10 @@ const emit = defineEmits<{
 
 const loading = computed(() => {
   return [
-    QueueItemStatus.Waiting,
-    QueueItemStatus.Uploading,
-    QueueItemStatus.Loading,
-    QueueItemStatus.Processing,
+    UploadQueueItemStatus.Waiting,
+    UploadQueueItemStatus.Uploading,
+    UploadQueueItemStatus.Loading,
+    UploadQueueItemStatus.Processing,
   ].includes(props.item.status)
 })
 
@@ -37,7 +36,9 @@ const cancelItem = () => {
 }
 
 const showCancel = computed(() => {
-  return [QueueItemStatus.Loading, QueueItemStatus.Waiting, QueueItemStatus.Uploading].includes(props.item.status)
+  return [UploadQueueItemStatus.Loading, UploadQueueItemStatus.Waiting, UploadQueueItemStatus.Uploading].includes(
+    props.item.status
+  )
 })
 
 const { remainingTimeShort } = useRemainingTime()

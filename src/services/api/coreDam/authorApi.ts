@@ -2,14 +2,14 @@ import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
-import type { Author } from '@/types/coreDam/Author'
+import type { DamAuthor } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/author'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'author'
 
 export const fetchAuthorListByIds = (extSystemId: number, ids: string[]) =>
-  apiFetchByIds<Author[]>(
+  apiFetchByIds<DamAuthor[]>(
     damClient,
     ids,
     END_POINT_LIST + '/search',
@@ -23,7 +23,7 @@ export const fetchAuthorListByIds = (extSystemId: number, ids: string[]) =>
   )
 
 export const fetchAuthorList = (extSystemId: number, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<Author[]>(
+  apiFetchList<DamAuthor[]>(
     damClient,
     END_POINT_LIST,
     {
@@ -35,11 +35,11 @@ export const fetchAuthorList = (extSystemId: number, pagination: Pagination, fil
     ENTITY
   )
 
-export const createAuthor = (data: Author) =>
-  apiCreateOne<Author>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const createAuthor = (data: DamAuthor) =>
+  apiCreateOne<DamAuthor>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
 
-export const updateAuthor = (id: string, data: Author) =>
-  apiUpdateOne<Author>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const updateAuthor = (id: string, data: DamAuthor) =>
+  apiUpdateOne<DamAuthor>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const fetchAuthor = (id: string) =>
-  apiFetchOne<Author>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchOne<DamAuthor>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)

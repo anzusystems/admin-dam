@@ -1,38 +1,30 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
-export enum AssetType {
-  Image = 'image',
-  Audio = 'audio',
-  Video = 'video',
-  Document = 'document',
-  Default = Image,
-}
+import { DamAssetType, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useAssetType() {
   const { t } = useI18n()
 
-  const assetTypeOptions = ref<ValueObjectOption<AssetType>[]>([
+  const assetTypeOptions = ref<ValueObjectOption<DamAssetType>[]>([
     {
-      value: AssetType.Image,
+      value: DamAssetType.Image,
       title: t('coreDam.asset.assetType.image'),
     },
     {
-      value: AssetType.Audio,
+      value: DamAssetType.Audio,
       title: t('coreDam.asset.assetType.audio'),
     },
     {
-      value: AssetType.Video,
+      value: DamAssetType.Video,
       title: t('coreDam.asset.assetType.video'),
     },
     {
-      value: AssetType.Document,
+      value: DamAssetType.Document,
       title: t('coreDam.asset.assetType.document'),
     },
   ])
 
-  const getAssetTypeOption = (value: AssetType) => {
+  const getAssetTypeOption = (value: DamAssetType) => {
     return assetTypeOptions.value.find((item) => item.value === value)
   }
 

@@ -1,8 +1,7 @@
 import { reactive } from 'vue'
-import { makeFilterHelper } from '@anzusystems/common-admin'
+import { DamAssetStatus, makeFilterHelper } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 
 const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 
@@ -17,7 +16,7 @@ const filter = reactive({
     ...makeFilter({ name: 'type', default: [] }),
   },
   status: {
-    ...makeFilter({ name: 'status', default: [AssetStatus.WithFile] }),
+    ...makeFilter({ name: 'status', default: [DamAssetStatus.WithFile] }),
   },
   keywordIds: {
     ...makeFilter({ name: 'keywordIds', default: [], multiple: true }),

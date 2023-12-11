@@ -1,9 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import { type DamDistributionServiceName, DamDistributionStatus } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { isNull } from '@anzusystems/common-admin'
-import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import { fetchDistribution } from '@/services/api/coreDam/distributionApi'
 import type { DistributionAuth } from '@/types/coreDam/DistributionAuth'
 import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
@@ -22,7 +21,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
   }),
   getters: {
     getDistributionAuth: (state) => {
-      return (distributionService: DistributionServiceName) => {
+      return (distributionService: DamDistributionServiceName) => {
         const foundIndex = state.auth.findIndex((item) => item.distributionService === distributionService)
         if (foundIndex > -1) return state.auth[foundIndex]
         return null
@@ -39,7 +38,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     setList(items: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>) {
       this.list = items
     },
-    authorizationMessage(distributionService: DistributionServiceName, success: boolean) {
+    authorizationMessage(distributionService: DamDistributionServiceName, success: boolean) {
       const found = this.getDistributionAuth(distributionService)
       if (found) {
         found.status = success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error
@@ -50,10 +49,10 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
         status: success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error,
       })
     },
-    async listItemMessageUpdate(distributionId: DocId, status: DistributionStatus) {
+    async listItemMessageUpdate(distributionId: DocId, status: DamDistributionStatus) {
       switch (status) {
-        case DistributionStatus.Distributing:
-        case DistributionStatus.RemoteProcessing:
+        case DamDistributionStatus.Distributing:
+        case DamDistributionStatus.RemoteProcessing:
           {
             const foundIndex = this.list.findIndex((item) => item.id === distributionId)
             if (foundIndex > -1) {
@@ -73,7 +72,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
           }
       }
     },
-    setAuthStatus(distributionService: DistributionServiceName, status = DistributionAuthStatus.Idle) {
+    setAuthStatus(distributionService: DamDistributionServiceName, status = DistributionAuthStatus.Idle) {
       const authItem = this.getDistributionAuth(distributionService)
       if (authItem) {
         authItem.status = status
@@ -84,7 +83,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     resetList() {
       this.list = []
     },
-    resetAuth(distributionService: DistributionServiceName | null = null) {
+    resetAuth(distributionService: DamDistributionServiceName | null = null) {
       if (isNull(distributionService)) {
         this.auth = []
         return

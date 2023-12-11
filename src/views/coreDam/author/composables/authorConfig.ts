@@ -1,14 +1,16 @@
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
+import { useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
-export const useAuthorAssetTypeConfig = (assetType: AssetType) => {
+export const useAuthorAssetTypeConfig = (assetType: DamAssetType) => {
+  const { damConfigExtSystem } = useDamConfigState()
+
   const authorEnabled = computed(() => {
-    return damConfigExtSystem[assetType].authors.enabled
+    return damConfigExtSystem.value[assetType].authors.enabled
   })
 
   const authorRequired = computed(() => {
-    return damConfigExtSystem[assetType].authors.required
+    return damConfigExtSystem.value[assetType].authors.required
   })
 
   return {

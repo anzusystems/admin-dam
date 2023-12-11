@@ -23,7 +23,7 @@ import { usePermissionGroupActions } from '@/views/common/permissionGroup/compos
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
 import { damClient } from '@/services/api/clients/damClient'
 
-type DatatableItem = { raw: PermissionGroup }
+type DatatableItem = PermissionGroup
 
 const router = useRouter()
 
@@ -33,8 +33,8 @@ const { fetchPermissionGroupList, permissionGroupList, datatableHiddenColumns } 
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
-    router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
+    router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -94,26 +94,26 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.permissions="{ item }: { item: DatatableItem }">
-          {{ Object.keys(item.raw.permissions).length }}
+          {{ Object.keys(item.permissions).length }}
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
               />
             </Acl>

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import AssetCustomMetadataElement from '@/components/coreDam/customMetadata/AssetCustomMetadataElement.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
-import { damConfigDistributionCustomFormElements } from '@/services/DamConfigDistributionCustomFormService'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 
 // damConfigDistributionCustomFormElements must be loaded before using this component
 
 const props = withDefaults(
   defineProps<{
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     modelValue: { [key: string]: any }
   }>(),
   {}
@@ -25,6 +24,7 @@ const updateModelValue = (data: { property: string; value: any }) => {
   emit('update:modelValue', { ...props.modelValue, ...updated })
   emit('anyChange')
 }
+const { damConfigDistributionCustomFormElements } = useDamConfigState()
 
 const elements = computed(() => {
   return damConfigDistributionCustomFormElements.value[props.distributionServiceName]
@@ -40,9 +40,8 @@ const elements = computed(() => {
       class="mt-1"
     >
       <VCol>
-        <AssetCustomMetadataElement
+        <ACustomDataFormElement
           :config="element"
-          :element-property="element.property"
           :model-value="modelValue[element.property]"
           :validation-scope="AssetMetadataValidationScopeSymbol"
           @update:model-value="updateModelValue"

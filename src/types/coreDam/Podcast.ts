@@ -1,5 +1,7 @@
 import type {
   AnzuUserAndTimeTrackingAware,
+  AssetFileImagePreviewNullable,
+  AssetFileLinks,
   DatetimeUTCNullable,
   DocId,
   IntegerIdNullable,
@@ -7,8 +9,6 @@ import type {
 } from '@anzusystems/common-admin'
 import type { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
 import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
-import type { Links } from '@/types/coreDam/File'
-import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
 
 interface Texts {
   title: string
@@ -31,10 +31,10 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   texts: Texts
   attributes: Attributes
   dates: Dates
-  links?: Links
-  altLinks?: Links
-  imagePreview: ImagePreviewNullable
-  altImage: ImagePreviewNullable
+  links?: AssetFileLinks
+  altLinks?: AssetFileLinks
+  imagePreview: AssetFileImagePreviewNullable
+  altImage: AssetFileImagePreviewNullable
 }
 
 export interface PodcastMinimal {

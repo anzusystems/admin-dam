@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
+import type { DamDistributionServiceType } from '@anzusystems/common-admin'
+import { type DamAssetType, DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
-import { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import type { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { useI18n } from 'vue-i18n'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 
 const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: AssetType
-    distributionType: DistributionServiceType | null
+    assetType: DamAssetType
+    distributionType: DamDistributionServiceType | null
     showRedistribute: boolean
   }>(),
   {}
@@ -24,8 +22,10 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
+const { damConfigExtSystem } = useDamConfigState()
+
 const serviceRequirements = computed(() => {
-  return damConfigExtSystem[props.assetType].distribution.distributionRequirements[props.item.distributionService]
+  return damConfigExtSystem.value[props.assetType].distribution.distributionRequirements[props.item.distributionService]
 })
 </script>
 
@@ -54,12 +54,12 @@ const serviceRequirements = computed(() => {
         </ABtnTertiary>
       </VCol>
     </VRow>
-    <VRow v-if="item.status === DistributionStatus.Failed">
+    <VRow v-if="item.status === DamDistributionStatus.Failed">
       <VCol>
         {{ t('coreDam.distribution.common.failReason') }}: <DistributionFailReasonChip :status="item.failReason" />
       </VCol>
     </VRow>
-    <VRow v-if="item.status === DistributionStatus.Distributed">
+    <VRow v-if="item.status === DamDistributionStatus.Distributed">
       <VCol>
         <a
           :href="'https://www.youtube.com/watch?v=' + item.extId"

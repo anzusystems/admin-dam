@@ -1,4 +1,4 @@
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 
 export enum DistributionAuthStatus {
   Idle = 'idle',
@@ -9,6 +9,6 @@ export enum DistributionAuthStatus {
 }
 
 export interface DistributionAuth {
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   status: DistributionAuthStatus
 }

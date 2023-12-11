@@ -1,10 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { AssetDetailItemDto } from '@/types/coreDam/Asset'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import { type AssetDetailItemDto, useAssetSuggestions } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@anzusystems/common-admin'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import { getAuthorConflicts } from '@/services/AssetSuggestionsService'
 
 interface State {
   asset: AssetDetailItemDto | null
@@ -48,6 +47,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
       this.loader = false
     },
     setAsset(asset: AssetDetailItemDto) {
+      const { getAuthorConflicts } = useAssetSuggestions()
       this.metadataAreTouched = false // todo check
       this.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
       this.prefetchLazyData(asset) // todo check
@@ -73,7 +73,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     setDeleting() {
       if (!this.asset) return
-      this.asset.attributes.assetStatus = AssetStatus.Deleting
+      this.asset.attributes.assetStatus = DamAssetStatus.Deleting
     },
     reset() {
       this.asset = null

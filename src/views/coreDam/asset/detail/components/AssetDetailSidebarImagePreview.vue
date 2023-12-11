@@ -4,11 +4,10 @@ import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/Asset
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { onMounted, ref } from 'vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import type { VideoFile } from '@/types/coreDam/File'
-import { isVideoFile } from '@/types/coreDam/File'
+import type { AssetFileVideo } from '@anzusystems/common-admin'
+import { assetFileIsVideoFile, useAlerts } from '@anzusystems/common-admin'
 import { fetchVideoFile, updatePreviewImage } from '@/services/api/coreDam/videoApi'
 import ImagePreview from '@/views/coreDam/asset/components/ImagePreview.vue'
-import { useAlerts } from '@anzusystems/common-admin'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
 import { useI18n } from 'vue-i18n'
 
@@ -25,7 +24,7 @@ withDefaults(
 const { t } = useI18n()
 const loading = ref(true)
 const saving = ref(false)
-const videoFile = ref<VideoFile | null>(null)
+const videoFile = ref<AssetFileVideo | null>(null)
 const chooseImagePreviewFromDistributionDialog = ref(false)
 
 const assetDetailStore = useAssetDetailStore()
@@ -39,7 +38,11 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 }
 
 const initLoad = async () => {
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isVideoFile(assetDetailStore.asset.mainFile)) {
+  if (
+    assetDetailStore.asset &&
+    assetDetailStore.asset.mainFile &&
+    assetFileIsVideoFile(assetDetailStore.asset.mainFile)
+  ) {
     videoFile.value = await fetchVideoFile(assetDetailStore.asset.mainFile.id)
   }
   loading.value = false

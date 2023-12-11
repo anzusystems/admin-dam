@@ -3,21 +3,21 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCurrentUser } from '@/composables/system/currentUser'
-import type { IntegerId } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   ASystemEntityScope,
+  type IntegerId,
   type IntegerIdNullable,
   isArray,
   isInt,
   isNull,
   isUndefined,
   useAlerts,
+  useDamConfigState,
   useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
-import { damConfig } from '@/services/DamConfigService'
 import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
 import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
 import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
@@ -88,8 +88,10 @@ const licenceItems = computed(() => {
   return []
 })
 
+const { damPrvConfig } = useDamConfigState()
+
 const allowSelect = computed(() => {
-  return damConfig.settings.allowSelectExtSystem && damConfig.settings.allowSelectLicenceId
+  return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
 })
 
 const onCancel = () => {

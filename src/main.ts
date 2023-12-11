@@ -6,7 +6,7 @@ import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
 import { vuetify } from '@/plugins/vuetify'
 import { router } from '@/router'
-import { loadEnvConfig } from '@/services/EnvConfigService'
+import { envConfig, loadEnvConfig } from '@/services/EnvConfigService'
 import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
@@ -46,7 +46,17 @@ loadEnvConfig(() => {
         default: DEFAULT_LANGUAGE,
       },
       coreDam: {
-        client: damClient,
+        configs: {
+          default: {
+            damClient: damClient,
+          },
+        },
+        apiTimeout: envConfig.dam.apiTimeout,
+        uploadStatusFallback: true,
+        notification: {
+          enabled: envConfig.notification.enabled,
+          webSocketUrl: envConfig.notification.webSocketUrl,
+        },
       },
     })
     .component('AppLayoutLoader', AppLayoutLoader)

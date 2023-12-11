@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -9,19 +9,19 @@ const { t } = useI18n()
 const { setTypeAndFetch, togglePodcastAndFetch, filter } = useAssetListActions()
 
 const isImageActive = computed(() => {
-  return filter.type.model.includes(AssetType.Image)
+  return filter.type.model.includes(DamAssetType.Image)
 })
 
 const isAudioActive = computed(() => {
-  return filter.type.model.includes(AssetType.Audio)
+  return filter.type.model.includes(DamAssetType.Audio)
 })
 
 const isVideoActive = computed(() => {
-  return filter.type.model.includes(AssetType.Video)
+  return filter.type.model.includes(DamAssetType.Video)
 })
 
 const isDocumentActive = computed(() => {
-  return filter.type.model.includes(AssetType.Document)
+  return filter.type.model.includes(DamAssetType.Document)
 })
 
 const isPodcastActive = computed(() => {
@@ -57,7 +57,7 @@ const isPodcastActive = computed(() => {
     :active="isImageActive"
     :color="isImageActive ? 'secondary' : ''"
     :variant="isImageActive ? 'flat' : 'text'"
-    @click.stop="setTypeAndFetch(AssetType.Image)"
+    @click.stop="setTypeAndFetch(DamAssetType.Image)"
   >
     <VIcon
       icon="mdi-image"
@@ -78,7 +78,7 @@ const isPodcastActive = computed(() => {
     :active="isVideoActive"
     :color="isVideoActive ? 'secondary' : ''"
     :variant="isVideoActive ? 'flat' : 'text'"
-    @click.stop="setTypeAndFetch(AssetType.Video)"
+    @click.stop="setTypeAndFetch(DamAssetType.Video)"
   >
     <VIcon
       icon="mdi-video"
@@ -99,7 +99,7 @@ const isPodcastActive = computed(() => {
     :active="isAudioActive"
     :color="isAudioActive ? 'secondary' : ''"
     :variant="isAudioActive ? 'flat' : 'text'"
-    @click.stop="setTypeAndFetch(AssetType.Audio)"
+    @click.stop="setTypeAndFetch(DamAssetType.Audio)"
   >
     <VIcon
       icon="mdi-music"
@@ -119,7 +119,7 @@ const isPodcastActive = computed(() => {
     :active="isDocumentActive"
     :color="isDocumentActive ? 'secondary' : ''"
     :variant="isDocumentActive ? 'flat' : 'text'"
-    @click.stop="setTypeAndFetch(AssetType.Document)"
+    @click.stop="setTypeAndFetch(DamAssetType.Document)"
   >
     <VIcon
       icon="mdi-note"

@@ -22,7 +22,7 @@ import { usePodcastListFilter } from '@/model/coreDam/filter/PodcastFilter'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { Podcast } from '@/types/coreDam/Podcast'
 
-type DatatableItem = { raw: Podcast }
+type DatatableItem = Podcast
 
 const router = useRouter()
 const filter = usePodcastListFilter()
@@ -34,8 +34,8 @@ const getList = () => {
 }
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id) {
-    router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: item.raw.id } })
+  if (item.id) {
+    router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -90,23 +90,23 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
-          <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatus" />
+          <PodcastLastImportStatusChip :status="item.attributes.lastImportStatus" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
-              :record-id="item.raw.id"
+              :record-id="item.id"
               :route-name="ROUTE.DAM.PODCAST.DETAIL"
             />
             <ATableEditButton
-              :record-id="item.raw.id"
+              :record-id="item.id"
               :route-name="ROUTE.DAM.PODCAST.EDIT"
             />
           </div>

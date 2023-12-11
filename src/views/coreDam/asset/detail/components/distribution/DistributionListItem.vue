@@ -4,41 +4,42 @@ import DistributionListItemJw from '@/views/coreDam/asset/detail/components/dist
 import DistributionListItemYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
 import DistributionListItemCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustom.vue'
 import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
+import { DamDistributionServiceType, useDamConfigState } from '@anzusystems/common-admin'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import { DistributionServiceType } from '@/types/coreDam/DamConfig'
-import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
 
 const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: AssetType
+    assetType: DamAssetType
   }>(),
   {}
 )
 
+const { damPrvConfig } = useDamConfigState()
+
 const distributionType = computed(() => {
-  if (damConfig.distributionServices[props.item.distributionService]) {
-    return damConfig.distributionServices[props.item.distributionService].type
+  if (damPrvConfig.value.distributionServices[props.item.distributionService]) {
+    return damPrvConfig.value.distributionServices[props.item.distributionService].type
   }
   return null
 })
 
 const showRedistribute = computed(() => {
-  return damConfig.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
+  return damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
     props.item.status
   )
 })
 
 const componentComputed = computed(() => {
   switch (distributionType.value) {
-    case DistributionServiceType.Jw:
+    case DamDistributionServiceType.Jw:
       return DistributionListItemJw
-    case DistributionServiceType.Youtube:
+    case DamDistributionServiceType.Youtube:
       return DistributionListItemYoutube
-    case DistributionServiceType.Custom:
+    case DamDistributionServiceType.Custom:
       return DistributionListItemCustom
     default:
       return DistributionListItemEmpty

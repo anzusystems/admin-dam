@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextField,
@@ -13,12 +14,12 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
 import { useDistributionCategoryCreateActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import { AssetType, useAssetType } from '@/model/coreDam/valueObject/AssetType'
 import DistributionCategorySelectOptionSelect from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 
 const props = withDefaults(
   defineProps<{
-    initialAssetType: AssetType
+    initialAssetType: DamAssetType
     buttonT?: string
     buttonClass?: string
     dataCy?: string
@@ -30,7 +31,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onCreateSuccess', data: AssetType): void
+  (e: 'onCreateSuccess', data: DamAssetType): void
 }>()
 
 const dialog = ref(false)

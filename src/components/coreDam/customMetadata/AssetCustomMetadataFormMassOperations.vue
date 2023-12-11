@@ -1,23 +1,22 @@
 <script lang="ts" setup>
-import { damConfigAssetCustomFormElements } from '@/services/DamConfigAssetCustomFormService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import AssetCustomMetadataElement from '@/components/coreDam/customMetadata/AssetCustomMetadataElement.vue'
 import { useI18n } from 'vue-i18n'
+import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{
-    assetType: AssetType
+    assetType: DamAssetType
     modelValue: { [key: string]: any }
   }>(),
   {}
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: any): void
-  (e: 'fillEmptyField', data: { assetType: AssetType; elementProperty: string; value: any }): void
-  (e: 'replaceField', data: { assetType: AssetType; elementProperty: string; value: any }): void
+  (e: 'fillEmptyField', data: { assetType: DamAssetType; elementProperty: string; value: any }): void
+  (e: 'replaceField', data: { assetType: DamAssetType; elementProperty: string; value: any }): void
 }>()
 
 const updateModelValue = (data: { property: string; value: any }) => {
@@ -33,8 +32,10 @@ const replaceField = (elementProperty: string, value: any) => {
   emit('replaceField', { assetType: props.assetType, elementProperty, value })
 }
 
+const { damConfigAssetCustomFormElements } = useDamConfigState()
+
 const elements = computed(() => {
-  return damConfigAssetCustomFormElements[props.assetType]
+  return damConfigAssetCustomFormElements.value[props.assetType]
 })
 </script>
 
@@ -47,10 +48,13 @@ const elements = computed(() => {
       class="mt-1"
     >
       <VCol>
-        <div class="d-flex">
-          <AssetCustomMetadataElement
+        <div v-if="element.attributes.readonly" />
+        <div
+          v-else
+          class="d-flex"
+        >
+          <ACustomDataFormElement
             :config="element"
-            :element-property="element.property"
             :model-value="modelValue[element.property]"
             @update:model-value="updateModelValue"
           />

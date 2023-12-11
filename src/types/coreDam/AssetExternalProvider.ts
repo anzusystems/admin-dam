@@ -1,4 +1,4 @@
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
 
 export type AssetExternalProviderId = string | number
 export type AssetExternalProviderIdNullable = AssetExternalProviderId | null
@@ -6,7 +6,7 @@ export type AssetExternalProviderIdNullable = AssetExternalProviderId | null
 export type AssetExternalProviderMetadata = Record<string, string | number | number[] | string[] | boolean>
 
 interface AssetExternalProviderAttributesDto {
-  assetType: AssetType
+  assetType: DamAssetType
 }
 
 interface AssetExternalProvideTextsDto {

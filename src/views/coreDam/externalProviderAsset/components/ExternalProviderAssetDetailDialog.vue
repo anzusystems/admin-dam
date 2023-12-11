@@ -4,10 +4,9 @@ import { storeToRefs } from 'pinia'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import { isNull, useTheme } from '@anzusystems/common-admin'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 import ExternalProviderAssetDetailDialogSidebar from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
@@ -59,16 +58,16 @@ const assetType = computed(() => {
 })
 
 const isTypeImage = computed(() => {
-  return assetType.value === AssetType.Image
+  return assetType.value === DamAssetType.Image
 })
 const isTypeVideo = computed(() => {
-  return assetType.value === AssetType.Video
+  return assetType.value === DamAssetType.Video
 })
 const isTypeAudio = computed(() => {
-  return assetType.value === AssetType.Audio
+  return assetType.value === DamAssetType.Audio
 })
 const isTypeDocument = computed(() => {
-  return assetType.value === AssetType.Document
+  return assetType.value === DamAssetType.Document
 })
 const imageSrc = computed(() => {
   if (asset.value?.url) {

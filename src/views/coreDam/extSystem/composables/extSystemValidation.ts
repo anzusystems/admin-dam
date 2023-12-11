@@ -1,12 +1,12 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
 
 const { required, minLength, slug } = useValidate()
 
-export function useExtSystemValidation(extSystem: Ref<ExtSystem>) {
+export function useExtSystemValidation(extSystem: Ref<DamExtSystem>) {
   const rules = computed(() => ({
     extSystem: {
       name: {

@@ -1,32 +1,36 @@
 <script setup lang="ts">
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import {
+  type AssetFileFailReason,
+  AssetFileProcessStatus,
+  DamAssetType,
+  type DocId,
+  isUndefined,
+  type UploadQueueItem,
+  UploadQueueItemStatus,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useI18n } from 'vue-i18n'
 import { computed, watch } from 'vue'
 import AssetSlotListItemRemove from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemDuplicate from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemSwitch from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
-import type { DocId } from '@anzusystems/common-admin'
-import { isUndefined, useAlerts } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import { QueueItemStatus, type UploadQueueItem } from '@/types/coreDam/UploadQueue'
 import AssetQueueItemList from '@/views/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
 import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
-import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
 
 const props = withDefaults(
   defineProps<{
     slotName: string
     item: AssetSlot | null
-    assetType: AssetType
+    assetType: DamAssetType
     totalSlotCount: number
     assetId: DocId
     dataCy?: string
@@ -63,7 +67,7 @@ const fileTitle = computed(() => {
 
 const uploadQueueItemInAnyProgress = computed(() => {
   const item = uploadQueuesStore.getQueueItemForSlotItem(QUEUE_ID_UPLOAD_SLOTS, props.slotName, props.assetId)
-  if (item && item.status !== QueueItemStatus.Uploaded) return item
+  if (item && item.status !== UploadQueueItemStatus.Uploaded) return item
   return undefined
 })
 
@@ -84,7 +88,7 @@ const statusComputed = computed(() => {
 
 const filePublicLink = computed(() => {
   if (
-    props.assetType !== AssetType.Audio ||
+    props.assetType !== DamAssetType.Audio ||
     !props.item ||
     !props.item.assetFile ||
     !props.item.assetFile.links ||
@@ -194,7 +198,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         <div>{{ fileTitle }}</div>
         <AssetFilePublicLink
           v-if="
-            assetType === AssetType.Audio &&
+            assetType === DamAssetType.Audio &&
               item &&
               item.assetFile &&
               statusComputed === AssetFileProcessStatus.Processed
@@ -204,7 +208,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           @open-make-public-dialog="openMakeFilePrivateDialog"
         />
         <ImageFile
-          v-if="assetType === AssetType.Image && item && item.assetFile"
+          v-if="assetType === DamAssetType.Image && item && item.assetFile"
           :model-value="item.assetFile.id"
           :height="200"
         />

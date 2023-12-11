@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import type { DocId } from '@anzusystems/common-admin'
+import type { CachedItem, DocId } from '@anzusystems/common-admin'
 import { isUndefined } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { computed, shallowRef, watch } from 'vue'
-import type { CachedItem } from '@anzusystems/common-admin'
-import type { AuthorMinimal } from '@/types/coreDam/Author'
+import type { DamAuthorMinimal } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -25,7 +24,7 @@ const clickClose = () => {
 
 const { getCachedAuthor } = useCachedAuthors()
 
-const cached = shallowRef<undefined | CachedItem<AuthorMinimal>>(undefined)
+const cached = shallowRef<undefined | CachedItem<DamAuthorMinimal>>(undefined)
 const loaded = shallowRef<boolean>(false)
 
 const item = computed(() => {

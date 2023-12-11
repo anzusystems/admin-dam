@@ -19,12 +19,12 @@ import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
-import type { Author } from '@/types/coreDam/Author'
+import type { DamAuthor } from '@anzusystems/common-admin'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'
 
-type DatatableItem = { raw: Author }
+type DatatableItem = DamAuthor
 
 const router = useRouter()
 const filter = useAuthorListFilter()
@@ -36,7 +36,7 @@ const getList = () => {
 }
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: item.raw.id } })
+  router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -92,30 +92,30 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.type="{ item }: { item: DatatableItem }">
-          <AuthorTypeChip :type="item.raw.type" />
+          <AuthorTypeChip :type="item.type" />
         </template>
         <template #item.flags.reviewed="{ item }: { item: DatatableItem }">
           <ABooleanValue
             chip
-            :value="item.raw.flags.reviewed"
+            :value="item.flags.reviewed"
           />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
-              :record-id="item.raw.id"
+              :record-id="item.id"
               :route-name="ROUTE.DAM.AUTHOR.DETAIL"
             />
             <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.AUTHOR.EDIT"
               />
             </Acl>

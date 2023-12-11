@@ -3,8 +3,7 @@ import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionIm
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted } from 'vue'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
-import { damConfig } from '@/services/DamConfigService'
+import { DamAssetStatus, useDamConfigState } from '@anzusystems/common-admin'
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR = '#ccc'
@@ -31,9 +30,11 @@ const onImageError = () => {
   emit('invalidImage', props.index)
 }
 
+const { damPrvConfig } = useDamConfigState()
+
 const title = computed(() => {
-  if (damConfig.distributionServices[props.item.service]) {
-    return damConfig.distributionServices[props.item.service].title
+  if (damPrvConfig.value.distributionServices[props.item.service]) {
+    return damPrvConfig.value.distributionServices[props.item.service].title
   }
   return props.item.id
 })
@@ -67,7 +68,7 @@ onMounted(async () => {
         />
       </div>
       <AssetImage
-        :asset-status="item.url.length > 0 ? AssetStatus.WithFile : AssetStatus.Draft"
+        :asset-status="item.url.length > 0 ? DamAssetStatus.WithFile : DamAssetStatus.Draft"
         :src="item.invalidImage ? '' : item.url"
         :background-color="IMAGE_BG_COLOR"
         :height="IMAGE_HEIGHT"

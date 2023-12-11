@@ -7,13 +7,13 @@ import {
   type DocId,
   isNull,
   useAlerts,
+  useDamConfigState,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
 import { useI18n } from 'vue-i18n'
-import { damConfig } from '@/services/DamConfigService'
 
 const props = withDefaults(
   defineProps<{
@@ -69,9 +69,11 @@ const onConfirm = async () => {
   }
 }
 
+const { damPrvConfig } = useDamConfigState()
+
 const selectedTitle = computed(() => {
-  if (lastSelectedItem.value && damConfig.distributionServices[lastSelectedItem.value.service]) {
-    return damConfig.distributionServices[lastSelectedItem.value.service].title
+  if (lastSelectedItem.value && damPrvConfig.value.distributionServices[lastSelectedItem.value.service]) {
+    return damPrvConfig.value.distributionServices[lastSelectedItem.value.service].title
   }
   return ''
 })

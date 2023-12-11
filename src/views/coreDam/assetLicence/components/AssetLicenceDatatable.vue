@@ -24,7 +24,7 @@ import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtS
 import { ACL, type AclValue } from '@/types/Permission'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 
-type DatatableItem = { raw: AssetLicence }
+type DatatableItem = AssetLicence
 
 const router = useRouter()
 const filter = useAssetLicenceListFilter()
@@ -38,8 +38,8 @@ const getList = () => {
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
-    router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
+    router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -88,28 +88,28 @@ defineExpose({
       >
         <template #item.extSystem="{ item }: { item: DatatableItem }">
           <CachedExtSystemChip
-            :id="item.raw.extSystem"
+            :id="item.extSystem"
             variant="text"
           />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_ASSET_LICENCE_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.ASSET_LICENCE.EDIT"
               />
             </Acl>

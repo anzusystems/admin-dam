@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
-import { type AuthorType, useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
+import { type DamAuthorType, useDamAuthorType } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
-    type: AuthorType
+    type: DamAuthorType
   }>(),
   {}
 )
 
-const { getAuthorTypeOption } = useAuthorType()
+const { getAuthorTypeOption } = useDamAuthorType()
 const typeOption = computed(() => {
   return getAuthorTypeOption(props.type)
 })

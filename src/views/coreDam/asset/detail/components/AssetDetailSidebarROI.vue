@@ -5,10 +5,9 @@ import { useI18n } from 'vue-i18n'
 import AssetFileRotate from '@/views/coreDam/asset/detail/components/AssetFileRotate.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { onMounted } from 'vue'
-import { isImageFile } from '@/types/coreDam/File'
+import { assetFileIsImageFile, cloneDeep, usePagination } from '@anzusystems/common-admin'
 import { fetchImageRoiList, fetchRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiFilter } from '@/model/coreDam/filter/ImageRoiFilter'
-import { cloneDeep, usePagination } from '@anzusystems/common-admin'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
@@ -54,7 +53,7 @@ const afterRotate = async () => {
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   imageRoiStore.setRoi(null)
-  if (!slot || !isImageFile(slot.assetFile)) return
+  if (!slot || !assetFileIsImageFile(slot.assetFile)) return
   imageRoiStore.showLoader()
   const imageFileDetail = await fetchImageFile(slot.assetFile.id)
   imageRoiStore.setImageFile(cloneDeep(imageFileDetail))
@@ -66,7 +65,11 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 onMounted(async () => {
   imageRoiStore.reset()
   imageRoiStore.showLoader()
-  if (assetDetailStore.asset && assetDetailStore.asset.mainFile && isImageFile(assetDetailStore.asset.mainFile)) {
+  if (
+    assetDetailStore.asset &&
+    assetDetailStore.asset.mainFile &&
+    assetFileIsImageFile(assetDetailStore.asset.mainFile)
+  ) {
     imageRoiStore.setImageFile(cloneDeep(assetDetailStore.asset.mainFile))
     await loadRois()
   }

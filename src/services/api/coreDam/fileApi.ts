@@ -1,6 +1,10 @@
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
-import type { DocId } from '@anzusystems/common-admin'
+import {
+  AssetFileProcessStatus,
+  type DamUploadStartResponse,
+  type DocId,
+  type UploadQueueItem,
+} from '@anzusystems/common-admin'
+import { UploadQueueItemStatus } from '@anzusystems/common-admin'
 import {
   deleteImage,
   downloadLink as imageDownloadLink,
@@ -45,48 +49,43 @@ import {
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
 } from '@/services/api/coreDam/documentApi'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { DamAssetType } from '@anzusystems/common-admin'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
-import { AssetFileProcessStatus, type FileDownloadLink } from '@/types/coreDam/File'
+import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
-
-interface UploadStartResponse {
-  id: DocId
-  asset: DocId
-}
 
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
 
-export const uploadStart: (item: UploadQueueItem) => Promise<UploadStartResponse> = (item: UploadQueueItem) => {
+export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentUploadStart(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
@@ -101,7 +100,7 @@ function calculateFallbackTime(item: UploadQueueItem) {
 // this is just a testing version, todo test
 async function notificationFallbackCallback(item: UploadQueueItem) {
   clearTimeout(item.notificationFallbackTimer)
-  if (item.status === QueueItemStatus.Uploaded) return
+  if (item.status === UploadQueueItemStatus.Uploaded) return
   if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) return
   if (!item.assetId) return
   const asset = await fetchAsset(item.assetId)
@@ -127,10 +126,10 @@ async function notificationFallbackCallback(item: UploadQueueItem) {
 export const uploadFinish = (item: UploadQueueItem, sha: string) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageUploadFinish(item, sha)
           .then((res) => {
-            item.status = QueueItemStatus.Processing
+            item.status = UploadQueueItemStatus.Processing
             if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
@@ -140,10 +139,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioUploadFinish(item, sha)
           .then((res) => {
-            item.status = QueueItemStatus.Processing
+            item.status = UploadQueueItemStatus.Processing
             if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
@@ -153,10 +152,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoUploadFinish(item, sha)
           .then((res) => {
-            item.status = QueueItemStatus.Processing
+            item.status = UploadQueueItemStatus.Processing
             if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
@@ -166,10 +165,10 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentUploadFinish(item, sha)
           .then((res) => {
-            item.status = QueueItemStatus.Processing
+            item.status = UploadQueueItemStatus.Processing
             if (envConfig.uploadStatusFallback) {
               item.notificationFallbackTimer = setTimeout(function () {
                 notificationFallbackCallback(item)
@@ -193,7 +192,7 @@ export const uploadChunk = (
 ) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
           .then((res) => {
             resolve(res)
@@ -202,7 +201,7 @@ export const uploadChunk = (
             reject(err)
           })
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
           .then((res) => {
             resolve(res)
@@ -211,7 +210,7 @@ export const uploadChunk = (
             reject(err)
           })
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
           .then((res) => {
             resolve(res)
@@ -220,7 +219,7 @@ export const uploadChunk = (
             reject(err)
           })
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
           .then((res) => {
             resolve(res)
@@ -233,37 +232,37 @@ export const uploadChunk = (
   })
 }
 
-export const externalProviderUpload: (item: UploadQueueItem) => Promise<UploadStartResponse> = (
+export const externalProviderUpload: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (
   item: UploadQueueItem
 ) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
 
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentExternalProviderUpload(item)
           .then((res) => {
-            resolve(res as UploadStartResponse)
+            resolve(res as DamUploadStartResponse)
           })
           .catch((err) => reject(err))
         break
@@ -271,31 +270,31 @@ export const externalProviderUpload: (item: UploadQueueItem) => Promise<UploadSt
   })
 }
 
-export const unsetAssetSlot = (assetType: AssetType, fileId: DocId, assetId: DocId, slotName: string) => {
+export const unsetAssetSlot = (assetType: DamAssetType, fileId: DocId, assetId: DocId, slotName: string) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageUnsetSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioUnsetSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoUnsetSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentUnsetSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
@@ -306,31 +305,31 @@ export const unsetAssetSlot = (assetType: AssetType, fileId: DocId, assetId: Doc
   })
 }
 
-export const deleteFile = (assetType: AssetType, fileId: DocId) => {
+export const deleteFile = (assetType: DamAssetType, fileId: DocId) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         deleteImage(fileId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         deleteAudio(fileId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         deleteVideo(fileId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         deleteDocument(fileId)
           .then((res) => {
             resolve(res)
@@ -341,31 +340,31 @@ export const deleteFile = (assetType: AssetType, fileId: DocId) => {
   })
 }
 
-export const makeMainFile = (assetType: AssetType, fileId: DocId, assetId: DocId) => {
+export const makeMainFile = (assetType: DamAssetType, fileId: DocId, assetId: DocId) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageMakeMainFile(fileId, assetId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioMakeMainFile(fileId, assetId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoMakeMainFile(fileId, assetId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentMakeMainFile(fileId, assetId)
           .then((res) => {
             resolve(res)
@@ -376,31 +375,31 @@ export const makeMainFile = (assetType: AssetType, fileId: DocId, assetId: DocId
   })
 }
 
-export const existingFileToSlot = (assetType: AssetType, fileId: DocId, assetId: DocId, slotName: string) => {
+export const existingFileToSlot = (assetType: DamAssetType, fileId: DocId, assetId: DocId, slotName: string) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         existingImageToSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         existingAudioToSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         existingVideoToSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         existingDocumentToSlot(fileId, assetId, slotName)
           .then((res) => {
             resolve(res)
@@ -411,31 +410,31 @@ export const existingFileToSlot = (assetType: AssetType, fileId: DocId, assetId:
   })
 }
 
-export const fileDownloadLink = (assetType: AssetType, fileId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+export const fileDownloadLink = (assetType: DamAssetType, fileId: DocId) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     switch (assetType) {
-      case AssetType.Image:
+      case DamAssetType.Image:
         imageDownloadLink(fileId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Audio:
+      case DamAssetType.Audio:
         audioDownloadLink(fileId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Video:
+      case DamAssetType.Video:
         videoDownloadLink(fileId)
           .then((res) => {
             resolve(res)
           })
           .catch((err) => reject(err))
         break
-      case AssetType.Document:
+      case DamAssetType.Document:
         documentDownloadLink(fileId)
           .then((res) => {
             resolve(res)

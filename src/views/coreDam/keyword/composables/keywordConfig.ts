@@ -1,14 +1,16 @@
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { DamAssetType } from '@anzusystems/common-admin'
+import { useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 
-export const useKeywordAssetTypeConfig = (assetType: AssetType) => {
+export const useKeywordAssetTypeConfig = (assetType: DamAssetType) => {
+  const { damConfigExtSystem } = useDamConfigState()
+
   const keywordEnabled = computed(() => {
-    return damConfigExtSystem[assetType].keywords.enabled
+    return damConfigExtSystem.value[assetType].keywords.enabled
   })
 
   const keywordRequired = computed(() => {
-    return damConfigExtSystem[assetType].keywords.required
+    return damConfigExtSystem.value[assetType].keywords.required
   })
 
   return {

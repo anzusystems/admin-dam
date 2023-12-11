@@ -3,7 +3,7 @@ import AssetQueueItemEditable from '@/views/coreDam/asset/components/queue/Asset
 import { computed, onMounted } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 

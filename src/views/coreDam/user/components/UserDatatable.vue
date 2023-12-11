@@ -23,7 +23,7 @@ import UserFilter from '@/views/coreDam/user/components/UserFilter.vue'
 import { ACL, type AclValue } from '@/types/Permission'
 import { useUserListFilter } from '@/model/coreDam/filter/UserFilter'
 
-type DatatableItem = { raw: User }
+type DatatableItem = User
 
 const router = useRouter()
 const filter = useUserListFilter()
@@ -38,8 +38,8 @@ const getList = () => {
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_USER_VIEW)) {
-    router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_USER_VIEW)) {
+    router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -88,23 +88,23 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_USER_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.USER.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.USER.EDIT"
               />
             </Acl>

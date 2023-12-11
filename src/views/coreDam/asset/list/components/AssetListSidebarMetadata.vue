@@ -2,10 +2,9 @@
 import { computed, ref, watch } from 'vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { browserHistoryReplaceUrlByRouter, isNull, useAlerts } from '@anzusystems/common-admin'
+import { browserHistoryReplaceUrlByRouter, DamAssetStatus, isNull, useAlerts } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
 import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
 import useVuelidate from '@vuelidate/core'
@@ -60,7 +59,7 @@ const onSave = async () => {
 }
 
 const assetStatus = computed(() => {
-  return asset.value?.attributes.assetStatus || AssetStatus.Draft
+  return asset.value?.attributes.assetStatus || DamAssetStatus.Draft
 })
 
 const assetMainFile = computed(() => {

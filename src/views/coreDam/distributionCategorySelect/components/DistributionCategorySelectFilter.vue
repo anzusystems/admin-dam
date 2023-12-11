@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAssetType } from '@/model/coreDam/valueObject/AssetType'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
 import {
   AFilterInteger,
