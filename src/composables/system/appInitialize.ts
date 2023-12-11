@@ -11,7 +11,7 @@ import { initAppNotificationListeners } from '@/composables/system/appNotificati
 import { useLoginStatus } from '@/composables/system/loginStatus'
 import { damClient } from '@/services/api/clients/damClient'
 
-const initialized = ref<boolean>(false)
+const initialized = ref(false)
 
 export async function createAppInitialize(
   to: RouteLocationNormalized,
@@ -20,7 +20,8 @@ export async function createAppInitialize(
 ) {
   const { isStatusNotDefined, isStatusSsoCommunicationFailure, isStatusInternalErrorFailure, isStatusUnauthorized } =
     useLoginStatus(to)
-  const { loadDamPrvConfig } = useDamConfigState(damClient)
+  const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements } =
+    useDamConfigState(damClient)
 
   try {
     const updateCurrentUserPromise = updateCurrentUser()
@@ -38,7 +39,6 @@ export async function createAppInitialize(
   }
 
   try {
-    const { loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements } = useDamConfigState()
     const { currentExtSystemId } = useCurrentExtSystem()
 
     const loadDamConfigExtSystemPromise = loadDamConfigExtSystem(currentExtSystemId.value)
