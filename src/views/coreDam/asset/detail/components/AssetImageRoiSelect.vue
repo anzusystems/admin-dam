@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ACropperjs, { cropToRegion, regionToCrop, useAlerts } from '@anzusystems/common-admin'
+import { ACropperjs, cropToRegion, regionToCrop, useAlerts } from '@anzusystems/common-admin'
 import { computed, onUnmounted, ref } from 'vue'
 import { updateRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'

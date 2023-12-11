@@ -4,13 +4,14 @@ import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 import { useDamConfigState } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 
 export const beforeEachRoute = async (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
-  const { loadDamPubConfig, initialized } = useDamConfigState()
+  const { loadDamPubConfig, initialized } = useDamConfigState(damClient)
 
   if (!initLanguageMessagesLoaded.value) await initLoadLanguageMessages()
   if (!initialized.damPubConfig) await loadDamPubConfig()
