@@ -3,7 +3,7 @@
 import { CY } from '../../utils/common'
 
 describe(`Test header navigation menu function, Env: ${CY.cfg}`,
-  { tags: '@assetAudioLicence', env: { visitBaseUrl: true } }, () => {
+  { tags: ['@headerNavigation', '@navigation'], env: { visitBaseUrl: true } }, () => {
     it('Test Settings Navigation menu', () => {
       cy.api_waitPageLoad('main')
       cy.getCy('button-main').should('be.visible').click()

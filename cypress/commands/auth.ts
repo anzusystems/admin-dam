@@ -9,10 +9,9 @@ declare global {
       /**
        * Provide user credentials form config/cypress.config.ts env to login, if they don't exist, use provided values.
        * @param user - username
-       * @param password - password for user
        * @param timeout - timeout for command
        */
-      login(user: string, password?: string, timeout?: number): Chainable<any>
+      login(user: string, timeout?: number): Chainable<any>
       /**
        * Clear all cookies, local storage, session storage and set protection cookie
        */
@@ -35,19 +34,8 @@ Cypress.Commands.add('protectionCookie', () => {
   }
 })
 
-Cypress.Commands.add('login', (user: string, password?: string, timeout?: number) => {
-  if (user != 'anonym') {
-    if (CY.credentials[user].isForceLogin === true) {
-      cy.visit(CY.credentials[user].forceLoginLink, { timeout: timeout })
-    } else {
-      cy.visit('/')
-      cy.getCy('login-form').should('be.visible') // central.sme.localhost
-      cy.getCy('username').type(CY.credentials[user].name || user)
-      cy.getCy('password').type(CY.credentials[user].password || password)
-      cy.getCyVisibleClick('button-login')
-    }
-  }
-
+Cypress.Commands.add('login', (user: string, timeout?: number) => {
+  cy.visit(CY.credentials[user].forceLoginLink, { timeout: timeout })
 })
 
 export {}

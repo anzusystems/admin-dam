@@ -41,7 +41,7 @@ Cypress.Commands.add('duplicateShouldExist', (value: boolean) => {
 })
 
 Cypress.Commands.add('changeLicence', (idLicence: string) => {
-  cy.getCy('button-main').should('be.visible').click()
+  cy.get(':nth-child(3) > .mx-1').should('be.visible').click()
   cy.getCy('button-switch-licence').should('be.visible').click()
   cy.getCy('field-change-on-id-licence').type(`${idLicence}`)
   cy.getCyVisibleClick('button-confirm')

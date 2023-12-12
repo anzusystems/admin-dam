@@ -4,7 +4,8 @@ import { AUDIO_TYPES, UPLOAD_TYPES } from '../../utils/upload'
 import { ALERT_UPLOAD, CY } from '../../utils/common'
 const FILE_ID: Array<string> = []
 
-describe(`Test upload of various audio, Env: ${CY.cfg}`, { tags: '@audio' }, () => {
+describe(`Test upload of various audio, Env: ${CY.cfg}`,
+  { tags: ['@audioUpload', '@upload'] }, () => {
   AUDIO_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Audio: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {

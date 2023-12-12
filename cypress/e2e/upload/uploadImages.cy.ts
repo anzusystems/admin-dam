@@ -3,7 +3,8 @@
 import { IMAGE_TYPES, UPLOAD_TYPES } from '../../utils/upload'
 import { ALERT_UPLOAD, CY } from '../../utils/common'
 const FILE_ID: Array<string> = []
-describe(`Test upload of various images, Env: ${CY.cfg}`, { tags: '@image' }, () => {
+describe(`Test upload of various images, Env: ${CY.cfg}`,
+  { tags: ['@imageUpload', '@upload'] }, () => {
   IMAGE_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Image: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {

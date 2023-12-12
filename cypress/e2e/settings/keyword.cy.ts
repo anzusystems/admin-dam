@@ -2,7 +2,8 @@
 
 import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/common'
 let KEYWORD_ID = ''
-describe(`Test keyword function, Env: ${CY.cfg}`, { tags: '@keyword', env: { visitBaseUrl: false } }, () => {
+describe(`Test keyword function, Env: ${CY.cfg}`,
+  { tags: ['@keyword', '@settings'], env: { visitBaseUrl: false } }, () => {
   it('Create keyword', () => {
     cy.visit('/settings')
     cy.visitSubpage('keyword-settings', 'keyword', 'Kľúčové slová')

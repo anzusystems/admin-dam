@@ -4,7 +4,7 @@ import { ALERT_UPDATE, CY, ASSET_TITLE, ASSET_DESCRIPTION } from '../../utils/co
 const ASSET_ID: Array<string> = []
 
 describe(`Test asset document function, Env: ${CY.cfg}`,
-  { tags: '@assetDocument' }, () => {
+  { tags: ['@assetDocument', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('document/sample.doc', 1, ASSET_ID)
     })

@@ -4,7 +4,7 @@ import { ALERT_UPDATE, CY, ASSET_TITLE, ASSET_DESCRIPTION, ALERT_CREATE, VIDEO_S
 const ASSET_ID: Array<string> = []
 
 describe(`Test add video asset to video show episode  function, Env: ${CY.cfg}`,
-  { tags: '@assetVideoToVideoShow' }, () => {
+  { tags: ['@assetVideoToVideoShow', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('video/sample.mp4', 1, ASSET_ID)
     })

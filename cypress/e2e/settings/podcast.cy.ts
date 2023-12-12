@@ -3,7 +3,8 @@
 import { ALERT_CREATE, ALERT_UPDATE, CY, EPISODE_TITLE, PODCAST_TITLE } from '../../utils/common'
 let PODCAST_ID = ''
 let EPISODE_ID = ''
-describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { visitBaseUrl: false } }, () => {
+describe(`Test Podcast function, Env: ${CY.cfg}`,
+  { tags: ['@podcast', '@settings'], env: { visitBaseUrl: false } }, () => {
   it('Create podcast', () => {
     cy.visit('/settings')
     cy.visitSubpage('podcast-settings', 'podcast', 'Podcasty')

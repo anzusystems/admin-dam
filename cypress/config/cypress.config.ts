@@ -28,7 +28,6 @@ export default defineConfig({
     grepIntegrationFolder: '../../',
   },
   e2e: {
-    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
     specPattern: 'cypress/e2e/**/*.cy.ts',
     setupNodeEvents(on, config) {
       on('task', {downloadFile})

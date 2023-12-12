@@ -3,7 +3,8 @@
 import { VIDEO_TYPES, UPLOAD_TYPES } from '../../utils/upload'
 import { ALERT_UPLOAD, CY } from '../../utils/common'
 const FILE_ID: Array<string> = []
-describe(`Test upload of various video, Env: ${CY.cfg}`, { tags: '@video' }, () => {
+describe(`Test upload of various video, Env: ${CY.cfg}`,
+  { tags: ['@videoUpload', '@upload'] }, () => {
   VIDEO_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Video: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {

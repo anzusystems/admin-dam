@@ -25,10 +25,12 @@ beforeEach(function () {
       //cy.protectionCookie()
       //Login with provided user
       cy.login(CY.loginUser)
+      cy.changeToSlovakDarkTheme()
     },
     {
       cacheAcrossSpecs: true,
     }
   )
+  cy.clipboardPermission()
   cy.visitBaseUrl(CY.visitBaseUrl, 10000)
 })

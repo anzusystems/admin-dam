@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 
-import { ALERT_UPDATE, CY, ASSET_TITLE, ASSET_DESCRIPTION, KEYWORDS, AUTHORS } from '../../utils/common'
+import { ALERT_UPDATE, CY, ASSET_TITLE, ASSET_DESCRIPTION, RAND_NUM } from '../../utils/common'
 const ASSET_ID: Array<string> = []
 
 describe(`Test asset audio function, Env: ${CY.cfg}`,
-  { tags: '@assetAudio' }, () => {
+  { tags: ['@assetAudio', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('audio/sample.mp3',1, ASSET_ID)
     })
@@ -17,18 +17,16 @@ describe(`Test asset audio function, Env: ${CY.cfg}`,
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
-      KEYWORDS.forEach(keyword=>{
-        cy.get('body').click()
-        cy.get('[data-cy="custom-field-keywords"] input').type(`${keyword}`)
-        cy.contains('.v-list-item', `${keyword}`, { timeout: 6000 }).click()
-      })
+      cy.getCy('add-keyword').click()
+      cy.getCy('keyword-name').type(`Keyword${RAND_NUM}`)
+      cy.getCy('button-confirm').click()
+      cy.get('[data-cy="custom-field-keywords"] input').type(`Keyword${RAND_NUM}`)
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('body').click()
-      AUTHORS.forEach(author => {
-        cy.get('body').click()
-        cy.get('[data-cy="custom-field-authors"] input').type(`${author}`)
-        cy.contains('.v-list-item', `${author}`, { timeout: 6000 }).click()
-      })
+      cy.getCy('add-author').click()
+      cy.getCy('author-name').type(`Author${RAND_NUM}`)
+      cy.getCy('button-confirm').click()
+      cy.get('[data-cy="custom-field-authors"] input').type(`Author${RAND_NUM}`)
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('body').click()
       cy.getCy('button-delete').click()
@@ -51,14 +49,6 @@ describe(`Test asset audio function, Env: ${CY.cfg}`,
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
-      cy.get('[data-cy="custom-field-keywords"] .mdi-close-circle').click()
-      cy.get('[data-cy="custom-field-keywords"] input').type(`${KEYWORDS[0]}`)
-      cy.contains('.v-list-item', `${KEYWORDS[0]}`, { timeout: 6000 }).click()
-      cy.get('body').type('{esc}')
-      cy.get('[data-cy="custom-field-authors"] .mdi-close-circle').click()
-      cy.get('[data-cy="custom-field-authors"] input').type(`${AUTHORS[0]}`)
-      cy.contains('.v-list-item', `${AUTHORS[0]}`, { timeout: 6000 }).click()
-      cy.get('body').type('{esc}')
       cy.getCy('button-save').should('be.visible').click()
       cy.alertMessage(ALERT_UPDATE)
     })

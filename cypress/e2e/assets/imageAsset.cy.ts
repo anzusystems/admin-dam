@@ -1,11 +1,12 @@
 /// <reference types="cypress" />
 
 import {
-  ALERT_UPDATE, CY, ASSET_TITLE, ASSET_DESCRIPTION, KEYWORDS, AUTHORS } from '../../utils/common'
+  ALERT_UPDATE, CY, ASSET_TITLE, ASSET_DESCRIPTION, RAND_NUM
+} from '../../utils/common'
 const ASSET_ID: Array<string> = []
 
 describe(`Test asset image function, Env: ${CY.cfg}`,
-  { tags: '@assetImage' }, () => {
+  { tags: ['@assetImage', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('image/sample.png', 1, ASSET_ID)
     })
@@ -19,17 +20,18 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
-      KEYWORDS.forEach(keyword=> {
-        cy.get('body').click()
-        cy.get('[data-cy="custom-field-keywords"] input').type(`${keyword}`)
-        cy.contains('.v-list-item', `${keyword}`, { timeout: 6000 }).click()
-      })
-      cy.get('body').type('{esc}')
-      AUTHORS.forEach(author => {
-        cy.get('body').click()
-        cy.get('[data-cy="custom-field-authors"] input').type(`${author}`)
-        cy.contains('.v-list-item', `${author}`, { timeout: 6000 }).click()
-      })
+      cy.getCy('add-keyword').click()
+      cy.getCy('keyword-name').type(`Keyword${RAND_NUM}`)
+      cy.getCy('button-confirm').click()
+      cy.get('[data-cy="custom-field-keywords"] input').type(`Keyword${RAND_NUM}`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
+      cy.get('body').click()
+      cy.getCy('add-author').click()
+      cy.getCy('author-name').type(`Author${RAND_NUM}`)
+      cy.getCy('button-confirm').click()
+      cy.get('[data-cy="custom-field-authors"] input').type(`Author${RAND_NUM}`)
+      // eslint-disable-next-line cypress/unsafe-to-chain-command
+      cy.get('body').click()
       cy.get('body').type('{esc}')
       cy.getCy('button-delete').click()
       cy.getCy('button-confirm-delete').should('be.visible')
@@ -52,14 +54,6 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}-edit`)
-      cy.get('[data-cy="custom-field-keywords"] .mdi-close-circle').click()
-      cy.get('[data-cy="custom-field-keywords"] input').type(`${KEYWORDS[0]}`)
-      cy.contains('.v-list-item', `${KEYWORDS[0]}`, { timeout: 6000 }).click()
-      cy.get('body').type('{esc}')
-      cy.get('[data-cy="custom-field-authors"] .mdi-close-circle').click()
-      cy.get('[data-cy="custom-field-authors"] input').type(`${AUTHORS[0]}`)
-      cy.contains('.v-list-item', `${AUTHORS[0]}`, { timeout: 6000 }).click()
-      cy.get('body').type('{esc}')
       cy.getCy('button-save').should('be.visible').click()
       cy.alertMessage(ALERT_UPDATE)
     })

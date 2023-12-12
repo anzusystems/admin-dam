@@ -23,7 +23,8 @@ Script used to run tests inside the application docker container:
 ### Command options
 
     -e, --env     (Optional) Run tests in specific environment. (Default: local) 
-    -b, --browser (Optional) Run tests in selected browser. (Allowed values: electron|chrome, Default: electron)
+    -b, --browser (Optional) Run tests in selected browser. (Allowed values: electron|chrome, Default: chrome)
+    -f  --filter  (Optional) Comma separated list of filters without space (Default: n/a - all tests)
     -t, --tags    (Optional) Comma separated list of test suite tags. (Default: n/a)
     -s, --spec    (Optional) Relative dir to the test suite, wildcard can be used (Default: n/a - all tests)
     --dashboard   (Optional) Whether to push test results to cypress dashboard or create only local test results
@@ -32,41 +33,34 @@ Script used to run tests inside the application docker container:
 
 ### Examples:
 
-    bin/test --env=local --browser=chrome
+    bin/test --env=local --browser=chrome --filter=@settings,@assets
     bin/test --tags=@ --dashboard
     bin/test --browser=chrome --spec=cypress/e2e/logOut.cy.ts --tag=Log-out --dashboard
 
 ### Support for multiple environments
-    
-Create file "$ENV.ts" in /cypress/config folder with following content:
 
-```typescript
-function extendCypressConfig(config) {
-  return config
-}
-module.exports = extendCypressConfig
-```
+Staging and devel config files are stored in `cypress/config` folder.
 
-*Insert your value instead of $ENV*
+For testing create `stg.ts`/`dev.ts`/`local.ts` file in `cypress/config` folder.
 
-### Example
+File should contain following code:
 
-Create new "QA" config, and override default URL, admin credentials and protection cookie:
-
-*cypress/config/qa.ts*
+*cypress/config/stg.ts*
 ```typescript
 function extendCypressConfig(config) {
   config.baseUrl = ''
   config.env.credentials = {
     admin: {
-      username: '',
-      password: '',
+      forceLoginLink: '',
     },
   }
   config.env.cookie = {
     name: '',
     value: '',
+  }
+  config.env.url = {
     domain: '',
+    proto: '',
   }
   return config
 }

@@ -1,9 +1,10 @@
 /// <reference types="cypress" />
 
-import { CY } from '../../utils/common'
+import { ALERT_UPDATE, CY } from '../../utils/common'
 const ASSET_ID: Array<string> = []
 
-describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env: { visitBaseUrl: false } }, () => {
+describe(`Test audio slots function, Env: ${CY.cfg}`,
+  { tags: ['@audioSlots', '@assets'], env: { visitBaseUrl: false } }, () => {
   it('Prepare Test Data', () => {
     cy.visit('/')
     cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
@@ -16,6 +17,7 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').click()
     cy.getCy('button-open-link').should('not.exist')
     cy.get('button.v-btn:contains("Nastaviť ako verejné")').click()
+    cy.waitSec(1)
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
     cy.getCy('button-confirm').should('be.visible').click()
@@ -44,52 +46,52 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.getCyVisibleClick('button-slot-duplicate')
     cy.getCyVisibleClick('button-choose-slot')
     cy.get('.v-list').should('include.text', 'premiumbonus')
-    cy.get('.v-list').eq(1).click()
+    cy.get('.v-list').contains('premium').click()
     cy.getCyVisibleClick('button-unset')
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-        cy.contains('Súbor je súkromný')
-        cy.contains('Nastaviť ako verejné')
-        cy.contains('premium')
-        cy.contains('Hlavný súbor')
+      .invoke('text').then((freeText)=>{
+        cy.wrap(freeText).should('include', 'Súbor je súkromný')
+        cy.wrap(freeText).should('include', 'Nastaviť ako verejné')
+        cy.wrap(freeText).should('include', 'free')
+        cy.wrap(freeText).should('include', 'Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-      cy.contains('Súbor je súkromný')
-      cy.contains('Nastaviť ako verejné')
-      cy.contains('premium')
-      cy.contains('Hlavný súbor')
+      .invoke('text').then((premiumText)=>{
+        cy.wrap(premiumText).should('include', 'Súbor je súkromný')
+        cy.wrap(premiumText).should('include', 'Nastaviť ako verejné')
+        cy.wrap(premiumText).should('include', 'premium')
+        cy.wrap(premiumText).should('include', 'Hlavný súbor')
     })
     cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').click()
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-      cy.contains('Súbor je súkromný')
-      cy.contains('Nastaviť ako verejné')
-      cy.contains('premium')
-      cy.contains('Hlavný súbor')
+      .invoke('text').then((freeText)=>{
+      cy.wrap(freeText).should('include', 'Súbor je súkromný')
+      cy.wrap(freeText).should('include', 'Nastaviť ako verejné')
+      cy.wrap(freeText).should('include', 'free')
+      cy.wrap(freeText).should('include', 'Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-      cy.contains('Súbor je súkromný')
-      cy.contains('Nastaviť ako verejné')
-      cy.contains('premium')
-      cy.contains('Hlavný súbor')
+      .invoke('text').then((premiumText)=>{
+      cy.wrap(premiumText).should('include', 'Súbor je súkromný')
+      cy.wrap(premiumText).should('include', 'Nastaviť ako verejné')
+      cy.wrap(premiumText).should('include', 'premium')
+      cy.wrap(premiumText).should('include', 'Hlavný súbor')
     })
     cy.getCyVisibleClick('button-podcast')
     cy.getCyVisibleClick('button-slots')
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-      cy.contains('Súbor je súkromný')
-      cy.contains('Nastaviť ako verejné')
-      cy.contains('free')
-      cy.contains('Hlavný súbor')
+      .invoke('text').then((freeText)=>{
+      cy.wrap(freeText).should('include', 'Súbor je súkromný')
+      cy.wrap(freeText).should('include', 'Nastaviť ako verejné')
+      cy.wrap(freeText).should('include', 'free')
+      cy.wrap(freeText).should('include', 'Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-      cy.contains('Súbor je súkromný')
-      cy.contains('Nastaviť ako verejné')
-      cy.contains('premium')
-      cy.contains('Hlavný súbor')
+      .invoke('text').then((premiumText)=>{
+      cy.wrap(premiumText).should('include', 'Súbor je súkromný')
+      cy.wrap(premiumText).should('include', 'Nastaviť ako verejné')
+      cy.wrap(premiumText).should('include', 'premium')
+      cy.wrap(premiumText).should('include', 'Hlavný súbor')
     })
   })
   it('Remove free file', ()=>{
@@ -102,18 +104,18 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.getCy('button-remove').should('be.visible')
     cy.getCyVisibleClick('button-unset')
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-      .invoke('text').then((text)=>{
-      cy.contains('free')
-      cy.contains('Žiaden súbor')
-      expect(text).not.to.include('premium')
-      expect(text).not.to.include('Hlavný súbor')
+      .invoke('text').then((freeText)=>{
+      cy.wrap(freeText).should('include', 'free')
+      cy.wrap(freeText).should('include', 'Žiaden súbor')
+      expect(freeText).not.to.include('premium')
+      expect(freeText).not.to.include('Hlavný súbor')
     })
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-      .invoke('text').then(()=>{
-      cy.contains('Súbor je súkromný')
-      cy.contains('Nastaviť ako verejné')
-      cy.contains('premium')
-      cy.contains('Hlavný súbor')
+      .invoke('text').then((premiumText)=>{
+        cy.wrap(premiumText).should('include', 'Súbor je súkromný')
+        cy.wrap(premiumText).should('include', 'Nastaviť ako verejné')
+        cy.wrap(premiumText).should('include', 'premium')
+        cy.wrap(premiumText).should('include', 'Hlavný súbor')
     })
   })
   it('Add new free file', ()=>{
@@ -126,16 +128,16 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
         { contents: 'cypress/fixtures/audio/sample2.mp3' },
         { waitForAnimations: true, force: true, action: 'drag-drop' }
       )
-    cy.intercept('GET', `http://core-dam.sme.localhost/api/adm/v1/asset-slot/asset/${ASSET_ID}?*`)
+    cy.intercept('GET', `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset-slot/asset/${ASSET_ID}?*`)
       .as('uploadApi')
     cy.wait('@uploadApi', { timeout: 30000 })
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-        .invoke('text').then((text)=>{
-        cy.contains('free')
-        cy.contains('Súbor je súkromný')
-        cy.contains('Nastaviť ako verejné')
-        expect(text).not.to.include('Žiaden súbor')
-        expect(text).not.to.include('Hlavný súbor')
+        .invoke('text').then((freeText)=>{
+        cy.wrap(freeText).should('include', 'Súbor je súkromný')
+        cy.wrap(freeText).should('include', 'Nastaviť ako verejné')
+        cy.wrap(freeText).should('include', 'free')
+        expect(freeText).not.to.include('Žiaden súbor')
+        expect(freeText).not.to.include('Hlavný súbor')
       })
   })
   it('Change Slots with each other', ()=>{
@@ -144,30 +146,42 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.getCyVisibleClick('button-slots')
     cy.get('button.v-btn:contains("Nastaviť ako verejné")').eq(1).click()
     cy.getCy('button-confirm').should('be.visible').click()
+    cy.alertMessage(ALERT_UPDATE)
     cy.get(':nth-child(2) > .v-row > :nth-child(1)')
-        .invoke('text').then(()=>{
-        cy.contains('Súbor je verejný')
-        cy.contains('Nastaviť ako súkromné')
-        cy.contains('premium')
-        cy.contains('Hlavný súbor')
+        .invoke('text').then((premiumText)=>{
+        cy.wrap(premiumText).should('include', 'Súbor je verejný')
+        cy.wrap(premiumText).should('include', 'Nastaviť ako súkromné')
+        cy.wrap(premiumText).should('include', 'premium')
+        cy.wrap(premiumText).should('include', 'Hlavný súbor')
       })
     cy.getCy('button-slot-actions').eq(1).click()
     cy.getCyVisibleClick('button-slot-switch')
     cy.getCyVisibleClick('button-choose-slot')
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(3000)
+    cy.wait(2000)
     cy.get('.v-overlay__content > .v-list').should('include.text', 'freebonus')
-    cy.get('.v-overlay__content > .v-list > :nth-child(2)').click()
+    cy.get('.v-overlay__content > .v-list > :nth-child(2)').contains('bonus').click()
     cy.getCyVisibleClick('button-unset')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000)
     cy.get(':nth-child(1) > .v-row > :nth-child(1)')
-        .invoke('text').then((text)=>{
-        cy.contains('Súbor je verejný')
-        cy.contains('Nastaviť ako súkromné')
-        cy.contains('free')
-        cy.contains('Hlavný súbor')
-        expect(text).not.to.include('Žiaden súbor')
+        .invoke('text').then((freeText)=>{
+        cy.wrap(freeText).should('include', 'Súbor je súkromný')
+        cy.wrap(freeText).should('include', 'Nastaviť ako verejné')
+        cy.wrap(freeText).should('include', 'free')
+        cy.wrap(freeText).should('include', 'sample2')
+        expect(freeText).not.to.include('Žiaden súbor')
       })
-    cy.getCy('button-open-link').should('be.visible')
+    cy.get(':nth-child(3) > .v-row > :nth-child(1)')
+        .invoke('text').then((bonusText)=> {
+        cy.wrap(bonusText).should('include', 'Hlavný súbor')
+        cy.wrap(bonusText).should('include', 'Súbor je verejný')
+        cy.wrap(bonusText).should('include', 'Nastaviť ako súkromné')
+        cy.wrap(bonusText).should('include', 'bonus')
+        cy.wrap(bonusText).should('include', 'sample')
+        cy.wrap(bonusText).should('include', 'Otvoriť')
+        cy.getCy('button-open-link').should('be.visible')
+    })
   })
   it('Delete Test data', ()=>{
     cy.deleteFile(ASSET_ID)

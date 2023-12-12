@@ -125,6 +125,9 @@ Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, FILE_ID:
           .then((responseID) => {
             FILE_ID.push(responseID)
           })
+        cy.waitForUpload('Nahrávanie ukončené')
+        cy.getCy('button-add-description').click()
+        cy.get(':nth-child(3) > .bg-primary').click()
       }
   })
 })

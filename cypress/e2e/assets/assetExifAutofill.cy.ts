@@ -6,7 +6,7 @@ const EXPECTED_KEYWORDS = 'happy son kid '
 const EXPECTED_AUTHOR = 'test author '
 
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
-  { tags: '@assetExifAutofill' }, () => {
+  { tags: ['@assetExifAutofill', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('image/sampleMeta1.jpg', 1, ASSET_ID)
     })

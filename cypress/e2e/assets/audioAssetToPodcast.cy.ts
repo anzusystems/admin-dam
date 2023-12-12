@@ -10,7 +10,7 @@ import {
 const ASSET_ID: Array<string> = []
 
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
-  { tags: '@assetAudioToPodcast' }, () => {
+  { tags: ['@assetAudioToPodcast', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
     })
@@ -29,8 +29,8 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.getCy('button-add-new-podcast-episode').should('be.visible').click()
       cy.getCy('field-choose-podcast').click()
       // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500)
-      cy.get('.v-list-item').first().click()
+      cy.get('.v-list-item').should('not.contain', 'Žiadne dostupne dáta')
+      cy.get('.v-list-item').eq(0).click()
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-title-podcast').clear().type(`${ASSET_TITLE}-edit`)
       // eslint-disable-next-line cypress/unsafe-to-chain-command

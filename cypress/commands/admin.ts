@@ -30,6 +30,18 @@ declare global {
        * Wait for card to load
        */
       cardLoad(): Chainable<any>
+      /**
+       * Wait for circle to load
+       */
+      circleLoad(): Chainable<any>
+      /**
+       * Wait for line to load
+       */
+      lineLoad(): Chainable<any>
+      /**
+       * Change Admin to Slovak language and dark theme
+       */
+      changeToSlovakDarkTheme(): Chainable<any>
     }
   }
 }
@@ -74,4 +86,26 @@ Cypress.Commands.add('cardLoad', () => {
   cy.get('.a-card-loader', { timeout: 10000 }).should('be.visible')
   cy.get('.a-card-loader', { timeout: 10000 }).should('not.be.visible')
 })
+
+Cypress.Commands.add('circleLoad', () => {
+  cy.get('.v-progress-circular', { timeout: 10000 }).should('exist')
+  cy.get('.v-progress-circular', { timeout: 10000 }).should('not.exist')
+})
+
+Cypress.Commands.add('lineLoad', () => {
+  cy.get('.v-progress-linear', { timeout: 10000 }).should('exist')
+  cy.get('.v-progress-linear', { timeout: 10000 }).should('not.exist')
+})
+
+Cypress.Commands.add('changeToSlovakDarkTheme', () => {
+  cy.visit('/settings')
+  cy.getCy('settings-language').click()
+  cy.contains('.v-list-item', 'Slovensky').click()
+  cy.getCy('settings-language').click()
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(500)
+  cy.getCy('settings-theme').click({ force: true })
+  cy.contains('.v-list-item', 'Tmavá').click()
+})
+
 export {}

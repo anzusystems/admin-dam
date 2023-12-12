@@ -5,7 +5,7 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, EXTERNAL_SYS, RAND_NUM } from '../../ut
 let LICENCE_ID = ''
 describe(
   `Test asset licences function, Env: ${CY.cfg}`,
-  { tags: '@assetLicence', env: { visitBaseUrl: false } },
+  { tags: ['@assetLicence', '@settings'], env: { visitBaseUrl: false } },
   () => {
     it('Create asset licence', () => {
       cy.visit('/settings')
