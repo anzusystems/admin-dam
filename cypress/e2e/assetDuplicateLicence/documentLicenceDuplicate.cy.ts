@@ -3,19 +3,21 @@
 import { CY } from '../../utils/common'
 import { DOCUMENT_TYPES } from '../../utils/upload'
 const FILE_ID: Array<string> = []
-const main_licence = '100000'
-const cms32630_licence = '200010'
+const TESTED_LICENCE_IDS = {
+  CMS_MAIN: 100000,
+  CMS_SPECTATOR: 100001,
+} as const
 describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
-  { tags: '@assetDocLicence', env: { visitBaseUrl: false } }, () => {
+  { tags: ['@assetDocLicence', '@licence'], env: { visitBaseUrl: false } }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('document/sample.doc', 0)
       cy.prepareData('document/sample.pdf', 0)
       cy.prepareData('document/sample.txt', 0)
       cy.prepareData('document/sample.xls', 0)
     })
-  it('Cms-sys | CMS licence', () => {
+  it('Cms-system 1', () => {
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', main_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
 
       let idx = 0
       DOCUMENT_TYPES.forEach((dataFormat)=>{
@@ -24,10 +26,10 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
         idx++
       })
     })
-    it('CMS-sys | cms32630',()=>{
+    it('CMS-system 2',()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', main_licence)
-      cy.changeLicence(cms32630_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
+      cy.changeLicence(TESTED_LICENCE_IDS.CMS_SPECTATOR)
 
       let idx = 0
       DOCUMENT_TYPES.forEach((dataFormat)=>{
@@ -41,7 +43,7 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
     })
     it('Back to main cms licence', ()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', cms32630_licence)
-      cy.changeLicence(main_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_SPECTATOR)
+      cy.changeLicence(TESTED_LICENCE_IDS.CMS_MAIN)
     })
   })
