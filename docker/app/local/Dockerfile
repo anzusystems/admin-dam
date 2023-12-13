@@ -1,4 +1,4 @@
-FROM node:18-bookworm-slim
+FROM node:20-bookworm-slim
 
 # ----------------------------------------------------------------------------------------------------------------------
 # ENVIRONMENT VARIABLES
@@ -9,19 +9,18 @@ ARG DOCKER_GROUP_ID
 # Versions
 # Nginx version
 ENV NGINX_VERSION=1.24.0 \
-    NGINX_NJS_VERSION=0.8.1 \
+    NGINX_NJS_VERSION=0.8.2 \
     NGINX_PKG_RELEASE=1~bookworm \
 # Supervisor version
     SUPERVISOR_VERSION=4.2.5 \
     SUPERVISOR_PKG_RELEASE=1 \
 # NPM version
-    NPM_VERSION=10.2.1 \
+    NPM_VERSION=10.2.5 \
 # Yarn version
-    DOCKER_YARN_VERSION=3.6.4 \
-    DOCKER_YARN_PLUGIN_OUTDATED=3.2.4 \
+    DOCKER_YARN_VERSION=4.0.2 \
 # Browsers version
-    CHROME_VERSION=118.0.5993.117 \
-    FIREFOX_VERSION=119.0
+    CHROME_VERSION=120.0.6099.71 \
+    FIREFOX_VERSION=120.0.1
 # Common environment variables
 ENV CONTAINER_STOP_LOG_FILE="/var/www/html/var/log/container_stop.log" \
     COREPACK_HOME="/usr/lib/node/corepack" \
@@ -49,9 +48,6 @@ ENV RUN_DEPS="ca-certificates \
               procps \
               vim \
               wget"
-# Yarn plugins
-ENV OFFICIAL_YARN_PLUGINS="interactive-tools" \
-    UNOFFICIAL_YARN_PLUGINS="outdated=https://mskelton.dev/yarn-outdated/v${DOCKER_YARN_PLUGIN_OUTDATED}"
 
 # ----------------------------------------------------------------------------------------------------------------------
 # PACKAGES
@@ -72,21 +68,6 @@ RUN npm install --location=global npm@${NPM_VERSION} && \
     mkdir -p ${COREPACK_HOME} && \
     corepack prepare yarn@${DOCKER_YARN_VERSION} --activate && \
     corepack enable && \
-# Install yarn plugins
-    mkdir -p /home/node/.yarn/plugins/@yarnpkg && \
-    echo "plugins:" >> /home/node/.yarnrc.yml && \
-    for plugin in ${OFFICIAL_YARN_PLUGINS}; do \
-        wget -q -O /home/node/.yarn/plugins/@yarnpkg/plugin-$plugin.cjs https://github.com/yarnpkg/berry/raw/@yarnpkg/cli/${DOCKER_YARN_VERSION}/packages/plugin-$plugin/bin/%40yarnpkg/plugin-$plugin.js && \
-        echo "  - path: /home/node/.yarn/plugins/@yarnpkg/plugin-$plugin.cjs" >> /home/node/.yarnrc.yml; \
-        echo "    spec: \"@yarnpkg/plugin-$plugin\"" >> /home/node/.yarnrc.yml; \
-    done && \
-    for plugin in ${UNOFFICIAL_YARN_PLUGINS}; do \
-        plugin_name=${plugin%%=*} && \
-        plugin_url=${plugin#*=} && \
-        wget -q -O /home/node/.yarn/plugins/@yarnpkg/plugin-$plugin_name.cjs $plugin_url && \
-        echo "  - path: /home/node/.yarn/plugins/@yarnpkg/plugin-$plugin_name.cjs" >> /home/node/.yarnrc.yml; \
-        echo "    spec: \"@yarnpkg/plugin-$plugin_name\"" >> /home/node/.yarnrc.yml; \
-    done && \
 # Node cache cleanup
     npm cache clean --force && \
     yarn cache clean --all
@@ -122,6 +103,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     echo "update-notifier=false" > /home/node/.npmrc && \
     mkdir -p \
         ${YARN_CACHE_FOLDER} \
+        /home/node/.yarn \
         /var/cache/nginx \
         /usr/local/lib/node_modules \
         /var/run/supervisor \
@@ -132,7 +114,6 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
         /etc/nginx \
         /home/node/.npmrc \
         /home/node/.yarn \
-        /home/node/.yarnrc.yml \
         /run/nginx \
         /usr/local/bin \
         /usr/local/lib/node_modules \
