@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { AFilterValueObjectOptionsSelect, type Filter, useDamConfigState } from '@anzusystems/common-admin'
+import { AFilterValueObjectOptionsSelect, type Filter, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -22,14 +23,19 @@ const value = computed({
   },
 })
 
-const { damConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const items = computed(() => {
   return [
-    ...damConfigExtSystem.value.audio.slots,
-    ...damConfigExtSystem.value.image.slots,
-    ...damConfigExtSystem.value.video.slots,
-    ...damConfigExtSystem.value.document.slots,
+    ...configExtSystem.audio.slots,
+    ...configExtSystem.image.slots,
+    ...configExtSystem.video.slots,
+    ...configExtSystem.document.slots,
   ]
     .filter((value, index, array) => array.indexOf(value) === index)
     .map((item) => ({ title: item, value: item }))

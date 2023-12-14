@@ -1,4 +1,4 @@
-import type { DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import {
   cloneDeep,
   type DocId,
@@ -92,11 +92,16 @@ export const useDistributionCategoryDetailActions = () => {
 }
 
 export const useDistributionCategoryManageActions = () => {
-  const { damConfigExtSystem } = useDamConfigState()
+  const { getDamConfigExtSystem } = useDamConfigState()
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+  if (isUndefined(configExtSystem)) {
+    throw new Error('Ext system must be initialised.')
+  }
 
   const getAvailableDistributionServiceSlugs = (assetType: DamAssetType) => {
     const serviceSlugs: string[] = []
-    Object.entries(damConfigExtSystem.value[assetType].distribution.distributionRequirements).forEach(
+    Object.entries(configExtSystem[assetType].distribution.distributionRequirements).forEach(
       ([service, config]) => {
         if (config.categorySelect.enabled) {
           serviceSlugs.push(service)
