@@ -1,6 +1,6 @@
 import {
   isNull,
-  isString,
+  isString, isUndefined,
   useAlerts,
   useDamConfigState,
   useFilterHelpers,
@@ -23,6 +23,7 @@ import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalPr
 import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
@@ -33,7 +34,12 @@ const { activeExternalProvider } = useExternalProviders()
 const filterIsTouched = ref(false)
 
 export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> | null = null) {
-  const { damConfigExtSystem } = useDamConfigState()
+  const { getDamConfigExtSystem } = useDamConfigState()
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+  if (isUndefined(configExtSystem)) {
+    throw new Error('Ext system must be initialised.')
+  }
   const assetDetailStore = useExternalProviderAssetDetailStore()
   const externalProviderAssetListStore = useExternalProviderAssetListStore()
   const uploadQueuesStore = useUploadQueuesStore()
@@ -44,7 +50,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const fetchAssetList = async () => {
     if (!activeExternalProvider.value) return
     pagination.page = 1
-    pagination.rowsPerPage = damConfigExtSystem.value.assetExternalProviders[activeExternalProvider.value].listingLimit
+    pagination.rowsPerPage = configExtSystem.assetExternalProviders[activeExternalProvider.value].listingLimit
     try {
       externalProviderAssetListStore.showLoader('hard')
       externalProviderAssetListStore.setList(
@@ -71,7 +77,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
     if (!activeExternalProvider.value) return
     pagination.page = pagination.page + 1
-    pagination.rowsPerPage = damConfigExtSystem.value.assetExternalProviders[activeExternalProvider.value].listingLimit
+    pagination.rowsPerPage = configExtSystem.assetExternalProviders[activeExternalProvider.value].listingLimit
     try {
       externalProviderAssetListStore.showLoader('soft')
       externalProviderAssetListStore.appendList(
@@ -202,7 +208,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const route = useRoute()
   const router = useRouter()
   const validateRouteProvider = async () => {
-    if (!(isString(route.params.provider) && damConfigExtSystem.value.assetExternalProviders[route.params.provider])) {
+    if (!(isString(route.params.provider) && configExtSystem.assetExternalProviders[route.params.provider])) {
       await router.push({ name: ROUTE.SYSTEM.NOT_FOUND })
       return
     }

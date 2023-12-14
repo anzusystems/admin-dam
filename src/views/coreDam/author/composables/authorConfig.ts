@@ -1,16 +1,23 @@
-import type { DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import { useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 export const useAuthorAssetTypeConfig = (assetType: DamAssetType) => {
-  const { damConfigExtSystem } = useDamConfigState()
+  const { getDamConfigExtSystem } = useDamConfigState()
+  const { currentExtSystemId } = useCurrentExtSystem()
+
+  const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+  if (isUndefined(configExtSystem)) {
+    throw new Error('Ext system must be initialised.')
+  }
 
   const authorEnabled = computed(() => {
-    return damConfigExtSystem.value[assetType].authors.enabled
+    return configExtSystem[assetType].authors.enabled
   })
 
   const authorRequired = computed(() => {
-    return damConfigExtSystem.value[assetType].authors.required
+    return configExtSystem[assetType].authors.required
   })
 
   return {
