@@ -1,5 +1,5 @@
 import {
-  AssetFileProcessStatus,
+  AssetFileProcessStatus, type AssetFileRoute,
   type DamUploadStartResponse,
   type DocId,
   type UploadQueueItem,
@@ -15,6 +15,8 @@ import {
   uploadChunk as imageUploadChunk,
   uploadFinish as imageUploadFinish,
   uploadStart as imageUploadStart,
+  makePublic as imageMakePublic,
+  makePrivate as imageMakePrivate
 } from '@/services/api/coreDam/imageApi'
 import {
   deleteAudio,
@@ -26,6 +28,8 @@ import {
   uploadChunk as audioUploadChunk,
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
+  makePublic as audioMakePublic,
+  makePrivate as audioMakePrivate
 } from '@/services/api/coreDam/audioApi'
 import {
   deleteVideo,
@@ -48,12 +52,15 @@ import {
   uploadChunk as documentUploadChunk,
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
+  makePublic as documentMakePublic,
+  makePrivate as documentMakePrivate
 } from '@/services/api/coreDam/documentApi'
 import { DamAssetType } from '@anzusystems/common-admin'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
+import { sl } from 'vuetify/locale'
 
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
@@ -436,6 +443,62 @@ export const fileDownloadLink = (assetType: DamAssetType, fileId: DocId) => {
         break
       case DamAssetType.Document:
         documentDownloadLink(fileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const makePublicFile = (assetType: DamAssetType, assetFileId: DocId, slug: string) => {
+  return new Promise<AssetFileRoute>((resolve, reject) => {
+    switch (assetType) {
+      case DamAssetType.Image:
+        imageMakePublic(assetFileId, slug)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case DamAssetType.Audio:
+        audioMakePublic(assetFileId, slug)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case DamAssetType.Document:
+        documentMakePublic(assetFileId, slug)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+    }
+  })
+}
+
+export const makePrivateFile = (assetType: DamAssetType, assetFileId: DocId, slug: string) => {
+  return new Promise<AssetFileRoute>((resolve, reject) => {
+    switch (assetType) {
+      case DamAssetType.Image:
+        imageMakePrivate(assetFileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case DamAssetType.Audio:
+        audioMakePrivate(assetFileId)
+          .then((res) => {
+            resolve(res)
+          })
+          .catch((err) => reject(err))
+        break
+      case DamAssetType.Document:
+        documentMakePrivate(assetFileId)
           .then((res) => {
             resolve(res)
           })

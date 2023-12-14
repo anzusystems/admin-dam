@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  type AssetFileFailReason,
+  type AssetFileFailReason, assetFileIsVideoFile,
   AssetFileProcessStatus,
   DamAssetType,
   type DocId,
@@ -25,6 +25,7 @@ import { useClipboard } from '@vueuse/core'
 import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
+import AssetFileRoute from '@/views/coreDam/asset/detail/components/AssetFileRoute.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -97,6 +98,15 @@ const filePublicLink = computed(() => {
   )
     return null
   return props.item.assetFile.links.audio.url
+})
+
+const routableAssetFile = computed(() => {
+  if (
+    props.item?.assetFile &&
+    !assetFileIsVideoFile(props.item.assetFile)
+  )
+    return props.item.assetFile
+  return null
 })
 
 watch(uploadQueueItemInAnyProgress, async (newValue, oldValue) => {
@@ -196,17 +206,24 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           </div>
         </div>
         <div>{{ fileTitle }}</div>
-        <AssetFilePublicLink
-          v-if="
-            assetType === DamAssetType.Audio &&
-              item &&
-              item.assetFile &&
-              statusComputed === AssetFileProcessStatus.Processed
-          "
-          :preview-link="filePublicLink"
+        <AssetFileRoute
+          v-if="routableAssetFile"
+          :asset-file-route="routableAssetFile"
           @make-private="makeFilePrivate"
           @open-make-public-dialog="openMakeFilePrivateDialog"
         />
+
+<!--        <AssetFilePublicLink-->
+<!--          v-if="-->
+<!--            assetType === DamAssetType.Audio &&-->
+<!--              item &&-->
+<!--              item.assetFile &&-->
+<!--              statusComputed === AssetFileProcessStatus.Processed-->
+<!--          "-->
+<!--          :preview-link="filePublicLink"-->
+<!--          @make-private="makeFilePrivate"-->
+<!--          @open-make-public-dialog="openMakeFilePrivateDialog"-->
+<!--        />-->
         <ImageFile
           v-if="assetType === DamAssetType.Image && item && item.assetFile"
           :model-value="item.assetFile.id"

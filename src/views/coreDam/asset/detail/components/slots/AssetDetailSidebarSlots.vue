@@ -102,6 +102,7 @@ onMounted(async () => {
   <AssetFilePublicLinkPrivateDialog
     v-if="assetDetailStore.asset"
     v-model="makeFilePrivateDialog"
+    :asset-type="assetType"
     :file-id="makeFilePrivateDialogFileId"
     :title="assetDetailStore.asset.texts.displayTitle"
     @after-update="getList"
