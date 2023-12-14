@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DamAssetType, DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
+import { type DamAssetType, type DamDistributionRequirementsConfig, isUndefined } from '@anzusystems/common-admin'
 import {
   cloneDeep,
   DamDistributionRequirementStrategy,
@@ -16,6 +16,7 @@ import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 // now only supports strategy AtLeastOne, as BE too
 
@@ -60,13 +61,18 @@ const assetFileIdComputed = computed(() => {
   return props.assetFileId
 })
 
-const { damConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const itemsComputed = computed(() => {
   return distributions.value.map((item) => {
     return {
       title:
-        (damConfigExtSystem.value[props.assetType]?.distribution.distributionRequirements[item.distributionService]
+        (configExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]
           ?.title || item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
       value: item.id,
     }

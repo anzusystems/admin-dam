@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import type { DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const { t } = useI18n()
 
@@ -32,10 +33,16 @@ const replaceField = (elementProperty: string, value: any) => {
   emit('replaceField', { assetType: props.assetType, elementProperty, value })
 }
 
-const { damConfigAssetCustomFormElements } = useDamConfigState()
+const { getDamConfigAssetCustomFormElements } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+
+const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
+if (isUndefined(configAssetCustomFormElements)) {
+  throw new Error('Custom form elements must be initialised.')
+}
 
 const elements = computed(() => {
-  return damConfigAssetCustomFormElements.value[props.assetType]
+  return configAssetCustomFormElements[props.assetType]
 })
 </script>
 

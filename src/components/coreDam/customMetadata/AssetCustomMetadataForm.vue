@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { ACustomDataForm, useDamConfigState } from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -18,16 +19,25 @@ const emit = defineEmits<{
   (e: 'anyChange'): void
 }>()
 
-const { damConfigAssetCustomFormElements } = useDamConfigState()
+const { getDamConfigAssetCustomFormElements, getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+
+const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
+if (isUndefined(configAssetCustomFormElements)) {
+  throw new Error('Custom form elements must be initialised.')
+}
 
 const elements = computed(() => {
-  return damConfigAssetCustomFormElements.value[props.assetType]
+  return configAssetCustomFormElements[props.assetType]
 })
 
-const { damConfigExtSystem } = useDamConfigState()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const pinnedCount = computed(() => {
-  return damConfigExtSystem.value[props.assetType].customMetadataPinnedAmount
+  return configExtSystem[props.assetType].customMetadataPinnedAmount
 })
 </script>
 
