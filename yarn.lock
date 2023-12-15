@@ -12,9 +12,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anzusystems/common-admin@npm:1.40.0-alpha17":
-  version: 1.40.0-alpha17
-  resolution: "@anzusystems/common-admin@npm:1.40.0-alpha17"
+"@anzusystems/common-admin@npm:1.40.0-alpha19":
+  version: 1.40.0-alpha19
+  resolution: "@anzusystems/common-admin@npm:1.40.0-alpha19"
   peerDependencies:
     "@vuelidate/core": 2.0.3
     "@vuelidate/validators": 2.0.4
@@ -41,7 +41,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 26aac6ab17fc51c9b990f383f20bf97aac0f25680f4adfe762f9bc2416d6d42e9891e9fc20b6349610d7e9728d2fb2f3cd4bc83a50ac2903d7ee4ab876d581bf
+  checksum: fc3780f816fd906c2373fd9f59dda70fc4340d14654ce9689052fa77ce9efc0993a2f957683b6cf374f12bdb214da3abc4c0d0cc05295b2a3fecefe70d907142
   languageName: node
   linkType: hard
 
@@ -732,10 +732,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/eslint-patch@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@rushstack/eslint-patch@npm:1.6.0"
-  checksum: f5a44ad19f87f23adf2e0e93e12788ef37c00b1ad4c29b9c7b343dff8bed146ebc9d50cc4bf1180b51b86a361f7dc62689f385c01d774633530e6ecea18dc698
+"@rushstack/eslint-patch@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@rushstack/eslint-patch@npm:1.6.1"
+  checksum: 4c57775785718c6665bee8daea204bf2fe59c2fec6cabf0d126f01c6c170e11605b7453a089dfd5bf3fb758832b2aa7964d6b9f29007d708a3571e8ff7bcf391
   languageName: node
   linkType: hard
 
@@ -1572,11 +1572,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": "npm:1.40.0-alpha17"
+    "@anzusystems/common-admin": "npm:1.40.0-alpha19"
     "@cypress/grep": "npm:^4.0.1"
     "@intlify/unplugin-vue-i18n": "npm:^1.6.0"
     "@mdi/font": "npm:7.3.67"
-    "@rushstack/eslint-patch": "npm:^1.6.0"
+    "@rushstack/eslint-patch": "npm:^1.6.1"
     "@types/node": "npm:^20.10.4"
     "@types/rusha": "npm:^0.8.3"
     "@types/sortablejs": "npm:^1.15.7"
@@ -1613,7 +1613,7 @@ __metadata:
     typescript: "npm:^4.9.5"
     universal-cookie: "npm:^6.1.1"
     uuid: "npm:^9.0.1"
-    vite: "npm:^5.0.9"
+    vite: "npm:^5.0.10"
     vite-plugin-vuetify: "npm:^2.0.1"
     vue: "npm:^3.3.11"
     vue-i18n: "npm:^9.8.0"
@@ -7619,9 +7619,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.9":
-  version: 5.0.9
-  resolution: "vite@npm:5.0.9"
+"vite@npm:^5.0.10":
+  version: 5.0.10
+  resolution: "vite@npm:5.0.10"
   dependencies:
     esbuild: "npm:^0.19.3"
     fsevents: "npm:~2.3.3"
@@ -7655,7 +7655,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: a57b018ef619ed5da9fbd51d5e2bf989cc7fb18467fab54aeaa4ed0457e783f9c3b51102890e3e4dda0bb13ce5c118f1db87cd7403d3e8db788e47ab81ca4b57
+  checksum: 5421e9c7f8cf3152eace9a8b528269141635f367e5dc63c5f1fe2712a766d9757f8197733cf3f28be590afdd520130d38de90c955e6dba6edfa6f9056c1e5ea7
   languageName: node
   linkType: hard
 
