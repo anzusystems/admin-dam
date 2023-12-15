@@ -5,7 +5,7 @@ import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusy
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
 import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
-import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
 import { createAssetLicence, ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 
@@ -20,11 +20,11 @@ withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: AssetLicence): void
+  (e: 'onSuccess', data: DamAssetLicence): void
 }>()
 
 const { createDefault } = useAssetLicenceFactory()
-const assetLicence = ref<AssetLicence>(createDefault())
+const assetLicence = ref<DamAssetLicence>(createDefault())
 const dialog = ref(false)
 
 const { v$ } = useAssetLicenceValidation(assetLicence)

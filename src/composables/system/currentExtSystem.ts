@@ -3,14 +3,14 @@ import type { DamExtSystem } from '@anzusystems/common-admin'
 import { isDocId, isString, useDamConfigState, useDamCurrentUser } from '@anzusystems/common-admin'
 import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
-import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<DamExtSystem>()
 
-const currentAssetLicence = ref<AssetLicence>()
+const currentAssetLicence = ref<DamAssetLicence>()
 const currentAssetLicenceId = ref(0)
 
 export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: string | undefined = undefined) => {

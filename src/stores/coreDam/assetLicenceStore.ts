@@ -1,11 +1,11 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
-import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
 
 const { createDefault } = useAssetLicenceFactory()
 
 interface State {
-  assetLicence: AssetLicence
+  assetLicence: DamAssetLicence
 }
 
 export const useAssetLicenceOneStore = defineStore('assetLicenceOneStore', {
@@ -13,7 +13,7 @@ export const useAssetLicenceOneStore = defineStore('assetLicenceOneStore', {
     assetLicence: createDefault(),
   }),
   actions: {
-    setAssetLicence(assetLicence: AssetLicence) {
+    setAssetLicence(assetLicence: DamAssetLicence) {
       this.assetLicence = assetLicence
     },
     reset() {
