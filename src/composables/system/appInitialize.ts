@@ -1,10 +1,15 @@
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { updateCurrentUser, useCurrentUser } from '@/composables/system/currentUser'
+import {
+  isDefined,
+  isUndefined,
+  updateDamCurrentUser,
+  useDamConfigState,
+  useDamCurrentUser,
+} from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
-import { isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
 import { initCurrentExtSystemAndLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
@@ -24,7 +29,7 @@ export async function createAppInitialize(
     useDamConfigState(damClient)
 
   try {
-    const updateCurrentUserPromise = updateCurrentUser()
+    const updateCurrentUserPromise = updateDamCurrentUser(damClient)
     const loadDamConfigPromise = loadDamPrvConfig()
     await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
   } catch (error) {
@@ -50,11 +55,11 @@ export async function createAppInitialize(
     return
   }
 
-  const { currentUser } = useCurrentUser()
+  const { damCurrentUser } = useDamCurrentUser()
 
   if (
     (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
-    isUndefined(currentUser.value)
+    isUndefined(damCurrentUser.value)
   ) {
     next({ name: ROUTE.SYSTEM.LOGIN })
   } else if (isStatusUnauthorized()) {

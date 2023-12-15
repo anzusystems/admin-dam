@@ -13,7 +13,7 @@ import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
-import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -47,6 +47,7 @@ const fetchImage = async (id: DocId) => {
 }
 
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const imagePreviewModel = computed({
   get() {
@@ -178,7 +179,13 @@ watch(
         {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
       <AAssetSelect
-        :asset-licence-id="currentAssetLicenceId"
+        :select-config="[
+          {
+            title: 'Default',
+            licence: currentAssetLicenceId,
+            extSystem: currentExtSystemId,
+          },
+        ]"
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"

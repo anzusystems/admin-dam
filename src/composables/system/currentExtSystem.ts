@@ -1,11 +1,10 @@
 import { readonly, ref, watch } from 'vue'
 import type { DamExtSystem } from '@anzusystems/common-admin'
+import { isDocId, isString, useDamConfigState, useDamCurrentUser } from '@anzusystems/common-admin'
 import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
-import { useCurrentUser } from '@/composables/system/currentUser'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import type { AssetLicence } from '@/types/coreDam/AssetLicence'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
-import { isDocId, isString, useDamConfigState } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const currentExtSystemId = ref(0)
@@ -15,7 +14,7 @@ const currentAssetLicence = ref<AssetLicence>()
 const currentAssetLicenceId = ref(0)
 
 export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: string | undefined = undefined) => {
-  const { currentUser } = useCurrentUser()
+  const { damCurrentUser } = useDamCurrentUser()
   const { damPrvConfig, initialized } = useDamConfigState()
 
   watch(currentExtSystemId, async (newValue, oldValue) => {
@@ -38,7 +37,7 @@ export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: s
       reject(false)
       return
     }
-    if (!currentUser.value) {
+    if (!damCurrentUser.value) {
       console.error('Current user must be loaded first.')
       reject(false)
       return
@@ -73,14 +72,14 @@ export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: s
         })
     }
     if (damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId) {
-      if (currentUser.value.selectedLicence) {
-        currentExtSystemId.value = currentUser.value.selectedLicence.extSystem
-        currentAssetLicenceId.value = currentUser.value.selectedLicence.id
+      if (damCurrentUser.value.selectedLicence) {
+        currentExtSystemId.value = damCurrentUser.value.selectedLicence.extSystem
+        currentAssetLicenceId.value = damCurrentUser.value.selectedLicence.id
         resolve(true)
         return
-      } else if (currentUser.value.assetLicences[0]) {
-        currentExtSystemId.value = currentUser.value.assetLicences[0].extSystem
-        currentAssetLicenceId.value = currentUser.value.assetLicences[0].id
+      } else if (damCurrentUser.value.assetLicences[0]) {
+        currentExtSystemId.value = damCurrentUser.value.assetLicences[0].extSystem
+        currentAssetLicenceId.value = damCurrentUser.value.assetLicences[0].id
         resolve(true)
         return
       }
