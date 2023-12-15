@@ -25,6 +25,7 @@ withDefaults(
 )
 const emit = defineEmits<{
   (e: 'postDelete', data: DocId): void
+  (e: 'mainRouteChanged'): void
 }>()
 
 const { t } = useI18n()
@@ -90,5 +91,5 @@ const onDelete = async () => {
       </ABtnPrimary>
     </Acl>
   </AssetDetailSidebarActionsWrapper>
-  <AssetMetadata />
+  <AssetMetadata @main-route-changed="$emit('mainRouteChanged')" />
 </template>

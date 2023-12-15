@@ -480,7 +480,7 @@ export const makePublicFile = (assetType: DamAssetType, assetFileId: DocId, slug
   })
 }
 
-export const makePrivateFile = (assetType: DamAssetType, assetFileId: DocId, slug: string) => {
+export const makePrivateFile = (assetType: DamAssetType, assetFileId: DocId) => {
   return new Promise<AssetFileRoute>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:

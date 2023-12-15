@@ -15,6 +15,10 @@ import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
+const emit = defineEmits<{
+  (e: 'mainRouteChanged'): void
+}>()
+
 const { sidebarRight } = useMainWrapper()
 const router = useRouter()
 
@@ -107,7 +111,7 @@ watch(
         :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
         :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
       />
-      <AssetMetadata />
+      <AssetMetadata @main-route-changed="$emit('mainRouteChanged')" />
     </div>
     <template
       v-if="!loader && asset"

@@ -6,7 +6,7 @@ import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/compo
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import AssetFilePublicLinkPrivateDialog from '@/views/coreDam/asset/detail/components/AssetFilePublicLinkPrivateDialog.vue'
+import AssetFilePublicLinkPrivateDialog from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
 
@@ -74,7 +74,7 @@ onMounted(async () => {
   >
     {{ t('coreDam.asset.slots.noEntries') }}
   </div>
-  <div v-else>
+  <div v-else-if="assetDetailStore.asset">
     <AssetSlotListItem
       v-for="(slot, slotName) in assetSlotsStore.getPositionedSlots"
       :key="slotName"
@@ -83,6 +83,7 @@ onMounted(async () => {
       :asset-type="assetType"
       :total-slot-count="assetSlotsStore.assetSlotNames.length"
       :asset-id="assetId"
+      :title="assetDetailStore.asset.texts.displayTitle"
       @unset-slot="unsetSlot"
       @remove-file="removeAssetFile"
       @make-main-file="makeMainFile"
@@ -99,12 +100,4 @@ onMounted(async () => {
       @change="getList"
     />
   </div>
-  <AssetFilePublicLinkPrivateDialog
-    v-if="assetDetailStore.asset"
-    v-model="makeFilePrivateDialog"
-    :asset-type="assetType"
-    :file-id="makeFilePrivateDialogFileId"
-    :title="assetDetailStore.asset.texts.displayTitle"
-    @after-update="getList"
-  />
 </template>

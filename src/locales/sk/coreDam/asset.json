@@ -228,8 +228,8 @@
       "openOnNewTab": "Otvoriť"
     },
     "status": {
-      "private": "Súbor je súkromný",
-      "public": "Súbor je verejný"
+      "private": "Súbor je neprístupný",
+      "public": "Súbor je prístupný"
     }
   },
   "slots": {

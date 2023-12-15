@@ -27,6 +27,7 @@ const { t } = useI18n()
 const emit = defineEmits<{
   (e: 'nextItem'): void
   (e: 'prevItem'): void
+  (e: 'mainRouteChanged'): void
 }>()
 
 const { toolbarColor } = useTheme()
@@ -267,6 +268,7 @@ const assetMainFile = computed(() => {
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="postDelete"
+              @main-route-changed="$emit('mainRouteChanged')"
             />
           </div>
         </div>

@@ -15,6 +15,10 @@ import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
+const emit = defineEmits<{
+  (e: 'mainRouteChanged'): void
+}>()
+
 const { t } = useI18n()
 const { showErrorT } = useAlerts()
 const route = useRoute()
@@ -183,6 +187,7 @@ onMounted(() => {
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="closeDialog"
+              @main-route-changed="getDetail"
             />
           </div>
         </div>
