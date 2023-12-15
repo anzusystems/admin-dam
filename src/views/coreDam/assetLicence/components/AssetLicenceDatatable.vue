@@ -22,9 +22,9 @@ import AssetLicenceFilter from '@/views/coreDam/assetLicence/components/AssetLic
 import { useAssetLicenceListFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, type AclValue } from '@/types/Permission'
-import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
 
-type DatatableItem = AssetLicence
+type DatatableItem = DamAssetLicence
 
 const router = useRouter()
 const filter = useAssetLicenceListFilter()
