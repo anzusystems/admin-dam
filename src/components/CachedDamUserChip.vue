@@ -14,7 +14,7 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-// const cached = shallowRef<undefined | UserMinimal>(undefined)
+const cached = shallowRef<undefined | UserMinimal>(undefined)
 const loaded = shallowRef<boolean>(false)
 
 const { getCachedUser } = useCachedUsers()
