@@ -29,7 +29,6 @@ cypress/fixtures
 
 # Managed by yarn
 .yarn/*
-!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
