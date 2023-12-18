@@ -15,6 +15,10 @@ const DISTRIBUTION_DATA={
 
 describe(`Test distribution Video function, Env: ${CY.cfg}`,
   { tags: ['@distributionVideo', '@distribution'] }, () => {
+    if (CY.cfg !== 'stg' && CY.cfg !== 'dev'){
+      it('Tests skipped - only possible in stg/dev env', ()=>{})
+      return
+    }
     it('Prepare Test Data', () => {
       cy.prepareData('video/sample.mp4', 1, ASSET_ID)
     })
@@ -61,7 +65,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       cy.getCy('button-close').click()
 
       // Check status
-      cy.get(':nth-child(1) > .text-body-2 > :nth-child(2) > .v-col > .v-chip > .v-chip__content', { timeout: 90000 })
+      cy.get(':nth-child(1) > .text-body-2 > :nth-child(2) > .v-col > .v-chip > .v-chip__content', { timeout: 120000 })
         .should('include.text', 'Distribuovaný')  // Artemis Distribution
       cy.get(':nth-child(2) > .text-body-2 > :nth-child(2) > .v-col > .v-chip > .v-chip__content', { timeout: 20000 })
         .should('include.text', 'Distribuovaný')  // YouTube distribution

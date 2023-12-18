@@ -5,8 +5,8 @@ import { IMAGE_TYPES } from '../../utils/upload'
 const FILE_ID: Array<string> = []
 const TESTED_LICENCE_IDS = {
   CMS_MAIN: 100000,
-  BLOG1: 200250,
-  BLOG2: 200251,
+  BLOG1: 110000,
+  BLOG2: 110001,
 } as const
 
 describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,

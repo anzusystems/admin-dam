@@ -63,6 +63,7 @@ describe(`Test audio empty asset, Env: ${CY.cfg}`,
         cy.circleLoad()
 
         cy.visit(`/asset/${assetID}`)
+        cy.circleLoad()
         cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea').eq(0)
           .invoke('val').then((assetTitle)=>{
             cy.wrap(assetTitle).should('include', ASSET_TITLE)

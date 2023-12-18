@@ -79,6 +79,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-focus').click()
+      cy.waitSec(1)
       cy.getCy('button-rotate-right').should('be.visible').click()
       cy.alertMessage(ALERT_UPDATE)
       cy.getCy('button-rotate-left').should('be.visible').click()

@@ -37,7 +37,11 @@ describe(
       cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)
       cy.getCyVisibleClick('button-close')
+      cy.cardLoad()
       cy.urlNotContains('/edit')
+      cy.getCy('table-detail').first().click()
+      cy.cardLoad()
+      cy.urlContains(`${ID}`)
     })
     it('Delete distribution category select', () => {
       cy.visit(`/distribution-category-select/${ID}/edit`)

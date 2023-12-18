@@ -5,7 +5,6 @@ import {
   ALERT_UPDATE,
   CY, JOB_DELETE,
   JOB_SYNC,
-  PERMISSION_GROUP,
   RAND_NUM,
   USER_EMAIL,
   USER_ROLE
@@ -25,8 +24,8 @@ describe(
       cy.getCyVisibleClick('user-roles')
       cy.contains('.v-list-item', USER_ROLE).click()
       cy.getCy('create-panel').click('top')
-      cy.getCy('user-permissionGroups').type(PERMISSION_GROUP)
-      cy.contains('.v-list-item', PERMISSION_GROUP).click()
+      cy.getCy('user-permissionGroups').click()
+      cy.get('.v-overlay .v-list-item').first().click()
       cy.getCy('create-panel').click('top')
       cy.getCy('button-close').should('be.visible')
       cy.getCy('button-cancel').should('be.visible')

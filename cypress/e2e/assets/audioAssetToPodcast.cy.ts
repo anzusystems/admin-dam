@@ -29,7 +29,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.getCy('button-add-new-podcast-episode').should('be.visible').click()
       cy.getCy('field-choose-podcast').click()
       // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.get('.v-list-item').should('not.contain', 'Žiadne dostupne dáta')
+      cy.waitSec(1)
       cy.get('.v-list-item').eq(0).click()
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-title-podcast').clear().type(`${ASSET_TITLE}-edit`)

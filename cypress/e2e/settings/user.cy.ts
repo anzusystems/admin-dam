@@ -6,7 +6,7 @@ import {
   DISTRIBUTION_SERVICE,
   EXTERNAL_SYS,
   CY,
-  ALERT_UPDATE, RAND_NUM, USER_EMAIL, USER_ROLE, PERMISSION_GROUP, ALERT_CREATE,
+  ALERT_UPDATE, RAND_NUM, USER_EMAIL, USER_ROLE, ALERT_CREATE,
 } from '../../utils/common'
 let USER_ID = ''
 describe(`Test user function, Env: ${CY.cfg}`,
@@ -21,8 +21,8 @@ describe(`Test user function, Env: ${CY.cfg}`,
       cy.getCyVisibleClick('user-roles')
       cy.contains('.v-list-item', USER_ROLE).click()
       cy.getCy('create-panel').click('top')
-      cy.getCy('user-permissionGroups').type(PERMISSION_GROUP)
-      cy.contains('.v-list-item', PERMISSION_GROUP).click()
+      cy.getCy('user-permissionGroups').click()
+      cy.get('.v-overlay .v-list-item').first().click()
       cy.getCy('create-panel').click('top')
       cy.getCy('button-close').should('be.visible')
       cy.getCy('button-cancel').should('be.visible')

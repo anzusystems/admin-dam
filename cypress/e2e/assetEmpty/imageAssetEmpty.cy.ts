@@ -27,7 +27,7 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
       cy.getCy('button-save').should('be.visible').click()
 
       cy.getCy('button-focus').should('be.visible').click()
-      cy.circleLoad()
+      cy.waitSec(1)
       cy.get('.sidebar-info__content').invoke('text').then((sidebarText) => {
         cy.wrap(sidebarText).should('include', 'Náhľady')
         cy.wrap(sidebarText).should('include', 'Náhľad obrázku na mobile, počítači alebo v aplikácii')
@@ -52,6 +52,7 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
         cy.circleLoad()
 
         cy.visit(`/asset/${assetID}`)
+        cy.circleLoad()
         cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea').eq(0)
           .invoke('val').then((assetTitle)=>{
           cy.wrap(assetTitle).should('include', ASSET_TITLE)

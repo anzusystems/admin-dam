@@ -27,7 +27,7 @@
     "@vuelidate/validators": "^2.0.3",
     "@vueuse/core": "10.2.1",
     "@vueuse/integrations": "10.2.1",
-    "axios": "^1.4.0",
+    "axios": "^1.6.2",
     "core-js": "^3.31.0",
     "js-sha1": "^0.6.0",
     "jwt-decode": "^3.1.2",

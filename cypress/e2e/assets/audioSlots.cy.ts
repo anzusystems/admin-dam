@@ -14,7 +14,7 @@ describe(`Test audio slots function, Env: ${CY.cfg}`,
     cy.visit(`/asset/${ASSET_ID}`)
     cy.api_waitPageLoad('asset-edit')
     cy.getCy('button-slots').click()
-    cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').click()
+    cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').should('be.visible').click()
     cy.getCy('button-open-link').should('not.exist')
     cy.get('button.v-btn:contains("Nastaviť ako verejné")').click()
     cy.waitSec(1)

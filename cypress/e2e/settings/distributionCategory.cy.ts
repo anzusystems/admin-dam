@@ -1,10 +1,29 @@
 /// <reference types="cypress" />
 
-import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/common'
+import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME } from '../../utils/common'
 
 describe(
   `Test distribution category function, Env: ${CY.cfg}`,
   { tags: ['@distributionCategory', '@settings'], env: { visitBaseUrl: false } }, () => {
+    if (CY.cfg === 'local'){
+      //if not - create
+      it('Create "Podcasty" in artemis_podcast_cms', () => {
+        cy.visit('/distribution-category-select')
+        cy.cardLoad()
+        cy.getCy('filter-value').click()
+        cy.get('.v-list-item').contains('Audio').click()
+        cy.cardLoad()
+        cy.get('.v-data-table__tr').contains('td', 'artemis_podcast_cms')
+          .parent('.v-data-table__tr').find('[data-cy="table-edit"]').click()
+        cy.cardLoad()
+        cy.getCy('button-add-option').click()
+        cy.getCy('option-name').last().type('Podcasty')
+        cy.getCy('option-id').last().type(RAND_NUM)
+        cy.getCyVisibleClick('button-save')
+        cy.alertMessage(ALERT_UPDATE)
+      })
+    }
+
     it('Create distribution category', () => {
       cy.visit('/settings')
       cy.visitSubpage('distribution-category-settings', 'distribution-category', 'Kategórie distribúcie')
@@ -15,7 +34,6 @@ describe(
       cy.getCy('category-name').should('be.visible').type(USER_FIRST_NAME)
       cy.getCy('distribution-category-select').eq(1).click()
       cy.get('.v-overlay__content > .v-list > .v-list-item').contains('Podcasty').click()
-      // cy.get('body').type('{ESC}')
       cy.getCy('button-close').should('be.visible')
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')

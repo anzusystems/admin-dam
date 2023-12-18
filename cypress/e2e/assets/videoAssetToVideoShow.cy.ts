@@ -22,9 +22,7 @@ describe(`Test add video asset to video show episode  function, Env: ${CY.cfg}`,
       cy.getCy('button-video-show').should('be.visible').click()
       cy.getCy('button-add-new-vs-episode').should('be.visible').click()
       cy.getCy('field-choose-video-show').click()
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
+      cy.waitSec(1)
       cy.get('.v-list-item').first().click()
       // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-title-episode').clear().type(`${VIDEO_SHOW_TITLE}-edit`)

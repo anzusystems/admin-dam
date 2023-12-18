@@ -16,6 +16,10 @@ const DISTRIBUTION_DATA={
 
 describe(`Test distribution Audio function, Env: ${CY.cfg}`,
   { tags: ['@distributionAudio', '@distribution'] }, () => {
+    if (CY.cfg !== 'stg' && CY.cfg !== 'dev'){
+      it('Tests skipped - only possible in stg/dev env', ()=>{})
+      return
+    }
     it('Prepare Test Data', () => {
       cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
     })
