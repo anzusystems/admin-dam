@@ -33,16 +33,7 @@ const {
   makeMainFile,
   duplicateSlot,
   switchSlot,
-  makeFilePrivate,
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
-
-const makeFilePrivateDialog = ref(false)
-const makeFilePrivateDialogFileId = ref<DocId>('')
-
-const openMakeFilePrivateDialog = (fileId: DocId) => {
-  makeFilePrivateDialogFileId.value = fileId
-  makeFilePrivateDialog.value = true
-}
 
 onMounted(async () => {
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)
@@ -90,8 +81,6 @@ onMounted(async () => {
       @duplicate-slot="duplicateSlot"
       @switch-slot="switchSlot"
       @refresh-list="getList"
-      @make-file-private="makeFilePrivate"
-      @open-make-file-private-dialog="openMakeFilePrivateDialog"
     />
     <ADatatablePagination
       v-if="showPagination"

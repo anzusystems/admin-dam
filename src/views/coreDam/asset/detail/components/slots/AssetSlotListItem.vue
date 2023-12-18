@@ -50,8 +50,6 @@ const emit = defineEmits<{
   (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
   (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
   (e: 'refreshList'): void
-  (e: 'makeFilePrivate', fileId: DocId, assetType: DamAssetType): void
-  (e: 'openMakeFilePrivateDialog', fileId: DocId): void
 }>()
 
 const { t } = useI18n()
@@ -123,16 +121,6 @@ const copyFileId = async () => {
   copy(props.item.assetFile.id).then(() => {
     showSuccess(t('common.alert.idWasCopied'))
   })
-}
-
-const makeFilePrivate = () => {
-  if (!props.item || !props.item.assetFile) return
-  emit('makeFilePrivate', props.item.assetFile.id, props.assetType)
-}
-
-const openMakeFilePrivateDialog = () => {
-  if (!props.item || !props.item.assetFile) return
-  emit('openMakeFilePrivateDialog', props.item.assetFile.id)
 }
 
 const makeMainFile = () => {
