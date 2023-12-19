@@ -91,7 +91,11 @@ watch(
       >
         <LogDatatable
           :key="system"
-          :ref="(el: any) => { datatables[system] = el }"
+          :ref="
+            (el: any) => {
+              datatables[system] = el
+            }
+          "
           :system="system"
           @count-change="updateCount($event, system)"
         />

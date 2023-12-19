@@ -1,19 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import type { AssetFileProperties } from '@anzusystems/common-admin'
+import { DamAssetStatus, DamAssetType, isUndefined, useRemainingTime } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { isUndefined } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
-import type { AssetFileProperties } from '@/types/coreDam/Asset'
-import { useRemainingTime } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
     src?: string
-    assetType?: AssetType
-    assetStatus?: AssetStatus
+    assetType?: DamAssetType
+    assetStatus?: DamAssetStatus
     backgroundColor?: string
     width?: number
     height?: number
@@ -36,8 +33,8 @@ const props = withDefaults(
     assetFileProperties?: AssetFileProperties
   }>(),
   {
-    assetType: AssetType.Image,
-    assetStatus: AssetStatus.WithFile,
+    assetType: DamAssetType.Image,
+    assetStatus: DamAssetStatus.WithFile,
     src: undefined,
     backgroundColor: '#ccc',
     width: undefined,
@@ -76,16 +73,16 @@ const onError = () => {
 }
 
 const icon = computed(() => {
-  if (props.assetStatus === AssetStatus.Deleting) return 'mdi-trash-can'
+  if (props.assetStatus === DamAssetStatus.Deleting) return 'mdi-trash-can'
   switch (props.assetType) {
-    case AssetType.Audio:
-      return props.assetStatus === AssetStatus.WithFile ? 'mdi-music' : 'mdi-music-off'
-    case AssetType.Document:
-      return props.assetStatus === AssetStatus.WithFile ? 'mdi-note' : 'mdi-note-off'
-    case AssetType.Video:
-      return props.assetStatus === AssetStatus.WithFile ? 'mdi-video' : 'mdi-video-off'
-    case AssetType.Image:
-      return props.assetStatus === AssetStatus.WithFile ? 'mdi-image' : 'mdi-image-off'
+    case DamAssetType.Audio:
+      return props.assetStatus === DamAssetStatus.WithFile ? 'mdi-music' : 'mdi-music-off'
+    case DamAssetType.Document:
+      return props.assetStatus === DamAssetStatus.WithFile ? 'mdi-note' : 'mdi-note-off'
+    case DamAssetType.Video:
+      return props.assetStatus === DamAssetStatus.WithFile ? 'mdi-video' : 'mdi-video-off'
+    case DamAssetType.Image:
+      return props.assetStatus === DamAssetStatus.WithFile ? 'mdi-image' : 'mdi-image-off'
     default:
       return ''
   }
@@ -98,11 +95,11 @@ const uploadingPercentage = computed(() => {
 })
 
 const backgroundColorComputed = computed(() => {
-  return [AssetStatus.Deleting, AssetStatus.Draft].includes(props.assetStatus) ? '#ccc' : props.backgroundColor
+  return [DamAssetStatus.Deleting, DamAssetStatus.Draft].includes(props.assetStatus) ? '#ccc' : props.backgroundColor
 })
 
 const iconColor = computed(() => {
-  return props.assetStatus === AssetStatus.WithFile ? '#505050' : '#8f8f8f'
+  return props.assetStatus === DamAssetStatus.WithFile ? '#505050' : '#8f8f8f'
 })
 
 const srcComputed = computed(() => {
@@ -111,7 +108,7 @@ const srcComputed = computed(() => {
 
 const showIconComputed = computed(() => {
   if (props.hideIcon) return false
-  else if (props.assetType === AssetType.Image && props.src) return false
+  else if (props.assetType === DamAssetType.Image && props.src) return false
   return true
 })
 
@@ -189,7 +186,7 @@ const { remainingTimeShort } = useRemainingTime()
     </template>
   </VImg>
   <VImg
-    v-else-if="assetStatus === AssetStatus.WithFile && src && useComponent"
+    v-else-if="assetStatus === DamAssetStatus.WithFile && src && useComponent"
     :src="srcComputed"
     :width="width"
     :height="height"
@@ -238,7 +235,7 @@ const { remainingTimeShort } = useRemainingTime()
     </template>
   </VImg>
   <div
-    v-else-if="assetStatus === AssetStatus.WithFile && src"
+    v-else-if="assetStatus === DamAssetStatus.WithFile && src"
     class="asset-image asset-image--img position-relative"
   >
     <img

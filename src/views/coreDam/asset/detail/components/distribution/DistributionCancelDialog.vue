@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ADialogToolbar, isNull, useAlerts } from '@anzusystems/common-admin'
+import { ADialogToolbar, DamDistributionServiceType, isNull, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
-import { DistributionServiceType } from '@/types/coreDam/DamConfig'
 import { cancelCustomDistribution } from '@/services/api/coreDam/distributionCustomApi'
 
 const emit = defineEmits<{
@@ -25,7 +24,7 @@ const onConfirm = async () => {
   if (
     isNull(distributionIdToCancel.value) ||
     isNull(distributionTypeToCancel.value) ||
-    distributionTypeToCancel.value !== DistributionServiceType.Custom
+    distributionTypeToCancel.value !== DamDistributionServiceType.Custom
   )
     return
   buttonLoading.value = true

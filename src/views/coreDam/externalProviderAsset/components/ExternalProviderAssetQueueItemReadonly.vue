@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
 import ExternalProviderAssetMetadataItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
 
 const IMAGE_ASPECT_RATIO = 16 / 9

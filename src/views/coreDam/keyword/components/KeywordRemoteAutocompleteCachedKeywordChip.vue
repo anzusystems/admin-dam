@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import type { DocId } from '@anzusystems/common-admin'
+import type { CachedItem, DocId } from '@anzusystems/common-admin'
 import { isNull, isUndefined } from '@anzusystems/common-admin'
 import { computed, shallowRef, watch } from 'vue'
-import type { CachedItem } from '@anzusystems/common-admin'
-import type { KeywordMinimal } from '@/types/coreDam/Keyword'
+import type { DamKeywordMinimal } from '@anzusystems/common-admin'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
@@ -30,7 +29,7 @@ const props = withDefaults(
 const { getCachedKeyword } = useCachedKeywords()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const cached = shallowRef<undefined | CachedItem<KeywordMinimal>>(undefined)
+const cached = shallowRef<undefined | CachedItem<DamKeywordMinimal>>(undefined)
 const loaded = shallowRef<boolean>(false)
 
 const item = computed(() => {

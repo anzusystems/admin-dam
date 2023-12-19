@@ -5,8 +5,7 @@ import { ACL } from '@/types/Permission'
 import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 import { computed, ref } from 'vue'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import AssetToolbarExtSystemLicenceDialog
-  from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
+import AssetToolbarExtSystemLicenceDialog from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 
 withDefaults(
   defineProps<{
@@ -43,7 +42,6 @@ const dialog = ref(false)
 const openDialog = () => {
   dialog.value = true
 }
-
 </script>
 
 <template>

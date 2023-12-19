@@ -1,8 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { cloneDeep } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
+import { cloneDeep, useDamConfigState } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 interface State {
   assetSlotNames: string[]
@@ -35,8 +35,14 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', {
     hideLoader() {
       this.loader = false
     },
-    setAssetSlotsNamesFromConfig(assetType: AssetType) {
-      this.assetSlotNames = cloneDeep(damConfigExtSystem[assetType].slots)
+    setAssetSlotsNamesFromConfig(assetType: DamAssetType) {
+      const { getDamConfigExtSystem } = useDamConfigState()
+      const { currentExtSystemId } = useCurrentExtSystem()
+      const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+      if (isUndefined(configExtSystem)) {
+        throw new Error('Ext system must be initialised.')
+      }
+      this.assetSlotNames = cloneDeep(configExtSystem[assetType].slots)
     },
     setList(items: Array<AssetSlot>) {
       this.list = items

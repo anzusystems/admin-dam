@@ -2,23 +2,25 @@
 import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/AssetDetailSidebarMetadata.vue'
 import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import type { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { type DamAssetStatus, type DamAssetType, isUndefined } from '@anzusystems/common-admin'
+import {
+  type AssetFileFailReason,
+  type AssetFileProcessStatus,
+  type DocId,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import { useI18n } from 'vue-i18n'
-import type { DocId } from '@anzusystems/common-admin'
 import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
 import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
 import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
-import type { AssetFileProcessStatus } from '@/types/coreDam/File'
 import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
-import type { AssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import { ACL } from '@/types/Permission'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -28,8 +30,8 @@ const props = withDefaults(
     isImage: boolean
     isDocument: boolean
     dataCy?: string
-    assetStatus: AssetStatus
-    assetType: AssetType
+    assetStatus: DamAssetStatus
+    assetType: DamAssetType
     assetMainFileStatus?: AssetFileProcessStatus | undefined
     assetMainFileFailReason?: AssetFileFailReason | undefined
   }>(),
@@ -51,8 +53,15 @@ const { t } = useI18n()
 
 const { activeTab } = useAssetDetailTab()
 
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
 const typeHasDistributions = computed(() => {
-  return damConfigExtSystem[props.assetType].distribution.distributionServices.length > 0
+  return configExtSystem[props.assetType].distribution.distributionServices.length > 0
 })
 </script>
 

@@ -27,7 +27,7 @@ import { usePermissionConfigActions } from '@/views/common/permission/composable
 import CachedPermissionGroupChip from '@/views/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 import { damClient } from '@/services/api/clients/damClient'
 
-type DatatableItem = { raw: AnzuUser }
+type DatatableItem = AnzuUser
 
 const router = useRouter()
 
@@ -37,8 +37,8 @@ const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserA
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_USER_VIEW)) {
-    router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_USER_VIEW)) {
+    router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -104,49 +104,49 @@ defineExpose({
         <template #item.enabled="{ item }: { item: DatatableItem }">
           <ABooleanValue
             chip
-            :value="item.raw.enabled"
+            :value="item.enabled"
           />
         </template>
         <template #item.roles="{ item }: { item: DatatableItem }">
           <AChipNoLink
-            v-for="role in item.raw.roles"
+            v-for="role in item.roles"
             :key="role"
             class="mr-1 mb-1"
           >
             {{ translatePermission('roles', role) }}
           </AChipNoLink>
-          <span v-if="item.raw.roles.length === 0">-</span>
+          <span v-if="item.roles.length === 0">-</span>
         </template>
         <template #item.permissionGroups="{ item }: { item: DatatableItem }">
           <CachedPermissionGroupChip
-            v-for="permissionGroupId in item.raw.permissionGroups"
+            v-for="permissionGroupId in item.permissionGroups"
             :id="permissionGroupId"
             :key="permissionGroupId"
             class="mr-1 mb-1"
           />
-          <span v-if="item.raw.permissionGroups.length === 0">-</span>
+          <span v-if="item.permissionGroups.length === 0">-</span>
         </template>
         <template #item.permissions="{ item }: { item: DatatableItem }">
-          {{ Object.keys(item.raw.permissions).length }}
+          {{ Object.keys(item.permissions).length }}
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_USER_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.COMMON.ANZU_USER.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
               />
             </Acl>

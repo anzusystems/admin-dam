@@ -1,9 +1,7 @@
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
-import { isImageFile } from '@/types/coreDam/File'
+import { assetFileIsImageFile, DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
 
 export function useAssetDetailActions() {
   const sidebar = ref(true)
@@ -23,25 +21,25 @@ export function useAssetDetailActions() {
   }
 
   const assetType = computed(() => {
-    return asset.value?.attributes.assetType || AssetType.Default
+    return asset.value?.attributes.assetType || DamAssetType.Default
   })
 
   const assetStatus = computed(() => {
-    if (!asset.value) return AssetStatus.Default
+    if (!asset.value) return DamAssetStatus.Default
     return asset.value.attributes.assetStatus
   })
 
   const isTypeImage = computed(() => {
-    return assetType.value === AssetType.Image
+    return assetType.value === DamAssetType.Image
   })
   const isTypeVideo = computed(() => {
-    return assetType.value === AssetType.Video
+    return assetType.value === DamAssetType.Video
   })
   const isTypeAudio = computed(() => {
-    return assetType.value === AssetType.Audio
+    return assetType.value === DamAssetType.Audio
   })
   const isTypeDocument = computed(() => {
-    return assetType.value === AssetType.Document
+    return assetType.value === DamAssetType.Document
   })
 
   const assetMainFile = computed(() => {
@@ -55,7 +53,7 @@ export function useAssetDetailActions() {
         width: asset.value.mainFile.links.image_detail.width,
         height: asset.value.mainFile.links.image_detail.height,
         bgColor:
-          isImageFile(asset.value.mainFile) &&
+          assetFileIsImageFile(asset.value.mainFile) &&
           asset.value.mainFile.imageAttributes &&
           asset.value.mainFile.imageAttributes.mostDominantColor
             ? asset.value.mainFile.imageAttributes.mostDominantColor

@@ -1,11 +1,11 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { Author } from '@/types/coreDam/Author'
-import { useAuthorFactory } from '@/model/coreDam/factory/AuthorFactory'
+import type { DamAuthor } from '@anzusystems/common-admin'
+import { useDamAuthorFactory } from '@anzusystems/common-admin'
 
-const { createDefault } = useAuthorFactory()
+const { createDefault } = useDamAuthorFactory()
 
 interface State {
-  author: Author
+  author: DamAuthor
 }
 
 export const useAuthorOneStore = defineStore('authorOneStore', {
@@ -13,7 +13,7 @@ export const useAuthorOneStore = defineStore('authorOneStore', {
     author: createDefault(0),
   }),
   actions: {
-    setAuthor(author: Author) {
+    setAuthor(author: DamAuthor) {
       this.author = author
     },
     reset() {

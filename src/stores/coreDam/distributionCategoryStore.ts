@@ -3,14 +3,14 @@ import { useDistributionCategoryFactory } from '@/model/coreDam/factory/Distribu
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 
 const { createDefault } = useDistributionCategoryFactory()
 
 interface State {
   distributionCategory: DistributionCategory
   distributionCategorySelects: DistributionCategorySelect[]
-  distributionCategorySelectedOptions: Partial<Record<DistributionServiceName, DistributionCategoryOption | null>>
+  distributionCategorySelectedOptions: Partial<Record<DamDistributionServiceName, DistributionCategoryOption | null>>
 }
 
 export const useDistributionCategoryOneStore = defineStore('distributionCategoryOneStore', {

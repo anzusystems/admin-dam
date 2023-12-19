@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
-import type { VideoFile } from '@/types/coreDam/File'
+import type { AssetFileVideo } from '@anzusystems/common-admin'
 import { prettyBps, prettyDuration } from '@/utils/file'
 
 withDefaults(
   defineProps<{
-    file: VideoFile
+    file: AssetFileVideo
   }>(),
   {}
 )

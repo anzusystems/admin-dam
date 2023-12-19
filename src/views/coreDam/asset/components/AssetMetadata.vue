@@ -1,20 +1,26 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import { ACopyText, ASystemEntityScope, dateTimePretty, prettyBytes } from '@anzusystems/common-admin'
+import type { AssetFile } from '@anzusystems/common-admin'
+import {
+  ACopyText,
+  assetFileIsAudioFile,
+  assetFileIsImageFile,
+  assetFileIsVideoFile,
+  ASystemEntityScope,
+  DamAssetType,
+  dateTimePretty,
+  prettyBytes,
+} from '@anzusystems/common-admin'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import type { AudioFile, DocumentFile, ImageFile, VideoFile } from '@/types/coreDam/File'
-import { isImageFile } from '@/types/coreDam/File'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import { isVideoFile, isAudioFile } from '@/types/coreDam/File'
 import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 
@@ -25,23 +31,23 @@ const panels = ref(['metadata', 'file'])
 const { asset, authorConflicts, metadataTouch } = useAssetDetailActions()
 
 const assetType = computed(() => {
-  return asset.value?.attributes.assetType || AssetType.Default
+  return asset.value?.attributes.assetType || DamAssetType.Default
 })
 
 const isTypeImage = computed(() => {
-  return assetType.value === AssetType.Image
+  return assetType.value === DamAssetType.Image
 })
 
 const isTypeAudio = computed(() => {
-  return assetType.value === AssetType.Audio
+  return assetType.value === DamAssetType.Audio
 })
 
 const isTypeVideo = computed(() => {
-  return assetType.value === AssetType.Video
+  return assetType.value === DamAssetType.Video
 })
 
-const assetMainFile = computed<null | ImageFile | AudioFile | DocumentFile | VideoFile>(() => {
-  return asset.value && asset.value.mainFile ? asset.value.mainFile : null
+const assetMainFile = computed<null | AssetFile>(() => {
+  return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
 })
 
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
@@ -189,17 +195,17 @@ const onAnyMetadataChange = () => {
           </VRow>
           <!-- image -->
           <AssetMetadataImageAttributes
-            v-if="isTypeImage && isImageFile(assetMainFile)"
+            v-if="isTypeImage && assetFileIsImageFile(assetMainFile)"
             :file="assetMainFile"
           />
           <!-- video -->
           <AssetMetadataVideoAttributes
-            v-if="isTypeVideo && isVideoFile(assetMainFile)"
+            v-if="isTypeVideo && assetFileIsVideoFile(assetMainFile)"
             :file="assetMainFile"
           />
           <!-- audio -->
           <AssetMetadataAudioAttributes
-            v-if="isTypeAudio && isAudioFile(assetMainFile)"
+            v-if="isTypeAudio && assetFileIsAudioFile(assetMainFile)"
             :file="assetMainFile"
           />
         </div>

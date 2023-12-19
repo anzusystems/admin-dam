@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { AssetStatus } from '@/model/coreDam/valueObject/AssetStatus'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { DamAssetStatus, UploadQueueItemStatus } from '@anzusystems/common-admin'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemStatus } from '@/types/coreDam/UploadQueue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -19,10 +18,10 @@ const { t } = useI18n()
 
 const processing = computed(() => {
   return [
-    QueueItemStatus.Waiting,
-    QueueItemStatus.Uploading,
-    QueueItemStatus.Loading,
-    QueueItemStatus.Processing,
+    UploadQueueItemStatus.Waiting,
+    UploadQueueItemStatus.Uploading,
+    UploadQueueItemStatus.Loading,
+    UploadQueueItemStatus.Processing,
   ].includes(props.item.status)
 })
 const imageSrc = computed(() => {
@@ -32,7 +31,7 @@ const assetType = computed(() => {
   return props.item.assetType
 })
 const status = computed(() => {
-  if (!props.item) return AssetStatus.Default
+  if (!props.item) return DamAssetStatus.Default
   return props.item.assetStatus
 })
 </script>

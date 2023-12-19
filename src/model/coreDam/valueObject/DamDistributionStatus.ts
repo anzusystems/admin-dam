@@ -1,48 +1,39 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
-export enum DistributionStatus {
-  Waiting = 'waiting',
-  Distributing = 'distributing',
-  RemoteProcessing = 'remote_processing',
-  Distributed = 'distributed',
-  Failed = 'failed',
-  Default = Waiting,
-}
+import { DamDistributionStatus, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useDistributionStatus() {
   const { t } = useI18n()
 
-  const DistributionStatusOptions = ref<ValueObjectOption<DistributionStatus>[]>([
+  const DistributionStatusOptions = ref<ValueObjectOption<DamDistributionStatus>[]>([
     {
-      value: DistributionStatus.Waiting,
+      value: DamDistributionStatus.Waiting,
       title: t('coreDam.distribution.distributionStatus.waiting'),
       color: 'default',
     },
     {
-      value: DistributionStatus.Distributing,
+      value: DamDistributionStatus.Distributing,
       title: t('coreDam.distribution.distributionStatus.distributing'),
       color: 'warning',
     },
     {
-      value: DistributionStatus.RemoteProcessing,
+      value: DamDistributionStatus.RemoteProcessing,
       title: t('coreDam.distribution.distributionStatus.remoteProcessing'),
       color: 'primary',
     },
     {
-      value: DistributionStatus.Distributed,
+      value: DamDistributionStatus.Distributed,
       title: t('coreDam.distribution.distributionStatus.distributed'),
       color: 'success',
     },
     {
-      value: DistributionStatus.Failed,
+      value: DamDistributionStatus.Failed,
       title: t('coreDam.distribution.distributionStatus.failed'),
       color: 'error',
     },
   ])
 
-  const getDistributionStatusOption = (value: DistributionStatus) => {
+  const getDistributionStatusOption = (value: DamDistributionStatus) => {
     return DistributionStatusOptions.value.find((item) => item.value === value)
   }
 

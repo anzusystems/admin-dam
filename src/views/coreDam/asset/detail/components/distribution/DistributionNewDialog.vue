@@ -1,22 +1,25 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  DamDistributionServiceType,
+  type DocId,
+  isNull,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
-import { DistributionServiceType } from '@/types/coreDam/DamConfig'
-import type { DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, isNull } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { damConfig } from '@/services/DamConfigService'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
-    assetType: AssetType
+    assetType: DamAssetType
     assetId: DocId
   }>(),
   {}
@@ -43,8 +46,15 @@ const closeDialog = () => {
   emit('reloadList')
 }
 
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
 const serviceRequirements = computed(() => {
-  return damConfigExtSystem[props.assetType].distribution.distributionRequirements
+  return configExtSystem[props.assetType].distribution.distributionRequirements
 })
 
 const activeConfig = computed(() => {
@@ -52,21 +62,23 @@ const activeConfig = computed(() => {
   return serviceRequirements.value[activeDistributionName.value]
 })
 
+const { damPrvConfig } = useDamConfigState()
+
 const activeDistributionType = computed(() => {
   if (isNull(activeDistributionName.value)) return null
-  if (damConfig.distributionServices[activeDistributionName.value]) {
-    return damConfig.distributionServices[activeDistributionName.value].type
+  if (damPrvConfig.value.distributionServices[activeDistributionName.value]) {
+    return damPrvConfig.value.distributionServices[activeDistributionName.value].type
   }
   return null
 })
 
 const componentComputed = computed(() => {
   switch (activeDistributionType.value) {
-    case DistributionServiceType.Youtube:
+    case DamDistributionServiceType.Youtube:
       return DistributionNewDialogYoutube
-    case DistributionServiceType.Jw:
+    case DamDistributionServiceType.Jw:
       return DistributionNewDialogJw
-    case DistributionServiceType.Custom:
+    case DamDistributionServiceType.Custom:
       return DistributionNewDialogCustom
     default:
       return DistributionNewDialogEmpty

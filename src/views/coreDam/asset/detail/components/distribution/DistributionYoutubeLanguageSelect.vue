@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubeLanguages } from '@/services/api/coreDam/distributionYoutubeApi'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
-import type { YoutubeLanguage } from '@/types/coreDam/Distribution'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
+import type { YoutubeLanguage } from '@/types/coreDam/Distribution'
 
 const props = withDefaults(
   defineProps<{
     modelValue: string
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
     label?: string
   }>(),
   {

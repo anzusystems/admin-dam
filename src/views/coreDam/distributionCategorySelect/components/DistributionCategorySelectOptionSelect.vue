@@ -4,8 +4,8 @@ import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCat
 import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { cloneDeep, useValidate } from '@anzusystems/common-admin'
+import { cloneDeep, isUndefined, useDamConfigState, useValidate } from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -29,9 +29,16 @@ const modelValueComputed = computed({
   },
 })
 
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
 const isRequired = computed(() => {
   return (
-    damConfigExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]
+    configExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]
       ?.categorySelect?.required ?? false
   )
 })

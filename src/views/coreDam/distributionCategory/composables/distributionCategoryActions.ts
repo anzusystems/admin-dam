@@ -1,5 +1,14 @@
-import type { DocId, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
+import {
+  cloneDeep,
+  type DocId,
+  type FilterBag,
+  type Pagination,
+  useAlerts,
+  useDamConfigState,
+  usePagination,
+  type ValueObjectOption,
+} from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   createDistributionCategory,
@@ -10,8 +19,6 @@ import {
 } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -85,17 +92,26 @@ export const useDistributionCategoryDetailActions = () => {
 }
 
 export const useDistributionCategoryManageActions = () => {
-  const getAvailableDistributionServiceSlugs = (assetType: AssetType) => {
+  const { getDamConfigExtSystem } = useDamConfigState()
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+  if (isUndefined(configExtSystem)) {
+    throw new Error('Ext system must be initialised.')
+  }
+
+  const getAvailableDistributionServiceSlugs = (assetType: DamAssetType) => {
     const serviceSlugs: string[] = []
-    Object.entries(damConfigExtSystem[assetType].distribution.distributionRequirements).forEach(([service, config]) => {
-      if (config.categorySelect.enabled) {
-        serviceSlugs.push(service)
+    Object.entries(configExtSystem[assetType].distribution.distributionRequirements).forEach(
+      ([service, config]) => {
+        if (config.categorySelect.enabled) {
+          serviceSlugs.push(service)
+        }
       }
-    })
+    )
     return serviceSlugs
   }
 
-  const fetchDistributionCategorySelectsData = async (assetType: AssetType) => {
+  const fetchDistributionCategorySelectsData = async (assetType: DamAssetType) => {
     const pagination = usePagination()
     const filter = cloneDeep(useDistributionCategorySelectListFilter())
     filter.serviceSlug.model = getAvailableDistributionServiceSlugs(assetType)
@@ -116,7 +132,7 @@ export const useDistributionCategoryCreateActions = () => {
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const prepareData = async (assetType: AssetType) => {
+  const prepareData = async (assetType: DamAssetType) => {
     try {
       createFormDataLoaded.value = false
       const { createDefault } = useDistributionCategoryFactory()

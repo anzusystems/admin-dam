@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import type { DocId } from '@anzusystems/common-admin'
+import type { AssetFileImage, DocId } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
-import type { ImageFile } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
@@ -12,7 +11,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const image = ref<ImageFile | null>(null)
+const image = ref<AssetFileImage | null>(null)
 const loading = ref(false)
 
 const router = useRouter()

@@ -3,8 +3,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import { isEmptyObject } from '@anzusystems/common-admin'
+import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const { t } = useI18n()
 
@@ -19,8 +19,15 @@ const goToExternalProvider = (provider: string) => {
   router.push({ name: ROUTE.DAM.EXTERNAL_PROVIDER.LIST, params: { provider } })
 }
 
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
 const externalProviders = computed(() => {
-  return damConfigExtSystem.assetExternalProviders
+  return configExtSystem.assetExternalProviders
 })
 
 const show = computed(() => {

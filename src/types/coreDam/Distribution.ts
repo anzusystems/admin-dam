@@ -1,7 +1,10 @@
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
-import type { DatetimeUTCNullable, DocId } from '@anzusystems/common-admin'
+import type {
+  DamDistributionServiceName,
+  DamDistributionStatus,
+  DatetimeUTCNullable,
+  DocId,
+} from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
-import type { DistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
 import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
 
@@ -38,7 +41,7 @@ interface FlagsYoutube {
 
 export interface DistributionAuthorized {
   authorized: boolean
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
 }
 
 export interface DistributionAuthUrl {
@@ -50,8 +53,8 @@ export interface DistributionItem {
   assetId: DocId
   assetFileId: DocId
   extId: string
-  distributionService: DistributionServiceName
-  status: DistributionStatus
+  distributionService: DamDistributionServiceName
+  status: DamDistributionStatus
   failReason: DistributionFailReason
   blockedBy: DocId[]
   publishAt: DatetimeUTCNullable
@@ -62,7 +65,7 @@ export interface DistributionJwCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
   texts: TextsJw
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   blockedBy: DocId[]
 }
 
@@ -72,7 +75,7 @@ export interface DistributionCustomCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
   customData: Record<string, any>
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   blockedBy: DocId[]
 }
 
@@ -80,7 +83,7 @@ export interface DistributionYoutubeCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
   texts: TextsYoutube
-  distributionService: DistributionServiceName
+  distributionService: DamDistributionServiceName
   privacy: DistributionYoutubePrivacy
   language: string
   playlist: string

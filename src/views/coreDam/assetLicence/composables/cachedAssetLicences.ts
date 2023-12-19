@@ -1,22 +1,21 @@
-import type { AssetLicence, AssetLicenceMinimal } from '@/types/coreDam/AssetLicence'
-import { fetchAssetLicenceListByIds } from '@/services/api/coreDam/assetLicenceApi'
-import type { IntegerId } from '@anzusystems/common-admin'
+import type { DamAssetLicence, DamAssetLicenceMinimal, IntegerId } from '@anzusystems/common-admin'
 import { defineCached } from '@anzusystems/common-admin'
+import { fetchAssetLicenceListByIds } from '@/services/api/coreDam/assetLicenceApi'
 
-const mapFullToMinimal = (assetLicence: AssetLicence): AssetLicenceMinimal => ({
+const mapFullToMinimal = (assetLicence: DamAssetLicence): DamAssetLicenceMinimal => ({
   id: assetLicence.id,
   name: assetLicence.name,
 })
 
-const mapIdToMinimal = (id: IntegerId): AssetLicenceMinimal => {
+const mapIdToMinimal = (id: IntegerId): DamAssetLicenceMinimal => {
   return { id: id, name: '' }
 }
 
-const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<IntegerId, AssetLicence, AssetLicenceMinimal>(
-  mapFullToMinimal,
-  mapIdToMinimal,
-  fetchAssetLicenceListByIds
-)
+const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
+  IntegerId,
+  DamAssetLicence,
+  DamAssetLicenceMinimal
+>(mapFullToMinimal, mapIdToMinimal, fetchAssetLicenceListByIds)
 
 export const useCachedAssetLicences = () => {
   return {

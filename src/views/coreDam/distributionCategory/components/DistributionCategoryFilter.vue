@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import { useAssetType } from '@/model/coreDam/valueObject/AssetType'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
 import {
   AFilterInteger,
   AFilterString,

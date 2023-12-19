@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { DamAssetType } from '@anzusystems/common-admin'
 import { ACard } from '@anzusystems/common-admin'
 import DistributionCategoryDatatable from '@/views/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
@@ -8,7 +9,6 @@ import {
   useDistributionCategoryManageActions,
 } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryCreateButton from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
 import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
@@ -16,11 +16,11 @@ const filter = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()
 const { listLoading } = useDistributionCategoryListActions()
 
-const assetType = computed(() => filter.type.model as AssetType)
+const assetType = computed(() => filter.type.model as DamAssetType)
 
 const datatable = ref<InstanceType<typeof DistributionCategoryDatatable> | null>(null)
 
-const onCreateSuccess = (type: AssetType) => {
+const onCreateSuccess = (type: DamAssetType) => {
   filter.type.model = type
   datatable.value?.refresh()
 }

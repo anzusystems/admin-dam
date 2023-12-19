@@ -15,10 +15,10 @@ import {
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthor, ENTITY } from '@/services/api/coreDam/authorApi'
-import { useAuthorFactory } from '@/model/coreDam/factory/AuthorFactory'
-import type { Author } from '@/types/coreDam/Author'
+import { useDamAuthorFactory } from '@anzusystems/common-admin'
+import type { DamAuthor } from '@anzusystems/common-admin'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
-import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
+import { useDamAuthorType } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { AuthorCreateValidationScopeSymbol } from '@/components/validationScopes'
 
@@ -45,13 +45,13 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: Author): void
+  (e: 'onSuccess', data: DamAuthor): void
 }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
-const { createDefault } = useAuthorFactory()
-const author = ref<Author>(createDefault(currentExtSystemId.value))
+const { createDefault } = useDamAuthorFactory()
+const author = ref<DamAuthor>(createDefault(currentExtSystemId.value))
 const dialog = ref(false)
 const buttonLoading = ref(false)
 
@@ -94,7 +94,7 @@ const onConfirm = async () => {
   }
 }
 
-const { authorTypeOptions } = useAuthorType()
+const { authorTypeOptions } = useDamAuthorType()
 </script>
 
 <template>

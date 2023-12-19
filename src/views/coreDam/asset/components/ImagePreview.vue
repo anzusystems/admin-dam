@@ -1,19 +1,23 @@
 <script lang="ts" setup>
-import type { AssetSelectReturnData, DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, isNull, AAssetSelect } from '@anzusystems/common-admin'
+import type { AssetFileImage, AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
+import {
+  AAssetSelect,
+  ADialogToolbar,
+  AssetFileProcessStatus,
+  type AssetSelectReturnData,
+  DamAssetType as AssetTypeValue,
+  type DocId,
+  isNull,
+} from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
-import type { ImageFile } from '@/types/coreDam/File'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
-import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { AssetType as AssetTypeValue } from '@/model/coreDam/valueObject/AssetType'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: ImagePreviewNullable
+    modelValue: AssetFileImagePreviewNullable
     width?: number
     height?: number
     showActions?: boolean
@@ -25,8 +29,8 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: ImagePreviewNullable): void
-  (e: 'changed', data: ImagePreviewNullable): void
+  (e: 'update:modelValue', data: AssetFileImagePreviewNullable): void
+  (e: 'changed', data: AssetFileImagePreviewNullable): void
 }>()
 
 const { t } = useI18n()
@@ -34,7 +38,7 @@ const { t } = useI18n()
 const loading = ref(false)
 const dialog = ref(false)
 const newFileId = ref<DocId>('')
-const imageFile = ref<null | ImageFile>(null)
+const imageFile = ref<null | AssetFileImage>(null)
 
 const fetchImage = async (id: DocId) => {
   loading.value = true
@@ -43,6 +47,7 @@ const fetchImage = async (id: DocId) => {
 }
 
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const imagePreviewModel = computed({
   get() {
@@ -174,7 +179,13 @@ watch(
         {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
       <AAssetSelect
-        :asset-licence-id="currentAssetLicenceId"
+        :select-config="[
+          {
+            title: 'Default',
+            licence: currentAssetLicenceId,
+            extSystem: currentExtSystemId,
+          },
+        ]"
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"

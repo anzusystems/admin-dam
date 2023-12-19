@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { ADialogToolbar, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { logoutYoutube } from '@/services/api/coreDam/distributionYoutubeApi'
-import type { DistributionServiceName } from '@/types/coreDam/DamConfig'
 import { ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    distributionServiceName: DistributionServiceName
+    distributionServiceName: DamDistributionServiceName
   }>(),
   {}
 )

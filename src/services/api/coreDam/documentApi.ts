@@ -1,30 +1,34 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DocId } from '@anzusystems/common-admin'
-import { apiFetchOne, HTTP_STATUS_CREATED, HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK } from '@anzusystems/common-admin'
+import type { DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import {
+  apiFetchOne,
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+  UploadQueueItemType,
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemType } from '@/types/coreDam/UploadQueue'
-import type { DocumentFile, FileDownloadLink } from '@/types/coreDam/File'
-import { fileTypeFix } from '@/services/fileType'
+import type { AssetFileDocument, AssetFileDownloadLink } from '@anzusystems/common-admin'
+import { damFileTypeFix } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/document'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
 export const fetchDocumentFile = (id: DocId) =>
-  apiFetchOne<DocumentFile>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchOne<AssetFileDocument>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
     let url = END_POINT + '/licence/' + item.licenceId
-    if (item.type === QueueItemType.SlotFile && item.slotName && item.assetId) {
+    if (item.type === UploadQueueItemType.SlotFile && item.slotName && item.assetId) {
       url = END_POINT + '/asset/' + item.assetId + '/slot-name/' + item.slotName
     }
     damClient()
       .post(
         url,
         JSON.stringify({
-          mimeType: fileTypeFix(item.file),
+          mimeType: damFileTypeFix(item.file),
           size: item.file?.size,
         })
       )
@@ -65,10 +69,7 @@ export const uploadChunk = (
 
     damClient(CHUNK_UPLOAD_TIMEOUT)
       .post(url, formData, {
-        cancelToken:
-          item.chunks[item.currentChunkIndex] && item.chunks[item.currentChunkIndex].cancelTokenSource
-            ? item.chunks[item.currentChunkIndex].cancelTokenSource.token
-            : undefined,
+        cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -221,7 +222,7 @@ export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotNa
 }
 
 export const downloadLink = (documentId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + documentId + '/download-link'
     damClient()
       .get(url)

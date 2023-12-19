@@ -4,15 +4,11 @@ import { createVuetify } from 'vuetify'
 import { Intersect } from 'vuetify/directives'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
 import { i18n, useCommonVuetifyConfig, useI18n } from '@anzusystems/common-admin'
-import { VDataTableServer } from 'vuetify/labs/VDataTable'
 
 const { commonTheme, commonAliases, commonDefaults } = useCommonVuetifyConfig()
 
 export const vuetify = createVuetify({
   aliases: commonAliases(),
-  components: {
-    VDataTableServer,
-  },
   locale: {
     // @ts-ignore
     adapter: createVueI18nAdapter({ i18n, useI18n }),

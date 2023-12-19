@@ -23,7 +23,7 @@ import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/
 import DistributionCategorySelectFilter from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
 
-type DatatableItem = { raw: DistributionCategorySelect }
+type DatatableItem = DistributionCategorySelect
 
 const router = useRouter()
 const filter = useDistributionCategorySelectListFilter()
@@ -38,8 +38,8 @@ const getList = () => {
 const { can } = useAcl<AclValue>()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.raw.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW)) {
-    router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: item.raw.id } })
+  if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW)) {
+    router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: item.id } })
   }
 }
 
@@ -86,23 +86,23 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW">
               <ATableDetailButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
               <ATableEditButton
-                :record-id="item.raw.id"
+                :record-id="item.id"
                 :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"
               />
             </Acl>

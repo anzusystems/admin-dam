@@ -1,23 +1,27 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
-import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
+import type {
+  DamAssetType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+} from '@anzusystems/common-admin'
+import {
+  AFormDatetimePicker,
+  AFormTextarea,
+  AFormTextField,
+  AssetFileProcessStatus,
+  ASystemEntityScope,
+  type DocId,
+  useAlerts,
+  usePagination,
+  useValidate,
+} from '@anzusystems/common-admin'
 import {
   createJwDistribution,
   ENTITY,
   prepareFormDataJwDistribution,
   redistributeJwDistribution,
 } from '@/services/api/coreDam/distributionJwApi'
-import type { DocId } from '@anzusystems/common-admin'
-import {
-  AFormDatetimePicker,
-  AFormTextarea,
-  AFormTextField,
-  ASystemEntityScope,
-  useAlerts,
-  usePagination,
-  useValidate,
-} from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
 import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/coreDam/Distribution'
@@ -30,13 +34,12 @@ import DistributionListItem from '@/views/coreDam/asset/detail/components/distri
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
-import { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
-    distributionServiceName: DistributionServiceName
-    assetType: AssetType
-    config: DistributionRequirementsConfig
+    distributionServiceName: DamDistributionServiceName
+    assetType: DamAssetType
+    config: DamDistributionRequirementsConfig
     assetId: DocId
   }>(),
   {}

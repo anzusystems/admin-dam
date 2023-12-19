@@ -1,12 +1,12 @@
 import type {
   AnzuUserAndTimeTrackingAware,
+  AssetFileImagePreviewNullable,
+  AssetFileLinks,
   DatetimeUTCNullable,
   DocId,
   DocIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { Links } from '@/types/coreDam/File'
-import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
 import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
@@ -34,6 +34,6 @@ export interface PodcastEpisode extends AnzuUserAndTimeTrackingAware, ResourceNa
   attributes: Attributes
   dates: Dates
   position: number
-  links?: Links
-  imagePreview: ImagePreviewNullable
+  links?: AssetFileLinks
+  imagePreview: AssetFileImagePreviewNullable
 }

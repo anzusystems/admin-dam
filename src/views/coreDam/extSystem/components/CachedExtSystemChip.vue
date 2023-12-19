@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import type { IntegerId } from '@anzusystems/common-admin'
 import { ACachedChip } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
-import type { IntegerId } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{

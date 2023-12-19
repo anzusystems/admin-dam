@@ -22,7 +22,7 @@ import { ACL } from '@/types/Permission'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 
-type DatatableItem = { raw: PodcastEpisode }
+type DatatableItem = PodcastEpisode
 
 const props = withDefaults(
   defineProps<{
@@ -38,7 +38,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = usePodcastEpisodeListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: props.podcastId, episodeId: item.raw.id } })
+  router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: props.podcastId, episodeId: item.id } })
 }
 
 const getList = () => {
@@ -93,26 +93,26 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
-          <PodcastLastImportStatusChip :status="item.raw.attributes.lastImportStatus" />
+          <PodcastLastImportStatusChip :status="item.attributes.lastImportStatus" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.createdAt" />
+          <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.raw.modifiedAt" />
+          <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.raw.id" />
+            <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">
               <ATableDetailButton
-                :route-params="{ id: props.podcastId, episodeId: item.raw.id }"
+                :route-params="{ id: props.podcastId, episodeId: item.id }"
                 :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
               <ATableEditButton
-                :route-params="{ id: props.podcastId, episodeId: item.raw.id }"
+                :route-params="{ id: props.podcastId, episodeId: item.id }"
                 :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT"
               />
             </Acl>

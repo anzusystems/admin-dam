@@ -2,8 +2,7 @@ import type { Ref } from 'vue'
 import { computed } from 'vue'
 import type { UpdateUser } from '@/types/coreDam/User'
 import useVuelidate from '@vuelidate/core'
-import { UserAuthType } from '@/types/coreDam/DamConfig'
-import { useValidate } from '@anzusystems/common-admin'
+import { UserAuthType, useValidate } from '@anzusystems/common-admin'
 
 const { required, minLength } = useValidate()
 

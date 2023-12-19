@@ -1,5 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { DocId, FilterBag, Pagination, UploadQueueItem } from '@anzusystems/common-admin'
 import {
   apiAnyRequest,
   apiFetchList,
@@ -7,33 +7,32 @@ import {
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
+  UploadQueueItemType,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { UploadQueueItem } from '@/types/coreDam/UploadQueue'
-import { QueueItemType } from '@/types/coreDam/UploadQueue'
-import type { FileDownloadLink, VideoFile } from '@/types/coreDam/File'
-import type { ImagePreviewNullable } from '@/types/coreDam/ImagePreview'
+import type { AssetFileDownloadLink, AssetFileVideo } from '@anzusystems/common-admin'
+import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
-import { fileTypeFix } from '@/services/fileType'
+import { damFileTypeFix } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
 export const fetchVideoFile = (id: DocId) =>
-  apiFetchOne<VideoFile>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchOne<AssetFileVideo>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
     let url = END_POINT + '/licence/' + item.licenceId
-    if (item.type === QueueItemType.SlotFile && item.slotName && item.assetId) {
+    if (item.type === UploadQueueItemType.SlotFile && item.slotName && item.assetId) {
       url = END_POINT + '/asset/' + item.assetId + '/slot-name/' + item.slotName
     }
     damClient()
       .post(
         url,
         JSON.stringify({
-          mimeType: fileTypeFix(item.file),
+          mimeType: damFileTypeFix(item.file),
           size: item.file?.size,
         })
       )
@@ -74,10 +73,7 @@ export const uploadChunk = (
 
     damClient(CHUNK_UPLOAD_TIMEOUT)
       .post(url, formData, {
-        cancelToken:
-          item.chunks[item.currentChunkIndex] && item.chunks[item.currentChunkIndex].cancelTokenSource
-            ? item.chunks[item.currentChunkIndex].cancelTokenSource.token
-            : undefined,
+        cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -230,7 +226,7 @@ export const existingVideoToSlot = (videoId: DocId, assetId: DocId, slotName: st
 }
 
 export const downloadLink = (videoId: DocId) => {
-  return new Promise<FileDownloadLink>((resolve, reject) => {
+  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     const url = END_POINT + '/' + videoId + '/download-link'
     damClient()
       .get(url)
@@ -249,7 +245,7 @@ export const downloadLink = (videoId: DocId) => {
   })
 }
 
-export const updatePreviewImage = (fileId: DocId, imagePreview: ImagePreviewNullable) => {
+export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePreviewNullable) => {
   return new Promise((resolve, reject) => {
     damClient()
       .put(

@@ -1,26 +1,32 @@
 <script setup lang="ts">
-import type { DistributionRequirementsConfig, DistributionServiceName } from '@/types/coreDam/DamConfig'
-import { DistributionRequirementStrategy } from '@/types/coreDam/DamConfig'
+import { type DamAssetType, type DamDistributionRequirementsConfig, isUndefined } from '@anzusystems/common-admin'
+import {
+  cloneDeep,
+  DamDistributionRequirementStrategy,
+  type DamDistributionServiceName,
+  type DocIdNullable,
+  useDamConfigState,
+  usePagination,
+  useValidate,
+} from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
-import { cloneDeep, type DocIdNullable, usePagination, useValidate } from '@anzusystems/common-admin'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
-import { useDistributionStatus } from '@/model/coreDam/valueObject/DistributionStatus'
-import { damConfigExtSystem } from '@/services/DamConfigExtSystemService'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 // now only supports strategy AtLeastOne, as BE too
 
 const props = withDefaults(
   defineProps<{
     modelValue: any
-    distributionServiceName: DistributionServiceName
-    config: DistributionRequirementsConfig
+    distributionServiceName: DamDistributionServiceName
+    config: DamDistributionRequirementsConfig
     assetFileId: DocIdNullable
-    assetType: AssetType
+    assetType: DamAssetType
   }>(),
   {}
 )
@@ -55,12 +61,19 @@ const assetFileIdComputed = computed(() => {
   return props.assetFileId
 })
 
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
 const itemsComputed = computed(() => {
   return distributions.value.map((item) => {
     return {
       title:
-        (damConfigExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]?.title ||
-          item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
+        (configExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]
+          ?.title || item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
       value: item.id,
     }
   })
@@ -69,7 +82,7 @@ const itemsComputed = computed(() => {
 const { required } = useValidate()
 
 const rules = computed(() => {
-  if (props.config.strategy === DistributionRequirementStrategy.AtLeastOne) {
+  if (props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne) {
     return {
       required,
     }

@@ -3,13 +3,13 @@ import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anz
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
-import { useAuthorType } from '@/model/coreDam/valueObject/AuthorType'
+import { useDamAuthorType } from '@anzusystems/common-admin'
 
 const { author } = storeToRefs(useAuthorOneStore())
 
 const { t } = useI18n()
 
-const { getAuthorTypeOption } = useAuthorType()
+const { getAuthorTypeOption } = useDamAuthorType()
 </script>
 
 <template>

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import type { AssetType } from '@/model/coreDam/valueObject/AssetType'
+import type { AssetFileProcessStatus, DamAssetType, DocId } from '@anzusystems/common-admin'
+import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { fetchAssetDistributionList } from '@/services/api/coreDam/distributionApi'
-import type { DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
@@ -12,12 +11,11 @@ import DistributionNewDialog from '@/views/coreDam/asset/detail/components/distr
 import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionCancelDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionCancelDialog.vue'
-import type { AssetFileProcessStatus } from '@/types/coreDam/File'
 
 const props = withDefaults(
   defineProps<{
     isActive: boolean
-    assetType: AssetType
+    assetType: DamAssetType
     assetId: DocId
     assetMainFileStatus?: AssetFileProcessStatus | undefined
     dataCy?: string
