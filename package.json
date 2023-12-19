@@ -21,7 +21,7 @@
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.40.0-alpha26",
+    "@anzusystems/common-admin": "1.40.0-alpha28",
     "@mdi/font": "7.3.67",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
@@ -35,7 +35,7 @@
     "sortablejs": "^1.15.1",
     "universal-cookie": "^6.1.1",
     "uuid": "^9.0.1",
-    "vue": "^3.3.12",
+    "vue": "^3.3.13",
     "vue-i18n": "^9.8.0",
     "vue-router": "^4.2.5",
     "vuetify": "^3.4.7"
@@ -48,7 +48,7 @@
     "@types/rusha": "^0.8.3",
     "@types/sortablejs": "^1.15.7",
     "@types/uuid": "^9.0.7",
-    "@typescript-eslint/parser": "^6.14.0",
+    "@typescript-eslint/parser": "^6.15.0",
     "@vitejs/plugin-vue": "^4.5.2",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
