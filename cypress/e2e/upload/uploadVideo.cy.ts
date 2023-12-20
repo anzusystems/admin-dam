@@ -7,7 +7,7 @@ describe(`Test upload of various video, Env: ${CY.cfg}`, { tags: '@video' }, () 
   VIDEO_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Video: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {
-        cy.prepareData(`video/sample.${fileType}`,0)
+        cy.prepareData(`video/sample.${fileType}`,false)
         cy.uploadFile(`video/sample.${fileType}`, uploadType, 20000)
         cy.api_getFileID().then((responseID) => {
           FILE_ID.push(responseID)

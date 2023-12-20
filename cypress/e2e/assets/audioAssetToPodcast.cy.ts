@@ -12,7 +12,7 @@ const ASSET_ID: Array<string> = []
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
   { tags: '@assetAudioToPodcast' }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
+      cy.prepareData('audio/sample.mp3', true, ASSET_ID)
     })
     it('Add audio asset to podcast episode', () => {
       cy.visit(`/asset/${ASSET_ID}`)

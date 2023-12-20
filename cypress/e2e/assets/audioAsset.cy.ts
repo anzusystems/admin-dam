@@ -6,7 +6,7 @@ const ASSET_ID: Array<string> = []
 describe(`Test asset audio function, Env: ${CY.cfg}`,
   { tags: '@assetAudio' }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('audio/sample.mp3',1, ASSET_ID)
+      cy.prepareData('audio/sample.mp3',true, ASSET_ID)
     })
     it('Create Metadata', () => {
       cy.visit(`/asset/${ASSET_ID}`)

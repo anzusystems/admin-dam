@@ -8,7 +8,7 @@ describe(`Test upload of various audio, Env: ${CY.cfg}`, { tags: '@audio' }, () 
   AUDIO_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Audio: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {
-        cy.prepareData(`audio/sample.${fileType}`,0)
+        cy.prepareData(`audio/sample.${fileType}`,false)
         cy.uploadFile(`audio/sample.${fileType}`, uploadType)
         cy.api_getFileID().then((responseID) => {
           FILE_ID.push(responseID)

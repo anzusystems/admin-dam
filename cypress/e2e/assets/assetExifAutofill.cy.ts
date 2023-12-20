@@ -8,7 +8,7 @@ const EXPECTED_AUTHOR = 'test author '
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
   { tags: '@assetExifAutofill' }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('image/sampleMeta1.jpg', 1, ASSET_ID)
+      cy.prepareData('image/sampleMeta1.jpg', true, ASSET_ID)
     })
     it('Check image on Title-Description-Keywords-Artists', () => {
       cy.visit(`/asset/${ASSET_ID}`)
@@ -29,7 +29,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.deleteFile(ASSET_ID)
     })
     it('Prepare Test Data', ()=> {
-      cy.prepareData('image/sampleMeta2.jpg', 1, ASSET_ID)
+      cy.prepareData('image/sampleMeta2.jpg', true, ASSET_ID)
     })
     it('Check image on Subject-ImageDescription-Subjects-Owners', () => {
       cy.visit(`/asset/${ASSET_ID[1]}`)

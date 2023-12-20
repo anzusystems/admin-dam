@@ -8,12 +8,12 @@ describe(`Test upload of various audio, Env: ${CY.cfg}`, { tags: '@audio' }, () 
   DOCUMENT_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Audio: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {
-        cy.prepareData(`document/sample.${fileType}`,0)
+        cy.prepareData(`document/sample.${fileType}`,false)
         cy.uploadFile(`document/sample.${fileType}`, uploadType)
         cy.api_getFileID().then((responseID) => {
           FILE_ID.push(responseID)
           cy.waitForUpload(ALERT_UPLOAD, 20000)
-          cy.verifyFileType(responseID, 'application', fileType)
+          cy.verifyFileType(responseID, 'audio', fileType)
         })
       })
     })
