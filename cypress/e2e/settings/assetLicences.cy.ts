@@ -38,9 +38,7 @@ describe(
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('asset-licence-name').find('input').clear().type(`${EXTERNAL_SYS[0]}${RAND_NUM}-edit`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('asset-licence-ext-id')
         .find('input')
         .clear()

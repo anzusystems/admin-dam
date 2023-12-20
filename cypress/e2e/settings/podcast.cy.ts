@@ -42,11 +42,8 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
     cy.cardLoad()
-    //eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('podcast-title').find('input').clear().type(`${PODCAST_TITLE}-edit`)
-    //eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('podcast-description').clear().type(`${PODCAST_TITLE}-edit-description`)
-    //eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('podcast-rss-url').find('input').clear().type(`https://${PODCAST_TITLE}-edit.com`)
     cy.get('[data-cy=select-image-preview]').find('button').click()
     cy.get('.asset-list-tiles > :nth-child(1)').click()
@@ -89,16 +86,12 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('filter-string', 10000).first().type(`${EPISODE_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('episode-title').find('input').clear().type(`${EPISODE_TITLE}-edit`)
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('episode-description').clear().type(`${EPISODE_TITLE}-edit-description`)
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('episode-season-number')
       .find('input')
       .clear()
       .type(`${Cypress._.random(1, 1000)}`)
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('episode-number')
       .find('input')
       .clear()

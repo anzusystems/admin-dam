@@ -11,10 +11,8 @@ describe(`Test add video asset to video show episode  function, Env: ${CY.cfg}`,
     it('Add video asset to video show episode', () => {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
       cy.getCy('button-save').should('be.visible').click()
@@ -22,11 +20,8 @@ describe(`Test add video asset to video show episode  function, Env: ${CY.cfg}`,
       cy.getCy('button-video-show').should('be.visible').click()
       cy.getCy('button-add-new-vs-episode').should('be.visible').click()
       cy.getCy('field-choose-video-show').click()
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(500)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('.v-list-item').first().click()
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-title-episode').clear().type(`${VIDEO_SHOW_TITLE}-edit`)
       cy.getCy('button-add').should('be.visible').click()
       cy.alertMessage(ALERT_CREATE)

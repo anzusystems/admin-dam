@@ -18,8 +18,10 @@ import {
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import KeywordRemoteAutocompleteWithCached
+  from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import AuthorRemoteAutocompleteWithCached
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useI18n } from 'vue-i18n'
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
@@ -175,7 +177,8 @@ const showCancel = computed(() => {
           />
           <div
             v-if="item.isDuplicate"
-            class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
+            :class="'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
+              ' d-flex align-center justify-center flex-column'"
           >
             <VIcon
               icon="mdi-alert"
@@ -197,7 +200,8 @@ const showCancel = computed(() => {
           </div>
           <div
             v-if="item.error.hasError"
-            class="dam-upload-queue__overlay dam-upload-queue__overlay--error d-flex align-center justify-center flex-column"
+            :class="'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
+              ' d-flex align-center justify-center flex-column'"
           >
             <VIcon
               icon="mdi-alert"

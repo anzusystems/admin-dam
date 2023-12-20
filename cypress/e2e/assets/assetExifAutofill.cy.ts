@@ -13,10 +13,8 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
     it('Check image on Title-Description-Keywords-Artists', () => {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .should('have.value', EXPECTED_TITLE)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .should('have.value', EXPECTED_DESCRIPTION)
       cy.getCy('custom-field-keywords').click()
@@ -36,10 +34,8 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
     it('Check image on Subject-ImageDescription-Subjects-Owners', () => {
       cy.visit(`/asset/${ASSET_ID[1]}`)
       cy.api_waitPageLoad('asset-edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .should('have.value', EXPECTED_TITLE)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .should('have.value', EXPECTED_DESCRIPTION)
       cy.getCy('custom-field-keywords').click()

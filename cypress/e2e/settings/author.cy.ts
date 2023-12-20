@@ -35,9 +35,7 @@ describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visi
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('author-name').find('input').clear().type(`${USER_FIRST_NAME}-edit`)
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('author-identifier').find('input').clear().type(`${RAND_NUM}-edit`)
     cy.getCy('author-flags-reviewed').click()
     cy.getCy('author-type').click()
