@@ -102,6 +102,7 @@ const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
 const { t } = useI18n()

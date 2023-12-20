@@ -61,10 +61,12 @@ const { requiredIf } = useValidate()
 
 const rules = {
   modelValueComputed: {
+    // eslint-disable-next-line vue/no-ref-object-reactivity-loss
     required: requiredIf(requiredComputed.value),
   },
 }
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const v$ = useVuelidate(rules, { modelValueComputed }, { $scope: props.validationScope })
 
 const { fetchItemsMinimal } = useAuthorSelectActions()

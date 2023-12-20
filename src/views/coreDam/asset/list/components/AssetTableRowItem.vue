@@ -38,6 +38,7 @@ const IMAGE_WIDTH = 128
 
 const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { asset, assetType, assetStatus, tableImageProperties } = useAssetItemActions(props.item)
 
 const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()

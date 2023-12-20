@@ -45,7 +45,7 @@ const isRequired = computed(() => {
 
 const { requiredIf } = useValidate()
 
-// @ts-ignore
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired.value) } }, { modelValueComputed })
 
 const errorMessageComputed = computed(() => {

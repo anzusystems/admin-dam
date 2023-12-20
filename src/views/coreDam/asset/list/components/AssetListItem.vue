@@ -27,6 +27,7 @@ const { t } = useI18n()
 
 const IMAGE_HEIGHT = 200
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
 
 const showDetail = () => {

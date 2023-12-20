@@ -135,7 +135,9 @@ const status = computed(() => {
   return props.item.assetStatus
 })
 
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
 const cancelItem = () => {

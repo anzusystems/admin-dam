@@ -42,6 +42,7 @@ const { t } = useI18n()
 
 const inputRef = ref<InputRef>(null)
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const selectedFiles = ref<File[] | File | null>(props.multiple ? [] : null)
 
 const blockDoubleClick = ref(false)
