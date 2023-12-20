@@ -24,10 +24,10 @@ const props = defineProps<{
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
-const permissions = computed(() => cloneDeep(props.modelValue))
 const emit = defineEmits<{
   (e: 'update:modelValue', data: Permissions): void
 }>()
+const permissions = computed(() => cloneDeep(props.modelValue))
 const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized, translatePermission } =
   usePermissionConfigActions(props.client)
 const changeGrant = (subject: string, action: string, grant?: Grant) => {

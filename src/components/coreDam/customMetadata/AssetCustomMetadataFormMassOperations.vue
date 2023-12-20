@@ -5,8 +5,6 @@ import { useI18n } from 'vue-i18n'
 import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
-const { t } = useI18n()
-
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetType
@@ -14,11 +12,14 @@ const props = withDefaults(
   }>(),
   {}
 )
+
 const emit = defineEmits<{
   (e: 'update:modelValue', data: any): void
   (e: 'fillEmptyField', data: { assetType: DamAssetType; elementProperty: string; value: any }): void
   (e: 'replaceField', data: { assetType: DamAssetType; elementProperty: string; value: any }): void
 }>()
+
+const { t } = useI18n()
 
 const updateModelValue = (data: { property: string; value: any }) => {
   const updated = {} as { [key: string]: any }

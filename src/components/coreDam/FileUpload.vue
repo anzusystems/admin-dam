@@ -7,10 +7,6 @@ import { damFileTypeFix } from '@anzusystems/common-admin'
 
 type InputRef = null | HTMLInputElement
 
-const BLOCK_DOUBLE_CLICK_MS = 200
-
-const { t } = useI18n()
-
 const props = withDefaults(
   defineProps<{
     fileInputKey: number
@@ -39,6 +35,10 @@ const emit = defineEmits<{
   (e: 'change', event: DragEvent): void
   (e: 'filesInput', files: any[]): void
 }>()
+
+const BLOCK_DOUBLE_CLICK_MS = 200
+
+const { t } = useI18n()
 
 const inputRef = ref<InputRef>(null)
 

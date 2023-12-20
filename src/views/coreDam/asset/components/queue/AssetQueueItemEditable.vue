@@ -28,8 +28,6 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import AssetLink from '@/views/coreDam/asset/components/AssetLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 
-const IMAGE_ASPECT_RATIO = 16 / 9
-
 const props = withDefaults(
   defineProps<{
     index: number
@@ -44,6 +42,7 @@ const props = withDefaults(
     disableDoneAnimation: false,
   }
 )
+
 const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
@@ -51,6 +50,8 @@ const emit = defineEmits<{
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
 }>()
+
+const IMAGE_ASPECT_RATIO = 16 / 9
 
 const customData = computed({
   get() {

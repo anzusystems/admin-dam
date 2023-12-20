@@ -5,10 +5,6 @@ import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 
-const { t } = useI18n()
-
-const IMAGE_HEIGHT = 200
-
 const props = withDefaults(
   defineProps<{
     index: number
@@ -20,14 +16,18 @@ const props = withDefaults(
   }
 )
 
-const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
-
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
   (e: 'itemClick', data: { assetId: DocId; index: number }): void
   (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
   (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
 }>()
+
+const { t } = useI18n()
+
+const IMAGE_HEIGHT = 200
+
+const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })

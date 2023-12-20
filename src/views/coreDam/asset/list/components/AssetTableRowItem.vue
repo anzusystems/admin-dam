@@ -13,13 +13,6 @@ import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastC
 import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 import { ROUTE } from '@/router/routes'
 
-const { t } = useI18n()
-
-const IMAGE_HEIGHT = 72
-const IMAGE_WIDTH = 128
-
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
-
 const props = withDefaults(
   defineProps<{
     index: number
@@ -31,16 +24,23 @@ const props = withDefaults(
   }
 )
 
-const { asset, assetType, assetStatus, tableImageProperties } = useAssetItemActions(props.item)
-
-const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
-
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
   (e: 'itemClick', data: { assetId: DocId; index: number }): void
   (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
   (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
 }>()
+
+const { t } = useI18n()
+
+const IMAGE_HEIGHT = 72
+const IMAGE_WIDTH = 128
+
+const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+
+const { asset, assetType, assetStatus, tableImageProperties } = useAssetItemActions(props.item)
+
+const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })

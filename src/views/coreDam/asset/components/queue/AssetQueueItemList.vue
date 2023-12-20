@@ -4,8 +4,6 @@ import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
-
 const props = withDefaults(
   defineProps<{
     index: number
@@ -14,9 +12,12 @@ const props = withDefaults(
   }>(),
   {}
 )
+
 const emit = defineEmits<{
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
 }>()
+
+const { t } = useI18n()
 
 const loading = computed(() => {
   return [
