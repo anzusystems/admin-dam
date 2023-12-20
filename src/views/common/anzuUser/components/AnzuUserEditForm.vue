@@ -15,6 +15,8 @@ const props = defineProps<{
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
+
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { anzuUser } = useAnzuUserActions(props.client)
 const { resolvePermissions } = usePermissionActions()
 const resolvedPermissions = computed(() => {

@@ -6,11 +6,11 @@ import { computed } from 'vue'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
-
 const emit = defineEmits<{
   (e: 'closeDialog'): void
 }>()
+
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 

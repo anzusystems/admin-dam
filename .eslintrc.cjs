@@ -3,6 +3,9 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 
 module.exports = {
   root: true,
+  plugins: [
+    '@stylistic',
+  ],
   extends: [
     'eslint:recommended',
     '@vue/eslint-config-typescript',
@@ -17,8 +20,8 @@ module.exports = {
     'vue/script-setup-uses-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
-    semi: ['error', 'never'],
-    quotes: ['error', 'single', 'avoid-escape'],
+    '@stylistic/semi': ['error', 'never'],
+    '@stylistic/quotes': ['error', 'single', 'avoid-escape'],
     'vue/multi-word-component-names': [
       'error',
       {
@@ -26,32 +29,29 @@ module.exports = {
       },
     ],
     'vue/valid-v-slot': ['error', { 'allowModifiers': true }],
-    'object-curly-spacing': ['error', 'always'],
-    'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
-    'no-trailing-spaces': 'error',
-    'comma-dangle': ['error', {
-      'arrays': 'always-multiline',
-      'objects': 'always-multiline',
-      'imports': 'only-multiline',
-      'exports': 'only-multiline',
-      'functions': 'only-multiline',
-    }],
-    'max-len': ['error', {
+    '@stylistic/object-curly-spacing': ['error', 'always'],
+    '@stylistic/no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
+    '@stylistic/no-trailing-spaces': 'error',
+    '@stylistic/comma-dangle': ['error', 'only-multiline'],
+    '@stylistic/max-len': ['error', {
       'code': 120,
       'ignoreTrailingComments': true,
       'ignoreUrls': true,
       'ignoreRegExpLiterals': true,
-      ignorePattern: '^import .*|(class\\s*=\\s*"[^"]+")',
+      'ignorePattern': '^import .*',
     }],
     'vue/no-template-target-blank': ['error'],
+    'vue/block-order': ['error', { 'order': [['script', 'template'], 'style'] }],
+    'vue/define-macros-order': ['error'],
+    'vue/component-name-in-template-casing': ['error'],
+    'vue/component-api-style': ['error'],
+    'vue/prefer-define-options': ['error'],
+    'vue/require-typed-ref': ['error'],
+    'vue/no-setup-props-reactivity-loss': ['error'],
+    'vue/no-ref-object-reactivity-loss': ['error'],
   },
-  overrides: [
-    {
-      files: ['**/__tests__/*.{cy,spec}.{js,ts,jsx,tsx}', 'cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}'],
-      extends: ['plugin:cypress/recommended'],
-    },
-  ],
   parserOptions: {
     ecmaVersion: 'latest',
   },
+  ignorePatterns: ['/docs/**/*'],
 }

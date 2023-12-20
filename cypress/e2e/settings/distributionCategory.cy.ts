@@ -40,7 +40,6 @@ describe(
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('category-name').find('input').clear().type(`${USER_FIRST_NAME}-edit`)
       cy.getCy('distribution-category-select').eq(0).click()
       cy.contains('.v-list-item-title', /^Drama$/, { timeout: 6000 }).click()

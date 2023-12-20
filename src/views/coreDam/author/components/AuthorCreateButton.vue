@@ -66,6 +66,7 @@ const onCancel = () => {
 }
 
 const router = useRouter()
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n()
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()

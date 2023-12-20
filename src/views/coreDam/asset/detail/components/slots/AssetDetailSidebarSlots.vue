@@ -34,6 +34,7 @@ const {
   duplicateSlot,
   switchSlot,
   makeFilePrivate,
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 const makeFilePrivateDialog = ref(false)

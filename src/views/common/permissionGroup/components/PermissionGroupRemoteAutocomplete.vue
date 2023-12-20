@@ -38,6 +38,7 @@ const modelValueComputed = computed({
   },
 })
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { fetchPermissionGroupOptions, fetchPermissionGroupOptionsByIds } = usePermissionGroupActions(props.client)
 
 const innerFilter = usePermissionGroupFilter()

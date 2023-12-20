@@ -5,9 +5,6 @@ import { useI18n } from 'vue-i18n'
 import { computed, onMounted } from 'vue'
 import { DamAssetStatus, useDamConfigState } from '@anzusystems/common-admin'
 
-const IMAGE_HEIGHT = 200
-const IMAGE_BG_COLOR = '#ccc'
-
 const props = withDefaults(
   defineProps<{
     item: DistributionImagePreviewDto
@@ -19,6 +16,8 @@ const emit = defineEmits<{
   (e: 'toggleSelected', index: number): void
   (e: 'invalidImage', index: number): void
 }>()
+const IMAGE_HEIGHT = 200
+const IMAGE_BG_COLOR = '#ccc'
 
 const { t } = useI18n()
 

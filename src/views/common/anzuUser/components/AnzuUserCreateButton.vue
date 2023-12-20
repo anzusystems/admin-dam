@@ -41,6 +41,7 @@ const emit = defineEmits<{
 }>()
 
 const { createAnzuUser } = useAnzuUserFactory()
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { apiCreateAnzuUser } = useAnzuUserApi(props.client)
 const anzuUser = ref<AnzuUser>(createAnzuUser())
 const dialog = ref(false)

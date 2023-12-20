@@ -61,6 +61,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
     ...[{ key: 'id' }, { key: 'name' }, { key: 'type' }],
+    // eslint-disable-next-line vue/no-ref-object-reactivity-loss
     ...distributionServicesTableColumns.value,
     ...[{ key: 'createdAt' }, { key: 'modifiedAt' }],
   ],
