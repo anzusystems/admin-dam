@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { CY } from '../utils/common'
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -10,6 +12,8 @@ declare global {
       verifyFileType(fileID: string, fileGroup: 'image' | 'audio' | 'video', fileType: string): Chainable<any>
 
       deleteFile(fileID: Array<string>): Chainable<any>
+
+      cacheControl(file: string): Chainable<any>
     }
   }
 }
@@ -51,6 +55,46 @@ Cypress.Commands.add('uploadFile', (fileName: string, action: 'select' | 'drag-d
         action: action,
       }
     )
+})
+
+Cypress.Commands.add('cacheControl', (file: string) => {
+  cy.request({
+    method: 'GET',
+    url: `${CY.url.proto}://imageadmin.smedatastaging.sk/image/${file}`,
+  }).then((response)=>{
+
+    // cache-control, max-age = 0
+    const CACHE_MAX_AGE = parseInt(
+      response.headers['cache-control'].toString().match(/max-age=(\d+)/)[1])
+    expect(CACHE_MAX_AGE).to.be.eq(0)
+
+    // cache-control - public
+    expect(response.headers['cache-control']).to.include('public')
+
+    // strict-transport-security, max-age > 0
+    const SECURE_MAX_AGE = parseInt(
+      response.headers['strict-transport-security'].toString().match(/max-age=(\d+)/)[1])
+    expect(SECURE_MAX_AGE).to.be.gte(0)
+  })
+
+  cy.request({
+    method: 'GET',
+    url: `${CY.url.proto}://image.smedatastaging.sk/image/w200-h200/${file.split('/')[1]}`,
+  }).then((response)=> {
+
+    // cache-control, max-age > 0
+    const CACHE_MAX_AGE = parseInt(
+      response.headers['cache-control'].toString().match(/max-age=(\d+)/)[1])
+    expect(CACHE_MAX_AGE).to.be.gte(0)
+
+    // cache-control - public
+    expect(response.headers['cache-control']).to.include('public')
+
+    // strict-transport-security, max-age > 0
+    const SECURE_MAX_AGE = parseInt(
+      response.headers['strict-transport-security'].toString().match(/max-age=(\d+)/)[1])
+    expect(SECURE_MAX_AGE).to.be.gte(0)
+  })
 })
 
 export {}

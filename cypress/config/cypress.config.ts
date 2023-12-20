@@ -14,12 +14,11 @@ export default defineConfig({
     showPending: 'false',
   },
   trashAssetsBeforeRuns: true,
-  videoUploadOnPasses: false,
   watchForFileChanges: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
   env: {
-    cfg: 'local', // local or stg
+    cfg: 'stg', // local or stg
     loginUser: 'admin',
     failOnUncaughtException: false,
     visitBaseUrl: true,
@@ -28,6 +27,7 @@ export default defineConfig({
     grepIntegrationFolder: '../../',
   },
   e2e: {
+    video: true,
     specPattern: 'cypress/e2e/**/*.cy.ts',
     setupNodeEvents(on, config) {
       on('task', {downloadFile})
