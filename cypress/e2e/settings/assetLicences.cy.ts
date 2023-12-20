@@ -53,7 +53,6 @@ describe(
       cy.getCy('filter-string')
         .last()
         .type(`${Cypress._.repeat(RAND_NUM, 2)}-edit{ENTER}`)
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.cardLoad()
       cy.contains('td', `${EXTERNAL_SYS[0]}${RAND_NUM}-edit`)
       cy.getCyVisibleClick('filter-reset')

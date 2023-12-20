@@ -6,8 +6,8 @@ const ASSET_ID: Array<string> = []
 describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env: { visitBaseUrl: false } }, () => {
   it('Prepare Test Data', () => {
     cy.visit('/')
-    cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
-    cy.prepareData('audio/sample2.mp3', 0)
+    cy.prepareData('audio/sample.mp3', true, ASSET_ID)
+    cy.prepareData('audio/sample2.mp3', false)
   })
   it('Public-Private', ()=>{
     cy.visit(`/asset/${ASSET_ID}`)
@@ -154,7 +154,6 @@ describe(`Test audio slots function, Env: ${CY.cfg}`, { tags: '@AudioSlots', env
     cy.getCy('button-slot-actions').eq(1).click()
     cy.getCyVisibleClick('button-slot-switch')
     cy.getCyVisibleClick('button-choose-slot')
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000)
     cy.get('.v-overlay__content > .v-list').should('include.text', 'freebonus')
     cy.get('.v-overlay__content > .v-list > :nth-child(2)').click()
