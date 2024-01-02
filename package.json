@@ -14,10 +14,10 @@
     "lint:tsc": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "lint:eslint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
     "lint:eslint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "lint:prettier": "prettier -c \"src/**/*.{ts,vue}\"",
-    "lint:prettier:fix": "prettier -w \"src/**/*.{ts,vue}\"",
     "lint:stylelint": "stylelint **/*.{scss,vue}",
     "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix",
+    "lint:prettier": "prettier -c \"src/**/*.{ts,vue}\"",
+    "lint:prettier:fix": "prettier -w \"src/**/*.{ts,vue}\"",
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
