@@ -154,7 +154,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const refreshActiveItem = async () => {
-    console.log('aa')
     const activeAsset = assetListStore.getActiveAsset()
     if (isNull(activeAsset)) return
 
