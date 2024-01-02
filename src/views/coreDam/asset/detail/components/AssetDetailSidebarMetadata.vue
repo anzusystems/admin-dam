@@ -91,5 +91,5 @@ const onDelete = async () => {
       </ABtnPrimary>
     </Acl>
   </AssetDetailSidebarActionsWrapper>
-  <AssetMetadata @main-route-changed="$emit('mainRouteChanged')" />
+  <AssetMetadata @main-route-changed="emit('mainRouteChanged')" />
 </template>

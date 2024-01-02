@@ -25,7 +25,7 @@ import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/Asset
 import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'mainRouteChanged'): void
   (e: 'mainRouteChanged'): void
 }>()
@@ -202,7 +202,7 @@ const onAnyMetadataChange = () => {
                 :asset-file="routableAssetFile"
                 :asset-type="assetType"
                 :title="asset.texts.displayTitle"
-                @main-route-changed="$emit('mainRouteChanged')"
+                @main-route-changed="emit('mainRouteChanged')"
               />
             </VCol>
           </VRow>

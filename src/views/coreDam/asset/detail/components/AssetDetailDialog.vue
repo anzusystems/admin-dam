@@ -283,7 +283,7 @@ const assetMainFile = computed(() => {
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="postDelete"
-              @main-route-changed="$emit('mainRouteChanged')"
+              @main-route-changed="emit('mainRouteChanged')"
             />
           </div>
         </div>

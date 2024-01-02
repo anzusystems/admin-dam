@@ -139,7 +139,7 @@ const typeHasDistributions = computed(() => {
             :is-active="activeTab === AssetDetailTab.Info"
             :asset-type="assetType"
             @post-delete="postDelete"
-            @main-route-changed="$emit('mainRouteChanged')"
+            @main-route-changed="emit('mainRouteChanged')"
           />
         </div>
         <div

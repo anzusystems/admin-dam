@@ -183,7 +183,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :asset-file="routableAssetFile"
           :asset-type="assetType"
           :title="title"
-          @main-route-changed="$emit('refreshList')"
+          @main-route-changed="emit('refreshList')"
         />
         <ImageFile
           v-if="assetType === DamAssetType.Image && item && item.assetFile"
