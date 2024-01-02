@@ -2,7 +2,7 @@
 import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/AssetDetailSidebarMetadata.vue'
 import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import type { DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetStatus, type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import {
   type AssetFileFailReason,
   type AssetFileProcessStatus,
@@ -20,6 +20,7 @@ import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/com
 import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import { ACL } from '@/types/Permission'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -53,10 +54,15 @@ const { t } = useI18n()
 
 const { activeTab } = useAssetDetailTab()
 
-const { damConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const typeHasDistributions = computed(() => {
-  return damConfigExtSystem.value[props.assetType].distribution.distributionServices.length > 0
+  return configExtSystem[props.assetType].distribution.distributionServices.length > 0
 })
 </script>
 

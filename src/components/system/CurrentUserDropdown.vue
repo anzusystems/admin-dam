@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
-import { useCurrentUser } from '@/composables/system/currentUser'
+import { useDamCurrentUser } from '@anzusystems/common-admin'
 import { ACurrentUserDropdown } from '@anzusystems/common-admin'
 
-const { currentUser } = useCurrentUser()
+const { damCurrentUser } = useDamCurrentUser()
 </script>
 
 <template>
   <ACurrentUserDropdown
-    :current-user="currentUser"
+    :current-user="damCurrentUser"
     :settings-route-name="ROUTE.SYSTEM.SETTINGS"
     :logout-route-name="ROUTE.SYSTEM.LOGOUT"
   />

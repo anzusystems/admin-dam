@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   DamDistributionServiceType,
@@ -14,6 +14,7 @@ import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components
 import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -45,10 +46,15 @@ const closeDialog = () => {
   emit('reloadList')
 }
 
-const { damConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const serviceRequirements = computed(() => {
-  return damConfigExtSystem.value[props.assetType].distribution.distributionRequirements
+  return configExtSystem[props.assetType].distribution.distributionRequirements
 })
 
 const activeConfig = computed(() => {

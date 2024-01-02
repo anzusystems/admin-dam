@@ -1,6 +1,6 @@
 import { useSimpleLoginFactory } from '@/model/coreDam/factory/SimpleLoginFactory'
+import type { Ref } from 'vue'
 import { ref } from 'vue'
-import type { Ref } from 'vue/dist/vue'
 import { login } from '@/services/api/coreDam/authApi'
 import { useAlerts } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'

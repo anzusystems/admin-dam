@@ -4,7 +4,8 @@ import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCat
 import { computed } from 'vue'
 import type { ErrorObject } from '@vuelidate/core'
 import { useVuelidate } from '@vuelidate/core'
-import { cloneDeep, useDamConfigState, useValidate } from '@anzusystems/common-admin'
+import { cloneDeep, isUndefined, useDamConfigState, useValidate } from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -28,18 +29,23 @@ const modelValueComputed = computed({
   },
 })
 
-const { damConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const isRequired = computed(() => {
   return (
-    damConfigExtSystem.value[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]
+    configExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]
       ?.categorySelect?.required ?? false
   )
 })
 
 const { requiredIf } = useValidate()
 
-// @ts-ignore
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired.value) } }, { modelValueComputed })
 
 const errorMessageComputed = computed(() => {

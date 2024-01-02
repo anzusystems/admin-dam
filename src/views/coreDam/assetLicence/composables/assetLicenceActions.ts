@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
-import type { AssetLicence } from '@/types/coreDam/AssetLicence'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
 import {
@@ -26,7 +26,7 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceListActions = () => {
-  const listItems = ref<AssetLicence[]>([])
+  const listItems = ref<DamAssetLicence[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
@@ -129,8 +129,8 @@ export const useAssetLicenceEditActions = () => {
 }
 
 export const useAssetLicenceSelectActions = () => {
-  const mapToValueObjectOption = (assetLicences: AssetLicence[]): ValueObjectOption<number>[] => {
-    return assetLicences.map((assetLicence: AssetLicence) => ({
+  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
+    return assetLicences.map((assetLicence: DamAssetLicence) => ({
       title: assetLicence.name,
       value: assetLicence.id,
     }))
@@ -151,8 +151,8 @@ export const useAssetLicenceSelectActions = () => {
 }
 
 export const useAssetLicenceByExtIdSelectActions = () => {
-  const mapToValueObjectOption = (assetLicences: AssetLicence[]): ValueObjectOption<number>[] => {
-    return assetLicences.map((assetLicence: AssetLicence) => ({
+  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
+    return assetLicences.map((assetLicence: DamAssetLicence) => ({
       title: assetLicence.extId,
       value: assetLicence.id,
     }))

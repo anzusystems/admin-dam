@@ -1,12 +1,12 @@
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import { updateCurrentUser } from '@/composables/system/currentUser'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import {
   DamDistributionStatus,
   DamNotificationName,
-  initDamNotifications,
+  initDamNotifications, updateDamCurrentUser,
   useDamNotifications,
 } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 
 export const initAppNotificationListeners = () => {
   const { openConnection } = initDamNotifications()
@@ -46,7 +46,7 @@ export const initAppNotificationListeners = () => {
         distributionListStore.authorizationMessage(event.data.distributionService, event.data.success)
         break
       case DamNotificationName.UserUpdated:
-        updateCurrentUser()
+        updateDamCurrentUser(damClient)
         break
     }
   })

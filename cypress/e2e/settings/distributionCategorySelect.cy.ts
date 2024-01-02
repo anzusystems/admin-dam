@@ -29,10 +29,8 @@ describe(
       cy.getCy('button-close').should('be.visible')
       cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('option-name').last().find('input').clear().type(USER_LAST_NAME)
       cy.getCy('option-assignable').last().click()
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('option-id').last().find('input').clear().type(`${Date.now()}`)
       cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)

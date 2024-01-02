@@ -28,7 +28,7 @@ import { fetchDocumentFile } from '@/services/api/coreDam/documentApi'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { externalProviderImport } from '@/services/upload/externalProviderImportService'
 import { useExternalProviders } from '@/composables/system/externalProviders'
-import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
@@ -122,10 +122,15 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   },
   actions: {
     async addByFiles(queueId: string, files: File[]) {
-      const { damConfigExtSystem } = useDamConfigState()
+      const { getDamConfigExtSystem } = useDamConfigState()
       const { currentAssetLicenceId } = useCurrentAssetLicence()
+      const { currentExtSystemId } = useCurrentExtSystem()
+      const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+      if (isUndefined(configExtSystem)) {
+        throw new Error('Ext system must be initialised.')
+      }
       for await (const file of files) {
-        const type = getAssetTypeByMimeType(damFileTypeFix(file), damConfigExtSystem.value)
+        const type = getAssetTypeByMimeType(damFileTypeFix(file), configExtSystem)
         if (!type) continue
         const queueItem = createDefault(
           'file_' + file.name,

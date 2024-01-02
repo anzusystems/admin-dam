@@ -18,8 +18,10 @@ import {
 } from '@anzusystems/common-admin'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import KeywordRemoteAutocompleteWithCached
+  from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import AuthorRemoteAutocompleteWithCached
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useI18n } from 'vue-i18n'
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
@@ -27,8 +29,6 @@ import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/aut
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetLink from '@/views/coreDam/asset/components/AssetLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
-
-const IMAGE_ASPECT_RATIO = 16 / 9
 
 const props = withDefaults(
   defineProps<{
@@ -44,6 +44,7 @@ const props = withDefaults(
     disableDoneAnimation: false,
   }
 )
+
 const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
@@ -51,6 +52,8 @@ const emit = defineEmits<{
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
 }>()
+
+const IMAGE_ASPECT_RATIO = 16 / 9
 
 const customData = computed({
   get() {
@@ -132,7 +135,9 @@ const status = computed(() => {
   return props.item.assetStatus
 })
 
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
 const cancelItem = () => {
@@ -174,7 +179,8 @@ const showCancel = computed(() => {
           />
           <div
             v-if="item.isDuplicate"
-            class="dam-upload-queue__overlay dam-upload-queue__overlay--warning d-flex align-center justify-center flex-column"
+            :class="'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
+              ' d-flex align-center justify-center flex-column'"
           >
             <VIcon
               icon="mdi-alert"
@@ -196,7 +202,8 @@ const showCancel = computed(() => {
           </div>
           <div
             v-if="item.error.hasError"
-            class="dam-upload-queue__overlay dam-upload-queue__overlay--error d-flex align-center justify-center flex-column"
+            :class="'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
+              ' d-flex align-center justify-center flex-column'"
           >
             <VIcon
               icon="mdi-alert"

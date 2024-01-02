@@ -23,8 +23,17 @@ const { t } = useI18n()
 const assetSlotsStore = useAssetSlotsStore()
 const assetDetailStore = useAssetDetailStore()
 
-const { getList, pagination, showPagination, unsetSlot, removeAssetFile, makeMainFile, duplicateSlot, switchSlot } =
-  useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
+const {
+  getList,
+  pagination,
+  showPagination,
+  unsetSlot,
+  removeAssetFile,
+  makeMainFile,
+  duplicateSlot,
+  switchSlot,
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+} = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 onMounted(async () => {
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)

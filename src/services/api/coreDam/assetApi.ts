@@ -1,10 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type {
-  AssetCustomData,
-  AssetDetailItemDto,
-  AssetMetadataDto,
-  AssetSearchListItemDto,
-} from '@anzusystems/common-admin'
+import type { DamAssetType } from '@anzusystems/common-admin'
 import {
   AnzuApiForbiddenError,
   AnzuApiForbiddenOperationError,
@@ -16,6 +11,10 @@ import {
   apiDeleteOne,
   apiFetchList,
   apiFetchOne,
+  type AssetCustomData,
+  type AssetDetailItemDto,
+  type AssetMetadataDto,
+  type AssetSearchListItemDto,
   axiosErrorResponseHasForbiddenOperationData,
   axiosErrorResponseHasValidationData,
   axiosErrorResponseIsForbidden,
@@ -25,6 +24,7 @@ import {
   HTTP_STATUS_OK,
   type IntegerId,
   isNull,
+  isUndefined,
   type Pagination,
   type UploadQueueItem,
   useAlerts,
@@ -32,8 +32,8 @@ import {
   type ValidationError,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamAssetType } from '@anzusystems/common-admin'
 import type { AssetCreateDto } from '@/types/coreDam/Asset'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -167,13 +167,18 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
 const { showUnknownError, showApiValidationError } = useAlerts()
 
 const handleMetadataValidationError = (error: any, assetType: DamAssetType) => {
-  const { damConfigAssetCustomFormElements } = useDamConfigState()
+  const { getDamConfigAssetCustomFormElements } = useDamConfigState()
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
+  if (isUndefined(configAssetCustomFormElements)) {
+    throw new Error('Custom form elements must be initialised.')
+  }
   if (!error || !error.response || !error.response.data) return
   const data = error.response.data as AnzuApiValidationResponseData
   const items = [] as ValidationError[]
   for (const [key, values] of Object.entries(data.fields)) {
     const field = key.split('.').pop()
-    const found = damConfigAssetCustomFormElements.value[assetType].find((item) => item.property === field)
+    const found = configAssetCustomFormElements[assetType].find((item) => item.property === field)
     if (found) {
       items.push({
         field: found.name,

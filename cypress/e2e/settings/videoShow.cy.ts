@@ -35,7 +35,6 @@ describe(`Test video shows function, Env: ${CY.cfg}`,{ tags: '@videoShow', env: 
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
     cy.cardLoad()
-    //eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.get('.v-card-text').find('input').clear().type(`${VIDEO_SHOW_TITLE}-edit`)
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)
@@ -46,7 +45,6 @@ describe(`Test video shows function, Env: ${CY.cfg}`,{ tags: '@videoShow', env: 
   it('Create episode', () =>{
     cy.visit(`/video-show/${VIDEO_SHOW_ID}`)
     cy.getCy('button-create').click()
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('episode-title').find('input').clear().type(`${EPISODE_TITLE}-edit`)
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-cancel').should('be.visible')
@@ -70,7 +68,6 @@ describe(`Test video shows function, Env: ${CY.cfg}`,{ tags: '@videoShow', env: 
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.cardLoad()
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.get('.v-card-text').find('input').clear().type(`${EPISODE_TITLE}-edit`)
     cy.getCy('button-close').should('be.visible')
     cy.getCy('button-save').click()

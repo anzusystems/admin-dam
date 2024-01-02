@@ -13,6 +13,7 @@ const props = defineProps<{
 }>()
 
 const { anzuUser } = storeToRefs(useAnzuUserOneStore())
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { translatePermission } = usePermissionConfigActions(props.client)
 
 const { t } = useI18n()

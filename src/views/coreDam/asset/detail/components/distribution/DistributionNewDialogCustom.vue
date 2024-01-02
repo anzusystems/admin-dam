@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import type { DamAssetType, DamDistributionRequirementsConfig } from '@anzusystems/common-admin'
+import { type DamAssetType, type DamDistributionRequirementsConfig, isUndefined } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AssetFileProcessStatus,
@@ -64,7 +64,10 @@ const { loadDamConfigDistributionCustomFormElements, damConfigDistributionCustom
 const loadFormData = async () => {
   canDisplayForm.value = false
   await loadDamConfigDistributionCustomFormElements(props.distributionServiceName)
-  if (!damConfigDistributionCustomFormElements.value[props.distributionServiceName]) return
+  const configDistributionCustomFormElements = damConfigDistributionCustomFormElements.value.get(
+    props.distributionServiceName
+  )
+  if (isUndefined(configDistributionCustomFormElements)) return
   if (!assetFileId.value || assetFileStatus.value !== AssetFileProcessStatus.Processed) return
   filter.distributionService.model = props.distributionServiceName
   filter.id.model = redistributeId.value

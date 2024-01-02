@@ -22,13 +22,13 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 
-const { t } = useI18n()
-
 const emit = defineEmits<{
   (e: 'nextItem'): void
   (e: 'prevItem'): void
   (e: 'mainRouteChanged'): void
 }>()
+
+const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 const router = useRouter()

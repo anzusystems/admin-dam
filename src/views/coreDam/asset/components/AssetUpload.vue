@@ -7,11 +7,12 @@ import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import {
   ADialogToolbar,
   DamAssetType,
-  type DocId,
+  type DocId, isUndefined,
   useDamAcceptTypeAndSizeHelper,
   useDamConfigState,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -95,8 +96,14 @@ const onDialogConfirm = async () => {
   uploadDialog.value = false
 }
 
-const { damConfigExtSystem } = useDamConfigState()
-const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, damConfigExtSystem.value)
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
 const { t } = useI18n()
 </script>

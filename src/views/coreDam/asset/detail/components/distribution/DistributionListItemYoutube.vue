@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { DamDistributionServiceType } from '@anzusystems/common-admin'
+import { type DamDistributionServiceType, isUndefined } from '@anzusystems/common-admin'
 import { type DamAssetType, DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useI18n } from 'vue-i18n'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -22,10 +23,15 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { damConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState()
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
 
 const serviceRequirements = computed(() => {
-  return damConfigExtSystem.value[props.assetType].distribution.distributionRequirements[props.item.distributionService]
+  return configExtSystem[props.assetType].distribution.distributionRequirements[props.item.distributionService]
 })
 </script>
 

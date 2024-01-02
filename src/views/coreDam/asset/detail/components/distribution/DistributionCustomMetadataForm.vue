@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
-
-// damConfigDistributionCustomFormElements must be loaded before using this component
+import {
+  ACustomDataFormElement,
+  type DamDistributionServiceName,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +29,13 @@ const updateModelValue = (data: { property: string; value: any }) => {
 const { damConfigDistributionCustomFormElements } = useDamConfigState()
 
 const elements = computed(() => {
-  return damConfigDistributionCustomFormElements.value[props.distributionServiceName]
+  const configDistributionCustomFormElements = damConfigDistributionCustomFormElements.value.get(
+    props.distributionServiceName
+  )
+  if (isUndefined(configDistributionCustomFormElements)) {
+    return []
+  }
+  return configDistributionCustomFormElements
 })
 </script>
 

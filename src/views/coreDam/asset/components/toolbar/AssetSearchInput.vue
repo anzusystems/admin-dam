@@ -2,8 +2,6 @@
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 
-const { t } = useI18n()
-
 const props = withDefaults(
   defineProps<{
     modelValue: string | null
@@ -15,6 +13,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: string): void
   (e: 'submit'): void
 }>()
+
+const { t } = useI18n()
 
 const modelValueComputed = computed({
   get() {

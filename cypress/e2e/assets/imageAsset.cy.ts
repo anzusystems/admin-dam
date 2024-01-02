@@ -7,16 +7,14 @@ const ASSET_ID: Array<string> = []
 describe(`Test asset image function, Env: ${CY.cfg}`,
   { tags: '@assetImage' }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('image/sample.png', 1, ASSET_ID)
+      cy.prepareData('image/sample.png', true, ASSET_ID)
     })
     it('Create Metadata', ()=> {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-more-metadata').click()
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
       KEYWORDS.forEach(keyword=> {
@@ -46,10 +44,8 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-more-metadata').click()
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}-edit`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}-edit`)
       cy.get('[data-cy="custom-field-keywords"] .mdi-close-circle').click()

@@ -31,7 +31,6 @@ describe(`Test keyword function, Env: ${CY.cfg}`, { tags: '@keyword', env: { vis
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('keyword-name').find('input').clear().type(`${USER_FIRST_NAME}-edit`)
     cy.getCyVisibleClick('keyword-flags-reviewed')
     cy.getCyVisibleClick('button-save')
