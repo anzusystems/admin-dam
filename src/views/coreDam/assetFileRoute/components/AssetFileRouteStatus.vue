@@ -16,7 +16,6 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <!-- todo check status-->
   <VChip
     v-if="assetFileRoute.mainRoute"
     color="success"
