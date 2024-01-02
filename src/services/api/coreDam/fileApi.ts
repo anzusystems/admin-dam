@@ -1,5 +1,6 @@
 import {
-  AssetFileProcessStatus, type AssetFileRoute,
+  AssetFileProcessStatus,
+  type AssetFileRoute,
   type DamUploadStartResponse,
   type DocId,
   type UploadQueueItem,
@@ -16,7 +17,7 @@ import {
   uploadFinish as imageUploadFinish,
   uploadStart as imageUploadStart,
   makePublic as imageMakePublic,
-  makePrivate as imageMakePrivate
+  makePrivate as imageMakePrivate,
 } from '@/services/api/coreDam/imageApi'
 import {
   deleteAudio,
@@ -29,7 +30,7 @@ import {
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
   makePublic as audioMakePublic,
-  makePrivate as audioMakePrivate
+  makePrivate as audioMakePrivate,
 } from '@/services/api/coreDam/audioApi'
 import {
   deleteVideo,
@@ -53,14 +54,13 @@ import {
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
   makePublic as documentMakePublic,
-  makePrivate as documentMakePrivate
+  makePrivate as documentMakePrivate,
 } from '@/services/api/coreDam/documentApi'
 import { DamAssetType } from '@anzusystems/common-admin'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
-import { sl } from 'vuetify/locale'
 
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3

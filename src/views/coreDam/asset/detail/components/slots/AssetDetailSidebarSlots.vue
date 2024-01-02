@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import type { DamAssetType, DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import AssetFilePublicLinkPrivateDialog from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
 
@@ -24,16 +23,8 @@ const { t } = useI18n()
 const assetSlotsStore = useAssetSlotsStore()
 const assetDetailStore = useAssetDetailStore()
 
-const {
-  getList,
-  pagination,
-  showPagination,
-  unsetSlot,
-  removeAssetFile,
-  makeMainFile,
-  duplicateSlot,
-  switchSlot,
-} = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
+const { getList, pagination, showPagination, unsetSlot, removeAssetFile, makeMainFile, duplicateSlot, switchSlot } =
+  useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 onMounted(async () => {
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)

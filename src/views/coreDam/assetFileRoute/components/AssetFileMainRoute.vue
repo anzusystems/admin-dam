@@ -1,22 +1,22 @@
 <script setup lang="ts">
-
 import {
   type AssetFile,
-  type AssetFileMainRouteAware, ATableCopyIdButton,
+  type AssetFileMainRouteAware,
+  ATableCopyIdButton,
   type DamAssetType,
-  type DocId, useAlerts
+  type DocId,
+  useAlerts,
 } from '@anzusystems/common-admin'
 import AssetFileRouteStatus from '@/views/coreDam/assetFileRoute/components/AssetFileRouteStatus.vue'
 import { ref } from 'vue'
-import AssetFileRouteMakePublicDialog
-  from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
+import AssetFileRouteMakePublicDialog from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import { makePrivateFile } from '@/services/api/coreDam/fileApi'
 import AssetFileRouteChangeBtn from '@/views/coreDam/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetType
-    assetFile: AssetFile&AssetFileMainRouteAware
+    assetFile: AssetFile & AssetFileMainRouteAware
     title: string
     dataCy?: string
   }>(),
@@ -51,7 +51,6 @@ const makePrivate = async () => {
   }
   loading.value = false
 }
-
 </script>
 
 <template>
@@ -84,5 +83,8 @@ const makePrivate = async () => {
   <ATableCopyIdButton
     v-if="assetFile.mainRoute"
     :id="assetFile.mainRoute.publicUrl"
+    button-t="coreDam.asset.assetFilePublicLink.actions.copyUrl"
+    icon-t="coreDam.asset.assetFilePublicLink.actions.copyUrlShort"
+    notify-t="coreDam.asset.assetFilePublicLink.actions.notify"
   />
 </template>

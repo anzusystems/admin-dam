@@ -169,9 +169,7 @@ onUnmounted(() => {
       <AssetListSidebarFilter />
     </template>
     <template #sidebar-right>
-      <AssetListSidebarMetadata
-        @main-route-changed="refreshActiveItem"
-      />
+      <AssetListSidebarMetadata @main-route-changed="refreshActiveItem" />
     </template>
     <template #custom-footer>
       <AssetFooterSelected />

@@ -4,7 +4,7 @@ import type {
   AssetFileDownloadLink,
   AssetFileRoute,
   DocId,
-  UploadQueueItem
+  UploadQueueItem,
 } from '@anzusystems/common-admin'
 import {
   apiFetchOne,

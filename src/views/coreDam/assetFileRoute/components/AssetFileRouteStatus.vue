@@ -11,17 +11,6 @@ withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'openMakePublicDialog'): void
-  (e: 'makePrivate'): void
-}>()
-
-const makePublic = () => {
-  emit('openMakePublicDialog')
-}
-const makePrivate = () => {
-  emit('makePrivate')
-}
 
 const { t } = useI18n()
 </script>

@@ -149,7 +149,8 @@
         "width": "Width",
         "height": "Height",
         "ratio": "Ratio",
-        "animated": "Animated"
+        "animated": "Animated",
+        "mainRoute": "Original"
       }
     },
     "roi": {
@@ -224,7 +225,10 @@
     "actions": {
       "makePrivate": "Make private",
       "makePublic": "Make public",
-      "openOnNewTab": "Open"
+      "openOnNewTab": "Open",
+      "copyUrl": "Copy URL",
+      "copyUrlShort": "LN",
+      "notify": "URL copied"
     },
     "status": {
       "private": "File is private",

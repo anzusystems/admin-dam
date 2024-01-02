@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import type { AssetFile, DocId } from '@anzusystems/common-admin'
+import type { AssetFile } from '@anzusystems/common-admin'
 import {
   ACopyText,
   assetFileIsAudioFile,
@@ -25,7 +25,7 @@ import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/Asset
 import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'mainRouteChanged'): void
   (e: 'mainRouteChanged'): void
 }>()
@@ -57,11 +57,7 @@ const assetMainFile = computed<null | AssetFile>(() => {
 })
 
 const routableAssetFile = computed(() => {
-  if (
-    asset?.value?.mainFile &&
-    !assetFileIsVideoFile(asset.value.mainFile)
-  )
-    return asset.value.mainFile
+  if (asset?.value?.mainFile && !assetFileIsVideoFile(asset.value.mainFile)) return asset.value.mainFile
   return null
 })
 
@@ -193,8 +189,11 @@ const onAnyMetadataChange = () => {
             </VCol>
           </VRow>
           <VRow v-if="routableAssetFile">
-            <VCol cols="3">
-              Originál
+            <VCol
+              cols="3"
+              class="pt-4"
+            >
+              {{ t('coreDam.asset.detail.info.field.mainRoute') }}
             </VCol>
             <VCol cols="9">
               <AssetFileMainRoute

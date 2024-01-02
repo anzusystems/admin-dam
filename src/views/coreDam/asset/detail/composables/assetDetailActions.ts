@@ -47,17 +47,32 @@ export function useAssetDetailActions() {
   })
 
   const imageProperties = computed(() => {
-    if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_detail) {
-      return {
-        url: asset.value.mainFile.links.image_detail.url,
-        width: asset.value.mainFile.links.image_detail.width,
-        height: asset.value.mainFile.links.image_detail.height,
-        bgColor:
-          assetFileIsImageFile(asset.value.mainFile) &&
-          asset.value.mainFile.imageAttributes &&
-          asset.value.mainFile.imageAttributes.mostDominantColor
-            ? asset.value.mainFile.imageAttributes.mostDominantColor
-            : '#ccc',
+    if (asset.value?.mainFile && asset.value.mainFile.links) {
+      if (asset.value.mainFile.links.image_animated) {
+        return {
+          url: asset.value.mainFile.links.image_animated.url,
+          width: asset.value.mainFile.links.image_animated.width,
+          height: asset.value.mainFile.links.image_animated.height,
+          bgColor:
+            assetFileIsImageFile(asset.value.mainFile) &&
+            asset.value.mainFile.imageAttributes &&
+            asset.value.mainFile.imageAttributes.mostDominantColor
+              ? asset.value.mainFile.imageAttributes.mostDominantColor
+              : '#ccc',
+        }
+      }
+      if (asset.value.mainFile.links.image_detail) {
+        return {
+          url: asset.value.mainFile.links.image_detail.url,
+          width: asset.value.mainFile.links.image_detail.width,
+          height: asset.value.mainFile.links.image_detail.height,
+          bgColor:
+            assetFileIsImageFile(asset.value.mainFile) &&
+            asset.value.mainFile.imageAttributes &&
+            asset.value.mainFile.imageAttributes.mostDominantColor
+              ? asset.value.mainFile.imageAttributes.mostDominantColor
+              : '#ccc',
+        }
       }
     }
     return {

@@ -64,7 +64,6 @@ const onConfirm = async () => {
     return
   }
   try {
-
     await makePublicFile(props.assetType, props.fileId, stringToSlug(slug.value))
 
     showRecordWas('updated')
@@ -88,7 +87,6 @@ const onConfirm = async () => {
       width="500"
       class="mt-0 mr-auto ml-auto"
     >
-
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.asset.assetFilePublicLink.actions.makePublic') }}
       </ADialogToolbar>

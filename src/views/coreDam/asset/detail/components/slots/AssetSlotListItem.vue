@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
-  type AssetFileFailReason, assetFileIsVideoFile,
+  type AssetFileFailReason,
+  assetFileIsVideoFile,
   AssetFileProcessStatus,
   DamAssetType,
   type DocId,
@@ -22,10 +23,8 @@ import AssetQueueItemList from '@/views/coreDam/asset/components/queue/AssetQueu
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
-import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
-import AssetFileRoute from '@/views/coreDam/assetFileRoute/components/AssetFileRouteStatus.vue'
 import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
 
 const props = withDefaults(
@@ -88,11 +87,7 @@ const statusComputed = computed(() => {
 })
 
 const routableAssetFile = computed(() => {
-  if (
-    props.item?.assetFile &&
-    !assetFileIsVideoFile(props.item.assetFile)
-  )
-    return props.item.assetFile
+  if (props.item?.assetFile && !assetFileIsVideoFile(props.item.assetFile)) return props.item.assetFile
   return null
 })
 

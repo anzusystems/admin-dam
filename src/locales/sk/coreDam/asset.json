@@ -150,7 +150,8 @@
         "width": "Šírka",
         "height": "Výška",
         "ratio": "Pomer strán",
-        "animated": "Animované"
+        "animated": "Animované",
+        "mainRoute": "Originál"
       }
     },
     "roi": {
@@ -225,7 +226,10 @@
     "actions": {
       "makePrivate": "Nastaviť ako súkromné",
       "makePublic": "Nastaviť ako verejné",
-      "openOnNewTab": "Otvoriť"
+      "openOnNewTab": "Otvoriť",
+      "copyUrl": "Kopírovať URL",
+      "copyUrlShort": "LN",
+      "notify": "URL skopírovaná"
     },
     "status": {
       "private": "Súbor je neprístupný",

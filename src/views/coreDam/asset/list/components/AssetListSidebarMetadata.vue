@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import { ACL } from '@/types/Permission'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'mainRouteChanged'): void
 }>()
 

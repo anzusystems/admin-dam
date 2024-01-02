@@ -15,7 +15,7 @@ import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'mainRouteChanged'): void
 }>()
 
