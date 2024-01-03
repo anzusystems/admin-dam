@@ -10,6 +10,7 @@ import {
 import { computed } from 'vue'
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'
 import { useI18n } from 'vue-i18n'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -35,7 +36,7 @@ const value = computed({
   },
 })
 
-const { damPrvConfig } = useDamConfigState()
+const { damPrvConfig } = useDamConfigState(damClient)
 
 const items = computed(() => {
   return Object.keys(damPrvConfig.value.colorSet).map((key) => ({

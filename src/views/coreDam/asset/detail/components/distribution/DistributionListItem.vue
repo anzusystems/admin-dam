@@ -9,6 +9,7 @@ import { DamDistributionServiceType, useDamConfigState } from '@anzusystems/comm
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -18,7 +19,7 @@ const props = withDefaults(
   {}
 )
 
-const { damPrvConfig } = useDamConfigState()
+const { damPrvConfig } = useDamConfigState(damClient)
 
 const distributionType = computed(() => {
   if (damPrvConfig.value.distributionServices[props.item.distributionService]) {

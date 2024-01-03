@@ -7,6 +7,7 @@ import {
   isUndefined,
   useDamConfigState,
 } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -26,7 +27,7 @@ const updateModelValue = (data: { property: string; value: any }) => {
   emit('update:modelValue', { ...props.modelValue, ...updated })
   emit('anyChange')
 }
-const { damConfigDistributionCustomFormElements } = useDamConfigState()
+const { damConfigDistributionCustomFormElements } = useDamConfigState(damClient)
 
 const elements = computed(() => {
   const configDistributionCustomFormElements = damConfigDistributionCustomFormElements.value.get(

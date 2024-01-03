@@ -32,6 +32,7 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/syste
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { damClient } from '@/services/api/clients/damClient'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -122,7 +123,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   },
   actions: {
     async addByFiles(queueId: string, files: File[]) {
-      const { getDamConfigExtSystem } = useDamConfigState()
+      const { getDamConfigExtSystem } = useDamConfigState(damClient)
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       const { currentExtSystemId } = useCurrentExtSystem()
       const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)

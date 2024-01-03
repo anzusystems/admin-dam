@@ -6,6 +6,7 @@ import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { damClient } from '@/services/api/clients/damClient'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<DamExtSystem>()
@@ -15,7 +16,7 @@ const currentAssetLicenceId = ref(0)
 
 export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: string | undefined = undefined) => {
   const { damCurrentUser } = useDamCurrentUser()
-  const { damPrvConfig, initialized } = useDamConfigState()
+  const { damPrvConfig, initialized } = useDamConfigState(damClient)
 
   watch(currentExtSystemId, async (newValue, oldValue) => {
     if (newValue !== oldValue && newValue > 0) {
