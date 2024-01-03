@@ -1,8 +1,9 @@
 import { ref } from 'vue'
 import { useDamConfigState, type ValueObjectOption } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 
 export function useExternalProviderAssetType() {
-  const { damPrvConfig } = useDamConfigState()
+  const { damPrvConfig } = useDamConfigState(damClient)
   const all = Object.entries(damPrvConfig.value.assetExternalProviders).map(
     ([providerName, value]): ValueObjectOption<string> => {
       return {

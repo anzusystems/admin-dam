@@ -3,6 +3,7 @@ import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { ACustomDataForm, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +20,7 @@ const emit = defineEmits<{
   (e: 'anyChange'): void
 }>()
 
-const { getDamConfigAssetCustomFormElements, getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigAssetCustomFormElements, getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)

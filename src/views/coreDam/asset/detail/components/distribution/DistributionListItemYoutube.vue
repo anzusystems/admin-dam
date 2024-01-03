@@ -7,6 +7,7 @@ import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeIte
 import { useI18n } from 'vue-i18n'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +24,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {

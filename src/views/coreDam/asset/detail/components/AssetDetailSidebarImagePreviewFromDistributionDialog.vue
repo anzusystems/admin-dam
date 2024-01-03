@@ -14,6 +14,7 @@ import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/de
 import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
 import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
 import { useI18n } from 'vue-i18n'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -69,7 +70,7 @@ const onConfirm = async () => {
   }
 }
 
-const { damPrvConfig } = useDamConfigState()
+const { damPrvConfig } = useDamConfigState(damClient)
 
 const selectedTitle = computed(() => {
   if (lastSelectedItem.value && damPrvConfig.value.distributionServices[lastSelectedItem.value.service]) {
