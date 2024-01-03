@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +35,7 @@ const replaceField = (elementProperty: string, value: any) => {
   emit('replaceField', { assetType: props.assetType, elementProperty, value })
 }
 
-const { getDamConfigAssetCustomFormElements } = useDamConfigState()
+const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)

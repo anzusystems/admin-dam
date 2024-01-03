@@ -167,7 +167,7 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
 const { showUnknownError, showApiValidationError } = useAlerts()
 
 const handleMetadataValidationError = (error: any, assetType: DamAssetType) => {
-  const { getDamConfigAssetCustomFormElements } = useDamConfigState()
+  const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
   const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
   if (isUndefined(configAssetCustomFormElements)) {

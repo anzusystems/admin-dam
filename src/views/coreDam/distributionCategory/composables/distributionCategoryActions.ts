@@ -27,6 +27,7 @@ import { ROUTE } from '@/router/routes'
 import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCategoryStore'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -92,7 +93,7 @@ export const useDistributionCategoryDetailActions = () => {
 }
 
 export const useDistributionCategoryManageActions = () => {
-  const { getDamConfigExtSystem } = useDamConfigState()
+  const { getDamConfigExtSystem } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
   const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
   if (isUndefined(configExtSystem)) {

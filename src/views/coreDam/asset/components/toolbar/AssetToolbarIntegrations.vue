@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { t } = useI18n()
 
@@ -19,7 +20,7 @@ const goToExternalProvider = (provider: string) => {
   router.push({ name: ROUTE.DAM.EXTERNAL_PROVIDER.LIST, params: { provider } })
 }
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {

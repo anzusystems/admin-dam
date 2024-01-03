@@ -3,6 +3,7 @@ import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
 import { cloneDeep, useDamConfigState } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 interface State {
   assetSlotNames: string[]
@@ -36,7 +37,7 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', {
       this.loader = false
     },
     setAssetSlotsNamesFromConfig(assetType: DamAssetType) {
-      const { getDamConfigExtSystem } = useDamConfigState()
+      const { getDamConfigExtSystem } = useDamConfigState(damClient)
       const { currentExtSystemId } = useCurrentExtSystem()
       const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
       if (isUndefined(configExtSystem)) {

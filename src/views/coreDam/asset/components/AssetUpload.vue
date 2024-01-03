@@ -13,6 +13,7 @@ import {
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -96,7 +97,7 @@ const onDialogConfirm = async () => {
   uploadDialog.value = false
 }
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {

@@ -17,6 +17,7 @@ import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributi
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 // now only supports strategy AtLeastOne, as BE too
 
@@ -61,7 +62,7 @@ const assetFileIdComputed = computed(() => {
   return props.assetFileId
 })
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {

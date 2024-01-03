@@ -3,6 +3,7 @@ import { AFilterValueObjectOptionsSelect, type Filter, isUndefined, useDamConfig
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +24,7 @@ const value = computed({
   },
 })
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {

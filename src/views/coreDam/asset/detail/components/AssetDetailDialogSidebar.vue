@@ -21,6 +21,7 @@ import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/compone
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import { ACL } from '@/types/Permission'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -53,7 +54,7 @@ const { t } = useI18n()
 
 const { activeTab } = useAssetDetailTab()
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {

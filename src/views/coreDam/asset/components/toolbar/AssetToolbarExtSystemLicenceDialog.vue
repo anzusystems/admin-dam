@@ -24,6 +24,7 @@ import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -88,7 +89,7 @@ const licenceItems = computed(() => {
   return []
 })
 
-const { damPrvConfig } = useDamConfigState()
+const { damPrvConfig } = useDamConfigState(damClient)
 
 const allowSelect = computed(() => {
   return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
