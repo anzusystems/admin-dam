@@ -3,7 +3,8 @@ import { useDistributionListStore } from '@/stores/coreDam/distributionListStore
 import {
   DamDistributionStatus,
   DamNotificationName,
-  initDamNotifications, updateDamCurrentUser,
+  initDamNotifications,
+  updateDamCurrentUser,
   useDamNotifications,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
