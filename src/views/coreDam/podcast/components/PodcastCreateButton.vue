@@ -65,6 +65,7 @@ const { v$ } = usePodcastValidation(podcast)
     :max-width="500"
     @on-open="onOpen"
     @on-success="emit('onSuccess', $event)"
+    @on-close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.podcast.meta.create') }}

@@ -58,6 +58,7 @@ const create = async () => {
     :max-width="500"
     @on-open="onOpen"
     @on-success="emit('onSuccess', $event)"
+    @on-close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.videoShow.meta.create') }}
