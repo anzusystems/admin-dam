@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
+import { ACustomDataForm, type DamAssetType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { ACustomDataForm, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
 
@@ -49,5 +48,12 @@ const pinnedCount = computed(() => {
     :elements="elements"
     @any-change="emit('anyChange')"
     @update:model-value="emit('update:modelValue', $event)"
-  />
+  >
+    <template #before-pinned>
+      <slot name="before-pinned"/>
+    </template>
+    <template #after-pinned>
+      <slot name="after-pinned"/>
+    </template>
+  </ACustomDataForm>
 </template>
