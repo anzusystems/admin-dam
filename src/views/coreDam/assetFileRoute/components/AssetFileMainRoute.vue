@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
+  ACopyText,
   type AssetFile,
   type AssetFileMainRouteAware,
-  ATableCopyIdButton,
   type DamAssetType,
   type DocId,
   useAlerts,
@@ -12,6 +12,7 @@ import { ref } from 'vue'
 import AssetFileRouteMakePublicDialog from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import { makePrivateFile } from '@/services/api/coreDam/fileApi'
 import AssetFileRouteChangeBtn from '@/views/coreDam/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -51,6 +52,7 @@ const makePrivate = async () => {
   }
   loading.value = false
 }
+const { t } = useI18n()
 </script>
 
 <template>
@@ -80,11 +82,25 @@ const makePrivate = async () => {
     @after-update="emit('mainRouteChanged')"
   />
 
-  <ATableCopyIdButton
+  <ACopyText
     v-if="assetFile.mainRoute"
-    :id="assetFile.mainRoute.publicUrl"
-    button-t="coreDam.asset.assetFilePublicLink.actions.copyUrl"
-    icon-t="coreDam.asset.assetFilePublicLink.actions.copyUrlShort"
     notify-t="coreDam.asset.assetFilePublicLink.actions.notify"
-  />
+    :value="assetFile.mainRoute.publicUrl"
+  >
+    <template #activator="{ props: copyButtonProps }">
+      <VBtn
+        icon
+        size="x-small"
+        v-bind="copyButtonProps"
+      >
+        <VIcon icon="mdi-content-copy" />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('coreDam.asset.assetFilePublicLink.actions.copyUrl') }}
+        </VTooltip>
+      </VBtn>
+    </template>
+  </ACopyText>
 </template>
