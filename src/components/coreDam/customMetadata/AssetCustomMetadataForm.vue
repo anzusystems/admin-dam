@@ -50,10 +50,10 @@ const pinnedCount = computed(() => {
     @update:model-value="emit('update:modelValue', $event)"
   >
     <template #before-pinned>
-      <slot name="before-pinned"/>
+      <slot name="before-pinned" />
     </template>
     <template #after-pinned>
-      <slot name="after-pinned"/>
+      <slot name="after-pinned" />
     </template>
   </ACustomDataForm>
 </template>
