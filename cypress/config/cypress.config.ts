@@ -1,7 +1,7 @@
-/* eslint @typescript-eslint/no-var-requires: "off" */
 import { defineConfig } from 'cypress'
-const {downloadFile} = require('cypress-downloadfile/lib/addPlugin')
+import { downloadFile } from 'cypress-downloadfile/lib/addPlugin'
 import * as fs from 'fs'
+
 export default defineConfig({
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
@@ -14,7 +14,6 @@ export default defineConfig({
     showPending: 'false',
   },
   trashAssetsBeforeRuns: true,
-  videoUploadOnPasses: false,
   watchForFileChanges: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
@@ -31,7 +30,7 @@ export default defineConfig({
     baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
     specPattern: 'cypress/e2e/**/*.cy.ts',
     setupNodeEvents(on, config) {
-      on('task', {downloadFile})
+      on('task', { downloadFile })
       require('cypress-mochawesome-reporter/plugin')(on)
       require('@cypress/grep/src/plugin')(config)
       config.reporterOptions.reportDir = `cypress/report/${config.env.cfg}/html`

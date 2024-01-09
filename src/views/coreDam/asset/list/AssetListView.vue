@@ -40,6 +40,7 @@ const {
   nextItem,
   onArrowRight,
   onArrowLeft,
+  refreshActiveItem,
 } = useAssetListActions(sidebarRight)
 
 const { footerViewSelected } = useAssetFooterSelectedView()
@@ -112,6 +113,7 @@ onUnmounted(() => {
         <AssetDetailDialog
           @prev-item="prevItem"
           @next-item="nextItem"
+          @main-route-changed="refreshActiveItem"
         />
       </div>
       <div
@@ -167,7 +169,7 @@ onUnmounted(() => {
       <AssetListSidebarFilter />
     </template>
     <template #sidebar-right>
-      <AssetListSidebarMetadata />
+      <AssetListSidebarMetadata @main-route-changed="refreshActiveItem" />
     </template>
     <template #custom-footer>
       <AssetFooterSelected />

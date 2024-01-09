@@ -25,6 +25,7 @@ import { ROUTE } from '@/router/routes'
 const emit = defineEmits<{
   (e: 'nextItem'): void
   (e: 'prevItem'): void
+  (e: 'mainRouteChanged'): void
 }>()
 
 const { t } = useI18n()
@@ -93,17 +94,32 @@ const isTypeDocument = computed(() => {
 })
 
 const imageProperties = computed(() => {
-  if (asset.value?.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_detail) {
-    return {
-      url: asset.value.mainFile.links.image_detail.url,
-      width: asset.value.mainFile.links.image_detail.width,
-      height: asset.value.mainFile.links.image_detail.height,
-      bgColor:
-        assetFileIsImageFile(asset.value.mainFile) &&
-        asset.value.mainFile.imageAttributes &&
-        asset.value.mainFile.imageAttributes.mostDominantColor
-          ? asset.value.mainFile.imageAttributes.mostDominantColor
-          : '#ccc',
+  if (asset.value?.mainFile && asset.value.mainFile.links) {
+    if (asset.value.mainFile.links.image_animated) {
+      return {
+        url: asset.value.mainFile.links.image_animated.url,
+        width: asset.value.mainFile.links.image_animated.width,
+        height: asset.value.mainFile.links.image_animated.height,
+        bgColor:
+          assetFileIsImageFile(asset.value.mainFile) &&
+          asset.value.mainFile.imageAttributes &&
+          asset.value.mainFile.imageAttributes.mostDominantColor
+            ? asset.value.mainFile.imageAttributes.mostDominantColor
+            : '#ccc',
+      }
+    }
+    if (asset.value.mainFile.links.image_detail) {
+      return {
+        url: asset.value.mainFile.links.image_detail.url,
+        width: asset.value.mainFile.links.image_detail.width,
+        height: asset.value.mainFile.links.image_detail.height,
+        bgColor:
+          assetFileIsImageFile(asset.value.mainFile) &&
+          asset.value.mainFile.imageAttributes &&
+          asset.value.mainFile.imageAttributes.mostDominantColor
+            ? asset.value.mainFile.imageAttributes.mostDominantColor
+            : '#ccc',
+      }
     }
   }
   return {
@@ -267,6 +283,7 @@ const assetMainFile = computed(() => {
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="postDelete"
+              @main-route-changed="emit('mainRouteChanged')"
             />
           </div>
         </div>

@@ -1,5 +1,11 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { AssetFileAudio, AssetFileDownloadLink, DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import type {
+  AssetFileAudio,
+  AssetFileDownloadLink,
+  AssetFileRoute,
+  DocId,
+  UploadQueueItem,
+} from '@anzusystems/common-admin'
 import {
   apiFetchOne,
   damFileTypeFix,
@@ -241,7 +247,7 @@ export const downloadLink = (audioId: DocId) => {
 }
 
 export const makePublic = (audioId: DocId, slug: string) => {
-  return new Promise<AssetFileAudio>((resolve, reject) => {
+  return new Promise<AssetFileRoute>((resolve, reject) => {
     const url = END_POINT + '/' + audioId + '/make-public'
     damClient()
       .patch(
@@ -266,7 +272,7 @@ export const makePublic = (audioId: DocId, slug: string) => {
 }
 
 export const makePrivate = (audioId: DocId) => {
-  return new Promise<AssetFileAudio>((resolve, reject) => {
+  return new Promise<AssetFileRoute>((resolve, reject) => {
     const url = END_POINT + '/' + audioId + '/make-private'
     damClient()
       .patch(url)

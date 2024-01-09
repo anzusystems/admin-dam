@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { DocId } from '@anzusystems/common-admin'
+import type { DamAssetType, DocId } from '@anzusystems/common-admin'
 import { ADialogToolbar, AFormTextField, stringToSlug, useAlerts, useValidate } from '@anzusystems/common-admin'
-import { makePublic } from '@/services/api/coreDam/audioApi'
+import { makePublicFile } from '@/services/api/coreDam/fileApi'
 import useVuelidate from '@vuelidate/core'
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
     fileId: DocId
+    assetType: DamAssetType
     title: string
   }>(),
   {}
@@ -63,7 +64,8 @@ const onConfirm = async () => {
     return
   }
   try {
-    await makePublic(props.fileId, stringToSlug(slug.value))
+    await makePublicFile(props.assetType, props.fileId, stringToSlug(slug.value))
+
     showRecordWas('updated')
   } catch (e) {
     showErrorsDefault(e)

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import type { DamAssetType, DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination } from '@anzusystems/common-admin'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import AssetFilePublicLinkPrivateDialog from '@/views/coreDam/asset/detail/components/AssetFilePublicLinkPrivateDialog.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
 
@@ -33,17 +32,8 @@ const {
   makeMainFile,
   duplicateSlot,
   switchSlot,
-  makeFilePrivate,
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
-
-const makeFilePrivateDialog = ref(false)
-const makeFilePrivateDialogFileId = ref<DocId>('')
-
-const openMakeFilePrivateDialog = (fileId: DocId) => {
-  makeFilePrivateDialogFileId.value = fileId
-  makeFilePrivateDialog.value = true
-}
 
 onMounted(async () => {
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)
@@ -75,7 +65,7 @@ onMounted(async () => {
   >
     {{ t('coreDam.asset.slots.noEntries') }}
   </div>
-  <div v-else>
+  <div v-else-if="assetDetailStore.asset">
     <AssetSlotListItem
       v-for="(slot, slotName) in assetSlotsStore.getPositionedSlots"
       :key="slotName"
@@ -84,14 +74,13 @@ onMounted(async () => {
       :asset-type="assetType"
       :total-slot-count="assetSlotsStore.assetSlotNames.length"
       :asset-id="assetId"
+      :title="assetDetailStore.asset.texts.displayTitle"
       @unset-slot="unsetSlot"
       @remove-file="removeAssetFile"
       @make-main-file="makeMainFile"
       @duplicate-slot="duplicateSlot"
       @switch-slot="switchSlot"
       @refresh-list="getList"
-      @make-file-private="makeFilePrivate"
-      @open-make-file-private-dialog="openMakeFilePrivateDialog"
     />
     <ADatatablePagination
       v-if="showPagination"
@@ -100,11 +89,4 @@ onMounted(async () => {
       @change="getList"
     />
   </div>
-  <AssetFilePublicLinkPrivateDialog
-    v-if="assetDetailStore.asset"
-    v-model="makeFilePrivateDialog"
-    :file-id="makeFilePrivateDialogFileId"
-    :title="assetDetailStore.asset.texts.displayTitle"
-    @after-update="getList"
-  />
 </template>

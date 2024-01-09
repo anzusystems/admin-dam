@@ -1,5 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import type { AssetFileRoute, DocId, UploadQueueItem } from '@anzusystems/common-admin'
 import {
   apiFetchOne,
   HTTP_STATUS_CREATED,
@@ -264,6 +264,51 @@ export const downloadLink = (imageId: DocId) => {
 export const rotateImage = (imageId: DocId, angle: 90 | 270) => {
   return new Promise((resolve, reject) => {
     const url = END_POINT + '/' + imageId + '/rotate/' + angle
+    damClient()
+      .patch(url)
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makePublic = (imageId: DocId, slug: string) => {
+  return new Promise<AssetFileRoute>((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/make-public'
+    damClient()
+      .patch(
+        url,
+        JSON.stringify({
+          slug,
+        })
+      )
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
+export const makePrivate = (imageId: DocId) => {
+  return new Promise<AssetFileRoute>((resolve, reject) => {
+    const url = END_POINT + '/' + imageId + '/make-private'
     damClient()
       .patch(url)
       .then((res) => {

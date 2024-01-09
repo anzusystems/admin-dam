@@ -9,7 +9,6 @@ import {
   makeMainFile as apiMakeMainFile,
   unsetAssetSlot,
 } from '@/services/api/coreDam/fileApi'
-import { makePrivate } from '@/services/api/coreDam/audioApi'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetType) {
@@ -43,17 +42,6 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
     try {
       assetSlotsStore.showLoader()
       await apiMakeMainFile(assetType, fileId, assetId)
-    } catch (e) {
-      showErrorsDefault(e)
-    } finally {
-      getList()
-    }
-  }
-
-  const makeFilePrivate = async (fileId: DocId) => {
-    try {
-      assetSlotsStore.showLoader()
-      await makePrivate(fileId)
     } catch (e) {
       showErrorsDefault(e)
     } finally {
@@ -113,6 +101,5 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
     makeMainFile,
     duplicateSlot,
     switchSlot,
-    makeFilePrivate,
   }
 }
