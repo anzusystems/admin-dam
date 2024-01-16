@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { DamAssetType, DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, AFormTextField, stringToSlug, useAlerts, useValidate } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormTextField,
+  type DamAssetType,
+  DamAssetType as DamAssetTypeValue,
+  type DocId,
+  stringToSlug,
+  useAlerts,
+  useValidate
+} from '@anzusystems/common-admin'
 import { makePublicFile } from '@/services/api/coreDam/fileApi'
 import useVuelidate from '@vuelidate/core'
 
@@ -92,6 +100,7 @@ const onConfirm = async () => {
       </ADialogToolbar>
       <VCardText>
         <AFormTextField
+          v-if="assetType !== DamAssetTypeValue.Image"
           v-model="slug"
           :label="t('coreDam.asset.assetFilePublicLink.model.slug')"
           :v="v$"

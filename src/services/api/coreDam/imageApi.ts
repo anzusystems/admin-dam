@@ -281,16 +281,11 @@ export const rotateImage = (imageId: DocId, angle: 90 | 270) => {
   })
 }
 
-export const makePublic = (imageId: DocId, slug: string) => {
+export const makePublic = (imageId: DocId) => {
   return new Promise<AssetFileRoute>((resolve, reject) => {
     const url = END_POINT + '/' + imageId + '/make-public'
     damClient()
-      .patch(
-        url,
-        JSON.stringify({
-          slug,
-        })
-      )
+      .patch(url)
       .then((res) => {
         if (res.status === HTTP_STATUS_OK) {
           resolve(res.data)

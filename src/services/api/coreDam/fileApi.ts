@@ -456,7 +456,7 @@ export const makePublicFile = (assetType: DamAssetType, assetFileId: DocId, slug
   return new Promise<AssetFileRoute>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
-        imageMakePublic(assetFileId, slug)
+        imageMakePublic(assetFileId)
           .then((res) => {
             resolve(res)
           })
