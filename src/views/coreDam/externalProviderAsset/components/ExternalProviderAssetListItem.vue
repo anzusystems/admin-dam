@@ -6,9 +6,6 @@ import type { ExternalProviderAssetListItem } from '@/stores/coreDam/externalPro
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { useI18n } from 'vue-i18n'
 
-const IMAGE_HEIGHT = 200
-const IMAGE_BG_COLOR_DEFAULT = '#ccc'
-
 const props = withDefaults(
   defineProps<{
     index: number
@@ -22,6 +19,8 @@ const emit = defineEmits<{
   (e: 'toggleSelected', data: { assetId: AssetExternalProviderId; index: number }): void
   (e: 'selectMultiple', data: { assetId: AssetExternalProviderId; index: number }): void
 }>()
+const IMAGE_HEIGHT = 200
+const IMAGE_BG_COLOR_DEFAULT = '#ccc'
 
 const { t } = useI18n()
 

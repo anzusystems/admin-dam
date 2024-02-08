@@ -18,7 +18,6 @@ describe(`Test ext system function, Env: ${CY.cfg}`,
       })
     cy.getCyVisibleClick('button-edit')
     cy.urlContains('/edit')
-    // eslint-disable-next-line cypress/unsafe-to-chain-command
     cy.getCy('ext-system-name').find('input').clear().type('CMS system')
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)

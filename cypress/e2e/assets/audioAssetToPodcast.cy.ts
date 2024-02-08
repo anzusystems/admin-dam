@@ -12,15 +12,13 @@ const ASSET_ID: Array<string> = []
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
   { tags: ['@assetAudioToPodcast', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
+      cy.prepareData('audio/sample.mp3', true, ASSET_ID)
     })
     it('Add audio asset to podcast episode', () => {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
       cy.getCy('button-save').should('be.visible').click()
@@ -28,16 +26,11 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.getCy('button-podcast').should('be.visible').click()
       cy.getCy('button-add-new-podcast-episode').should('be.visible').click()
       cy.getCy('field-choose-podcast').click()
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.waitSec(1)
       cy.get('.v-list-item').eq(0).click()
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-title-podcast').clear().type(`${ASSET_TITLE}-edit`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-description-podcast').clear().type(`${ASSET_DESCRIPTION}-edit`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-season-num-podcast').clear().type( `${RAND_NUM}`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('field-episode-num-podcast').clear().type(`${RAND_NUM}`)
       cy.getCy('button-add').should('be.visible').click()
       cy.alertMessage(ALERT_CREATE)

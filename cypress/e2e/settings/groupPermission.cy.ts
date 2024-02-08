@@ -35,9 +35,7 @@ describe(
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('permissionGroup-title').find('input').clear().type(`TEST-${RAND_NUM}-edit`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('permissionGroup-description')
         .find('input')
         .clear()

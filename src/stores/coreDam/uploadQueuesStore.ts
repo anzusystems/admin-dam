@@ -1,5 +1,4 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { type UploadQueue, useAssetSuggestions } from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
   type AssetFileFailReason,
@@ -13,11 +12,13 @@ import {
   type DocIdNullable,
   getAssetTypeByMimeType,
   isUndefined,
+  type UploadQueue,
   type UploadQueueItem,
   UploadQueueItemStatus,
   UploadQueueItemType,
+  useAssetSuggestions,
   useDamConfigState,
-  useUploadQueueItemFactory,
+  useUploadQueueItemFactory
 } from '@anzusystems/common-admin'
 import { uploadStop, useUpload } from '@/services/upload/uploadService'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
@@ -32,6 +33,7 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/syste
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { damClient } from '@/services/api/clients/damClient'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -122,7 +124,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
   },
   actions: {
     async addByFiles(queueId: string, files: File[]) {
-      const { getDamConfigExtSystem } = useDamConfigState()
+      const { getDamConfigExtSystem } = useDamConfigState(damClient)
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       const { currentExtSystemId } = useCurrentExtSystem()
       const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
@@ -394,7 +396,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
           if (item.assetId === asset.id && item.type !== UploadQueueItemType.SlotFile) {
-            console.log('queueItemMetadataProcessed', asset)
             item.keywords = asset.keywords
             item.authors = asset.authors
             item.customData = asset.metadata.customData

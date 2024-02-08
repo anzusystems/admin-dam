@@ -7,10 +7,6 @@ import { damFileTypeFix } from '@anzusystems/common-admin'
 
 type InputRef = null | HTMLInputElement
 
-const BLOCK_DOUBLE_CLICK_MS = 200
-
-const { t } = useI18n()
-
 const props = withDefaults(
   defineProps<{
     fileInputKey: number
@@ -40,8 +36,13 @@ const emit = defineEmits<{
   (e: 'filesInput', files: any[]): void
 }>()
 
+const BLOCK_DOUBLE_CLICK_MS = 200
+
+const { t } = useI18n()
+
 const inputRef = ref<InputRef>(null)
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const selectedFiles = ref<File[] | File | null>(props.multiple ? [] : null)
 
 const blockDoubleClick = ref(false)

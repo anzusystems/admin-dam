@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   type AssetFileFailReason,
+  assetFileIsVideoFile,
   AssetFileProcessStatus,
   DamAssetType,
   type DocId,
@@ -22,13 +23,14 @@ import AssetQueueItemList from '@/views/coreDam/asset/components/queue/AssetQueu
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
 import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
-import AssetFilePublicLink from '@/views/coreDam/asset/detail/components/AssetFilePublicLink.vue'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
+import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
 
 const props = withDefaults(
   defineProps<{
     slotName: string
+    title: string
     item: AssetSlot | null
     assetType: DamAssetType
     totalSlotCount: number
@@ -47,8 +49,6 @@ const emit = defineEmits<{
   (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
   (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
   (e: 'refreshList'): void
-  (e: 'makeFilePrivate', fileId: DocId): void
-  (e: 'openMakeFilePrivateDialog', fileId: DocId): void
 }>()
 
 const { t } = useI18n()
@@ -86,17 +86,9 @@ const statusComputed = computed(() => {
   return props.item?.assetFile?.fileAttributes.status
 })
 
-const filePublicLink = computed(() => {
-  if (
-    props.assetType !== DamAssetType.Audio ||
-    !props.item ||
-    !props.item.assetFile ||
-    !props.item.assetFile.links ||
-    !props.item.assetFile.links.audio ||
-    props.item.assetFile.links.audio.url.length === 0
-  )
-    return null
-  return props.item.assetFile.links.audio.url
+const routableAssetFile = computed(() => {
+  if (props.item?.assetFile && !assetFileIsVideoFile(props.item.assetFile)) return props.item.assetFile
+  return null
 })
 
 watch(uploadQueueItemInAnyProgress, async (newValue, oldValue) => {
@@ -124,16 +116,6 @@ const copyFileId = async () => {
   copy(props.item.assetFile.id).then(() => {
     showSuccess(t('common.alert.idWasCopied'))
   })
-}
-
-const makeFilePrivate = () => {
-  if (!props.item || !props.item.assetFile) return
-  emit('makeFilePrivate', props.item.assetFile.id)
-}
-
-const openMakeFilePrivateDialog = () => {
-  if (!props.item || !props.item.assetFile) return
-  emit('openMakeFilePrivateDialog', props.item.assetFile.id)
 }
 
 const makeMainFile = () => {
@@ -196,16 +178,12 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           </div>
         </div>
         <div>{{ fileTitle }}</div>
-        <AssetFilePublicLink
-          v-if="
-            assetType === DamAssetType.Audio &&
-              item &&
-              item.assetFile &&
-              statusComputed === AssetFileProcessStatus.Processed
-          "
-          :preview-link="filePublicLink"
-          @make-private="makeFilePrivate"
-          @open-make-public-dialog="openMakeFilePrivateDialog"
+        <AssetFileMainRoute
+          v-if="routableAssetFile"
+          :asset-file="routableAssetFile"
+          :asset-type="assetType"
+          :title="title"
+          @main-route-changed="emit('refreshList')"
         />
         <ImageFile
           v-if="assetType === DamAssetType.Image && item && item.assetFile"

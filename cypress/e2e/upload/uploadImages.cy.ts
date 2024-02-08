@@ -8,7 +8,7 @@ describe(`Test upload of various images, Env: ${CY.cfg}`,
   IMAGE_TYPES.forEach((fileType) => {
     UPLOAD_TYPES.forEach((uploadType) => {
       it(`Image: Upload ${fileType.toUpperCase()} - ${uploadType.toUpperCase()}`, () => {
-        cy.prepareData(`image/sample.${fileType}`,0)
+        cy.prepareData(`image/sample.${fileType}`,false)
         cy.uploadFile(`image/sample.${fileType}`, uploadType, 20000)
         cy.api_getFileID().then((responseID) => {
           FILE_ID.push(responseID)

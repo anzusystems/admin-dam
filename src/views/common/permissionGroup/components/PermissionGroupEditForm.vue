@@ -9,6 +9,7 @@ import { ENTITY } from '@/services/api/common/permissionGroupApi'
 const props = defineProps<{
   client: () => AxiosInstance
 }>()
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { permissionGroup } = usePermissionGroupActions(props.client)
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 </script>

@@ -4,8 +4,9 @@ import { useI18n } from 'vue-i18n'
 import LoginFormSimple from '@/views/system/components/LoginFormSimple.vue'
 import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
 import { useDamConfigState, UserAuthType } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 
-const { damPubConfig } = useDamConfigState()
+const { damPubConfig } = useDamConfigState(damClient)
 
 const userAuthType = damPubConfig.value.userAuthType
 

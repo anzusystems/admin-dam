@@ -24,6 +24,7 @@ import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
@@ -34,7 +35,7 @@ const { activeExternalProvider } = useExternalProviders()
 const filterIsTouched = ref(false)
 
 export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> | null = null) {
-  const { getDamConfigExtSystem } = useDamConfigState()
+  const { getDamConfigExtSystem } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
   const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
   if (isUndefined(configExtSystem)) {

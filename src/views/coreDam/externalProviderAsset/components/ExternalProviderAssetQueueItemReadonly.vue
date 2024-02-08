@@ -5,8 +5,6 @@ import { useI18n } from 'vue-i18n'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
 import ExternalProviderAssetMetadataItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
 
-const IMAGE_ASPECT_RATIO = 16 / 9
-
 const props = withDefaults(
   defineProps<{
     item: UploadQueueItem
@@ -14,9 +12,12 @@ const props = withDefaults(
   }>(),
   {}
 )
+
 const emit = defineEmits<{
   (e: 'removeItem', index: number): void
 }>()
+
+const IMAGE_ASPECT_RATIO = 16 / 9
 
 const { t } = useI18n()
 

@@ -153,6 +153,18 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.hideLoader()
   }
 
+  const refreshActiveItem = async () => {
+    const activeAsset = assetListStore.getActiveAsset()
+    if (isNull(activeAsset)) return
+
+    assetDetailStore.showLoader()
+    const res = await fetchAsset(activeAsset.asset.id)
+    assetDetailStore.setAsset(res)
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
+    assetDetailStore.hideLoader()
+  }
+
   const onItemClick = async (data: { assetId: DocId; index: number }) => {
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
@@ -291,6 +303,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     listMounted,
     listUnmounted,
     showDetail,
+    refreshActiveItem,
     onItemClick,
     prevItem,
     nextItem,

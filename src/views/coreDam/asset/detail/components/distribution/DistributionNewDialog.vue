@@ -15,6 +15,7 @@ import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/
 import { useI18n } from 'vue-i18n'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -46,7 +47,7 @@ const closeDialog = () => {
   emit('reloadList')
 }
 
-const { getDamConfigExtSystem } = useDamConfigState()
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 if (isUndefined(configExtSystem)) {
@@ -62,7 +63,7 @@ const activeConfig = computed(() => {
   return serviceRequirements.value[activeDistributionName.value]
 })
 
-const { damPrvConfig } = useDamConfigState()
+const { damPrvConfig } = useDamConfigState(damClient)
 
 const activeDistributionType = computed(() => {
   if (isNull(activeDistributionName.value)) return null

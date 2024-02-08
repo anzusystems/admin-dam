@@ -58,7 +58,6 @@ describe(
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.getCy('category-name').find('input').clear().type(`${USER_FIRST_NAME}-do-not-use`)
       cy.getCy('button-close').should('be.visible')
       cy.getCyVisibleClick('button-save')

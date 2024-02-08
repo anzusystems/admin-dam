@@ -16,10 +16,11 @@ import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/Ex
 import DistributionServiceSelect from '@/views/coreDam/distribution/components/DistributionServiceSelect.vue'
 import ExternalProviderAssetSelect from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
 import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { userUpdate } = useUserEditActions()
 
-const { damPubConfig } = useDamConfigState()
+const { damPubConfig } = useDamConfigState(damClient)
 
 const { v$ } = useUpdateUserValidation(userUpdate, damPubConfig.value.userAuthType)
 

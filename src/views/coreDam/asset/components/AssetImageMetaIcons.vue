@@ -9,6 +9,7 @@ import {
   LOW_DIMENSION,
 } from '@/views/coreDam/asset/components/assetImageIconsConfig'
 import { useI18n } from 'vue-i18n'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -46,7 +47,7 @@ const checkDimensions = (icons: string[], titles: string[]) => {
 }
 
 const checkDistributions = (icons: string[], titles: string[]) => {
-  const { damPrvConfig } = useDamConfigState()
+  const { damPrvConfig } = useDamConfigState(damClient)
   for (let i = 0; i < props.assetFileProperties.distributesInServices.length; i++) {
     const iconPath =
       damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]]?.iconPath

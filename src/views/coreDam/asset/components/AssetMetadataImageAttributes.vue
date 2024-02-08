@@ -40,7 +40,9 @@ const { t } = useI18n()
     </VCol>
   </VRow>
   <VRow>
-    <VCol>{{ t('coreDam.asset.detail.info.field.animated') }}</VCol>
+    <VCol cols="3">
+      {{ t('coreDam.asset.detail.info.field.animated') }}
+    </VCol>
     <VCol cols="9">
       <ABooleanValue :value="file.imageAttributes.animated" />
     </VCol>

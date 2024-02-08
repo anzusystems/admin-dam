@@ -6,15 +6,13 @@ const ASSET_ID: Array<string> = []
 describe(`Test asset document function, Env: ${CY.cfg}`,
   { tags: ['@assetDocument', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('document/sample.doc', 1, ASSET_ID)
+      cy.prepareData('document/sample.doc', true, ASSET_ID)
     })
     it('Create Metadata', ()=> {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
       cy.getCy('button-delete').click()
@@ -31,10 +29,8 @@ describe(`Test asset document function, Env: ${CY.cfg}`,
     it('Edit Metadata', ()=> {
       cy.visit(`/asset/${ASSET_ID}`)
       cy.api_waitPageLoad('asset-edit')
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}-edit`)
-      // eslint-disable-next-line cypress/unsafe-to-chain-command
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
       cy.getCy('button-save').should('be.visible').click()

@@ -19,6 +19,7 @@ const roles = computed({
     emit('update:modelValue', newRoles)
   },
 })
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { permissionConfig, translatePermission } = usePermissionConfigActions(props.client)
 const items = computed(() =>
   permissionConfig.value.roles.map((role) => {

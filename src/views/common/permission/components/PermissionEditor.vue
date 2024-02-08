@@ -24,11 +24,12 @@ const props = defineProps<{
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
-const permissions = computed(() => cloneDeep(props.modelValue))
 const emit = defineEmits<{
   (e: 'update:modelValue', data: Permissions): void
 }>()
+const permissions = computed(() => cloneDeep(props.modelValue))
 const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized, translatePermission } =
+  // eslint-disable-next-line vue/no-setup-props-reactivity-loss
   usePermissionConfigActions(props.client)
 const changeGrant = (subject: string, action: string, grant?: Grant) => {
   const permissionName = subject + '_' + action

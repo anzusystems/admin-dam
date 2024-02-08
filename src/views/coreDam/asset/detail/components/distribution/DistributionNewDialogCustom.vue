@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { type DamAssetType, type DamDistributionRequirementsConfig, isUndefined } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
   AssetFileProcessStatus,
   ASystemEntityScope,
   cloneDeep,
+  type DamAssetType,
+  type DamDistributionRequirementsConfig,
   type DamDistributionServiceName,
   type DocId,
+  isUndefined,
   useAlerts,
   useDamConfigState,
-  usePagination,
+  usePagination
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import useVuelidate from '@vuelidate/core'
@@ -28,9 +30,13 @@ import {
   redistributeCustomDistribution,
 } from '@/services/api/coreDam/distributionCustomApi'
 import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
-import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import DistributionCustomMetadataForm
+  from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import {
+  useAssetDetailDistributionDialog
+} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -59,11 +65,20 @@ const saving = ref(false)
 const pagination = usePagination()
 const filter = useDistributionFilter()
 
-const { loadDamConfigDistributionCustomFormElements, damConfigDistributionCustomFormElements } = useDamConfigState()
+const { showRecordWas, showValidationError, showErrorsDefault, showUnknownError } = useAlerts()
+
+const {
+  loadDamConfigDistributionCustomFormElements,
+  damConfigDistributionCustomFormElements
+} = useDamConfigState(damClient)
 
 const loadFormData = async () => {
   canDisplayForm.value = false
-  await loadDamConfigDistributionCustomFormElements(props.distributionServiceName)
+  try {
+    await loadDamConfigDistributionCustomFormElements(props.distributionServiceName)
+  } catch (e) {
+    showUnknownError()
+  }
   const configDistributionCustomFormElements = damConfigDistributionCustomFormElements.value.get(
     props.distributionServiceName
   )
@@ -102,8 +117,6 @@ const loadFormData = async () => {
 const closeDialog = (reload = false) => {
   emit('closeDialog', reload)
 }
-
-const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const rules = computed(() => ({
   distribution: {

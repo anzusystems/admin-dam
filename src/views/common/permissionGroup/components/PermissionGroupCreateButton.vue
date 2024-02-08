@@ -39,6 +39,7 @@ const emit = defineEmits<{
 }>()
 
 const { createPermissionGroup } = usePermissionGroupFactory()
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { apiCreatePermissionGroup } = usePermissionGroupApi(props.client)
 const permissionGroup = ref<PermissionGroup>(createPermissionGroup())
 const dialog = ref(false)
