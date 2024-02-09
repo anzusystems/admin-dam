@@ -5,6 +5,8 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/syste
 import {
   ADialogToolbar,
   ASystemEntityScope,
+  DamAssetLicenceRemoteAutocomplete,
+  DamExtSystemRemoteAutocomplete,
   type IntegerId,
   type IntegerIdNullable,
   isArray,
@@ -18,9 +20,8 @@ import {
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
-import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
-import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
-import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
+import AssetLicenceByExtIdRemoteAutocomplete
+  from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
@@ -200,8 +201,9 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol class="pt-2">
-              <ExtSystemRemoteAutocomplete
+              <DamExtSystemRemoteAutocomplete
                 v-model="selectedExtSystemSearch"
+                :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
                 hide-details
                 data-cy="field-name-ext-sys"
@@ -219,8 +221,9 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <AssetLicenceRemoteAutocomplete
+              <DamAssetLicenceRemoteAutocomplete
                 v-model="selectedLicenceSearch"
+                :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
                 :ext-system-id="selectedExtSystem"
                 hide-details

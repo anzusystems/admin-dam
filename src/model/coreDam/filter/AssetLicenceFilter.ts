@@ -18,16 +18,3 @@ export function useAssetLicenceListFilter() {
   return filter
 }
 
-export function useAssetLicenceFilter() {
-  return reactive({
-    name: {
-      ...makeFilter({ name: 'name', variant: 'startsWith' }),
-    },
-    extSystem: {
-      ...makeFilter({ name: 'extSystem', default: null }),
-    },
-    extId: {
-      ...makeFilter({ name: 'extId', default: null }),
-    },
-  })
-}

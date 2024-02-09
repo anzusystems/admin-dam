@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
-import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
 import type { DamAssetLicence } from '@anzusystems/common-admin'
+import {
+  ACreateDialog,
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  DamExtSystemRemoteAutocomplete
+} from '@anzusystems/common-admin'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
 import { createAssetLicence, ENTITY } from '@/services/api/coreDam/assetLicenceApi'
+import { damClient } from '@/services/api/clients/damClient'
 
 withDefaults(
   defineProps<{
@@ -79,8 +85,9 @@ const create = async () => {
           />
         </ARow>
         <ARow>
-          <ExtSystemRemoteAutocomplete
+          <DamExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
+            :client="damClient"
             :label="t('coreDam.assetLicence.model.extSystem')"
             required
             data-cy="asset-licence-ext-system"

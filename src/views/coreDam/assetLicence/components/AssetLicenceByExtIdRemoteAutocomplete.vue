@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep, useDamAssetLicenceFilter } from '@anzusystems/common-admin'
 import { useAssetLicenceByExtIdSelectActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
-import { useAssetLicenceFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
 import { computed, watch } from 'vue'
 
 const props = withDefaults(
@@ -43,7 +42,7 @@ const modelValueComputed = computed({
 
 const { fetchItems, fetchItemsByIds } = useAssetLicenceByExtIdSelectActions()
 
-const innerFilter = useAssetLicenceFilter()
+const innerFilter = useDamAssetLicenceFilter()
 
 const selectedExtSystemId = computed(() => {
   return props.extSystemId

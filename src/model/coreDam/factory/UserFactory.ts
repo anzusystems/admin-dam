@@ -1,6 +1,7 @@
-import type { UpdateUser, User } from '@/types/coreDam/User'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
+import type { DamUserUpdateDto } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
+import type { User } from '@/types/coreDam/User'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/userApi'
 
 export function useUserFactory() {
@@ -36,7 +37,7 @@ export function useUserFactory() {
     }
   }
 
-  const createDefaultForUpdate = (user: User): UpdateUser => {
+  const createDefaultForUpdate = (user: User): DamUserUpdateDto => {
     return {
       id: 0,
       plainPassword: '',
