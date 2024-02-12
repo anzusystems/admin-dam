@@ -1,4 +1,4 @@
-import type { AnzuUser, DamUserUpdateDto, IntegerId } from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
 
 export interface UserMinimal {
   id: IntegerId
@@ -13,5 +13,3 @@ export interface UserMinimal {
   }
   email: string
 }
-
-export interface User extends Omit<AnzuUser, 'id'>, DamUserUpdateDto {}

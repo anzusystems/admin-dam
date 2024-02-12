@@ -1,8 +1,13 @@
 import { ref } from 'vue'
-import type { User } from '@/types/coreDam/User'
-import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { cloneDeep, useAlerts } from '@anzusystems/common-admin'
-import { fetchUser, fetchUserList, fetchUserListByIds, updateUser } from '@/services/api/coreDam/userApi'
+import type { DamUser, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import {
+  cloneDeep,
+  fetchDamUser,
+  fetchDamUserList,
+  fetchDamUserListByIds,
+  updateDamUser,
+  useAlerts
+} from '@anzusystems/common-admin'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
@@ -10,6 +15,7 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -23,12 +29,12 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useUserListActions = () => {
-  const listItems = ref<User[]>([])
+  const listItems = ref<DamUser[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchUserList(pagination, filterBag)
+      listItems.value = await fetchDamUserList(damClient, pagination, filterBag)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -51,7 +57,7 @@ export const useUserDetailActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const user = await fetchUser(id)
+      const user = await fetchDamUser(damClient, id)
       userOneStore.setUser(user)
       addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
       addToCachedAssetLicences(user.assetLicences)
@@ -81,7 +87,7 @@ export const useUserEditActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const user = await fetchUser(id)
+      const user = await fetchDamUser(damClient, id)
       userOneStore.setUser(user)
     } catch (error) {
       showErrorsDefault(error)
@@ -101,7 +107,7 @@ export const useUserEditActions = () => {
         return
       }
       const userUpdateCloned = cloneDeep(userUpdate.value)
-      await updateUser(userOneStore.user.id, userUpdateCloned)
+      await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: ROUTE.DAM.USER.LIST })
@@ -127,18 +133,18 @@ export const useUserEditActions = () => {
 
 export const useUserSelectActions = () => {
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const users = await fetchUserList(pagination, filterBag)
+    const users = await fetchDamUserList(damClient, pagination, filterBag)
 
-    return <ValueObjectOption<number>[]>users.map((user: User) => ({
+    return <ValueObjectOption<number>[]>users.map((user: DamUser) => ({
       title: user.email,
       value: user.id,
     }))
   }
 
   const fetchItemsByIds = async (ids: number[]) => {
-    const users = await fetchUserListByIds(ids)
+    const users = await fetchDamUserListByIds(damClient, ids)
 
-    return <ValueObjectOption<number>[]>users.map((user: User) => ({
+    return <ValueObjectOption<number>[]>users.map((user: DamUser) => ({
       title: user.email,
       value: user.id,
     }))

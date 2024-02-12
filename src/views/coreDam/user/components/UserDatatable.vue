@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useUserListActions } from '@/views/coreDam/user/composables/userActions'
 import { onMounted } from 'vue'
+import type { DamUser } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -17,13 +18,12 @@ import {
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/userApi'
 import { ROUTE } from '@/router/routes'
-import type { User } from '@/types/coreDam/User'
 import { useRouter } from 'vue-router'
 import UserFilter from '@/views/coreDam/user/components/UserFilter.vue'
 import { ACL, type AclValue } from '@/types/Permission'
 import { useUserListFilter } from '@/model/coreDam/filter/UserFilter'
 
-type DatatableItem = User
+type DatatableItem = DamUser
 
 const router = useRouter()
 const filter = useUserListFilter()
