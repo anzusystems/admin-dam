@@ -1,5 +1,5 @@
 import type { AnzuUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { isInt, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
@@ -55,6 +55,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
   const router = useRouter()
   const v$ = useVuelidate()
   const updateAnzuUser = async (close = false) => {
+    if (!isInt(anzuUserOneStore.anzuUser.id)) return
     try {
       saveButtonLoading.value = true
       v$.value.$touch()

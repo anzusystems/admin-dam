@@ -1,12 +1,12 @@
-import type { UpdateUser, User } from '@/types/coreDam/User'
+import type { DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
 import { useUserFactory } from '@/model/coreDam/factory/UserFactory'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 const { createDefault, createDefaultForUpdate } = useUserFactory()
 
 interface State {
-  user: User
-  userUpdate: UpdateUser
+  user: DamUser
+  userUpdate: DamUserUpdateDto
 }
 
 export const useUserOneStore = defineStore('damUserOneStore', {
@@ -15,7 +15,7 @@ export const useUserOneStore = defineStore('damUserOneStore', {
     userUpdate: createDefaultForUpdate(createDefault()),
   }),
   actions: {
-    setUser(user: User) {
+    setUser(user: DamUser) {
       this.user = user
       this.userUpdate = createDefaultForUpdate(user)
     },

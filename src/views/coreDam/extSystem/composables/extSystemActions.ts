@@ -1,19 +1,14 @@
 import { ref } from 'vue'
-import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import type { DamExtSystem } from '@anzusystems/common-admin'
-import {
-  fetchExtSystem,
-  fetchExtSystemList,
-  fetchExtSystemListByIds,
-  updateExtSystem,
-} from '@/services/api/coreDam/extSystemApi'
+import type { DamExtSystem, FilterBag, Pagination } from '@anzusystems/common-admin'
+import { fetchDamExtSystemList, useAlerts } from '@anzusystems/common-admin'
+import { fetchExtSystem, updateExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { storeToRefs } from 'pinia'
 import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -31,7 +26,7 @@ export const useExtSystemListActions = () => {
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchExtSystemList(pagination, filterBag)
+      listItems.value = await fetchDamExtSystemList(damClient, pagination, filterBag)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -70,31 +65,6 @@ export const useExtSystemDetailActions = () => {
     detailLoading,
     fetchData,
     resetStore: extSystemOneStore.reset,
-  }
-}
-
-export const useExtSystemSelectActions = () => {
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const extSystems = await fetchExtSystemList(pagination, filterBag)
-
-    return <ValueObjectOption<number>[]>extSystems.map((extSystem: DamExtSystem) => ({
-      title: extSystem.slug,
-      value: extSystem.id,
-    }))
-  }
-
-  const fetchItemsByIds = async (ids: number[]) => {
-    const extSystems = await fetchExtSystemListByIds(ids)
-
-    return <ValueObjectOption<number>[]>extSystems.map((extSystem: DamExtSystem) => ({
-      title: extSystem.slug,
-      value: extSystem.id,
-    }))
-  }
-
-  return {
-    fetchItems,
-    fetchItemsByIds,
   }
 }
 

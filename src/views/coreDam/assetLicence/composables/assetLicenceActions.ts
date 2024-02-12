@@ -1,19 +1,14 @@
 import { ref } from 'vue'
-import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
+import type { DamAssetLicence, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceList, fetchDamAssetLicenceListByIds, useAlerts } from '@anzusystems/common-admin'
 import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
-import {
-  fetchAssetLicence,
-  fetchAssetLicenceList,
-  fetchAssetLicenceListByIds,
-  updateAssetLicence,
-} from '@/services/api/coreDam/assetLicenceApi'
+import { fetchAssetLicence, updateAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 
@@ -31,7 +26,7 @@ export const useAssetLicenceListActions = () => {
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchAssetLicenceList(pagination, filterBag)
+      listItems.value = await fetchDamAssetLicenceList(damClient, pagination, filterBag)
       addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
       fetchCachedExtSystems()
     } catch (error) {
@@ -128,28 +123,6 @@ export const useAssetLicenceEditActions = () => {
   }
 }
 
-export const useAssetLicenceSelectActions = () => {
-  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
-    return assetLicences.map((assetLicence: DamAssetLicence) => ({
-      title: assetLicence.name,
-      value: assetLicence.id,
-    }))
-  }
-
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    return mapToValueObjectOption(await fetchAssetLicenceList(pagination, filterBag))
-  }
-
-  const fetchItemsByIds = async (ids: number[]) => {
-    return mapToValueObjectOption(await fetchAssetLicenceListByIds(ids))
-  }
-
-  return {
-    fetchItems,
-    fetchItemsByIds,
-  }
-}
-
 export const useAssetLicenceByExtIdSelectActions = () => {
   const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
     return assetLicences.map((assetLicence: DamAssetLicence) => ({
@@ -159,11 +132,11 @@ export const useAssetLicenceByExtIdSelectActions = () => {
   }
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    return mapToValueObjectOption(await fetchAssetLicenceList(pagination, filterBag))
+    return mapToValueObjectOption(await fetchDamAssetLicenceList(damClient, pagination, filterBag))
   }
 
   const fetchItemsByIds = async (ids: number[]) => {
-    return mapToValueObjectOption(await fetchAssetLicenceListByIds(ids))
+    return mapToValueObjectOption(await fetchDamAssetLicenceListByIds(damClient, ids))
   }
 
   return {

@@ -5,6 +5,10 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
+  DamAssetLicenceRemoteAutocomplete,
+  DamDistributionServiceSelect,
+  DamExternalProviderAssetSelect,
+  DamExtSystemRemoteAutocomplete,
   isUndefined,
   useDamConfigState,
   UserAuthType,
@@ -12,10 +16,6 @@ import {
 import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
-import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
-import DistributionServiceSelect from '@/views/coreDam/distribution/components/DistributionServiceSelect.vue'
-import ExternalProviderAssetSelect from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetSelect.vue'
-import AssetLicenceRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceRemoteAutocomplete.vue'
 import { damClient } from '@/services/api/clients/damClient'
 
 const { userUpdate } = useUserEditActions()
@@ -48,8 +48,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AssetLicenceRemoteAutocomplete
+          <DamAssetLicenceRemoteAutocomplete
             v-model="userUpdate.assetLicences"
+            :client="damClient"
             :label="t('coreDam.user.model.assetLicences')"
             :v="v$.userUpdate.assetLicences"
             multiple
@@ -58,8 +59,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ExtSystemRemoteAutocomplete
+          <DamExtSystemRemoteAutocomplete
             v-model="userUpdate.adminToExtSystems"
+            :client="damClient"
             :label="t('coreDam.user.model.adminToExtSystems')"
             multiple
             clearable
@@ -67,8 +69,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ExternalProviderAssetSelect
+          <DamExternalProviderAssetSelect
             v-model="userUpdate.allowedAssetExternalProviders"
+            :client="damClient"
             :label="t('coreDam.user.model.allowedAssetExternalProviders')"
             multiple
             clearable
@@ -76,8 +79,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DistributionServiceSelect
+          <DamDistributionServiceSelect
             v-model="userUpdate.allowedDistributionServices"
+            :client="damClient"
             :label="t('coreDam.user.model.allowedDistributionServices')"
             multiple
             clearable

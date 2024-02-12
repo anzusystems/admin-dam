@@ -1,7 +1,6 @@
-import type { DamExtSystem, DamExtSystemMinimal } from '@anzusystems/common-admin'
-import { fetchExtSystemListByIds } from '@/services/api/coreDam/extSystemApi'
-import type { IntegerId } from '@anzusystems/common-admin'
-import { defineCached } from '@anzusystems/common-admin'
+import type { DamExtSystem, DamExtSystemMinimal, IntegerId } from '@anzusystems/common-admin'
+import { defineCached, fetchDamExtSystemListByIds } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 
 const mapFullToMinimal = (extSystem: DamExtSystem): DamExtSystemMinimal => ({
   id: extSystem.id,
@@ -15,7 +14,7 @@ const mapIdToMinimal = (id: IntegerId): DamExtSystemMinimal => {
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<IntegerId, DamExtSystem, DamExtSystemMinimal>(
   mapFullToMinimal,
   mapIdToMinimal,
-  fetchExtSystemListByIds
+  (ids: IntegerId[]) => fetchDamExtSystemListByIds(damClient, ids)
 )
 
 export const useCachedExtSystems = () => {

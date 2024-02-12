@@ -137,15 +137,20 @@ defineExpose({
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton :id="item.id" />
+            <ATableCopyIdButton
+              v-if="item.id"
+              :id="item.id"
+            />
             <Acl :permission="ACL.DAM_USER_VIEW">
               <ATableDetailButton
+                v-if="item.id"
                 :record-id="item.id"
                 :route-name="ROUTE.COMMON.ANZU_USER.DETAIL"
               />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
               <ATableEditButton
+                v-if="item.id"
                 :record-id="item.id"
                 :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
               />
