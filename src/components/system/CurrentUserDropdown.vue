@@ -8,7 +8,7 @@ const { damCurrentUser } = useDamCurrentUser()
 
 <template>
   <ACurrentUserDropdown
-    :current-user="damCurrentUser"
+    :current-user="damCurrentUser as any"
     :settings-route-name="ROUTE.SYSTEM.SETTINGS"
     :logout-route-name="ROUTE.SYSTEM.LOGOUT"
   />
