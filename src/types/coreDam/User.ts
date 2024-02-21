@@ -1,4 +1,4 @@
-import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
 
 export interface UserMinimal {
   id: IntegerId
@@ -13,14 +13,3 @@ export interface UserMinimal {
   }
   email: string
 }
-
-export interface UpdateUser extends Pick<UserMinimal, 'id'> {
-  assetLicences: IntegerId[]
-  allowedAssetExternalProviders: string[]
-  allowedDistributionServices: string[]
-  adminToExtSystems: IntegerId[]
-  readonly userToExtSystems: IntegerId[]
-  plainPassword?: string
-}
-
-export interface User extends AnzuUser, UpdateUser {}

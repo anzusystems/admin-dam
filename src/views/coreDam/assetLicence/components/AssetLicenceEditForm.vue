@@ -2,10 +2,10 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 import { useI18n } from 'vue-i18n'
-import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, ASystemEntityScope, DamExtSystemRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
-import ExtSystemRemoteAutocomplete from '@/views/coreDam/extSystem/components/ExtSystemRemoteAutocomplete.vue'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { assetLicence } = useAssetLicenceEditActions()
 
@@ -41,8 +41,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ExtSystemRemoteAutocomplete
+          <DamExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
+            :client="damClient"
             :label="t('coreDam.assetLicence.model.extSystem')"
             :v="v$.assetLicence.extSystem"
             data-cy="asset-licence-ext-system"

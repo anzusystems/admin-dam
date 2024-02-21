@@ -58,7 +58,7 @@ const autoFillTexts = () => {
               v-else
               :title="t('common.anzuUser.model.id')"
             >
-              <ACopyText :value="anzuUser.id" />
+              <ACopyText :value="`${anzuUser.id}`" />
             </ARow>
           </VCol>
           <VCol

@@ -27,7 +27,7 @@ const { t } = useI18n()
         sm="4"
       >
         <h4>{{ t('common.anzuUser.model.id') }}</h4>
-        <ACopyText :value="anzuUser.id" />
+        <ACopyText :value="`${anzuUser.id}`" />
       </VCol>
       <VCol
         cols="12"
