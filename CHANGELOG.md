@@ -1,3 +1,8 @@
+## [1.3.2](https://github.com/anzusystems/admin-dam/compare/1.3.1...1.3.2) (2024-02-29)
+
+### Features
+* changed Podcast rssUrl max length validation
+
 ## [1.3.1](https://github.com/anzusystems/admin-dam/compare/1.2.0...1.3.0) (2024-01-19)
 
 ### Features
