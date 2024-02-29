@@ -23,7 +23,7 @@ export function usePodcastValidation(podcast: Ref<Podcast>) {
       attributes: {
         rssUrl: {
           minLength: minLength(1),
-          maxLength: maxLength(100),
+          maxLength: maxLength(2048),
         },
       },
       dates: {
