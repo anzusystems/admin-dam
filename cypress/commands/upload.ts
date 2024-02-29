@@ -9,7 +9,8 @@ declare global {
       uploadFile(fileName: string, action: 'select' | 'drag-drop', timeout?: number): Chainable<any>
 
       waitForUpload(alertUpload: string, timeout?: number): Chainable<any>
-      verifyFileType(fileID: string, fileGroup: 'image' | 'audio' | 'video', fileType: string): Chainable<any>
+      verifyFileType(fileID: string, fileGroup: 'image' | 'audio' | 'video' | 'application',
+                     fileType: string): Chainable<any>
 
       deleteFile(fileID: Array<string>): Chainable<any>
 
@@ -26,17 +27,19 @@ Cypress.Commands.add('deleteFile', (fileID: Array<string>) => {
   })
 })
 Cypress.Commands.add('verifyFileType',
-  (fileID: string, fileGroup: 'image' | 'audio' | 'video' | 'document', fileType: string) => {
+  (fileID: string, fileGroup: 'image' | 'audio' | 'video' | 'application', fileType: string) => {
   const getFileType = (fileType: string): string => {
     if (fileType.includes('mp3')) return 'mpeg'
     else if (fileType.includes('mov')) return 'quicktime'
     else if (fileType.includes('wav')) return 'x-wav'
     else if (fileType.includes('doc')) return 'msword'
     else if (fileType.includes('xls')) return 'vnd.ms-excel'
+    else if (fileType.includes('txt')) return 'plain'
     else return fileType
   }
-
-  cy.api_getFileType(fileID).then((type) => expect(type).to.contain(fileGroup).and.to.contain(getFileType(fileType)))
+  cy.api_getFileType(fileID).then((type) => {
+    fileGroup = fileType.includes('txt') ? 'text' : fileGroup
+    expect(type).to.contain(fileGroup).and.to.contain(getFileType(fileType))})
 })
 Cypress.Commands.add('waitForUpload', (alertUpload: string, timeout?: number) => {
   cy.contains('[data-cy="upload-overlay-title"]', alertUpload, { timeout: timeout | 90000 })

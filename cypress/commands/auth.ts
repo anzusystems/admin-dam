@@ -20,7 +20,13 @@ declare global {
        * Setup protection cookie based on env
        */
       protectionCookie(): Chainable<any>
-      createUser(userMail: string, clientSecret: string): Chainable<any>
+      /**
+       * Login to sme web
+       * Provide user credentials form config/cypress.config.ts env to login
+       * @param username - username
+       * @param password - password
+       */
+      webLogin(username: string, password: string): Chainable<any>
     }
   }
 }
@@ -36,6 +42,21 @@ Cypress.Commands.add('protectionCookie', () => {
 
 Cypress.Commands.add('login', (user: string, timeout?: number) => {
   cy.visit(CY.credentials[user].forceLoginLink, { timeout: timeout })
+})
+
+Cypress.Commands.add('webLogin', (username: string, password: string) => {
+  cy.request(`${CY.url.proto}://prihlasenie.${CY.url.domain}/get-csrf-token/login`).then((csrfToken) => {
+    cy.request({
+      method: 'POST',
+      url: `${CY.url.proto}://prihlasenie.${CY.url.domain}/login_check`,
+      body: {
+        username: username,
+        password: password,
+        _token: csrfToken.body,
+      },
+      form: true,
+    })
+  })
 })
 
 export {}

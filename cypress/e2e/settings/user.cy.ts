@@ -6,7 +6,7 @@ import {
   DISTRIBUTION_SERVICE,
   EXTERNAL_SYS,
   CY,
-  ALERT_UPDATE, RAND_NUM, USER_EMAIL, USER_ROLE, ALERT_CREATE,
+  ALERT_UPDATE, USER_EMAIL, USER_ROLE, ALERT_CREATE,
 } from '../../utils/common'
 let USER_ID = ''
 describe(`Test user function, Env: ${CY.cfg}`,
@@ -16,7 +16,7 @@ describe(`Test user function, Env: ${CY.cfg}`,
       cy.visitSubpage('user-permissions', '-user', 'Oprávnenia používateľov')
       cy.getCyVisibleClick('button-create')
       cy.getCy('create-panel').should('be.visible')
-      cy.getCy('user-id').type(RAND_NUM)
+      cy.getCy('user-id').type(`${Cypress._.random(10000, 99999)}`)
       cy.getCy('user-email').type(USER_EMAIL)
       cy.getCyVisibleClick('user-roles')
       cy.contains('.v-list-item', USER_ROLE).click()
@@ -28,7 +28,8 @@ describe(`Test user function, Env: ${CY.cfg}`,
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.get('[value="50"]').click()
+      cy.getCy('filter-string').eq(1).type(USER_EMAIL)
+      cy.getCy('filter-submit').click()
       cy.contains(`${USER_EMAIL}`).click()
       cy.cardLoad()
       cy.getCy('copy-text')

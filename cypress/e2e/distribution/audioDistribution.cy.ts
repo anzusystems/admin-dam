@@ -6,25 +6,27 @@ import {
   ASSET_DESCRIPTION,
   ALERT_CREATE
 } from '../../utils/common'
-const ASSET_ID: Array<string> = []
+const assetIDs: Array<string> = []
 const DISTRIBUTION_DATA={
   PODCAST: 'Dobré ráno',
   CATEGORY: 'Podcasty',
   AUTHOR: 'Boris Zemko',
   KEYWORD: 'Aupark',
-}
-
+} as const
 describe(`Test distribution Audio function, Env: ${CY.cfg}`,
   { tags: ['@distributionAudio', '@distribution'] }, () => {
     if (CY.cfg !== 'stg' && CY.cfg !== 'dev'){
       it('Tests skipped - only possible in stg/dev env', ()=>{})
       return
     }
+    beforeEach(() => {
+      cy.webLogin(CY.credentials[CY.loginUser].username, CY.credentials[CY.loginUser].password)
+    })
     it('Prepare Test Data', () => {
-      cy.prepareData('audio/sample.mp3', 1, ASSET_ID)
+      cy.prepareData('audio/sample.mp3', 1, assetIDs)
     })
     it('Distribute audio', () => {
-      cy.visit(`/asset/${ASSET_ID}`)
+      cy.visit(`/asset/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
 
       // Add to podcast
@@ -81,10 +83,18 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.getCy('filter-value').first().click()
       cy.contains('.v-list-item', 'coreDam').click()
       cy.getCy('filter-submit').click()
-      cy.get('.v-data-table__tbody > :nth-child(1) > :nth-child(3)').contains('INFO')
-      cy.get('.v-data-table__tbody > :nth-child(1) > :nth-child(4)').contains('[Artemis] Distribute')
+      cy.contains('.v-data-table__tr', '[Artemis] Distribute')
+        .within(()=>{
+          cy.contains('INFO')
+        })
+    })
+    it('Verify artemis', ()=>{
+      cy.visit(`${CY.url.proto}://artemis.${CY.url.domain}/admin/media/list/section/117`)
+      cy.get('tbody > :nth-child(1) > :nth-child(8)').contains(ASSET_TITLE)
+      cy.get(':nth-child(1) > .sonata-ba-list-field-actions > .btn-group > .btn').click()
+      cy.get('#s452f557d4c_title').invoke('val').should('eq', ASSET_TITLE)
     })
     it('Delete Test data', ()=>{
-      cy.deleteFile(ASSET_ID)
+      cy.deleteFile(assetIDs)
     })
 })

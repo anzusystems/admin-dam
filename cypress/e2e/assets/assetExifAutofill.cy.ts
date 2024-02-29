@@ -1,5 +1,5 @@
 import { CY } from '../../utils/common'
-const ASSET_ID: Array<string> = []
+const assetIDs: Array<string> = []
 const EXPECTED_TITLE = 'happy mother\'s day!'
 const EXPECTED_DESCRIPTION = 'child son congratulates mother on holiday and gives flowers'
 const EXPECTED_KEYWORDS = 'happy son kid '
@@ -8,10 +8,10 @@ const EXPECTED_AUTHOR = 'test author '
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
   { tags: ['@assetExifAutofill', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('image/sampleMeta1.jpg', true, ASSET_ID)
+      cy.prepareData('image/sampleMeta1.jpg', true, assetIDs)
     })
     it('Check image on Title-Description-Keywords-Artists', () => {
-      cy.visit(`/asset/${ASSET_ID}`)
+      cy.visit(`/asset/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .should('have.value', EXPECTED_TITLE)
@@ -26,13 +26,13 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
         .invoke('text').should('eq', EXPECTED_AUTHOR)
     })
     it('Delete Test data', ()=>{
-      cy.deleteFile(ASSET_ID)
+      cy.deleteFile(assetIDs)
     })
     it('Prepare Test Data', ()=> {
-      cy.prepareData('image/sampleMeta2.jpg', true, ASSET_ID)
+      cy.prepareData('image/sampleMeta2.jpg', true, assetIDs)
     })
     it('Check image on Subject-ImageDescription-Subjects-Owners', () => {
-      cy.visit(`/asset/${ASSET_ID[1]}`)
+      cy.visit(`/asset/${assetIDs[1]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .should('have.value', EXPECTED_TITLE)
@@ -47,6 +47,6 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
         .invoke('text').should('eq', EXPECTED_AUTHOR)
     })
     it('Delete Test data', ()=>{
-      cy.deleteFile([ASSET_ID[1]])
+      cy.deleteFile([assetIDs[1]])
     })
   })

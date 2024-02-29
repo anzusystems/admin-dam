@@ -6,12 +6,12 @@ import {
   ASSET_DESCRIPTION,
   ALERT_CREATE
 } from '../../utils/common'
-const ASSET_ID: Array<string> = []
+const assetIDs: Array<string> = []
 const DISTRIBUTION_DATA={
   CATEGORY: 'Publicistika',
   AUTHOR: 'Boris Zemko',
   KEYWORD: 'Aupark',
-}
+} as const
 
 describe(`Test distribution Video function, Env: ${CY.cfg}`,
   { tags: ['@distributionVideo', '@distribution'] }, () => {
@@ -19,11 +19,14 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       it('Tests skipped - only possible in stg/dev env', ()=>{})
       return
     }
+    beforeEach(() => {
+      cy.webLogin(CY.credentials[CY.loginUser].username, CY.credentials[CY.loginUser].password)
+    })
     it('Prepare Test Data', () => {
-      cy.prepareData('video/sample.mp4', 1, ASSET_ID)
+      cy.prepareData('video/sample.mp4', 1, assetIDs)
     })
     it('Distribute video', () => {
-      cy.visit(`/asset/${ASSET_ID}`)
+      cy.visit(`/asset/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
 
       // Change distribution category
@@ -77,10 +80,22 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       cy.getCy('filter-value').first().click()
       cy.contains('.v-list-item', 'coreDam').click()
       cy.getCy('filter-submit').click()
-      cy.get('.v-data-table__tbody > :nth-child(1) > :nth-child(3)').contains('INFO')
-      cy.get('.v-data-table__tbody > :nth-child(1) > :nth-child(4)').contains('[Artemis] Distribute')
+      cy.contains('.v-data-table__tr', '[Artemis] Distribute')
+        .within(()=>{
+          cy.contains('INFO')
+        })
+    })
+    it('Verify artemis', ()=>{
+      cy.visit(`${CY.url.proto}://artemis.${CY.url.domain}/admin/media/list/section/119`)
+      cy.get('tbody > :nth-child(1) > :nth-child(8)').contains(ASSET_TITLE)
+      cy.get(':nth-child(1) > .sonata-ba-list-field-actions > .btn-group > .btn').click()
+      cy.get('.sonata-ba-field > .list-group > .list-group-item').click()
+      cy.get('#sdc5d04ee76_title_baseTitle')
+        .invoke('val').should('eq', ASSET_TITLE)
+      cy.get('#s2id_sdc5d04ee76_tags_autocomplete_input > .select2-choices').contains(DISTRIBUTION_DATA.KEYWORD)
+      cy.get('#s2id_sdc5d04ee76_authors_autocomplete_input > .select2-choices').contains(DISTRIBUTION_DATA.AUTHOR)
     })
     it('Delete Test data', ()=>{
-      cy.deleteFile(ASSET_ID)
+      cy.deleteFile(assetIDs)
     })
   })

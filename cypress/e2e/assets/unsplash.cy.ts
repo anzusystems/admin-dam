@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { ALERT_UPLOAD, CY } from '../../utils/common'
-const ASSET_ID: Array<string> = []
+const assetIDs: Array<string> = []
 
 describe(`Test audio slots function, Env: ${CY.cfg}`,
   { tags: ['@unsplash', '@assets'], env: { visitBaseUrl: true } }, () => {
@@ -22,24 +22,24 @@ describe(`Test audio slots function, Env: ${CY.cfg}`,
     cy.getCy('table-copy').eq(0).click()
     cy.window().then((win) => {
       win.navigator.clipboard.readText().then((text) => {
-        ASSET_ID.push(text)
+        assetIDs.push(text)
       })
     })
     cy.getCy('table-copy').eq(1).click()
     cy.window().then((win) => {
       win.navigator.clipboard.readText().then((text) => {
-        ASSET_ID.push(text)
+        assetIDs.push(text)
       })
     })
   })
   it('Visit data', ()=>{
-    ASSET_ID.forEach((id)=>{
+    assetIDs.forEach((id)=>{
       cy.log(id)
       cy.visit(`/asset/${id}`)
       cy.urlContains(id)
     })
   })
   it('Delete Test data', ()=>{
-    cy.deleteFile(ASSET_ID)
+    cy.deleteFile(assetIDs)
   })
 })

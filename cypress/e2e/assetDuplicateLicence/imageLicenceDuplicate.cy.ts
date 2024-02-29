@@ -2,11 +2,11 @@
 
 import { CY } from '../../utils/common'
 import { IMAGE_TYPES } from '../../utils/upload'
-const FILE_ID: Array<string> = []
+const fileIDs: Array<string> = []
 const TESTED_LICENCE_IDS = {
   CMS_MAIN: 100000,
-  BLOG1: 110000,
-  BLOG2: 110001,
+  BLOG1: 200296,
+  BLOG2: 200295,
 } as const
 
 describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
@@ -23,7 +23,7 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
 
       let idx = 0
       IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('image', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
@@ -35,7 +35,7 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
 
       let idx = 0
       IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('image', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
@@ -47,13 +47,13 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
 
       let idx = 0
       IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('image', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
     })
     it('Delete uploaded images', ()=>{
-      cy.deleteFile(FILE_ID)
+      cy.deleteFile(fileIDs)
     })
     it('Back to main licence', ()=>{
       cy.visit('/asset')

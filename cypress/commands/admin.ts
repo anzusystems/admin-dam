@@ -98,14 +98,10 @@ Cypress.Commands.add('lineLoad', () => {
 })
 
 Cypress.Commands.add('changeToSlovakDarkTheme', () => {
-  cy.visit('/settings')
-  cy.getCy('settings-language').click()
-  cy.contains('.v-list-item', 'Slovensky').click()
-  cy.getCy('settings-language').click()
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.wait(500)
-  cy.getCy('settings-theme').click({ force: true })
-  cy.contains('.v-list-item', 'Tmavá').click()
+  cy.window().then((win) => {
+    win.localStorage.setItem('theme', 'dark')
+    win.localStorage.setItem('language', 'sk')
+  })
 })
 
 export {}

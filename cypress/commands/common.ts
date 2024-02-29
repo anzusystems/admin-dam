@@ -59,9 +59,9 @@ declare global {
        * Uploads to assets and returns id
        * @param path - file name, dataType and format - (audio/sample.mp3)
        * @param withUpload - if true - uploads file on server, saves ID
-       * @param FILE_ID - Array where to file id will be saved
+       * @param assetIDs - Array where file ids will be pushed
        */
-      prepareData(path: string, withUpload: boolean, FILE_ID?: string[]): Chainable<any>
+      prepareData(path: string, withUpload: boolean, assetIDs?: string[]): Chainable<any>
     }
   }
 }
@@ -112,18 +112,18 @@ Cypress.Commands.add('failOnUncaughtException', (option) => {
   })
 })
 
-Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, FILE_ID: string[])=>{
+Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs: string[])=>{
   cy.exec( '[ -f cypress/fixtures/'+path+' ] && echo "file exists"', { failOnNonZeroExit: false } )
     .then( (res) => {
       if( res.stdout != 'file exists' ) {
         cy.downloadFile(`https://storage.googleapis.com/anzu-e2e-test-data-devel-bel/${path}`,
           `../fixtures/${path.split('/')[0]}`, `${path.split('/')[1]}`)
       }
-      if (withUpload == true){
+      if (withUpload){
         cy.uploadFile(`${path}`, 'select')
         cy.api_getFileID()
           .then((responseID) => {
-            FILE_ID.push(responseID)
+            assetIDs.push(responseID)
           })
         cy.waitForUpload('Nahrávanie ukončené')
         cy.getCy('button-add-description').click()

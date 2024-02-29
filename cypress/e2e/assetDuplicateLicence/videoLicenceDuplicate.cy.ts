@@ -2,7 +2,7 @@
 
 import { CY } from '../../utils/common'
 import { VIDEO_TYPES } from '../../utils/upload'
-const FILE_ID: Array<string> = []
+const fileIDs: Array<string> = []
 const TESTED_LICENCE_IDS = {
   CMS_MAIN: 100000,
   CMS_SPECTATOR: 100001,
@@ -18,7 +18,7 @@ describe(`Test asset video licence duplicate function, Env: ${CY.cfg}`,
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
       let idx = 0
       VIDEO_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('video', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('video', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
@@ -29,13 +29,13 @@ describe(`Test asset video licence duplicate function, Env: ${CY.cfg}`,
       cy.changeLicence(TESTED_LICENCE_IDS.CMS_SPECTATOR)
       let idx = 0
       VIDEO_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('video', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('video', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
     })
     it('Delete uploaded videos', ()=>{
-      cy.deleteFile(FILE_ID)
+      cy.deleteFile(fileIDs)
     })
     it('Back to main cms licence', ()=>{
       cy.visit('/asset')

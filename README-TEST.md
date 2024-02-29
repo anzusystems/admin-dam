@@ -5,64 +5,61 @@ Simple guide on how to run E2E tests on the project.
 
 ---
 
-# Prerequisites
+## 1. Project installation
+Follow the [installation guide](README.md) to install the project and run dev server.
 
-## 1. Installation 
-Follow the [installation guide](README-DEV.md#Installation) to install the project.
 
-## 2. Run dev server
-Follow the [run dev server guide](README-DEV.md#Dev---Run-dev-server) to run dev server.
+## 2. Tests configuration
 
-# Test
+- Staging and devel config files are stored in `cypress/config` folder.
 
-### Run E2E tests
-Script used to run tests inside the application docker container:
+
+- For testing create `stg.ts`/`dev.ts`/`local.ts` file in `cypress/config` folder, then change environment parameter 'cfg'
+  in `cypress.config.ts`
+
+
+- Some are stored in [LastPass](https://lastpass.com/) under name `Cypress Config - DAM` or use following example:
+```typescript
+function extendCypressConfigStg(config) {
+    config.baseUrl = ''
+    config.env.credentials = {
+        testUser: {
+            username: '',
+            password: '',
+            forceLoginLink: '',  // admin forceLoginLink
+        },
+    }
+    config.env.cookie = {
+        name: '',
+        value: '',
+    }
+    config.env.url = {
+        domain: '',
+        proto: '',
+    }
+    return config
+}
+module.exports = extendCypressConfigStg
+```
+
+## 3. Run E2E tests
+
+First script used to run tests inside the application docker container:
 
     bin/test
 
-### Command options
+### Command options:
 
     -e, --env     (Optional) Run tests in specific environment. (Default: local) 
     -b, --browser (Optional) Run tests in selected browser. (Allowed values: electron|chrome, Default: chrome)
     -f  --filter  (Optional) Comma separated list of filters without space (Default: n/a - all tests)
-    -t, --tags    (Optional) Comma separated list of test suite tags. (Default: n/a)
-    -s, --spec    (Optional) Relative dir to the test suite, wildcard can be used (Default: n/a - all tests)
-    --dashboard   (Optional) Whether to push test results to cypress dashboard or create only local test results
-                  You need to set CYPRESS_DASHBOARD_KEY in .env.docker.local
-    --tag         (Optional) Run tests with specific tag for cypress dashboard (Run only with --dashboard option, Default: n/a)
 
 ### Examples:
 
-    bin/test --env=local --browser=chrome --filter=@settings,@assets
-    bin/test --tags=@ --dashboard
-    bin/test --browser=chrome --spec=cypress/e2e/logOut.cy.ts --tag=Log-out --dashboard
+    bin/test --env=local --browser=chrome --filter=@assets,@navigation,@upload
+    bin/test -e stg -b chrome -f @licence,@assets
+    /*  Do not use space before @ using --filter  */
 
-### Support for multiple environments
+### Second script - Visual base Environment:
 
-Staging and devel config files are stored in `cypress/config` folder.
-
-For testing create `stg.ts`/`dev.ts`/`local.ts` file in `cypress/config` folder.
-
-File should contain following code:
-
-*cypress/config/stg.ts*
-```typescript
-function extendCypressConfig(config) {
-  config.baseUrl = ''
-  config.env.credentials = {
-    admin: {
-      forceLoginLink: '',
-    },
-  }
-  config.env.cookie = {
-    name: '',
-    value: '',
-  }
-  config.env.url = {
-    domain: '',
-    proto: '',
-  }
-  return config
-}
-module.exports = extendCypressConfig
-```
+    yarn cypress open -C cypress/config/cypress.config.ts

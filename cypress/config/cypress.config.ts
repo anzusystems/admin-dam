@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-import { downloadFile } from 'cypress-downloadfile/lib/addPlugin'
+import { downloadFile } from 'cypress-downloadfile/lib/addPlugin.js'
 import * as fs from 'fs'
 
 export default defineConfig({
@@ -15,6 +15,7 @@ export default defineConfig({
   },
   trashAssetsBeforeRuns: true,
   watchForFileChanges: false,
+  defaultCommandTimeout: 10000,
   viewportHeight: 1080,
   viewportWidth: 1920,
   env: {

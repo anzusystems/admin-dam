@@ -48,6 +48,7 @@ describe(`Test authors function, Env: ${CY.cfg}`,
     cy.getCyVisibleClick('button-close')
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
+    cy.cardLoad()
     cy.getCy('filter-string').eq(1).type(`${RAND_NUM}-edit{ENTER}`)
     cy.cardLoad()
     cy.contains('td', `${USER_FIRST_NAME}-edit`)

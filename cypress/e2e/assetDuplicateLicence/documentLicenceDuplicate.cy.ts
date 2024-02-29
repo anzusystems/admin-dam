@@ -2,7 +2,7 @@
 
 import { CY } from '../../utils/common'
 import { DOCUMENT_TYPES } from '../../utils/upload'
-const FILE_ID: Array<string> = []
+const fileIDs: Array<string> = []
 const TESTED_LICENCE_IDS = {
   CMS_MAIN: 100000,
   CMS_SPECTATOR: 100001,
@@ -21,7 +21,7 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
 
       let idx = 0
       DOCUMENT_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('document', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('document', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
@@ -33,13 +33,13 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
 
       let idx = 0
       DOCUMENT_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('document', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('document', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
     })
     it('Delete uploaded audios', ()=>{
-      cy.deleteFile(FILE_ID)
+      cy.deleteFile(fileIDs)
     })
     it('Back to main cms licence', ()=>{
       cy.visit('/asset')
