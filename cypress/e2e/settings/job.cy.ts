@@ -73,7 +73,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
               cy.alertMessage(ALERT_CREATE)
               cy.get(':nth-child(1) > :nth-child(2) > .v-chip > .v-chip__content')
                 .should('include.text', 'Podcastový synchronizátor')
-              cy.waitSec(150) //todo
+              cy.waitSec(150)
               cy.reload()
               cy.get(':nth-child(1) > :nth-child(3) > .v-chip > .v-chip__content')
                 .should('include.text', 'Hotovo')
