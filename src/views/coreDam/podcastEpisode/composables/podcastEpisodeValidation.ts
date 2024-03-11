@@ -36,6 +36,9 @@ export function usePodcastEpisodeValidation(podcastEpisode: Ref<PodcastEpisode>)
           minLength: minLength(1),
           maxLength: maxLength(256),
         },
+        extUrl: {
+          maxLength: maxLength(2048),
+        },
       },
     },
   }))
