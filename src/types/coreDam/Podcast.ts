@@ -17,6 +17,7 @@ interface Texts {
 
 export interface Attributes {
   rssUrl: string
+  extUrl: string
   mode: PodcastMode
   lastImportStatus: PodcastLastImportStatus
 }

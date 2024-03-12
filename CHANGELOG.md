@@ -1,3 +1,8 @@
+## [1.3.3](https://github.com/anzusystems/admin-dam/compare/1.3.2...1.3.3) (2024-03-12)
+
+### Features
+* Podcast episode extUrl, podcast extUrl
+
 ## [1.3.2](https://github.com/anzusystems/admin-dam/compare/1.3.1...1.3.2) (2024-02-29)
 
 ### Features

@@ -8,6 +8,8 @@
       "seasonNumber": "Číslo sezóny",
       "episodeNumber": "Číslo epizódy",
       "extId": "Externé ID",
+      "rssUrl": "Rss audio URL",
+      "extUrl": "Externá URL epizódy",
       "lastImportStatus": "Posledný stav importu"
     },
     "texts": {

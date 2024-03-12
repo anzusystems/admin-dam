@@ -38,6 +38,10 @@ const altImgSrc = computed(() => {
         :title="t('coreDam.podcast.model.attributes.rssUrl')"
         :value="podcast.attributes.rssUrl"
       />
+      <ARow
+        :title="t('coreDam.podcast.model.attributes.extUrl')"
+        :value="podcast.attributes.extUrl"
+      />
       <ARow :title="t('coreDam.podcast.model.attributes.lastImportStatus')">
         <PodcastLastImportStatusChip :status="podcast.attributes.lastImportStatus" />
       </ARow>
