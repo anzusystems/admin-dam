@@ -4,14 +4,14 @@ import { ALERT_CREATE, CY, JOB_DELETE, JOB_SYNC } from '../../utils/common'
 const assetIDs: Array<string> = []
 describe(`Test job function, Env: ${CY.cfg}`,
   { tags: ['@job', '@settings'] }, () => {
-  it('Check job options', () => {
-    cy.visit('/settings')
-    cy.visitSubpage('job-settings', 'job', 'Systémové úlohy')
-    cy.getCyVisibleClick('button-create')
-    cy.getCyVisibleClick('job-select')
-    cy.contains('.v-list-item', JOB_SYNC)
-    cy.contains('.v-list-item', JOB_DELETE).click()
-  })
+    it('Check job options', () => {
+      cy.visit('/settings')
+      cy.visitSubpage('job-settings', 'job', 'Systémové úlohy')
+      cy.getCyVisibleClick('button-create')
+      cy.getCyVisibleClick('job-select')
+      cy.contains('.v-list-item', JOB_SYNC)
+      cy.contains('.v-list-item', JOB_DELETE).click()
+    })
     it('Prepare Test Data', ()=> {
       cy.prepareData('audio/sample.mp3',true, assetIDs)
     })
@@ -35,7 +35,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
           cy.visit(`asset/${assetIDs[0]}`)
           cy.get('[data-cy="custom-field-title"] textarea')
             .first().clear({ force: true }).type(`${assetTitle}`)
-          cy.getCy('button-save').click()
+          cy.get('[id="anzu-asset-detail-sidebar-actions"] [data-cy="button-save"]').click()
           cy.getCy('button-podcast').should('be.visible').click()
           cy.request(`${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/podcast/${podcastID}`)
             .then((response)=>{

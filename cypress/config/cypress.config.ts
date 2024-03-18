@@ -3,6 +3,7 @@ import { downloadFile } from 'cypress-downloadfile/lib/addPlugin.js'
 import * as fs from 'fs'
 
 export default defineConfig({
+  projectId: 'cbjsgw',
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
     reportDir: 'report/html',
