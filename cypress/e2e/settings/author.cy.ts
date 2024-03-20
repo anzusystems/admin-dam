@@ -19,6 +19,7 @@ describe(`Test authors function, Env: ${CY.cfg}`,
     cy.alertMessage(ALERT_CREATE)
     cy.getCy('filter-reset').click()
     cy.cardLoad()
+    cy.waitSec(1)
     cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`)
     cy.contains(`${USER_FIRST_NAME}`).click()
     cy.cardLoad()

@@ -62,6 +62,10 @@ declare global {
        * @param assetIDs - Array where file ids will be pushed
        */
       prepareData(path: string, withUpload: boolean, assetIDs?: string[]): Chainable<any>
+      /**
+       * Waits for job
+       */
+      waitForJob(): Chainable<any>
     }
   }
 }
@@ -130,6 +134,25 @@ Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs
         cy.get(':nth-child(3) > .bg-primary').click()
       }
   })
+})
+
+Cypress.Commands.add('waitForJob', () => {
+  cy.waitSec(30)
+  cy.reload()
+  cy.waitSec(2)
+  cy.get('body').then(($body)=>{
+    if ($body.find('.v-chip:contains("V poradí")').length > 0){
+      cy.waitSec(50)
+      cy.reload()
+      cy.waitSec(2)
+      cy.get('body').then(($body)=>{
+        if($body.find('.v-chip:contains("V poradí")').length > 0){
+          cy.waitSec(50)
+          cy.reload()
+        }})
+    }})
+  cy.get(':nth-child(1) > :nth-child(3) > .v-chip > .v-chip__content', { timeout: 50000 })
+    .should('include.text', 'Hotovo')
 })
 
 export {}
