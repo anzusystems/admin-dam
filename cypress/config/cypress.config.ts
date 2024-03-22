@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-import { downloadFile } from 'cypress-downloadfile/lib/addPlugin'
+import { downloadFile } from 'cypress-downloadfile/lib/addPlugin.js'
 import * as fs from 'fs'
 
 export default defineConfig({
@@ -15,10 +15,11 @@ export default defineConfig({
   },
   trashAssetsBeforeRuns: true,
   watchForFileChanges: false,
+  defaultCommandTimeout: 10000,
   viewportHeight: 1080,
   viewportWidth: 1920,
   env: {
-    cfg: 'local', // local or stg
+    cfg: 'stg', // local or stg
     loginUser: 'admin',
     failOnUncaughtException: false,
     visitBaseUrl: true,
@@ -27,7 +28,7 @@ export default defineConfig({
     grepIntegrationFolder: '../../',
   },
   e2e: {
-    baseUrl: 'http://admin-dam.anzusystems.localhost:8150/',
+    video: true,
     specPattern: 'cypress/e2e/**/*.cy.ts',
     setupNodeEvents(on, config) {
       on('task', { downloadFile })

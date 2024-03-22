@@ -2,7 +2,8 @@
 
 import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME } from '../../utils/common'
 let USER_ID = ''
-describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visitBaseUrl: false } }, () => {
+describe(`Test authors function, Env: ${CY.cfg}`,
+  { tags: ['@author', '@settings'], env: { visitBaseUrl: false } }, () => {
   it('Create author', () => {
     cy.visit('/settings')
     cy.visitSubpage('author-settings', 'author', 'Autori')
@@ -16,6 +17,9 @@ describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visi
     cy.getCy('button-cancel').should('be.visible')
     cy.getCyVisibleClick('button-confirm')
     cy.alertMessage(ALERT_CREATE)
+    cy.getCy('filter-reset').click()
+    cy.cardLoad()
+    cy.waitSec(1)
     cy.getCy('filter-string').eq(1).type(`${USER_FIRST_NAME}{ENTER}`)
     cy.contains(`${USER_FIRST_NAME}`).click()
     cy.cardLoad()
@@ -31,7 +35,7 @@ describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visi
   })
   it('Edit author', () => {
     cy.visit('/author')
-    cy.getCy('filter-string').first().type(`${USER_ID}{ENTER}`)
+    cy.getCy('filter-string', { timeout: 20000 }).first().type(`${USER_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')
@@ -45,6 +49,7 @@ describe(`Test authors function, Env: ${CY.cfg}`, { tags: '@author', env: { visi
     cy.getCyVisibleClick('button-close')
     cy.urlNotContains('/edit')
     cy.getCyVisibleClick('filter-reset')
+    cy.cardLoad()
     cy.getCy('filter-string').eq(1).type(`${RAND_NUM}-edit{ENTER}`)
     cy.cardLoad()
     cy.contains('td', `${USER_FIRST_NAME}-edit`)

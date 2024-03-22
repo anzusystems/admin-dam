@@ -3,7 +3,8 @@
 import { ALERT_CREATE, ALERT_UPDATE, CY, EPISODE_TITLE, PODCAST_TITLE } from '../../utils/common'
 let PODCAST_ID = ''
 let EPISODE_ID = ''
-describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { visitBaseUrl: false } }, () => {
+describe(`Test Podcast function, Env: ${CY.cfg}`,
+  { tags: ['@podcast', '@settings'], env: { visitBaseUrl: false } }, () => {
   it('Create podcast', () => {
     cy.visit('/settings')
     cy.visitSubpage('podcast-settings', 'podcast', 'Podcasty')
@@ -47,10 +48,10 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.getCy('podcast-rss-url').find('input').clear().type(`https://${PODCAST_TITLE}-edit.com`)
     cy.get('[data-cy=select-image-preview]').find('button').click()
     cy.get('.asset-list-tiles > :nth-child(1)').click()
-    cy.contains('button', 'Zvoliť').click()
+    cy.contains('button', 'Potvrď').click()
     cy.get('[data-cy=select-image-alt]').find('button').click()
     cy.get('.asset-list-tiles > :nth-child(1)').click()
-    cy.contains('button', 'Zvoliť').click()
+    cy.contains('button', 'Potvrď').click()
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)
     cy.getCyVisibleClick('button-close')
@@ -102,7 +103,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`, { tags: '@podcast', env: { vis
     cy.get('body').type('{ESC}')
     cy.get(':nth-child(1) > :nth-child(2) > .v-btn').click()
     cy.get('.asset-list-tiles > :nth-child(2)').click()
-    cy.contains('button', 'Zvoliť').click()
+    cy.contains('button', 'Potvrď').click()
 
     cy.getCyVisibleClick('button-save')
     cy.alertMessage(ALERT_UPDATE)

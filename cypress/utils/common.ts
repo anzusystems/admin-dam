@@ -14,7 +14,7 @@ export const EXTERNAL_SYS = ['cms', 'blog', 'tools']
 export const KEYWORDS = ['TestKeyword1', 'TestKeyword2']
 export const AUTHORS = ['TestAuthor1', 'TestAuthor2', 'TestAuthor3']
 export const EXTERNAL_PROVIDER = 'Unsplash'
-export const DISTRIBUTION_SERVICE = ['Youtube CMS', 'Youtube Fičí', 'JwVideo', 'Artemis Video CMS',
+export const DISTRIBUTION_SERVICE = ['Youtube', 'Youtube Fičí', 'JwVideo', 'Artemis Video CMS',
   'Artemis Podcast CMS']
 export const PERMISSION_GROUP_TITLE = `TestGroup${RAND_NUM}`
 export const PODCAST_TITLE = `TestPodcast${RAND_NUM}`
@@ -28,3 +28,4 @@ export const ALERT_UPDATE = 'Záznam bol upravený'
 export const ALERT_UPLOAD = 'Nahrávanie ukončené'
 export const JOB_DELETE = 'Výmaz používateľových dát'
 export const JOB_SYNC = 'Podcastový synchronizátor'
+export const USER_ROLE = 'Super Admin'

@@ -4,7 +4,8 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, EPISODE_TITLE, VIDEO_SHOW_TITLE } from 
 
 let VIDEO_SHOW_ID = ''
 let EPISODE_ID = ''
-describe(`Test video shows function, Env: ${CY.cfg}`,{ tags: '@videoShow', env: { visitBaseUrl: false } }, () => {
+describe(`Test video shows function, Env: ${CY.cfg}`,
+  { tags: ['@videoShow', '@settings'], env: { visitBaseUrl: false } }, () => {
   it('Create video show', () => {
     cy.visit('/settings')
     cy.visitSubpage('video-show-settings', 'video-show', 'Video relácie')

@@ -7,27 +7,27 @@ import {
   ASSET_DESCRIPTION,
   ALERT_CREATE, RAND_NUM
 } from '../../utils/common'
-const ASSET_ID: Array<string> = []
+const assetIDs: Array<string> = []
 
 describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
-  { tags: '@assetAudioToPodcast' }, () => {
+  { tags: ['@assetAudioToPodcast', '@assets'] }, () => {
     it('Prepare Test Data', ()=> {
-      cy.prepareData('audio/sample.mp3', true, ASSET_ID)
+      cy.prepareData('audio/sample.mp3', true, assetIDs)
     })
     it('Add audio asset to podcast episode', () => {
-      cy.visit(`/asset/${ASSET_ID}`)
+      cy.visit(`/asset/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
       cy.get('[data-cy="custom-field-description"] textarea')
         .first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
-      cy.getCy('button-save').should('be.visible').click()
+      cy.getCy('button-save').last().should('be.visible').click()
       cy.alertMessage(ALERT_UPDATE)
       cy.getCy('button-podcast').should('be.visible').click()
       cy.getCy('button-add-new-podcast-episode').should('be.visible').click()
       cy.getCy('field-choose-podcast').click()
-      cy.wait(500)
-      cy.get('.v-list-item').first().click()
+      cy.waitSec(1)
+      cy.get('.v-list-item').eq(0).click()
       cy.getCy('field-title-podcast').clear().type(`${ASSET_TITLE}-edit`)
       cy.getCy('field-description-podcast').clear().type(`${ASSET_DESCRIPTION}-edit`)
       cy.getCy('field-season-num-podcast').clear().type( `${RAND_NUM}`)
@@ -36,7 +36,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.alertMessage(ALERT_CREATE)
     })
     it('Delete podcast', ()=>{
-      cy.visit(`/asset/${ASSET_ID}`)
+      cy.visit(`/asset/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-podcast').should('be.visible').click()
       cy.get('.text-body-2').contains(`${ASSET_TITLE}-edit`).should('exist')
@@ -50,6 +50,6 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.get('.pa-4').should('contain', 'Nie je čo zobraziť')
     })
     it('Delete Test data', ()=>{
-      cy.deleteFile(ASSET_ID)
+      cy.deleteFile(assetIDs)
     })
 })

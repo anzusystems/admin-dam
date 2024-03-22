@@ -2,7 +2,8 @@
 
 import { CY } from '../../utils/common'
 
-describe(`Test log, Env: ${CY.cfg}`, { tags: '@log', env: { visitBaseUrl: false } }, () => {
+describe(`Test log, Env: ${CY.cfg}`,
+  { tags: ['@log', '@settings'], env: { visitBaseUrl: false } }, () => {
   it('Verify log page', () => {
     cy.visit('/settings')
     cy.visitSubpage('log-settings', 'log', 'Logy')

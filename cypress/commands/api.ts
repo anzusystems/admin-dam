@@ -69,6 +69,9 @@ Cypress.Commands.add('api_waitPageLoad', (pagePart: string = 'main', idLicence?:
     case 'author':
       url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/author/*`
       break
+    case 'unsplash':
+      url = `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset-external-provider/unsplash_cms/*`
+      break
     default:
       throw new Error(`${pagePart} is unknown param`)
   }

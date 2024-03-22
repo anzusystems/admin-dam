@@ -34,7 +34,7 @@ function help() {
         -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder
 
     Examples:
-        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -t @datepicker,@nl --tag Docker,Web -d
+        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
     \n"
 }
 

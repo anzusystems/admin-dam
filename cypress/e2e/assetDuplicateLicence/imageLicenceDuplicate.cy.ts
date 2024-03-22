@@ -2,72 +2,62 @@
 
 import { CY } from '../../utils/common'
 import { IMAGE_TYPES } from '../../utils/upload'
-const FILE_ID: Array<string> = []
-const main_licence = '100000'
-const cms32630_licence = '200010'
-const slonik_licence= '100003'
-const pixel_licence = '100005'
+const fileIDs: Array<string> = []
+const TESTED_LICENCE_IDS = {
+  CMS_MAIN: 100000,
+  BLOG1: 200296,
+  BLOG2: 200295,
+} as const
+
 describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
-  { tags: '@assetImageLicence', env: { visitBaseUrl: false } }, () => {
+  { tags: ['@assetImageLicence', '@licence'], env: { visitBaseUrl: false } }, () => {
     it('Prepare Test Data', ()=> {
       cy.prepareData('image/sample.png', 0)
       cy.prepareData('image/sample.gif', 0)
       cy.prepareData('image/sample.jpeg', 0)
       cy.prepareData('image/sample.webp', 0)
     })
-    it('Cms-sys | CMS licence', () => {
+    it('CMS', () => {
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', main_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
 
       let idx = 0
       IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('image', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
     })
-    it('CMS-sys | cms32630',()=>{
+    it('Blog-system 1',()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', main_licence)
-      cy.changeLicence(cms32630_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
+      cy.changeLicence(TESTED_LICENCE_IDS.BLOG1)
 
       let idx = 0
       IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('image', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
     })
-    it('Blog-sys | Slonik:PHPckar',()=>{
+    it('Blog-system 2',()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', cms32630_licence)
-      cy.changeLicence(slonik_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.BLOG1)
+      cy.changeLicence(TESTED_LICENCE_IDS.BLOG2)
 
       let idx = 0
       IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
-        cy.finishUpload()
-        idx++
-      })
-    })
-    it('Blog-sys | Pixel',()=>{
-      cy.visit('/asset')
-      cy.api_waitPageLoad('main', slonik_licence)
-      cy.changeLicence(pixel_licence)
-
-      let idx = 0
-      IMAGE_TYPES.forEach((dataFormat)=>{
-        cy.checkDuplicate('image', dataFormat, idx, FILE_ID)
+        cy.checkDuplicate('image', dataFormat, idx, fileIDs)
         cy.finishUpload()
         idx++
       })
     })
     it('Delete uploaded images', ()=>{
-      cy.deleteFile(FILE_ID)
+      cy.deleteFile(fileIDs)
     })
-    it('Back to main cms licence', ()=>{
+    it('Back to main licence', ()=>{
       cy.visit('/asset')
-      cy.api_waitPageLoad('main', slonik_licence)
-      cy.changeLicence(main_licence)
+      cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.BLOG2)
+      cy.changeLicence(TESTED_LICENCE_IDS.CMS_MAIN)
     })
   })

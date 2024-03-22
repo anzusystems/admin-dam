@@ -6,17 +6,49 @@ import {
   DISTRIBUTION_SERVICE,
   EXTERNAL_SYS,
   CY,
-  ALERT_UPDATE,
+  ALERT_UPDATE, USER_EMAIL, USER_ROLE, ALERT_CREATE,
 } from '../../utils/common'
 let USER_ID = ''
-describe(`Test user function, Env: ${CY.cfg}`, { tags: '@user', env: { visitBaseUrl: false } }, () => {
+describe(`Test user function, Env: ${CY.cfg}`,
+  { tags: ['@user', '@settings'], env: { visitBaseUrl: false } }, () => {
+    it('Create user', () => {
+      cy.visit('/settings')
+      cy.visitSubpage('user-permissions', '-user', 'Oprávnenia používateľov')
+      cy.getCyVisibleClick('button-create')
+      cy.getCy('create-panel').should('be.visible')
+      cy.getCy('user-id').type(`${Cypress._.random(10000, 99999)}`)
+      cy.getCy('user-email').type(USER_EMAIL)
+      cy.getCyVisibleClick('user-roles')
+      cy.contains('.v-list-item', USER_ROLE).click()
+      cy.getCy('create-panel').click('top')
+      cy.getCy('user-permissionGroups').click()
+      cy.get('.v-overlay .v-list-item').first().click()
+      cy.getCy('create-panel').click('top')
+      cy.getCy('button-close').should('be.visible')
+      cy.getCy('button-cancel').should('be.visible')
+      cy.getCyVisibleClick('button-confirm')
+      cy.alertMessage(ALERT_CREATE)
+      cy.getCy('filter-string').eq(1).type(USER_EMAIL)
+      cy.getCy('filter-submit').click()
+      cy.contains(`${USER_EMAIL}`).click()
+      cy.cardLoad()
+      cy.getCy('copy-text')
+        .invoke('text')
+        .then((text) => {
+          cy.urlContains(text)
+          cy.getCyVisibleClick('button-close')
+          cy.urlNotContains(`/${text}`)
+          cy.urlContains('-user')
+          USER_ID = text
+        })
+    })
   it('Edit User', () => {
     cy.visit('/settings')
     cy.visitSubpage('user-settings', 'user', 'Používatelia')
-    cy.getCy('filter-string').last().type(`${CY.credentials.admin.email}{ENTER}`)
+    cy.getCy('filter-string').last().type(`${USER_EMAIL}{ENTER}`)
     cy.getCyVisibleClick('filter-submit')
     cy.cardLoad()
-    cy.contains(`${CY.credentials.admin.email}`).click()
+    cy.contains(`${USER_EMAIL}`).click()
     cy.cardLoad()
     cy.getCy('copy-text')
       .invoke('text')

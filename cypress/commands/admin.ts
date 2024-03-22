@@ -30,6 +30,18 @@ declare global {
        * Wait for card to load
        */
       cardLoad(): Chainable<any>
+      /**
+       * Wait for circle to load
+       */
+      circleLoad(): Chainable<any>
+      /**
+       * Wait for line to load
+       */
+      lineLoad(): Chainable<any>
+      /**
+       * Change Admin to Slovak language and dark theme
+       */
+      changeToSlovakDarkTheme(): Chainable<any>
     }
   }
 }
@@ -74,4 +86,22 @@ Cypress.Commands.add('cardLoad', () => {
   cy.get('.a-card-loader', { timeout: 10000 }).should('be.visible')
   cy.get('.a-card-loader', { timeout: 10000 }).should('not.be.visible')
 })
+
+Cypress.Commands.add('circleLoad', () => {
+  cy.get('.v-progress-circular', { timeout: 10000 }).should('exist')
+  cy.get('.v-progress-circular', { timeout: 10000 }).should('not.exist')
+})
+
+Cypress.Commands.add('lineLoad', () => {
+  cy.get('.v-progress-linear', { timeout: 10000 }).should('exist')
+  cy.get('.v-progress-linear', { timeout: 10000 }).should('not.exist')
+})
+
+Cypress.Commands.add('changeToSlovakDarkTheme', () => {
+  cy.window().then((win) => {
+    win.localStorage.setItem('theme', 'dark')
+    win.localStorage.setItem('language', 'sk')
+  })
+})
+
 export {}

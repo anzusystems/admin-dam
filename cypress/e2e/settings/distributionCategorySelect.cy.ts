@@ -4,7 +4,7 @@ import { ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME, USER_LAST_NAME } from '../
 let ID = ''
 describe(
   `Test distribution category select function, Env: ${CY.cfg}`,
-  { tags: '@distributionCategorySelect', env: { visitBaseUrl: false } },
+  { tags: ['@distributionCategorySelect', '@settings'], env: { visitBaseUrl: false } },
   () => {
     it('Create distribution category select', () => {
       cy.visit('/settings')
@@ -35,7 +35,11 @@ describe(
       cy.getCyVisibleClick('button-save')
       cy.alertMessage(ALERT_UPDATE)
       cy.getCyVisibleClick('button-close')
+      cy.cardLoad()
       cy.urlNotContains('/edit')
+      cy.getCy('table-detail').first().click()
+      cy.cardLoad()
+      cy.urlContains(`${ID}`)
     })
     it('Delete distribution category select', () => {
       cy.visit(`/distribution-category-select/${ID}/edit`)
