@@ -46,6 +46,11 @@ const routes = {
       DETAIL: 'assetLicence_detail',
       EDIT: 'assetLicence_edit',
     },
+    ASSET_LICENCE_GROUP: {
+      LIST: 'assetLicenceGroup_list',
+      DETAIL: 'assetLicenceGroup_detail',
+      EDIT: 'assetLicenceGroup_edit',
+    },
     AUTHOR: {
       LIST: 'author_list',
       DETAIL: 'author_detail',
