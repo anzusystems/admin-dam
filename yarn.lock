@@ -12,9 +12,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anzusystems/common-admin@npm:1.47.0-alpha48":
-  version: 1.47.0-alpha48
-  resolution: "@anzusystems/common-admin@npm:1.47.0-alpha48"
+"@anzusystems/common-admin@npm:1.47.0-alpha49":
+  version: 1.47.0-alpha49
+  resolution: "@anzusystems/common-admin@npm:1.47.0-alpha49"
   peerDependencies:
     "@vuelidate/core": 2.0.3
     "@vuelidate/validators": 2.0.4
@@ -41,7 +41,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/3e88aabb88c0f70fd5bd6bebb09973b94dab1e3e3ff7429417cebff821eb229e24f3b97027ec64e5b3324d978f842b0603689bf05b1a203934afde90655c77a3
+  checksum: 10/fa518df9351cca60cfbe6c70ecb2ff3e71a776dce319874f44f0185779ad1c915231eff60272cbbeeb76dea84993fc4b3009cc75cd9917034b9b31b1f2e24ec0
   languageName: node
   linkType: hard
 
@@ -1900,7 +1900,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": "npm:1.47.0-alpha48"
+    "@anzusystems/common-admin": "npm:1.47.0-alpha49"
     "@cypress/grep": "npm:^4.0.1"
     "@intlify/unplugin-vue-i18n": "npm:^4.0.0"
     "@mdi/font": "npm:7.4.47"
