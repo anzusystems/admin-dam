@@ -5,6 +5,7 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
+  DamAssetLicenceGroupRemoteAutocomplete,
   DamAssetLicenceRemoteAutocomplete,
   DamDistributionServiceSelect,
   DamExternalProviderAssetSelect,
@@ -48,11 +49,20 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <DamAssetLicenceGroupRemoteAutocomplete
+            v-model="userUpdate.licenceGroups"
+            :client="damClient"
+            :label="t('coreDam.user.model.licenceGroups')"
+            multiple
+            clearable
+            data-cy="user-asset-licence-groups"
+          />
+        </ARow>
+        <ARow>
           <DamAssetLicenceRemoteAutocomplete
             v-model="userUpdate.assetLicences"
             :client="damClient"
             :label="t('coreDam.user.model.assetLicences')"
-            :v="v$.userUpdate.assetLicences"
             multiple
             clearable
             data-cy="user-asset-licences"

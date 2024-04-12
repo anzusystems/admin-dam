@@ -3,6 +3,7 @@ import sidebar from '@/locales/sk/sidebar.json'
 import system from '@/locales/sk/system.json'
 import asset from '@/locales/sk/coreDam/asset.json'
 import assetLicence from '@/locales/sk/coreDam/assetLicence.json'
+import assetLicenceGroup from '@/locales/sk/coreDam/assetLicenceGroup.json'
 import author from '@/locales/sk/coreDam/author.json'
 import distribution from '@/locales/sk/coreDam/distribution.json'
 import distributionCategory from '@/locales/sk/coreDam/distributionCategory.json'
@@ -32,6 +33,7 @@ export default {
   coreDam: {
     asset,
     assetLicence,
+    assetLicenceGroup,
     author,
     distribution,
     distributionCategory,

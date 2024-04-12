@@ -1,29 +1,33 @@
-import type { DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup, DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
 import { useUserFactory } from '@/model/coreDam/factory/UserFactory'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
 
-const { createDefault, createDefaultForUpdate } = useUserFactory()
+export const useUserOneStore = defineStore('damUserOneStore', () => {
+  const { createDefault, createDefaultForUpdate } = useUserFactory()
 
-interface State {
-  user: DamUser
-  userUpdate: DamUserUpdateDto
-}
+  const user = ref<DamUser>(createDefault())
+  const userUpdate = ref<DamUserUpdateDto>(createDefaultForUpdate(createDefault()))
+  const userAssetLicenceGroups = ref<DamAssetLicenceGroup[]>([])
 
-export const useUserOneStore = defineStore('damUserOneStore', {
-  state: (): State => ({
-    user: createDefault(),
-    userUpdate: createDefaultForUpdate(createDefault()),
-  }),
-  actions: {
-    setUser(user: DamUser) {
-      this.user = user
-      this.userUpdate = createDefaultForUpdate(user)
-    },
-    reset() {
-      this.user = createDefault()
-      this.userUpdate = createDefaultForUpdate(this.user)
-    },
-  },
+  function setUser(userNew: DamUser) {
+    user.value = userNew
+    userUpdate.value = createDefaultForUpdate(userNew)
+  }
+
+  function reset() {
+    user.value = createDefault()
+    userUpdate.value = createDefaultForUpdate(user.value)
+    userAssetLicenceGroups.value = []
+  }
+
+  return {
+    user,
+    userUpdate,
+    userAssetLicenceGroups,
+    setUser,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

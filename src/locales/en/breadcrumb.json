@@ -5,6 +5,11 @@
       "detail": "Licence",
       "edit": "Licence"
     },
+    "assetLicenceGroup": {
+      "list": "Asset licence groups",
+      "detail": "Licence group",
+      "edit": "Licence groups"
+    },
     "author": {
       "list": "Authors",
       "detail": "Author",

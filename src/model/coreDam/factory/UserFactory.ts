@@ -21,6 +21,7 @@ export function useUserFactory() {
       permissionGroups: [],
       permissions: {},
       resolvedPermissions: {},
+      licenceGroups: [],
       assetLicences: [],
       enabled: true,
       createdAt: dateTimeNow(),
@@ -43,6 +44,7 @@ export function useUserFactory() {
       adminToExtSystems: user.adminToExtSystems,
       userToExtSystems: [],
       assetLicences: user.assetLicences,
+      licenceGroups: user.licenceGroups,
       allowedAssetExternalProviders: user.allowedAssetExternalProviders,
       allowedDistributionServices: user.allowedDistributionServices,
     }

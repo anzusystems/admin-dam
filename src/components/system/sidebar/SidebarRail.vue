@@ -106,6 +106,20 @@ const { t } = useI18n()
         </VTooltip>
       </VListItem>
     </Acl>
+    <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
+      <VListItem
+        :to="{ name: ROUTE.DAM.ASSET_LICENCE_GROUP.LIST }"
+        prepend-icon="mdi-account-key"
+        data-cy="asset-licence-group-settings"
+      >
+        <VTooltip
+          location="right"
+          activator="parent"
+        >
+          {{ t('sidebar.settings.assetLicenceGroups') }}
+        </VTooltip>
+      </VListItem>
+    </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
         :to="{ name: ROUTE.DAM.AUTHOR.LIST }"

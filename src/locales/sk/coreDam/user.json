@@ -12,6 +12,7 @@
     "enabled": "Povolený",
     "plainPassword": "Nové heslo",
     "assetLicences": "Licencie",
+    "licenceGroups": "Skupiny licencií",
     "userToExtSystems": "Používateľ externých systémov",
     "adminToExtSystems": "Admin externých systémov",
     "superAdmin": "Super admin",

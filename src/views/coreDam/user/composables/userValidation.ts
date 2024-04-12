@@ -4,9 +4,9 @@ import type { DamUserUpdateDto } from '@anzusystems/common-admin'
 import { UserAuthType, useValidate } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 
-const { required, minLength } = useValidate()
-
 export function useUpdateUserValidation(userUpdate: Ref<DamUserUpdateDto>, userAuthType: UserAuthType) {
+  const { required, minLength } = useValidate()
+
   const rulesRaw = {} as Record<string, any> // todo find better type
 
   if (userAuthType === UserAuthType.JsonCredentials) {
