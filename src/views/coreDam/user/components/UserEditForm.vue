@@ -17,6 +17,8 @@ import { useUserEditActions } from '@/views/coreDam/user/composables/userActions
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
 import { damClient } from '@/services/api/clients/damClient'
+import DamAssetLicenceGroupRemoteAutocomplete
+  from '@/views/coreDam/assetLicenceGroup/components/DamAssetLicenceGroupRemoteAutocomplete.vue'
 
 const { userUpdate } = useUserEditActions()
 
@@ -48,11 +50,20 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <DamAssetLicenceGroupRemoteAutocomplete
+            v-model="userUpdate.licenceGroups"
+            :client="damClient"
+            :label="t('coreDam.user.model.licenceGroups')"
+            multiple
+            clearable
+            data-cy="user-asset-licence-groups"
+          />
+        </ARow>
+        <ARow>
           <DamAssetLicenceRemoteAutocomplete
             v-model="userUpdate.assetLicences"
             :client="damClient"
             :label="t('coreDam.user.model.assetLicences')"
-            :v="v$.userUpdate.assetLicences"
             multiple
             clearable
             data-cy="user-asset-licences"

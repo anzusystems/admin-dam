@@ -1,12 +1,13 @@
 import { ref } from 'vue'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, IntegerId, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupOneStore } from '@/stores/coreDam/assetLicenceGroupStore'
 import { storeToRefs } from 'pinia'
 import {
   fetchAssetLicenceGroup,
   fetchAssetLicenceGroupList,
-  updateAssetLicenceGroup
+  fetchAssetLicenceGroupListByIds,
+  updateAssetLicenceGroup,
 } from '@/services/api/coreDam/assetLicenceGroupApi'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
@@ -14,6 +15,8 @@ import { ROUTE } from '@/router/routes'
 import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
+import { damClient } from '@/services/api/clients/damClient'
+import type { AxiosInstance } from 'axios'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -31,7 +34,7 @@ export const useAssetLicenceGroupListActions = () => {
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      const res = await fetchAssetLicenceGroupList(pagination, filterBag)
+      const res = await fetchAssetLicenceGroupList(damClient, pagination, filterBag)
       res.forEach((item) => {
         addToCachedAssetLicences(item.licences)
         addToCachedExtSystems(item.extSystem)
@@ -131,5 +134,27 @@ export const useAssetLicenceGroupEditActions = () => {
     fetchData,
     onUpdate,
     resetStore: assetLicenceGroupOneStore.reset,
+  }
+}
+
+export const useAssetLicenceGroupSelectActions = (client: () => AxiosInstance) => {
+  const mapToValueObjectOption = (assetLicenceGroups: AssetLicenceGroup[]): ValueObjectOption<IntegerId>[] => {
+    return assetLicenceGroups.map((assetLicence: AssetLicenceGroup) => ({
+      title: assetLicence.name,
+      value: assetLicence.id,
+    }))
+  }
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToValueObjectOption(await fetchAssetLicenceGroupList(client, pagination, filterBag))
+  }
+
+  const fetchItemsByIds = async (ids: number[]) => {
+    return mapToValueObjectOption(await fetchAssetLicenceGroupListByIds(client, ids))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
   }
 }

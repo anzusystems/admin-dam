@@ -12,6 +12,7 @@
     "enabled": "Enabled",
     "plainPassword": "New password",
     "assetLicences": "Licences",
+    "licenceGroups": "Licence groups",
     "userToExtSystems": "User to External Systems",
     "adminToExtSystems": "Admin to External Systems",
     "superAdmin": "Super admin",

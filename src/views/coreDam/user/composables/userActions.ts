@@ -16,6 +16,7 @@ import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { damClient } from '@/services/api/clients/damClient'
+import { fetchAssetLicenceGroupListByIds } from '@/services/api/coreDam/assetLicenceGroupApi'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -52,12 +53,13 @@ export const useUserListActions = () => {
 
 export const useUserDetailActions = () => {
   const userOneStore = useUserOneStore()
-  const { user } = storeToRefs(userOneStore)
+  const { user, userAssetLicenceGroups } = storeToRefs(userOneStore)
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
       const user = await fetchDamUser(damClient, id)
+      userAssetLicenceGroups.value = await fetchAssetLicenceGroupListByIds(damClient, user.licenceGroups)
       userOneStore.setUser(user)
       addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
       addToCachedAssetLicences(user.assetLicences)

@@ -9,13 +9,14 @@ import {
   type IntegerId, type Pagination
 } from '@anzusystems/common-admin'
 import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
+import type { AxiosInstance } from 'axios'
 
 const END_POINT = '/adm/v1/asset-licence-group'
 export const ENTITY = 'assetLicenceGroup'
 
-export const fetchAssetLicenceGroupListByIds = (ids: IntegerId[]) =>
+export const fetchAssetLicenceGroupListByIds = (client: () => AxiosInstance, ids: IntegerId[]) =>
   apiFetchByIds<AssetLicenceGroup[]>(
-    damClient,
+    client,
     ids,
     END_POINT,
     {},
@@ -25,9 +26,9 @@ export const fetchAssetLicenceGroupListByIds = (ids: IntegerId[]) =>
     true
   )
 
-export const fetchAssetLicenceGroupList = (pagination: Pagination, filterBag: FilterBag) =>
+export const fetchAssetLicenceGroupList = (client: () => AxiosInstance, pagination: Pagination, filterBag: FilterBag) =>
   apiFetchList<AssetLicenceGroup[]>(
-    damClient,
+    client,
     END_POINT,
     {},
     pagination,
