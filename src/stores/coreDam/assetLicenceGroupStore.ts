@@ -1,12 +1,12 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useAssetLicenceGroupFactory } from '@/model/coreDam/factory/AssetLicenceGroupFactory'
-import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
 import { ref } from 'vue'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
 
 export const useAssetLicenceGroupOneStore = defineStore('assetLicenceGroupOneStore', () => {
   const { createDefault } = useAssetLicenceGroupFactory()
 
-  const assetLicenceGroup = ref<AssetLicenceGroup>(createDefault())
+  const assetLicenceGroup = ref<DamAssetLicenceGroup>(createDefault())
 
   function reset() {
     assetLicenceGroup.value = createDefault()

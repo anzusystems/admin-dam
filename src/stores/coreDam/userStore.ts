@@ -1,15 +1,14 @@
-import type { DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup, DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
 import { useUserFactory } from '@/model/coreDam/factory/UserFactory'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
 
 export const useUserOneStore = defineStore('damUserOneStore', () => {
   const { createDefault, createDefaultForUpdate } = useUserFactory()
 
   const user = ref<DamUser>(createDefault())
   const userUpdate = ref<DamUserUpdateDto>(createDefaultForUpdate(createDefault()))
-  const userAssetLicenceGroups = ref<AssetLicenceGroup[]>([])
+  const userAssetLicenceGroups = ref<DamAssetLicenceGroup[]>([])
 
   function setUser(userNew: DamUser) {
     user.value = userNew

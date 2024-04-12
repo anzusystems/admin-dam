@@ -1,22 +1,15 @@
 import { ref } from 'vue'
-import type { FilterBag, IntegerId, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup, FilterBag, Pagination } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceGroupList, useAlerts } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupOneStore } from '@/stores/coreDam/assetLicenceGroupStore'
 import { storeToRefs } from 'pinia'
-import {
-  fetchAssetLicenceGroup,
-  fetchAssetLicenceGroupList,
-  fetchAssetLicenceGroupListByIds,
-  updateAssetLicenceGroup,
-} from '@/services/api/coreDam/assetLicenceGroupApi'
+import { fetchAssetLicenceGroup, updateAssetLicenceGroup } from '@/services/api/coreDam/assetLicenceGroupApi'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { damClient } from '@/services/api/clients/damClient'
-import type { AxiosInstance } from 'axios'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -27,14 +20,14 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceGroupListActions = () => {
-  const listItems = ref<AssetLicenceGroup[]>([])
+  const listItems = ref<DamAssetLicenceGroup[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      const res = await fetchAssetLicenceGroupList(damClient, pagination, filterBag)
+      const res = await fetchDamAssetLicenceGroupList(damClient, pagination, filterBag)
       res.forEach((item) => {
         addToCachedAssetLicences(item.licences)
         addToCachedExtSystems(item.extSystem)
@@ -137,24 +130,3 @@ export const useAssetLicenceGroupEditActions = () => {
   }
 }
 
-export const useAssetLicenceGroupSelectActions = (client: () => AxiosInstance) => {
-  const mapToValueObjectOption = (assetLicenceGroups: AssetLicenceGroup[]): ValueObjectOption<IntegerId>[] => {
-    return assetLicenceGroups.map((assetLicence: AssetLicenceGroup) => ({
-      title: assetLicence.name,
-      value: assetLicence.id,
-    }))
-  }
-
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    return mapToValueObjectOption(await fetchAssetLicenceGroupList(client, pagination, filterBag))
-  }
-
-  const fetchItemsByIds = async (ids: number[]) => {
-    return mapToValueObjectOption(await fetchAssetLicenceGroupListByIds(client, ids))
-  }
-
-  return {
-    fetchItems,
-    fetchItemsByIds,
-  }
-}

@@ -5,6 +5,7 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
+  DamAssetLicenceGroupRemoteAutocomplete,
   DamAssetLicenceRemoteAutocomplete,
   DamDistributionServiceSelect,
   DamExternalProviderAssetSelect,
@@ -17,8 +18,6 @@ import { useUserEditActions } from '@/views/coreDam/user/composables/userActions
 import { useI18n } from 'vue-i18n'
 import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
 import { damClient } from '@/services/api/clients/damClient'
-import DamAssetLicenceGroupRemoteAutocomplete
-  from '@/views/coreDam/assetLicenceGroup/components/DamAssetLicenceGroupRemoteAutocomplete.vue'
 
 const { userUpdate } = useUserEditActions()
 

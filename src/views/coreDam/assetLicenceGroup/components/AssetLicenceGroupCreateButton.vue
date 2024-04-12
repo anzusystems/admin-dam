@@ -5,15 +5,16 @@ import {
   ACreateDialog,
   AFormTextField,
   ARow,
-  ASystemEntityScope, DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete
+  ASystemEntityScope,
+  type DamAssetLicenceGroup,
+  DamAssetLicenceRemoteAutocomplete,
+  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useAssetLicenceGroupFactory } from '@/model/coreDam/factory/AssetLicenceGroupFactory'
 import { useAssetLicenceGroupValidation } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
 import { createAssetLicenceGroup, ENTITY } from '@/services/api/coreDam/assetLicenceGroupApi'
 import { damClient } from '@/services/api/clients/damClient'
-import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
 
 withDefaults(
   defineProps<{
@@ -26,11 +27,11 @@ withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: AssetLicenceGroup): void
+  (e: 'onSuccess', data: DamAssetLicenceGroup): void
 }>()
 
 const { createDefault } = useAssetLicenceGroupFactory()
-const assetLicenceGroup = ref<AssetLicenceGroup>(createDefault())
+const assetLicenceGroup = ref<DamAssetLicenceGroup>(createDefault())
 const dialog = ref(false)
 
 const { v$ } = useAssetLicenceGroupValidation(assetLicenceGroup)

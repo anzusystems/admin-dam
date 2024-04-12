@@ -14,17 +14,3 @@ const filter = reactive({
 export function useAssetLicenceGroupListFilter() {
   return filter
 }
-
-export function useAssetLicenceGroupFilter() {
-  return reactive({
-    name: {
-      ...makeFilter({ name: 'name', variant: 'startsWith' }),
-    },
-    extSystem: {
-      ...makeFilter({ name: 'extSystem', default: null }),
-    },
-    extId: {
-      ...makeFilter({ name: 'extId', default: null }),
-    },
-  })
-}

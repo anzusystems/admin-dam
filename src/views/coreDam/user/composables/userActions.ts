@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { DamUser, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import {
-  cloneDeep,
+  cloneDeep, fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserList,
   fetchDamUserListByIds,
@@ -16,7 +16,6 @@ import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { damClient } from '@/services/api/clients/damClient'
-import { fetchAssetLicenceGroupListByIds } from '@/services/api/coreDam/assetLicenceGroupApi'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -59,7 +58,7 @@ export const useUserDetailActions = () => {
     detailLoading.value = true
     try {
       const user = await fetchDamUser(damClient, id)
-      userAssetLicenceGroups.value = await fetchAssetLicenceGroupListByIds(damClient, user.licenceGroups)
+      userAssetLicenceGroups.value = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
       userOneStore.setUser(user)
       addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
       addToCachedAssetLicences(user.assetLicences)

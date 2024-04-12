@@ -8,7 +8,7 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
+  createDatatableColumnsConfig, type DamAssetLicenceGroup,
   type DatatableOrderingOption,
   useAcl,
   useFilterHelpers,
@@ -22,10 +22,9 @@ import AssetLicenceGroupFilter from '@/views/coreDam/assetLicenceGroup/component
 import { useAssetLicenceGroupListFilter } from '@/model/coreDam/filter/AssetLicenceGroupFilter'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, type AclValue } from '@/types/Permission'
-import type { AssetLicenceGroup } from '@/types/coreDam/AssetLicenceGroup'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 
-type DatatableItem = AssetLicenceGroup
+type DatatableItem = DamAssetLicenceGroup
 
 const router = useRouter()
 const filter = useAssetLicenceGroupListFilter()
