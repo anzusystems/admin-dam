@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { DamUser, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import {
-  cloneDeep,
+  cloneDeep, fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserList,
   fetchDamUserListByIds,
@@ -52,12 +52,13 @@ export const useUserListActions = () => {
 
 export const useUserDetailActions = () => {
   const userOneStore = useUserOneStore()
-  const { user } = storeToRefs(userOneStore)
+  const { user, userAssetLicenceGroups } = storeToRefs(userOneStore)
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
       const user = await fetchDamUser(damClient, id)
+      userAssetLicenceGroups.value = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
       userOneStore.setUser(user)
       addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
       addToCachedAssetLicences(user.assetLicences)

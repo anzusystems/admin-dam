@@ -65,6 +65,14 @@ const { t } = useI18n()
         data-cy="asset-licence-settings"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
+      <VListItem
+        :to="{ name: ROUTE.DAM.ASSET_LICENCE_GROUP.LIST }"
+        prepend-icon="mdi-account-key"
+        :title="t('sidebar.settings.assetLicenceGroups')"
+        data-cy="asset-licence-group-settings"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
         :to="{ name: ROUTE.DAM.AUTHOR.LIST }"

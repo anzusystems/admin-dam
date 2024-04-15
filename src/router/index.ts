@@ -19,6 +19,7 @@ import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
 import { jobRoutes } from '@/router/routes/coreDam/job'
 import HomepageView from '@/views/system/HomepageView.vue'
 import { ANotFoundView } from '@anzusystems/common-admin'
+import { assetLicenceGroupRoutes } from '@/router/routes/coreDam/assetLicenceGroup'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -38,6 +39,7 @@ const vueRouter = createRouter({
     ...userRoutes,
     ...extSystemRoutes,
     ...assetLicenceRoutes,
+    ...assetLicenceGroupRoutes,
     ...permissionGroupRoutes,
     ...anzuUserRoutes,
     ...authorRoutes,

@@ -19,6 +19,6 @@ const { getCachedAssetLicence } = useCachedAssetLicences()
     :id="id"
     :get-cached-fn="getCachedAssetLicence"
     :route="ROUTE.DAM.ASSET_LICENCE.DETAIL"
-    display-text-path="title"
+    display-text-path="name"
   />
 </template>

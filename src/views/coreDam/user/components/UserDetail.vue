@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
@@ -7,8 +7,9 @@ import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtS
 import ExternalProviderAssetChip from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/coreDam/distribution/components/DistributionServiceChip.vue'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import { ROUTE } from '@/router/routes'
 
-const { user } = storeToRefs(useUserOneStore())
+const { user, userAssetLicenceGroups } = storeToRefs(useUserOneStore())
 
 const { t } = useI18n()
 </script>
@@ -16,6 +17,19 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
+      <ARow :title="t('coreDam.user.model.licenceGroups')">
+        <VChip
+          v-for="userAssetLicenceGroup in userAssetLicenceGroups"
+          :key="userAssetLicenceGroup.id"
+          :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
+          label
+          size="small"
+          class="mr-1"
+          :to="{ name: ROUTE.DAM.ASSET_LICENCE_GROUP.DETAIL, params: { id: userAssetLicenceGroup.id } }"
+        >
+          {{ userAssetLicenceGroup.name }}
+        </VChip>
+      </ARow>
       <ARow :title="t('coreDam.user.model.assetLicences')">
         <CachedAssetLicenceChip
           v-for="assetLicenceId in user.assetLicences"

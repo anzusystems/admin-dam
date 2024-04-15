@@ -1,0 +1,14 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "extSystem": "Ext system",
+    "licences": "Licences"
+  },
+  "filter": {
+    "id": "ID"
+  },
+  "meta": {
+    "create": "Create licence group"
+  }
+}

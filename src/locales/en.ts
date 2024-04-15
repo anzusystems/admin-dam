@@ -25,6 +25,7 @@ import apiValidation from '@/locales/en/error/apiValidation.json'
 import apiForbiddenOperation from '@/locales/en/error/apiForbiddenOperation.json'
 import jsValidation from '@/locales/en/error/jsValidation.json'
 import breadcrumb from '@/locales/en/breadcrumb.json'
+import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
 
 export default {
   common: messagesEn.common,
@@ -32,6 +33,7 @@ export default {
   coreDam: {
     asset,
     assetLicence,
+    assetLicenceGroup,
     author,
     distribution,
     distributionCategory,

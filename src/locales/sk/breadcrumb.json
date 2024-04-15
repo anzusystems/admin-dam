@@ -5,6 +5,11 @@
       "detail": "Licencie",
       "edit": "Licencie"
     },
+    "assetLicenceGroup": {
+      "list": "Skupiny licencií assetov",
+      "detail": "Skupina licencie",
+      "edit": "Skupina licencie"
+    },
     "author": {
       "list": "Autori",
       "detail": "Autor",
