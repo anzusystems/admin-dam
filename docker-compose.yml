@@ -9,7 +9,7 @@ services:
       dockerfile: ./docker/app/local/Dockerfile
     environment:
       - VIRTUAL_HOST=admin-dam.anzusystems.local
-      - VIRTUAL_PORT=8080
+      - VIRTUAL_PORT=${NGINX_PORT:-8151}
     external_links:
       - local-proxy:core-dam.anzusystems.local
       - local-proxy:admin-dam.anzusystems.local
@@ -21,7 +21,7 @@ services:
       - .:/var/www/html:cached
     ports:
       - ${DOCKER_VUE_DEV_PORT:-8150}:${DOCKER_VUE_DEV_PORT:-8150}
-      - ${NGINX_PORT:-8151}:8080
+      - ${NGINX_PORT:-8151}:${NGINX_PORT:-8151}
     hostname: admin-dam.anzusystems.local
     privileged: true
     networks:
