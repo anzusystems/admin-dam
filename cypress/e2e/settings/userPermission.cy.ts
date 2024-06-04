@@ -5,11 +5,11 @@ import {
   ALERT_UPDATE,
   CY, JOB_DELETE,
   JOB_SYNC,
-  RAND_NUM,
   USER_EMAIL,
   USER_ROLE
 } from '../../utils/common'
 let USER_ID = ''
+const RAND_NUM = `${Cypress._.random(50, 100)}`
 describe(
   `Test permission user function, Env: ${CY.cfg}`,
   { tags: ['@userPermission', '@settings'], env: { visitBaseUrl: false } },

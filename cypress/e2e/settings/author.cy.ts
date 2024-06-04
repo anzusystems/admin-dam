@@ -35,7 +35,7 @@ describe(`Test authors function, Env: ${CY.cfg}`,
   })
   it('Edit author', () => {
     cy.visit('/author')
-    cy.getCy('filter-string', { timeout: 20000 }).first().type(`${USER_ID}{ENTER}`)
+    cy.getCy('filter-string', 20000).first().type(`${USER_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
     cy.urlContains('/edit')

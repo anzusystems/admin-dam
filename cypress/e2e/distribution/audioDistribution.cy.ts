@@ -34,6 +34,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.getCy('button-add-new-podcast-episode').should('be.visible').click()
       cy.getCy('field-choose-podcast').click()
       cy.waitSec(2)
+      cy.getCy('field-choose-podcast').type(DISTRIBUTION_DATA.PODCAST)
       cy.get('.v-list-item').contains(DISTRIBUTION_DATA.PODCAST).click()
       cy.circleLoad()
       cy.get('textarea').eq(0).type(ASSET_DESCRIPTION)

@@ -18,7 +18,7 @@ Follow the [installation guide](README.md) to install the project and run dev se
   in `cypress.config.ts`
 
 
-- Some are stored in [LastPass](https://lastpass.com/) under name `Cypress Config - DAM` or use following example:
+- Some are stored in [BitWarden](https://vault.bitwarden.com/#/vault?collectionId=5ec1888a-edc3-4141-8d69-b14800d2726c&itemId=2d496bd8-9b56-41f7-811a-b148007cd710) under name `Cypress Config - DAM` or use following example:
 ```typescript
 function extendCypressConfigStg(config) {
     config.baseUrl = ''
@@ -28,10 +28,6 @@ function extendCypressConfigStg(config) {
             password: '',
             forceLoginLink: '',  // admin forceLoginLink
         },
-    }
-    config.env.cookie = {
-        name: '',
-        value: '',
     }
     config.env.url = {
         domain: '',

@@ -41,10 +41,10 @@ Cypress.Commands.add('verifyFileType',
     fileGroup = fileType.includes('txt') ? 'text' : fileGroup
     expect(type).to.contain(fileGroup).and.to.contain(getFileType(fileType))})
 })
-Cypress.Commands.add('waitForUpload', (alertUpload: string, timeout?: number) => {
+Cypress.Commands.add('waitForUpload', (alertUpload: string, timeout?: number = 10000) => {
   cy.contains('[data-cy="upload-overlay-title"]', alertUpload, { timeout: timeout | 90000 })
 })
-Cypress.Commands.add('uploadFile', (fileName: string, action: 'select' | 'drag-drop', timeout?: number) => {
+Cypress.Commands.add('uploadFile', (fileName: string, action: 'select' | 'drag-drop', timeout?: number = 10000) => {
   cy.get('input[type="file"]', { timeout: timeout | 10000 })
     .first()
     .selectFile(

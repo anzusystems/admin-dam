@@ -70,7 +70,7 @@ declare global {
   }
 }
 
-Cypress.Commands.add('waitResponse', (request: string, timeout?: number) => {
+Cypress.Commands.add('waitResponse', (request: string, timeout: number = 10000) => {
   cy.log(`Wait for response: ${request}`)
   cy.intercept(request, {}).as('waitResponse')
   cy.wait('@waitResponse', { timeout: timeout })
@@ -81,15 +81,15 @@ Cypress.Commands.add('waitSec', (sec: number) => {
   cy.wait(sec * 1000)
 })
 
-Cypress.Commands.add('getCy', (selector: string, timeout?: number) => {
+Cypress.Commands.add('getCy', (selector: string, timeout: number = 10000) => {
   cy.get(`[data-cy='${selector}']`, { timeout: timeout })
 })
 
-Cypress.Commands.add('getCyVisibleClick', (selector: string, timeout?: number) => {
+Cypress.Commands.add('getCyVisibleClick', (selector: string, timeout: number = 10000) => {
   cy.get(`[data-cy='${selector}']`, { timeout: timeout }).should('be.visible').click()
 })
 
-Cypress.Commands.add('urlContains', (string: string, timeout?: number) => {
+Cypress.Commands.add('urlContains', (string: string, timeout: number = 10000) => {
   cy.url({ timeout: timeout }).should('contain', string)
 })
 
@@ -103,7 +103,7 @@ Cypress.Commands.add('alertMessage', (message: string) => {
   cy.get('.mdi-close').eq(0).click()
 })
 
-Cypress.Commands.add('visitBaseUrl', (value?: boolean, timeout?: number) => {
+Cypress.Commands.add('visitBaseUrl', (value?: boolean, timeout: number = 10000) => {
   if (value) {
     cy.visit('/', { timeout: timeout })
   }
