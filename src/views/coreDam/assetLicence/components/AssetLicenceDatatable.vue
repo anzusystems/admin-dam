@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -10,7 +11,6 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -21,8 +21,7 @@ import { useAssetLicenceListActions } from '@/views/coreDam/assetLicence/composa
 import AssetLicenceFilter from '@/views/coreDam/assetLicence/components/AssetLicenceFilter.vue'
 import { useAssetLicenceListFilter } from '@/model/coreDam/filter/AssetLicenceFilter'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
-import { ACL, type AclValue } from '@/types/Permission'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = DamAssetLicence
 
@@ -35,10 +34,10 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_ASSET_LICENCE_VIEW))
+  if (item.id && can(ACL.DAM_ASSET_LICENCE_READ))
     router.push({ name: ROUTE.DAM.ASSET_LICENCE.DETAIL, params: { id: item.id } })
 }
 
@@ -101,7 +100,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_ASSET_LICENCE_VIEW">
+            <Acl :permission="ACL.DAM_ASSET_LICENCE_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.ASSET_LICENCE.DETAIL"

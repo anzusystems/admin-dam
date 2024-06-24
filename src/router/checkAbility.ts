@@ -1,14 +1,13 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { isUndefined, useAcl, useDamCurrentUser } from '@anzusystems/common-admin'
-import type { AclValue } from '@/types/Permission'
+import { isUndefined } from '@anzusystems/common-admin'
+import { useAuth } from '@/composables/auth/auth'
 
 export const checkAbility = async (
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
-  const { damCurrentUser } = useDamCurrentUser()
-  const { canForAll } = useAcl<AclValue>({ currentUser: damCurrentUser, disableInject: true })
+  const { canForAll } = useAuth()
 
   if (isUndefined(to.meta.requiredPermissions)) {
     next()

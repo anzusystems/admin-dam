@@ -11,17 +11,16 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL, type AclValue } from '@/types/Permission'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
 import { damClient } from '@/services/api/clients/damClient'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = PermissionGroup
 
@@ -30,10 +29,10 @@ const router = useRouter()
 const filter = usePermissionGroupListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchPermissionGroupList, permissionGroupList, datatableHiddenColumns } = usePermissionGroupActions(damClient)
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_PERMISSION_GROUP_VIEW)) {
+  if (item.id && can(ACL.DAM_PERMISSION_GROUP_READ)) {
     router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: item.id } })
   }
 }
@@ -105,7 +104,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_PERMISSION_GROUP_VIEW">
+            <Acl :permission="ACL.DAM_PERMISSION_GROUP_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"

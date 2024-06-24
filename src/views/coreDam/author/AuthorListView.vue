@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
-import { ACL } from '@/types/Permission'
 import AuthorDatatable from '@/views/coreDam/author/components/AuthorDatatable.vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import { ref } from 'vue'
 import type AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = useAuthorListActions()
 

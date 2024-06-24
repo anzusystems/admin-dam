@@ -10,8 +10,8 @@ import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
 import { ref } from 'vue'
-import { ACL } from '@/types/Permission'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import { ACL } from '@/composables/auth/auth'
 
 withDefaults(
   defineProps<{

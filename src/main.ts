@@ -17,19 +17,19 @@ import {
   loadCommonFonts,
   type PluginOptions,
 } from '@anzusystems/common-admin'
-import { useDamCurrentUser } from '@anzusystems/common-admin'
-import type { AclValue } from '@/types/Permission'
 import '@anzusystems/common-admin/styles'
 import { damClient } from '@/services/api/clients/damClient'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
+import { type AclValue, useAuth } from '@/composables/auth/auth'
 
 export const DEFAULT_LANGUAGE: LanguageCode = 'sk'
 export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['en', 'sk']
 
 dayjs.extend(Duration)
 
-const { damCurrentUser } = useDamCurrentUser()
+const { useCurrentUser } = useAuth()
+const { currentUser } = useCurrentUser('dam')
 
 loadCommonFonts()
 
@@ -40,7 +40,7 @@ loadEnvConfig(() => {
     .use(vuetify)
     .use(router)
     .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
-      currentUser: damCurrentUser,
+      currentUser: currentUser,
       languages: {
         available: AVAILABLE_LANGUAGES,
         default: DEFAULT_LANGUAGE,

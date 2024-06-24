@@ -16,14 +16,13 @@ import {
   ATableDetailButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
 import { useI18n } from 'vue-i18n'
-import { ACL, type AclValue } from '@/types/Permission'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import type { Job } from '@/types/coreDam/Job'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = Job
 
@@ -35,10 +34,10 @@ const { fetchList, listItems, datatableHiddenColumns } = useJobListActions()
 
 const { t } = useI18n()
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_JOB_VIEW)) {
+  if (item.id && can(ACL.DAM_JOB_READ)) {
     router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: item.id } })
   }
 }
@@ -120,7 +119,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_JOB_VIEW">
+            <Acl :permission="ACL.DAM_JOB_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.JOB.DETAIL"

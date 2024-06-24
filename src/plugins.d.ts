@@ -2,7 +2,8 @@
 import type { MessageSchema } from '@/plugins/i18n'
 import type { ObjectLeaves } from '@anzusystems/common-admin'
 import 'vue-router'
-import type { AclValue as CustomAclValue } from '@/types/Permission'
+
+import type { AclValue as CustomAclValue } from '@/composables/auth/auth'
 
 declare module 'vue-router' {
   interface RouteMeta {

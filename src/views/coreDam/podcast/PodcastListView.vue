@@ -4,8 +4,8 @@ import PodcastCreateButton from '@/views/coreDam/podcast/components/PodcastCreat
 import PodcastDatatable from '@/views/coreDam/podcast/components/PodcastDatatable.vue'
 import { ref } from 'vue'
 import { usePodcastListActions } from '@/views/coreDam/podcast/composables/podcastActions'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = usePodcastListActions()
 

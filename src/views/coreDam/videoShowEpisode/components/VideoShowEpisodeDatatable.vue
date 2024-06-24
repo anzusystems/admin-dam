@@ -9,7 +9,6 @@ import {
   ATableDetailButton,
   ATableEditButton,
   createDatatableColumnsConfig,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -19,8 +18,8 @@ import { useRouter } from 'vue-router'
 import { useVideoShowEpisodeListActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeListFilter } from '@/model/coreDam/filter/VideoShowEpisodeFilter'
 import VideoShowEpisodeFilter from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
-import { ACL, type AclValue } from '@/types/Permission'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = VideoShowEpisode
 
@@ -37,10 +36,10 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 
 const { fetchList, listItems, datatableHiddenColumns } = useVideoShowEpisodeListActions()
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_VIEW)) {
+  if (item.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_READ)) {
     router.push({
       name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL,
       params: { id: props.videoShowId, episodeId: item.id },

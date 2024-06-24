@@ -4,8 +4,8 @@ import VideoShowCreateButton from '@/views/coreDam/videoShow/components/VideoSho
 import VideoShowDatatable from '@/views/coreDam/videoShow/components/VideoShowDatatable.vue'
 import { ref } from 'vue'
 import { useVideoShowListActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = useVideoShowListActions()
 

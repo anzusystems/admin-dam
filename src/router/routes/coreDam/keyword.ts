@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const keywordRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/keyword/KeywordListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
+          requiredPermissions: [ACL.DAM_KEYWORD_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/keyword/KeywordEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_KEYWORD_VIEW, ACL.DAM_KEYWORD_UPDATE],
+          requiredPermissions: [ACL.DAM_KEYWORD_READ, ACL.DAM_KEYWORD_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.keyword.edit',
         },
@@ -41,7 +41,7 @@ export const keywordRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/keyword/KeywordDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_KEYWORD_VIEW],
+          requiredPermissions: [ACL.DAM_KEYWORD_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.keyword.detail',
         },

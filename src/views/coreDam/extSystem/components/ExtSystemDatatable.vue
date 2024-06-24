@@ -20,7 +20,8 @@ import { useExtSystemListFilter } from '@/model/coreDam/filter/ExtSystemFilter'
 import { useExtSystemListActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemFilter from '@/views/coreDam/extSystem/components/ExtSystemFilter.vue'
 import type { DamExtSystem } from '@anzusystems/common-admin'
-import { ACL } from '@/types/Permission'
+
+import { ACL } from '@/composables/auth/auth'
 
 type DatatableItem = DamExtSystem
 
@@ -93,7 +94,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_EXT_SYSTEM_VIEW">
+            <Acl :permission="ACL.DAM_EXT_SYSTEM_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.EXT_SYSTEM.DETAIL"

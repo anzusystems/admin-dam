@@ -8,9 +8,9 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig, type DamAssetLicenceGroup,
+  createDatatableColumnsConfig,
+  type DamAssetLicenceGroup,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -21,8 +21,8 @@ import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGro
 import AssetLicenceGroupFilter from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupFilter.vue'
 import { useAssetLicenceGroupListFilter } from '@/model/coreDam/filter/AssetLicenceGroupFilter'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
-import { ACL, type AclValue } from '@/types/Permission'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = DamAssetLicenceGroup
 
@@ -35,10 +35,10 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_ASSET_LICENCE_GROUP_VIEW))
+  if (item.id && can(ACL.DAM_ASSET_LICENCE_GROUP_READ))
     router.push({ name: ROUTE.DAM.ASSET_LICENCE_GROUP.DETAIL, params: { id: item.id } })
 }
 
@@ -49,7 +49,7 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'extSystem' },
     { key: 'licences' },
     { key: 'createdAt' },
-    { key: 'modifiedAt' }
+    { key: 'modifiedAt' },
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
@@ -116,7 +116,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_VIEW">
+            <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.ASSET_LICENCE_GROUP.DETAIL"

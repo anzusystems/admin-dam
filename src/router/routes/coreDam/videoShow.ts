@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
 import type { RouteRecordRaw } from 'vue-router'
-import { ACL } from '@/types/Permission'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const videoShowRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/videoShow/VideoShowListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
+          requiredPermissions: [ACL.DAM_VIDEO_SHOW_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/videoShow/VideoShowEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW, ACL.DAM_VIDEO_SHOW_UPDATE],
+          requiredPermissions: [ACL.DAM_VIDEO_SHOW_READ, ACL.DAM_VIDEO_SHOW_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.videoShow.edit',
         },
@@ -40,7 +40,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
         component: AEmptyRouterView,
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
+          requiredPermissions: [ACL.DAM_VIDEO_SHOW_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.videoShow.detail',
         },
@@ -51,7 +51,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
             component: () => import('@/views/coreDam/videoShow/VideoShowDetailView.vue'),
             meta: {
               requiresAuth: true,
-              requiredPermissions: [ACL.DAM_VIDEO_SHOW_VIEW],
+              requiredPermissions: [ACL.DAM_VIDEO_SHOW_READ],
               layout: 'AppLayoutDrawer',
             },
           },
@@ -61,7 +61,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
             component: () => import('@/views/coreDam/videoShowEpisode/VideoShowEpisodeEditView.vue'),
             meta: {
               requiresAuth: true,
-              requiredPermissions: [ACL.DAM_VIDEO_SHOW_EPISODE_VIEW, ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE],
+              requiredPermissions: [ACL.DAM_VIDEO_SHOW_EPISODE_READ, ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE],
               layout: 'AppLayoutDrawer',
               breadcrumbT: 'breadcrumb.coreDam.videoShowEpisode.edit',
             },
@@ -72,7 +72,7 @@ export const videoShowRoutes: RouteRecordRaw[] = [
             component: () => import('@/views/coreDam/videoShowEpisode/VideoShowEpisodeDetailView.vue'),
             meta: {
               requiresAuth: true,
-              requiredPermissions: [ACL.DAM_VIDEO_SHOW_EPISODE_VIEW],
+              requiredPermissions: [ACL.DAM_VIDEO_SHOW_EPISODE_READ],
               layout: 'AppLayoutDrawer',
               breadcrumbT: 'breadcrumb.coreDam.videoShowEpisode.detail',
             },
