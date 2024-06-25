@@ -51,7 +51,7 @@ if [ -f /.dockerenv ]; then
     env-config
 
     if ${RUN_YARN_INSTALL}; then
-        yarn install
+        yes | yarn install
     fi
 
     if ${CLEAR_VITE_DEPS}; then
