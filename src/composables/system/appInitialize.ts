@@ -1,7 +1,7 @@
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { isDefined, isUndefined, updateDamCurrentUser, useDamConfigState } from '@anzusystems/common-admin'
+import { isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
 import { envConfig } from '@/services/EnvConfigService'
@@ -22,9 +22,11 @@ export async function createAppInitialize(
     useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements } =
     useDamConfigState(damClient)
+  const { useCurrentUser } = useAuth()
+  const { fetchCurrentUser, currentUser } = useCurrentUser('dam')
 
   try {
-    const updateCurrentUserPromise = updateDamCurrentUser(damClient)
+    const updateCurrentUserPromise = fetchCurrentUser(damClient)
     const loadDamConfigPromise = loadDamPrvConfig()
     await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
   } catch (error) {
@@ -49,9 +51,6 @@ export async function createAppInitialize(
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
   }
-
-  const { useCurrentUser } = useAuth()
-  const { currentUser } = useCurrentUser('dam')
 
   if (
     (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
