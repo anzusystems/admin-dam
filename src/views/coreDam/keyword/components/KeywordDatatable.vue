@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
+import type { DamKeyword } from '@anzusystems/common-admin'
 import {
   ABooleanValue,
   ADatatableConfigButton,
@@ -11,18 +12,16 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/keywordApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL, type AclValue } from '@/types/Permission'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
 import KeywordFilter from '@/views/coreDam/keyword/components/KeywordFilter.vue'
-import type { DamKeyword } from '@anzusystems/common-admin'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = DamKeyword
 
@@ -35,10 +34,10 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_KEYWORD_VIEW)) {
+  if (item.id && can(ACL.DAM_KEYWORD_READ)) {
     router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: item.id } })
   }
 }
@@ -102,7 +101,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_KEYWORD_VIEW">
+            <Acl :permission="ACL.DAM_KEYWORD_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.KEYWORD.DETAIL"

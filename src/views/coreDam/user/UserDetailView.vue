@@ -5,8 +5,8 @@ import { useRoute } from 'vue-router'
 import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, user } = useUserDetailActions()
 

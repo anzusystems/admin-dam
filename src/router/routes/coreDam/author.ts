@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const authorRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const authorRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/author/AuthorListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_AUTHOR_VIEW],
+          requiredPermissions: [ACL.DAM_AUTHOR_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const authorRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/author/AuthorEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_AUTHOR_VIEW, ACL.DAM_AUTHOR_UPDATE],
+          requiredPermissions: [ACL.DAM_AUTHOR_READ, ACL.DAM_AUTHOR_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.author.edit',
         },
@@ -41,7 +41,7 @@ export const authorRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/author/AuthorDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_AUTHOR_VIEW],
+          requiredPermissions: [ACL.DAM_AUTHOR_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.author.detail',
         },

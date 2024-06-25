@@ -6,7 +6,8 @@ import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGro
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import AssetLicenceGroupCreateButton
   from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
-import { ACL } from '@/types/Permission'
+
+import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = useAssetLicenceGroupListActions()
 

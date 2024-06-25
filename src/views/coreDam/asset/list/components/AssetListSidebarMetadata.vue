@@ -12,8 +12,8 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL } from '@/types/Permission'
 import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import { ACL } from '@/composables/auth/auth'
 
 const emit = defineEmits<{
   (e: 'mainRouteChanged'): void

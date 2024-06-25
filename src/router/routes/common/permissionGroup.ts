@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const permissionGroupRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const permissionGroupRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/common/permissionGroup/PermissionGroupListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_PERMISSION_GROUP_VIEW],
+          requiredPermissions: [ACL.DAM_PERMISSION_GROUP_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const permissionGroupRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/common/permissionGroup/PermissionGroupEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_PERMISSION_GROUP_VIEW, ACL.DAM_PERMISSION_GROUP_UPDATE],
+          requiredPermissions: [ACL.DAM_PERMISSION_GROUP_READ, ACL.DAM_PERMISSION_GROUP_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.permissionGroup.edit',
         },
@@ -41,7 +41,7 @@ export const permissionGroupRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/common/permissionGroup/PermissionGroupDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_PERMISSION_GROUP_VIEW],
+          requiredPermissions: [ACL.DAM_PERMISSION_GROUP_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.permissionGroup.detail',
         },

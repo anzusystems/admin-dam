@@ -1,8 +1,8 @@
 import ListView from '@/views/common/log/LogListView.vue'
 import DetailView from '@/views/common/log/LogDetailView.vue'
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const commonLogRoutes = [
   {

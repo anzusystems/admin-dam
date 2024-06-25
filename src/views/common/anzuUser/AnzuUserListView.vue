@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ACL } from '@/types/Permission'
 import { ref } from 'vue'
 import { damClient } from '@/services/api/clients/damClient'
 import AnzuUserDatatable from '@/views/common/anzuUser/components/AnzuUserDatatable.vue'
@@ -7,6 +6,7 @@ import AnzuUserCreateButton from '@/views/common/anzuUser/components/AnzuUserCre
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import { ACard } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)
 

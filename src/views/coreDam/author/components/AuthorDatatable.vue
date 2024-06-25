@@ -17,12 +17,12 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL } from '@/types/Permission'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
 import type { DamAuthor } from '@anzusystems/common-admin'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'
+import { ACL } from '@/composables/auth/auth'
 
 type DatatableItem = DamAuthor
 

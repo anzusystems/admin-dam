@@ -1,6 +1,6 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
+import { ACL } from '@/composables/auth/auth'
 
 export const externalProviderRoutes: RouteRecordRaw[] = [
   {

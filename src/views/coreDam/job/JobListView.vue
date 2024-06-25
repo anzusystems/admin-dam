@@ -2,10 +2,10 @@
 import { ACard } from '@anzusystems/common-admin'
 import { useJobListActions } from '@/views/coreDam/job/composables/jobActions'
 import JobDatatable from '@/views/coreDam/job/components/JobDatatable.vue'
-import { ACL } from '@/types/Permission'
 import { ref } from 'vue'
 import JobCreateButton from '@/views/coreDam/job/components/JobCreateButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const datatable = ref<InstanceType<typeof JobDatatable> | null>(null)
 

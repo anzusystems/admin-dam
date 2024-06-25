@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const jobRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const jobRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/job/JobListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_JOB_VIEW],
+          requiredPermissions: [ACL.DAM_JOB_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const jobRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/job/JobDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_JOB_VIEW],
+          requiredPermissions: [ACL.DAM_JOB_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.job.detail',
         },

@@ -5,8 +5,8 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useAssetLicenceGroupDetailActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupDetail from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, assetLicenceGroup } = useAssetLicenceGroupDetailActions()
 
