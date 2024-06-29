@@ -21,7 +21,7 @@
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.47.0-beta.4",
+    "@anzusystems/common-admin": "1.47.0-beta.8",
     "@mdi/font": "7.4.47",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
@@ -36,7 +36,7 @@
     "sortablejs": "^1.15.2",
     "universal-cookie": "^7.1.4",
     "uuid": "^10.0.0",
-    "vue": "3.4.30",
+    "vue": "3.4.31",
     "vue-i18n": "^9.13.1",
     "vue-router": "^4.4.0",
     "vuetify": "^3.6.10"
@@ -45,9 +45,9 @@
     "@cypress/grep": "^4.0.2",
     "@intlify/unplugin-vue-i18n": "^4.0.0",
     "@rushstack/eslint-patch": "^1.10.3",
-    "@stylistic/eslint-plugin": "^2.2.2",
+    "@stylistic/eslint-plugin": "^2.3.0",
     "@tsconfig/node18": "^18.2.4",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "@types/rusha": "^0.8.3",
     "@types/sortablejs": "^1.15.8",
     "@types/uuid": "^10.0.0",
@@ -73,7 +73,7 @@
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "typescript": "5.4.5",
-    "vite": "^5.3.1",
+    "vite": "^5.3.2",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-tsc": "2.0.22"
   }

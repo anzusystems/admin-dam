@@ -40,7 +40,7 @@ loadEnvConfig(() => {
     .use(vuetify)
     .use(router)
     .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
-      currentUser: currentUser,
+      currentUser,
       languages: {
         available: AVAILABLE_LANGUAGES,
         default: DEFAULT_LANGUAGE,
