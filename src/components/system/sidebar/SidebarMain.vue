@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
-
 import { ACL } from '@/composables/auth/auth'
 
 const { t } = useI18n()

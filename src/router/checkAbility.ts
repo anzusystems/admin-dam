@@ -1,5 +1,5 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { isUndefined } from '@anzusystems/common-admin'
+import { type AclValue, isArray, isUndefined } from '@anzusystems/common-admin'
 import { useAuth } from '@/composables/auth/auth'
 
 export const checkAbility = async (
@@ -8,8 +8,10 @@ export const checkAbility = async (
   next: NavigationGuardNext
 ) => {
   const { canForAll } = useAuth()
-
-  if (isUndefined(to.meta.requiredPermissions)) {
+  if (
+    isUndefined(to.meta.requiredPermissions) ||
+    (isArray<AclValue>(to.meta.requiredPermissions) && to.meta.requiredPermissions.length === 0)
+  ) {
     next()
   } else if (canForAll(to.meta.requiredPermissions)) {
     next()
