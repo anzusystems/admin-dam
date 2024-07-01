@@ -1,4 +1,5 @@
 import { defineAuth } from '@anzusystems/common-admin'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 
 export const ACL = {
   DAM_ASSET_CREATE: 'dam_asset_create',
@@ -103,7 +104,7 @@ export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]
 
 export function useAuth() {
-  const { can, canForAll, canForSome, useCurrentUser } = defineAuth<AclValue>('dam')
+  const { can, canForAll, canForSome, useCurrentUser } = defineAuth<AclValue>(SYSTEM_CORE_DAM)
 
   return {
     useCurrentUser,
