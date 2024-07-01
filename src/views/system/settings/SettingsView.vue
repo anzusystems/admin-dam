@@ -10,6 +10,7 @@ import {
 import { useI18n } from 'vue-i18n'
 import { inject } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 
 const { t } = useI18n()
 const configAvailableLanguages = inject<LanguageCode[]>(AvailableLanguagesSymbol, [])
@@ -46,7 +47,10 @@ const afterLanguageChange = async (language: LanguageCode) => {
               {{ t('system.settings.locale') }}
             </VCol>
             <VCol>
-              <ALanguageSelect @after-change="afterLanguageChange" />
+              <ALanguageSelect
+                :system="SYSTEM_CORE_DAM"
+                @after-change="afterLanguageChange"
+              />
             </VCol>
           </VRow>
           <VRow
