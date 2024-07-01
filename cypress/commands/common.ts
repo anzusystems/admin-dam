@@ -131,7 +131,7 @@ Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs
           })
         cy.waitForUpload('Nahrávanie ukončené')
         cy.getCy('button-add-description').click()
-        cy.get(':nth-child(3) > .bg-primary').click()
+        cy.get('.v-overlay--active .bg-primary').contains('Uložiť a ukončiť').click()
       }
   })
 })

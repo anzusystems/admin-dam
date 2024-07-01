@@ -28,7 +28,7 @@ describe(`Test user function, Env: ${CY.cfg}`,
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-string').eq(1).type(USER_EMAIL)
+      cy.getCy('filter-string').type(USER_EMAIL)
       cy.getCy('filter-submit').click()
       cy.contains(`${USER_EMAIL}`).click()
       cy.cardLoad()
@@ -45,7 +45,7 @@ describe(`Test user function, Env: ${CY.cfg}`,
   it('Edit User', () => {
     cy.visit('/settings')
     cy.visitSubpage('user-settings', 'user', 'Používatelia')
-    cy.getCy('filter-string').last().type(`${USER_EMAIL}{ENTER}`)
+    cy.getCy('filter-string').type(`${USER_EMAIL}{ENTER}`)
     cy.getCyVisibleClick('filter-submit')
     cy.cardLoad()
     cy.contains(`${USER_EMAIL}`).click()

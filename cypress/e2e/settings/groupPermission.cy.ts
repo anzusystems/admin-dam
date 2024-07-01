@@ -31,7 +31,7 @@ describe(
     })
     it('Edit permission group', () => {
       cy.visit('/permission-group')
-      cy.getCy('filter-string', 10000).first().type(`${GROUP_ID}{ENTER}`)
+      cy.getCy('filter-integer', 10000).type(`${GROUP_ID}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
@@ -45,7 +45,7 @@ describe(
       cy.getCyVisibleClick('button-close')
       cy.urlNotContains('/edit')
       cy.getCyVisibleClick('filter-reset')
-      cy.getCy('filter-string').last().type(`TEST-${RAND_NUM}-edit{ENTER}`)
+      cy.getCy('filter-string').type(`TEST-${RAND_NUM}-edit{ENTER}`)
       cy.cardLoad()
       cy.contains('td', `TEST-${RAND_NUM}-edit`)
       cy.getCyVisibleClick('filter-reset')

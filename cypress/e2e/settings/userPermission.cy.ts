@@ -31,7 +31,7 @@ describe(
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-string').eq(1).type(USER_EMAIL)
+      cy.getCy('filter-string').type(USER_EMAIL)
       cy.getCy('filter-submit').click()
       cy.contains(`${USER_EMAIL}`).click()
       cy.cardLoad()
@@ -47,7 +47,7 @@ describe(
     })
     it('Edit user', () => {
       cy.visit('/anzu-user')
-      cy.getCy('filter-string', 10000).first().type(`${USER_ID}{ENTER}`)
+      cy.getCy('filter-integer', 10000).type(`${USER_ID}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
@@ -65,7 +65,7 @@ describe(
     })
     it('Disable user', () => {
       cy.visit('/anzu-user')
-      cy.getCy('filter-string', 10000).last().type(`${USER_EMAIL}{ENTER}`)
+      cy.getCy('filter-string', 10000).type(`${USER_EMAIL}{ENTER}`)
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')
       cy.cardLoad()
