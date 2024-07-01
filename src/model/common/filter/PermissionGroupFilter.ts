@@ -6,7 +6,7 @@ const makeFilter = makeFilterHelper('common', ENTITY)
 
 const filter = reactive({
   id: {
-    ...makeFilter({ name: 'id' }),
+    ...makeFilter({ name: 'id', default: null }),
   },
   title: {
     ...makeFilter({ name: 'title' }),
