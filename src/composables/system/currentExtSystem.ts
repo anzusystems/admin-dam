@@ -7,6 +7,7 @@ import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_DAM } from '@/model/systems'
 
 const currentExtSystemId = ref(0)
 const currentExtSystem = ref<DamExtSystem>()
@@ -16,7 +17,7 @@ const currentAssetLicenceId = ref(0)
 
 export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: string | undefined = undefined) => {
   const { useCurrentUser } = useAuth()
-  const { currentUser } = useCurrentUser<DamCurrentUserDto>('dam')
+  const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
   const { damPrvConfig, initialized } = useDamConfigState(damClient)
 
   watch(currentExtSystemId, async (newValue, oldValue) => {

@@ -56,7 +56,7 @@ const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { useCurrentUser } = useAuth()
-const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>('dam')
+const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_CORE_DAM)
 
 const saving = ref(false)
 const selectedExtSystem = ref<null | IntegerId>(null)
