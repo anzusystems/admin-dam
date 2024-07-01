@@ -10,6 +10,7 @@ import { initAppNotificationListeners } from '@/composables/system/appNotificati
 import { useLoginStatus } from '@/composables/system/loginStatus'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_DAM } from '@/model/systems'
 
 const initialized = ref(false)
 
@@ -23,7 +24,7 @@ export async function createAppInitialize(
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements } =
     useDamConfigState(damClient)
   const { useCurrentUser } = useAuth()
-  const { fetchCurrentUser, currentUser } = useCurrentUser('dam')
+  const { fetchCurrentUser, currentUser } = useCurrentUser(SYSTEM_DAM)
 
   try {
     const updateCurrentUserPromise = fetchCurrentUser(damClient)

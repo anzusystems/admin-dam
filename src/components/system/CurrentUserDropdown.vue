@@ -2,9 +2,10 @@
 import { ROUTE } from '@/router/routes'
 import { ACurrentUserDropdown } from '@anzusystems/common-admin'
 import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_DAM } from '@/model/systems'
 
 const { useCurrentUser } = useAuth()
-const { currentUser } = useCurrentUser('dam')
+const { currentUser } = useCurrentUser(SYSTEM_DAM)
 </script>
 
 <template>
