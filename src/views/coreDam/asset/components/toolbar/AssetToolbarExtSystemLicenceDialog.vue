@@ -21,7 +21,7 @@ import {
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
 import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import { damClient } from '@/services/api/clients/damClient'
@@ -56,7 +56,7 @@ const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { useCurrentUser } = useAuth()
-const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_CORE_DAM)
+const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
 const saving = ref(false)
 const selectedExtSystem = ref<null | IntegerId>(null)
