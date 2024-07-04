@@ -21,7 +21,7 @@
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.47.0-beta.12",
+    "@anzusystems/common-admin": "1.47.0-beta.14",
     "@mdi/font": "7.4.47",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
@@ -39,7 +39,7 @@
     "vue": "3.4.31",
     "vue-i18n": "^9.13.1",
     "vue-router": "^4.4.0",
-    "vuetify": "^3.6.10"
+    "vuetify": "^3.6.11"
   },
   "devDependencies": {
     "@cypress/grep": "^4.1.0",
@@ -73,7 +73,7 @@
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "typescript": "5.4.5",
-    "vite": "^5.3.2",
+    "vite": "^5.3.3",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-tsc": "2.0.24"
   }

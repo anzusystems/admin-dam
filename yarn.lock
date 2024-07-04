@@ -12,9 +12,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anzusystems/common-admin@npm:1.47.0-beta.12":
-  version: 1.47.0-beta.12
-  resolution: "@anzusystems/common-admin@npm:1.47.0-beta.12"
+"@anzusystems/common-admin@npm:1.47.0-beta.14":
+  version: 1.47.0-beta.14
+  resolution: "@anzusystems/common-admin@npm:1.47.0-beta.14"
   peerDependencies:
     "@vuelidate/core": 2.0.3
     "@vuelidate/validators": 2.0.4
@@ -27,7 +27,7 @@ __metadata:
     vue: 3.4.31
     vue-i18n: 9.13.1
     vue-router: 4.4.0
-    vuetify: 3.6.10
+    vuetify: 3.6.11
   peerDependenciesMeta:
     "@vueuse/core":
       optional: true
@@ -41,7 +41,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/adadccf58738ffc389f07f22fec1302c199f5c6591d77b87052967fa05e40c0c4979cd8e432de8369aa4d579f478fafe6db3012852618ff4f7792e382ac872e2
+  checksum: 10/6a96c6401eb72d74998f2ac052a7135baa74e72331c508d455e436077df506bbcefe5e5d9f34a771c80b75f8fd2a52ac44ecbafce53459317bda01144d82758c
   languageName: node
   linkType: hard
 
@@ -1949,7 +1949,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": "npm:1.47.0-beta.12"
+    "@anzusystems/common-admin": "npm:1.47.0-beta.14"
     "@cypress/grep": "npm:^4.1.0"
     "@intlify/unplugin-vue-i18n": "npm:^4.0.0"
     "@mdi/font": "npm:7.4.47"
@@ -1995,13 +1995,13 @@ __metadata:
     typescript: "npm:5.4.5"
     universal-cookie: "npm:^7.1.4"
     uuid: "npm:^10.0.0"
-    vite: "npm:^5.3.2"
+    vite: "npm:^5.3.3"
     vite-plugin-vuetify: "npm:^2.0.3"
     vue: "npm:3.4.31"
     vue-i18n: "npm:^9.13.1"
     vue-router: "npm:^4.4.0"
     vue-tsc: "npm:2.0.24"
-    vuetify: "npm:^3.6.10"
+    vuetify: "npm:^3.6.11"
   languageName: unknown
   linkType: soft
 
@@ -7791,13 +7791,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.3.2":
-  version: 5.3.2
-  resolution: "vite@npm:5.3.2"
+"vite@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "vite@npm:5.3.3"
   dependencies:
     esbuild: "npm:^0.21.3"
     fsevents: "npm:~2.3.3"
-    postcss: "npm:^8.4.38"
+    postcss: "npm:^8.4.39"
     rollup: "npm:^4.13.0"
   peerDependencies:
     "@types/node": ^18.0.0 || >=20.0.0
@@ -7827,7 +7827,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/77b284938921da6c2c4055a5edd916ab221a973aa1403dba2aef303db1bd54ac7325db13f3fad13d77a7ac55cac7ffef49dffaa69bcadcc3caf2cae32ca03127
+  checksum: 10/e7a094cefedad9e204b715588502118e07d1b9c00c617f55b810169181907f55144f0a82f650995d6a74f12e3695fca65afc348b475b91a81dcbd0274d30a088
   languageName: node
   linkType: hard
 
@@ -8226,9 +8226,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.6.10":
-  version: 3.6.10
-  resolution: "vuetify@npm:3.6.10"
+"vuetify@npm:^3.6.11":
+  version: 3.6.11
+  resolution: "vuetify@npm:3.6.11"
   peerDependencies:
     typescript: ">=4.7"
     vite-plugin-vuetify: ">=1.0.0"
@@ -8244,7 +8244,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 10/f57aed02d81cd24d78020e20fe7882735830129577d3a22e93303170790f528449309369c7f7b4f1c28f7082d83667d199cbee47a4a0309d9c26c64085606871
+  checksum: 10/87895843c35158ce6af962954731aa7e9ec8bf184b3a1618c9b3326e911330703223162af4ea27e607368b3932d5451519ec9fbeeb1b331aea7fa2ecd082131d
   languageName: node
   linkType: hard
 
