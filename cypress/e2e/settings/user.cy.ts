@@ -16,7 +16,7 @@ describe(`Test user function, Env: ${CY.cfg}`,
       cy.visitSubpage('user-permissions', '-user', 'Oprávnenia používateľov')
       cy.getCyVisibleClick('button-create')
       cy.getCy('create-panel').should('be.visible')
-      cy.getCy('user-id').type(`${Cypress._.random(10000, 99999)}`)
+      cy.getCy('user-id').type(`${Cypress._.random(400000, 999999)}`)
       cy.getCy('user-email').type(USER_EMAIL)
       cy.getCyVisibleClick('user-roles')
       cy.contains('.v-list-item', USER_ROLE).click()

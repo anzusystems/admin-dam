@@ -9,7 +9,7 @@ import {
 const assetIDs: Array<string> = []
 const DISTRIBUTION_DATA={
   CATEGORY: 'Publicistika',
-  AUTHOR: 'Boris Zemko',
+  AUTHOR: 'Pavol Demeš',
   KEYWORD: 'Aupark',
 } as const
 

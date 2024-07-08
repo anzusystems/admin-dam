@@ -10,7 +10,7 @@ const assetIDs: Array<string> = []
 const DISTRIBUTION_DATA={
   PODCAST: 'Dobré ráno',
   CATEGORY: 'Podcasty',
-  AUTHOR: 'Boris Zemko',
+  AUTHOR: 'Pavol Demeš',
   KEYWORD: 'Aupark',
 } as const
 describe(`Test distribution Audio function, Env: ${CY.cfg}`,
@@ -66,8 +66,8 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.circleLoad()
       cy.get('textarea').eq(0).type(ASSET_TITLE)
       cy.get('textarea').eq(2).type(ASSET_DESCRIPTION)
-      // cy.get('.v-card-text [data-cy="custom-field-authors"]').type(DISTRIBUTION_DATA.AUTHOR)
-      // cy.get('.v-card-text [data-cy="custom-field-keywords"]').type(DISTRIBUTION_DATA.KEYWORD)
+      cy.get('.v-card-text [data-cy="custom-field-authors"]').type(DISTRIBUTION_DATA.AUTHOR)
+      cy.get('.v-card-text [data-cy="custom-field-keywords"]').type(DISTRIBUTION_DATA.KEYWORD)
       cy.get('[id^="switch-"]').eq(2).click()  // Zalozit clanok -> ON
       cy.get('.v-card-actions > .bg-primary').click()
       cy.alertMessage(ALERT_CREATE)
