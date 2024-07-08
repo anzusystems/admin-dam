@@ -8,6 +8,7 @@
     },
     "attributes": {
       "rssUrl": "RSS URL",
+      "extUrl": "Externá URL podcastu",
       "mode": "Mód",
       "lastImportStatus": "Posledný stav importu"
     },

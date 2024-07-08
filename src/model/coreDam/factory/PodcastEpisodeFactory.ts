@@ -21,6 +21,8 @@ export function usePodcastEpisodeFactory() {
         seasonNumber: null,
         episodeNumber: null,
         extId: '',
+        rssUrl: '',
+        extUrl: '',
         lastImportStatus: PodcastLastImportStatus.Default,
       },
       dates: {

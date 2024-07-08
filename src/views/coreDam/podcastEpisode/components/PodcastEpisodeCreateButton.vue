@@ -103,6 +103,14 @@ const create = async () => {
             data-cy="episode-number"
           />
         </ARow>
+        <ARow>
+          <AFormTextField
+            v-model="podcastEpisode.attributes.extUrl"
+            :label="t('coreDam.podcastEpisode.model.attributes.extUrl')"
+            :v="v$.podcastEpisode.attributes.extUrl"
+            data-cy="episode-ext-url"
+          />
+        </ARow>
       </ASystemEntityScope>
     </template>
   </ACreateDialog>

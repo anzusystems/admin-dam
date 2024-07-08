@@ -25,6 +25,9 @@ export function usePodcastValidation(podcast: Ref<Podcast>) {
           minLength: minLength(1),
           maxLength: maxLength(2048),
         },
+        extUrl: {
+          maxLength: maxLength(2048),
+        },
       },
       dates: {
         importFrom: {},

@@ -51,6 +51,14 @@ const onAssetChipClick = () => {
         :value="podcastEpisode.attributes.episodeNumber"
       />
       <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.rssUrl')"
+        :value="podcastEpisode.attributes.rssUrl"
+      />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.extUrl')"
+        :value="podcastEpisode.attributes.extUrl"
+      />
+      <ARow
         :title="t('coreDam.podcastEpisode.model.attributes.extId')"
         :value="podcastEpisode.attributes.extId"
       />

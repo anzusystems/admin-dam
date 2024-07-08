@@ -8,6 +8,8 @@
       "seasonNumber": "Season number",
       "episodeNumber": "Episode number",
       "extId": "Ext id",
+      "rssUrl": "Rss audio URL",
+      "extUrl": "Ext link",
       "lastImportStatus": "Last import status"
     },
     "texts": {
