@@ -1,13 +1,7 @@
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import {
-  isDefined,
-  isUndefined,
-  updateDamCurrentUser,
-  useDamConfigState,
-  useDamCurrentUser,
-} from '@anzusystems/common-admin'
+import { isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { checkAbility } from '@/router/checkAbility'
 import { envConfig } from '@/services/EnvConfigService'
@@ -15,6 +9,8 @@ import { initCurrentExtSystemAndLicence, useCurrentExtSystem } from '@/composabl
 import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
 import { useLoginStatus } from '@/composables/system/loginStatus'
 import { damClient } from '@/services/api/clients/damClient'
+import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_DAM } from '@/model/systems'
 
 const initialized = ref(false)
 
@@ -27,11 +23,13 @@ export async function createAppInitialize(
     useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements } =
     useDamConfigState(damClient)
+  const { useCurrentUser } = useAuth()
+  const { fetchCurrentUser, currentUser } = useCurrentUser(SYSTEM_DAM)
 
   try {
-    const updateCurrentUserPromise = updateDamCurrentUser(damClient)
+    const updateCurrentUserPromise = fetchCurrentUser(damClient)
     const loadDamConfigPromise = loadDamPrvConfig()
-    await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
+    await Promise.allSettled([updateCurrentUserPromise, loadDamConfigPromise])
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
@@ -48,18 +46,16 @@ export async function createAppInitialize(
 
     const loadDamConfigExtSystemPromise = loadDamConfigExtSystem(currentExtSystemId.value)
     const loadDamConfigAssetCustomFormElementsPromise = loadDamConfigAssetCustomFormElements(currentExtSystemId.value)
-    await Promise.all([loadDamConfigExtSystemPromise, loadDamConfigAssetCustomFormElementsPromise])
+    await Promise.allSettled([loadDamConfigExtSystemPromise, loadDamConfigAssetCustomFormElementsPromise])
     initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
   }
 
-  const { damCurrentUser } = useDamCurrentUser()
-
   if (
     (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
-    isUndefined(damCurrentUser.value)
+    isUndefined(currentUser.value)
   ) {
     next({ name: ROUTE.SYSTEM.LOGIN })
   } else if (isStatusUnauthorized()) {

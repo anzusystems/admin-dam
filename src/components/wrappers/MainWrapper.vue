@@ -10,9 +10,9 @@ import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
 import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
-import { ACL } from '@/types/Permission'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
+import { ACL } from '@/composables/auth/auth'
 
 const { t } = useI18n()
 

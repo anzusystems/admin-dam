@@ -88,6 +88,7 @@ const loadFormData = async () => {
   podcastEpisode.value.attributes.episodeNumber = res.attributes.episodeNumber
   podcastEpisode.value.attributes.seasonNumber = res.attributes.seasonNumber
   podcastEpisode.value.attributes.extId = res.attributes.extId
+  podcastEpisode.value.attributes.extUrl = res.attributes.extUrl
   loadingFormData.value = false
 }
 
@@ -172,6 +173,14 @@ onMounted(async () => {
                 type="number"
                 :step="1"
                 data-cy="field-episode-num-podcast"
+              />
+            </ARow>
+            <ARow>
+              <AFormTextField
+                v-model="podcastEpisode.attributes.extUrl"
+                :label="t('coreDam.podcastEpisode.model.attributes.extUrl')"
+                :v="v$.podcastEpisode.attributes.extUrl"
+                data-cy="episode-ext-url"
               />
             </ARow>
           </template>

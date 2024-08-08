@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const assetLicenceGroupRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const assetLicenceGroupRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/assetLicenceGroup/AssetLicenceGroupListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_ASSET_LICENCE_GROUP_VIEW],
+          requiredPermissions: [ACL.DAM_ASSET_LICENCE_GROUP_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const assetLicenceGroupRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/assetLicenceGroup/AssetLicenceGroupEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_ASSET_LICENCE_GROUP_VIEW, ACL.DAM_ASSET_LICENCE_GROUP_UPDATE],
+          requiredPermissions: [ACL.DAM_ASSET_LICENCE_GROUP_READ, ACL.DAM_ASSET_LICENCE_GROUP_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.assetLicenceGroup.edit',
         },
@@ -41,7 +41,7 @@ export const assetLicenceGroupRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/assetLicenceGroup/AssetLicenceGroupDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_ASSET_LICENCE_GROUP_VIEW],
+          requiredPermissions: [ACL.DAM_ASSET_LICENCE_GROUP_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.assetLicenceGroup.detail',
         },

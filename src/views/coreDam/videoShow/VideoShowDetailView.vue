@@ -10,8 +10,8 @@ import { useVideoShowDetailTab, VideoShowDetailTab } from '@/views/coreDam/video
 import VideoShowEpisodeDatatable from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
 import VideoShowEpisodeCreateButton from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue'
 import { useVideoShowEpisodeListActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, videoShow } = useVideoShowDetailActions()
 const { listLoading } = useVideoShowEpisodeListActions()

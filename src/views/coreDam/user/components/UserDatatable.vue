@@ -12,7 +12,6 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -20,8 +19,8 @@ import { ENTITY } from '@/services/api/coreDam/userApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import UserFilter from '@/views/coreDam/user/components/UserFilter.vue'
-import { ACL, type AclValue } from '@/types/Permission'
 import { useUserListFilter } from '@/model/coreDam/filter/UserFilter'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = DamUser
 
@@ -35,10 +34,10 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_USER_VIEW)) {
+  if (item.id && can(ACL.DAM_USER_READ)) {
     router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: item.id } })
   }
 }
@@ -96,7 +95,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_USER_VIEW">
+            <Acl :permission="ACL.DAM_USER_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.USER.DETAIL"

@@ -51,3 +51,10 @@ $bg-color-dark: #1a1a1a;
     background-color: $bg-color-dark;
   }
 }
+
+
+.v-toolbar.overflow-visible {
+  & > .v-toolbar__content {
+    overflow: visible;
+  }
+}

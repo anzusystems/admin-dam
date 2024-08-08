@@ -19,6 +19,8 @@ interface Attributes {
   seasonNumber: number | null
   episodeNumber: number | null
   extId: string
+  extUrl: string
+  rssUrl: string
   lastImportStatus: PodcastLastImportStatus
 }
 

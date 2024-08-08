@@ -10,8 +10,8 @@ import { PodcastDetailTab, usePodcastDetailTab } from '@/views/coreDam/podcast/c
 import PodcastEpisodeDatatable from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import PodcastEpisodeCreateButton from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
 import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, podcast } = usePodcastDetailActions()
 const { listLoading } = usePodcastEpisodeListActions()

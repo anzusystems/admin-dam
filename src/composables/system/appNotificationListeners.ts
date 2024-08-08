@@ -4,10 +4,11 @@ import {
   DamDistributionStatus,
   DamNotificationName,
   initDamNotifications,
-  updateDamCurrentUser,
   useDamNotifications,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
+import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/model/systems'
 
 export const initAppNotificationListeners = () => {
   const { openConnection } = initDamNotifications()
@@ -46,9 +47,12 @@ export const initAppNotificationListeners = () => {
       case DamNotificationName.DistributionAuthorized:
         distributionListStore.authorizationMessage(event.data.distributionService, event.data.success)
         break
-      case DamNotificationName.UserUpdated:
-        updateDamCurrentUser(damClient)
+      case DamNotificationName.UserUpdated: {
+        const { useCurrentUser } = useAuth()
+        const { fetchCurrentUser } = useCurrentUser(SYSTEM_DAM)
+        fetchCurrentUser(damClient)
         break
+      }
     }
   })
 }

@@ -12,16 +12,15 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
-import { ACL, type AclValue } from '@/types/Permission'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useVideoShowListActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowFilter from '@/views/coreDam/videoShow/components/VideoShowFilter.vue'
 import { useVideoShowListFilter } from '@/model/coreDam/filter/VideoShowFilter'
 import type { VideoShow } from '@/types/coreDam/VideoShow'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = VideoShow
 
@@ -34,10 +33,10 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_VIDEO_SHOW_VIEW)) {
+  if (item.id && can(ACL.DAM_VIDEO_SHOW_READ)) {
     router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: item.id } })
   }
 }

@@ -67,6 +67,14 @@ const { podcastModeOptions } = usePodcastMode()
           />
         </ARow>
         <ARow>
+          <AFormTextField
+            v-model="podcast.attributes.extUrl"
+            :label="t('coreDam.podcast.model.attributes.extUrl')"
+            :v="v$.podcast.attributes.extUrl"
+            data-cy="podcast-ext-url"
+          />
+        </ARow>
+        <ARow>
           <AFormDatetimePicker
             v-model="podcast.dates.importFrom"
             :label="t('coreDam.podcast.model.dates.importFrom')"

@@ -5,8 +5,8 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import ExtSystemDetail from '@/views/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
-import { ACL } from '@/types/Permission'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, extSystem } = useExtSystemDetailActions()
 

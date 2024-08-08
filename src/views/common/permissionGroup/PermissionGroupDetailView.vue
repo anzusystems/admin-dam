@@ -9,11 +9,11 @@ import {
   stringToInt,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 
 const route = useRoute()
 const id = stringToInt(route.params.id)

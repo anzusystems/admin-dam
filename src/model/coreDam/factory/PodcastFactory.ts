@@ -17,6 +17,7 @@ export function usePodcastFactory() {
       },
       attributes: {
         rssUrl: '',
+        extUrl: '',
         mode: PodcastMode.Default,
         lastImportStatus: PodcastLastImportStatus.Default,
       },

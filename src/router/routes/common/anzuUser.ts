@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const anzuUserRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const anzuUserRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/common/anzuUser/AnzuUserListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_USER_VIEW],
+          requiredPermissions: [ACL.DAM_USER_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const anzuUserRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/common/anzuUser/AnzuUserEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_USER_VIEW, ACL.DAM_USER_UPDATE],
+          requiredPermissions: [ACL.DAM_USER_READ, ACL.DAM_USER_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.anzuUser.edit',
         },
@@ -41,7 +41,7 @@ export const anzuUserRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/common/anzuUser/AnzuUserDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_USER_VIEW],
+          requiredPermissions: [ACL.DAM_USER_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.anzuUser.detail',
         },

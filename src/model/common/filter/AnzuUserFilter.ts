@@ -5,7 +5,7 @@ const makeFilter = makeFilterHelper('common', 'anzuUser')
 
 const filter = reactive({
   id: {
-    ...makeFilter({ name: 'id' }),
+    ...makeFilter({ name: 'id', default: null }),
   },
   email: {
     ...makeFilter({ name: 'email', variant: 'startsWith' }),

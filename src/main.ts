@@ -10,15 +10,7 @@ import { envConfig, loadEnvConfig } from '@/services/EnvConfigService'
 import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import {
-  AnzuSystemsCommonAdmin,
-  i18n,
-  type LanguageCode,
-  loadCommonFonts,
-  type PluginOptions,
-} from '@anzusystems/common-admin'
-import { useDamCurrentUser } from '@anzusystems/common-admin'
-import type { AclValue } from '@/types/Permission'
+import { AnzuSystemsCommonAdmin, i18n, type LanguageCode, loadCommonFonts } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
 import { damClient } from '@/services/api/clients/damClient'
 import dayjs from 'dayjs'
@@ -29,8 +21,6 @@ export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['en', 'sk']
 
 dayjs.extend(Duration)
 
-const { damCurrentUser } = useDamCurrentUser()
-
 loadCommonFonts()
 
 loadEnvConfig(() => {
@@ -39,8 +29,7 @@ loadEnvConfig(() => {
     .use(createPinia())
     .use(vuetify)
     .use(router)
-    .use<PluginOptions<AclValue>>(AnzuSystemsCommonAdmin, {
-      currentUser: damCurrentUser,
+    .use(AnzuSystemsCommonAdmin, {
       languages: {
         available: AVAILABLE_LANGUAGES,
         default: DEFAULT_LANGUAGE,

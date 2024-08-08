@@ -13,19 +13,18 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL, type AclValue } from '@/types/Permission'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import CachedPermissionGroupChip from '@/views/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 import { damClient } from '@/services/api/clients/damClient'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = AnzuUser
 
@@ -34,10 +33,10 @@ const router = useRouter()
 const filter = useAnzuUserFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions(damClient)
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_USER_VIEW)) {
+  if (item.id && can(ACL.DAM_USER_READ)) {
     router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: item.id } })
   }
 }
@@ -141,7 +140,7 @@ defineExpose({
               v-if="item.id"
               :id="item.id"
             />
-            <Acl :permission="ACL.DAM_USER_VIEW">
+            <Acl :permission="ACL.DAM_USER_READ">
               <ATableDetailButton
                 v-if="item.id"
                 :record-id="item.id"

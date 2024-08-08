@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const podcastRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/podcast/PodcastListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_PODCAST_VIEW],
+          requiredPermissions: [ACL.DAM_PODCAST_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/podcast/PodcastEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_PODCAST_VIEW, ACL.DAM_PODCAST_UPDATE],
+          requiredPermissions: [ACL.DAM_PODCAST_READ, ACL.DAM_PODCAST_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.podcast.edit',
         },
@@ -40,7 +40,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
         component: AEmptyRouterView,
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_PODCAST_VIEW],
+          requiredPermissions: [ACL.DAM_PODCAST_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.podcast.detail',
         },
@@ -51,7 +51,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
             component: () => import('@/views/coreDam/podcast/PodcastDetailView.vue'),
             meta: {
               requiresAuth: true,
-              requiredPermissions: [ACL.DAM_PODCAST_VIEW],
+              requiredPermissions: [ACL.DAM_PODCAST_READ],
               layout: 'AppLayoutDrawer',
             },
           },
@@ -61,7 +61,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
             component: () => import('@/views/coreDam/podcastEpisode/PodcastEpisodeEditView.vue'),
             meta: {
               requiresAuth: true,
-              requiredPermissions: [ACL.DAM_PODCAST_EPISODE_VIEW, ACL.DAM_PODCAST_EPISODE_UPDATE],
+              requiredPermissions: [ACL.DAM_PODCAST_EPISODE_READ, ACL.DAM_PODCAST_EPISODE_UPDATE],
               layout: 'AppLayoutDrawer',
               breadcrumbT: 'common.system.breadcrumb.edit',
             },
@@ -72,7 +72,7 @@ export const podcastRoutes: RouteRecordRaw[] = [
             component: () => import('@/views/coreDam/podcastEpisode/PodcastEpisodeDetailView.vue'),
             meta: {
               requiresAuth: true,
-              requiredPermissions: [ACL.DAM_PODCAST_EPISODE_VIEW],
+              requiredPermissions: [ACL.DAM_PODCAST_EPISODE_READ],
               layout: 'AppLayoutDrawer',
               breadcrumbT: 'breadcrumb.coreDam.podcastEpisode.detail',
             },

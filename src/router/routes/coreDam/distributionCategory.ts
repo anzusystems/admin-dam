@@ -1,7 +1,7 @@
 import { ROUTE } from '@/router/routes'
-import { ACL } from '@/types/Permission'
 import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
+import { ACL } from '@/composables/auth/auth'
 
 export const distributionCategoryRoutes: RouteRecordRaw[] = [
   {
@@ -20,7 +20,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
+          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_READ],
           layout: 'AppLayoutDrawer',
         },
       },
@@ -30,7 +30,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryEditView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW, ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE],
+          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_READ, ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.distributionCategory.edit',
         },
@@ -41,7 +41,7 @@ export const distributionCategoryRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/coreDam/distributionCategory/DistributionCategoryDetailView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_VIEW],
+          requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_READ],
           layout: 'AppLayoutDrawer',
           breadcrumbT: 'breadcrumb.coreDam.distributionCategory.detail',
         },

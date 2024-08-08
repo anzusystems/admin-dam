@@ -18,9 +18,9 @@ import { useRouter } from 'vue-router'
 import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeFilter.vue'
-import { ACL } from '@/types/Permission'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
+import { ACL } from '@/composables/auth/auth'
 
 type DatatableItem = PodcastEpisode
 
@@ -104,7 +104,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_PODCAST_EPISODE_VIEW">
+            <Acl :permission="ACL.DAM_PODCAST_EPISODE_READ">
               <ATableDetailButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
                 :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL"

@@ -6,6 +6,7 @@ import {
   ADialogToolbar,
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
+  type DamCurrentUserDto,
   DamExtSystemRemoteAutocomplete,
   type IntegerId,
   type IntegerIdNullable,
@@ -15,17 +16,16 @@ import {
   isUndefined,
   useAlerts,
   useDamConfigState,
-  useDamCurrentUser,
   useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { updateCurrentUser } from '@/services/api/coreDam/userApi'
-import AssetLicenceByExtIdRemoteAutocomplete
-  from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
+import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import { damClient } from '@/services/api/clients/damClient'
+import { useAuth } from '@/composables/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -55,7 +55,8 @@ const { t } = useI18n()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
-const { damCurrentUser, damCurrentUserIsSuperAdmin } = useDamCurrentUser()
+const { useCurrentUser } = useAuth()
+const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
 const saving = ref(false)
 const selectedExtSystem = ref<null | IntegerId>(null)
@@ -65,8 +66,8 @@ const selectedExtSystemSearch = ref<null | IntegerId>(null)
 const selectedLicenceSearch = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
-  if (damCurrentUser.value && damCurrentUser.value.userToExtSystems.length > 0) {
-    return damCurrentUser.value.userToExtSystems.map((item) => {
+  if (currentUser.value && currentUser.value.userToExtSystems.length > 0) {
+    return currentUser.value.userToExtSystems.map((item) => {
       return {
         value: item.id,
         title: item.name,
@@ -77,8 +78,8 @@ const extSystemsItems = computed(() => {
 })
 
 const licenceItems = computed(() => {
-  if (damCurrentUser.value && damCurrentUser.value.assetLicences.length > 0 && !isUndefined(selectedExtSystem.value)) {
-    return damCurrentUser.value.assetLicences
+  if (currentUser.value && currentUser.value.assetLicences.length > 0 && !isUndefined(selectedExtSystem.value)) {
+    return currentUser.value.assetLicences
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
       .map((item) => {
         return {
@@ -181,7 +182,7 @@ onMounted(async () => {
       >
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
-      <VCardText v-if="damCurrentUserIsSuperAdmin">
+      <VCardText v-if="isSuperAdmin">
         <div class="mb-4 text-caption">
           {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
             extSystemName

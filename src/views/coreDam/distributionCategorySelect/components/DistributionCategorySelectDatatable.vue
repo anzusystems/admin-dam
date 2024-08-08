@@ -9,19 +9,18 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
-  useAcl,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategorySelectApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { ACL, type AclValue } from '@/types/Permission'
 import { onMounted } from 'vue'
 import { useDistributionCategorySelectListActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
 import DistributionCategorySelectFilter from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = DistributionCategorySelect
 
@@ -35,10 +34,10 @@ const getList = () => {
   fetchList(pagination, filter)
 }
 
-const { can } = useAcl<AclValue>()
+const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW)) {
+  if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_READ)) {
     router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: item.id } })
   }
 }
@@ -94,7 +93,7 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_VIEW">
+            <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_READ">
               <ATableDetailButton
                 :record-id="item.id"
                 :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL"

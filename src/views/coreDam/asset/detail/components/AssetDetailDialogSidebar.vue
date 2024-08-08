@@ -19,9 +19,9 @@ import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slo
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
 import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
-import { ACL } from '@/types/Permission'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import { ACL } from '@/composables/auth/auth'
 
 const props = withDefaults(
   defineProps<{
