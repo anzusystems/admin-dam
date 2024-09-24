@@ -27,7 +27,7 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "10.11.0",
     "@vueuse/integrations": "10.11.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "cropperjs": "^1.6.2",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
@@ -73,7 +73,7 @@
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "typescript": "5.4.5",
-    "vite": "^5.3.3",
+    "vite": "^5.4.7",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-tsc": "2.0.24"
   }
