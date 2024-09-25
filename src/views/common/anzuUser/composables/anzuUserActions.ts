@@ -1,7 +1,6 @@
 import type {
-  AnzuUser, AnzuUserMinimal,
-  DamAuthor,
-  DamAuthorMinimal, DamUser,
+  AnzuUser,
+  DamUser,
   FilterBag,
   Pagination,
   ValueObjectOption
@@ -16,12 +15,10 @@ import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { fetchAuthorList, fetchAuthorListByIds } from '@/services/api/coreDam/authorApi'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
-const datatableHiddenColumns = ref<Array<string>>(['id'])
+const datatableHiddenColumns = ref<Array<string>>(['id', 'person.firstName', 'person.lastName'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)

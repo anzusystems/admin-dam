@@ -15,7 +15,10 @@ const filter = reactive({
   },
   lastName: {
     ...makeFilter({ name: 'lastName', variant: 'startsWith', field: 'person.lastName' }),
-  }
+  },
+  permissionGroups: {
+    ...makeFilter({ name: 'permissionGroups', variant: 'custom', multiple: true, default: [] }),
+  },
 })
 
 export function useAnzuUserFilter() {
