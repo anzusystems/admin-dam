@@ -1,16 +1,12 @@
 <script lang="ts" setup>
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import {
-  AFilterBooleanSelect,
   AFilterInteger,
   AFilterString,
   AFilterWrapper,
-  ASystemEntityScope
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import PermissionGroupRemoteSelect from '@/views/common/permissionGroup/components/PermissionGroupRemoteSelect.vue'
-import { useI18n } from 'vue-i18n'
-import { ENTITY } from '@/services/api/common/anzuUserApi'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -19,8 +15,6 @@ const emit = defineEmits<{
 
 const filter = useAnzuUserFilter()
 const touched = ref(false)
-
-const { t } = useI18n()
 
 const submitFilter = () => {
   touched.value = false
@@ -75,21 +69,21 @@ const onAnyFilterUpdate = () => {
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>
-        </VRow>
-
-        <template #advanced>
-          <VRow>
-        <VCol
-          cols="12"
-          sm="5"
-        >
-          <PermissionGroupRemoteSelect
-            v-model="filter.permissionGroups"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
       </VRow>
-</template>
+
+      <template #advanced>
+        <VRow>
+          <VCol
+            cols="12"
+            sm="5"
+          >
+            <PermissionGroupRemoteSelect
+              v-model="filter.permissionGroups"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+      </template>
     </AFilterWrapper>
   </VForm>
 </template>

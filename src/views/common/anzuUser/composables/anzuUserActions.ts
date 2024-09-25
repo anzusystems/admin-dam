@@ -1,7 +1,7 @@
 import type {
   AnzuUser,
   DamUser,
-  FilterBag,
+  FilterBag, IntegerId,
   Pagination,
   ValueObjectOption
 } from '@anzusystems/common-admin'
@@ -120,12 +120,12 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
 }
 
 export const useAnzuUserSelectAction = (client: () => AxiosInstance) => {
-  const mapToValueObject = (user: DamUser): ValueObjectOption<string> => ({
+  const mapToValueObject = (user: DamUser): ValueObjectOption<IntegerId> => ({
     title: '' === user.person.fullName ? user.email : user.person.fullName,
     value: user.id,
   })
 
-  const mapToValueObjects = (users: DamUser[]): ValueObjectOption<string>[] => {
+  const mapToValueObjects = (users: DamUser[]): ValueObjectOption<IntegerId>[] => {
     return users.map((user: DamUser) => mapToValueObject(user))
   }
 
@@ -133,7 +133,7 @@ export const useAnzuUserSelectAction = (client: () => AxiosInstance) => {
     return mapToValueObjects(await fetchDamUserList(client, pagination, filterBag))
   }
 
-  const fetchItemsByIds = async (ids: string[]) => {
+  const fetchItemsByIds = async (ids: IntegerId[]) => {
     return mapToValueObjects(await fetchDamUserListByIds(client, ids))
   }
 

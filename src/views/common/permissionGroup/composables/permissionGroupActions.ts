@@ -1,12 +1,11 @@
 import type {
-  DamUser,
   FilterBag,
   IntegerId,
   Pagination,
   PermissionGroup,
   ValueObjectOption
 } from '@anzusystems/common-admin'
-import { fetchDamUserList, fetchDamUserListByIds, useAlerts } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
@@ -166,12 +165,12 @@ export const usePermissionGroupSelectAction = (client: () => AxiosInstance) => {
     apiFetchPermissionGroupListByIds,
   } = usePermissionGroupApi(client)
 
-  const mapToValueObject = (permissionGroup: PermissionGroup): ValueObjectOption<string> => ({
+  const mapToValueObject = (permissionGroup: PermissionGroup): ValueObjectOption<IntegerId> => ({
     title: permissionGroup.title,
     value: permissionGroup.id,
   })
 
-  const mapToValueObjects = (permissionGroups: PermissionGroup[]): ValueObjectOption<string>[] => {
+  const mapToValueObjects = (permissionGroups: PermissionGroup[]): ValueObjectOption<IntegerId>[] => {
     return permissionGroups.map((permissionGroup: PermissionGroup) => mapToValueObject(permissionGroup))
   }
 
@@ -179,7 +178,7 @@ export const usePermissionGroupSelectAction = (client: () => AxiosInstance) => {
     return mapToValueObjects(await apiFetchPermissionGroupList(pagination, filterBag))
   }
 
-  const fetchItemsByIds = async (ids: string[]) => {
+  const fetchItemsByIds = async (ids: IntegerId[]) => {
     return mapToValueObjects(await apiFetchPermissionGroupListByIds(ids))
   }
 
