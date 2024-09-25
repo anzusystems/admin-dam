@@ -21,6 +21,12 @@ const filter = reactive({
   keywordIds: {
     ...makeFilter({ name: 'keywordIds', default: [], multiple: true }),
   },
+  assetAndMainFileIds: {
+    ...makeFilter({ name: 'assetAndMainFileIds' }),
+  },
+  authorIds: {
+    ...makeFilter({ name: 'authorIds', default: [], multiple: true }),
+  },
   mostDominantColor: {
     ...makeFilter({ name: 'mostDominantColor', default: [] }),
   },

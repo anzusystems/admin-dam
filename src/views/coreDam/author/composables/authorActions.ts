@@ -25,6 +25,7 @@ export const useAuthorListActions = () => {
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
+    pagination.sortBy = filterBag.text.model ? null : 'id'
     try {
       listItems.value = await fetchAuthorList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
@@ -140,6 +141,8 @@ export const useAuthorSelectActions = () => {
   }
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    pagination.sortBy = filterBag.text.model ? null : 'id'
+
     return mapToValueObjects(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
   }
 

@@ -7,9 +7,11 @@
   },
   "filter": {
     "text": "Text",
+    "assetAndMainFileIds": "Id",
     "type": "Typ",
     "inPodcast": "V podcastoch",
     "keywordIds": "Klúčové slová",
+    "authorIds": "Autori",
     "fromRss": "Z RSS",
     "distributedInServices": "Distribuované v službách",
     "slotNames": "Mená slotov",
