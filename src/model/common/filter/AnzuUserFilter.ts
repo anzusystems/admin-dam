@@ -13,6 +13,9 @@ const filter = reactive({
   enabled: {
     ...makeFilter({ name: 'enabled' }),
   },
+  lastName: {
+    ...makeFilter({ name: 'lastName', variant: 'startsWith', field: 'person.lastName' }),
+  }
 })
 
 export function useAnzuUserFilter() {

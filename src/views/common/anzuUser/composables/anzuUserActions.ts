@@ -1,5 +1,12 @@
-import type { AnzuUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { isInt, useAlerts } from '@anzusystems/common-admin'
+import type {
+  AnzuUser, AnzuUserMinimal,
+  DamAuthor,
+  DamAuthorMinimal, DamUser,
+  FilterBag,
+  Pagination,
+  ValueObjectOption
+} from '@anzusystems/common-admin'
+import { fetchDamUserList, fetchDamUserListByIds, isInt, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
@@ -9,6 +16,8 @@ import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { fetchAuthorList, fetchAuthorListByIds } from '@/services/api/coreDam/authorApi'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -110,5 +119,30 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
     detailLoading,
     saveButtonLoading,
     resetAnzuUserStore: anzuUserOneStore.reset,
+  }
+}
+
+export const useAnzuUserSelectAction = (client: () => AxiosInstance) => {
+  const mapToValueObject = (user: DamUser): ValueObjectOption<string> => ({
+    title: '' === user.person.fullName ? user.email : user.person.fullName,
+    value: user.id,
+  })
+
+  const mapToValueObjects = (users: DamUser[]): ValueObjectOption<string>[] => {
+    return users.map((user: DamUser) => mapToValueObject(user))
+  }
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToValueObjects(await fetchDamUserList(client, pagination, filterBag))
+  }
+
+  const fetchItemsByIds = async (ids: string[]) => {
+    return mapToValueObjects(await fetchDamUserListByIds(client, ids))
+  }
+
+  return {
+    mapToValueObject,
+    fetchItems,
+    fetchItemsByIds,
   }
 }

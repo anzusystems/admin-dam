@@ -27,6 +27,9 @@ const filter = reactive({
   authorIds: {
     ...makeFilter({ name: 'authorIds', default: [], multiple: true }),
   },
+  createdByIds: {
+    ...makeFilter({ name: 'createdByIds', default: [], multiple: true }),
+  },
   mostDominantColor: {
     ...makeFilter({ name: 'mostDominantColor', default: [] }),
   },
