@@ -26,9 +26,19 @@ import jsValidation from '@/locales/sk/error/jsValidation.json'
 import breadcrumb from '@/locales/sk/breadcrumb.json'
 import audioFile from '@/locales/sk/coreDam/audioFile.json'
 import videoFile from '@/locales/sk/coreDam/videoFile.json'
+import anzuUser from '@/locales/sk/common/anzuUser.json'
 
 export default {
-  common: messagesSk.common,
+  common: {
+    ...messagesSk.common,
+    anzuUser: {
+      ...messagesSk.common.anzuUser,
+      filter: {
+        ...messagesSk.common.anzuUser.filter,
+        ...anzuUser.filter
+      }
+    }
+  },
   $vuetify: messagesSk.$vuetify,
   coreDam: {
     asset,

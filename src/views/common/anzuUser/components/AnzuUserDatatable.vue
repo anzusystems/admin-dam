@@ -44,6 +44,8 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
     { key: 'id' },
+    { key: 'person.firstName' },
+    { key: 'person.lastName' },
     { key: 'email' },
     { key: 'enabled' },
     { key: 'roles' },
@@ -105,6 +107,12 @@ defineExpose({
             chip
             :value="item.enabled"
           />
+        </template>
+        <template #item.person.firstName="{ item }: { item: DatatableItem }">
+          {{ item.person.firstName }}
+        </template>
+        <template #item.person.lastName="{ item }: { item: DatatableItem }">
+          {{ item.person.lastName }}
         </template>
         <template #item.roles="{ item }: { item: DatatableItem }">
           <AChipNoLink

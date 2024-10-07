@@ -16,6 +16,8 @@ import {
   AFilterValueObjectOptionsSelect,
 } from '@anzusystems/common-admin'
 import KeywordTitleFilter from '@/views/coreDam/keyword/components/KeywordTitleRemoteSelect.vue'
+import AuthorTitleRemoteSelect from '@/views/coreDam/author/components/AuthorTitleRemoteSelect.vue'
+import AnzuUserRemoteSelect from '@/views/common/anzuUser/components/AnzuUserRemoteSelect.vue'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -67,8 +69,33 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
+            <AFilterString
+              v-model="filter.assetAndMainFileIds"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
             <KeywordTitleFilter
               v-model="filter.keywordIds"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AuthorTitleRemoteSelect
+              v-model="filter.authorIds"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AnzuUserRemoteSelect
+              v-model="filter.createdByIds"
               @update:model-value="onAnyFilterUpdate"
             />
           </VCol>

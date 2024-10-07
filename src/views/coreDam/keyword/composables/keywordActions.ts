@@ -24,6 +24,7 @@ export const useKeywordListActions = () => {
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
+    pagination.sortBy = filterBag.text.model ? null : 'id'
     try {
       listItems.value = await fetchKeywordList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
@@ -138,6 +139,8 @@ export const useKeywordSelectActions = () => {
   }
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    pagination.sortBy = filterBag.text.model ? null : 'id'
+
     return mapToValueObjects(await fetchKeywordList(currentExtSystemId.value, pagination, filterBag))
   }
 
