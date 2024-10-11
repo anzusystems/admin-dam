@@ -28,7 +28,7 @@ describe(`Test user function, Env: ${CY.cfg}`,
       cy.getCy('button-cancel').should('be.visible')
       cy.getCyVisibleClick('button-confirm')
       cy.alertMessage(ALERT_CREATE)
-      cy.getCy('filter-string').type(USER_EMAIL)
+      cy.get("[data-cy='filter-string']").first().type(USER_EMAIL)
       cy.getCy('filter-submit').click()
       cy.contains(`${USER_EMAIL}`).click()
       cy.cardLoad()

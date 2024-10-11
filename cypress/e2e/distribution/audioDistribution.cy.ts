@@ -19,9 +19,6 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       it('Tests skipped - only possible in stg/dev env', ()=>{})
       return
     }
-    beforeEach(() => {
-      cy.webLogin(CY.credentials[CY.loginUser].username, CY.credentials[CY.loginUser].password)
-    })
     it('Prepare Test Data', () => {
       cy.prepareData('audio/sample.mp3', 1, assetIDs)
     })

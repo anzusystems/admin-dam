@@ -23,7 +23,7 @@ Follow the [installation guide](README.md) to install the project and run dev se
 function extendCypressConfigStg(config) {
     config.baseUrl = ''
     config.env.credentials = {
-        testUser: {
+        admin: {
             username: '',
             password: '',
             forceLoginLink: '',  // admin forceLoginLink
