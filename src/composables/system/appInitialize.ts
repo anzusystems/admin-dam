@@ -1,16 +1,16 @@
+import { useAuth } from '@/composables/auth/auth'
+import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
+import { initCurrentExtSystemAndLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useLoginStatus } from '@/composables/system/loginStatus'
+import { SYSTEM_DAM } from '@/model/systems'
+import { checkAbility } from '@/router/checkAbility'
+import { ROUTE } from '@/router/routes'
+import { damClient } from '@/services/api/clients/damClient'
+import { envConfig } from '@/services/EnvConfigService'
+import { isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
-import { checkAbility } from '@/router/checkAbility'
-import { envConfig } from '@/services/EnvConfigService'
-import { initCurrentExtSystemAndLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { initAppNotificationListeners } from '@/composables/system/appNotificationListeners'
-import { useLoginStatus } from '@/composables/system/loginStatus'
-import { damClient } from '@/services/api/clients/damClient'
-import { useAuth } from '@/composables/auth/auth'
-import { SYSTEM_DAM } from '@/model/systems'
 
 const initialized = ref(false)
 
@@ -26,14 +26,14 @@ export async function createAppInitialize(
   const { useCurrentUser } = useAuth()
   const { fetchCurrentUser, currentUser } = useCurrentUser(SYSTEM_DAM)
 
-  try {
+  // try {
     const updateCurrentUserPromise = fetchCurrentUser(damClient)
     const loadDamConfigPromise = loadDamPrvConfig()
     await Promise.allSettled([updateCurrentUserPromise, loadDamConfigPromise])
-  } catch (error) {
-    next({ name: ROUTE.SYSTEM.LOGIN })
-    return
-  }
+  // } catch (error) {
+  //   next({ name: ROUTE.SYSTEM.LOGIN })
+  //   return
+  // }
   try {
     await initCurrentExtSystemAndLicence(to.name === ROUTE.DAM.ASSET.DETAIL, to.params.id as string | undefined)
   } catch (error) {
