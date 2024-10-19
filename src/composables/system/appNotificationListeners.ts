@@ -1,14 +1,14 @@
-import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_DAM } from '@/model/systems'
+import { damClient } from '@/services/api/clients/damClient'
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import {
   DamDistributionStatus,
   DamNotificationName,
   initDamNotifications,
   useDamNotifications,
 } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
-import { useAuth } from '@/composables/auth/auth'
-import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/model/systems'
 
 export const initAppNotificationListeners = () => {
   const { openConnection } = initDamNotifications()

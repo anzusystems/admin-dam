@@ -1,11 +1,10 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import { type DamDistributionServiceName, DamDistributionStatus } from '@anzusystems/common-admin'
-import type { DocId } from '@anzusystems/common-admin'
-import { isNull } from '@anzusystems/common-admin'
 import { fetchDistribution } from '@/services/api/coreDam/distributionApi'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import type { DistributionAuth } from '@/types/coreDam/DistributionAuth'
 import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
+import type { DamDistributionStatusType, DocId } from '@anzusystems/common-admin'
+import { type DamDistributionServiceName, DamDistributionStatus, isNull } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 
 interface State {
   list: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>
@@ -49,7 +48,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
         status: success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error,
       })
     },
-    async listItemMessageUpdate(distributionId: DocId, status: DamDistributionStatus) {
+    async listItemMessageUpdate(distributionId: DocId, status: DamDistributionStatusType) {
       switch (status) {
         case DamDistributionStatus.Distributing:
         case DamDistributionStatus.RemoteProcessing:

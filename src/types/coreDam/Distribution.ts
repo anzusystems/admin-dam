@@ -1,12 +1,12 @@
+import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
+import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type {
   DamDistributionServiceName,
-  DamDistributionStatus,
+  DamDistributionStatusType,
   DatetimeUTCNullable,
-  DocId,
+  DocId
 } from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
-import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
-import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
 
 interface TextsJw {
   title: string
@@ -54,7 +54,7 @@ export interface DistributionItem {
   assetFileId: DocId
   extId: string
   distributionService: DamDistributionServiceName
-  status: DamDistributionStatus
+  status: DamDistributionStatusType
   failReason: DistributionFailReason
   blockedBy: DocId[]
   publishAt: DatetimeUTCNullable

@@ -3,7 +3,7 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
 import { computed, ref, watch } from 'vue'
 import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { DamAssetType, isNull } from '@anzusystems/common-admin'
+import { DamAssetTypeDefault, isNull } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -33,7 +33,7 @@ const distributionCategoryId = computed(() => {
 const assetType = computed(() => {
   return assetDetailStore.asset && assetDetailStore.asset.attributes.assetType
     ? assetDetailStore.asset.attributes.assetType
-    : DamAssetType.Default
+    : DamAssetTypeDefault
 })
 
 const loadCategory = async (id: DocId) => {

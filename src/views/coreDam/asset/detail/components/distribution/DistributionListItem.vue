@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import DistributionListItemJw from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemJw.vue'
-import DistributionListItemYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import DistributionListItemCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustom.vue'
 import DistributionListItemEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemEmpty.vue'
-import type { DamAssetType } from '@anzusystems/common-admin'
-import { DamDistributionServiceType, useDamConfigState } from '@anzusystems/common-admin'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import DistributionListItemJw from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemJw.vue'
+import DistributionListItemYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemYoutube.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
-import { damClient } from '@/services/api/clients/damClient'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { DamDistributionServiceType, useDamConfigStore } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
   }>(),
   {}
 )
 
-const { damPrvConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damPrvConfig } = storeToRefs(damConfigStore)
 
 const distributionType = computed(() => {
   if (damPrvConfig.value.distributionServices[props.item.distributionService]) {

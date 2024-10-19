@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { AFilterValueObjectOptionsSelect, type Filter, useDamConfigState } from '@anzusystems/common-admin'
+import { AFilterValueObjectOptionsSelect, type Filter, useDamConfigStore } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -22,11 +21,10 @@ const value = computed({
     emit('update:modelValue', newValue)
   },
 })
-
-const { damPrvConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
 
 const items = computed(() => {
-  return Object.entries(damPrvConfig.value.distributionServices).map(([key, value]) => {
+  return Object.entries(damConfigStore.damPrvConfig.distributionServices).map(([key, value]) => {
     return {
       title: value.title,
       value: key,

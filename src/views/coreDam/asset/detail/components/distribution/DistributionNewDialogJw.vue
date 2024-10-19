@@ -1,9 +1,24 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
+import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
+import {
+  createJwDistribution,
+  ENTITY,
+  prepareFormDataJwDistribution,
+  redistributeJwDistribution,
+} from '@/services/api/coreDam/distributionJwApi'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/coreDam/Distribution'
+import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
+import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
+import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import type {
-  DamAssetType,
+  DamAssetTypeType,
   DamDistributionRequirementsConfig,
-  DamDistributionServiceName,
+  DamDistributionServiceName
 } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
@@ -16,29 +31,14 @@ import {
   usePagination,
   useValidate,
 } from '@anzusystems/common-admin'
-import {
-  createJwDistribution,
-  ENTITY,
-  prepareFormDataJwDistribution,
-  redistributeJwDistribution,
-} from '@/services/api/coreDam/distributionJwApi'
 import useVuelidate from '@vuelidate/core'
-import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
-import type { DistributionJwCreateRedistributeDto, DistributionJwItem } from '@/types/coreDam/Distribution'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
-import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
-import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
-import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 
 const props = withDefaults(
   defineProps<{
     distributionServiceName: DamDistributionServiceName
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     config: DamDistributionRequirementsConfig
     assetId: DocId
   }>(),

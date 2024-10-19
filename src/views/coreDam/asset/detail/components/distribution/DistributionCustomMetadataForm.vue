@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import {
   ACustomDataFormElement,
   type DamDistributionServiceName,
   isUndefined,
-  useDamConfigState,
+  useDamConfigStore
 } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +27,8 @@ const updateModelValue = (data: { property: string; value: any }) => {
   emit('update:modelValue', { ...props.modelValue, ...updated })
   emit('anyChange')
 }
-const { damConfigDistributionCustomFormElements } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damConfigDistributionCustomFormElements } = storeToRefs(damConfigStore)
 
 const elements = computed(() => {
   const configDistributionCustomFormElements = damConfigDistributionCustomFormElements.value.get(

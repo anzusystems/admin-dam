@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
-import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import type { DamAssetType, DocId } from '@anzusystems/common-admin'
-import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import { useI18n } from 'vue-i18n'
-import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
-import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
-import { ref } from 'vue'
-import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { ACL } from '@/composables/auth/auth'
+import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
+import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
     isActive: boolean
     dataCy?: string
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
   }>(),
   {
     dataCy: undefined,
