@@ -50,7 +50,7 @@ export const initAppNotificationListeners = () => {
       case DamNotificationName.UserUpdated: {
         const { useCurrentUser } = useAuth()
         const { fetchCurrentUser } = useCurrentUser(SYSTEM_DAM)
-        fetchCurrentUser(damClient)
+        fetchCurrentUser(damClient, '/adm/users/current')
         break
       }
     }

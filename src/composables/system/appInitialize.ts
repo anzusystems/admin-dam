@@ -26,14 +26,14 @@ export async function createAppInitialize(
   const { useCurrentUser } = useAuth()
   const { fetchCurrentUser, currentUser } = useCurrentUser(SYSTEM_DAM)
 
-  // try {
-    const updateCurrentUserPromise = fetchCurrentUser(damClient)
+  try {
+    const updateCurrentUserPromise = fetchCurrentUser(damClient, '/adm/users/current')
     const loadDamConfigPromise = loadDamPrvConfig()
     await Promise.allSettled([updateCurrentUserPromise, loadDamConfigPromise])
-  // } catch (error) {
-  //   next({ name: ROUTE.SYSTEM.LOGIN })
-  //   return
-  // }
+  } catch (error) {
+    next({ name: ROUTE.SYSTEM.LOGIN })
+    return
+  }
   try {
     await initCurrentExtSystemAndLicence(to.name === ROUTE.DAM.ASSET.DETAIL, to.params.id as string | undefined)
   } catch (error) {
