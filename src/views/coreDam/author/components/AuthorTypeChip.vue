@@ -1,11 +1,10 @@
 <script lang="ts" setup>
+import { AChipNoLink, type DamAuthorTypeType, useDamAuthorType } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { AChipNoLink } from '@anzusystems/common-admin'
-import { type DamAuthorType, useDamAuthorType } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
-    type: DamAuthorType
+    type: DamAuthorTypeType
   }>(),
   {}
 )

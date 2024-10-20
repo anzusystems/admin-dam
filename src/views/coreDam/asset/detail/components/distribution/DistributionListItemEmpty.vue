@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { DamAssetType, DamDistributionServiceType } from '@anzusystems/common-admin'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: DamAssetType
-    distributionType: DamDistributionServiceType | null
+    assetType: DamAssetTypeType
+    distributionType: DamDistributionServiceTypeType | null
     showRedistribute: boolean
   }>(),
   {}

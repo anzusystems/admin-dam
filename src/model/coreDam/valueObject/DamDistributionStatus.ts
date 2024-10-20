@@ -1,11 +1,11 @@
+import { DamDistributionStatus, type DamDistributionStatusType, type ValueObjectOption } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { DamDistributionStatus, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useDistributionStatus() {
   const { t } = useI18n()
 
-  const DistributionStatusOptions = ref<ValueObjectOption<DamDistributionStatus>[]>([
+  const DistributionStatusOptions = ref<ValueObjectOption<DamDistributionStatusType>[]>([
     {
       value: DamDistributionStatus.Waiting,
       title: t('coreDam.distribution.distributionStatus.waiting'),
@@ -33,7 +33,7 @@ export function useDistributionStatus() {
     },
   ])
 
-  const getDistributionStatusOption = (value: DamDistributionStatus) => {
+  const getDistributionStatusOption = (value: DamDistributionStatusType) => {
     return DistributionStatusOptions.value.find((item) => item.value === value)
   }
 

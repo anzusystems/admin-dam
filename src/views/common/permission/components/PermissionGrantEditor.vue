@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import { useGrant, type GrantType } from '@anzusystems/common-admin'
 import { computed } from 'vue'
-import { Grant, useGrant } from '@anzusystems/common-admin'
 
 const props = defineProps<{
-  availableGrants: Grant[]
-  selectedGrant: Grant | undefined
+  availableGrants: GrantType[]
+  selectedGrant: GrantType | undefined
 }>()
 const emit = defineEmits<{
-  (e: 'change', data?: Grant): void
+  (e: 'change', data?: GrantType): void
 }>()
 const selectedGrant = computed({
   get() {

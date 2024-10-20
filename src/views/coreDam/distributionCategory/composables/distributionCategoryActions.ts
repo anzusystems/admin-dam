@@ -1,15 +1,8 @@
-import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
-import {
-  cloneDeep,
-  type DocId,
-  type FilterBag,
-  type Pagination,
-  useAlerts,
-  useDamConfigState,
-  usePagination,
-  type ValueObjectOption,
-} from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
+import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
+import { ROUTE } from '@/router/routes'
+import { damClient } from '@/services/api/clients/damClient'
 import {
   createDistributionCategory,
   fetchDistributionCategory,
@@ -17,17 +10,21 @@ import {
   fetchDistributionCategoryListByIds,
   updateDistributionCategory,
 } from '@/services/api/coreDam/distributionCategoryApi'
-import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
 import { fetchDistributionCategorySelectList } from '@/services/api/coreDam/distributionCategorySelectApi'
-import { ROUTE } from '@/router/routes'
 import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCategoryStore'
-import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
-import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
-import { damClient } from '@/services/api/clients/damClient'
+import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
+import {
+  cloneDeep, type DamAssetTypeType, type DocId,
+  type FilterBag, isUndefined, type Pagination,
+  useAlerts,
+  useDamConfigState,
+  usePagination,
+  type ValueObjectOption
+} from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -100,7 +97,7 @@ export const useDistributionCategoryManageActions = () => {
     throw new Error('Ext system must be initialised.')
   }
 
-  const getAvailableDistributionServiceSlugs = (assetType: DamAssetType) => {
+  const getAvailableDistributionServiceSlugs = (assetType: DamAssetTypeType) => {
     const serviceSlugs: string[] = []
     Object.entries(configExtSystem[assetType].distribution.distributionRequirements).forEach(
       ([service, config]) => {
@@ -112,7 +109,7 @@ export const useDistributionCategoryManageActions = () => {
     return serviceSlugs
   }
 
-  const fetchDistributionCategorySelectsData = async (assetType: DamAssetType) => {
+  const fetchDistributionCategorySelectsData = async (assetType: DamAssetTypeType) => {
     const pagination = usePagination()
     const filter = cloneDeep(useDistributionCategorySelectListFilter())
     filter.serviceSlug.model = getAvailableDistributionServiceSlugs(assetType)
@@ -133,7 +130,7 @@ export const useDistributionCategoryCreateActions = () => {
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const prepareData = async (assetType: DamAssetType) => {
+  const prepareData = async (assetType: DamAssetTypeType) => {
     try {
       createFormDataLoaded.value = false
       const { createDefault } = useDistributionCategoryFactory()

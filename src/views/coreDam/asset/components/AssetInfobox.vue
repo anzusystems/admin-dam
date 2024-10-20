@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { type AssetFileFailReason, AssetFileProcessStatus, DamAssetStatus } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
+import { type AssetFileFailReasonType, AssetFileProcessStatus, type AssetFileProcessStatusType, DamAssetStatus, type DamAssetStatusType } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
-    assetStatus: DamAssetStatus
-    assetMainFileStatus?: AssetFileProcessStatus | undefined
-    assetMainFileFailReason?: AssetFileFailReason | undefined
+    assetStatus: DamAssetStatusType
+    assetMainFileStatus?: AssetFileProcessStatusType | undefined
+    assetMainFileFailReason?: AssetFileFailReasonType | undefined
   }>(),
   {
     assetMainFileStatus: undefined,

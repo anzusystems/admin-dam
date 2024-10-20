@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { type DamAssetType, type DamDistributionRequirementsConfig, isUndefined } from '@anzusystems/common-admin'
-import {
-  cloneDeep,
-  DamDistributionRequirementStrategy,
-  type DamDistributionServiceName,
-  type DocIdNullable,
-  useDamConfigState,
-  usePagination,
-  useValidate,
-} from '@anzusystems/common-admin'
-import { computed, ref, watch } from 'vue'
-import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
-import { useI18n } from 'vue-i18n'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import {
+  cloneDeep, type DamAssetTypeType, type DamDistributionRequirementsConfig, DamDistributionRequirementStrategy,
+  type DamDistributionServiceName,
+  type DocIdNullable, isUndefined, useDamConfigState,
+  usePagination,
+  useValidate
+} from '@anzusystems/common-admin'
+import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 // now only supports strategy AtLeastOne, as BE too
 
@@ -27,7 +24,7 @@ const props = withDefaults(
     distributionServiceName: DamDistributionServiceName
     config: DamDistributionRequirementsConfig
     assetFileId: DocIdNullable
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
   }>(),
   {}
 )

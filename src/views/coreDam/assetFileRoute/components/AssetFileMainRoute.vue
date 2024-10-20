@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import { makePrivateFile } from '@/services/api/coreDam/fileApi'
+import AssetFileRouteChangeBtn from '@/views/coreDam/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
+import AssetFileRouteMakePublicDialog from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
+import AssetFileRouteStatus from '@/views/coreDam/assetFileRoute/components/AssetFileRouteStatus.vue'
 import {
   ACopyText,
   type AssetFile,
   type AssetFileMainRouteAware,
-  type DamAssetType,
+  type DamAssetTypeType,
   type DocId,
-  useAlerts,
+  useAlerts
 } from '@anzusystems/common-admin'
-import AssetFileRouteStatus from '@/views/coreDam/assetFileRoute/components/AssetFileRouteStatus.vue'
 import { ref } from 'vue'
-import AssetFileRouteMakePublicDialog from '@/views/coreDam/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
-import { makePrivateFile } from '@/services/api/coreDam/fileApi'
-import AssetFileRouteChangeBtn from '@/views/coreDam/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     assetFile: AssetFile & AssetFileMainRouteAware
     title: string
     dataCy?: string

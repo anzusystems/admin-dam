@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import type { DamAssetType, DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
 import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
-import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     dataCy?: string
   }>(),
   {

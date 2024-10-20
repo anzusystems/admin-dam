@@ -1,5 +1,8 @@
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { damClient } from '@/services/api/clients/damClient'
-import type { DamAssetType } from '@anzusystems/common-admin'
+import type { AssetCreateDto } from '@/types/coreDam/Asset'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   AnzuApiForbiddenError,
   AnzuApiForbiddenOperationError,
@@ -31,9 +34,6 @@ import {
   useDamConfigState,
   type ValidationError,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { AssetCreateDto } from '@/types/coreDam/Asset'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -166,7 +166,7 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
 
 const { showUnknownError, showApiValidationError } = useAlerts()
 
-const handleMetadataValidationError = (error: any, assetType: DamAssetType) => {
+const handleMetadataValidationError = (error: any, assetType: DamAssetTypeType) => {
   const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
   const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)

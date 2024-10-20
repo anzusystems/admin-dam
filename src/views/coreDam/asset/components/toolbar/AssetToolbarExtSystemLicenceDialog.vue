@@ -1,7 +1,12 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useAuth } from '@/composables/auth/auth'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/model/systems'
+import { damClient } from '@/services/api/clients/damClient'
+import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
+import { ENTITY } from '@/services/api/coreDam/extSystemApi'
+import { updateCurrentUser } from '@/services/api/coreDam/userApi'
+import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import {
   ADialogToolbar,
   ASystemEntityScope,
@@ -15,17 +20,13 @@ import {
   isNull,
   isUndefined,
   useAlerts,
-  useDamConfigState,
-  useValidate,
+  useDamConfigStore,
+  useValidate
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
-import { updateCurrentUser } from '@/services/api/coreDam/userApi'
-import AssetLicenceByExtIdRemoteAutocomplete from '@/views/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
-import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/coreDam/extSystemApi'
-import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
-import { damClient } from '@/services/api/clients/damClient'
-import { useAuth } from '@/composables/auth/auth'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -66,8 +67,8 @@ const selectedExtSystemSearch = ref<null | IntegerId>(null)
 const selectedLicenceSearch = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
-  if (currentUser.value && currentUser.value.userToExtSystems.length > 0) {
-    return currentUser.value.userToExtSystems.map((item) => {
+  if (currentUser.value && currentUser.value.userToExtSystemsDto.length > 0) {
+    return currentUser.value.userToExtSystemsDto.map((item) => {
       return {
         value: item.id,
         title: item.name,
@@ -78,8 +79,8 @@ const extSystemsItems = computed(() => {
 })
 
 const licenceItems = computed(() => {
-  if (currentUser.value && currentUser.value.assetLicences.length > 0 && !isUndefined(selectedExtSystem.value)) {
-    return currentUser.value.assetLicences
+  if (currentUser.value && currentUser.value.assetLicencesDto.length > 0 && !isUndefined(selectedExtSystem.value)) {
+    return currentUser.value.assetLicencesDto
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
       .map((item) => {
         return {
@@ -91,7 +92,8 @@ const licenceItems = computed(() => {
   return []
 })
 
-const { damPrvConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damPrvConfig } = storeToRefs(damConfigStore)
 
 const allowSelect = computed(() => {
   return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId

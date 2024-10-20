@@ -1,41 +1,47 @@
+import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import {
-  AssetFileProcessStatus,
-  type AssetFileRoute,
-  type DamUploadStartResponse,
-  type DocId,
-  type UploadQueueItem,
-} from '@anzusystems/common-admin'
-import { UploadQueueItemStatus } from '@anzusystems/common-admin'
-import {
-  deleteImage,
-  downloadLink as imageDownloadLink,
-  existingImageToSlot,
-  externalProviderUpload as imageExternalProviderUpload,
-  makeMainFile as imageMakeMainFile,
-  unsetSlot as imageUnsetSlot,
-  uploadChunk as imageUploadChunk,
-  uploadFinish as imageUploadFinish,
-  uploadStart as imageUploadStart,
-  makePublic as imageMakePublic,
-  makePrivate as imageMakePrivate,
-} from '@/services/api/coreDam/imageApi'
-import {
-  deleteAudio,
   downloadLink as audioDownloadLink,
-  existingAudioToSlot,
   externalProviderUpload as audioExternalProviderUpload,
   makeMainFile as audioMakeMainFile,
+  makePrivate as audioMakePrivate,
+  makePublic as audioMakePublic,
   unsetSlot as audioUnsetSlot,
   uploadChunk as audioUploadChunk,
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
-  makePublic as audioMakePublic,
-  makePrivate as audioMakePrivate,
+  deleteAudio,
+  existingAudioToSlot,
 } from '@/services/api/coreDam/audioApi'
 import {
+  deleteDocument,
+  downloadLink as documentDownloadLink,
+  externalProviderUpload as documentExternalProviderUpload,
+  makeMainFile as documentMakeMainFile,
+  makePrivate as documentMakePrivate,
+  makePublic as documentMakePublic,
+  unsetSlot as documentUnsetSlot,
+  uploadChunk as documentUploadChunk,
+  uploadFinish as documentUploadFinish,
+  uploadStart as documentUploadStart,
+  existingDocumentToSlot,
+} from '@/services/api/coreDam/documentApi'
+import {
+  deleteImage,
+  existingImageToSlot,
+  downloadLink as imageDownloadLink,
+  externalProviderUpload as imageExternalProviderUpload,
+  makeMainFile as imageMakeMainFile,
+  makePrivate as imageMakePrivate,
+  makePublic as imageMakePublic,
+  unsetSlot as imageUnsetSlot,
+  uploadChunk as imageUploadChunk,
+  uploadFinish as imageUploadFinish,
+  uploadStart as imageUploadStart,
+} from '@/services/api/coreDam/imageApi'
+import {
   deleteVideo,
-  downloadLink as videoDownloadLink,
   existingVideoToSlot,
+  downloadLink as videoDownloadLink,
   externalProviderUpload as videoExternalProviderUpload,
   makeMainFile as videoMakeMainFile,
   unsetSlot as videoUnsetSlot,
@@ -43,24 +49,18 @@ import {
   uploadFinish as videoUploadFinish,
   uploadStart as videoUploadStart,
 } from '@/services/api/coreDam/videoApi'
-import {
-  deleteDocument,
-  downloadLink as documentDownloadLink,
-  existingDocumentToSlot,
-  externalProviderUpload as documentExternalProviderUpload,
-  makeMainFile as documentMakeMainFile,
-  unsetSlot as documentUnsetSlot,
-  uploadChunk as documentUploadChunk,
-  uploadFinish as documentUploadFinish,
-  uploadStart as documentUploadStart,
-  makePublic as documentMakePublic,
-  makePrivate as documentMakePrivate,
-} from '@/services/api/coreDam/documentApi'
-import { DamAssetType } from '@anzusystems/common-admin'
-import { fetchAsset } from '@/services/api/coreDam/assetApi'
-import type { AssetFileDownloadLink } from '@anzusystems/common-admin'
-import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { envConfig } from '@/services/EnvConfigService'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import type { AssetFileDownloadLink, DamAssetTypeType } from '@anzusystems/common-admin'
+import {
+  AssetFileProcessStatus,
+  DamAssetType,
+  UploadQueueItemStatus,
+  type AssetFileRoute,
+  type DamUploadStartResponse,
+  type DocId,
+  type UploadQueueItem,
+} from '@anzusystems/common-admin'
 
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
@@ -277,7 +277,7 @@ export const externalProviderUpload: (item: UploadQueueItem) => Promise<DamUploa
   })
 }
 
-export const unsetAssetSlot = (assetType: DamAssetType, fileId: DocId, assetId: DocId, slotName: string) => {
+export const unsetAssetSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
@@ -312,7 +312,7 @@ export const unsetAssetSlot = (assetType: DamAssetType, fileId: DocId, assetId: 
   })
 }
 
-export const deleteFile = (assetType: DamAssetType, fileId: DocId) => {
+export const deleteFile = (assetType: DamAssetTypeType, fileId: DocId) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
@@ -347,7 +347,7 @@ export const deleteFile = (assetType: DamAssetType, fileId: DocId) => {
   })
 }
 
-export const makeMainFile = (assetType: DamAssetType, fileId: DocId, assetId: DocId) => {
+export const makeMainFile = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
@@ -382,7 +382,7 @@ export const makeMainFile = (assetType: DamAssetType, fileId: DocId, assetId: Do
   })
 }
 
-export const existingFileToSlot = (assetType: DamAssetType, fileId: DocId, assetId: DocId, slotName: string) => {
+export const existingFileToSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) => {
   return new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
@@ -417,7 +417,7 @@ export const existingFileToSlot = (assetType: DamAssetType, fileId: DocId, asset
   })
 }
 
-export const fileDownloadLink = (assetType: DamAssetType, fileId: DocId) => {
+export const fileDownloadLink = (assetType: DamAssetTypeType, fileId: DocId) => {
   return new Promise<AssetFileDownloadLink>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
@@ -452,7 +452,7 @@ export const fileDownloadLink = (assetType: DamAssetType, fileId: DocId) => {
   })
 }
 
-export const makePublicFile = (assetType: DamAssetType, assetFileId: DocId, slug: string) => {
+export const makePublicFile = (assetType: DamAssetTypeType, assetFileId: DocId, slug: string) => {
   return new Promise<AssetFileRoute>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
@@ -480,7 +480,7 @@ export const makePublicFile = (assetType: DamAssetType, assetFileId: DocId, slug
   })
 }
 
-export const makePrivateFile = (assetType: DamAssetType, assetFileId: DocId) => {
+export const makePrivateFile = (assetType: DamAssetTypeType, assetFileId: DocId) => {
   return new Promise<AssetFileRoute>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:

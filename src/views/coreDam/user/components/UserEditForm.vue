@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { damClient } from '@/services/api/clients/damClient'
 import { ENTITY } from '@/services/api/coreDam/userApi'
+import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
+import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
 import {
   AFormTextField,
   ARow,
@@ -11,17 +14,15 @@ import {
   DamExternalProviderAssetSelect,
   DamExtSystemRemoteAutocomplete,
   isUndefined,
-  useDamConfigState,
-  UserAuthType,
+  useDamConfigStore,
+  UserAuthType
 } from '@anzusystems/common-admin'
-import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
+import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { useUpdateUserValidation } from '@/views/coreDam/user/composables/userValidation'
-import { damClient } from '@/services/api/clients/damClient'
 
 const { userUpdate } = useUserEditActions()
-
-const { damPubConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damPubConfig } = storeToRefs(damConfigStore)
 
 const { v$ } = useUpdateUserValidation(userUpdate, damPubConfig.value.userAuthType)
 

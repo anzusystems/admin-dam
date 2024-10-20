@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/AssetDetailSidebarMetadata.vue'
-import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
+import { ACL } from '@/composables/auth/auth'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import { type DamAssetStatus, type DamAssetType, isUndefined } from '@anzusystems/common-admin'
-import {
-  type AssetFileFailReason,
-  type AssetFileProcessStatus,
-  type DocId,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
-import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
-import { useI18n } from 'vue-i18n'
-import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
-import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
-import { computed } from 'vue'
-import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
-import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
-import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
-import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
-import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
-import { ACL } from '@/composables/auth/auth'
+import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
+import AssetDetailSidebarActionsTeleportTarget from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
+import AssetDetailSidebarImagePreview from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreview.vue'
+import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/AssetDetailSidebarMetadata.vue'
+import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
+import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
+import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
+import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
+import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
+import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
+import { type AssetFileFailReasonType, type AssetFileProcessStatusType, type DamAssetStatusType, type DamAssetTypeType, type DocId, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -31,10 +25,10 @@ const props = withDefaults(
     isImage: boolean
     isDocument: boolean
     dataCy?: string
-    assetStatus: DamAssetStatus
-    assetType: DamAssetType
-    assetMainFileStatus?: AssetFileProcessStatus | undefined
-    assetMainFileFailReason?: AssetFileFailReason | undefined
+    assetStatus: DamAssetStatusType
+    assetType: DamAssetTypeType
+    assetMainFileStatus?: AssetFileProcessStatusType | undefined
+    assetMainFileFailReason?: AssetFileFailReasonType | undefined
   }>(),
   {
     assetMainFileStatus: undefined,

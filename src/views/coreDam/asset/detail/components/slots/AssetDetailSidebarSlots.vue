@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import type { DamAssetType, DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination } from '@anzusystems/common-admin'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
-import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { ADatatablePagination } from '@anzusystems/common-admin'
+import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     isActive: boolean
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     assetId: DocId
   }>(),
   {}
