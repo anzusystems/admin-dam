@@ -1,5 +1,11 @@
-import type { AnzuUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { isInt, useAlerts } from '@anzusystems/common-admin'
+import type {
+  AnzuUser,
+  DamUser,
+  FilterBag, IntegerId,
+  Pagination,
+  ValueObjectOption
+} from '@anzusystems/common-admin'
+import { fetchDamUserList, fetchDamUserListByIds, isInt, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
@@ -12,7 +18,7 @@ import { useCachedPermissionGroups } from '@/views/common/permissionGroup/compos
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
-const datatableHiddenColumns = ref<Array<string>>(['id'])
+const datatableHiddenColumns = ref<Array<string>>(['id', 'person.firstName', 'person.lastName'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
@@ -110,5 +116,30 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
     detailLoading,
     saveButtonLoading,
     resetAnzuUserStore: anzuUserOneStore.reset,
+  }
+}
+
+export const useAnzuUserSelectAction = (client: () => AxiosInstance) => {
+  const mapToValueObject = (user: DamUser): ValueObjectOption<IntegerId> => ({
+    title: '' === user.person.fullName ? user.email : user.person.fullName,
+    value: user.id,
+  })
+
+  const mapToValueObjects = (users: DamUser[]): ValueObjectOption<IntegerId>[] => {
+    return users.map((user: DamUser) => mapToValueObject(user))
+  }
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    return mapToValueObjects(await fetchDamUserList(client, pagination, filterBag))
+  }
+
+  const fetchItemsByIds = async (ids: IntegerId[]) => {
+    return mapToValueObjects(await fetchDamUserListByIds(client, ids))
+  }
+
+  return {
+    mapToValueObject,
+    fetchItems,
+    fetchItemsByIds,
   }
 }

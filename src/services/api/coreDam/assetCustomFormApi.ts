@@ -1,15 +1,13 @@
-import type { CustomDataFormElement, IntegerId } from '@anzusystems/common-admin'
-import { apiFetchOne } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamAssetType } from '@anzusystems/common-admin'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
+import type { CustomDataFormElement, DamAssetTypeType, DamDistributionServiceName, IntegerId } from '@anzusystems/common-admin'
+import { apiFetchOne } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/asset-custom-form'
 const ENTITY = 'assetCustomForm'
 
 // todo limit set to 100 for now, add load for pagination?
-export const fetchAssetCustomFormElements = (extSystem: IntegerId, assetType: DamAssetType) =>
+export const fetchAssetCustomFormElements = (extSystem: IntegerId, assetType: DamAssetTypeType) =>
   apiFetchOne<{ data: CustomDataFormElement[] }>(
     damClient,
     END_POINT + '/ext-system/:extSystem/type/:assetType/element?order[position]=asc&limit=100',

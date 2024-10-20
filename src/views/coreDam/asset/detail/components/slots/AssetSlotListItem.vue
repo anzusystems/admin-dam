@@ -1,38 +1,39 @@
 <script setup lang="ts">
+import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
+import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
+import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
+import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
+import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
+import AssetQueueItemList from '@/views/coreDam/asset/components/queue/AssetQueueItemList.vue'
+import AssetSlotListItemDuplicate from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
+import AssetSlotListItemRemove from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
+import AssetSlotListItemSwitch from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
+import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
 import {
-  type AssetFileFailReason,
+  type AssetFileFailReasonType,
   assetFileIsVideoFile,
   AssetFileProcessStatus,
   DamAssetType,
+  type DamAssetTypeType,
   type DocId,
   isUndefined,
   type UploadQueueItem,
   UploadQueueItemStatus,
-  useAlerts,
+  useAlerts
 } from '@anzusystems/common-admin'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { useI18n } from 'vue-i18n'
-import { computed, watch } from 'vue'
-import AssetSlotListItemRemove from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemRemove.vue'
-import AssetSlotListItemDuplicate from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemDuplicate.vue'
-import AssetSlotListItemSwitch from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItemSwitch.vue'
-import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
-import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
-import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import AssetQueueItemList from '@/views/coreDam/asset/components/queue/AssetQueueItemList.vue'
-import { fileDownloadLink } from '@/services/api/coreDam/fileApi'
-import ImageFile from '@/views/coreDam/asset/components/ImageFile.vue'
 import { useClipboard } from '@vueuse/core'
-import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
-import AssetFileDuplicateChip from '@/views/coreDam/asset/components/AssetFileDuplicateChip.vue'
-import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     slotName: string
     title: string
     item: AssetSlot | null
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     totalSlotCount: number
     assetId: DocId
     dataCy?: string
@@ -173,7 +174,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
             {{ t('coreDam.distribution.common.failReason') }}:
             <AssetFileFailReasonChip
               class="ml-2"
-              :reason="item?.assetFile?.fileAttributes.failReason as AssetFileFailReason"
+              :reason="item?.assetFile?.fileAttributes.failReason as AssetFileFailReasonType"
             />
           </div>
         </div>

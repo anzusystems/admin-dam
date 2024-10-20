@@ -1,8 +1,8 @@
-import { ref } from 'vue'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { AssetFileProcessStatus, type DocIdNullable } from '@anzusystems/common-admin'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import type { AssetFileProcessStatusType, DamDistributionServiceName } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, type DocIdNullable } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
 const dialogKey = ref(1)
 const dialogNew = ref(false)
@@ -10,7 +10,7 @@ const activeDistributionName = ref<DamDistributionServiceName | null>(null)
 const showTabs = ref(false)
 const redistributeMode = ref(false)
 const assetFileId = ref<DocIdNullable>(null)
-const assetFileStatus = ref<AssetFileProcessStatus>(AssetFileProcessStatus.Processed)
+const assetFileStatus = ref<AssetFileProcessStatusType>(AssetFileProcessStatus.Processed)
 const redistributeId = ref<DocIdNullable>(null)
 
 export function useAssetDetailDistributionDialog() {

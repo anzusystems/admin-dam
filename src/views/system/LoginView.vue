@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { envConfig } from '@/services/EnvConfigService'
-import { useI18n } from 'vue-i18n'
 import LoginFormSimple from '@/views/system/components/LoginFormSimple.vue'
 import LoginFormSso from '@/views/system/components/LoginFormSso.vue'
-import { useDamConfigState, UserAuthType } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
+import { useDamConfigStore, UserAuthType } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
-const { damPubConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
 
-const userAuthType = damPubConfig.value.userAuthType
+const userAuthType = damConfigStore.damPubConfig.userAuthType
 
 const { t } = useI18n()
 </script>

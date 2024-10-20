@@ -1,10 +1,9 @@
-import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
-import { useDamConfigState } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import { type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
-export const useAuthorAssetTypeConfig = (assetType: DamAssetType) => {
+export const useAuthorAssetTypeConfig = (assetType: DamAssetTypeType) => {
   const { getDamConfigExtSystem } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
 

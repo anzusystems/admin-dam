@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { type DamDistributionServiceType, isUndefined } from '@anzusystems/common-admin'
-import { ACopyText, type DamAssetType, DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
-import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
-import { useI18n } from 'vue-i18n'
-import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
-import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
+import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
+import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
+import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
+import { ACopyText, type DamAssetTypeType, type DamDistributionServiceTypeType, DamDistributionStatus, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem
-    assetType: DamAssetType
-    distributionType: DamDistributionServiceType | null
+    assetType: DamAssetTypeType
+    distributionType: DamDistributionServiceTypeType | null
     showRedistribute: boolean
   }>(),
   {}

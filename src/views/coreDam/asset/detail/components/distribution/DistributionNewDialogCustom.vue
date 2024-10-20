@@ -1,47 +1,48 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
+import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { damClient } from '@/services/api/clients/damClient'
+import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
+import {
+  createCustomDistribution,
+  prepareFormDataCustomDistribution,
+  redistributeCustomDistribution,
+} from '@/services/api/coreDam/distributionCustomApi'
+import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
+import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
+import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
+import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
+import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
+import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
+import {
+  useAssetDetailDistributionDialog
+} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import {
   AFormDatetimePicker,
   AssetFileProcessStatus,
   ASystemEntityScope,
   cloneDeep,
-  type DamAssetType,
+  type DamAssetTypeType,
   type DamDistributionRequirementsConfig,
   type DamDistributionServiceName,
   type DocId,
   isUndefined,
   useAlerts,
   useDamConfigState,
+  useDamConfigStore,
   usePagination
 } from '@anzusystems/common-admin'
-import { ENTITY } from '@/services/api/coreDam/distributionJwApi'
 import useVuelidate from '@vuelidate/core'
-import type { DistributionCustomCreateRedistributeDto, DistributionCustomItem } from '@/types/coreDam/Distribution'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
-import { useDistributionFilter } from '@/model/coreDam/filter/DistributionFilter'
-import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import {
-  createCustomDistribution,
-  prepareFormDataCustomDistribution,
-  redistributeCustomDistribution,
-} from '@/services/api/coreDam/distributionCustomApi'
-import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
-import DistributionCustomMetadataForm
-  from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
-import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
-import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
     distributionServiceName: DamDistributionServiceName
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     config: DamDistributionRequirementsConfig
     assetId: DocId
   }>(),
@@ -69,8 +70,9 @@ const { showRecordWas, showValidationError, showErrorsDefault, showUnknownError 
 
 const {
   loadDamConfigDistributionCustomFormElements,
-  damConfigDistributionCustomFormElements
 } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damConfigDistributionCustomFormElements } = storeToRefs(damConfigStore)
 
 const loadFormData = async () => {
   canDisplayForm.value = false

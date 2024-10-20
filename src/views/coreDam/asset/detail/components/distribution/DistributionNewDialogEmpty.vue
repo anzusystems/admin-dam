@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import type {
-  DamAssetType,
+  DamAssetTypeType,
   DamDistributionRequirementsConfig,
   DamDistributionServiceName,
-  DocId,
+  DocId
 } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
     distributionServiceName: DamDistributionServiceName
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     config: DamDistributionRequirementsConfig
     assetId: DocId
   }>(),

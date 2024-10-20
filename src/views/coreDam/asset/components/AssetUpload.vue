@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import FileUpload from '@/components/coreDam/FileUpload.vue'
-import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
-import { computed, ref } from 'vue'
-import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import {
-  ADialogToolbar,
-  DamAssetType,
-  type DocId, isUndefined,
-  useDamAcceptTypeAndSizeHelper,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
+import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import {
+  ADialogToolbar,
+  type DamAssetTypeType,
+  type DocId, isUndefined,
+  useDamAcceptTypeAndSizeHelper,
+  useDamConfigState
+} from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -25,7 +25,7 @@ const props = withDefaults(
     assetId?: DocId
     slotName?: string
     multiple?: boolean
-    assetType?: DamAssetType
+    assetType?: DamAssetTypeType
   }>(),
   {
     variant: 'dropzone-fullscreen',

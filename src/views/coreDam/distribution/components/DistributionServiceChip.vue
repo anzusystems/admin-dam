@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { useDamDistributionServiceType } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
+import { computed } from 'vue'
 
 const props = defineProps<{
   serviceName: string
 }>()
 
-const { getDistributionServiceTypeOption } = useDamDistributionServiceType(damClient)
+const { getDistributionServiceTypeOption } = useDamDistributionServiceType()
 
 const item = computed(() => {
   return getDistributionServiceTypeOption(props.serviceName)

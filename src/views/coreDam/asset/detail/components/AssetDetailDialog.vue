@@ -1,26 +1,27 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { storeToRefs } from 'pinia'
-import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
-import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
+import { ROUTE } from '@/router/routes'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
+import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
+import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
+import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
+import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import type { DocId } from '@anzusystems/common-admin'
 import {
   assetFileIsImageFile,
   browserHistoryReplaceUrlByRouter,
-  DamAssetStatus,
+  DamAssetStatusDefault,
   DamAssetType,
+  DamAssetTypeDefault,
   isNull,
-  useTheme,
+  useTheme
 } from '@anzusystems/common-admin'
-import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void
@@ -72,11 +73,11 @@ const prevItem = () => {
 }
 
 const assetType = computed(() => {
-  return asset.value?.attributes.assetType || DamAssetType.Default
+  return asset.value?.attributes.assetType || DamAssetTypeDefault
 })
 
 const assetStatus = computed(() => {
-  if (!asset.value) return DamAssetStatus.Default
+  if (!asset.value) return DamAssetStatusDefault
   return asset.value.attributes.assetStatus
 })
 

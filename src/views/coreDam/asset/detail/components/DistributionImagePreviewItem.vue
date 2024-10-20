@@ -3,8 +3,8 @@ import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionIm
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted } from 'vue'
-import { DamAssetStatus, useDamConfigState } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
+import { DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
 
 const props = withDefaults(
   defineProps<{
@@ -30,7 +30,8 @@ const onImageError = () => {
   emit('invalidImage', props.index)
 }
 
-const { damPrvConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damPrvConfig } = storeToRefs(damConfigStore)
 
 const title = computed(() => {
   if (damPrvConfig.value.distributionServices[props.item.service]) {

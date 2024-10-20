@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import type { DamAssetType } from '@anzusystems/common-admin'
-import { ACard } from '@anzusystems/common-admin'
-import DistributionCategoryDatatable from '@/views/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'
+import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import { ACL } from '@/composables/auth/auth'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import { computed, ref } from 'vue'
+import DistributionCategoryCreateButton from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
+import DistributionCategoryDatatable from '@/views/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'
 import {
   useDistributionCategoryListActions,
   useDistributionCategoryManageActions,
 } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import DistributionCategoryCreateButton from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-import { ACL } from '@/composables/auth/auth'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { ACard } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 const filter = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()
 const { listLoading } = useDistributionCategoryListActions()
 
-const assetType = computed(() => filter.type.model as DamAssetType)
+const assetType = computed(() => filter.type.model as DamAssetTypeType)
 
 const datatable = ref<InstanceType<typeof DistributionCategoryDatatable> | null>(null)
 
-const onCreateSuccess = (type: DamAssetType) => {
+const onCreateSuccess = (type: DamAssetTypeType) => {
   filter.type.model = type
   datatable.value?.refresh()
 }

@@ -1,4 +1,15 @@
-import type { AssetSearchListItemDto, DocId } from '@anzusystems/common-admin'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { useAssetListFilter } from '@/model/coreDam/filter/AssetFilter'
+import { ROUTE } from '@/router/routes'
+import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/coreDam/assetApi'
+import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
+import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
+import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
+import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
+import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import type { AssetSearchListItemDto, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
   browserHistoryReplaceUrlByRouter,
@@ -8,20 +19,9 @@ import {
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
-import { useAssetListStore } from '@/stores/coreDam/assetListStore'
-import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/coreDam/assetApi'
-import { useAssetListFilter } from '@/model/coreDam/filter/AssetFilter'
 import { storeToRefs } from 'pinia'
 import { readonly, type Ref, ref } from 'vue'
-import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
-import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 
@@ -103,7 +103,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
-  const setTypeAndFetch = async (type: null | DamAssetType = null) => {
+  const setTypeAndFetch = async (type: null | DamAssetTypeType = null) => {
     if (isNull(type)) {
       filter.type.model = []
       filter.inPodcast.model = null

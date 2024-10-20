@@ -1,5 +1,16 @@
 <script lang="ts" setup>
+import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
+import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
+import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
+import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
+import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
+import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
+import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
+import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
+import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
   ACopyText,
@@ -8,22 +19,12 @@ import {
   assetFileIsVideoFile,
   ASystemEntityScope,
   DamAssetType,
+  DamAssetTypeDefault,
   dateTimePretty,
   prettyBytes,
 } from '@anzusystems/common-admin'
-import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
-import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
-import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
-import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
-import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import AssetMetadataImageAttributes from '@/views/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import AssetMetadataVideoAttributes from '@/views/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
-import AssetMetadataAudioAttributes from '@/views/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
-import AssetFileMainRoute from '@/views/coreDam/assetFileRoute/components/AssetFileMainRoute.vue'
 
 const emit = defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -37,7 +38,7 @@ const panels = ref(['metadata', 'file'])
 const { asset, authorConflicts, metadataTouch } = useAssetDetailActions()
 
 const assetType = computed(() => {
-  return asset.value?.attributes.assetType || DamAssetType.Default
+  return asset.value?.attributes.assetType || DamAssetTypeDefault
 })
 
 const isTypeImage = computed(() => {

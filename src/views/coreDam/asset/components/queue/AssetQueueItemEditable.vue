@@ -1,34 +1,33 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
+import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { deleteAsset, fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { useAssetListStore } from '@/stores/coreDam/assetListStore'
+import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
+import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
+import AssetLink from '@/views/coreDam/asset/components/AssetLink.vue'
+import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
+import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
+import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import {
   AActionDeleteButton,
   type AssetCustomData,
   AssetFileFailReason,
   ASystemEntityScope,
   ATableCopyIdButton,
-  DamAssetStatus,
+  DamAssetStatusDefault,
   type DocId,
   isNull,
   prettyBytes,
   type UploadQueueItem,
   UploadQueueItemStatus,
+  type UploadQueueItemStatusType,
   useAlerts,
 } from '@anzusystems/common-admin'
-import { useAssetListStore } from '@/stores/coreDam/assetListStore'
-import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import KeywordRemoteAutocompleteWithCached
-  from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import AuthorRemoteAutocompleteWithCached
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AssetCustomMetadataForm from '@/components/coreDam/customMetadata/AssetCustomMetadataForm.vue'
-import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
-import { useAuthorAssetTypeConfig } from '@/views/coreDam/author/composables/authorConfig'
-import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
-import AssetLink from '@/views/coreDam/asset/components/AssetLink.vue'
-import AssetFileFailReasonChip from '@/views/coreDam/asset/components/AssetFileFailReasonChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -90,7 +89,9 @@ const assetListStore = useAssetListStore()
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const processing = computed(() => {
-  return [UploadQueueItemStatus.Processing, UploadQueueItemStatus.Loading].includes(props.item.status)
+  return (
+    [UploadQueueItemStatus.Processing, UploadQueueItemStatus.Loading] as unknown as UploadQueueItemStatusType
+  ).includes(props.item.status)
 })
 const waiting = computed(() => {
   return props.item.status === UploadQueueItemStatus.Waiting
@@ -131,7 +132,7 @@ const assetType = computed(() => {
   return props.item.assetType
 })
 const status = computed(() => {
-  if (!props.item) return DamAssetStatus.Default
+  if (!props.item) return DamAssetStatusDefault
   return props.item.assetStatus
 })
 
@@ -145,9 +146,13 @@ const cancelItem = () => {
 }
 
 const showCancel = computed(() => {
-  return [UploadQueueItemStatus.Loading, UploadQueueItemStatus.Waiting, UploadQueueItemStatus.Uploading].includes(
-    props.item.status
-  )
+  return (
+    [
+      UploadQueueItemStatus.Loading,
+      UploadQueueItemStatus.Waiting,
+      UploadQueueItemStatus.Uploading,
+    ] as unknown as UploadQueueItemStatusType
+  ).includes(props.item.status)
 })
 </script>
 
@@ -179,8 +184,10 @@ const showCancel = computed(() => {
           />
           <div
             v-if="item.isDuplicate"
-            :class="'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
-              ' d-flex align-center justify-center flex-column'"
+            :class="
+              'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
+              ' d-flex align-center justify-center flex-column'
+            "
           >
             <VIcon
               icon="mdi-alert"
@@ -202,8 +209,10 @@ const showCancel = computed(() => {
           </div>
           <div
             v-if="item.error.hasError"
-            :class="'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
-              ' d-flex align-center justify-center flex-column'"
+            :class="
+              'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
+              ' d-flex align-center justify-center flex-column'
+            "
           >
             <VIcon
               icon="mdi-alert"

@@ -1,5 +1,5 @@
 import type { Log } from '@anzusystems/common-admin'
-import { LogLevel } from '@anzusystems/common-admin'
+import { LogLevelDefault } from '@anzusystems/common-admin'
 
 export function useLogFactory() {
   const createDefault = (): Log => {
@@ -7,7 +7,7 @@ export function useLogFactory() {
       id: '',
       message: '',
       datetime: '',
-      levelName: LogLevel.Default,
+      levelName: LogLevelDefault,
       context: {
         appVersion: '',
         appSystem: '',

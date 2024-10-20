@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     item: AssetSlot | null
     fileTitle: string
-    dataCy: string
+    dataCy?: string | undefined
   }>(),
   {
     dataCy: undefined,

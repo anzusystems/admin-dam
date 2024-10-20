@@ -1,11 +1,11 @@
+import { DamAssetType, type DamAssetTypeType, type ValueObjectOption } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { DamAssetType, type ValueObjectOption } from '@anzusystems/common-admin'
 
 export function useAssetType() {
   const { t } = useI18n()
 
-  const assetTypeOptions = ref<ValueObjectOption<DamAssetType>[]>([
+  const assetTypeOptions = ref<ValueObjectOption<DamAssetTypeType>[]>([
     {
       value: DamAssetType.Image,
       title: t('coreDam.asset.assetType.image'),
@@ -24,7 +24,7 @@ export function useAssetType() {
     },
   ])
 
-  const getAssetTypeOption = (value: DamAssetType) => {
+  const getAssetTypeOption = (value: DamAssetTypeType) => {
     return assetTypeOptions.value.find((item) => item.value === value)
   }
 

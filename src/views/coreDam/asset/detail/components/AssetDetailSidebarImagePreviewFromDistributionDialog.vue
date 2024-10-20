@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
+import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
+import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
 import {
   ACard,
   ADatatablePagination,
@@ -7,14 +9,12 @@ import {
   type DocId,
   isNull,
   useAlerts,
-  useDamConfigState,
-  usePagination,
+  useDamConfigStore,
+  usePagination
 } from '@anzusystems/common-admin'
-import { useVideoDistributionPreviewListActions } from '@/views/coreDam/asset/detail/composables/videoDistributionPreviewActions'
-import DistributionImagePreviewItem from '@/views/coreDam/asset/detail/components/DistributionImagePreviewItem.vue'
-import { setVideoFileDistributionPreview } from '@/services/api/coreDam/videoApi'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -70,7 +70,8 @@ const onConfirm = async () => {
   }
 }
 
-const { damPrvConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damPrvConfig } = storeToRefs(damConfigStore)
 
 const selectedTitle = computed(() => {
   if (lastSelectedItem.value && damPrvConfig.value.distributionServices[lastSelectedItem.value.service]) {
