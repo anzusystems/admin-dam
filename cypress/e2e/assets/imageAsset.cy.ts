@@ -43,6 +43,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
     it('Edit Metadata', ()=> {
       cy.visit(`/asset/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
+      cy.get('.sidebar-info .v-btn').contains('Zobraziť viac').should('be.visible').click()
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}-edit`)
       cy.get('[data-cy="custom-field-description"] textarea')

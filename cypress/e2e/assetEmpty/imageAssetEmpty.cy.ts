@@ -20,9 +20,10 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
 
       cy.urlContains('/asset')
       cy.get('.sidebar-info__content > .pa-2 > .v-alert').contains('Neobsahuje žiaden súbor')
+      cy.get('.sidebar-info .v-btn').contains('Zobraziť viac').click()
       cy.getCy('button-download').should('be.visible')
       cy.getCy('button-delete').should('be.visible')
-      cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea').eq(0)
+      cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea[rows]')
         .type(`${ASSET_TITLE}`)
       cy.getCy('button-save').should('be.visible').click()
 
@@ -53,7 +54,7 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
 
         cy.visit(`/asset/${assetID}`)
         cy.circleLoad()
-        cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea').eq(0)
+        cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea[rows]')
           .invoke('val').then((assetTitle)=>{
           cy.wrap(assetTitle).should('include', ASSET_TITLE)
         })
