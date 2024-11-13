@@ -1,17 +1,17 @@
+import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 import type {
   AnzuUserAndTimeTrackingAware,
-  DamAssetType,
+  DamAssetTypeType,
   DamDistributionServiceName,
   DocId,
   IntegerId,
-  ResourceNameSystemAware,
+  ResourceNameSystemAware
 } from '@anzusystems/common-admin'
-import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 
 export interface DistributionCategorySelect extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   serviceSlug: DamDistributionServiceName
-  type: DamAssetType
+  type: DamAssetTypeType
   extSystem: IntegerId
   options: DistributionCategoryOption[]
 }

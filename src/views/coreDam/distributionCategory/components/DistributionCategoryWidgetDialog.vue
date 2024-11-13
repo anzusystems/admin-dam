@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
-import { computed, ref, watch } from 'vue'
-import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
-import type { DamAssetType, DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
-import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
-import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
-import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
+import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
+import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
+import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
+import type { DamAssetTypeType, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: boolean
     categoryId?: DocIdNullable
     assetId: DocId
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
   }>(),
   {
     modelValue: false,

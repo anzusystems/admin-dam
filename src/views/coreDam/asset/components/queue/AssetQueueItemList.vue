@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
+import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -20,12 +20,14 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const loading = computed(() => {
-  return [
-    UploadQueueItemStatus.Waiting,
-    UploadQueueItemStatus.Uploading,
-    UploadQueueItemStatus.Loading,
-    UploadQueueItemStatus.Processing,
-  ].includes(props.item.status)
+  return (
+    [
+      UploadQueueItemStatus.Waiting,
+      UploadQueueItemStatus.Uploading,
+      UploadQueueItemStatus.Loading,
+      UploadQueueItemStatus.Processing,
+    ] as unknown as UploadQueueItemStatusType
+  ).includes(props.item.status)
 })
 
 const loadingProgress = computed(() => {
@@ -37,9 +39,13 @@ const cancelItem = () => {
 }
 
 const showCancel = computed(() => {
-  return [UploadQueueItemStatus.Loading, UploadQueueItemStatus.Waiting, UploadQueueItemStatus.Uploading].includes(
-    props.item.status
-  )
+  return (
+    [
+      UploadQueueItemStatus.Loading,
+      UploadQueueItemStatus.Waiting,
+      UploadQueueItemStatus.Uploading,
+    ] as unknown as UploadQueueItemStatusType
+  ).includes(props.item.status)
 })
 
 const { remainingTimeShort } = useRemainingTime()

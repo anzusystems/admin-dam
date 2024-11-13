@@ -1,5 +1,5 @@
-import type { DamAssetType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
 export interface AssetCreateDto {
-  type: DamAssetType
+  type: DamAssetTypeType
 }

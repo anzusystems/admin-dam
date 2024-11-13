@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import { ACustomDataFormElement, type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     modelValue: { [key: string]: any }
   }>(),
   {}
@@ -16,8 +15,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', data: any): void
-  (e: 'fillEmptyField', data: { assetType: DamAssetType; elementProperty: string; value: any }): void
-  (e: 'replaceField', data: { assetType: DamAssetType; elementProperty: string; value: any }): void
+  (e: 'fillEmptyField', data: { assetType: DamAssetTypeType; elementProperty: string; value: any }): void
+  (e: 'replaceField', data: { assetType: DamAssetTypeType; elementProperty: string; value: any }): void
 }>()
 
 const { t } = useI18n()

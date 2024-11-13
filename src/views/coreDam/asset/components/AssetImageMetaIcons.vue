@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { type AssetFileProperties, DamAssetType, useDamConfigState } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 import {
   DIMENSIONS_CONFIG,
   ICON_LOW,
@@ -8,12 +6,14 @@ import {
   ICON_SLOTS,
   LOW_DIMENSION,
 } from '@/views/coreDam/asset/components/assetImageIconsConfig'
+import { type AssetFileProperties, DamAssetType, type DamAssetTypeType, useDamConfigStore } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
   }>(),
@@ -47,7 +47,8 @@ const checkDimensions = (icons: string[], titles: string[]) => {
 }
 
 const checkDistributions = (icons: string[], titles: string[]) => {
-  const { damPrvConfig } = useDamConfigState(damClient)
+  const damConfigStore = useDamConfigStore()
+const { damPrvConfig } = storeToRefs(damConfigStore)
   for (let i = 0; i < props.assetFileProperties.distributesInServices.length; i++) {
     const iconPath =
       damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]]?.iconPath

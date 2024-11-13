@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 // @ts-nocheck
 // todo remove nocheck
+import { ACL, useAuth } from '@/composables/auth/auth'
+import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { ROUTE } from '@/router/routes'
+import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
+import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
+import DistributionCategoryFilter from '@/views/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
+import { useDistributionCategoryListActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import DistributionCategorySelectedOptionChip from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -13,17 +22,8 @@ import {
   type DatatableOrderingOption,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
-import { ROUTE } from '@/router/routes'
-import { useRouter } from 'vue-router'
-import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import { useDistributionCategoryListActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import DistributionCategoryFilter from '@/views/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { computed, onMounted } from 'vue'
-import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
-import DistributionCategorySelectedOptionChip from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
-import { ACL, useAuth } from '@/composables/auth/auth'
+import { useRouter } from 'vue-router'
 
 type DatatableItem = DistributionCategory
 
@@ -82,7 +82,6 @@ defineExpose({
   refresh: getList,
 })
 
-// eslint-disable-next-line
 const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => {
   return 'item.' + distributionServiceSlug
 }

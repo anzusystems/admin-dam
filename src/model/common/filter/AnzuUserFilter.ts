@@ -13,6 +13,12 @@ const filter = reactive({
   enabled: {
     ...makeFilter({ name: 'enabled' }),
   },
+  lastName: {
+    ...makeFilter({ name: 'lastName', variant: 'startsWith', field: 'person.lastName' }),
+  },
+  permissionGroups: {
+    ...makeFilter({ name: 'permissionGroups', variant: 'custom', multiple: true, default: [] }),
+  },
 })
 
 export function useAnzuUserFilter() {

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
-import { DamAssetStatus, UploadQueueItemStatus } from '@anzusystems/common-admin'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
+import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
+import { DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -17,12 +17,14 @@ const props = withDefaults(
 const { t } = useI18n()
 
 const processing = computed(() => {
-  return [
-    UploadQueueItemStatus.Waiting,
-    UploadQueueItemStatus.Uploading,
-    UploadQueueItemStatus.Loading,
-    UploadQueueItemStatus.Processing,
-  ].includes(props.item.status)
+  return (
+    [
+      UploadQueueItemStatus.Waiting,
+      UploadQueueItemStatus.Uploading,
+      UploadQueueItemStatus.Loading,
+      UploadQueueItemStatus.Processing,
+    ] as unknown as UploadQueueItemStatusType
+  ).includes(props.item.status)
 })
 const imageSrc = computed(() => {
   return props.item.imagePreview ? props.item.imagePreview.url : undefined
@@ -31,7 +33,7 @@ const assetType = computed(() => {
   return props.item.assetType
 })
 const status = computed(() => {
-  if (!props.item) return DamAssetStatus.Default
+  if (!props.item) return DamAssetStatusDefault
   return props.item.assetStatus
 })
 </script>

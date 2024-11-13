@@ -1,21 +1,23 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import type { Permissions } from '@/types/Permission'
-import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
-import type { AxiosInstance } from 'axios'
 import PermissionGrantEditor from '@/views/common/permission/components/PermissionGrantEditor.vue'
+import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
+import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
+import type { GrantType } from '@anzusystems/common-admin'
 import {
   cloneDeep,
   Grant,
   GrantOrigin,
+  GrantOriginDefault,
   isUndefined,
   objectDeletePropertyByPath,
   objectGetValueByPath,
   objectSetValueByPath,
   ROLE_SUPER_ADMIN,
 } from '@anzusystems/common-admin'
+import type { AxiosInstance } from 'axios'
 import { computed } from 'vue'
-import PermissionValueChip from '@/views/common/permission/components/PermissionValueChip.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   modelValue: Permissions
@@ -31,7 +33,7 @@ const permissions = computed(() => cloneDeep(props.modelValue))
 const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized, translatePermission } =
   // eslint-disable-next-line vue/no-setup-props-reactivity-loss
   usePermissionConfigActions(props.client)
-const changeGrant = (subject: string, action: string, grant?: Grant) => {
+const changeGrant = (subject: string, action: string, grant?: GrantType) => {
   const permissionName = subject + '_' + action
   if (isUndefined(grant) && Object.hasOwn(permissions.value, permissionName)) {
     objectDeletePropertyByPath(permissions.value, permissionName)
@@ -87,7 +89,7 @@ const getGrantOrigin = (subject: string, action: string) => {
     }
   }
 
-  return GrantOrigin.DefaultGrant
+  return GrantOriginDefault
 }
 const { t } = useI18n()
 </script>

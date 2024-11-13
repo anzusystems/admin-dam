@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import type { AssetFileProperties } from '@anzusystems/common-admin'
-import { DamAssetStatus, DamAssetType, isUndefined, useRemainingTime } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
+import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
+import { DamAssetStatus, DamAssetType, isUndefined, useRemainingTime } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     src?: string
-    assetType?: DamAssetType
-    assetStatus?: DamAssetStatus
+    assetType?: DamAssetTypeType
+    assetStatus?: DamAssetStatusType
     backgroundColor?: string
     width?: number
     height?: number
@@ -95,7 +95,9 @@ const uploadingPercentage = computed(() => {
 })
 
 const backgroundColorComputed = computed(() => {
-  return [DamAssetStatus.Deleting, DamAssetStatus.Draft].includes(props.assetStatus) ? '#ccc' : props.backgroundColor
+  return ([DamAssetStatus.Deleting, DamAssetStatus.Draft] as unknown as DamAssetStatusType).includes(props.assetStatus)
+    ? '#ccc'
+    : props.backgroundColor
 })
 
 const iconColor = computed(() => {
@@ -245,7 +247,7 @@ const { remainingTimeShort } = useRemainingTime()
       alt=""
       :style="'background-color:' + backgroundColorComputed"
       @onerror="onError"
-    >
+    />
     <div
       v-if="showIconComputed"
       class="asset-image__icon-wrapper"

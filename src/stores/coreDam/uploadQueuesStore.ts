@@ -1,7 +1,20 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useExternalProviders } from '@/composables/system/externalProviders'
+import { damClient } from '@/services/api/clients/damClient'
+import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
+import { fetchAudioFile } from '@/services/api/coreDam/audioApi'
+import { fetchDocumentFile } from '@/services/api/coreDam/documentApi'
+import { fetchImageFile } from '@/services/api/coreDam/imageApi'
+import { fetchVideoFile } from '@/services/api/coreDam/videoApi'
+import { externalProviderImport } from '@/services/upload/externalProviderImportService'
+import { uploadStop, useUpload } from '@/services/upload/uploadService'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import type { AssetFileFailReasonType, DamAssetTypeType, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
-  type AssetFileFailReason,
   AssetFileLinkType,
   type AssetFileNullable,
   type AssetSearchListItemDto,
@@ -20,20 +33,7 @@ import {
   useDamConfigState,
   useUploadQueueItemFactory
 } from '@anzusystems/common-admin'
-import { uploadStop, useUpload } from '@/services/upload/uploadService'
-import { fetchImageFile } from '@/services/api/coreDam/imageApi'
-import { fetchAsset, fetchAssetListByIds } from '@/services/api/coreDam/assetApi'
-import { fetchAudioFile } from '@/services/api/coreDam/audioApi'
-import { fetchVideoFile } from '@/services/api/coreDam/videoApi'
-import { fetchDocumentFile } from '@/services/api/coreDam/documentApi'
-import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
-import { externalProviderImport } from '@/services/upload/externalProviderImportService'
-import { useExternalProviders } from '@/composables/system/externalProviders'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
-import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { damClient } from '@/services/api/clients/damClient'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 
 interface State {
   queues: { [queueId: string]: UploadQueue }
@@ -76,7 +76,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       }
     },
     getQueueItemsByStatus: (state) => {
-      return (queueId: string, status: UploadQueueItemStatus) => {
+      return (queueId: string, status: UploadQueueItemStatusType) => {
         if (queueId in state.queues) {
           return state.queues[queueId].items.filter((item) => item.status === status)
         }
@@ -109,7 +109,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
     getQueueItemsTypes: (state) => {
       return (queueId: string) => {
-        const types: Array<DamAssetType> = []
+        const types: Array<DamAssetTypeType> = []
         if (queueId in state.queues && state.queues[queueId].items.length > 0) {
           for (let i = 0; i < state.queues[queueId].items.length; i++) {
             if (types.includes(state.queues[queueId].items[i].assetType)) {
@@ -155,7 +155,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
       files: File[],
       assetId: DocId,
       slotName: string,
-      assetType: DamAssetType
+      assetType: DamAssetTypeType
     ) {
       const { currentAssetLicenceId } = useCurrentAssetLicence()
       for await (const file of files) {
@@ -373,7 +373,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         this.recalculateQueueCounts(queueId)
       }
     },
-    async queueItemFailed(assetId: DocId, failReason: AssetFileFailReason) {
+    async queueItemFailed(assetId: DocId, failReason: AssetFileFailReasonType) {
       const asset = await fetchAsset(assetId)
       for (const queueId in this.queues) {
         this.queues[queueId].items.forEach((item) => {
@@ -423,7 +423,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     async queueItemDuplicate(
       assetId: DocId,
       originAssetFile: DocIdNullable = null,
-      assetType: DamAssetType | null = null
+      assetType: DamAssetTypeType | null = null
     ) {
       // @todo product question what to do with duplicate file display
       let file: null | AssetFileNullable = null
@@ -485,7 +485,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
     queueItemsReplaceEmptyCustomDataValue(
       queueId: string,
-      data: { assetType: DamAssetType; elementProperty: string; value: any },
+      data: { assetType: DamAssetTypeType; elementProperty: string; value: any },
       forceReplace = false
     ) {
       const items = this.queues[queueId].items

@@ -18,6 +18,7 @@ import keyword from '@/locales/en/coreDam/keyword.json'
 import podcast from '@/locales/en/coreDam/podcast.json'
 import podcastEpisode from '@/locales/en/coreDam/podcastEpisode.json'
 import user from '@/locales/en/coreDam/user.json'
+import anzuUser from '@/locales/en/common/anzuUser.json'
 import videoShow from '@/locales/en/coreDam/videoShow.json'
 import videoShowEpisode from '@/locales/en/coreDam/videoShowEpisode.json'
 import { messagesEn } from '@anzusystems/common-admin'
@@ -28,7 +29,16 @@ import breadcrumb from '@/locales/en/breadcrumb.json'
 import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
 
 export default {
-  common: messagesEn.common,
+  common: {
+    ...messagesEn.common,
+    anzuUser: {
+      ...messagesEn.common.anzuUser,
+      filter: {
+        ...messagesEn.common.anzuUser.filter,
+        ...anzuUser.filter
+      }
+    }
+  },
   $vuetify: messagesEn.$vuetify,
   coreDam: {
     asset,

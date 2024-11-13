@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 import type { MessageSchema } from '@/plugins/i18n'
 import type { ObjectLeaves } from '@anzusystems/common-admin'
 import 'vue-router'

@@ -1,7 +1,7 @@
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { assetFileIsImageFile, DamAssetStatusDefault, DamAssetType, DamAssetTypeDefault } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
-import { assetFileIsImageFile, DamAssetStatus, DamAssetType } from '@anzusystems/common-admin'
 
 export function useAssetDetailActions() {
   const sidebar = ref(true)
@@ -21,11 +21,11 @@ export function useAssetDetailActions() {
   }
 
   const assetType = computed(() => {
-    return asset.value?.attributes.assetType || DamAssetType.Default
+    return asset.value?.attributes.assetType || DamAssetTypeDefault
   })
 
   const assetStatus = computed(() => {
-    if (!asset.value) return DamAssetStatus.Default
+    if (!asset.value) return DamAssetStatusDefault
     return asset.value.attributes.assetStatus
   })
 

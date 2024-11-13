@@ -1,26 +1,25 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { type DamAssetType, isUndefined } from '@anzusystems/common-admin'
-import {
-  ADialogToolbar,
-  DamDistributionServiceType,
-  type DocId,
-  isNull,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
-import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
-import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
-import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
-import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
-import { useI18n } from 'vue-i18n'
-import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import DistributionNewDialogCustom from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogCustom.vue'
+import DistributionNewDialogEmpty from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogEmpty.vue'
+import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogJw.vue'
+import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import {
+  ADialogToolbar, type DamAssetTypeType, DamDistributionServiceType,
+  type DocId,
+  isNull, isUndefined, useDamConfigState,
+  useDamConfigStore
+} from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     assetId: DocId
   }>(),
   {}
@@ -62,8 +61,8 @@ const activeConfig = computed(() => {
   if (isNull(activeDistributionName.value)) return null
   return serviceRequirements.value[activeDistributionName.value]
 })
-
-const { damPrvConfig } = useDamConfigState(damClient)
+const damConfigStore = useDamConfigStore()
+const { damPrvConfig } = storeToRefs(damConfigStore)
 
 const activeDistributionType = computed(() => {
   if (isNull(activeDistributionName.value)) return null

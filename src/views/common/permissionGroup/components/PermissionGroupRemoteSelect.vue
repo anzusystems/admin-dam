@@ -2,8 +2,9 @@
 import { useVModels } from '@vueuse/core'
 import type { Filter } from '@anzusystems/common-admin'
 import { AFilterRemoteAutocomplete } from '@anzusystems/common-admin'
-import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
-import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
+import { damClient } from '@/services/api/clients/damClient'
+import { usePermissionGroupSelectAction } from '@/views/common/permissionGroup/composables/permissionGroupActions'
+import { usePermissionGroupFilter } from '@/model/common/filter/PermissionGroupFilter'
 
 const props = withDefaults(
   defineProps<{
@@ -15,9 +16,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: Filter): void
 }>()
 const { modelValue } = useVModels(props, emit)
-const { fetchItems, fetchItemsByIds } = useKeywordSelectActions()
+const { fetchItems, fetchItemsByIds } = usePermissionGroupSelectAction(damClient)
 
-const innerFilter = useKeywordListFilter()
+const innerFilter = usePermissionGroupFilter()
 </script>
 
 <template>
@@ -26,6 +27,6 @@ const innerFilter = useKeywordListFilter()
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
     :inner-filter="innerFilter"
-    filter-by-field="text"
+    filter-by-field="title"
   />
 </template>

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ACustomDataForm, type DamAssetType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
+import { ACustomDataForm, type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    assetType: DamAssetType
+    assetType: DamAssetTypeType
     modelValue: { [key: string]: any }
     dataCy?: string
   }>(),

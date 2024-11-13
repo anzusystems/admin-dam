@@ -1,7 +1,11 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { DamAssetType } from '@anzusystems/common-admin'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
+import { useDistributionCategoryCreateActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
+import DistributionCategorySelectOptionSelect from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextField,
@@ -10,16 +14,12 @@ import {
   ASystemEntityScope,
   useAlerts,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
-import { useDistributionCategoryValidation } from '@/views/coreDam/distributionCategory/composables/distributionCategoryValidation'
-import { useDistributionCategoryCreateActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
-import DistributionCategorySelectOptionSelect from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
-import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    initialAssetType: DamAssetType
+    initialAssetType: DamAssetTypeType
     buttonT?: string
     buttonClass?: string
     dataCy?: string
@@ -31,7 +31,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onCreateSuccess', data: DamAssetType): void
+  (e: 'onCreateSuccess', data: DamAssetTypeType): void
 }>()
 
 const dialog = ref(false)

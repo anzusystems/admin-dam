@@ -1,21 +1,24 @@
 <script lang="ts" setup>
-import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
-import { useAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
-import { useI18n } from 'vue-i18n'
-import { useImageOrientation } from '@/model/coreDam/valueObject/ImageOrientation'
 import FilterClosestColor from '@/components/filter/FilterClosestColor.vue'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
-import DistributionServiceNameFilter from '@/views/coreDam/distribution/components/DistributionServiceNameFilter.vue'
+import { useAssetStatus } from '@/model/coreDam/valueObject/DamAssetStatus'
+import { useAssetType } from '@/model/coreDam/valueObject/DamAssetType'
+import { useImageOrientation } from '@/model/coreDam/valueObject/ImageOrientation'
 import AssetSlotsFilter from '@/views/coreDam/asset/components/AssetSlotsFilter.vue'
+import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
+import DistributionServiceNameFilter from '@/views/coreDam/distribution/components/DistributionServiceNameFilter.vue'
 import {
   AFilterBooleanSelect,
   AFilterDatetimePicker,
   AFilterInteger,
   AFilterString,
   AFilterValueObjectOptionsSelect,
+  DamAuthorFilterRemoteAutocomplete,
+  DamKeywordFilterRemoteAutocomplete,
+  DamUserFilterRemoteAutocomplete,
 } from '@anzusystems/common-admin'
-import KeywordTitleFilter from '@/views/coreDam/keyword/components/KeywordTitleRemoteSelect.vue'
+import { useI18n } from 'vue-i18n'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -40,6 +43,8 @@ const resetFilter = () => {
 const onAnyFilterUpdate = () => {
   filterTouch()
 }
+
+const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
@@ -67,8 +72,35 @@ const onAnyFilterUpdate = () => {
         </VRow>
         <VRow>
           <VCol>
-            <KeywordTitleFilter
+            <AFilterString
+              v-model="filter.assetAndMainFileIds"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <DamKeywordFilterRemoteAutocomplete
               v-model="filter.keywordIds"
+              :ext-system="currentExtSystemId"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <DamAuthorFilterRemoteAutocomplete
+              v-model="filter.authorIds"
+              :ext-system="currentExtSystemId"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <DamUserFilterRemoteAutocomplete
+              v-model="filter.createdByIds"
               @update:model-value="onAnyFilterUpdate"
             />
           </VCol>
