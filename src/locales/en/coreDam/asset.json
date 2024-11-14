@@ -158,7 +158,7 @@
     },
     "roi": {
       "title": "Previews",
-      "description": "Preview of image on mobile, desktop or app.",
+      "description": "Previews are intended for the main image in the article, article lists, titles, and sections. In the body of the article, the format is displayed without cropping.",
       "refresh": "Refresh previews",
       "rotate": {
         "rotateMainFileImage": "Rotate image (main file)",
