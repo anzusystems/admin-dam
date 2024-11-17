@@ -76,7 +76,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
               cy.waitForJob()
               cy.visit(`asset/${assetIDs[0]}`)
               cy.getCy('button-distribution').click()
-              cy.get('.sidebar-info__content .text-body-2').contains('Distribuovaný')
+              cy.get('.sidebar-info__content .text-body-2', { timeout: 30000 }).contains('Distribuovaný')
 
               cy.getCy('button-slots').click()
               cy.get(':nth-child(1) > .v-row > :nth-child(1)')

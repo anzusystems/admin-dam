@@ -45,6 +45,7 @@ describe(`Test video shows function, Env: ${CY.cfg}`,
   })
   it('Create episode', () =>{
     cy.visit(`/video-show/${VIDEO_SHOW_ID}`)
+    cy.getCy('episode-list').click()
     cy.getCy('button-create').click()
     cy.getCy('episode-title').find('input').clear().type(`${EPISODE_TITLE}-edit`)
     cy.getCy('button-close').should('be.visible')
@@ -65,6 +66,7 @@ describe(`Test video shows function, Env: ${CY.cfg}`,
   })
   it('Edit episode', ()=>{
     cy.visit(`/video-show/${VIDEO_SHOW_ID}`)
+    cy.getCy('episode-list').click()
     cy.getCy('filter-string', 10000).first().type(`${EPISODE_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')

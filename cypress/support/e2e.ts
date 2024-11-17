@@ -21,11 +21,12 @@ beforeEach(function () {
   cy.session(
     CY.loginUser,
     () => {
-      //Setup protection cookie based on env
-      cy.protectionCookie()
       //Login with provided user
+      cy.webLogin(CY.credentials[CY.loginUser].username, CY.credentials[CY.loginUser].password)
       cy.login(CY.loginUser)
       cy.changeToSlovakDarkTheme()
+      // go to main licence
+      cy.changeLicence(100000)
     },
     {
       cacheAcrossSpecs: true,

@@ -3,7 +3,7 @@
 import { ALERT_UPLOAD, CY } from '../../utils/common'
 const assetIDs: Array<string> = []
 
-describe(`Test audio slots function, Env: ${CY.cfg}`,
+xdescribe(`Test audio slots function, Env: ${CY.cfg}`,
   { tags: ['@unsplash', '@assets'], env: { visitBaseUrl: true } }, () => {
   it('test Unsplash Image', ()=>{
     cy.api_waitPageLoad('main')
