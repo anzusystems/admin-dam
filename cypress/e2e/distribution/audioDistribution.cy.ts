@@ -10,7 +10,7 @@ const assetIDs: Array<string> = []
 const DISTRIBUTION_DATA={
   PODCAST: 'Dobré ráno',
   CATEGORY: 'Podcasty',
-  AUTHOR: 'Boris Zemko',
+  AUTHOR: 'Pavol Demeš',
   KEYWORD: 'Aupark',
 } as const
 describe(`Test distribution Audio function, Env: ${CY.cfg}`,
@@ -19,9 +19,6 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       it('Tests skipped - only possible in stg/dev env', ()=>{})
       return
     }
-    beforeEach(() => {
-      cy.webLogin(CY.credentials[CY.loginUser].username, CY.credentials[CY.loginUser].password)
-    })
     it('Prepare Test Data', () => {
       cy.prepareData('audio/sample.mp3', 1, assetIDs)
     })
@@ -34,6 +31,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.getCy('button-add-new-podcast-episode').should('be.visible').click()
       cy.getCy('field-choose-podcast').click()
       cy.waitSec(2)
+      cy.getCy('field-choose-podcast').type(DISTRIBUTION_DATA.PODCAST)
       cy.get('.v-list-item').contains(DISTRIBUTION_DATA.PODCAST).click()
       cy.circleLoad()
       cy.get('textarea').eq(0).type(ASSET_DESCRIPTION)
@@ -55,7 +53,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.get(':nth-child(3) > .v-col').type(DISTRIBUTION_DATA.AUTHOR)
       cy.get(':nth-child(4) > .v-col').type(DISTRIBUTION_DATA.KEYWORD)
       cy.get('.mdi-calendar').click()
-      cy.get('.shortcut-buttons-flatpickr-buttons').click()
+      cy.get('.a-datetime-picker__now-button').click()
       cy.get('.v-btn').contains('Zrušiť').should('be.visible')
       cy.get('.v-card-actions > .bg-primary').click()
       cy.alertMessage(ALERT_CREATE)

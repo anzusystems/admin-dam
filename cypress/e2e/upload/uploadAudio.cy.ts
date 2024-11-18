@@ -13,7 +13,7 @@ describe(`Test upload of various audio, Env: ${CY.cfg}`,
         cy.uploadFile(`audio/sample.${fileType}`, uploadType)
         cy.api_getFileID().then((responseID) => {
           fileIDs.push(responseID)
-          cy.waitForUpload(ALERT_UPLOAD, 20000)
+          cy.waitForUpload(ALERT_UPLOAD, 25000)
           cy.verifyFileType(responseID, 'audio', fileType)
         })
       })

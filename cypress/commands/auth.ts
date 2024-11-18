@@ -17,10 +17,6 @@ declare global {
        */
       clearAll(): Chainable<any>
       /**
-       * Setup protection cookie based on env
-       */
-      protectionCookie(): Chainable<any>
-      /**
        * Login to sme web
        * Provide user credentials form config/cypress.config.ts env to login
        * @param username - username
@@ -30,15 +26,6 @@ declare global {
     }
   }
 }
-
-Cypress.Commands.add('protectionCookie', () => {
-  if (CY.cookie != undefined) {
-    cy.setCookie(CY.cookie.name, CY.cookie.value, {
-      domain: CY.url.domain,
-      log: false,
-    })
-  }
-})
 
 Cypress.Commands.add('login', (user: string, timeout?: number) => {
   cy.visit(CY.credentials[user].forceLoginLink, { timeout: timeout })
