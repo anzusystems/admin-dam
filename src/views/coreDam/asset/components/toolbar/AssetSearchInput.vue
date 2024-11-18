@@ -47,12 +47,13 @@ const modelValueComputed = computed({
 </template>
 
 <style lang="scss" scoped>
+@use "sass:map";
 @use 'vuetify/lib/styles/settings/_variables.scss' as vars;
 
 .v-text-field--pill {
   min-width: 120px;
 
-  @media #{map-get(vars.$display-breakpoints, 'sm-and-up')} {
+  @media #{map.get(vars.$display-breakpoints, 'sm-and-up')} {
     min-width: 300px;
   }
 }

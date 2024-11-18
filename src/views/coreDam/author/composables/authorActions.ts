@@ -125,6 +125,7 @@ export const useAuthorSelectActions = () => {
     id: author.id,
     name: author.name,
     identifier: author.identifier,
+    reviewed: author.flags.reviewed,
   })
 
   const mapToValueObject = (author: DamAuthor): ValueObjectOption<string> => ({
