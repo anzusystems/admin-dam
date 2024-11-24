@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import AssetQueueItemEditable from '@/views/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
+import {
+  AssetFileProcessStatus,
+  DamAssetStatus, DamAssetType,
+  type DocId,
+  type UploadQueueItem,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { fetchAsset } from '@/services/api/coreDam/assetApi'
 
 const props = withDefaults(
   defineProps<{
@@ -19,6 +26,29 @@ const props = withDefaults(
 )
 
 const uploadQueuesStore = useUploadQueuesStore()
+const refreshDisabled = ref(false)
+
+const { showWarningT } = useAlerts()
+
+const refreshItem = async (data: { index: number; assetId: DocId }) => {
+  refreshDisabled.value = true
+  try {
+    const asset = await fetchAsset(data.assetId)
+    if (asset.attributes.assetStatus === DamAssetStatus.WithFile) {
+      await uploadQueuesStore.queueItemProcessed(asset.id)
+    } else if(asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
+      await uploadQueuesStore.queueItemDuplicate(asset.id, asset.mainFile.originAssetFile, asset.attributes.assetType)
+    } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed) {
+      await uploadQueuesStore.queueItemFailed(data.assetId, asset.mainFile.fileAttributes.failReason)
+    } else {
+      showWarningT('common.damImage.queueItem.stillUploadingOrProcessing')
+    }
+  } catch (e) {
+    //
+  } finally {
+    refreshDisabled.value = false
+  }
+}
 
 const list = computed(() => {
   return uploadQueuesStore.getQueueItems(props.queueId)
@@ -62,10 +92,12 @@ onMounted(() => {
             v-model:customData="item.customData"
             v-model:keywords="item.keywords"
             v-model:authors="item.authors"
+            :refresh-disabled="refreshDisabled"
             :item="item"
             :index="index"
             :queue-id="queueId"
             :disable-done-animation="disableDoneAnimation"
+            @refresh-item="refreshItem"
             @cancel-item="cancelItem"
             @remove-item="removeItem"
           />

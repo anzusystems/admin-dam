@@ -26,7 +26,7 @@ import {
   type UploadQueueItemStatusType,
   useAlerts,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
+import { computed, onUnmounted, type Ref, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -37,6 +37,7 @@ const props = withDefaults(
     keywords: DocId[]
     authors: DocId[]
     item: UploadQueueItem
+    refreshDisabled: boolean
     disableDoneAnimation?: boolean
   }>(),
   {
@@ -50,6 +51,7 @@ const emit = defineEmits<{
   (e: 'update:authors', data: DocId[]): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
+  (e: 'refreshItem', data: { index: number; assetId: DocId }): void
 }>()
 
 const IMAGE_ASPECT_RATIO = 16 / 9
@@ -106,6 +108,16 @@ const uploadProgress = computed(() => {
   return props.item.progress.progressPercent
 })
 
+const SHOW_REFRESH_AFTER_SECONDS = 20
+const showRefresh = ref(false)
+const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefined)
+
+const refresh = () => {
+  if (props.item.assetId) {
+    emit('refreshItem', { index: props.index, assetId: props.item.assetId })
+  }
+}
+
 const showDetail = async () => {
   if (isNull(props.item.assetId)) return
   assetDetailStore.setView('queue')
@@ -153,6 +165,30 @@ const showCancel = computed(() => {
       UploadQueueItemStatus.Uploading,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
+})
+
+watch(
+  () => props.item.status,
+  async (newValue) => {
+    if (newValue === UploadQueueItemStatus.Uploading || newValue === UploadQueueItemStatus.Processing) {
+      clearTimeout(refreshTimer.value)
+      refreshTimer.value = setTimeout(() => {
+        if (newValue === UploadQueueItemStatus.Uploading || newValue === UploadQueueItemStatus.Processing) {
+          showRefresh.value = true
+        }
+      }, SHOW_REFRESH_AFTER_SECONDS * 1000)
+    } else if (newValue === UploadQueueItemStatus.Uploaded) {
+      clearTimeout(refreshTimer.value)
+      refreshTimer.value = undefined
+      showRefresh.value = false
+    }
+  },
+  { immediate: true }
+)
+
+onUnmounted(() => {
+  clearTimeout(refreshTimer.value)
+  refreshTimer.value = undefined
 })
 </script>
 
@@ -263,6 +299,22 @@ const showCancel = computed(() => {
                   button-t="coreDam.asset.queueItem.copyAssetId"
                   size="small"
                 />
+                <VBtn
+                  v-if="showRefresh"
+                  icon
+                  size="small"
+                  variant="text"
+                  @click.stop="refresh"
+                  :disabled="refreshDisabled"
+                >
+                  <VIcon icon="mdi-refresh" />
+                  <VTooltip
+                    activator="parent"
+                    location="bottom"
+                  >
+                    {{ t('common.button.refresh') }}
+                  </VTooltip>
+                </VBtn>
                 <VBtn
                   v-if="showCancel"
                   icon
