@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { DamKeyword } from '@anzusystems/common-admin'
+import type { DamKeyword, IntegerId } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocompleteWithCached,
   type DocId,
@@ -12,7 +12,6 @@ import {
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
-import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import { useVuelidate } from '@vuelidate/core'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
@@ -58,6 +57,10 @@ const modelValueComputed = computed({
   },
 })
 
+const search = ref<string>('')
+const loadingLocal = ref(false)
+const fetchedItemsMinimal = ref<Map<IntegerId | DocId, any>>(new Map())
+
 const requiredComputed = computed(() => !!props.required)
 
 const { requiredIf } = useValidate()
@@ -78,7 +81,7 @@ const innerFilter = useKeywordFilter()
 const addNewKeywordText = ref('')
 
 const searchChange = (newValue: string) => {
-  if (newValue.length > 0) addNewKeywordText.value = newValue
+  if (newValue.length > 0) addNewKeywordText.value = removeLastComma(newValue)
 }
 
 const { addManualToCachedKeywords } = useCachedKeywords()
@@ -110,6 +113,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 const createOrSelectKeyword = async (name: string) => {
   const keywordCreate = createDefault(currentExtSystemId.value, true)
   keywordCreate.name = removeLastComma(name)
+  if (keywordCreate.name.length < 3) return
   try {
     const keywordRes = await createKeyword(keywordCreate)
     afterCreate(keywordRes)
@@ -123,8 +127,6 @@ const removeLastComma = (value: string) => {
   return value
 }
 
-const search = ref('')
-
 const onEnterKeyup = () => {
   const value = removeLastComma(search.value)
   createOrSelectKeyword(value)
@@ -134,6 +136,15 @@ const onCommaKeyup = () => {
   const value = removeLastComma(search.value)
   createOrSelectKeyword(value)
 }
+
+const showAdd = computed(() => {
+  if (loadingLocal.value) return false
+  if (search.value.length < 2 || search.value.length > 255) return false
+  if (fetchedItemsMinimal.value.size === 0) return true
+  return ![...fetchedItemsMinimal.value.values()].some(
+    (item) => item.name?.toLowerCase() === search.value!.toLowerCase()
+  )
+})
 </script>
 
 <template>
@@ -141,6 +152,8 @@ const onCommaKeyup = () => {
     <AFormRemoteAutocompleteWithCached
       v-model="modelValueComputed"
       v-model:search="search"
+      v-model:loading-local="loadingLocal"
+      v-model:fetched-items-minimal="fetchedItemsMinimal"
       :use-cached="useCachedKeywordsForRemoteAutocomplete"
       :v="v$"
       :required="requiredComputed"
@@ -194,16 +207,16 @@ const onCommaKeyup = () => {
           force-rounded
         />
       </template>
+      <template #append-item>
+        <VListItem v-if="showAdd">
+          <ABtnSecondary
+            size="small"
+            :text="addNewKeywordText"
+            prepend-icon="mdi-plus-circle"
+            @click.stop="onCommaKeyup"
+          />
+        </VListItem>
+      </template>
     </AFormRemoteAutocompleteWithCached>
-    <div>
-      <KeywordCreateButton
-        variant="icon"
-        data-cy="add-keyword"
-        :initial-value="addNewKeywordText"
-        disable-redirect
-        :disabled="disabled"
-        @on-success="afterCreate"
-      />
-    </div>
   </div>
 </template>
