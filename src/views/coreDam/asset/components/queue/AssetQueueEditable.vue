@@ -92,6 +92,7 @@ onMounted(() => {
             v-model:customData="item.customData"
             v-model:keywords="item.keywords"
             v-model:authors="item.authors"
+            v-model:main-file-single-use="item.mainFileSingleUse"
             :refresh-disabled="refreshDisabled"
             :item="item"
             :index="index"

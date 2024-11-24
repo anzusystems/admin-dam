@@ -15,6 +15,7 @@ interface State {
   directDetailLoad: boolean
   lastFetched: number
   lastFetchedId: DocId
+  mainFileSingleUse: boolean
 }
 
 export const useAssetDetailStore = defineStore('damAssetDetailStore', {
@@ -28,6 +29,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     directDetailLoad: false,
     lastFetched: Date.now(),
     lastFetchedId: '',
+    mainFileSingleUse: false,
   }),
   actions: {
     updateLastFetched(id: DocId) {
@@ -48,6 +50,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     },
     setAsset(asset: AssetDetailItemDto) {
       const { getAuthorConflicts } = useAssetSuggestions()
+      this.mainFileSingleUse = asset?.mainFileSingleUse || false
       this.metadataAreTouched = false // todo check
       this.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
       this.prefetchLazyData(asset) // todo check
@@ -82,6 +85,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
       this.detail = false
       this.view = 'list'
       this.metadataAreTouched = false
+      this.mainFileSingleUse = false
     },
   },
 })

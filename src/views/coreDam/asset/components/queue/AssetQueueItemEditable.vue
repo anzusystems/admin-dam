@@ -38,6 +38,7 @@ const props = withDefaults(
     authors: DocId[]
     item: UploadQueueItem
     refreshDisabled: boolean
+    mainFileSingleUse: boolean | null
     disableDoneAnimation?: boolean
   }>(),
   {
@@ -49,6 +50,7 @@ const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
   (e: 'update:authors', data: DocId[]): void
+  (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
   (e: 'refreshItem', data: { index: number; assetId: DocId }): void
@@ -80,6 +82,15 @@ const authors = computed({
   },
   set(newValue) {
     emit('update:authors', [...newValue])
+  },
+})
+
+const mainFileSingleUse = computed({
+  get() {
+    return props.mainFileSingleUse
+  },
+  set(newValue) {
+    emit('update:mainFileSingleUse', newValue)
   },
 })
 
@@ -402,6 +413,17 @@ onUnmounted(() => {
                       :disabled="!item.canEditMetadata"
                     />
                   </ASystemEntityScope>
+                </VCol>
+              </VRow>
+              <VRow
+                dense
+                class="my-2"
+              >
+                <VCol>
+                  <VSwitch
+                    :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                    v-model="mainFileSingleUse"
+                  />
                 </VCol>
               </VRow>
             </template>

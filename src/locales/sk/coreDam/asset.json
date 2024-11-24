@@ -43,7 +43,8 @@
     "slotsCountFrom": "Počet slotov od",
     "slotsCountUntil": "Počet slotov do",
     "createdAtFrom": "Vytvorené od",
-    "createdAtUntil": "Vytvorené do"
+    "createdAtUntil": "Vytvorené do",
+    "mainFileSingleUse": "Jednorazová licencia"
   },
   "meta": {
     "createEmpty": "Vytvoriť prázdny asset"
