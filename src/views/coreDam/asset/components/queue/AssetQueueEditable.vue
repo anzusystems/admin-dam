@@ -5,7 +5,7 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
 import {
   AssetFileProcessStatus,
-  DamAssetStatus, DamAssetType,
+  DamAssetStatus,
   type DocId,
   type UploadQueueItem,
   useAlerts,
@@ -36,7 +36,7 @@ const refreshItem = async (data: { index: number; assetId: DocId }) => {
     const asset = await fetchAsset(data.assetId)
     if (asset.attributes.assetStatus === DamAssetStatus.WithFile) {
       await uploadQueuesStore.queueItemProcessed(asset.id)
-    } else if(asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
+    } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
       await uploadQueuesStore.queueItemDuplicate(asset.id, asset.mainFile.originAssetFile, asset.attributes.assetType)
     } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed) {
       await uploadQueuesStore.queueItemFailed(data.assetId, asset.mainFile.fileAttributes.failReason)
