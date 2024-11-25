@@ -35,7 +35,7 @@ const { t } = useI18n()
 
 const panels = ref(['metadata', 'file'])
 
-const { asset, authorConflicts, metadataTouch } = useAssetDetailActions()
+const { asset, authorConflicts, metadataTouch, mainFileSingleUse } = useAssetDetailActions()
 
 const assetType = computed(() => {
   return asset.value?.attributes.assetType || DamAssetTypeDefault
@@ -137,6 +137,17 @@ const onAnyMetadataChange = () => {
                     @update:model-value="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
+              </VCol>
+            </VRow>
+            <VRow
+              dense
+              class="my-2"
+            >
+              <VCol>
+                <VSwitch
+                  :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                  v-model="mainFileSingleUse"
+                />
               </VCol>
             </VRow>
           </template>

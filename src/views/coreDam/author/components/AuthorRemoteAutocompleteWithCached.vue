@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { ValidationScope } from '@anzusystems/common-admin'
+import type { IntegerId, ValidationScope } from '@anzusystems/common-admin'
 import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import type { DamAuthor } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
-import {
-  useCachedAuthors,
-  useCachedAuthorsForRemoteAutocomplete,
-} from '@/views/coreDam/author/composables/cachedAuthors'
 import { useI18n } from 'vue-i18n'
 import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
+import {
+  useCachedAuthors,
+  useCachedAuthorsForRemoteAutocomplete
+} from '@/views/coreDam/author/composables/cachedAuthors'
 
 const props = withDefaults(
   defineProps<{
@@ -53,6 +53,10 @@ const modelValueComputed = computed({
   },
 })
 
+const search = ref<string>('')
+const loadingLocal = ref(false)
+const fetchedItemsMinimal = ref<Map<IntegerId | DocId, any>>(new Map())
+
 const { t } = useI18n()
 
 const requiredComputed = computed(() => !!props.required)
@@ -83,7 +87,7 @@ const addAuthor = async (id: null | DocId | undefined) => {
 const addNewAuthorText = ref('')
 
 const searchChange = (newValue: string) => {
-  if (newValue.length > 0) addNewAuthorText.value = newValue
+  if (newValue.length > 0) addNewAuthorText.value = removeLastComma(newValue)
 }
 
 const { addManualToCachedAuthors } = useCachedAuthors()
@@ -92,9 +96,11 @@ const afterCreate = (author: DamAuthor) => {
   addManualToCachedAuthors(author)
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, author.id]
+    search.value = ''
     return
   }
   modelValueComputed.value = author.id
+  search.value = ''
 }
 
 const itemSlotIsSelected = (item: DocId) => {
@@ -106,8 +112,30 @@ const itemSlotIsSelected = (item: DocId) => {
   return false
 }
 
-onMounted(() => {
-  //
+const authorCreateButton = ref<InstanceType<typeof AuthorCreateButton> | null>(null)
+
+const removeLastComma = (value: string) => {
+  if (value.endsWith(',')) return value.slice(0, -1)
+  return value
+}
+
+const onEnterKeyup = () => {
+  const value = removeLastComma(search.value)
+  authorCreateButton.value?.open(value)
+}
+
+const onCommaKeyup = () => {
+  const value = removeLastComma(search.value)
+  authorCreateButton.value?.open(value)
+}
+
+const showAdd = computed(() => {
+  if (loadingLocal.value) return false
+  if (search.value.length < 2 || search.value.length > 255) return false
+  if (fetchedItemsMinimal.value.size === 0) return true
+  return ![...fetchedItemsMinimal.value.values()].some(
+    (item) => item.name?.toLowerCase() === search.value!.toLowerCase()
+  )
 })
 </script>
 
@@ -115,6 +143,9 @@ onMounted(() => {
   <div class="d-flex">
     <AFormRemoteAutocompleteWithCached
       v-model="modelValueComputed"
+      v-model:search="search"
+      v-model:loading-local="loadingLocal"
+      v-model:fetched-items-minimal="fetchedItemsMinimal"
       :use-cached="useCachedAuthorsForRemoteAutocomplete"
       :v="v$"
       :required="requiredComputed"
@@ -128,7 +159,11 @@ onMounted(() => {
       :data-cy="dataCy"
       item-title="name"
       item-value="id"
+      :min-search-chars="3"
+      min-search-text="common.damImage.author.filterMinChars"
       @search-change="searchChange"
+      @keyup.enter="onEnterKeyup"
+      @keyup.,="onCommaKeyup"
     >
       <template #item="{ props: itemSlotProps, item: itemSlotItem }">
         <VListItem
@@ -151,6 +186,7 @@ onMounted(() => {
               :queue-id="queueId"
               :title="itemSlotItem.title"
               text-only
+              :force-reviewed="itemSlotItem.raw?.raw?.reviewed"
             />
           </template>
         </VListItem>
@@ -164,9 +200,20 @@ onMounted(() => {
           force-rounded
         />
       </template>
+      <template #append-item>
+        <VListItem v-if="showAdd">
+          <ABtnSecondary
+            size="small"
+            :text="addNewAuthorText"
+            prepend-icon="mdi-plus-circle"
+            @click.stop="onCommaKeyup"
+          />
+        </VListItem>
+      </template>
     </AFormRemoteAutocompleteWithCached>
     <div>
       <AuthorCreateButton
+        ref="authorCreateButton"
         variant="icon"
         data-cy="add-author"
         :initial-value="addNewAuthorText"
@@ -181,7 +228,7 @@ onMounted(() => {
     class="d-flex flex-column"
   >
     <div>
-      <span class="text-caption">{{ t('coreDam.author.conflicts') }}</span>
+      <span class="text-caption">{{ t('common.damImage.author.conflicts') }}</span>
     </div>
     <div>
       <AuthorRemoteAutocompleteCachedAuthorChipConflicts

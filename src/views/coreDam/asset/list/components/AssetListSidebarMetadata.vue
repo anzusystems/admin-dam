@@ -26,7 +26,7 @@ const saveButtonLoading = ref(false)
 
 const { t } = useI18n()
 
-const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
+const { asset, loader, metadataUnTouch, metadataAreTouched, mainFileSingleUse } = useAssetDetailActions()
 
 const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
 
@@ -53,7 +53,7 @@ const onSave = async () => {
   }
   try {
     metadataUnTouch()
-    await updateAssetMetadata(asset.value)
+    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
     showRecordWas('updated')
   } catch (error) {
     showErrorsDefault(error)

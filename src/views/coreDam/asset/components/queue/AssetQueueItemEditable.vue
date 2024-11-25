@@ -26,7 +26,7 @@ import {
   type UploadQueueItemStatusType,
   useAlerts,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
+import { computed, onUnmounted, type Ref, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
@@ -37,6 +37,8 @@ const props = withDefaults(
     keywords: DocId[]
     authors: DocId[]
     item: UploadQueueItem
+    refreshDisabled: boolean
+    mainFileSingleUse: boolean | null
     disableDoneAnimation?: boolean
   }>(),
   {
@@ -48,8 +50,10 @@ const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
   (e: 'update:authors', data: DocId[]): void
+  (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
+  (e: 'refreshItem', data: { index: number; assetId: DocId }): void
 }>()
 
 const IMAGE_ASPECT_RATIO = 16 / 9
@@ -81,6 +85,15 @@ const authors = computed({
   },
 })
 
+const mainFileSingleUse = computed({
+  get() {
+    return props.mainFileSingleUse
+  },
+  set(newValue) {
+    emit('update:mainFileSingleUse', newValue)
+  },
+})
+
 const { t } = useI18n()
 
 const assetDetailStore = useAssetDetailStore()
@@ -105,6 +118,16 @@ const uploading = computed(() => {
 const uploadProgress = computed(() => {
   return props.item.progress.progressPercent
 })
+
+const SHOW_REFRESH_AFTER_SECONDS = 20
+const showRefresh = ref(false)
+const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefined)
+
+const refresh = () => {
+  if (props.item.assetId) {
+    emit('refreshItem', { index: props.index, assetId: props.item.assetId })
+  }
+}
 
 const showDetail = async () => {
   if (isNull(props.item.assetId)) return
@@ -153,6 +176,30 @@ const showCancel = computed(() => {
       UploadQueueItemStatus.Uploading,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
+})
+
+watch(
+  () => props.item.status,
+  async (newValue) => {
+    if (newValue === UploadQueueItemStatus.Uploading || newValue === UploadQueueItemStatus.Processing) {
+      clearTimeout(refreshTimer.value)
+      refreshTimer.value = setTimeout(() => {
+        if (newValue === UploadQueueItemStatus.Uploading || newValue === UploadQueueItemStatus.Processing) {
+          showRefresh.value = true
+        }
+      }, SHOW_REFRESH_AFTER_SECONDS * 1000)
+    } else if (newValue === UploadQueueItemStatus.Uploaded) {
+      clearTimeout(refreshTimer.value)
+      refreshTimer.value = undefined
+      showRefresh.value = false
+    }
+  },
+  { immediate: true }
+)
+
+onUnmounted(() => {
+  clearTimeout(refreshTimer.value)
+  refreshTimer.value = undefined
 })
 </script>
 
@@ -264,6 +311,22 @@ const showCancel = computed(() => {
                   size="small"
                 />
                 <VBtn
+                  v-if="showRefresh"
+                  icon
+                  size="small"
+                  variant="text"
+                  @click.stop="refresh"
+                  :disabled="refreshDisabled"
+                >
+                  <VIcon icon="mdi-refresh" />
+                  <VTooltip
+                    activator="parent"
+                    location="bottom"
+                  >
+                    {{ t('common.button.refresh') }}
+                  </VTooltip>
+                </VBtn>
+                <VBtn
                   v-if="showCancel"
                   icon
                   size="small"
@@ -350,6 +413,17 @@ const showCancel = computed(() => {
                       :disabled="!item.canEditMetadata"
                     />
                   </ASystemEntityScope>
+                </VCol>
+              </VRow>
+              <VRow
+                dense
+                class="my-2"
+              >
+                <VCol>
+                  <VSwitch
+                    :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                    v-model="mainFileSingleUse"
+                  />
                 </VCol>
               </VRow>
             </template>

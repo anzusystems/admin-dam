@@ -146,6 +146,14 @@ const { currentExtSystemId } = useCurrentExtSystem()
         <VRow>
           <VCol>
             <AFilterBooleanSelect
+              v-model="filter.mainFileSingleUse"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
+            <AFilterBooleanSelect
               v-model="filter.described"
               @update:model-value="onAnyFilterUpdate"
             />

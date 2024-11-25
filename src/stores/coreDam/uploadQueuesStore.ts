@@ -367,6 +367,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             if (asset.mainFile.links?.image_detail) {
               item.imagePreview = asset.mainFile.links.image_detail
             }
+            item.mainFileSingleUse = asset.mainFileSingleUse
             this.processUpload(queueId)
           }
         })
@@ -399,6 +400,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             item.keywords = asset.keywords
             item.authors = asset.authors
             item.customData = asset.metadata.customData
+            item.mainFileSingleUse = asset.mainFileSingleUse
             updateNewNames(asset.metadata.authorSuggestions, this.queues[queueId].suggestions.newAuthorNames)
             updateNewNames(asset.metadata.keywordSuggestions, this.queues[queueId].suggestions.newKeywordNames)
             item.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
@@ -453,6 +455,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             if (file) {
               item.fileId = file.id
               item.duplicateAssetId = file.asset
+              item.mainFileSingleUse = file.flags.singleUse
             }
             if (file?.links?.image_detail) {
               item.imagePreview = file.links.image_detail
@@ -526,6 +529,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
             item.keywords = asset.keywords
             item.authors = asset.authors
             item.customData = asset.metadata.customData
+            item.mainFileSingleUse = asset.mainFileSingleUse
           }
         })
       }

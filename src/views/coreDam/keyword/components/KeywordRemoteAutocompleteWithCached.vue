@@ -1,17 +1,25 @@
 <script lang="ts" setup>
-import type { ValidationScope } from '@anzusystems/common-admin'
-import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
+import type { DamKeyword, IntegerId } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocompleteWithCached,
+  type DocId,
+  isArray,
+  useAlerts,
+  useDamKeywordFactory,
+  useValidate,
+  type ValidationScope,
+} from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 import { computed, ref } from 'vue'
-import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
-import type { DamKeyword } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
   useCachedKeywordsForRemoteAutocomplete,
 } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import { createKeyword } from '@/services/api/coreDam/keywordApi'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -49,6 +57,10 @@ const modelValueComputed = computed({
   },
 })
 
+const search = ref<string>('')
+const loadingLocal = ref(false)
+const fetchedItemsMinimal = ref<Map<IntegerId | DocId, any>>(new Map())
+
 const requiredComputed = computed(() => !!props.required)
 
 const { requiredIf } = useValidate()
@@ -69,7 +81,7 @@ const innerFilter = useKeywordFilter()
 const addNewKeywordText = ref('')
 
 const searchChange = (newValue: string) => {
-  if (newValue.length > 0) addNewKeywordText.value = newValue
+  if (newValue.length > 0) addNewKeywordText.value = removeLastComma(newValue)
 }
 
 const { addManualToCachedKeywords } = useCachedKeywords()
@@ -78,9 +90,11 @@ const afterCreate = (keyword: DamKeyword) => {
   addManualToCachedKeywords(keyword)
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, keyword.id]
+    search.value = ''
     return
   }
   modelValueComputed.value = keyword.id
+  search.value = ''
 }
 
 const itemSlotIsSelected = (item: DocId) => {
@@ -91,12 +105,55 @@ const itemSlotIsSelected = (item: DocId) => {
   }
   return false
 }
+
+const { showErrorsDefault } = useAlerts()
+const { createDefault } = useDamKeywordFactory()
+const { currentExtSystemId } = useCurrentExtSystem()
+
+const createOrSelectKeyword = async (name: string) => {
+  const keywordCreate = createDefault(currentExtSystemId.value, true)
+  keywordCreate.name = removeLastComma(name)
+  if (keywordCreate.name.length < 3) return
+  try {
+    const keywordRes = await createKeyword(keywordCreate)
+    afterCreate(keywordRes)
+  } catch (error) {
+    showErrorsDefault(error)
+  }
+}
+
+const removeLastComma = (value: string) => {
+  if (value.endsWith(',')) return value.slice(0, -1)
+  return value
+}
+
+const onEnterKeyup = () => {
+  const value = removeLastComma(search.value)
+  createOrSelectKeyword(value)
+}
+
+const onCommaKeyup = () => {
+  const value = removeLastComma(search.value)
+  createOrSelectKeyword(value)
+}
+
+const showAdd = computed(() => {
+  if (loadingLocal.value) return false
+  if (search.value.length < 2 || search.value.length > 255) return false
+  if (fetchedItemsMinimal.value.size === 0) return true
+  return ![...fetchedItemsMinimal.value.values()].some(
+    (item) => item.name?.toLowerCase() === search.value!.toLowerCase()
+  )
+})
 </script>
 
 <template>
   <div class="d-flex">
     <AFormRemoteAutocompleteWithCached
       v-model="modelValueComputed"
+      v-model:search="search"
+      v-model:loading-local="loadingLocal"
+      v-model:fetched-items-minimal="fetchedItemsMinimal"
       :use-cached="useCachedKeywordsForRemoteAutocomplete"
       :v="v$"
       :required="requiredComputed"
@@ -110,7 +167,11 @@ const itemSlotIsSelected = (item: DocId) => {
       item-title="name"
       item-value="id"
       :data-cy="dataCy"
+      :min-search-chars="3"
+      min-search-text="common.damImage.keyword.filterMinChars"
       @search-change="searchChange"
+      @keyup.enter="onEnterKeyup"
+      @keyup.,="onCommaKeyup"
     >
       <template #item="{ props: itemSlotProps, item: itemSlotItem }">
         <VListItem
@@ -146,16 +207,16 @@ const itemSlotIsSelected = (item: DocId) => {
           force-rounded
         />
       </template>
+      <template #append-item>
+        <VListItem v-if="showAdd">
+          <ABtnSecondary
+            size="small"
+            :text="addNewKeywordText"
+            prepend-icon="mdi-plus-circle"
+            @click.stop="onCommaKeyup"
+          />
+        </VListItem>
+      </template>
     </AFormRemoteAutocompleteWithCached>
-    <div>
-      <KeywordCreateButton
-        variant="icon"
-        data-cy="add-keyword"
-        :initial-value="addNewKeywordText"
-        disable-redirect
-        :disabled="disabled"
-        @on-success="afterCreate"
-      />
-    </div>
   </div>
 </template>
