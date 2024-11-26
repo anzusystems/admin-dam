@@ -113,7 +113,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 const createOrSelectKeyword = async (name: string) => {
   const keywordCreate = createDefault(currentExtSystemId.value, true)
   keywordCreate.name = removeLastComma(name)
-  if (keywordCreate.name.length < 3) return
+  if (keywordCreate.name.length < 2) return
   try {
     const keywordRes = await createKeyword(keywordCreate)
     afterCreate(keywordRes)
@@ -167,7 +167,7 @@ const showAdd = computed(() => {
       item-title="name"
       item-value="id"
       :data-cy="dataCy"
-      :min-search-chars="3"
+      :min-search-chars="2"
       min-search-text="common.damImage.keyword.filterMinChars"
       @search-change="searchChange"
       @keyup.enter="onEnterKeyup"
