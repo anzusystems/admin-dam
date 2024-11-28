@@ -21,7 +21,7 @@ import {
   isUndefined,
   useAlerts,
   useDamConfigStore,
-  useValidate
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
@@ -65,6 +65,7 @@ const selectedLicence = ref<null | IntegerId>(null)
 
 const selectedExtSystemSearch = ref<null | IntegerId>(null)
 const selectedLicenceSearch = ref<null | IntegerId>(null)
+const selectedLicenceSearchByExtId = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
   if (currentUser.value && currentUser.value.userToExtSystemsDto.length > 0) {
@@ -147,6 +148,7 @@ const onConfirm = async () => {
 }
 
 const onSelectedExtSystemSearchChange = (value: IntegerIdNullable | IntegerId[]) => {
+  selectedLicenceSearch.value = null
   if (isArray<IntegerIdNullable>(value) && value[0]) {
     selectedExtSystem.value = value[0]
     selectedLicence.value = null
@@ -164,6 +166,18 @@ const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) =
     return
   }
   if (isInt(value) || isNull(value)) selectedLicence.value = value
+}
+
+const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | IntegerId[]) => {
+  if (isArray<IntegerIdNullable>(value) && value[0]) {
+    selectedLicence.value = value[0]
+    selectedLicenceSearch.value = value[0]
+    return
+  }
+  if (isInt(value) || isNull(value)) {
+    selectedLicence.value = value
+    selectedLicenceSearch.value = value
+  }
 }
 
 onMounted(async () => {
@@ -188,10 +202,10 @@ onMounted(async () => {
         <div class="mb-4 text-caption">
           {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
             extSystemName
-          }})<br>
+          }})<br />
           {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
             licenceName
-          }})<br>
+          }})<br />
         </div>
         <ASystemEntityScope
           :system="SYSTEM_CORE_DAM"
@@ -236,12 +250,12 @@ onMounted(async () => {
             </VCol>
             <VCol>
               <AssetLicenceByExtIdRemoteAutocomplete
-                v-model="selectedLicenceSearch"
+                v-model="selectedLicenceSearchByExtId"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
                 :ext-system-id="selectedExtSystem"
                 hide-details
                 data-cy="field-id-licence"
-                @update:model-value="onSelectedLicenceSearchChange"
+                @update:model-value="onSelectedLicenceSearchByExtIdChange"
               />
             </VCol>
           </VRow>
