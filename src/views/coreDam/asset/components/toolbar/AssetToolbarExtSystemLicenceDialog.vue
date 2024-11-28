@@ -259,7 +259,7 @@ onMounted(async () => {
               />
             </VCol>
           </VRow>
-          <div class="d-flex align-center w-100">
+          <div class="d-flex align-center w-100 mt-8">
             <div class="text-caption font-weight-bold">
               {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
             </div>
