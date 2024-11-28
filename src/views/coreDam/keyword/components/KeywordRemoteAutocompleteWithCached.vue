@@ -113,7 +113,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 const createOrSelectKeyword = async (name: string) => {
   const keywordCreate = createDefault(currentExtSystemId.value, true)
   keywordCreate.name = removeLastComma(name)
-  if (keywordCreate.name.length < 3) return
+  if (keywordCreate.name.length < 2) return
   try {
     const keywordRes = await createKeyword(keywordCreate)
     afterCreate(keywordRes)
@@ -167,7 +167,7 @@ const showAdd = computed(() => {
       item-title="name"
       item-value="id"
       :data-cy="dataCy"
-      :min-search-chars="3"
+      :min-search-chars="2"
       min-search-text="common.damImage.keyword.filterMinChars"
       @search-change="searchChange"
       @keyup.enter="onEnterKeyup"
@@ -208,7 +208,10 @@ const showAdd = computed(() => {
         />
       </template>
       <template #append-item>
-        <VListItem v-if="showAdd">
+        <VListItem
+          v-if="showAdd"
+          class="a-keywords-append-item"
+        >
           <ABtnSecondary
             size="small"
             :text="addNewKeywordText"
@@ -220,3 +223,12 @@ const showAdd = computed(() => {
     </AFormRemoteAutocompleteWithCached>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.a-keywords-append-item {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  transform: translateY(8px);
+}
+</style>

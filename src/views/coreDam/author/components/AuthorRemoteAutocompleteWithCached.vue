@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import type { IntegerId, ValidationScope } from '@anzusystems/common-admin'
+import type { DamAuthor, IntegerId, ValidationScope } from '@anzusystems/common-admin'
 import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
-import type { DamAuthor } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import { useI18n } from 'vue-i18n'
 import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
 import {
   useCachedAuthors,
-  useCachedAuthorsForRemoteAutocomplete
+  useCachedAuthorsForRemoteAutocomplete,
 } from '@/views/coreDam/author/composables/cachedAuthors'
 
 const props = withDefaults(
@@ -159,7 +158,7 @@ const showAdd = computed(() => {
       :data-cy="dataCy"
       item-title="name"
       item-value="id"
-      :min-search-chars="3"
+      :min-search-chars="2"
       min-search-text="common.damImage.author.filterMinChars"
       @search-change="searchChange"
       @keyup.enter="onEnterKeyup"
@@ -201,7 +200,10 @@ const showAdd = computed(() => {
         />
       </template>
       <template #append-item>
-        <VListItem v-if="showAdd">
+        <VListItem
+          v-if="showAdd"
+          class="a-authors-append-item"
+        >
           <ABtnSecondary
             size="small"
             :text="addNewAuthorText"
@@ -241,3 +243,12 @@ const showAdd = computed(() => {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.a-authors-append-item {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  transform: translateY(8px);
+}
+</style>
