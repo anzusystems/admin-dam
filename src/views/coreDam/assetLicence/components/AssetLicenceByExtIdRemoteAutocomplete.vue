@@ -1,6 +1,14 @@
 <script lang="ts" setup>
-import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, cloneDeep, useDamAssetLicenceFilter } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocomplete,
+  cloneDeep,
+  type FilterBag,
+  type IntegerId,
+  type IntegerIdNullable,
+  isString,
+  type Pagination,
+  useDamAssetLicenceFilter,
+} from '@anzusystems/common-admin'
 import { useAssetLicenceByExtIdSelectActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import { computed, watch } from 'vue'
 
@@ -42,6 +50,16 @@ const modelValueComputed = computed({
 
 const { fetchItems, fetchItemsByIds } = useAssetLicenceByExtIdSelectActions()
 
+/**
+ * Limit to fetch only when extId is set.
+ */
+const fetchItemsCustomized = async (pagination: Pagination, filterBag: FilterBag) => {
+  if (isString(filterBag.extId.model) && filterBag.extId.model.length > 0) {
+    return await fetchItems(pagination, filterBag)
+  }
+  return []
+}
+
 const innerFilter = useDamAssetLicenceFilter()
 
 const selectedExtSystemId = computed(() => {
@@ -69,7 +87,7 @@ watch(
     v-model="modelValueComputed"
     :required="required"
     :label="label"
-    :fetch-items="fetchItems"
+    :fetch-items="fetchItemsCustomized"
     :fetch-items-by-ids="fetchItemsByIds"
     :inner-filter="innerFilter"
     :multiple="multiple"
