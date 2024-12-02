@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import {
+  JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
   type JobResource,
   useJobResource,
@@ -10,6 +11,7 @@ import {
 import JobCreateFormPodcastSynchronizer from '@/views/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
 import JobCreateFormUserDataDelete from '@/views/coreDam/job/components/JobCreateFormUserDataDelete.vue'
 import JobCreateFormDefault from '@/views/coreDam/job/components/JobCreateFormDefault.vue'
+import JobCreateFormAuthorCurrentOptimize from '@/views/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
 
 withDefaults(
   defineProps<{
@@ -39,6 +41,8 @@ const jobComponent = computed(() => {
       return JobCreateFormUserDataDelete
     case JOB_RESOURCE_PODCAST_SYNCHRONIZER:
       return JobCreateFormPodcastSynchronizer
+    case JOB_AUTHOR_CURRENT_OPTIMIZE:
+      return JobCreateFormAuthorCurrentOptimize
     default:
       console.error('Unsupported type.')
       return JobCreateFormDefault
