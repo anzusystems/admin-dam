@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ABooleanValue, AJobDetailCommon, ARow, useI18n } from '@anzusystems/common-admin'
-import type { JobAuthorCurrentOptimize, JobPodcastSynchronizer } from '@/types/coreDam/Job'
+import type { JobAuthorCurrentOptimize } from '@/types/coreDam/Job'
 import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
 
 withDefaults(

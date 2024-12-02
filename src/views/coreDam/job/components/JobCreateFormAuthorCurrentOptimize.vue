@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import {
   AFormTextField,
-  ARow, DamDistributionRequirementStrategy,
-  type JobUserDataDelete,
+  ARow,
   useAlerts,
-  useCommonJobFactory,
   useJobApi,
   useValidate,
 } from '@anzusystems/common-admin'
@@ -39,13 +37,15 @@ const { required, minValue } = useValidate()
 const rules = computed(() => {
   if (!job.value.processAll) {
     return {
-      authorId: {
-        required,
-        minValue: minValue(1),
+      job: {
+        authorId: {
+          required,
+          minValue: minValue(1),
+        }
       }
     }
   }
-  return {}
+  return { job: {} }
 })
 
 const v$ = useVuelidate(rules, { job })
