@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import type { AssetListItem } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import type { DocId } from '@anzusystems/common-admin'
-import { AChipNoLink, ADatetime, ATableCopyIdButton, ATableEditButton, prettyBytes } from '@anzusystems/common-admin'
+import {
+  AChipNoLink,
+  ADatetime,
+  ATableCopyIdButton,
+  ATableEditButton,
+  type DocId,
+  prettyBytes,
+  useDamCachedUsers,
+} from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import { onMounted } from 'vue'
 import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
@@ -36,7 +42,7 @@ const { t } = useI18n()
 const IMAGE_HEIGHT = 72
 const IMAGE_WIDTH = 128
 
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { asset, assetType, assetStatus, tableImageProperties } = useAssetItemActions(props.item)

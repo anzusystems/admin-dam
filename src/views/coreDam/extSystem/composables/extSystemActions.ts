@@ -1,18 +1,17 @@
 import { ref } from 'vue'
 import type { DamExtSystem, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { fetchDamExtSystemList, useAlerts } from '@anzusystems/common-admin'
+import { fetchDamExtSystemList, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
 import { fetchExtSystem, updateExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { storeToRefs } from 'pinia'
 import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import { damClient } from '@/services/api/clients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)

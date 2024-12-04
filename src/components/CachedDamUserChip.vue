@@ -2,8 +2,14 @@
 import { computed, shallowRef, watch } from 'vue'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { COMMON_CONFIG, type IntegerId, isNull, isUndefined, AAnzuUserAvatar } from '@anzusystems/common-admin'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
+import {
+  AAnzuUserAvatar,
+  COMMON_CONFIG,
+  type IntegerId,
+  isNull,
+  isUndefined,
+  useDamCachedUsers,
+} from '@anzusystems/common-admin'
 import type { UserMinimal } from '@/types/coreDam/User'
 
 const props = withDefaults(
@@ -17,7 +23,7 @@ const router = useRouter()
 const cached = shallowRef<undefined | UserMinimal>(undefined)
 const loaded = shallowRef<boolean>(false)
 
-const { getCachedUser } = useCachedUsers()
+const { getCachedUser } = useDamCachedUsers()
 
 const item = computed(() => {
   return getCachedUser(props.id)
