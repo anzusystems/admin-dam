@@ -1,9 +1,14 @@
 {
   "model": {
     "podcastId": "Podcast Id",
-    "fullSync": "Full synchronization"
+    "fullSync": "Full synchronization",
+    "authorId": "Author Id",
+    "processAll": "Process all",
+    "licence": "Licence"
   },
   "jobResource": {
-    "jobPodcastSynchronizer": "Podcast synchronizer"
+    "jobPodcastSynchronizer": "Podcast synchronizer",
+    "jobAuthorCurrentOptimize": "Author current optimize",
+    "jobImageCopy": "Image copy"
   }
 }
