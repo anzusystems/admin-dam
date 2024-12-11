@@ -130,6 +130,14 @@ const { t } = useI18n()
         data-cy="job-settings"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UI">
+      <VListItem
+        :to="{ name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.LIST }"
+        prepend-icon="mdi-file-cabinet"
+        :title="t('sidebar.settings.authorCleanPhrase')"
+        data-cy="job-settings"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
       <VListItem
         :to="{ name: ROUTE.COMMON.LOG.LIST }"
