@@ -1,0 +1,39 @@
+{
+  "model": {
+    "id": "ID",
+    "phrase": "Fráza",
+    "authorReplacement": "Nahraď autorom",
+    "type": "Typ frázy",
+    "mode": "Operácia frázy",
+    "position": "Poradie",
+    "flags": {
+      "wordBoundary": "Samostatné slovo"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "phrase": "Fráza"
+  },
+  "button": {
+    "create": "Vytvoriť",
+    "playground": "Ihrisko"
+  },
+  "meta": {
+    "playground": "Testovanie pravidiel",
+    "test": "Testuj"
+  },
+  "dto": {
+    "name": "Text",
+    "authorNames": "Reťazce autorov",
+    "authors": "Autori"
+  },
+  "mode": {
+    "split": "Rozdelenie",
+    "remove": "Odstránenie",
+    "replace": "Nahradenie"
+  },
+  "type": {
+    "word": "Slovo",
+    "regex": "Regulárny výraz"
+  }
+}

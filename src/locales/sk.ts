@@ -27,6 +27,7 @@ import breadcrumb from '@/locales/sk/breadcrumb.json'
 import audioFile from '@/locales/sk/coreDam/audioFile.json'
 import videoFile from '@/locales/sk/coreDam/videoFile.json'
 import anzuUser from '@/locales/sk/common/anzuUser.json'
+import authorCleanPhrase from '@/locales/sk/coreDam/authorCleanPhrase.json'
 
 export default {
   common: {
@@ -61,6 +62,7 @@ export default {
     videoShowEpisode,
     audioFile,
     videoFile,
+    authorCleanPhrase,
   },
   auth,
   sidebar,

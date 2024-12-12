@@ -8,6 +8,8 @@ import AuthorCleanPhraseDatatable
 import AuthorCleanPhraseCreateButton
   from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseCreateButton.vue'
 import { useAuthorCleanPhraseListActions } from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
+import AuthorCleanPhrasePlaygroundButton
+  from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhrasePlaygroundButton.vue'
 
 const { listLoading } = useAuthorCleanPhraseListActions()
 
@@ -26,6 +28,12 @@ const afterCreate = () => {
           data-cy="button-create"
           disable-redirect
           @on-success="afterCreate"
+        />
+      </Acl>
+      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
+        <AuthorCleanPhrasePlaygroundButton
+          data-cy="button-playground"
+          disable-redirect
         />
       </Acl>
     </template>

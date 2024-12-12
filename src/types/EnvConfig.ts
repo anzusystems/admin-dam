@@ -16,6 +16,7 @@ export interface EnvConfig {
     apiUrl: string
     apiTimeout: number
     imageUrl: string
+    authorCleanPhraseTestSample: string
   }
   notification: {
     enabled: boolean

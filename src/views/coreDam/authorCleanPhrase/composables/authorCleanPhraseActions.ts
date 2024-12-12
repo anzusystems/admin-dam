@@ -13,6 +13,7 @@ import { useRouter } from 'vue-router'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAuthorCleanPhraseOneStore } from '@/stores/coreDam/authorCleanPhraseStore'
 import { ROUTE } from '@/router/routes'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -68,12 +69,18 @@ export const useAuthorCleanPhraseRemoveActions = () => {
 export const useAuthorCleanPhraseDetailActions = () => {
   const authorCleanPhraseOneStore = useAuthorCleanPhraseOneStore()
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
+  const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
       const authorCleanPhrase = await fetchAuthorCleanPhrase(id)
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
+      if (authorCleanPhrase.authorReplacement) {
+        addToCachedAuthors(authorCleanPhrase.authorReplacement)
+      }
+      fetchCachedAuthors()
+
     } catch (error) {
       showErrorsDefault(error)
     } finally {

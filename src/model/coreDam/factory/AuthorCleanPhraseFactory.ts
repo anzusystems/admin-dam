@@ -1,11 +1,13 @@
-import type { Podcast } from '@/types/coreDam/Podcast'
-import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
+import type { AuthorCleanPhrase, AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'
 import { ENTITY } from '@/services/api/coreDam/AuthorCleanPhraseApi'
 import { AuthorCleanPhraseModeDefault } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
 import { AuthorCleanPhraseTypeDefault } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
+import { envConfig } from '@/services/EnvConfigService'
+
+const DEFAULT_POSITION = 100
 
 export function useAuthorCleanPhraseFactory() {
   const createDefault = (extSystemId: IntegerId): AuthorCleanPhrase => {
@@ -14,6 +16,10 @@ export function useAuthorCleanPhraseFactory() {
       authorReplacement: null,
       extSystem: extSystemId,
       phrase: '',
+      position: DEFAULT_POSITION,
+      flags: {
+        wordBoundary: false,
+      },
       mode: AuthorCleanPhraseModeDefault,
       type: AuthorCleanPhraseTypeDefault,
       modifiedAt: dateTimeNow(),
@@ -25,7 +31,23 @@ export function useAuthorCleanPhraseFactory() {
     }
   }
 
+  const createAuthorNameDto = (): AuthorNameDto => {
+    return {
+      name: envConfig.dam.authorCleanPhraseTestSample
+    }
+  }
+
+  const createAuthorCleanResultDto = (): AuthorCleanResultDto => {
+    return {
+      name: '',
+      authors: [],
+      authorNames: []
+    }
+  }
+
   return {
+    createAuthorNameDto,
+    createAuthorCleanResultDto,
     createDefault,
   }
 }

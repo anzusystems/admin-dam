@@ -15,7 +15,7 @@ export const AuthorCleanPhraseModeDefault = AuthorCleanPhraseMode.Remove
 export function useAuthorCleanPhraseModeTypes() {
   const { t } = useI18n()
 
-  const authorCleanPhraseTypeOptions = ref<ValueObjectOption<AuthorCleanPhraseModeType>[]>([
+  const authorCleanPhraseModeOptions = ref<ValueObjectOption<AuthorCleanPhraseModeType>[]>([
     {
       value: AuthorCleanPhraseMode.Remove,
       title: t('coreDam.authorCleanPhrase.mode.remove'),
@@ -31,11 +31,11 @@ export function useAuthorCleanPhraseModeTypes() {
   ])
 
   const getAuthorCleanPhraseModeOption = (value: AuthorCleanPhraseModeType) => {
-    return authorCleanPhraseTypeOptions.value.find((item) => item.value === value)
+    return authorCleanPhraseModeOptions.value.find((item) => item.value === value)
   }
 
   return {
-    authorCleanPhraseTypeOptions,
+    authorCleanPhraseModeOptions,
     getAuthorCleanPhraseModeOption,
   }
 }
