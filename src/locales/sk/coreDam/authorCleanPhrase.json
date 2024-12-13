@@ -12,7 +12,9 @@
   },
   "filter": {
     "id": "ID",
-    "phrase": "Fráza"
+    "phrase": "Fráza",
+    "type": "Typ frázy",
+    "mode": "Operácia frázy"
   },
   "button": {
     "create": "Vytvoriť",

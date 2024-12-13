@@ -1,4 +1,5 @@
 {
   "error_invalid_key": "error_invalid_key error",
-  "error_invalid_licence": "error_invalid_licence error"
+  "error_invalid_licence": "error_invalid_licence error",
+  "error_invalid_ext_system": "error_invalid_ext_system error"
 }

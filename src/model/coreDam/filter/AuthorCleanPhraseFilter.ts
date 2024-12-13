@@ -12,6 +12,12 @@ const filter = reactive({
   phrase: {
     ...makeFilter({ name: 'phrase' }),
   },
+  mode: {
+    ...makeFilter({ name: 'mode' }),
+  },
+  type: {
+    ...makeFilter({ name: 'type' }),
+  },
 })
 
 export function useAuthorCleanPhraseListFilter() {
