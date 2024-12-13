@@ -8,10 +8,6 @@ import { useAuthorCleanPhraseValidation } from '@/views/coreDam/authorCleanPhras
 import { useAuthorCleanPhraseTypeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
 import { useAuthorCleanPhraseModeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
 import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
-import AuthorRemoteAutocompleteCachedAuthorChip
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
-import AuthorRemoteAutocompleteWithCached
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 
 const { authorCleanPhrase } = useAuthorCleanPhraseEditActions()
 

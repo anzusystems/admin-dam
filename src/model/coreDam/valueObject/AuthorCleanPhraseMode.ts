@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
-import { AuthorCleanPhraseType } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
 
 export const AuthorCleanPhraseMode = {
   Remove: 'remove',

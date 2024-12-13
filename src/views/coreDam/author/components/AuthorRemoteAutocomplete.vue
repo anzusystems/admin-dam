@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
@@ -20,13 +19,11 @@ const props = withDefaults(
   }
 )
 
-const modelValue = defineModel<IntegerIdNullable | IntegerId[]>({ required: true })
+const modelValue = defineModel<DocIdNullable | DocId[]>({ required: true })
 
 const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 
 const innerFilter = useAuthorFilter()
-
-const { t } = useI18n()
 </script>
 
 <template>

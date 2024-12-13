@@ -20,7 +20,7 @@ import { useAuthorCleanPhraseTypeTypes } from '@/model/coreDam/valueObject/Autho
 import { useAuthorCleanPhraseModeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
 import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     buttonClass?: string
     dataCy?: string

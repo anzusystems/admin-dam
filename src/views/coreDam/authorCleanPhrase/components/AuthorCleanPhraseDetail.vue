@@ -2,7 +2,6 @@
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import { useAuthorCleanPhraseOneStore } from '@/stores/coreDam/authorCleanPhraseStore'
 import AuthorRemoteAutocompleteCachedAuthorChip
   from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
@@ -12,7 +11,6 @@ import AuthorCleanPhraseTypeChip from '@/views/coreDam/authorCleanPhrase/compone
 const { authorCleanPhrase } = storeToRefs(useAuthorCleanPhraseOneStore())
 
 const { t } = useI18n()
-const router = useRouter()
 
 </script>
 

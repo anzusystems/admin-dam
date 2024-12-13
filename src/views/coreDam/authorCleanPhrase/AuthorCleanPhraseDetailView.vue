@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { ROUTE } from '@/router/routes'
 import {
   AActionCloseButton,
@@ -21,7 +21,6 @@ const { detailLoading, fetchData, resetStore, authorCleanPhrase } = useAuthorCle
 const { removeAuthorCleanPhrase } = useAuthorCleanPhraseRemoveActions()
 
 const route = useRoute()
-const router = useRouter()
 const id = stringToInt(route.params.id)
 
 const getDetail = () => {

@@ -4,18 +4,18 @@ import { useI18n } from 'vue-i18n'
 import {
   AChipNoLink,
   ADialogToolbar, AFormTextarea,
-  ARow, type DocId,
+  ARow,
   useAlerts
 } from '@anzusystems/common-admin'
 import { playground } from '@/services/api/coreDam/AuthorCleanPhraseApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAuthorCleanPhraseFactory } from '@/model/coreDam/factory/AuthorCleanPhraseFactory'
-import type { AuthorCleanPhrase, AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'
+import type { AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import AuthorRemoteAutocompleteCachedAuthorChip
   from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     buttonClass?: string
     dataCy?: string
@@ -25,9 +25,6 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: AuthorCleanPhrase): void
-}>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -53,9 +50,6 @@ const onCancel = () => {
 const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
 const onConfirm = async () => {
-  const { currentExtSystemId } = useCurrentExtSystem()
-
-
   try {
     buttonLoading.value = true
     authorCleanPhraseRes.value = await playground(currentExtSystemId.value, authorNameDto.value)

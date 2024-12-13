@@ -127,7 +127,10 @@ export const useAuthorCleanPhraseEditActions = () => {
       await updateAuthorCleanPhrase(authorCleanPhraseOneStore.authorCleanPhrase.id, authorCleanPhrase.value)
       showRecordWas('updated')
 
-      router.push({ name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL, params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id } })
+      router.push({
+        name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL,
+        params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id }
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

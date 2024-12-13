@@ -1,21 +1,17 @@
 import type {
   AnzuUserAndTimeTrackingAware, DocId,
   DocIdNullable, IntegerId, IntegerIdNullable,
-  JobBase,
-  JobUserDataDelete,
   ResourceNameSystemAware
 } from '@anzusystems/common-admin'
-import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
 import type { AuthorCleanPhraseTypeType } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
 import type { AuthorCleanPhraseModeType } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
-import { integer } from '@vue/language-server'
 
 export interface AuthorCleanPhrase extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: IntegerId
   extSystem: IntegerIdNullable
-  authorReplacement: IntegerIdNullable
+  authorReplacement: DocIdNullable
   phrase: string
-  position: integer
+  position: number
   type: AuthorCleanPhraseTypeType
   mode: AuthorCleanPhraseModeType
   flags: AuthorCleanPhraseFlags
