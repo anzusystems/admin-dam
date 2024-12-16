@@ -43,7 +43,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
         .should('have.value', EXPECTED_DESCRIPTION)
       cy.getCy('custom-field-keywords').click()
       cy.get('.v-overlay__content > .v-list > .v-list-item')
-        .invoke('text').should('eq', 'Žiadne dostupné dáta')
+        .invoke('text').should('eq', 'Zadajte minimálne 2 znaky')
       cy.get('body').type('{esc}')
       cy.getCy('custom-field-authors').click()
     })
