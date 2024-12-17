@@ -51,7 +51,6 @@
     "podcasts": "Podcasts",
     "videoShows": "Video shows",
     "extSystemLicenceSwitch": {
-      "filters": "Filters",
       "filter": {
         "extSystemName": "External system name",
         "extSystemId": "External system ID",
