@@ -89,6 +89,11 @@ const routes = {
       DETAIL: 'videoShowEpisode_detail',
       EDIT: 'videoShowEpisode_edit',
     },
+    AUTHOR_CLEAN_PHRASE: {
+      DETAIL: 'authorCleanPhrase_detail',
+      EDIT: 'authorCleanPhrase_edit',
+      LIST: 'authorCleanPhrase_list',
+    },
   },
   SYSTEM: {
     HOMEPAGE: 'homepage',

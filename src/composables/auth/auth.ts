@@ -82,6 +82,10 @@ export const ACL = {
   DAM_PODCAST_EPISODE_UPDATE: 'dam_podcastEpisode_update',
   DAM_PODCAST_EPISODE_READ: 'dam_podcastEpisode_read',
   DAM_PODCAST_EPISODE_DELETE: 'dam_podcastEpisode_delete',
+  DAM_AUTHOR_CLEAN_PHRASE_CREATE: 'dam_authorCleanPhrase_create',
+  DAM_AUTHOR_CLEAN_PHRASE_UPDATE: 'dam_authorCleanPhrase_update',
+  DAM_AUTHOR_CLEAN_PHRASE_READ: 'dam_authorCleanPhrase_read',
+  DAM_AUTHOR_CLEAN_PHRASE_DELETE: 'dam_authorCleanPhrase_delete',
   DAM_ASSET_EXTERNAL_PROVIDER_ACCESS: 'dam_assetExternalProvider_access',
   DAM_DISTRIBUTION_ACCESS: 'dam_distribution_access',
   DAM_USER_UI: 'dam_user_ui',
@@ -97,6 +101,7 @@ export const ACL = {
   DAM_VIDEO_SHOW_EPISODE_UI: 'dam_videoShowEpisode_ui',
   DAM_PODCAST_UI: 'dam_podcast_ui',
   DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
+  DAM_AUTHOR_CLEAN_PHRASE_UI: 'dam_authorCleanPhrase_ui',
   DAM_LOG_UI: 'dam_log_ui',
   DAM_JOB_UI: 'dam_job_ui',
 } as const

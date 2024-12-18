@@ -63,6 +63,11 @@
     "job": {
       "list": "Jobs",
       "detail": "Job"
+    },
+    "authorCleanPhrase": {
+      "list": "Phrases",
+      "detail": "Phrase",
+      "edit": "Phrase"
     }
   },
   "anzuUser": {

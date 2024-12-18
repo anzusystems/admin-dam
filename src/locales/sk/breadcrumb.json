@@ -63,6 +63,11 @@
     "job": {
       "list": "Systémové úlohy",
       "detail": "Systémová úloha"
+    },
+    "authorCleanPhrase": {
+      "list": "Pravidlá",
+      "detail": "Pravidlo",
+      "edit": "Pravidlo"
     }
   },
   "anzuUser": {
