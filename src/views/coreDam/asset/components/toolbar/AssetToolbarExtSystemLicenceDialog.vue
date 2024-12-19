@@ -128,7 +128,6 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const onConfirm = async () => {
   saving.value = true
   validateLicence.value.$touch()
-  console.log(validateLicence.value)
   if (
     validateLicence.value.$invalid ||
     !selectedLicence.value ||
@@ -170,7 +169,6 @@ const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) =
     return
   }
   if (isInt(value) || isNull(value)) selectedLicence.value = value
-  console.log(selectedLicence.value)
 }
 
 const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | IntegerId[]) => {
