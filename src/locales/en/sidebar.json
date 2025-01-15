@@ -16,6 +16,7 @@
     "distributionCategorySelect": "Distribution Categories Selects",
     "log": "Logs",
     "beta": "Beta",
-    "job": "System jobs"
+    "job": "System jobs",
+    "authorCleanPhrase": "Author clean"
   }
 }

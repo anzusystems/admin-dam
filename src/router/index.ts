@@ -20,6 +20,7 @@ import { jobRoutes } from '@/router/routes/coreDam/job'
 import HomepageView from '@/views/system/HomepageView.vue'
 import { ANotFoundView } from '@anzusystems/common-admin'
 import { assetLicenceGroupRoutes } from '@/router/routes/coreDam/assetLicenceGroup'
+import { authorCleanPhraseRoutes } from '@/router/routes/coreDam/authorCleanPhrase'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -46,6 +47,7 @@ const vueRouter = createRouter({
     ...keywordRoutes,
     ...distributionCategoryRoutes,
     ...distributionCategorySelectRoutes,
+    ...authorCleanPhraseRoutes,
     ...podcastRoutes,
     ...videoShowRoutes,
     ...jobRoutes,
