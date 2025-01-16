@@ -66,7 +66,7 @@ const selectMultiple = () => {
           class="selected-triangle__icon"
           icon="mdi-check"
           color="white"
-          size="x-small"
+          size="large"
         />
       </div>
       <AssetImage

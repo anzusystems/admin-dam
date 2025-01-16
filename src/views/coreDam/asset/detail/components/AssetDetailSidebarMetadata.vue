@@ -30,7 +30,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset, view } = useAssetDetailActions()
+const { asset, view, mainFileSingleUse } = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
@@ -49,7 +49,7 @@ const onSave = async () => {
     return
   }
   try {
-    await updateAssetMetadata(asset.value)
+    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
     if (view.value === 'queue') {
       uploadQueueStore.updateAssetMetadata(asset.value)
     }

@@ -1,0 +1,41 @@
+{
+  "model": {
+    "id": "ID",
+    "phrase": "Phrase",
+    "authorReplacement": "Replace by author",
+    "type": "Type",
+    "mode": "Mode",
+    "position": "Position",
+    "flags": {
+      "wordBoundary": "Separate word"
+    }
+  },
+  "filter": {
+    "id": "ID",
+    "phrase": "Phrase",
+    "type": "Type",
+    "mode": "Mode"
+  },
+  "button": {
+    "create": "Create",
+    "playground": "Playground"
+  },
+  "meta": {
+    "playground": "Phrase testing",
+    "test": "Test"
+  },
+  "dto": {
+    "name": "Name",
+    "authorNames": "Author strings",
+    "authors": "Authors"
+  },
+  "mode": {
+    "split": "Split",
+    "remove": "Remove",
+    "replace": "Replace"
+  },
+  "type": {
+    "word": "Word",
+    "regex": "Regular expression"
+  }
+}

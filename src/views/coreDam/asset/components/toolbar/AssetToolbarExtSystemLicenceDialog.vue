@@ -21,12 +21,13 @@ import {
   isUndefined,
   useAlerts,
   useDamConfigStore,
-  useValidate
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import ABtnAdvanced from '@/components/ABtnAdvanced.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -54,6 +55,8 @@ const dialog = computed({
 
 const { t } = useI18n()
 
+const showAdvanced = ref(false)
+
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { useCurrentUser } = useAuth()
@@ -65,6 +68,7 @@ const selectedLicence = ref<null | IntegerId>(null)
 
 const selectedExtSystemSearch = ref<null | IntegerId>(null)
 const selectedLicenceSearch = ref<null | IntegerId>(null)
+const selectedLicenceSearchByExtId = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
   if (currentUser.value && currentUser.value.userToExtSystemsDto.length > 0) {
@@ -124,6 +128,7 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const onConfirm = async () => {
   saving.value = true
   validateLicence.value.$touch()
+  console.log(validateLicence.value)
   if (
     validateLicence.value.$invalid ||
     !selectedLicence.value ||
@@ -147,6 +152,7 @@ const onConfirm = async () => {
 }
 
 const onSelectedExtSystemSearchChange = (value: IntegerIdNullable | IntegerId[]) => {
+  selectedLicenceSearch.value = null
   if (isArray<IntegerIdNullable>(value) && value[0]) {
     selectedExtSystem.value = value[0]
     selectedLicence.value = null
@@ -164,11 +170,26 @@ const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) =
     return
   }
   if (isInt(value) || isNull(value)) selectedLicence.value = value
+  console.log(selectedLicence.value)
+}
+
+const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | IntegerId[]) => {
+  if (isArray<IntegerIdNullable>(value) && value[0]) {
+    selectedLicence.value = value[0]
+    selectedLicenceSearch.value = value[0]
+    return
+  }
+  if (isInt(value) || isNull(value)) {
+    selectedLicence.value = value
+    selectedLicenceSearch.value = value
+  }
 }
 
 onMounted(async () => {
   selectedExtSystem.value = currentExtSystemId.value
   selectedLicence.value = currentAssetLicenceId.value
+  selectedExtSystemSearch.value = currentExtSystemId.value
+  selectedLicenceSearch.value = currentAssetLicenceId.value
 })
 </script>
 
@@ -185,23 +206,10 @@ onMounted(async () => {
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
       <VCardText v-if="isSuperAdmin">
-        <div class="mb-4 text-caption">
-          {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
-            extSystemName
-          }})<br>
-          {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
-            licenceName
-          }})<br>
-        </div>
         <ASystemEntityScope
           :system="SYSTEM_CORE_DAM"
           :subject="ENTITY"
         >
-          <VRow>
-            <VCol class="text-caption font-weight-bold mb-4">
-              {{ t('system.mainBar.extSystemLicenceSwitch.filters') }}
-            </VCol>
-          </VRow>
           <VRow>
             <VCol class="pt-2">
               <DamExtSystemRemoteAutocomplete
@@ -209,16 +217,9 @@ onMounted(async () => {
                 :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
                 hide-details
+                clearable
                 data-cy="field-name-ext-sys"
                 @update:model-value="onSelectedExtSystemSearchChange"
-              />
-            </VCol>
-            <VCol>
-              <VTextField
-                v-model="selectedExtSystem"
-                hide-details
-                data-cy="field-id-ext-sys"
-                :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemId')"
               />
             </VCol>
           </VRow>
@@ -230,21 +231,45 @@ onMounted(async () => {
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
                 :ext-system-id="selectedExtSystem"
                 hide-details
+                clearable
                 data-cy="field-name-licence"
                 @update:model-value="onSelectedLicenceSearchChange"
               />
             </VCol>
+          </VRow>
+          <VRow>
             <VCol>
-              <AssetLicenceByExtIdRemoteAutocomplete
-                v-model="selectedLicenceSearch"
-                :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
-                :ext-system-id="selectedExtSystem"
-                hide-details
-                data-cy="field-id-licence"
-                @update:model-value="onSelectedLicenceSearchChange"
-              />
+              <ABtnAdvanced class="mt-2 mb-4" v-model="showAdvanced" />
             </VCol>
           </VRow>
+          <div
+            v-show="showAdvanced"
+          >
+            <VRow>
+              <VCol>
+                <div class="text-caption">
+                  {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
+                    extSystemName
+                  }})<br />
+                  {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
+                    licenceName
+                  }})<br />
+                </div>
+              </VCol>
+            </VRow>
+            <VRow class="mb-4">
+              <VCol>
+                <AssetLicenceByExtIdRemoteAutocomplete
+                  v-model="selectedLicenceSearchByExtId"
+                  :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceExtId')"
+                  :ext-system-id="selectedExtSystem"
+                  hide-details
+                  data-cy="field-id-licence"
+                  @update:model-value="onSelectedLicenceSearchByExtIdChange"
+                />
+              </VCol>
+            </VRow>
+          </div>
           <div class="d-flex align-center w-100">
             <div class="text-caption font-weight-bold">
               {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
@@ -305,6 +330,7 @@ onMounted(async () => {
         </ABtnTertiary>
         <ABtnPrimary
           v-if="allowSelect"
+          :disabled="isNull(selectedLicence)"
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >

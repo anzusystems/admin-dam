@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
-import { type DocId, isDocId, isString, useAlerts, useTheme } from '@anzusystems/common-admin'
+import { type DocId, isDocId, isString, useAlerts, useDamCachedUsers, useTheme } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
@@ -13,7 +13,6 @@ import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 
 defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -28,7 +27,7 @@ const assetListStore = useAssetListStore()
 const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 const {
   toggleSidebar,
   sidebar,

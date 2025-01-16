@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { AssetDetailItemDto } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormValueObjectOptionsSelect,
   ARow,
+  type AssetDetailItemDto,
   ASystemEntityScope,
   useAlerts,
+  useDamCachedUsers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
@@ -16,7 +17,6 @@ import { useI18n } from 'vue-i18n'
 import { createAsset } from '@/services/api/coreDam/assetApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import type { AssetCreateDto } from '@/types/coreDam/Asset'
 
 const emit = defineEmits<{
@@ -26,7 +26,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const assetDetailStore = useAssetDetailStore()
-const { addToCachedUsers, fetchCachedUsers } = useCachedUsers()
+const { addToCachedUsers, fetchCachedUsers } = useDamCachedUsers()
 
 const { createCreateDto } = useAssetFactory()
 const asset = ref<AssetCreateDto>(createCreateDto())

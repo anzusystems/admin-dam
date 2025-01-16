@@ -43,7 +43,8 @@
     "slotsCountFrom": "Slots count from",
     "slotsCountUntil": "Slots count until",
     "createdAtFrom": "CreatedAt from",
-    "createdAtUntil": "CreatedAt until"
+    "createdAtUntil": "CreatedAt until",
+    "mainFileSingleUse": "Single-use license"
   },
   "meta": {
     "createEmpty": "Create empty asset"
@@ -158,7 +159,7 @@
     },
     "roi": {
       "title": "Previews",
-      "description": "Preview of image on mobile, desktop or app.",
+      "description": "Previews are intended for the main image in the article, article lists, titles, and sections. In the body of the article, the format is displayed without cropping.",
       "refresh": "Refresh previews",
       "rotate": {
         "rotateMainFileImage": "Rotate image (main file)",

@@ -8,7 +8,6 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import type { AssetSearchListItemDto, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
@@ -16,6 +15,7 @@ import {
   DamAssetType,
   isNull,
   useAlerts,
+  useDamCachedUsers,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
@@ -43,7 +43,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
   const { resetFilter } = useFilterHelpers()
   const { currentAssetLicenceId } = useCurrentAssetLicence()
-  const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 

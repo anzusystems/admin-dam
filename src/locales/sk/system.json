@@ -51,7 +51,6 @@
     "podcasts": "Podcasty",
     "videoShows": "Video relácie",
     "extSystemLicenceSwitch": {
-      "filters": "filtre",
       "filter": {
         "extSystemName": "Meno externého systému",
         "extSystemId": "ID externého systému",

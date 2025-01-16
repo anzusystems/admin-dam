@@ -4,7 +4,7 @@ import type { DamCurrentUserDto } from '@anzusystems/common-admin'
 import { apiAnyRequest } from '@anzusystems/common-admin'
 import type { UpdateCurrentUserDto } from '@/types/coreDam/CurrentUser'
 
-const END_POINT = '/adm/v1/user'
+const END_POINT = '/adm/users'
 export const CURRENT_USER_END_POINT = END_POINT + '/current'
 export const ENTITY = 'user'
 

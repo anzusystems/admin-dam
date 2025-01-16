@@ -2,7 +2,13 @@
 import { computed, ref, watch } from 'vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { browserHistoryReplaceUrlByRouter, DamAssetStatus, isNull, useAlerts } from '@anzusystems/common-admin'
+import {
+  browserHistoryReplaceUrlByRouter,
+  DamAssetStatus,
+  isNull,
+  useAlerts,
+  useDamCachedUsers,
+} from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useI18n } from 'vue-i18n'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
@@ -12,7 +18,6 @@ import { AssetMetadataValidationScopeSymbol } from '@/components/validationScope
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import { useCachedUsers } from '@/views/coreDam/user/composables/cachedUsers'
 import { ACL } from '@/composables/auth/auth'
 
 const emit = defineEmits<{
@@ -26,9 +31,9 @@ const saveButtonLoading = ref(false)
 
 const { t } = useI18n()
 
-const { asset, loader, metadataUnTouch, metadataAreTouched } = useAssetDetailActions()
+const { asset, loader, metadataUnTouch, metadataAreTouched, mainFileSingleUse } = useAssetDetailActions()
 
-const { fetchCachedUsers, addToCachedUsers } = useCachedUsers()
+const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
 
@@ -53,7 +58,7 @@ const onSave = async () => {
   }
   try {
     metadataUnTouch()
-    await updateAssetMetadata(asset.value)
+    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
     showRecordWas('updated')
   } catch (error) {
     showErrorsDefault(error)
