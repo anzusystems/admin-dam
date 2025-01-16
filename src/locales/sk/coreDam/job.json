@@ -1,9 +1,14 @@
 {
   "model": {
     "podcastId": "Podcast Id",
-    "fullSync": "Plná synchronizácia"
+    "fullSync": "Plná synchronizácia",
+    "authorId": "Autor ID",
+    "processAll": "Spracuj všetko",
+    "licence": "Licencia Id"
   },
   "jobResource": {
-    "jobPodcastSynchronizer": "Podcastový synchronizátor"
+    "jobPodcastSynchronizer": "Podcastový synchronizátor",
+    "jobAuthorCurrentOptimize": "Optimalizácia autorov",
+    "jobImageCopy": "Kopírovanie obrázkov"
   }
 }
