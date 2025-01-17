@@ -16,10 +16,17 @@ export function usePodcastEpisodeFactory() {
         description: '',
         rawDescription: '',
       },
+      flags: {
+        fromRss: false,
+        webPublicExportEnabled: false,
+        mobilePublicExportEnabled: false
+      },
       position: 0,
       attributes: {
         seasonNumber: null,
         episodeNumber: null,
+        webOrderPosition: 0,
+        mobileOrderPosition: 0,
         extId: '',
         rssUrl: '',
         extUrl: '',

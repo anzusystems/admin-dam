@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import type { DocId } from '@anzusystems/common-admin'
+import { ABooleanValue, type DocId } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatablePagination,
@@ -50,8 +50,12 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
     { key: 'id' },
     { key: 'texts.title' },
     { key: 'attributes.lastImportStatus' },
-    { key: 'attributes.seasonNumber' },
-    { key: 'attributes.episodeNumber' },
+    { key: 'attributes.webOrderPosition' },
+    { key: 'attributes.mobileOrderPosition' },
+    { key: 'flags.webPublicExportEnabled' },
+    { key: 'flags.mobilePublicExportEnabled' },
+    // { key: 'attributes.seasonNumber' },
+    // { key: 'attributes.episodeNumber' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -100,6 +104,18 @@ defineExpose({
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.modifiedAt" />
+        </template>
+        <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.webPublicExportEnabled"
+          />
+        </template>
+        <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.mobilePublicExportEnabled"
+          />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">

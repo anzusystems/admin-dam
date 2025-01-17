@@ -15,9 +15,17 @@ interface Texts {
   rawDescription: string
 }
 
+interface Flags {
+  fromRss: boolean
+  webPublicExportEnabled: boolean
+  mobilePublicExportEnabled: boolean
+}
+
 interface Attributes {
   seasonNumber: number | null
   episodeNumber: number | null
+  webOrderPosition: number
+  mobileOrderPosition: number
   extId: string
   extUrl: string
   rssUrl: string
@@ -34,6 +42,7 @@ export interface PodcastEpisode extends AnzuUserAndTimeTrackingAware, ResourceNa
   asset: DocIdNullable
   texts: Texts
   attributes: Attributes
+  flags: Flags
   dates: Dates
   position: number
   links?: AssetFileLinks

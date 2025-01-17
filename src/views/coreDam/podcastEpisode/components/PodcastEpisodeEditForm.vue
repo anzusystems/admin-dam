@@ -34,6 +34,41 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
+            v-model="podcastEpisode.attributes.webOrderPosition"
+            :label="t('coreDam.podcastEpisode.model.attributes.webOrderPosition')"
+            :v="v$.podcastEpisode.attributes.webOrderPosition"
+            type="number"
+            :step="1"
+            data-cy="episode-web-order-number"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            v-model="podcastEpisode.attributes.mobileOrderPosition"
+            :label="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
+            :v="v$.podcastEpisode.attributes.mobileOrderPosition"
+            type="number"
+            :step="1"
+            data-cy="episode-web-order-number"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="podcastEpisode.flags.webPublicExportEnabled"
+            class="pl-2"
+            :label="t('coreDam.podcastEpisode.model.flags.webPublicExportEnabled')"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="podcastEpisode.flags.mobilePublicExportEnabled"
+            class="pl-2"
+            :label="t('coreDam.podcastEpisode.model.flags.mobilePublicExportEnabled')"
+          />
+        </ARow>
+
+        <ARow>
+          <AFormTextField
             v-model="podcastEpisode.texts.description"
             :label="t('coreDam.podcastEpisode.model.texts.description')"
             :v="v$.podcastEpisode.texts.description"

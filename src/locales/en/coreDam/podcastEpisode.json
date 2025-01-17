@@ -7,6 +7,8 @@
     "attributes": {
       "seasonNumber": "Season number",
       "episodeNumber": "Episode number",
+      "webOrderPosition": "Web order position",
+      "mobileOrderPosition": "Mobile order position",
       "extId": "Ext id",
       "rssUrl": "Rss audio URL",
       "extUrl": "Ext link",
@@ -19,6 +21,11 @@
     },
     "dates": {
       "publicationDate": "Publication date"
+    },
+    "flags": {
+      "fromRss": "From RSS",
+      "webPublicExportEnabled": "Web export enabled",
+      "mobilePublicExportEnabled": "Mobile export enabled"
     }
   },
   "filter": {
