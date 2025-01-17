@@ -27,6 +27,7 @@ import apiForbiddenOperation from '@/locales/en/error/apiForbiddenOperation.json
 import jsValidation from '@/locales/en/error/jsValidation.json'
 import breadcrumb from '@/locales/en/breadcrumb.json'
 import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
+import publicExport from '@/locales/en/coreDam/publicExport.json'
 
 export default {
   common: {
@@ -61,6 +62,7 @@ export default {
     videoShowEpisode,
     audioFile,
     videoFile,
+    publicExport,
   },
   auth,
   sidebar,

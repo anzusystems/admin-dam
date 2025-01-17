@@ -1,0 +1,16 @@
+{
+  "model": {
+    "id": "ID",
+    "slug": "Slug",
+    "assetLicence": "Licencia",
+    "type": "Typ"
+  },
+  "filter": {
+    "type": "Typ",
+    "slug": "Slug"
+  },
+  "exportType": {
+    "mobile": "Appka",
+    "web": "Web"
+  }
+}

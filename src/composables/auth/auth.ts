@@ -104,6 +104,11 @@ export const ACL = {
   DAM_AUTHOR_CLEAN_PHRASE_UI: 'dam_authorCleanPhrase_ui',
   DAM_LOG_UI: 'dam_log_ui',
   DAM_JOB_UI: 'dam_job_ui',
+  DAM_PUBLIC_EXPORT_CREATE: 'dam_publicExport_create',
+  DAM_PUBLIC_EXPORT_UPDATE: 'dam_publicExport_update',
+  DAM_PUBLIC_EXPORT_READ: 'dam_publicExport_read',
+  DAM_PUBLIC_EXPORT_DELETE: 'dam_publicExport_delete',
+  DAM_PUBLIC_EXPORT_UI: 'dam_publicExport_ui',
 } as const
 export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]
