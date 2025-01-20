@@ -17,6 +17,7 @@
     "log": "Logs",
     "beta": "Beta",
     "job": "System jobs",
-    "authorCleanPhrase": "Author clean"
+    "authorCleanPhrase": "Author clean",
+    "publicExport": "Public Export"
   }
 }

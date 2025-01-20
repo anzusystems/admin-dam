@@ -13,5 +13,8 @@
   "exportType": {
     "mobile": "Mobile",
     "web": "Web"
+  },
+  "button": {
+    "create": "Add public export"
   }
 }

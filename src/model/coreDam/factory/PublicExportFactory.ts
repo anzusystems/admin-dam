@@ -1,13 +1,12 @@
-import type { IntegerId } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
 import { ExportTypeDefault } from '@/model/coreDam/valueObject/ExportType'
 
 export function usePublicExportFactory() {
-  const createDefault = (assetLicenceId: IntegerId): PublicExport => {
+  const createDefault = (): PublicExport => {
     return {
       id: '',
-      assetLicence: assetLicenceId,
+      assetLicence: null,
       slug: '',
       type: ExportTypeDefault,
       createdAt: dateTimeNow(),

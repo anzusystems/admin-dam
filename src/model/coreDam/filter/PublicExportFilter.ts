@@ -13,7 +13,7 @@ const filter = reactive({
     ...makeFilter({ name: 'type' }),
   },
   slug: {
-    ...makeFilter({ name: 'slug' }),
+    ...makeFilter({ name: 'slug', variant: 'startsWith' }),
   },
 })
 

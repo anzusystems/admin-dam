@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { usePublicExportOneStore } from '@/stores/coreDam/publicExportStore'
 import ExportTypeChip from '@/views/coreDam/publicExport/components/ExportTypeChip.vue'
+import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 
 const { publicExport } = storeToRefs(usePublicExportOneStore())
 
@@ -28,8 +29,10 @@ const { t } = useI18n()
       <ARow
         :title="t('coreDam.publicExport.model.assetLicence')"
       >
-        TODO
-<!--        <AuthorRemoteAutocompleteCachedAuthorChip  :id="publicExport.authorReplacement"/>-->
+        <CachedAssetLicenceChip
+          :id="publicExport.assetLicence"
+          class="mr-1"
+        />
       </ARow>
     </VCol>
     <VCol cols="4">

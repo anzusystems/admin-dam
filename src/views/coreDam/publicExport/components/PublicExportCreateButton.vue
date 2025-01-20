@@ -99,9 +99,7 @@ const { exportTypeOptions } = useExportTypeTypes()
             v-model="publicExport.assetLicence"
             :client="damClient"
             :label="t('coreDam.publicExport.model.assetLicence')"
-            :ext-system-id="currentExtSystemId"
-            hide-details
-            data-cy="publicExport-assetLicence"
+            data-cy="user-asset-licences"
           />
         </ARow>
       </ASystemEntityScope>

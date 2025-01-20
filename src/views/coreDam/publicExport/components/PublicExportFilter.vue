@@ -26,7 +26,7 @@ const onAnyFilterUpdate = () => {
   touched.value = true
 }
 
-const { getExportTypeOption } = useExportTypeTypes()
+const { exportTypeOptions } = useExportTypeTypes()
 </script>
 
 <template>
@@ -54,7 +54,7 @@ const { getExportTypeOption } = useExportTypeTypes()
         <VCol cols="3">
           <AFilterValueObjectOptionsSelect
             v-model="filter.type"
-            :items="getExportTypeOption"
+            :items="exportTypeOptions"
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>

@@ -20,6 +20,7 @@ import { ACL } from '@/composables/auth/auth'
 import { usePublicExportListActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import { usePublicExportListFilter } from '@/model/coreDam/filter/PublicExportFilter'
 import ExportTypeChip from '@/views/coreDam/publicExport/components/ExportTypeChip.vue'
+import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 
 
 type DatatableItem = PublicExport
@@ -43,6 +44,7 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
     { key: 'id' },
     { key: 'slug' },
     { key: 'type' },
+    { key: 'assetLicence' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -83,10 +85,15 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.slug="{ item }: { item: DatatableItem }">
-          {{ item.phrase }}
+          {{ item.slug }}
         </template>
         <template #item.type="{ item }: { item: DatatableItem }">
           <ExportTypeChip :type="item.type" />
+        </template>
+        <template #item.assetLicence="{ item }: { item: DatatableItem }">
+          <CachedAssetLicenceChip
+            :id="item.assetLicence"
+          />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />

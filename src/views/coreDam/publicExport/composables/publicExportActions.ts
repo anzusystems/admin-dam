@@ -1,5 +1,5 @@
 import type { FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { isInt, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   deletePublicExport,
@@ -14,6 +14,7 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePublicExportOneStore } from '@/stores/coreDam/publicExportStore'
 import { ROUTE } from '@/router/routes'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -24,13 +25,18 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const usePublicExportListActions = () => {
-  const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<PublicExport[]>([])
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchPublicExportList(currentExtSystemId.value, pagination, filterBag)
+      const res = await fetchPublicExportList(pagination, filterBag)
+      res.forEach((item) => {
+          addToCachedAssetLicences(item.assetLicence)
+          fetchCachedAssetLicences()
+      })
+      listItems.value = res
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -69,18 +75,15 @@ export const usePublicExportRemoveActions = () => {
 export const usePublicExportDetailActions = () => {
   const publicExportOneStore = usePublicExportOneStore()
   const { publicExport } = storeToRefs(publicExportOneStore)
-  const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const publicExport = await fetchPublicExport(id)
-      publicExportOneStore.setPublicExport(publicExport)
-      if (publicExport.authorReplacement) {
-        addToCachedAuthors(publicExport.authorReplacement)
-      }
-      fetchCachedAuthors()
-
+      const res = await fetchPublicExport(id)
+      addToCachedAssetLicences(res.assetLicence)
+      fetchCachedAssetLicences()
+      publicExport.value = res
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -101,12 +104,15 @@ export const usePublicExportEditActions = () => {
   const router = useRouter()
   const publicExportOneStore = usePublicExportOneStore()
   const { publicExport } = storeToRefs(publicExportOneStore)
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const publicExport = await fetchPublicExport(id)
-      publicExportOneStore.setPublicExport(publicExport)
+      const res = await fetchPublicExport(id)
+      addToCachedAssetLicences(res.assetLicence)
+      fetchCachedAssetLicences()
+      publicExport.value = res
     } catch (error) {
       showErrorsDefault(error)
     } finally {

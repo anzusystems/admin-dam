@@ -2,10 +2,17 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/publicExportApi'
 import { useI18n } from 'vue-i18n'
-import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope,
+  DamAssetLicenceRemoteAutocomplete
+} from '@anzusystems/common-admin'
 import { usePublicExportEditActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import { usePublicExportValidation } from '@/views/coreDam/publicExport/composables/publicExportValidation'
 import { useExportTypeTypes } from '@/model/coreDam/valueObject/ExportType'
+import { damClient } from '@/services/api/clients/damClient'
 
 const { publicExport } = usePublicExportEditActions()
 
@@ -29,10 +36,10 @@ const { exportTypeOptions } = useExportTypeTypes()
       >
         <ARow>
           <AFormTextField
-            v-model="publicExport.phrase"
-            :label="t('coreDam.publicExport.model.phrase')"
-            :v="v$.publicExport.phrase"
-            data-cy="publicExport-phrase"
+            v-model="publicExport.slug"
+            :label="t('coreDam.publicExport.model.slug')"
+            :v="v$.publicExport.slug"
+            data-cy="publicExport-slug"
           />
         </ARow>
         <ARow>
@@ -44,12 +51,12 @@ const { exportTypeOptions } = useExportTypeTypes()
           />
         </ARow>
         <ARow>
-          todo
-<!--          <AuthorRemoteAutocomplete-->
-<!--            v-model="publicExport.authorReplacement"-->
-<!--            :label="t('coreDam.publicExport.model.authorReplacement')"-->
-<!--            data-cy="publicExport-authorReplacement"-->
-<!--          />-->
+          <DamAssetLicenceRemoteAutocomplete
+            v-model="publicExport.assetLicence"
+            :client="damClient"
+            :label="t('coreDam.publicExport.model.assetLicence')"
+            data-cy="publicExport-licence"
+          />
         </ARow>
       </VCol>
     </VRow>

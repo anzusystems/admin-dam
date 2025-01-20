@@ -10,9 +10,9 @@ const props = withDefaults(
   {}
 )
 
-const { getAuthorCleanPhraseModeOption } = useExportTypeTypes()
+const { getExportTypeOption } = useExportTypeTypes()
 const typeOption = computed(() => {
-  return getAuthorCleanPhraseModeOption(props.type)
+  return getExportTypeOption(props.type)
 })
 </script>
 

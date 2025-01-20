@@ -7,18 +7,17 @@ import type { PublicExport } from '@/types/coreDam/PublicExport'
 const END_POINT = '/adm/v1/public-export'
 export const ENTITY = 'publicExport'
 
-export const fetchPublicExportList = (extSystemId: number, pagination: Pagination, filterBag: FilterBag) =>
+export const fetchPublicExportList = (pagination: Pagination, filterBag: FilterBag) =>
   apiFetchList<PublicExport[]>(
     damClient,
-    END_POINT_LIST,
-    {
-      extSystemId,
-    },
+    END_POINT,
+    {},
     pagination,
     filterBag,
     SYSTEM_CORE_DAM,
     ENTITY
   )
+
 
 export const createPublicExport = (data: PublicExport) =>
   apiCreateOne<PublicExport>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
