@@ -20,6 +20,12 @@ export function usePodcastFactory() {
         extUrl: '',
         mode: PodcastMode.Default,
         lastImportStatus: PodcastLastImportStatus.Default,
+        webOrderPosition: 0,
+        mobileOrderPosition: 0,
+      },
+      flags: {
+        webPublicExportEnabled: false,
+        mobilePublicExportEnabled: false
       },
       dates: {
         importFrom: null,

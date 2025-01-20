@@ -26,6 +26,7 @@ interface Attributes {
   episodeNumber: number | null
   webOrderPosition: number
   mobileOrderPosition: number
+  duration: number
   extId: string
   extUrl: string
   rssUrl: string

@@ -15,9 +15,16 @@ interface Texts {
   description: string
 }
 
+interface Flags {
+  webPublicExportEnabled: boolean
+  mobilePublicExportEnabled: boolean
+}
+
 export interface Attributes {
   rssUrl: string
   extUrl: string
+  webOrderPosition: number
+  mobileOrderPosition: number
   mode: PodcastMode
   lastImportStatus: PodcastLastImportStatus
 }
@@ -31,6 +38,7 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   licence: IntegerIdNullable
   texts: Texts
   attributes: Attributes
+  flags: Flags
   dates: Dates
   links?: AssetFileLinks
   altLinks?: AssetFileLinks

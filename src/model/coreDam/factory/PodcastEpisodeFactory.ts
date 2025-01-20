@@ -26,6 +26,7 @@ export function usePodcastEpisodeFactory() {
         seasonNumber: null,
         episodeNumber: null,
         webOrderPosition: 0,
+        duration: 0,
         mobileOrderPosition: 0,
         extId: '',
         rssUrl: '',

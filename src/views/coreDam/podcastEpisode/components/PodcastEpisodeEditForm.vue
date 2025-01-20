@@ -53,6 +53,16 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <AFormTextField
+            v-model="podcastEpisode.attributes.duration"
+            :label="t('coreDam.podcastEpisode.model.attributes.duration')"
+            :v="v$.podcastEpisode.attributes.duration"
+            type="number"
+            :step="1"
+            data-cy="episode-duration"
+          />
+        </ARow>
+        <ARow>
           <VSwitch
             v-model="podcastEpisode.flags.webPublicExportEnabled"
             class="pl-2"
@@ -66,7 +76,6 @@ const { t } = useI18n()
             :label="t('coreDam.podcastEpisode.model.flags.mobilePublicExportEnabled')"
           />
         </ARow>
-
         <ARow>
           <AFormTextField
             v-model="podcastEpisode.texts.description"

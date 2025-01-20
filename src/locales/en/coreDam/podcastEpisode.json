@@ -8,6 +8,7 @@
       "seasonNumber": "Season number",
       "episodeNumber": "Episode number",
       "webOrderPosition": "Web order position",
+      "duration": "Duration",
       "mobileOrderPosition": "Mobile order position",
       "extId": "Ext id",
       "rssUrl": "Rss audio URL",

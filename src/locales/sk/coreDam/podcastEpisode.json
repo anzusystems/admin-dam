@@ -8,6 +8,7 @@
       "seasonNumber": "Číslo sezóny",
       "episodeNumber": "Číslo epizódy",
       "webOrderPosition": "Poradie na webe",
+      "duration": "Dĺžka",
       "mobileOrderPosition": "Poradie v appke",
       "extId": "Externé ID",
       "rssUrl": "Rss audio URL",

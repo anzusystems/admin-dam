@@ -21,6 +21,7 @@ import PodcastEpisodeFilter from '@/views/coreDam/podcastEpisode/components/Podc
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { ACL } from '@/composables/auth/auth'
+import { prettyDuration } from '@/utils/file'
 
 type DatatableItem = PodcastEpisode
 
@@ -54,8 +55,7 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
     { key: 'attributes.mobileOrderPosition' },
     { key: 'flags.webPublicExportEnabled' },
     { key: 'flags.mobilePublicExportEnabled' },
-    // { key: 'attributes.seasonNumber' },
-    // { key: 'attributes.episodeNumber' },
+    { key: 'attributes.duration' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -116,6 +116,14 @@ defineExpose({
             chip
             :value="item.flags.mobilePublicExportEnabled"
           />
+        </template>
+        <template #item.attributes.duration="{ item }: { item: DatatableItem }">
+          <template v-if="item.attributes.duration">
+            {{ prettyDuration(item.attributes.duration) }}
+          </template>
+          <template v-else>
+            -
+          </template>
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">

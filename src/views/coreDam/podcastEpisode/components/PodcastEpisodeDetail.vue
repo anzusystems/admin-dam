@@ -15,6 +15,7 @@ import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
+import { prettyDuration } from '@/utils/file'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
@@ -59,6 +60,10 @@ const onAssetChipClick = () => {
       >
         <ABooleanValue :value="podcastEpisode.flags.mobilePublicExportEnabled" />
       </ARow>
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.duration')"
+        :value="prettyDuration(podcastEpisode.attributes.duration)"
+      />
       <ARow
         :title="t('coreDam.podcastEpisode.model.texts.description')"
         :value="podcastEpisode.texts.description"
