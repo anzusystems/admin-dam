@@ -254,3 +254,25 @@ export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) =>
     SYSTEM_CORE_DAM,
     ENTITY
   )
+
+export const setSibling = (assetId: DocId, targetAssetId: DocId) =>
+  apiAnyRequest<any, AssetDetailItemDto>(
+    damClient,
+    'PATCH',
+    END_POINT + '/:assetId/sibling/:targetAssetId',
+    { assetId, targetAssetId },
+    { },
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
+
+export const removeSibling = (assetId: DocId) =>
+  apiAnyRequest<any, AssetDetailItemDto>(
+    damClient,
+    'PATCH',
+    END_POINT + '/:assetId/sibling',
+    { assetId },
+    { },
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )

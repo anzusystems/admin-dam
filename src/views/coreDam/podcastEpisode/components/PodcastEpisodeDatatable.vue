@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { ABooleanValue, type DocId } from '@anzusystems/common-admin'
+import { ABooleanValue, ADatatableOrdering, type DatatableOrderingOption, type DocId } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatablePagination,
@@ -46,7 +46,7 @@ const getList = () => {
   fetchList(props.podcastId, pagination, filter)
 }
 
-const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'texts.title' },
@@ -63,7 +63,18 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
   SYSTEM_CORE_DAM,
   ENTITY
 )
-pagination.sortBy = 'position'
+
+const customSort: DatatableOrderingOptions = [
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'position', order: 'desc' } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'position', order: 'asc' } },
+  { id: 3, titleT: 'system.datatable.ordering.webOrderPosition', sortBy: { key: 'attributes.webOrderPosition', order: 'desc' } },
+  { id: 4, titleT: 'system.datatable.ordering.mobileOrderPosition', sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' } },
+]
+
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
+}
 
 onMounted(() => {
   fetchList(props.podcastId, pagination, filter)
@@ -83,6 +94,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
+        <ADatatableOrdering
+          :custom-options="customSort"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"

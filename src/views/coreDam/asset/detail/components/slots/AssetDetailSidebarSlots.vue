@@ -1,13 +1,25 @@
 <script lang="ts" setup>
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper
+  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
-import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
-import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination } from '@anzusystems/common-admin'
+import {
+  useAssetDetailSidebarSlotsActions
+} from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
+import {
+  AAssetSelect,
+  ADatatablePagination,
+  ARow,
+  type AssetSelectReturnData, DamAssetType,
+  DamAssetType as AssetTypeValue,
+  type DocId
+} from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
+import AssetSibling from '@/views/coreDam/asset/detail/components/slots/AssetSibling.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -36,9 +48,11 @@ const {
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 onMounted(async () => {
+  console.log('AssetDetailSidebarSlots.onMounted')
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)
   await getList()
 })
+
 </script>
 
 <template>
@@ -50,6 +64,11 @@ onMounted(async () => {
       {{ t('coreDam.asset.slots.actions.refreshList') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
+  <AssetSibling
+    v-if="assetType === DamAssetType.Video || assetType === DamAssetType.Audio"
+    :asset-type="assetType"
+    :asset-id="assetId"
+  />
   <div
     v-if="assetSlotsStore.loader"
     class="d-flex w-100 h-100 justify-center align-center pa-2"
