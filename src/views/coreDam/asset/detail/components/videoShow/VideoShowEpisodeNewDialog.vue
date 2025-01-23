@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import type { DocId } from '@anzusystems/common-admin'
+import { AFormDatetimePicker, type DocId } from '@anzusystems/common-admin'
 import { ADialogToolbar, AFormTextarea, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -138,6 +138,12 @@ onMounted(async () => {
               />
             </ARow>
           </template>
+          <ARow>
+            <AFormDatetimePicker
+              v-model="videoShowEpisode.dates.publicationDate"
+              :label="t('coreDam.videoShowEpisode.model.dates.publicationDate')"
+            />
+          </ARow>
         </ASystemEntityScope>
       </VCardText>
       <VCardActions>
