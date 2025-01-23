@@ -54,7 +54,6 @@ const { podcastModeOptions } = usePodcastMode()
           <AFormTextField
             v-model="podcast.attributes.webOrderPosition"
             :label="t('coreDam.podcast.model.attributes.webOrderPosition')"
-            :v="v$.podcast.attributes.webOrderPosition"
             type="number"
             :step="1"
             data-cy="podcast-web-order-number"
@@ -64,7 +63,6 @@ const { podcastModeOptions } = usePodcastMode()
           <AFormTextField
             v-model="podcast.attributes.mobileOrderPosition"
             :label="t('coreDam.podcastEpodcastpisode.model.attributes.mobileOrderPosition')"
-            :v="v$.podcast.attributes.mobileOrderPosition"
             type="number"
             :step="1"
             data-cy="podcast-web-order-number"

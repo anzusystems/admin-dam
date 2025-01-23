@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import type { DocId } from '@anzusystems/common-admin'
+import { ABooleanValue, ADatatableOrdering, type DatatableOrderingOption, type DocId } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatablePagination,
@@ -47,13 +47,35 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
-  [{ key: 'id' }, { key: 'texts.title' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+  [
+    { key: 'id' },
+    { key: 'texts.title' },
+    { key: 'attributes.webOrderPosition' },
+    { key: 'attributes.mobileOrderPosition' },
+    { key: 'flags.webPublicExportEnabled' },
+    { key: 'flags.mobilePublicExportEnabled' },
+    { key: 'dates.publicationDate' },
+    { key: 'createdAt' },
+    { key: 'modifiedAt' }
+  ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
 )
 pagination.sortBy = 'position'
+
+const customSort: DatatableOrderingOptions = [
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'createdAt', order: 'desc' } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'createdAt', order: 'asc' } },
+  { id: 3, titleT: 'system.datatable.ordering.webOrderPosition', sortBy: { key: 'attributes.webOrderPosition', order: 'desc' } },
+  { id: 4, titleT: 'system.datatable.ordering.mobileOrderPosition', sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' } },
+]
+
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
+}
 
 const getList = () => {
   fetchList(props.videoShowId, pagination, filter)
@@ -77,6 +99,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
+        <ADatatableOrdering
+          :custom-options="customSort"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -90,11 +116,26 @@ defineExpose({
         item-value="id"
         @click:row="onRowClick"
       >
+        <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.webPublicExportEnabled"
+          />
+        </template>
+        <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.mobilePublicExportEnabled"
+          />
+        </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.modifiedAt" />
+        </template>
+        <template #item.dates.publicationDate="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.dates.publicationDate" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useVideoShowOneStore } from '@/stores/coreDam/videoShowStore'
@@ -8,9 +8,6 @@ const { videoShow } = storeToRefs(useVideoShowOneStore())
 
 const { t } = useI18n()
 
-// const imageSrc = computed(() => {
-//   return videoShow.value.links ? videoShow.value.links.image_list.url : undefined
-// })
 </script>
 
 <template>
@@ -20,6 +17,24 @@ const { t } = useI18n()
         :title="t('coreDam.videoShow.model.texts.title')"
         :value="videoShow.texts.title"
       />
+      <ARow
+        :title="t('coreDam.videoShow.model.attributes.webOrderPosition')"
+        :value="videoShow.attributes.webOrderPosition"
+      />
+      <ARow
+        :title="t('coreDam.videoShow.model.attributes.mobileOrderPosition')"
+        :value="videoShow.attributes.mobileOrderPosition"
+      />
+      <ARow
+        :title="t('coreDam.videoShow.model.flags.webPublicExportEnabled')"
+      >
+        <ABooleanValue :value="videoShow.flags.webPublicExportEnabled" />
+      </ARow>
+      <ARow
+        :title="t('coreDam.videoShow.model.flags.mobilePublicExportEnabled')"
+      >
+        <ABooleanValue :value="videoShow.flags.mobilePublicExportEnabled" />
+      </ARow>
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.videoShow.model.id')">
@@ -28,9 +43,6 @@ const { t } = useI18n()
           data-cy="video-show-id"
         />
       </ARow>
-      <!--        <ARow v-if="imageSrc" title="Image">-->
-      <!--          <AssetImage :src="imageSrc" use-component />-->
-      <!--        </ARow>-->
       <AUserAndTimeTrackingFields :data="videoShow" />
     </VCol>
   </VRow>

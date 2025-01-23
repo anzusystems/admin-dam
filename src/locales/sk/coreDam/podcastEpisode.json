@@ -31,7 +31,9 @@
   },
   "filter": {
     "id": "ID",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "webPublicExportEnabled": "Povolené na webe",
+    "mobilePublicExportEnabled": "Povolené v appke"
   },
   "button": {
     "create": "Pridať epizódu"

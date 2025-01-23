@@ -31,7 +31,9 @@
   },
   "filter": {
     "id": "ID",
-    "title": "Title"
+    "title": "Title",
+    "webPublicExportEnabled": "Web export enabled",
+    "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "button": {
     "create": "Add Episode"

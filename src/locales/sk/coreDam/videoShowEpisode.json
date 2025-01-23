@@ -6,11 +6,24 @@
     "position": "Pozícia",
     "texts": {
       "title": "Nadpis"
+    },
+    "attributes": {
+      "webOrderPosition": "Poradie na webe",
+      "mobileOrderPosition": "Poradie v appke"
+    },
+    "flags": {
+      "webPublicExportEnabled": "Povolené na webe",
+      "mobilePublicExportEnabled": "Povolené v appke"
+    },
+    "dates": {
+      "publicationDate": "Dátum publikovania"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "webPublicExportEnabled": "Povolené na webe",
+    "mobilePublicExportEnabled": "Povolené v appke"
   },
   "button": {
     "create": "Pridať epizódu",
