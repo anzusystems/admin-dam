@@ -48,7 +48,6 @@ const {
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 onMounted(async () => {
-  console.log('AssetDetailSidebarSlots.onMounted')
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)
   await getList()
 })
