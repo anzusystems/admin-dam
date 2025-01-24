@@ -83,11 +83,19 @@ export const useAuthorEditActions = () => {
   const router = useRouter()
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
+  const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
       const author = await fetchAuthor(id)
+      author.currentAuthors.forEach((item) => {
+        addToCachedAuthors(item)
+      })
+      author.childAuthors.forEach((item) => {
+        addToCachedAuthors(item)
+      })
+      fetchCachedAuthors()
       authorOneStore.setAuthor(author)
     } catch (error) {
       showErrorsDefault(error)

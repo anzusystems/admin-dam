@@ -6,7 +6,9 @@
     "type": "Typ",
     "flags": {
       "reviewed": "Skontrolovaný"
-    }
+    },
+    "currentAuthors": "Nadradený autori",
+    "childAuthors": "Podradený autori"
   },
   "filter": {
     "id": "ID",

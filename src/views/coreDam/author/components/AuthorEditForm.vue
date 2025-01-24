@@ -15,8 +15,6 @@ import { useDamAuthorType } from '@anzusystems/common-admin'
 import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip
   from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
-import AuthorRemoteAutocompleteWithCached
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 
 const { author } = useAuthorEditActions()
 const { v$ } = useAuthorValidation(author)
@@ -24,7 +22,7 @@ const { t } = useI18n()
 
 const { createDefault } = useDamAuthorFactory()
 
-console.log(createDefault(0))
+const { authorTypeOptions } = useDamAuthorType()
 
 </script>
 
@@ -70,7 +68,7 @@ console.log(createDefault(0))
           />
         </ARow>
         <ARow>
-<!--          :disabled="author.childAuthors.length !== 0"-->
+
           <AuthorRemoteAutocomplete
             v-model="author.currentAuthors"
             canBeCurrentAuthor
@@ -78,7 +76,7 @@ console.log(createDefault(0))
             data-cy="authorCleanPhrase-authorReplacement"
             multiple
             clearable
-
+            :disabled="author.childAuthors.length !== 0"
           />
         </ARow>
         <ARow :title="t('coreDam.author.model.childAuthors')">
