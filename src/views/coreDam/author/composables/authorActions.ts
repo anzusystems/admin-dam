@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -46,11 +47,21 @@ export const useAuthorListActions = () => {
 export const useAuthorDetailActions = () => {
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
+  const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
       const author = await fetchAuthor(id)
+
+      author.currentAuthors.forEach((item) => {
+        addToCachedAuthors(item)
+      })
+      author.childAuthors.forEach((item) => {
+        addToCachedAuthors(item)
+      })
+      fetchCachedAuthors()
+
       authorOneStore.setAuthor(author)
     } catch (error) {
       showErrorsDefault(error)

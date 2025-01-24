@@ -3,19 +3,22 @@ import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
+import { computed, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
-    disabled?: boolean
+    disabled?: boolean,
+    canBeCurrentAuthor?: boolean | null | undefined
   }>(),
   {
     label: undefined,
     required: undefined,
     multiple: false,
     disabled: false,
+    canBeCurrentAuthor: null,
   }
 )
 
@@ -24,6 +27,25 @@ const modelValue = defineModel<DocIdNullable | DocId[]>({ required: true })
 const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 
 const innerFilter = useAuthorFilter()
+
+const canBeCurrentAuthorComputed = computed(() => {
+  return props.canBeCurrentAuthor
+})
+
+watch(
+  canBeCurrentAuthorComputed,
+  (newValue, oldValue) => {
+    if (newValue === oldValue)
+      return
+    modelValue.value = null
+    if (newValue) {
+      innerFilter.canBeCurrentAuthor.model = newValue
+      return
+    }
+    innerFilter.canBeCurrentAuthor.model = null
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

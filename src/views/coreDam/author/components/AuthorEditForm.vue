@@ -2,18 +2,30 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { useI18n } from 'vue-i18n'
-import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope,
+  useDamAuthorFactory
+} from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
 import { useDamAuthorType } from '@anzusystems/common-admin'
+import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import AuthorRemoteAutocompleteWithCached
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 
 const { author } = useAuthorEditActions()
-
 const { v$ } = useAuthorValidation(author)
-
 const { t } = useI18n()
 
-const { authorTypeOptions } = useDamAuthorType()
+const { createDefault } = useDamAuthorFactory()
+
+console.log(createDefault(0))
+
 </script>
 
 <template>
@@ -56,6 +68,27 @@ const { authorTypeOptions } = useDamAuthorType()
             :items="authorTypeOptions"
             data-cy="author-type"
           />
+        </ARow>
+        <ARow>
+<!--          :disabled="author.childAuthors.length !== 0"-->
+          <AuthorRemoteAutocomplete
+            v-model="author.currentAuthors"
+            canBeCurrentAuthor
+            :label="t('coreDam.author.model.currentAuthors')"
+            data-cy="authorCleanPhrase-authorReplacement"
+            multiple
+            clearable
+
+          />
+        </ARow>
+        <ARow :title="t('coreDam.author.model.childAuthors')">
+          <AuthorRemoteAutocompleteCachedAuthorChip
+            class="pr-2"
+            v-for="authorId in author.childAuthors"
+            :key="authorId"
+            :id="authorId"
+          >
+          </AuthorRemoteAutocompleteCachedAuthorChip>
         </ARow>
       </VCol>
     </VRow>

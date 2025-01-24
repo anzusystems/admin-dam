@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useDamAuthorType } from '@anzusystems/common-admin'
+import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip
+  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 const { author } = storeToRefs(useAuthorOneStore())
 
@@ -27,6 +30,22 @@ const { getAuthorTypeOption } = useDamAuthorType()
         <VChip size="small">
           {{ getAuthorTypeOption(author.type)?.title }}
         </VChip>
+      </ARow>
+      <ARow :title="t('coreDam.author.model.currentAuthors')">
+        <AuthorRemoteAutocompleteCachedAuthorChip
+          class="pr-2"
+          v-for="authorId in author.currentAuthors"
+          :key="authorId"
+          :id="authorId"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.childAuthors')">
+        <AuthorRemoteAutocompleteCachedAuthorChip
+          class="pr-2"
+          v-for="authorId in author.childAuthors"
+          :key="authorId"
+          :id="authorId"
+        />
       </ARow>
     </VCol>
     <VCol cols="4">
