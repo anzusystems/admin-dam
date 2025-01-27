@@ -42,7 +42,7 @@ const { t } = useI18n()
         <ARow>
           <AFormTextField
             v-model="videoShow.attributes.mobileOrderPosition"
-            :label="t('coreDam.videoShowEvideoShowpisode.model.attributes.mobileOrderPosition')"
+            :label="t('coreDam.videoShow.model.attributes.mobileOrderPosition')"
             type="number"
             :step="1"
             data-cy="videoShow-web-order-number"

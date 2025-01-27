@@ -141,7 +141,7 @@ const { t } = useI18n()
     <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
       <VListItem
         :to="{ name: ROUTE.DAM.PUBLIC_EXPORT.LIST }"
-        prepend-icon="mdi-spray-bottle"
+        prepend-icon="mdi-export"
         :title="t('sidebar.settings.publicExport')"
         data-cy="public-export"
       />
