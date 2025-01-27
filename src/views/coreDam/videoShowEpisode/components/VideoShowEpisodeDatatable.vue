@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import { ABooleanValue, ADatatableOrdering, type DatatableOrderingOption, type DocId } from '@anzusystems/common-admin'
+import {
+  ABooleanValue,
+  ADatatableOrdering,
+  type DatatableOrderingOption,
+  type DatatableOrderingOptions,
+  type DocId
+} from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatablePagination,

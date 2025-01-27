@@ -2,6 +2,7 @@
 import {
   AAssetSelect,
   type AssetSelectReturnData, DamAssetType,
+  type DamAssetTypeType,
   type DocId,
 } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'

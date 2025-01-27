@@ -8,17 +8,13 @@ import {
   useAssetDetailSidebarSlotsActions
 } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
 import {
-  AAssetSelect,
   ADatatablePagination,
-  ARow,
-  type AssetSelectReturnData, DamAssetType,
-  DamAssetType as AssetTypeValue,
+  DamAssetType,
+  type DamAssetTypeType,
   type DocId
 } from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import AssetSibling from '@/views/coreDam/asset/detail/components/slots/AssetSibling.vue'
 
 const props = withDefaults(

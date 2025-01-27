@@ -36,14 +36,14 @@ const emit = defineEmits<{
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const { createDefault } = usePublicExportFactory()
-const publicExport = ref<PublicExport>(createDefault(currentExtSystemId.value))
+const publicExport = ref<PublicExport>(createDefault())
 const dialog = ref(false)
 
 const { v$ } = usePublicExportValidation(publicExport)
 const { t } = useI18n()
 
 const onOpen = () => {
-  publicExport.value = createDefault(currentExtSystemId.value)
+  publicExport.value = createDefault()
 }
 
 const create = async () => {

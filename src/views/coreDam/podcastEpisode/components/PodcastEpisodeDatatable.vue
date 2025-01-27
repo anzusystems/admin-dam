@@ -10,6 +10,7 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   useFilterHelpers,
+  type DatatableOrderingOptions,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastEpisodeApi'

@@ -22,10 +22,10 @@ export const fetchPublicExportList = (pagination: Pagination, filterBag: FilterB
 export const createPublicExport = (data: PublicExport) =>
   apiCreateOne<PublicExport>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
 
-export const updatePublicExport = (id: string, data: PublicExport) =>
+export const updatePublicExport = (id: IntegerId, data: PublicExport) =>
   apiUpdateOne<PublicExport>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
-export const fetchPublicExport = (id: string) =>
+export const fetchPublicExport = (id: IntegerId) =>
   apiFetchOne<PublicExport>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const deletePublicExport = (id: IntegerId) =>

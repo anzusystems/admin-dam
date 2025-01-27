@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="publicExport.phrase">
+  <ActionbarWrapper :last-breadcrumb-title="publicExport.slug">
     <template #buttons>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
         <AActionEditButton
