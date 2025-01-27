@@ -6,18 +6,16 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  ASystemEntityScope, DamAssetLicenceRemoteAutocomplete
+  ASystemEntityScope,
+  DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createPublicExport, ENTITY } from '@/services/api/coreDam/publicExportApi'
 import { usePublicExportFactory } from '@/model/coreDam/factory/PublicExportFactory'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
-import {
-  usePublicExportValidation
-} from '@/views/coreDam/publicExport/composables/publicExportValidation'
+import { usePublicExportValidation } from '@/views/coreDam/publicExport/composables/publicExportValidation'
 import { useExportTypeTypes } from '@/model/coreDam/valueObject/ExportType'
 import { damClient } from '@/services/api/clients/damClient'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 withDefaults(
   defineProps<{
@@ -32,8 +30,6 @@ withDefaults(
 const emit = defineEmits<{
   (e: 'onSuccess', data: PublicExport): void
 }>()
-
-const { currentExtSystemId } = useCurrentExtSystem()
 
 const { createDefault } = usePublicExportFactory()
 const publicExport = ref<PublicExport>(createDefault())
@@ -51,7 +47,6 @@ const create = async () => {
 }
 
 const { exportTypeOptions } = useExportTypeTypes()
-
 </script>
 
 <template>

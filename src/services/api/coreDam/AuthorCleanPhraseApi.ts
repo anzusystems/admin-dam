@@ -2,10 +2,14 @@ import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
   apiAnyRequest,
-  apiCreateOne, apiDeleteOne, apiFetchList,
+  apiCreateOne,
+  apiDeleteOne,
+  apiFetchList,
   apiFetchOne,
-  apiUpdateOne, type FilterBag,
-  type IntegerId, type Pagination,
+  apiUpdateOne,
+  type FilterBag,
+  type IntegerId,
+  type Pagination,
 } from '@anzusystems/common-admin'
 import type { AuthorCleanPhrase, AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'
 

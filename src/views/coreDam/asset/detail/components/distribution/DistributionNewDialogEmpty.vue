@@ -3,7 +3,7 @@ import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
   DamDistributionServiceName,
-  DocId
+  DocId,
 } from '@anzusystems/common-admin'
 
 withDefaults(

@@ -19,7 +19,7 @@ export function useVideoShowEpisodeFactory() {
       },
       flags: {
         webPublicExportEnabled: false,
-        mobilePublicExportEnabled: false
+        mobilePublicExportEnabled: false,
       },
       dates: {
         publicationDate: dateTimeNow(),

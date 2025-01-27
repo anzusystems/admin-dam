@@ -39,14 +39,10 @@ const altImgSrc = computed(() => {
         :title="t('coreDam.podcast.model.attributes.mobileOrderPosition')"
         :value="podcast.attributes.mobileOrderPosition"
       />
-      <ARow
-        :title="t('coreDam.podcast.model.flags.webPublicExportEnabled')"
-      >
+      <ARow :title="t('coreDam.podcast.model.flags.webPublicExportEnabled')">
         <ABooleanValue :value="podcast.flags.webPublicExportEnabled" />
       </ARow>
-      <ARow
-        :title="t('coreDam.podcast.model.flags.mobilePublicExportEnabled')"
-      >
+      <ARow :title="t('coreDam.podcast.model.flags.mobilePublicExportEnabled')">
         <ABooleanValue :value="podcast.flags.mobilePublicExportEnabled" />
       </ARow>
       <ARow :title="t('coreDam.podcast.model.attributes.mode')">

@@ -25,7 +25,7 @@ export function usePodcastFactory() {
       },
       flags: {
         webPublicExportEnabled: false,
-        mobilePublicExportEnabled: false
+        mobilePublicExportEnabled: false,
       },
       dates: {
         importFrom: null,

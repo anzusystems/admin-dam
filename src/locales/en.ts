@@ -36,9 +36,9 @@ export default {
       ...messagesEn.common.anzuUser,
       filter: {
         ...messagesEn.common.anzuUser.filter,
-        ...anzuUser.filter
-      }
-    }
+        ...anzuUser.filter,
+      },
+    },
   },
   $vuetify: messagesEn.$vuetify,
   coreDam: {

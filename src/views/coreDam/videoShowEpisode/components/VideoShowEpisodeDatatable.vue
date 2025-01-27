@@ -5,7 +5,7 @@ import {
   ADatatableOrdering,
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
-  type DocId
+  type DocId,
 } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
@@ -63,7 +63,7 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'flags.mobilePublicExportEnabled' },
     { key: 'dates.publicationDate' },
     { key: 'createdAt' },
-    { key: 'modifiedAt' }
+    { key: 'modifiedAt' },
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
@@ -74,8 +74,16 @@ pagination.sortBy = 'position'
 const customSort: DatatableOrderingOptions = [
   { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'createdAt', order: 'desc' } },
   { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'createdAt', order: 'asc' } },
-  { id: 3, titleT: 'system.datatable.ordering.webOrderPosition', sortBy: { key: 'attributes.webOrderPosition', order: 'desc' } },
-  { id: 4, titleT: 'system.datatable.ordering.mobileOrderPosition', sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' } },
+  {
+    id: 3,
+    titleT: 'system.datatable.ordering.webOrderPosition',
+    sortBy: { key: 'attributes.webOrderPosition', order: 'desc' },
+  },
+  {
+    id: 4,
+    titleT: 'system.datatable.ordering.mobileOrderPosition',
+    sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' },
+  },
 ]
 
 const sortByChange = (option: DatatableOrderingOption) => {

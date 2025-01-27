@@ -52,7 +52,7 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'flags.webPublicExportEnabled' },
     { key: 'flags.mobilePublicExportEnabled' },
     { key: 'createdAt' },
-    { key: 'modifiedAt' }
+    { key: 'modifiedAt' },
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
@@ -62,8 +62,16 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
 const customSort: DatatableOrderingOptions = [
   { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'createdAt', order: 'desc' } },
   { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'createdAt', order: 'asc' } },
-  { id: 3, titleT: 'system.datatable.ordering.webOrderPosition', sortBy: { key: 'attributes.webOrderPosition', order: 'asc' } },
-  { id: 4, titleT: 'system.datatable.ordering.mobileOrderPosition', sortBy: { key: 'attributes.mobileOrderPosition', order: 'asc' } },
+  {
+    id: 3,
+    titleT: 'system.datatable.ordering.webOrderPosition',
+    sortBy: { key: 'attributes.webOrderPosition', order: 'asc' },
+  },
+  {
+    id: 4,
+    titleT: 'system.datatable.ordering.mobileOrderPosition',
+    sortBy: { key: 'attributes.mobileOrderPosition', order: 'asc' },
+  },
 ]
 
 const sortByChange = (option: DatatableOrderingOption) => {

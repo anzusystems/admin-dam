@@ -14,7 +14,7 @@ export const useAssetLicenceGroupOneStore = defineStore('assetLicenceGroupOneSto
 
   return {
     assetLicenceGroup,
-    reset
+    reset,
   }
 })
 

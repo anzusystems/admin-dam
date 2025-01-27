@@ -6,8 +6,10 @@ export const JOB_AUTHOR_CURRENT_OPTIMIZE = 'jobAuthorCurrentOptimize'
 export const JOB_RESOURCE_IMAGE_COPY = 'jobImageCopy'
 
 export type JobResource =
-  typeof JOB_RESOURCE_PODCAST_SYNCHRONIZER | typeof JOB_RESOURCE_IMAGE_COPY |
-  typeof  JOB_AUTHOR_CURRENT_OPTIMIZE |  JobBaseResource
+  | typeof JOB_RESOURCE_PODCAST_SYNCHRONIZER
+  | typeof JOB_RESOURCE_IMAGE_COPY
+  | typeof JOB_AUTHOR_CURRENT_OPTIMIZE
+  | JobBaseResource
 
 export function useJobResource() {
   const { t } = useI18n()

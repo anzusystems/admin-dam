@@ -18,7 +18,7 @@ export const envConfig: EnvConfig = {
     apiUrl: '',
     apiTimeout: 1,
     imageUrl: '',
-    authorCleanPhraseTestSample: ''
+    authorCleanPhraseTestSample: '',
   },
   notification: {
     enabled: true,

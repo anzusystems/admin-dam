@@ -129,9 +129,7 @@ const { t } = useI18n()
             >
               <td>
                 {{ translatePermission('actions', permissionAction) }}
-                <div class="text-caption text-disabled">
-                  {{ permissionSubject }}_{{ permissionAction }}
-                </div>
+                <div class="text-caption text-disabled">{{ permissionSubject }}_{{ permissionAction }}</div>
               </td>
               <td v-if="isEdit">
                 <PermissionGrantEditor

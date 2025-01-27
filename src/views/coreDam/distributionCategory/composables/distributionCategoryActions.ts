@@ -14,12 +14,16 @@ import { fetchDistributionCategorySelectList } from '@/services/api/coreDam/dist
 import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCategoryStore'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import {
-  cloneDeep, type DamAssetTypeType, type DocId,
-  type FilterBag, isUndefined, type Pagination,
+  cloneDeep,
+  type DamAssetTypeType,
+  type DocId,
+  type FilterBag,
+  isUndefined,
+  type Pagination,
   useAlerts,
   useDamConfigState,
   usePagination,
-  type ValueObjectOption
+  type ValueObjectOption,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
@@ -99,13 +103,11 @@ export const useDistributionCategoryManageActions = () => {
 
   const getAvailableDistributionServiceSlugs = (assetType: DamAssetTypeType) => {
     const serviceSlugs: string[] = []
-    Object.entries(configExtSystem[assetType].distribution.distributionRequirements).forEach(
-      ([service, config]) => {
-        if (config.categorySelect.enabled) {
-          serviceSlugs.push(service)
-        }
+    Object.entries(configExtSystem[assetType].distribution.distributionRequirements).forEach(([service, config]) => {
+      if (config.categorySelect.enabled) {
+        serviceSlugs.push(service)
       }
-    )
+    })
     return serviceSlugs
   }
 

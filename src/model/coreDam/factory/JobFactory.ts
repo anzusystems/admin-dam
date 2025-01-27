@@ -1,10 +1,7 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useCommonJobFactory } from '@anzusystems/common-admin'
 import type { JobAuthorCurrentOptimize, JobPodcastSynchronizer } from '@/types/coreDam/Job'
-import {
-  JOB_AUTHOR_CURRENT_OPTIMIZE,
-  JOB_RESOURCE_PODCAST_SYNCHRONIZER
-} from '@/model/coreDam/valueObject/JobResource'
+import { JOB_AUTHOR_CURRENT_OPTIMIZE, JOB_RESOURCE_PODCAST_SYNCHRONIZER } from '@/model/coreDam/valueObject/JobResource'
 
 export function useJobFactory() {
   const { createBase } = useCommonJobFactory()

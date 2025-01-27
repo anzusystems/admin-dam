@@ -7,7 +7,7 @@ import {
   AActionDeleteButton,
   AActionEditButton,
   ACard,
-  stringToInt
+  stringToInt,
 } from '@anzusystems/common-admin'
 import {
   usePublicExportDetailActions,
@@ -53,9 +53,7 @@ onBeforeUnmount(() => {
           @delete-record="removePublicExport(id)"
         />
       </Acl>
-      <AActionCloseButton
-        :route-name="ROUTE.DAM.PUBLIC_EXPORT.LIST"
-      />
+      <AActionCloseButton :route-name="ROUTE.DAM.PUBLIC_EXPORT.LIST" />
     </template>
   </ActionbarWrapper>
 

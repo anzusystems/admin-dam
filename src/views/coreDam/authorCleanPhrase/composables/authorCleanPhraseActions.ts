@@ -3,7 +3,8 @@ import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   deleteAuthorCleanPhrase,
-  fetchAuthorCleanPhrase, fetchAuthorCleanPhraseList,
+  fetchAuthorCleanPhrase,
+  fetchAuthorCleanPhraseList,
   updateAuthorCleanPhrase,
 } from '@/services/api/coreDam/AuthorCleanPhraseApi'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
@@ -80,7 +81,6 @@ export const useAuthorCleanPhraseDetailActions = () => {
         addToCachedAuthors(authorCleanPhrase.authorReplacement)
       }
       fetchCachedAuthors()
-
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -129,7 +129,7 @@ export const useAuthorCleanPhraseEditActions = () => {
 
       router.push({
         name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL,
-        params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id }
+        params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
       })
     } catch (error) {
       showErrorsDefault(error)

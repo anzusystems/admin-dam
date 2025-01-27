@@ -57,7 +57,7 @@ const buttonLoading = ref(false)
 
 const onClick = (textOverride: string | undefined) => {
   author.value = createDefault(currentExtSystemId.value, true)
-  textOverride ? author.value.name = textOverride : author.value.name = props.initialValue
+  textOverride ? (author.value.name = textOverride) : (author.value.name = props.initialValue)
   dialog.value = true
 }
 

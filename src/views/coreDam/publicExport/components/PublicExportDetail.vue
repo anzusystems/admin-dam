@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { usePublicExportOneStore } from '@/stores/coreDam/publicExportStore'
@@ -9,7 +9,6 @@ import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/Cach
 const { publicExport } = storeToRefs(usePublicExportOneStore())
 
 const { t } = useI18n()
-
 </script>
 
 <template>
@@ -19,16 +18,10 @@ const { t } = useI18n()
         :title="t('coreDam.publicExport.model.slug')"
         :value="publicExport.slug"
       />
-      <ARow
-        :title="t('coreDam.publicExport.model.type')"
-      >
-        <ExportTypeChip
-          :type="publicExport.type"
-        />
+      <ARow :title="t('coreDam.publicExport.model.type')">
+        <ExportTypeChip :type="publicExport.type" />
       </ARow>
-      <ARow
-        :title="t('coreDam.publicExport.model.assetLicence')"
-      >
+      <ARow :title="t('coreDam.publicExport.model.assetLicence')">
         <CachedAssetLicenceChip
           :id="publicExport.assetLicence"
           class="mr-1"

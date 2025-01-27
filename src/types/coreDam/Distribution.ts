@@ -4,7 +4,7 @@ import type {
   DamDistributionServiceName,
   DamDistributionStatusType,
   DatetimeUTCNullable,
-  DocId
+  DocId,
 } from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
 

@@ -3,10 +3,8 @@ import { ACard } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
-import PublicExportDatatable
-  from '@/views/coreDam/publicExport/components/PublicExportDatatable.vue'
-import PublicExportCreateButton
-  from '@/views/coreDam/publicExport/components/PublicExportCreateButton.vue'
+import PublicExportDatatable from '@/views/coreDam/publicExport/components/PublicExportDatatable.vue'
+import PublicExportCreateButton from '@/views/coreDam/publicExport/components/PublicExportCreateButton.vue'
 import { usePublicExportListActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 
 const { listLoading } = usePublicExportListActions()

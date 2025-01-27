@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
 import {
   type AuthorCleanPhraseModeType,
-  useAuthorCleanPhraseModeTypes
+  useAuthorCleanPhraseModeTypes,
 } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
 
 const props = withDefaults(

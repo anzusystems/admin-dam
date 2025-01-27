@@ -1,6 +1,7 @@
 import type {
   AnzuUserAndTimeTrackingAware,
-  IntegerId, IntegerIdNullable,
+  IntegerId,
+  IntegerIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 import type { ExportTypeType } from '@/model/coreDam/valueObject/ExportType'

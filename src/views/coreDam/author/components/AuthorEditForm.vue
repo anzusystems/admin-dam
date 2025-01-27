@@ -7,23 +7,18 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  useDamAuthorFactory
 } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
 import { useDamAuthorType } from '@anzusystems/common-admin'
 import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
-import AuthorRemoteAutocompleteCachedAuthorChip
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 const { author } = useAuthorEditActions()
 const { v$ } = useAuthorValidation(author)
 const { t } = useI18n()
 
-const { createDefault } = useDamAuthorFactory()
-
 const { authorTypeOptions } = useDamAuthorType()
-
 </script>
 
 <template>
@@ -68,7 +63,6 @@ const { authorTypeOptions } = useDamAuthorType()
           />
         </ARow>
         <ARow>
-
           <AuthorRemoteAutocomplete
             v-model="author.currentAuthors"
             canBeCurrentAuthor

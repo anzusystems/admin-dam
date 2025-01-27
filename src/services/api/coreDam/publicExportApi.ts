@@ -8,16 +8,7 @@ const END_POINT = '/adm/v1/public-export'
 export const ENTITY = 'publicExport'
 
 export const fetchPublicExportList = (pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<PublicExport[]>(
-    damClient,
-    END_POINT,
-    {},
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
-
+  apiFetchList<PublicExport[]>(damClient, END_POINT, {}, pagination, filterBag, SYSTEM_CORE_DAM, ENTITY)
 
 export const createPublicExport = (data: PublicExport) =>
   apiCreateOne<PublicExport>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)

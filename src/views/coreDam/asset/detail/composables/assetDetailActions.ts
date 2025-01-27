@@ -1,5 +1,10 @@
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { assetFileIsImageFile, DamAssetStatusDefault, DamAssetType, DamAssetTypeDefault } from '@anzusystems/common-admin'
+import {
+  assetFileIsImageFile,
+  DamAssetStatusDefault,
+  DamAssetType,
+  DamAssetTypeDefault,
+} from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, readonly, ref } from 'vue'
 

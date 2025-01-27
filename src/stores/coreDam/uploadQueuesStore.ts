@@ -31,7 +31,7 @@ import {
   UploadQueueItemType,
   useAssetSuggestions,
   useDamConfigState,
-  useUploadQueueItemFactory
+  useUploadQueueItemFactory,
 } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 

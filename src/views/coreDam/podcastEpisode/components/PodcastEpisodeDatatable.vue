@@ -68,8 +68,16 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
 const customSort: DatatableOrderingOptions = [
   { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'position', order: 'desc' } },
   { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'position', order: 'asc' } },
-  { id: 3, titleT: 'system.datatable.ordering.webOrderPosition', sortBy: { key: 'attributes.webOrderPosition', order: 'desc' } },
-  { id: 4, titleT: 'system.datatable.ordering.mobileOrderPosition', sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' } },
+  {
+    id: 3,
+    titleT: 'system.datatable.ordering.webOrderPosition',
+    sortBy: { key: 'attributes.webOrderPosition', order: 'desc' },
+  },
+  {
+    id: 4,
+    titleT: 'system.datatable.ordering.mobileOrderPosition',
+    sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' },
+  },
 ]
 
 const sortByChange = (option: DatatableOrderingOption) => {
@@ -137,9 +145,7 @@ defineExpose({
           <template v-if="item.attributes.duration">
             {{ prettyDuration(item.attributes.duration) }}
           </template>
-          <template v-else>
-            -
-          </template>
+          <template v-else> - </template>
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">

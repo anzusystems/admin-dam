@@ -4,8 +4,6 @@ import type {
   IntegerIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
-import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
   title: string

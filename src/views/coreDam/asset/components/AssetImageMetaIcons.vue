@@ -6,7 +6,12 @@ import {
   ICON_SLOTS,
   LOW_DIMENSION,
 } from '@/views/coreDam/asset/components/assetImageIconsConfig'
-import { type AssetFileProperties, DamAssetType, type DamAssetTypeType, useDamConfigStore } from '@anzusystems/common-admin'
+import {
+  type AssetFileProperties,
+  DamAssetType,
+  type DamAssetTypeType,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -48,7 +53,7 @@ const checkDimensions = (icons: string[], titles: string[]) => {
 
 const checkDistributions = (icons: string[], titles: string[]) => {
   const damConfigStore = useDamConfigStore()
-const { damPrvConfig } = storeToRefs(damConfigStore)
+  const { damPrvConfig } = storeToRefs(damConfigStore)
   for (let i = 0; i < props.assetFileProperties.distributesInServices.length; i++) {
     const iconPath =
       damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]]?.iconPath
@@ -91,7 +96,7 @@ const data = computed(() => {
       :src="item"
       alt=""
       :title="data.titles[index] || ''"
-    >
+    />
   </div>
 </template>
 

@@ -13,7 +13,15 @@ import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/p
 import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
-import { type AssetFileFailReasonType, type AssetFileProcessStatusType, type DamAssetStatusType, type DamAssetTypeType, type DocId, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import {
+  type AssetFileFailReasonType,
+  type AssetFileProcessStatusType,
+  type DamAssetStatusType,
+  type DamAssetTypeType,
+  type DocId,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 

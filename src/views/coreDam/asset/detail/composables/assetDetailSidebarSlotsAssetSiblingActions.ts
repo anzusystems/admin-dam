@@ -9,7 +9,6 @@ export function useAssetDetailSidebarSlotsAssetSiblingActions() {
   const assetDetailStore = useAssetDetailStore()
   const { asset, siblingLoader } = storeToRefs(assetDetailStore)
 
-
   const setAssetSibling = async (targetAssetId: DocId) => {
     try {
       if (!asset.value) {

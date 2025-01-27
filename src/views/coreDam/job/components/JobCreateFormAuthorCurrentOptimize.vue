@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import {
-  AFormTextField,
-  ARow,
-  useAlerts,
-  useJobApi,
-  useValidate,
-} from '@anzusystems/common-admin'
+import { AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 import { damClient } from '@/services/api/clients/damClient'
@@ -41,8 +35,8 @@ const rules = computed(() => {
         authorId: {
           required,
           minValue: minValue(1),
-        }
-      }
+        },
+      },
     }
   }
   return { job: {} }

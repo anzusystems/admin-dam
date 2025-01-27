@@ -7,7 +7,6 @@ import { useVideoShowOneStore } from '@/stores/coreDam/videoShowStore'
 const { videoShow } = storeToRefs(useVideoShowOneStore())
 
 const { t } = useI18n()
-
 </script>
 
 <template>
@@ -25,14 +24,10 @@ const { t } = useI18n()
         :title="t('coreDam.videoShow.model.attributes.mobileOrderPosition')"
         :value="videoShow.attributes.mobileOrderPosition"
       />
-      <ARow
-        :title="t('coreDam.videoShow.model.flags.webPublicExportEnabled')"
-      >
+      <ARow :title="t('coreDam.videoShow.model.flags.webPublicExportEnabled')">
         <ABooleanValue :value="videoShow.flags.webPublicExportEnabled" />
       </ARow>
-      <ARow
-        :title="t('coreDam.videoShow.model.flags.mobilePublicExportEnabled')"
-      >
+      <ARow :title="t('coreDam.videoShow.model.flags.mobilePublicExportEnabled')">
         <ABooleanValue :value="videoShow.flags.mobilePublicExportEnabled" />
       </ARow>
     </VCol>

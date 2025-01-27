@@ -1,19 +1,18 @@
 import type { FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { isInt, useAlerts } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   deletePublicExport,
-  fetchPublicExport, fetchPublicExportList,
+  fetchPublicExport,
+  fetchPublicExportList,
   updatePublicExport,
 } from '@/services/api/coreDam/publicExportApi'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePublicExportOneStore } from '@/stores/coreDam/publicExportStore'
 import { ROUTE } from '@/router/routes'
-import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -33,8 +32,8 @@ export const usePublicExportListActions = () => {
     try {
       const res = await fetchPublicExportList(pagination, filterBag)
       res.forEach((item) => {
-          addToCachedAssetLicences(item.assetLicence)
-          fetchCachedAssetLicences()
+        addToCachedAssetLicences(item.assetLicence)
+        fetchCachedAssetLicences()
       })
       listItems.value = res
     } catch (error) {
@@ -135,7 +134,7 @@ export const usePublicExportEditActions = () => {
 
       router.push({
         name: ROUTE.DAM.PUBLIC_EXPORT.DETAIL,
-        params: { id: publicExportOneStore.publicExport.id }
+        params: { id: publicExportOneStore.publicExport.id },
       })
     } catch (error) {
       showErrorsDefault(error)

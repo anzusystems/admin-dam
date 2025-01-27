@@ -239,12 +239,13 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <ABtnAdvanced class="mt-2 mb-4" v-model="showAdvanced" />
+              <ABtnAdvanced
+                class="mt-2 mb-4"
+                v-model="showAdvanced"
+              />
             </VCol>
           </VRow>
-          <div
-            v-show="showAdvanced"
-          >
+          <div v-show="showAdvanced">
             <VRow>
               <VCol>
                 <div class="text-caption">

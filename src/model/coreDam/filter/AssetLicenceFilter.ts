@@ -17,4 +17,3 @@ const filter = reactive({
 export function useAssetLicenceListFilter() {
   return filter
 }
-

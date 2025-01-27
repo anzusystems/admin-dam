@@ -75,14 +75,14 @@ const { theme } = useTheme()
               :src="logoFull"
               alt="Admin"
               class="hidden-xs"
-            >
+            />
             <img
               width="42"
               height="42"
               :src="logoNoText"
               alt="DAM"
               class="hidden-sm-and-up"
-            >
+            />
           </RouterLink>
         </div>
         <KeepAlive>

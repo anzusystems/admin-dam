@@ -1,10 +1,4 @@
-import type {
-  FilterBag,
-  IntegerId,
-  Pagination,
-  PermissionGroup,
-  ValueObjectOption
-} from '@anzusystems/common-admin'
+import type { FilterBag, IntegerId, Pagination, PermissionGroup, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import type { AxiosInstance } from 'axios'
@@ -160,10 +154,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
 }
 
 export const usePermissionGroupSelectAction = (client: () => AxiosInstance) => {
-  const {
-    apiFetchPermissionGroupList,
-    apiFetchPermissionGroupListByIds,
-  } = usePermissionGroupApi(client)
+  const { apiFetchPermissionGroupList, apiFetchPermissionGroupListByIds } = usePermissionGroupApi(client)
 
   const mapToValueObject = (permissionGroup: PermissionGroup): ValueObjectOption<IntegerId> => ({
     title: permissionGroup.title,

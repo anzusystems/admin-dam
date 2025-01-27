@@ -1,18 +1,10 @@
 <script lang="ts" setup>
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import AssetDetailSidebarActionsWrapper
-  from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
-import {
-  useAssetDetailSidebarSlotsActions
-} from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
-import {
-  ADatatablePagination,
-  DamAssetType,
-  type DamAssetTypeType,
-  type DocId
-} from '@anzusystems/common-admin'
+import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
+import { ADatatablePagination, DamAssetType, type DamAssetTypeType, type DocId } from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AssetSibling from '@/views/coreDam/asset/detail/components/slots/AssetSibling.vue'
@@ -40,14 +32,13 @@ const {
   makeMainFile,
   duplicateSlot,
   switchSlot,
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+  // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 onMounted(async () => {
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)
   await getList()
 })
-
 </script>
 
 <template>

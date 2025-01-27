@@ -22,7 +22,6 @@ import { usePublicExportListFilter } from '@/model/coreDam/filter/PublicExportFi
 import ExportTypeChip from '@/views/coreDam/publicExport/components/ExportTypeChip.vue'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 
-
 type DatatableItem = PublicExport
 
 const router = useRouter()
@@ -91,9 +90,7 @@ defineExpose({
           <ExportTypeChip :type="item.type" />
         </template>
         <template #item.assetLicence="{ item }: { item: DatatableItem }">
-          <CachedAssetLicenceChip
-            :id="item.assetLicence"
-          />
+          <CachedAssetLicenceChip :id="item.assetLicence" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />

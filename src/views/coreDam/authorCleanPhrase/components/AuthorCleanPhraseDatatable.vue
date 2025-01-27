@@ -19,10 +19,8 @@ import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
 import { ACL } from '@/composables/auth/auth'
 import { useAuthorCleanPhraseListFilter } from '@/model/coreDam/filter/AuthorCleanPhraseFilter'
 import { useAuthorCleanPhraseListActions } from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import AuthorCleanPhraseTypeStatusChip
-  from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue'
-import AuthorCleanPhraseModeStatusChip
-  from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeStatusChip.vue'
+import AuthorCleanPhraseTypeStatusChip from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue'
+import AuthorCleanPhraseModeStatusChip from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeStatusChip.vue'
 
 type DatatableItem = AuthorCleanPhrase
 
@@ -41,14 +39,7 @@ const getList = () => {
 }
 
 const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
-  [
-    { key: 'id' },
-    { key: 'phrase' },
-    { key: 'mode' },
-    { key: 'type' },
-    { key: 'createdAt' },
-    { key: 'modifiedAt' },
-  ],
+  [{ key: 'id' }, { key: 'phrase' }, { key: 'mode' }, { key: 'type' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY

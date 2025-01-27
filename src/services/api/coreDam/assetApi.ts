@@ -261,7 +261,7 @@ export const setSibling = (assetId: DocId, targetAssetId: DocId) =>
     'PATCH',
     END_POINT + '/:assetId/sibling/:targetAssetId',
     { assetId, targetAssetId },
-    { },
+    {},
     SYSTEM_CORE_DAM,
     ENTITY
   )
@@ -272,7 +272,7 @@ export const removeSibling = (assetId: DocId) =>
     'PATCH',
     END_POINT + '/:assetId/sibling',
     { assetId },
-    { },
+    {},
     SYSTEM_CORE_DAM,
     ENTITY
   )

@@ -48,9 +48,9 @@ const onImport = () => {
     class="asset-footer__selected pa-0"
     :class="
       'asset-footer--' +
-        externalProviderFooterViewSelected +
-        ' asset-footer__selected--' +
-        externalProviderFooterViewSelected
+      externalProviderFooterViewSelected +
+      ' asset-footer__selected--' +
+      externalProviderFooterViewSelected
     "
   >
     <div class="d-flex w-100 h-100 flex-column">

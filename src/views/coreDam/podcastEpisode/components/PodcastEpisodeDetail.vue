@@ -5,7 +5,7 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
-  COMMON_CONFIG
+  COMMON_CONFIG,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
@@ -50,14 +50,10 @@ const onAssetChipClick = () => {
         :title="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
         :value="podcastEpisode.attributes.mobileOrderPosition"
       />
-      <ARow
-        :title="t('coreDam.podcastEpisode.model.flags.webPublicExportEnabled')"
-      >
+      <ARow :title="t('coreDam.podcastEpisode.model.flags.webPublicExportEnabled')">
         <ABooleanValue :value="podcastEpisode.flags.webPublicExportEnabled" />
       </ARow>
-      <ARow
-        :title="t('coreDam.podcastEpisode.model.flags.mobilePublicExportEnabled')"
-      >
+      <ARow :title="t('coreDam.podcastEpisode.model.flags.mobilePublicExportEnabled')">
         <ABooleanValue :value="podcastEpisode.flags.mobilePublicExportEnabled" />
       </ARow>
       <ARow

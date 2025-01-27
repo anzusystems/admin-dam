@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {
   AAssetSelect,
-  type AssetSelectReturnData, DamAssetType,
+  type AssetSelectReturnData,
+  DamAssetType,
   type DamAssetTypeType,
   type DocId,
 } from '@anzusystems/common-admin'
@@ -10,9 +11,7 @@ import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { computed } from 'vue'
-import {
-  useAssetDetailSidebarSlotsAssetSiblingActions
-} from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
+import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
 import { storeToRefs } from 'pinia'
 
 const props = withDefaults(
@@ -24,7 +23,7 @@ const props = withDefaults(
 )
 
 const assetDetailStore = useAssetDetailStore()
-const { asset, siblingLoader } = storeToRefs(assetDetailStore)
+const { siblingLoader } = storeToRefs(assetDetailStore)
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { t } = useI18n()
 
@@ -32,12 +31,12 @@ const { setAssetSibling, removeAssetSibling } = useAssetDetailSidebarSlotsAssetS
 
 const selectAsset = (data: AssetSelectReturnData) => {
   if (data.type === 'assetId') {
-    let assetId = data.value[0] || ''
+    const assetId = data.value[0] || ''
     setAssetSibling(assetId)
   }
 }
 
-const removeItem = (index: number) => {
+const removeItem = () => {
   removeAssetSibling()
 }
 
@@ -51,7 +50,6 @@ const pickAssetType = computed(() => {
 
   return undefined
 })
-
 </script>
 
 <template>
@@ -65,7 +63,7 @@ const pickAssetType = computed(() => {
           {{ t('coreDam.asset.sibling.title') }}
         </div>
         <div v-if="assetDetailStore.asset.siblingToAsset">
-          <AssetChip  :id="assetDetailStore.asset.siblingToAsset" />
+          <AssetChip :id="assetDetailStore.asset.siblingToAsset" />
           <VBtn
             icon="mdi-trash-can-outline"
             variant="text"

@@ -3,8 +3,6 @@ import type { IntegerIdNullable } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/videoShowApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
-import { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 export function useVideoShowFactory() {
   const createDefault = (licenceId: IntegerIdNullable = null): VideoShow => {
@@ -20,7 +18,7 @@ export function useVideoShowFactory() {
       },
       flags: {
         webPublicExportEnabled: false,
-        mobilePublicExportEnabled: false
+        mobilePublicExportEnabled: false,
       },
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),

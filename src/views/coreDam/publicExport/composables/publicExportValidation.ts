@@ -7,7 +7,10 @@ import type { PublicExport } from '@/types/coreDam/PublicExport'
 
 const { required, minLength } = useValidate()
 
-export function usePublicExportValidation(publicExport: Ref<PublicExport>, validationScope: ValidationScope = undefined) {
+export function usePublicExportValidation(
+  publicExport: Ref<PublicExport>,
+  validationScope: ValidationScope = undefined
+) {
   const rules = computed(() => ({
     publicExport: {
       slug: {

@@ -3,13 +3,10 @@ import { ACard } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
-import AuthorCleanPhraseDatatable
-  from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'
-import AuthorCleanPhraseCreateButton
-  from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseCreateButton.vue'
+import AuthorCleanPhraseDatatable from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'
+import AuthorCleanPhraseCreateButton from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseCreateButton.vue'
 import { useAuthorCleanPhraseListActions } from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import AuthorCleanPhrasePlaygroundButton
-  from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhrasePlaygroundButton.vue'
+import AuthorCleanPhrasePlaygroundButton from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhrasePlaygroundButton.vue'
 
 const { listLoading } = useAuthorCleanPhraseListActions()
 

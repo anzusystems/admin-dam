@@ -7,7 +7,7 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete
+  DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { usePublicExportEditActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import { usePublicExportValidation } from '@/views/coreDam/publicExport/composables/publicExportValidation'
@@ -21,7 +21,6 @@ const { v$ } = usePublicExportValidation(publicExport)
 const { t } = useI18n()
 
 const { exportTypeOptions } = useExportTypeTypes()
-
 </script>
 
 <template>

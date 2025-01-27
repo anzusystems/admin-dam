@@ -17,7 +17,6 @@ const { t } = useI18n()
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()
 const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
-
 </script>
 
 <template>

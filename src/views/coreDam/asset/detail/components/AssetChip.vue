@@ -20,7 +20,6 @@ const onAssetChipClick = () => {
   assetDetailStore.reset()
   router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: props.id } })
 }
-
 </script>
 
 <template>

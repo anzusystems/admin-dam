@@ -17,9 +17,8 @@ const {
   fetchData,
   resetStore,
   onUpdate,
-  assetLicenceGroup
-} =
-  useAssetLicenceGroupEditActions()
+  assetLicenceGroup,
+} = useAssetLicenceGroupEditActions()
 
 const getData = () => {
   fetchData(id)

@@ -7,7 +7,7 @@ import {
   AActionDeleteButton,
   AActionEditButton,
   ACard,
-  stringToInt
+  stringToInt,
 } from '@anzusystems/common-admin'
 import {
   useAuthorCleanPhraseDetailActions,
@@ -53,9 +53,7 @@ onBeforeUnmount(() => {
           @delete-record="removeAuthorCleanPhrase(id)"
         />
       </Acl>
-      <AActionCloseButton
-        :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.LIST"
-      />
+      <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.LIST" />
     </template>
   </ActionbarWrapper>
 

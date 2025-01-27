@@ -16,9 +16,7 @@ import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/Asset
 import DistributionBlockedBy from '@/views/coreDam/asset/detail/components/distribution/DistributionBlockedBy.vue'
 import DistributionCustomMetadataForm from '@/views/coreDam/asset/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
-import {
-  useAssetDetailDistributionDialog
-} from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import {
   AFormDatetimePicker,
   AssetFileProcessStatus,
@@ -32,7 +30,7 @@ import {
   useAlerts,
   useDamConfigState,
   useDamConfigStore,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
@@ -68,9 +66,7 @@ const filter = useDistributionFilter()
 
 const { showRecordWas, showValidationError, showErrorsDefault, showUnknownError } = useAlerts()
 
-const {
-  loadDamConfigDistributionCustomFormElements,
-} = useDamConfigState(damClient)
+const { loadDamConfigDistributionCustomFormElements } = useDamConfigState(damClient)
 const damConfigStore = useDamConfigStore()
 const { damConfigDistributionCustomFormElements } = storeToRefs(damConfigStore)
 

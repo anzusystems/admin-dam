@@ -10,7 +10,7 @@ const props = withDefaults(
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
-    disabled?: boolean,
+    disabled?: boolean
     canBeCurrentAuthor?: boolean | null | undefined
   }>(),
   {
@@ -35,8 +35,7 @@ const canBeCurrentAuthorComputed = computed(() => {
 watch(
   canBeCurrentAuthorComputed,
   (newValue, oldValue) => {
-    if (newValue === oldValue)
-      return
+    if (newValue === oldValue) return
     modelValue.value = null
     if (newValue) {
       innerFilter.canBeCurrentAuthor.model = newValue

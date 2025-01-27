@@ -17,7 +17,7 @@ import JobDetailUserDataDelete from '@/views/coreDam/job/components/JobDetailUse
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_IMAGE_COPY,
-  JOB_RESOURCE_PODCAST_SYNCHRONIZER
+  JOB_RESOURCE_PODCAST_SYNCHRONIZER,
 } from '@/model/coreDam/valueObject/JobResource'
 import JobAuthorCurrentOptimize from '@/views/coreDam/job/components/JobAuthorCurrentOptimize.vue'
 import JobImageCopy from '@/views/coreDam/job/components/JobImageCopy.vue'

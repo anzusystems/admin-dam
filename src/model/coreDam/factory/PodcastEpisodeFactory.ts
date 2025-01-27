@@ -19,7 +19,7 @@ export function usePodcastEpisodeFactory() {
       flags: {
         fromRss: false,
         webPublicExportEnabled: false,
-        mobilePublicExportEnabled: false
+        mobilePublicExportEnabled: false,
       },
       position: 0,
       attributes: {

@@ -1,5 +1,6 @@
 import type {
-  AnzuUserAndTimeTrackingAware, DatetimeUTC,
+  AnzuUserAndTimeTrackingAware,
+  DatetimeUTC,
   DocId,
   DocIdNullable,
   ResourceNameSystemAware,

@@ -19,8 +19,8 @@ export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: s
   const { useCurrentUser } = useAuth()
   const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
-const damConfigStore = useDamConfigStore()
-const { damPrvConfig, initialized } = storeToRefs(damConfigStore)
+  const damConfigStore = useDamConfigStore()
+  const { damPrvConfig, initialized } = storeToRefs(damConfigStore)
 
   watch(currentExtSystemId, async (newValue, oldValue) => {
     if (newValue !== oldValue && newValue > 0) {
