@@ -83,6 +83,7 @@ const getDetail = async () => {
 const resetAllStores = () => {
   assetDetailStore.hideDetail()
   assetDetailStore.reset()
+  activeTab.value = AssetDetailTab.Default
   assetDetailStore.directDetailLoad = false
   assetListStore.reset()
 }
