@@ -7,8 +7,8 @@ import type {
   IntegerIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
-import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import type { PodcastModeType } from '@/model/coreDam/valueObject/PodcastMode'
+import type { PodcastLastImportStatusType } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
   title: string
@@ -25,8 +25,8 @@ export interface Attributes {
   extUrl: string
   webOrderPosition: number
   mobileOrderPosition: number
-  mode: PodcastMode
-  lastImportStatus: PodcastLastImportStatus
+  mode: PodcastModeType
+  lastImportStatus: PodcastLastImportStatusType
 }
 
 interface Dates {

@@ -7,7 +7,7 @@ import type {
   DocIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import type { PodcastLastImportStatusType } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
   title: string
@@ -30,7 +30,7 @@ interface Attributes {
   extId: string
   extUrl: string
   rssUrl: string
-  lastImportStatus: PodcastLastImportStatus
+  lastImportStatus: PodcastLastImportStatusType
 }
 
 interface Dates {

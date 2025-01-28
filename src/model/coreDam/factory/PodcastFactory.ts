@@ -3,8 +3,8 @@ import type { IntegerIdNullable } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
-import { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import { PodcastModeDefault } from '@/model/coreDam/valueObject/PodcastMode'
+import { PodcastLastImportStatusDefault } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 export function usePodcastFactory() {
   const createDefault = (licenceId: IntegerIdNullable = null): Podcast => {
@@ -18,8 +18,8 @@ export function usePodcastFactory() {
       attributes: {
         rssUrl: '',
         extUrl: '',
-        mode: PodcastMode.Default,
-        lastImportStatus: PodcastLastImportStatus.Default,
+        mode: PodcastModeDefault,
+        lastImportStatus: PodcastLastImportStatusDefault,
         webOrderPosition: 0,
         mobileOrderPosition: 0,
       },

@@ -1,4 +1,4 @@
-import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
+import type { DistributionFailReasonType } from '@/model/coreDam/valueObject/DistributionFailReason'
 import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type {
   DamDistributionServiceName,
@@ -55,7 +55,7 @@ export interface DistributionItem {
   extId: string
   distributionService: DamDistributionServiceName
   status: DamDistributionStatusType
-  failReason: DistributionFailReason
+  failReason: DistributionFailReasonType
   blockedBy: DocId[]
   publishAt: DatetimeUTCNullable
   _resourceName: string

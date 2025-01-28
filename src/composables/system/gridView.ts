@@ -1,16 +1,18 @@
 import { readonly, ref } from 'vue'
 
-export enum GridView {
-  Masonry = 'masonry',
-  Thumbnail = 'thumbnail',
-  Table = 'table',
-  Default = Masonry,
-}
+export const GridView = {
+  Masonry: 'masonry',
+  Thumbnail: 'thumbnail',
+  Table: 'table',
+} as const
 
-const gridView = ref<GridView>(GridView.Default)
+export type GridViewType = (typeof GridView)[keyof typeof GridView]
+export const GridViewDefault = GridView.Masonry
+
+const gridView = ref<GridViewType>(GridViewDefault)
 
 export function useGridView() {
-  const setGridView = (value: GridView) => {
+  const setGridView = (value: GridViewType) => {
     gridView.value = value
   }
 
