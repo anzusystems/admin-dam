@@ -2,7 +2,8 @@
 import {
   ALanguageSelect,
   AThemeSelect,
-  AvailableLanguagesSymbol, type DamCurrentUserDto,
+  AvailableLanguagesSymbol,
+  type DamCurrentUserDto,
   DefaultLanguageSymbol,
   type LanguageCode,
   modifyLanguageSettings,
