@@ -2,12 +2,7 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { useI18n } from 'vue-i18n'
-import {
-  AFormTextField,
-  AFormValueObjectOptionsSelect,
-  ARow,
-  ASystemEntityScope,
-} from '@anzusystems/common-admin'
+import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
 import { useDamAuthorType } from '@anzusystems/common-admin'
