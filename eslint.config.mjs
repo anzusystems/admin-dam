@@ -57,18 +57,6 @@ export default [
       'vue/require-typed-ref': ['error'],
       'vue/no-setup-props-reactivity-loss': ['error'],
       'vue/no-ref-object-reactivity-loss': ['error'],
-      'vue/html-self-closing': [
-        'error',
-        {
-          html: {
-            void: 'never',
-            normal: 'always',
-            component: 'always',
-          },
-          svg: 'always',
-          math: 'always',
-        },
-      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
