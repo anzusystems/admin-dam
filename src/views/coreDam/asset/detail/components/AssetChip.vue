@@ -3,7 +3,6 @@ import { COMMON_CONFIG } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { DocId } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 const props = withDefaults(
   defineProps<{
@@ -13,8 +12,6 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-
-const assetDetailStore = useAssetDetailStore()
 
 const onAssetChipClick = () => {
   router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: props.id } })
