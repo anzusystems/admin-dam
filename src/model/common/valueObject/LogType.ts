@@ -1,14 +1,16 @@
 import { ref } from 'vue'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
 
-export enum LogType {
-  App = 'app',
-  Audit = 'audit',
-  Default = App,
-}
+export const LogType = {
+  App: 'app',
+  Audit: 'audit',
+} as const
+
+export type LogTypeType = (typeof LogType)[keyof typeof LogType]
+export const LogTypeDefault = LogType.App
 
 export function useLogType() {
-  const logTypeOptions = ref<ValueObjectOption<LogType>[]>([
+  const logTypeOptions = ref<ValueObjectOption<LogTypeType>[]>([
     {
       value: LogType.App,
       title: LogType.App,
@@ -19,7 +21,7 @@ export function useLogType() {
     },
   ])
 
-  const getLogTypeOption = (value: LogType) => {
+  const getLogTypeOption = (value: LogTypeType) => {
     return logTypeOptions.value.find((item) => item.value === value)
   }
 

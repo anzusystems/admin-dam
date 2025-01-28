@@ -14,16 +14,18 @@ export interface JobImageCopyItem {
   id: IntegerId
   sourceAssetId: DocIdNullable
   targetAssetId: DocIdNullable
-  status: AssetFileCopyStatus
+  status: AssetFileCopyStatusType
   job: IntegerIdNullable
 }
 
-export enum AssetFileCopyStatus {
-  Exists = 'exists',
-  Copy = 'copy',
-  NotAllowed = 'notAllowed',
-  Unassigned = 'unassigned',
-}
+export const AssetFileCopyStatus = {
+  Exists: 'exists',
+  Copy: 'copy',
+  NotAllowed: 'notAllowed',
+  Unassigned: 'unassigned',
+} as const
+
+export type AssetFileCopyStatusType = (typeof AssetFileCopyStatus)[keyof typeof AssetFileCopyStatus]
 
 export interface JobAuthorCurrentOptimize extends JobBase<JobResource> {
   processAll: boolean

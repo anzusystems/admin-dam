@@ -14,7 +14,7 @@ import { ROUTE } from '@/router/routes'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import type { LogSystem } from '@/model/common/valueObject/LogSystem'
+import type { LogSystemType } from '@/model/common/valueObject/LogSystem'
 
 type DatatableItem = Log
 
@@ -60,7 +60,7 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
 )
 
 const getList = async () => {
-  filter.contextAppSystem.model = props.system as LogSystem
+  filter.contextAppSystem.model = props.system as LogSystemType
   await fetchList(props.system, pagination, filter)
   emit('countChange', calculateCount())
 }
