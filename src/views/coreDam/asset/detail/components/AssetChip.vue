@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { COMMON_CONFIG } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { COMMON_CONFIG, isString } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
-import type { DocId } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +14,9 @@ const props = withDefaults(
 const router = useRouter()
 
 const onAssetChipClick = () => {
-  router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: props.id } })
+  if (isString(props.id)) {
+    router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: props.id } })
+  }
 }
 </script>
 

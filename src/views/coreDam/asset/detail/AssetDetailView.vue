@@ -80,8 +80,18 @@ const getDetail = async () => {
   assetDetailStore.hideLoader()
 }
 
+const resetAllStores = () => {
+  assetDetailStore.hideDetail()
+  assetDetailStore.reset()
+  assetDetailStore.directDetailLoad = false
+  assetListStore.reset()
+}
+
 onMounted(() => {
-  getDetail()
+  resetAllStores()
+  setTimeout(() => {
+    getDetail()
+  }, 100)
 })
 </script>
 
