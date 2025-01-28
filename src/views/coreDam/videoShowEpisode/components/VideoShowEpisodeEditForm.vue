@@ -72,8 +72,7 @@ const { t } = useI18n()
       <VCol
         cols="12"
         md="4"
-      >
-      </VCol>
+      />
     </VRow>
   </ASystemEntityScope>
 </template>

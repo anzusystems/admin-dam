@@ -145,7 +145,9 @@ defineExpose({
           <template v-if="item.attributes.duration">
             {{ prettyDuration(item.attributes.duration) }}
           </template>
-          <template v-else> - </template>
+          <template v-else>
+            -
+          </template>
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">

@@ -99,10 +99,9 @@ const onConfirm = async () => {
         <ARow :title="t('coreDam.authorCleanPhrase.dto.authors')">
           <AuthorRemoteAutocompleteCachedAuthorChip
             v-for="authorId in authorCleanPhraseRes.authors"
-            :key="authorId"
             :id="authorId"
-          >
-          </AuthorRemoteAutocompleteCachedAuthorChip>
+            :key="authorId"
+          />
         </ARow>
       </VCardText>
       <VCardActions>

@@ -40,14 +40,14 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :src="logoFull"
                 alt="ADAM"
                 class="hidden-xs"
-              />
+              >
               <img
                 width="42"
                 height="42"
                 :src="logoNoText"
                 alt="ADAM"
                 class="hidden-sm-and-up"
-              />
+              >
             </RouterLink>
           </div>
           <slot name="main-bar-left" />

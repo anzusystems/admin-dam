@@ -141,7 +141,7 @@ const { t } = useI18n()
           <span v-if="uploadQueueTotalCount > 0">{{
             t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
           }}</span>
-          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
           {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </VCardText>

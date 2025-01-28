@@ -240,8 +240,8 @@ onMounted(async () => {
           <VRow>
             <VCol>
               <ABtnAdvanced
-                class="mt-2 mb-4"
                 v-model="showAdvanced"
+                class="mt-2 mb-4"
               />
             </VCol>
           </VRow>
@@ -251,10 +251,10 @@ onMounted(async () => {
                 <div class="text-caption">
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
-                  }})<br />
+                  }})<br>
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
                     licenceName
-                  }})<br />
+                  }})<br>
                 </div>
               </VCol>
             </VRow>

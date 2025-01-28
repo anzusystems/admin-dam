@@ -1,5 +1,5 @@
 import stylistic from '@stylistic/eslint-plugin'
-import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+// import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 import vueTsEslintConfig from '@vue/eslint-config-typescript'
 import pluginVue from 'eslint-plugin-vue'
 
@@ -13,6 +13,8 @@ export default [
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', '**/cypress/**'],
   },
   ...pluginVue.configs['flat/essential'],
+  ...pluginVue.configs['flat/strongly-recommended'],
+  ...pluginVue.configs['flat/recommended'],
   ...vueTsEslintConfig(),
   {
     plugins: {
@@ -55,6 +57,18 @@ export default [
       'vue/require-typed-ref': ['error'],
       'vue/no-setup-props-reactivity-loss': ['error'],
       'vue/no-ref-object-reactivity-loss': ['error'],
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            void: 'never',
+            normal: 'always',
+            component: 'always',
+          },
+          svg: 'always',
+          math: 'always',
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -65,5 +79,5 @@ export default [
       '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
-  skipFormatting,
+  // skipFormatting,
 ]

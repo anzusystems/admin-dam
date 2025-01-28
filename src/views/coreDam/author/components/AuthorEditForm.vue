@@ -60,7 +60,7 @@ const { authorTypeOptions } = useDamAuthorType()
         <ARow>
           <AuthorRemoteAutocomplete
             v-model="author.currentAuthors"
-            canBeCurrentAuthor
+            can-be-current-author
             :label="t('coreDam.author.model.currentAuthors')"
             data-cy="authorCleanPhrase-authorReplacement"
             multiple
@@ -70,12 +70,11 @@ const { authorTypeOptions } = useDamAuthorType()
         </ARow>
         <ARow :title="t('coreDam.author.model.childAuthors')">
           <AuthorRemoteAutocompleteCachedAuthorChip
-            class="pr-2"
             v-for="authorId in author.childAuthors"
-            :key="authorId"
             :id="authorId"
-          >
-          </AuthorRemoteAutocompleteCachedAuthorChip>
+            :key="authorId"
+            class="pr-2"
+          />
         </ARow>
       </VCol>
     </VRow>

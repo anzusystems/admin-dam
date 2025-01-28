@@ -31,18 +31,18 @@ const { getAuthorTypeOption } = useDamAuthorType()
       </ARow>
       <ARow :title="t('coreDam.author.model.currentAuthors')">
         <AuthorRemoteAutocompleteCachedAuthorChip
-          class="pr-2"
           v-for="authorId in author.currentAuthors"
-          :key="authorId"
           :id="authorId"
+          :key="authorId"
+          class="pr-2"
         />
       </ARow>
       <ARow :title="t('coreDam.author.model.childAuthors')">
         <AuthorRemoteAutocompleteCachedAuthorChip
-          class="pr-2"
           v-for="authorId in author.childAuthors"
-          :key="authorId"
           :id="authorId"
+          :key="authorId"
+          class="pr-2"
         />
       </ARow>
     </VCol>

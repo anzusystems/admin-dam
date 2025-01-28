@@ -68,11 +68,13 @@ const pickAssetType = computed(() => {
             icon="mdi-trash-can-outline"
             variant="text"
             size="small"
-            @click.stop="removeItem"
             :loading="siblingLoader"
+            @click.stop="removeItem"
           />
         </div>
-        <div v-else>-</div>
+        <div v-else>
+          -
+        </div>
       </VCol>
       <VCol
         cols="3"
@@ -83,7 +85,7 @@ const pickAssetType = computed(() => {
           :select-licences="[currentAssetLicenceId]"
           :min-count="1"
           :max-count="1"
-          returnType="assetId"
+          return-type="assetId"
           :asset-type="pickAssetType"
           @on-confirm="selectAsset"
         >

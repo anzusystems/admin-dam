@@ -17,12 +17,12 @@ const { theme } = useTheme()
         v-if="theme === Theme.Dark"
         alt="YouTube"
         :src="logoDark"
-      />
+      >
       <img
         v-else
         alt="YouTube"
         :src="logoLight"
-      />
+      >
     </a>
   </div>
 </template>

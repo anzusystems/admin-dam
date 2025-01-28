@@ -46,7 +46,7 @@ const { t } = useI18n()
     >
       {{ t('coreDam.asset.detail.info.status.failed') }}
       <div v-if="assetMainFileFailReason">
-        <br />
+        <br>
         <AssetFileFailReasonChip :reason="assetMainFileFailReason" />
       </div>
     </VAlert>

@@ -91,7 +91,9 @@ const breadcrumbs = computed(() => {
                   {{ breadcrumb.title }}
                 </div>
               </VBreadcrumbsItem>
-              <VBreadcrumbsDivider v-if="index < breadcrumbs.length - 1"> &raquo; </VBreadcrumbsDivider>
+              <VBreadcrumbsDivider v-if="index < breadcrumbs.length - 1">
+                &raquo;
+              </VBreadcrumbsDivider>
             </template>
           </VBreadcrumbs>
         </div>
