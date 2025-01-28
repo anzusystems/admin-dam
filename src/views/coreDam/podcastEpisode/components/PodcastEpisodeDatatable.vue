@@ -66,8 +66,8 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
 )
 
 const customSort: DatatableOrderingOptions = [
-  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'position', order: 'desc' } },
-  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'position', order: 'asc' } },
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: 'desc' } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: 'asc' } },
   {
     id: 3,
     titleT: 'system.datatable.ordering.webOrderPosition',
