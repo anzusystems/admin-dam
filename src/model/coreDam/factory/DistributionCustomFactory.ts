@@ -1,6 +1,6 @@
 import type {
   DistributionCustomCreateRedistributeDto,
-  CustomDistributionUpdateDto, JwDistributionUpdateDto
+  CustomDistributionUpdateDto, JwDistributionUpdateDto, DistributionItem
 } from '@/types/coreDam/Distribution'
 import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 import { DistributionItemResourceName } from '@/types/coreDam/Distribution'
@@ -16,14 +16,14 @@ export function useDistributionCustomFactory() {
     }
   }
 
-  const createCustomUpdateDtoFromItemDto = (item: DistributionCustomCreateRedistributeDto): CustomDistributionUpdateDto => {
+  const createCustomUpdateDtoFromItemDto = (item: DistributionItem): CustomDistributionUpdateDto => {
     return {
       id: item.id,
       asset: item.assetId,
       assetFile: item.assetFileId,
       extId: item.extId,
       distributionService: item.distributionService,
-      status: DamDistributionStatus.Distributed,
+      status: item.status,
       _resourceName: DistributionItemResourceName.Custom
     }
   }

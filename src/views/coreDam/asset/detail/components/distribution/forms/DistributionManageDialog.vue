@@ -45,7 +45,7 @@ const emit = defineEmits<{
 const distribution = defineModel<DistributionUpdateDto>({ required: true })
 const distributionManageDialog = defineModel<boolean>('distributionManageDialog', { required: true })
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 
 const saveButtonLoading = ref(false)
 
@@ -73,44 +73,6 @@ const onConfirm = async () => {
     showRecordWas(props.isEdit ? 'updated' : 'created')
     emit('onDistributionUpsert')
   } catch (error) {
-
-    console.error(error)
-    console.error(error instanceof AnzuApiValidationError)
-    console.error(error.fields)
-
-    const errors = error.fields as AnzuApiValidationError[]
-    const fieldIsTranslated = true
-    const texts = [t('common.alert.fixApiValidationErrors')]
-
-    for (let i = 0; i < errors.length; i++) {
-      let fieldText = ''
-      if (fieldIsTranslated) {
-        fieldText += errors[i].field
-      } else if (te(errors[i].field)) {
-        fieldText += t(errors[i].field)
-      }
-
-      console.log(fieldText)
-
-      const errorsTexts = new Set<string>()
-      for (let j = 0; j < errors[i].errors.length; j++) {
-        console.log(errors[i].errors[j])
-        if (te('error.apiValidation.' + errors[i].errors[j])) {
-          errorsTexts.add(t('error.apiValidation.' + errors[i].errors[j]))
-          continue
-        }
-
-        errorsTexts.add(t('error.apiValidation.noTranslation'))
-      }
-      if (fieldText.length > 0) {
-        texts.push(fieldText + ': ' + Array.from(errorsTexts).join(', '))
-      }
-
-      console.log(errorsTexts)
-    }
-
-    console.log(texts)
-
     showErrorsDefault(error)
   } finally {
     saveButtonLoading.value = false

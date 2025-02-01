@@ -3,7 +3,7 @@
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ASortable, type DamAssetTypeType, type SortableItem } from '@anzusystems/common-admin'
+import { ASortable, type DamAssetTypeType, isString, type SortableItem } from '@anzusystems/common-admin'
 import {
   type DistributionItem, DistributionItemResourceName, type DistributionItemResourceNameType,
 } from '@/types/coreDam/Distribution.ts'
@@ -17,6 +17,7 @@ import {
   distributionItemIsJwItem, distributionItemIsYoutubeItem, distributionItemIsCustomItem,
 } from '@/types/coreDam/Distribution.ts'
 import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory.ts'
+import { deleteDistribution } from '@/services/api/coreDam/distributionApi.ts'
 
 const props = withDefaults(
   defineProps<{
@@ -61,9 +62,22 @@ const onAddExternalLink = (beforeSortableItem: PublicExportPlacedContentItem | n
   distributionDialogEdit.value = false
   distributionManageDialog.value = true
 }
-const onDeleteExternalLink = (item: SortableItem) => {
-  console.log('delete')
-  //desk.value.externalLinks.splice(item.index, 1)
+const onDeleteExternalLink = async (item: SortableItem) => {
+  console.log('delete', item)
+  const distributionId = distributionListStore.list[item.index]?.id ?? null
+  if (!isString(distributionId))
+    return
+
+  distributionListStore.showLoader()
+  try {
+    await deleteDistribution(distributionId)
+
+    emit('onDistributionDelete')
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    distributionListStore.hideLoader()
+  }
 }
 
 
@@ -92,12 +106,23 @@ const onDistributionUpsert = () => {
 
 const emit = defineEmits<{
   (e: 'onDistributionUpsert'): void
+  (e: 'onDistributionDelete'): void
 }>()
 
 </script>
 
 <template>
+  <div
+    v-if="distributionListStore.loader"
+    class="d-flex w-100 h-100 justify-center align-center pa-2"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
+  </div>
     <ASortable
+      v-else
       v-model="distributionListStore.list"
       show-add-last-button
       show-delete-button
@@ -111,9 +136,6 @@ const emit = defineEmits<{
         <DistributionItemView v-model="item.raw" :asset-type="assetType"/>
       </template>
     </ASortable>
-
-    {{ distributionManageDialog }}
-    {{ distributionDialogEdit }}
     <DistributionManageDialog
       v-model="distributionContent"
       :distribution-manage-dialog="distributionManageDialog"

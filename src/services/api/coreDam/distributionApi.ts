@@ -1,14 +1,15 @@
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiAnyRequest, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import type { DocId, FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
+import { apiAnyRequest, apiDeleteOne, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
   DistributionAuthorized,
-  DistributionCustomItem,
+  DistributionCustomItem, DistributionItem,
   DistributionJwItem, DistributionUpdateDto,
   DistributionYoutubeItem,
 } from '@/types/coreDam/Distribution'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase.ts'
 
 const END_POINT = '/adm/v1/distribution'
 export const ENTITY = 'distribution'
@@ -76,3 +77,6 @@ export const upsertAssetDistributions = <T = DistributionUpdateDto>(
     SYSTEM_CORE_DAM,
     ENTITY
   )
+
+export const deleteDistribution = (id: DocId) =>
+  apiDeleteOne<DistributionItem>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)

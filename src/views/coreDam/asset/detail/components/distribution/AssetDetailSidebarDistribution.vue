@@ -121,6 +121,7 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
       :asset-type="assetType"
       :is-active="isActive"
       @on-distribution-upsert="reloadList"
+      @on-distribution-delete="reloadList"
     />
     <DistributionNewDialog
       :key="dialogKey"

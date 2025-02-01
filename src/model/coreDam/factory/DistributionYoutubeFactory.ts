@@ -36,7 +36,7 @@ export function useDistributionYoutubeFactory() {
       assetFile: item.assetFileId,
       extId: item.extId,
       distributionService: item.distributionService,
-      status: DamDistributionStatus.Distributed,
+      status: item.status,
       _resourceName: DistributionItemResourceName.Youtube
     }
   }
