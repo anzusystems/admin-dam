@@ -1,11 +1,11 @@
 import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import { apiAnyRequest, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
   DistributionAuthorized,
   DistributionCustomItem,
-  DistributionJwItem,
+  DistributionJwItem, DistributionUpdateDto,
   DistributionYoutubeItem,
 } from '@/types/coreDam/Distribution'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
@@ -59,6 +59,20 @@ export const distributionIsAuthorized = (distributionServiceName: DamDistributio
     damClient,
     END_POINT + '/:distributionServiceName/authorized',
     { distributionServiceName },
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )
+
+export const upsertAssetDistributions = <T = DistributionUpdateDto>(
+  assetId: DocId,
+  data: T
+) =>
+  apiAnyRequest<Array<T>, Array<T>>(
+    damClient,
+    'PATCH',
+    END_POINT + '/asset/:assetId',
+    { assetId },
+    data,
     SYSTEM_CORE_DAM,
     ENTITY
   )

@@ -1,5 +1,10 @@
 import { fetchDistribution } from '@/services/api/coreDam/distributionApi'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
+import type {
+  DistributionCustomItem,
+  DistributionJwItem,
+  DistributionYoutubeItem, JwDistributionUpdateDto,
+  YoutubeDistributionUpdateDto
+} from '@/types/coreDam/Distribution'
 import {
   type DistributionAuth,
   DistributionAuthStatus,
@@ -11,6 +16,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 
 interface State {
   list: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>
+  listUpdateDto: Array<YoutubeDistributionUpdateDto | JwDistributionUpdateDto>
   loader: boolean
   auth: Array<DistributionAuth>
 }
@@ -18,6 +24,7 @@ interface State {
 export const useDistributionListStore = defineStore('damDistributionListStore', {
   state: (): State => ({
     list: [],
+    listUpdateDto: [],
     loader: false,
     auth: [],
   }),
@@ -39,6 +46,9 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     },
     setList(items: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>) {
       this.list = items
+    },
+    setUpdateList(items: Array<YoutubeDistributionUpdateDto | JwDistributionUpdateDto>) {
+      this.listUpdateDto = items
     },
     authorizationMessage(distributionService: DamDistributionServiceName, success: boolean) {
       const found = this.getDistributionAuth(distributionService)
@@ -101,6 +111,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     reset() {
       this.list = []
       this.loader = false
+      this.listUpdateDto = false
       this.auth = []
     },
   },
