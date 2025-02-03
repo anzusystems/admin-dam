@@ -3,6 +3,7 @@ import {
   AFormValueObjectOptionsSelect,
   AFormTextField,
   ARow,
+  ADialogToolbar,
   useAlerts, type DocId
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
@@ -104,10 +105,10 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
     :width="900"
   >
     <VCard v-if="distributionManageDialog">
-      <!--      <ADialogToolbar @on-cancel="pageContentManageDialog = false">-->
-      <!--        <span v-if="pageContent.id">{{ t('cms.pageContent.meta.edit') }}</span>-->
-      <!--        <span v-else>{{ t('cms.pageContent.meta.create') }}</span>-->
-      <!--      </ADialogToolbar>-->
+      <ADialogToolbar @on-cancel="onCancel">
+        <span v-if="isEdit">{{ t('coreDam.distribution.meta.edit') }}</span>
+        <span v-else>{{ t('coreDam.distribution.meta.create') }}</span>
+      </ADialogToolbar>
       <VCardText class="pb-6">
         <AFormValueObjectOptionsSelect
           v-if="!isEdit"

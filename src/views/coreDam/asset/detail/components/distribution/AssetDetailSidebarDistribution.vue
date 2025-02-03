@@ -112,8 +112,8 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
       class="mb-5 pl-0 pr-0 mt-5 mb-5"
       @click.stop="toggleAdvancedSettings"
     >
-      <span v-if="showAdvancedSettings">{{ t('Skryť pokročilú správu distribúcií') }}</span>
-      <span v-else>{{ t('Zobraziť pokročilú správu distribúcií') }}</span>
+      <span v-if="showAdvancedSettings">{{ t('coreDam.distribution.meta.hideAdvanced') }}</span>
+      <span v-else>{{ t('coreDam.distribution.meta.showAdvanced') }}</span>
     </ABtnTertiary>
 
     <DistributionManage

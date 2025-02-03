@@ -145,6 +145,7 @@ const onDistributionUpsert = () => {
     show-delete-button
     disable-dragable
     show-edit-button
+    add-last-button-t="coreDam.distribution.meta.create"
     @on-edit="onEdit"
     @on-add-last="onAddDistributionItem"
     @on-delete="onDeleteDistributionItem"

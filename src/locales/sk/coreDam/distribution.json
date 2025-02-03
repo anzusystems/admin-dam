@@ -16,6 +16,12 @@
     "remoteProcessFailed": "Vzdialené spracovávanie zlyhalo",
     "validationFailed": "Chyba pri validácii"
   },
+  "meta": {
+    "edit": "Upraviť distribúciu",
+    "create": "Vytvoriť distribúciu",
+    "showAdvanced": "Zobraziť pokročilú správu distribúcií",
+    "hideAdvanced": "Skryť pokročilú správu distribúcií"
+  },
   "common": {
     "select": "Kategória distribúcie",
     "list": "Zoznam distribúcií",
