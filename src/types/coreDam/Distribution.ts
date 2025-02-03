@@ -93,6 +93,7 @@ export interface DistributionYoutubeCreateRedistributeDto {
 
 export interface DistributionJwItem extends DistributionItem {
   texts: TextsJw
+  directSourceUrl: ''
 }
 
 export interface DistributionYoutubeItem extends DistributionItem {
@@ -124,4 +125,53 @@ export const isDistributionCustomItem = (
   value: DistributionCustomItem | DistributionYoutubeItem | DistributionJwItem
 ): value is DistributionCustomItem => {
   return isDefined((value as DistributionCustomItem).distributionData)
+}
+
+export interface DistributionUpdateDto {
+  id: string,
+  asset: DocId
+  assetFile: DocId
+  extId: string
+  status: DamDistributionStatusType
+  distributionService: DamDistributionServiceName
+  _resourceName: DistributionItemResourceNameType
+}
+
+export interface YoutubeDistributionUpdateDto extends DistributionUpdateDto {
+}
+
+export interface JwDistributionUpdateDto extends DistributionUpdateDto {
+  directSourceUrl: string
+}
+
+export interface CustomDistributionUpdateDto extends DistributionUpdateDto {
+}
+
+export const DistributionItemResourceName = {
+  Jw: 'jwDistribution',
+  Youtube: 'youtubeDistribution',
+  Custom: 'distribution',
+} as const
+
+export type DistributionItemResourceNameType =
+  (typeof DistributionItemResourceName)[keyof typeof DistributionItemResourceName]
+
+export type DistributionItemTypeMap = {
+  [DistributionItemResourceName.Jw]: DistributionJwItem,
+  [DistributionItemResourceName.Youtube]: DistributionYoutubeItem,
+  [DistributionItemResourceName.Custom]: DistributionCustomItem,
+}
+
+export type DistributionItemTypes = DistributionItemTypeMap[keyof DistributionItemTypeMap]
+
+export const distributionItemIsJwItem = (value: DistributionItem): value is DistributionJwItem => {
+  return value._resourceName === DistributionItemResourceName.Jw
+}
+
+export const distributionItemIsYoutubeItem = (value: DistributionItem): value is DistributionYoutubeItem => {
+  return value._resourceName === DistributionItemResourceName.Youtube
+}
+
+export const distributionItemIsCustomItem = (value: DistributionItem): value is DistributionCustomItem => {
+  return value._resourceName === DistributionItemResourceName.Custom
 }

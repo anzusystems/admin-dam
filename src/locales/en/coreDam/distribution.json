@@ -16,6 +16,12 @@
     "remoteProcessFailed": "Remote process failed",
     "validationFailed": "Validation failed"
   },
+  "meta": {
+    "edit": "Edit distribution",
+    "create": "Create distribution",
+    "showAdvanced": "Create distribution",
+    "hideAdvanced": "Create distribution"
+  },
   "common": {
     "select": "Distribution category",
     "list": "List of distributions",
