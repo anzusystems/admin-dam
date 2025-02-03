@@ -1,4 +1,9 @@
-import type { DistributionYoutubeCreateRedistributeDto } from '@/types/coreDam/Distribution'
+import  {
+  type DistributionYoutubeCreateRedistributeDto,
+  DistributionItemResourceName,
+  type YoutubeDistributionUpdateDto,
+  type DistributionYoutubeItem
+} from '@/types/coreDam/Distribution'
 import { DistributionYoutubePrivacyDefault } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 
