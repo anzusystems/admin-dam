@@ -112,7 +112,7 @@ export interface DistributionUpdateDto {
   extId: string
   status: DamDistributionStatusType
   distributionService: DamDistributionServiceName
-  _resourceName: string
+  _resourceName: DistributionItemResourceNameType
 }
 
 export interface YoutubeDistributionUpdateDto extends DistributionUpdateDto {

@@ -2,6 +2,7 @@
 import type {
   CustomDistributionUpdateDto,
 } from '@/types/coreDam/Distribution.ts'
+import type { ValidationScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

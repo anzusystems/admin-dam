@@ -3,9 +3,9 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   useDamConfigStore,
+  type ValidationScope,
 } from '@anzusystems/common-admin'
 import {
-  type DistributionItem,
   DistributionItemResourceName,
   type YoutubeDistributionUpdateDto
 } from '@/types/coreDam/Distribution.ts'

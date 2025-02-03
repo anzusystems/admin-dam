@@ -2,19 +2,14 @@
 import {
   AFormTextField, AFormValueObjectOptionsSelect,
   ARow,
-  ASystemEntityScope, useDamConfigStore,
+  type ValidationScope, useDamConfigStore,
 } from '@anzusystems/common-admin'
-import { SYSTEM_DAM } from '@/model/systems.ts'
 import {
-  type DistributionItem,
   DistributionItemResourceName,
-  type DistributionJwItem
+  type DistributionJwItem, type JwDistributionUpdateDto
 } from '@/types/coreDam/Distribution.ts'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot.ts'
-import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus.ts'
 import {
   useJwDistributionUpdateDtoValidations
 } from '@/views/coreDam/asset/detail/composables/distributionValidations.ts'
@@ -43,7 +38,7 @@ const distributionServices = computed(() => {
   })
 })
 
-const distribution = defineModel<DistributionJwItem>({ required: true })
+const distribution = defineModel<JwDistributionUpdateDto>({ required: true })
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useJwDistributionUpdateDtoValidations(distribution, props.validationScope)

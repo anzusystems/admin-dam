@@ -119,6 +119,7 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
     <DistributionManage
       v-if="showAdvancedSettings"
       :asset-type="assetType"
+      :asset-id="assetId"
       :is-active="isActive"
       @on-distribution-upsert="reloadList"
       @on-distribution-delete="reloadList"

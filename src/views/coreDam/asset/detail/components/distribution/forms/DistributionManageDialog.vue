@@ -86,7 +86,7 @@ const allowedDistributionResourceNames = [
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
-  distribution.value.assetFileId = slot.assetFile.id
+  distribution.value.assetFile = slot.assetFile.id
 }
 
 const onBlur = () => {

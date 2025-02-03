@@ -68,10 +68,10 @@ export const upsertAssetDistributions = <T = DistributionUpdateDto>(
   assetId: DocId,
   data: T
 ) =>
-  apiAnyRequest<Array<T>, Array<T>>(
+  apiAnyRequest<T, T>(
     damClient,
     'PATCH',
-    END_POINT + '/asset/:assetId',
+    END_POINT,
     { assetId },
     data,
     SYSTEM_CORE_DAM,

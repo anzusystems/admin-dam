@@ -1,11 +1,21 @@
 <script lang="ts" setup>
 
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ASortable, type DamAssetTypeType, isString, type SortableItem } from '@anzusystems/common-admin'
 import {
-  type DistributionItem, DistributionItemResourceName, type DistributionItemResourceNameType,
+  ASortable,
+  type DamAssetTypeType,
+  type DocId, isNull,
+  isString,
+  type SortableItem,
+  useAlerts
+} from '@anzusystems/common-admin'
+import {
+  type DistributionItem,
+  DistributionItemResourceName,
+  type DistributionItemResourceNameType,
+  type DistributionUpdateDto,
 } from '@/types/coreDam/Distribution.ts'
 import DistributionManageDialog
   from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionManageDialog.vue'
@@ -23,6 +33,7 @@ const props = withDefaults(
   defineProps<{
     isActive: boolean,
     assetType: DamAssetTypeType
+    assetId: DocId
   }>(),
   {
   }
@@ -33,9 +44,11 @@ const { t } = useI18n()
 const assetDetailStore = useAssetDetailStore()
 const distributionListStore = useDistributionListStore()
 
-const distributionContent = ref<DistributionItem | null>()
+const distributionContent = ref<DistributionUpdateDto | null>()
 const distributionManageDialog = ref(false)
 const distributionDialogEdit = ref(false)
+
+const assetFileId = computed(() => assetDetailStore.asset?.mainFile?.id)
 
 const closeDialog = () => {
   distributionContent.value = null
@@ -57,22 +70,27 @@ const createUpdateDto = (item: DistributionItem) => {
     throw Error('Unknown distribution item type')
 }
 
-const onAddExternalLink = (beforeSortableItem: PublicExportPlacedContentItem | null) => {
-  distributionContent.value = createDefaultUpdateDto(assetDetailStore.asset.id, assetDetailStore.asset.mainFile.id)
+const onAddExternalLink = (beforeSortableItem: DistributionItem | null) => {
+  if (!isString(assetFileId.value)) {
+    throw new Error('Asset file id is null')
+  }
+  distributionContent.value = createDefaultUpdateDto(props.assetId, assetFileId.value)
   distributionDialogEdit.value = false
   distributionManageDialog.value = true
 }
-const onDeleteExternalLink = async (item: SortableItem) => {
-  console.log('delete', item)
-  const distributionId = distributionListStore.list[item.index]?.id ?? null
+
+const { showRecordWas, showErrorsDefault } = useAlerts()
+
+const onDeleteExternalLink = async (index: number) => {
+  const distributionId = distributionListStore.list[index]?.id ?? null
   if (!isString(distributionId))
     return
 
   distributionListStore.showLoader()
   try {
     await deleteDistribution(distributionId)
-
     emit('onDistributionDelete')
+    showRecordWas('deleted')
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -88,14 +106,17 @@ const onEdit = (data: SortableItem<DistributionItem>) => {
 }
 
 const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
+  if (!isString(assetFileId.value)) {
+    throw new Error('Asset file id is null')
+  }
   if (value === DistributionItemResourceName.Jw) {
-    distributionContent.value =  createDefaultUpdateDto(assetDetailStore.asset.id, assetDetailStore.asset.mainFile.id)
+    distributionContent.value =  createDefaultUpdateDto(props.assetId, assetFileId.value)
   }
   if (value === DistributionItemResourceName.Youtube) {
-    distributionContent.value =  createDefaultYoutubeUpdateDto(assetDetailStore.asset.id, assetDetailStore.asset.mainFile.id)
+    distributionContent.value =  createDefaultYoutubeUpdateDto(props.assetId, assetFileId.value)
   }
   if (value === DistributionItemResourceName.Custom) {
-    distributionContent.value =  createDefaultCustomUpdateDto(assetDetailStore.asset.id, assetDetailStore.asset.mainFile.id)
+    distributionContent.value =  createDefaultCustomUpdateDto(props.assetId, assetFileId.value)
   }
 }
 
@@ -133,13 +154,14 @@ const emit = defineEmits<{
       @on-delete="onDeleteExternalLink"
     >
       <template #item="{ item }: { item: SortableItem<DistributionItem> }">
-        <DistributionItemView v-model="item.raw" :asset-type="assetType"/>
+        <DistributionItemView v-model="item.raw as DistributionItem" :asset-type="assetType"/>
       </template>
     </ASortable>
     <DistributionManageDialog
+      v-if="distributionContent"
       v-model="distributionContent"
       :distribution-manage-dialog="distributionManageDialog"
-      :asset-id="assetDetailStore.asset.id"
+      :asset-id="assetId"
       :is-edit="distributionDialogEdit"
       @on-distribution-upsert="onDistributionUpsert"
       @on-cancel="closeDialog"

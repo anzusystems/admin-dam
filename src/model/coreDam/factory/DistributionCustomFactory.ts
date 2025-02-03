@@ -28,7 +28,7 @@ export function useDistributionCustomFactory() {
     }
   }
 
-  const createDefaultCustomUpdateDto = (assetId: DocId, assetFileId: DocId): JwDistributionUpdateDto => {
+  const createDefaultCustomUpdateDto = (assetId: DocId, assetFileId: DocId): CustomDistributionUpdateDto => {
     return {
       id: '',
       asset: assetId,

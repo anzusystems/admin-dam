@@ -41,7 +41,7 @@ export function useDistributionYoutubeFactory() {
     }
   }
 
-  const createDefaultYoutubeUpdateDto = (assetId: DocId, assetFileId: DocId): JwDistributionUpdateDto => {
+  const createDefaultYoutubeUpdateDto = (assetId: DocId, assetFileId: DocId): YoutubeDistributionUpdateDto => {
     return {
       id: '',
       asset: assetId,

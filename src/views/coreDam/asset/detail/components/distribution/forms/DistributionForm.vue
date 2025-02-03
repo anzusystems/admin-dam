@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ACard, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { ACard, type ValidationScope } from '@anzusystems/common-admin'
 import {
-  type DistributionItem,
   DistributionItemResourceName,
-  type DistributionItemResourceNameType
+  type DistributionItemResourceNameType, type DistributionUpdateDto
 } from '@/types/coreDam/Distribution.ts'
 import { computed, ref } from 'vue'
 import JwDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/JwDistributionForm.vue'
@@ -23,7 +22,7 @@ withDefaults(
   }
 )
 
-const distribution = defineModel<DistributionItem>({ required: true })
+const distribution = defineModel<DistributionUpdateDto>({ required: true })
 
 const DistributionItemFormComponent = (resourceName: DistributionItemResourceNameType) => {
   switch (resourceName) {
