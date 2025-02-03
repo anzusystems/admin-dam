@@ -4,8 +4,7 @@ import AssetLicenceGroupDatatable from '@/views/coreDam/assetLicenceGroup/compon
 import { ref } from 'vue'
 import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-import AssetLicenceGroupCreateButton
-  from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
+import AssetLicenceGroupCreateButton from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
 
 import { ACL } from '@/composables/auth/auth'
 

@@ -7,16 +7,19 @@ const HEIGHT_COMPACT = 160
 const HEIGHT_FULL = 0
 const HEIGHT_HIDDEN = 0
 
-export enum FooterViewSelected {
-  Hidden = 'hidden',
-  Minimal = 'minimal',
-  Compact = 'compact',
-  Full = 'full',
-}
+export const FooterViewSelected = {
+  Hidden: 'hidden',
+  Minimal: 'minimal',
+  Compact: 'compact',
+  Full: 'full',
+} as const
+
+export type FooterViewSelectedType = (typeof FooterViewSelected)[keyof typeof FooterViewSelected]
+export const FooterViewSelectedDefault = FooterViewSelected.Hidden
 
 const { customFooterHeight, customDialog } = useMainWrapper()
 
-const getFooterViewSelectedHeight = (value: FooterViewSelected) => {
+const getFooterViewSelectedHeight = (value: FooterViewSelectedType) => {
   switch (value) {
     case FooterViewSelected.Compact:
       return HEIGHT_COMPACT
@@ -29,12 +32,12 @@ const getFooterViewSelectedHeight = (value: FooterViewSelected) => {
   }
 }
 
-const footerViewSelected = ref<FooterViewSelected>(FooterViewSelected.Hidden)
+const footerViewSelected = ref<FooterViewSelectedType>(FooterViewSelectedDefault)
 
 export function useAssetFooterSelectedView() {
   const assetListStore = useAssetListStore()
 
-  const setFooterViewSelected = (value: FooterViewSelected) => {
+  const setFooterViewSelected = (value: FooterViewSelectedType) => {
     footerViewSelected.value = value
     customFooterHeight.value = getFooterViewSelectedHeight(footerViewSelected.value)
   }

@@ -2,16 +2,18 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
 
-export enum PodcastMode {
-  Import = 'import',
-  NotImport = 'not_import',
-  Default = Import,
-}
+export const PodcastMode = {
+  Import: 'import',
+  NotImport: 'not_import',
+} as const
+
+export type PodcastModeType = (typeof PodcastMode)[keyof typeof PodcastMode]
+export const PodcastModeDefault = PodcastMode.Import
 
 export function usePodcastMode() {
   const { t } = useI18n()
 
-  const podcastModeOptions = ref<ValueObjectOption<PodcastMode>[]>([
+  const podcastModeOptions = ref<ValueObjectOption<PodcastModeType>[]>([
     {
       value: PodcastMode.Import,
       title: t('coreDam.podcast.podcastMode.import'),
@@ -22,7 +24,7 @@ export function usePodcastMode() {
     },
   ])
 
-  const getPodcastModeOption = (value: PodcastMode) => {
+  const getPodcastModeOption = (value: PodcastModeType) => {
     return podcastModeOptions.value.find((item) => item.value === value)
   }
 

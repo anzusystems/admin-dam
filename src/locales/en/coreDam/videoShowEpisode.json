@@ -6,11 +6,24 @@
     "position": "Position",
     "texts": {
       "title": "Title"
+    },
+    "attributes": {
+      "webOrderPosition": "Web order position",
+      "mobileOrderPosition": "Mobile order position"
+    },
+    "flags": {
+      "webPublicExportEnabled": "Web export enabled",
+      "mobilePublicExportEnabled": "Mobile export enabled"
+    },
+    "dates": {
+      "publicationDate": "Publication date"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Title"
+    "title": "Title",
+    "webPublicExportEnabled": "Web export enabled",
+    "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "button": {
     "create": "Add Episode",

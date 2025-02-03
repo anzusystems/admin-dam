@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
-import {
-  AFilterInteger,
-  AFilterString,
-  AFilterWrapper,
-} from '@anzusystems/common-admin'
+import { AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import PermissionGroupRemoteSelect from '@/views/common/permissionGroup/components/PermissionGroupRemoteSelect.vue'
 

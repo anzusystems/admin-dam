@@ -94,6 +94,11 @@ const routes = {
       EDIT: 'authorCleanPhrase_edit',
       LIST: 'authorCleanPhrase_list',
     },
+    PUBLIC_EXPORT: {
+      DETAIL: 'publicExport_detail',
+      EDIT: 'publicExport_edit',
+      LIST: 'publicExport_list',
+    },
   },
   SYSTEM: {
     HOMEPAGE: 'homepage',

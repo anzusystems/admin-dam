@@ -2,18 +2,21 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
 
-export enum DistributionYoutubePrivacy {
-  Private = 'private',
-  Public = 'public',
-  Unlisted = 'unlisted',
-  Dynamic = 'dynamic',
-  Default = Private,
-}
+export const DistributionYoutubePrivacy = {
+  Private: 'private',
+  Public: 'public',
+  Unlisted: 'unlisted',
+  Dynamic: 'dynamic',
+} as const
+
+export type DistributionYoutubePrivacyType =
+  (typeof DistributionYoutubePrivacy)[keyof typeof DistributionYoutubePrivacy]
+export const DistributionYoutubePrivacyDefault = DistributionYoutubePrivacy.Private
 
 export function useDistributionYoutubePrivacy() {
   const { t } = useI18n()
 
-  const distributionYoutubePrivacyOptions = ref<ValueObjectOption<DistributionYoutubePrivacy>[]>([
+  const distributionYoutubePrivacyOptions = ref<ValueObjectOption<DistributionYoutubePrivacyType>[]>([
     {
       value: DistributionYoutubePrivacy.Private,
       title: t('coreDam.youtubeDistribution.privacy.private'),
@@ -32,7 +35,7 @@ export function useDistributionYoutubePrivacy() {
     },
   ])
 
-  const getDistributionYoutubePrivacyOption = (value: DistributionYoutubePrivacy) => {
+  const getDistributionYoutubePrivacyOption = (value: DistributionYoutubePrivacyType) => {
     return distributionYoutubePrivacyOptions.value.find((item) => item.value === value)
   }
 

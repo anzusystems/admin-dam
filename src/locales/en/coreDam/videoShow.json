@@ -4,11 +4,21 @@
     "licence": "Licence",
     "texts": {
       "title": "Title"
+    },
+    "attributes": {
+      "webOrderPosition": "Web order position",
+      "mobileOrderPosition": "Mobile order position"
+    },
+    "flags": {
+      "webPublicExportEnabled": "Web export enabled",
+      "mobilePublicExportEnabled": "Mobile export enabled"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Title"
+    "title": "Title",
+    "webPublicExportEnabled": "Web export enabled",
+    "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "meta": {
     "create": "Video show create"

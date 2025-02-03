@@ -138,6 +138,14 @@ const { t } = useI18n()
         data-cy="job-settings"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
+      <VListItem
+        :to="{ name: ROUTE.DAM.PUBLIC_EXPORT.LIST }"
+        prepend-icon="mdi-export"
+        :title="t('sidebar.settings.publicExport')"
+        data-cy="public-export"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
       <VListItem
         :to="{ name: ROUTE.COMMON.LOG.LIST }"

@@ -6,7 +6,14 @@ import { isDistributionCustomItem } from '@/types/coreDam/Distribution'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionListItemCustomDistributionDataItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
-import { ACopyText, type DamAssetTypeType, type DamDistributionServiceTypeType, DamDistributionStatus, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import {
+  ACopyText,
+  type DamAssetTypeType,
+  type DamDistributionServiceTypeType,
+  DamDistributionStatus,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 

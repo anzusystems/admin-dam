@@ -15,7 +15,7 @@ import {
   DamExtSystemRemoteAutocomplete,
   isUndefined,
   useDamConfigStore,
-  UserAuthType
+  UserAuthType,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'

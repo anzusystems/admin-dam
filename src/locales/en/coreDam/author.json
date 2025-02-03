@@ -6,7 +6,9 @@
     "type": "Type",
     "flags": {
       "reviewed": "Reviewed"
-    }
+    },
+    "currentAuthors": "Current authors",
+    "childAuthors": "Child authors"
   },
   "filter": {
     "id": "ID",

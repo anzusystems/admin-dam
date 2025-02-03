@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import {
+  ABooleanValue,
   ADatatableConfigButton,
   ADatatableOrdering,
   ADatatablePagination,
@@ -12,6 +13,7 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
+  type DatatableOrderingOptions,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
@@ -44,6 +46,10 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'id' },
     { key: 'texts.title' },
     { key: 'attributes.lastImportStatus' },
+    { key: 'attributes.webOrderPosition' },
+    { key: 'attributes.mobileOrderPosition' },
+    { key: 'flags.webPublicExportEnabled' },
+    { key: 'flags.mobilePublicExportEnabled' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -51,6 +57,21 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   SYSTEM_CORE_DAM,
   ENTITY
 )
+
+const customSort: DatatableOrderingOptions = [
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: 'desc' } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: 'asc' } },
+  {
+    id: 3,
+    titleT: 'system.datatable.ordering.webOrderPosition',
+    sortBy: { key: 'attributes.webOrderPosition', order: 'asc' },
+  },
+  {
+    id: 4,
+    titleT: 'system.datatable.ordering.mobileOrderPosition',
+    sortBy: { key: 'attributes.mobileOrderPosition', order: 'asc' },
+  },
+]
 
 const sortByChange = (option: DatatableOrderingOption) => {
   updateSortBy(option.sortBy)
@@ -75,7 +96,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableOrdering
+          :custom-options="customSort"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -91,6 +115,18 @@ defineExpose({
       >
         <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
           <PodcastLastImportStatusChip :status="item.attributes.lastImportStatus" />
+        </template>
+        <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.webPublicExportEnabled"
+          />
+        </template>
+        <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.mobilePublicExportEnabled"
+          />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />

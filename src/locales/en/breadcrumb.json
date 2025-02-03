@@ -68,6 +68,11 @@
       "list": "Phrases",
       "detail": "Phrase",
       "edit": "Phrase"
+    },
+    "publicExport": {
+      "list": "Public exports",
+      "detail": "Public export",
+      "edit": "Public export"
     }
   },
   "anzuUser": {

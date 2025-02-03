@@ -6,7 +6,7 @@ import {
   type Filter,
   isArray,
   useDamConfigStore,
-  useFilterHelpers
+  useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'

@@ -10,7 +10,7 @@ import {
   isNull,
   useAlerts,
   useDamConfigStore,
-  usePagination
+  usePagination,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'

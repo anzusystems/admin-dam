@@ -1,5 +1,5 @@
 import type { DistributionYoutubeCreateRedistributeDto } from '@/types/coreDam/Distribution'
-import { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
+import { DistributionYoutubePrivacyDefault } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 
 export function useDistributionYoutubeFactory() {
   const createCreateDto = (): DistributionYoutubeCreateRedistributeDto => {
@@ -12,7 +12,7 @@ export function useDistributionYoutubeFactory() {
         keywords: [],
       },
       distributionService: '',
-      privacy: DistributionYoutubePrivacy.Default,
+      privacy: DistributionYoutubePrivacyDefault,
       language: '',
       playlist: '',
       flags: {

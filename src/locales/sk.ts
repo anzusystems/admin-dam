@@ -28,6 +28,7 @@ import audioFile from '@/locales/sk/coreDam/audioFile.json'
 import videoFile from '@/locales/sk/coreDam/videoFile.json'
 import anzuUser from '@/locales/sk/common/anzuUser.json'
 import authorCleanPhrase from '@/locales/sk/coreDam/authorCleanPhrase.json'
+import publicExport from '@/locales/sk/coreDam/publicExport.json'
 
 export default {
   common: {
@@ -36,9 +37,9 @@ export default {
       ...messagesSk.common.anzuUser,
       filter: {
         ...messagesSk.common.anzuUser.filter,
-        ...anzuUser.filter
-      }
-    }
+        ...anzuUser.filter,
+      },
+    },
   },
   $vuetify: messagesSk.$vuetify,
   coreDam: {
@@ -63,6 +64,7 @@ export default {
     audioFile,
     videoFile,
     authorCleanPhrase,
+    publicExport,
   },
   auth,
   sidebar,

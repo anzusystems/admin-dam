@@ -10,8 +10,15 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt(route.params.id)
 
-const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading,
-  authorCleanPhrase } = useAuthorCleanPhraseEditActions()
+const {
+  detailLoading,
+  fetchData,
+  resetStore,
+  onUpdate,
+  saveButtonLoading,
+  saveAndCloseButtonLoading,
+  authorCleanPhrase,
+} = useAuthorCleanPhraseEditActions()
 
 const getData = () => {
   fetchData(id)

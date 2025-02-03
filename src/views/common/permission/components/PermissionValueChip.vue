@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { GrantOriginDefault, useGrant, useGrantOrigin, type GrantOriginType, type GrantType } from '@anzusystems/common-admin'
+import {
+  GrantOriginDefault,
+  useGrant,
+  useGrantOrigin,
+  type GrantOriginType,
+  type GrantType,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 
 const props = defineProps<{

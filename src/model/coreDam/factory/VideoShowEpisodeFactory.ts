@@ -13,6 +13,17 @@ export function useVideoShowEpisodeFactory() {
       texts: {
         title: '',
       },
+      attributes: {
+        webOrderPosition: 0,
+        mobileOrderPosition: 0,
+      },
+      flags: {
+        webPublicExportEnabled: false,
+        mobilePublicExportEnabled: false,
+      },
+      dates: {
+        publicationDate: dateTimeNow(),
+      },
       position: 0,
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),

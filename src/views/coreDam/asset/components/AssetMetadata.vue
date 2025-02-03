@@ -145,8 +145,8 @@ const onAnyMetadataChange = () => {
             >
               <VCol>
                 <VSwitch
-                  :label="t('common.damImage.asset.model.mainFileSingleUse')"
                   v-model="mainFileSingleUse"
+                  :label="t('common.damImage.asset.model.mainFileSingleUse')"
                 />
               </VCol>
             </VRow>

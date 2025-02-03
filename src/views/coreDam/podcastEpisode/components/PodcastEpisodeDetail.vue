@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
+import {
+  ABooleanValue,
+  ACopyText,
+  ADatetime,
+  ARow,
+  AUserAndTimeTrackingFields,
+  COMMON_CONFIG,
+} from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { usePodcastEpisodeOneStore } from '@/stores/coreDam/podcastEpisodeStore'
@@ -8,6 +15,7 @@ import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
+import { prettyDuration } from '@/utils/file'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 
@@ -33,6 +41,24 @@ const onAssetChipClick = () => {
       <ARow
         :title="t('coreDam.podcastEpisode.model.position')"
         :value="podcastEpisode.position"
+      />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.webOrderPosition')"
+        :value="podcastEpisode.attributes.webOrderPosition"
+      />
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
+        :value="podcastEpisode.attributes.mobileOrderPosition"
+      />
+      <ARow :title="t('coreDam.podcastEpisode.model.flags.webPublicExportEnabled')">
+        <ABooleanValue :value="podcastEpisode.flags.webPublicExportEnabled" />
+      </ARow>
+      <ARow :title="t('coreDam.podcastEpisode.model.flags.mobilePublicExportEnabled')">
+        <ABooleanValue :value="podcastEpisode.flags.mobilePublicExportEnabled" />
+      </ARow>
+      <ARow
+        :title="t('coreDam.podcastEpisode.model.attributes.duration')"
+        :value="prettyDuration(podcastEpisode.attributes.duration)"
       />
       <ARow
         :title="t('coreDam.podcastEpisode.model.texts.description')"

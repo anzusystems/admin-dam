@@ -7,6 +7,9 @@
     "attributes": {
       "seasonNumber": "Season number",
       "episodeNumber": "Episode number",
+      "webOrderPosition": "Web order position",
+      "duration": "Duration",
+      "mobileOrderPosition": "Mobile order position",
       "extId": "Ext id",
       "rssUrl": "Rss audio URL",
       "extUrl": "Ext link",
@@ -19,11 +22,18 @@
     },
     "dates": {
       "publicationDate": "Publication date"
+    },
+    "flags": {
+      "fromRss": "From RSS",
+      "webPublicExportEnabled": "Web export enabled",
+      "mobilePublicExportEnabled": "Mobile export enabled"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Title"
+    "title": "Title",
+    "webPublicExportEnabled": "Web export enabled",
+    "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "button": {
     "create": "Add Episode"

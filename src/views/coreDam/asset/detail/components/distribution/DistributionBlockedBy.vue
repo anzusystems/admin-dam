@@ -6,11 +6,16 @@ import { damClient } from '@/services/api/clients/damClient'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import {
-  cloneDeep, type DamAssetTypeType, type DamDistributionRequirementsConfig, DamDistributionRequirementStrategy,
+  cloneDeep,
+  type DamAssetTypeType,
+  type DamDistributionRequirementsConfig,
+  DamDistributionRequirementStrategy,
   type DamDistributionServiceName,
-  type DocIdNullable, isUndefined, useDamConfigState,
+  type DocIdNullable,
+  isUndefined,
+  useDamConfigState,
   usePagination,
-  useValidate
+  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
@@ -70,8 +75,8 @@ const itemsComputed = computed(() => {
   return distributions.value.map((item) => {
     return {
       title:
-        (configExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]
-          ?.title || item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
+        (configExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]?.title ||
+          item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
       value: item.id,
     }
   })

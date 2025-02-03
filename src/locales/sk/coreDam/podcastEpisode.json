@@ -7,6 +7,9 @@
     "attributes": {
       "seasonNumber": "Číslo sezóny",
       "episodeNumber": "Číslo epizódy",
+      "webOrderPosition": "Poradie na webe",
+      "duration": "Dĺžka",
+      "mobileOrderPosition": "Poradie v appke",
       "extId": "Externé ID",
       "rssUrl": "Rss audio URL",
       "extUrl": "Externá URL epizódy",
@@ -19,11 +22,18 @@
     },
     "dates": {
       "publicationDate": "Dátum publikácie"
+    },
+    "flags": {
+      "fromRss": "Z RSS",
+      "webPublicExportEnabled": "Povolené na webe",
+      "mobilePublicExportEnabled": "Povolené v appke"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "webPublicExportEnabled": "Povolené na webe",
+    "mobilePublicExportEnabled": "Povolené v appke"
   },
   "button": {
     "create": "Pridať epizódu"

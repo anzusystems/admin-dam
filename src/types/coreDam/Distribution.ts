@@ -1,10 +1,10 @@
-import type { DistributionFailReason } from '@/model/coreDam/valueObject/DistributionFailReason'
-import type { DistributionYoutubePrivacy } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
+import type { DistributionFailReasonType } from '@/model/coreDam/valueObject/DistributionFailReason'
+import type { DistributionYoutubePrivacyType } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type {
   DamDistributionServiceName,
   DamDistributionStatusType,
   DatetimeUTCNullable,
-  DocId
+  DocId,
 } from '@anzusystems/common-admin'
 import { isDefined } from '@anzusystems/common-admin'
 
@@ -55,7 +55,7 @@ export interface DistributionItem {
   extId: string
   distributionService: DamDistributionServiceName
   status: DamDistributionStatusType
-  failReason: DistributionFailReason
+  failReason: DistributionFailReasonType
   blockedBy: DocId[]
   publishAt: DatetimeUTCNullable
   _resourceName: string
@@ -84,7 +84,7 @@ export interface DistributionYoutubeCreateRedistributeDto {
   publishAt: DatetimeUTCNullable
   texts: TextsYoutube
   distributionService: DamDistributionServiceName
-  privacy: DistributionYoutubePrivacy
+  privacy: DistributionYoutubePrivacyType
   language: string
   playlist: string
   flags: FlagsYoutube
@@ -99,17 +99,19 @@ export interface DistributionYoutubeItem extends DistributionItem {
   language: string
   playlist: string
   channelId: string
-  privacy: DistributionYoutubePrivacy
+  privacy: DistributionYoutubePrivacyType
   flags: FlagsYoutube
   texts: TextsYoutube
 }
 
-export enum DistributionDataItemType {
-  Url = 'url',
-}
+export const DistributionDataItemType = {
+  Url: 'url',
+} as const
+
+export type DistributionDataItemTypeType = (typeof DistributionDataItemType)[keyof typeof DistributionDataItemType]
 
 export interface DistributionDataItem {
-  type: DistributionDataItemType
+  type: DistributionDataItemTypeType
   value: any
 }
 

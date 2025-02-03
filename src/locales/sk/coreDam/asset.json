@@ -61,6 +61,11 @@
   },
   "filterTitle": "Filter",
   "noItemsFound": "Žiadne nájdené assety",
+  "sibling": {
+    "title": "Dvojička",
+    "select": "Pridať",
+    "noAsset": "Asset nebol nájdený"
+  },
   "assetType": {
     "image": "Obrázok",
     "audio": "Audio",

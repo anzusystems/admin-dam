@@ -4,7 +4,13 @@ import { damClient } from '@/services/api/clients/damClient'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import DistributionFailReasonChip from '@/views/coreDam/asset/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionStatusChip from '@/views/coreDam/asset/detail/components/distribution/DistributionStatusChip.vue'
-import { type DamAssetTypeType, type DamDistributionServiceTypeType, DamDistributionStatus, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import {
+  type DamAssetTypeType,
+  type DamDistributionServiceTypeType,
+  DamDistributionStatus,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 

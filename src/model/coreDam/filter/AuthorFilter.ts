@@ -38,5 +38,8 @@ export function useAuthorFilter() {
     text: {
       ...makeFilter({ name: 'text' }),
     },
+    canBeCurrentAuthor: {
+      ...makeFilter({ name: 'canBeCurrentAuthor' }),
+    },
   })
 }

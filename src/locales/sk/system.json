@@ -1,4 +1,10 @@
 {
+  "datatable": {
+    "ordering": {
+      "webOrderPosition": "Web",
+      "mobileOrderPosition": "Appka"
+    }
+  },
   "upload": {
     "add": "Pridať do nahrávania",
     "dragAndDrop": "Sem presuň nahrávané súbory",

@@ -30,7 +30,7 @@ import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/c
 import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
-  DamDistributionServiceName
+  DamDistributionServiceName,
 } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,

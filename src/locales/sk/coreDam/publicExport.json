@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "slug": "Slug",
+    "assetLicence": "Licencia",
+    "type": "Typ"
+  },
+  "filter": {
+    "id": "ID",
+    "type": "Typ",
+    "slug": "Slug"
+  },
+  "exportType": {
+    "mobile": "Appka",
+    "web": "Web"
+  },
+  "button": {
+    "create": "Pridať verejný export"
+  }
+}

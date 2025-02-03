@@ -1,5 +1,4 @@
 import { reactive } from 'vue'
-import { LogType } from '@/model/common/valueObject/LogType'
 import type { Filter } from '@anzusystems/common-admin'
 import {
   dateTimeEndOfDay,
@@ -8,19 +7,20 @@ import {
   type MakeFilterOptions,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/logApi'
-import type { LogSystem } from '@/model/common/valueObject/LogSystem'
+import type { LogSystemType } from '@/model/common/valueObject/LogSystem'
+import { LogTypeDefault } from '@/model/common/valueObject/LogType.ts'
 
 const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper('common', ENTITY)
 
 const filter = reactive({
   system: {
-    ...makeFilter<LogSystem[]>({ name: 'system', variant: 'in', mandatory: true, exclude: true }),
+    ...makeFilter<LogSystemType[]>({ name: 'system', variant: 'in', mandatory: true, exclude: true }),
   },
   contextAppSystem: {
-    ...makeFilter<LogSystem>({ name: 'system', mandatory: true, field: 'context.appSystem' }),
+    ...makeFilter<LogSystemType>({ name: 'system', mandatory: true, field: 'context.appSystem' }),
   },
   type: {
-    ...makeFilter({ name: 'type', variant: 'in', default: LogType.Default, exclude: true }),
+    ...makeFilter({ name: 'type', variant: 'in', default: LogTypeDefault, exclude: true }),
   },
   levelName: {
     ...makeFilter({ name: 'levelName', variant: 'in' }),

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
-import { AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterBooleanSelect, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 
 const emit = defineEmits<{
@@ -45,6 +45,18 @@ const onAnyFilterUpdate = () => {
         <VCol cols="4">
           <AFilterString
             v-model="filter.title"
+            @update:model-value="onAnyFilterUpdate"
+          />
+        </VCol>
+        <VCol cols="2">
+          <AFilterBooleanSelect
+            v-model="filter.webPublicExportEnabled"
+            @update:model-value="onAnyFilterUpdate"
+          />
+        </VCol>
+        <VCol cols="2">
+          <AFilterBooleanSelect
+            v-model="filter.mobilePublicExportEnabled"
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>

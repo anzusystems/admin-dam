@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import type { DocId } from '@anzusystems/common-admin'
+import { ABooleanValue, ADatatableOrdering, type DatatableOrderingOption, type DocId } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatablePagination,
@@ -10,6 +10,7 @@ import {
   ATableEditButton,
   createDatatableColumnsConfig,
   useFilterHelpers,
+  type DatatableOrderingOptions,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastEpisodeApi'
@@ -21,6 +22,7 @@ import PodcastEpisodeFilter from '@/views/coreDam/podcastEpisode/components/Podc
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { ACL } from '@/composables/auth/auth'
+import { prettyDuration } from '@/utils/file'
 
 type DatatableItem = PodcastEpisode
 
@@ -45,13 +47,16 @@ const getList = () => {
   fetchList(props.podcastId, pagination, filter)
 }
 
-const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'texts.title' },
     { key: 'attributes.lastImportStatus' },
-    { key: 'attributes.seasonNumber' },
-    { key: 'attributes.episodeNumber' },
+    { key: 'attributes.webOrderPosition' },
+    { key: 'attributes.mobileOrderPosition' },
+    { key: 'flags.webPublicExportEnabled' },
+    { key: 'flags.mobilePublicExportEnabled' },
+    { key: 'attributes.duration' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -59,7 +64,26 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
   SYSTEM_CORE_DAM,
   ENTITY
 )
-pagination.sortBy = 'position'
+
+const customSort: DatatableOrderingOptions = [
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: 'desc' } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: 'asc' } },
+  {
+    id: 3,
+    titleT: 'system.datatable.ordering.webOrderPosition',
+    sortBy: { key: 'attributes.webOrderPosition', order: 'desc' },
+  },
+  {
+    id: 4,
+    titleT: 'system.datatable.ordering.mobileOrderPosition',
+    sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' },
+  },
+]
+
+const sortByChange = (option: DatatableOrderingOption) => {
+  updateSortBy(option.sortBy)
+  getList()
+}
 
 onMounted(() => {
   fetchList(props.podcastId, pagination, filter)
@@ -79,6 +103,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
+        <ADatatableOrdering
+          :custom-options="customSort"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -100,6 +128,26 @@ defineExpose({
         </template>
         <template #item.modifiedAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.modifiedAt" />
+        </template>
+        <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.webPublicExportEnabled"
+          />
+        </template>
+        <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.mobilePublicExportEnabled"
+          />
+        </template>
+        <template #item.attributes.duration="{ item }: { item: DatatableItem }">
+          <template v-if="item.attributes.duration">
+            {{ prettyDuration(item.attributes.duration) }}
+          </template>
+          <template v-else>
+            -
+          </template>
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">

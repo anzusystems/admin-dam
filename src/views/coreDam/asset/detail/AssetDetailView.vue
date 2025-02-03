@@ -5,7 +5,7 @@ import { type DocId, isDocId, isString, useAlerts, useDamCachedUsers, useTheme }
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
 import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
+import { AssetDetailTab, AssetDetailTabDefault, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
@@ -80,8 +80,19 @@ const getDetail = async () => {
   assetDetailStore.hideLoader()
 }
 
+const resetAllStores = () => {
+  assetDetailStore.hideDetail()
+  assetDetailStore.reset()
+  activeTab.value = AssetDetailTabDefault
+  assetDetailStore.directDetailLoad = false
+  assetListStore.reset()
+}
+
 onMounted(() => {
-  getDetail()
+  resetAllStores()
+  setTimeout(() => {
+    getDetail()
+  }, 100)
 })
 </script>
 

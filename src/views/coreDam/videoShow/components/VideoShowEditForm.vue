@@ -30,9 +30,38 @@ const { t } = useI18n()
             :v="v$.videoShow.texts.title"
           />
         </ARow>
-        <!--        <ARow>-->
-        <!--          <ImagePreview v-model="videoShow.imagePreview" show-actions />-->
-        <!--        </ARow>-->
+        <ARow>
+          <AFormTextField
+            v-model="videoShow.attributes.webOrderPosition"
+            :label="t('coreDam.videoShow.model.attributes.webOrderPosition')"
+            type="number"
+            :step="1"
+            data-cy="videoShow-web-order-number"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            v-model="videoShow.attributes.mobileOrderPosition"
+            :label="t('coreDam.videoShow.model.attributes.mobileOrderPosition')"
+            type="number"
+            :step="1"
+            data-cy="videoShow-web-order-number"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="videoShow.flags.webPublicExportEnabled"
+            class="pl-2"
+            :label="t('coreDam.videoShow.model.flags.webPublicExportEnabled')"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="videoShow.flags.mobilePublicExportEnabled"
+            class="pl-2"
+            :label="t('coreDam.videoShow.model.flags.mobilePublicExportEnabled')"
+          />
+        </ARow>
       </VCol>
     </VRow>
   </ASystemEntityScope>

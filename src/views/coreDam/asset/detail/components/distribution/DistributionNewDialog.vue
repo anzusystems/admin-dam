@@ -7,10 +7,14 @@ import DistributionNewDialogJw from '@/views/coreDam/asset/detail/components/dis
 import DistributionNewDialogYoutube from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import {
-  ADialogToolbar, type DamAssetTypeType, DamDistributionServiceType,
+  ADialogToolbar,
+  type DamAssetTypeType,
+  DamDistributionServiceType,
   type DocId,
-  isNull, isUndefined, useDamConfigState,
-  useDamConfigStore
+  isNull,
+  isUndefined,
+  useDamConfigState,
+  useDamConfigStore,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'

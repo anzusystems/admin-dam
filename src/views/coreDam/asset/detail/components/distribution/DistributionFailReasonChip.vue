@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import {
-  type DistributionFailReason,
+  type DistributionFailReasonType,
   useDistributionFailReason,
 } from '@/model/coreDam/valueObject/DistributionFailReason'
 
 const props = withDefaults(
   defineProps<{
-    status: DistributionFailReason
+    status: DistributionFailReasonType
   }>(),
   {}
 )

@@ -51,6 +51,38 @@ const { podcastModeOptions } = usePodcastMode()
           />
         </ARow>
         <ARow>
+          <AFormTextField
+            v-model="podcast.attributes.webOrderPosition"
+            :label="t('coreDam.podcast.model.attributes.webOrderPosition')"
+            type="number"
+            :step="1"
+            data-cy="podcast-web-order-number"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            v-model="podcast.attributes.mobileOrderPosition"
+            :label="t('coreDam.podcastEpodcastpisode.model.attributes.mobileOrderPosition')"
+            type="number"
+            :step="1"
+            data-cy="podcast-web-order-number"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="podcast.flags.webPublicExportEnabled"
+            class="pl-2"
+            :label="t('coreDam.podcast.model.flags.webPublicExportEnabled')"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="podcast.flags.mobilePublicExportEnabled"
+            class="pl-2"
+            :label="t('coreDam.podcast.model.flags.mobilePublicExportEnabled')"
+          />
+        </ARow>
+        <ARow>
           <AFormValueObjectOptionsSelect
             v-model="podcast.attributes.mode"
             :label="t('coreDam.podcast.model.attributes.mode')"

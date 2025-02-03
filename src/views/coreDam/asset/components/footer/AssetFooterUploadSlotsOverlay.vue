@@ -4,7 +4,7 @@ import { computed, watch } from 'vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/services/upload/uploadQueueIds'
 import AssetFooterUploadButtonStop from '@/views/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import AssetQueueUploadList from '@/views/coreDam/asset/components/queue/AssetQueueUploadList.vue'
-import { useTheme } from '@anzusystems/common-admin'
+import { isOneOf, useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useAssetFooterUploadSlotsView } from '@/composables/system/assetFooterUploadSlots'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
@@ -50,7 +50,7 @@ const isUploading = computed(() => {
 const classComputed = computed(() => {
   const classes = []
   classes.push('asset-upload-overlay--' + footerViewUploadSlots.value)
-  if ([FooterViewUpload.Minimal, FooterViewUpload.Compact].includes(footerViewUpload.value)) {
+  if (isOneOf(footerViewUpload.value, [FooterViewUpload.Minimal, FooterViewUpload.Compact])) {
     classes.push('asset-upload-overlay--second')
   }
   return classes.join(' ')

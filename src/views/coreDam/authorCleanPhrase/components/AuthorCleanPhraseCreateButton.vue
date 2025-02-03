@@ -6,16 +6,14 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  ASystemEntityScope
+  ASystemEntityScope,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthorCleanPhrase, ENTITY } from '@/services/api/coreDam/AuthorCleanPhraseApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAuthorCleanPhraseFactory } from '@/model/coreDam/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
-import {
-  useAuthorCleanPhraseValidation
-} from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
+import { useAuthorCleanPhraseValidation } from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
 import { useAuthorCleanPhraseTypeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
 import { useAuthorCleanPhraseModeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
 import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
@@ -53,7 +51,6 @@ const create = async () => {
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()
 const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
-
 </script>
 
 <template>

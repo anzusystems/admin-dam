@@ -8,9 +8,10 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import {
   ADialogToolbar,
   type DamAssetTypeType,
-  type DocId, isUndefined,
+  type DocId,
+  isUndefined,
   useDamAcceptTypeAndSizeHelper,
-  useDamConfigState
+  useDamConfigState,
 } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'

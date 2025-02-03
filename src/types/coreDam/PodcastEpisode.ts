@@ -7,7 +7,7 @@ import type {
   DocIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import type { PodcastLastImportStatusType } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
   title: string
@@ -15,13 +15,22 @@ interface Texts {
   rawDescription: string
 }
 
+interface Flags {
+  fromRss: boolean
+  webPublicExportEnabled: boolean
+  mobilePublicExportEnabled: boolean
+}
+
 interface Attributes {
   seasonNumber: number | null
   episodeNumber: number | null
+  webOrderPosition: number
+  mobileOrderPosition: number
+  duration: number
   extId: string
   extUrl: string
   rssUrl: string
-  lastImportStatus: PodcastLastImportStatus
+  lastImportStatus: PodcastLastImportStatusType
 }
 
 interface Dates {
@@ -34,6 +43,7 @@ export interface PodcastEpisode extends AnzuUserAndTimeTrackingAware, ResourceNa
   asset: DocIdNullable
   texts: Texts
   attributes: Attributes
+  flags: Flags
   dates: Dates
   position: number
   links?: AssetFileLinks

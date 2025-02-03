@@ -16,7 +16,7 @@ import {
   DamAssetType,
   DamAssetTypeDefault,
   isNull,
-  useTheme
+  useTheme,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'

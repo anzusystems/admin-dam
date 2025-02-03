@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
+import {
+  ABooleanValue,
+  ACopyText,
+  ADatetime,
+  ARow,
+  AUserAndTimeTrackingFields,
+  COMMON_CONFIG,
+} from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
@@ -10,10 +17,6 @@ const { videoShowEpisode } = storeToRefs(useVideoShowEpisodeOneStore())
 
 const { t } = useI18n()
 const router = useRouter()
-
-// const imageSrc = computed(() => {
-//   return videoShowEpisode.value.links ? videoShowEpisode.value.links.image_list.url : undefined
-// })
 
 const onAssetChipClick = () => {
   router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: videoShowEpisode.value.asset } })
@@ -31,14 +34,28 @@ const onAssetChipClick = () => {
         :title="t('coreDam.videoShowEpisode.model.position')"
         :value="videoShowEpisode.position"
       />
+      <ARow
+        :title="t('coreDam.videoShowEpisode.model.attributes.webOrderPosition')"
+        :value="videoShowEpisode.attributes.webOrderPosition"
+      />
+      <ARow
+        :title="t('coreDam.videoShowEpisode.model.attributes.mobileOrderPosition')"
+        :value="videoShowEpisode.attributes.mobileOrderPosition"
+      />
+      <ARow :title="t('coreDam.videoShowEpisode.model.flags.webPublicExportEnabled')">
+        <ABooleanValue :value="videoShowEpisode.flags.webPublicExportEnabled" />
+      </ARow>
+      <ARow :title="t('coreDam.videoShowEpisode.model.flags.mobilePublicExportEnabled')">
+        <ABooleanValue :value="videoShowEpisode.flags.mobilePublicExportEnabled" />
+      </ARow>
+      <ARow :title="t('coreDam.videoShowEpisode.model.dates.publicationDate')">
+        <ADatetime :date-time="videoShowEpisode.dates.publicationDate" />
+      </ARow>
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.videoShowEpisode.model.id')">
         <ACopyText :value="videoShowEpisode.id" />
       </ARow>
-      <!--        <ARow v-if="imageSrc" title="Image">-->
-      <!--          <AssetImage :src="imageSrc" use-component />-->
-      <!--        </ARow>-->
       <ARow :title="t('coreDam.videoShowEpisode.model.asset')">
         <VChip
           size="small"

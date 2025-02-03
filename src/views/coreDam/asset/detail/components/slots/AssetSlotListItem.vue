@@ -22,7 +22,7 @@ import {
   isUndefined,
   type UploadQueueItem,
   UploadQueueItemStatus,
-  useAlerts
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { useClipboard } from '@vueuse/core'
 import { computed, watch } from 'vue'

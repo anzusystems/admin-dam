@@ -7,6 +7,7 @@ const { canTeleport } = useExternalProviderAssetDetailSidebarActionbar()
 <template>
   <Teleport
     v-if="canTeleport"
+    defer
     to="#anzu-external-provider-asset-detail-sidebar-actions"
   >
     <div class="w-100 text-right">

@@ -9,7 +9,7 @@ import {
   type AssetFileMainRouteAware,
   type DamAssetTypeType,
   type DocId,
-  useAlerts
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
