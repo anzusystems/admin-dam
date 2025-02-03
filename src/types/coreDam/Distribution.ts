@@ -105,6 +105,28 @@ export interface DistributionYoutubeItem extends DistributionItem {
   texts: TextsYoutube
 }
 
+export const DistributionDataItemType = {
+  Url: 'url',
+} as const
+
+export type DistributionDataItemTypeType = (typeof DistributionDataItemType)[keyof typeof DistributionDataItemType]
+
+export interface DistributionDataItem {
+  type: DistributionDataItemTypeType
+  value: any
+}
+
+export interface DistributionCustomItem extends DistributionItem {
+  customData: Record<string, any>
+  distributionData: Record<string, DistributionDataItem>
+}
+
+export const isDistributionCustomItem = (
+  value: DistributionCustomItem | DistributionYoutubeItem | DistributionJwItem
+): value is DistributionCustomItem => {
+  return isDefined((value as DistributionCustomItem).distributionData)
+}
+
 export interface DistributionUpdateDto {
   id: string,
   asset: DocId
@@ -142,12 +164,6 @@ export type DistributionItemTypeMap = {
 
 export type DistributionItemTypes = DistributionItemTypeMap[keyof DistributionItemTypeMap]
 
-export const DistributionDataItemType = {
-  Url: 'url',
-} as const
-
-export type DistributionDataItemTypeType = (typeof DistributionDataItemType)[keyof typeof DistributionDataItemType]
-
 export const distributionItemIsJwItem = (value: DistributionItem): value is DistributionJwItem => {
   return value._resourceName === DistributionItemResourceName.Jw
 }
@@ -158,20 +174,4 @@ export const distributionItemIsYoutubeItem = (value: DistributionItem): value is
 
 export const distributionItemIsCustomItem = (value: DistributionItem): value is DistributionCustomItem => {
   return value._resourceName === DistributionItemResourceName.Custom
-}
-
-export interface DistributionDataItem {
-  type: DistributionDataItemTypeType
-  value: any
-}
-
-export interface DistributionCustomItem extends DistributionItem {
-  customData: Record<string, any>
-  distributionData: Record<string, DistributionDataItem>
-}
-
-export const isDistributionCustomItem = (
-  value: DistributionCustomItem | DistributionYoutubeItem | DistributionJwItem
-): value is DistributionCustomItem => {
-  return isDefined((value as DistributionCustomItem).distributionData)
 }

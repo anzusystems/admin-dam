@@ -2,7 +2,7 @@ import { fetchDistribution } from '@/services/api/coreDam/distributionApi'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
-  DistributionYoutubeItem,
+  DistributionYoutubeItem
 } from '@/types/coreDam/Distribution'
 import {
   type DistributionAuth,
