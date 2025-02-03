@@ -10,7 +10,7 @@ import {
 } from '@/components/validationScopes.ts'
 
 export function useDistributionUpdateDtoValidations(distribution: Ref<DistributionUpdateDto>) {
-  const { required, url } = useValidate()
+  const { required } = useValidate()
   const rules = {
     distribution: {
       extId: {

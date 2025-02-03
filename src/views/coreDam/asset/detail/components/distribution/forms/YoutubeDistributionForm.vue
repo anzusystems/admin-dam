@@ -30,7 +30,7 @@ const damConfigStore = useDamConfigStore()
 
 const distributionServices = computed(() => {
   return Object.entries(damConfigStore.damPrvConfig.distributionServices)
-    .filter(([key, value]) => value.type === DistributionItemResourceName.Youtube)
+    .filter(([, value]) => value.type === DistributionItemResourceName.Youtube)
     .map(([key, value]) => {
       return {
         title: value.title,
@@ -51,8 +51,8 @@ const { v$ } = useYoutubeDistributionUpdateDtoValidations(distribution, props.va
 <template>
   <ARow>
     <AFormValueObjectOptionsSelect
-      :label="t('coreDam.youtubeDistribution.model.distributionService')"
       v-model="distribution.distributionService"
+      :label="t('coreDam.youtubeDistribution.model.distributionService')"
       :items="distributionServices"
       :readonly="readonly"
       :v="v$.distribution.distributionService"

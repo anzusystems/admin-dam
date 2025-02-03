@@ -1,18 +1,15 @@
 <script lang="ts" setup>
 import {
-  ADialogToolbar,
-  AFormTextarea,
   AFormValueObjectOptionsSelect,
   AFormTextField,
   ARow,
-  useAlerts, type DocId, AnzuApiValidationError
+  useAlerts, type DocId
 } from '@anzusystems/common-admin'
-import { computed, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
-  type DistributionItem,
   DistributionItemResourceName, type DistributionItemResourceNameType,
-  type DistributionItemTypes, type DistributionUpdateDto
+  type DistributionUpdateDto
 } from '@/types/coreDam/Distribution.ts'
 import DistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionForm.vue'
 import { DistributionUpdateDtoValidationScopeSymbol } from '@/components/validationScopes.ts'
@@ -107,10 +104,10 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
     :width="900"
   >
     <VCard v-if="distributionManageDialog">
-<!--      <ADialogToolbar @on-cancel="pageContentManageDialog = false">-->
-<!--        <span v-if="pageContent.id">{{ t('cms.pageContent.meta.edit') }}</span>-->
-<!--        <span v-else>{{ t('cms.pageContent.meta.create') }}</span>-->
-<!--      </ADialogToolbar>-->
+      <!--      <ADialogToolbar @on-cancel="pageContentManageDialog = false">-->
+      <!--        <span v-if="pageContent.id">{{ t('cms.pageContent.meta.edit') }}</span>-->
+      <!--        <span v-else>{{ t('cms.pageContent.meta.create') }}</span>-->
+      <!--      </ADialogToolbar>-->
       <VCardText class="pb-6">
         <AFormValueObjectOptionsSelect
           v-if="!isEdit"
@@ -120,21 +117,21 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
           @update:model-value="onDistributionTypeSelect"
         />
         <ARow>
-            <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
+          <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
         </ARow>
         <ARow>
           <AFormTextField
-            :label="t('coreDam.distribution.common.extId')"
             v-model="distribution.extId"
-            @blur="onBlur"
+            :label="t('coreDam.distribution.common.extId')"
             :readonly="readonly"
             :v="v$.distribution.extId"
+            @blur="onBlur"
           />
         </ARow>
         <ARow>
           <AFormValueObjectOptionsSelect
-            :label="t('coreDam.distribution.common.status')"
             v-model="distribution.status"
+            :label="t('coreDam.distribution.common.status')"
             :items="DistributionStatusOptions"
             :readonly="readonly"
             :v="v$.distribution.status"

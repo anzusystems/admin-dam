@@ -6,7 +6,7 @@ import {
 } from '@anzusystems/common-admin'
 import {
   DistributionItemResourceName,
-  type DistributionJwItem, type JwDistributionUpdateDto
+  type JwDistributionUpdateDto
 } from '@/types/coreDam/Distribution.ts'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -29,7 +29,7 @@ const damConfigStore = useDamConfigStore()
 
 const distributionServices = computed(() => {
   return Object.entries(damConfigStore.damPrvConfig.distributionServices)
-    .filter(([key, value]) => value.type === DistributionItemResourceName.Jw)
+    .filter(([, value]) => value.type === DistributionItemResourceName.Jw)
     .map(([key, value]) => {
     return {
       title: value.title,
@@ -54,8 +54,8 @@ const onBlur = () => {
 <template>
   <ARow>
     <AFormValueObjectOptionsSelect
-      :label="t('coreDam.jwDistribution.model.distributionService')"
       v-model="distribution.distributionService"
+      :label="t('coreDam.jwDistribution.model.distributionService')"
       :items="distributionServices"
       :readonly="readonly"
       :v="v$.distribution.distributionService"
@@ -63,11 +63,11 @@ const onBlur = () => {
   </ARow>
   <ARow>
     <AFormTextField
-      :label="t('coreDam.jwDistribution.model.directSourceUrl')"
       v-model="distribution.directSourceUrl"
-      @blur="onBlur"
+      :label="t('coreDam.jwDistribution.model.directSourceUrl')"
       :readonly="readonly"
       :v="v$.distribution.directSourceUrl"
+      @blur="onBlur"
     />
   </ARow>
 </template>

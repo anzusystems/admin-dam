@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import type {
-  CustomDistributionUpdateDto,
-} from '@/types/coreDam/Distribution.ts'
 import type { ValidationScope } from '@anzusystems/common-admin'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     readonly?: boolean,
     validationScope?: ValidationScope
@@ -15,9 +12,8 @@ const props = withDefaults(
   }
 )
 
-const distribution = defineModel<CustomDistributionUpdateDto>({ required: true })
-
 </script>
 
 <template>
+  <div />
 </template>

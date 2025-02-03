@@ -4,7 +4,7 @@ import {
   DistributionItemResourceName,
   type DistributionItemResourceNameType, type DistributionUpdateDto
 } from '@/types/coreDam/Distribution.ts'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import JwDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/JwDistributionForm.vue'
 import YoutubeDistributionForm
   from '@/views/coreDam/asset/detail/components/distribution/forms/YoutubeDistributionForm.vue'
@@ -40,7 +40,6 @@ const DistributionItemFormComponent = (resourceName: DistributionItemResourceNam
 const rules = computed(() =>
   DistributionItemFormComponent(distribution.value._resourceName)
 )
-
 
 </script>
 

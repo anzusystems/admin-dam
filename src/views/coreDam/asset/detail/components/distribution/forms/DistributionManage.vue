@@ -2,11 +2,10 @@
 
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ASortable,
   type DamAssetTypeType,
-  type DocId, isNull,
+  type DocId,
   isString,
   type SortableItem,
   useAlerts
@@ -39,7 +38,10 @@ const props = withDefaults(
   }
 )
 
-const { t } = useI18n()
+const emit = defineEmits<{
+  (e: 'onDistributionUpsert'): void
+  (e: 'onDistributionDelete'): void
+}>()
 
 const assetDetailStore = useAssetDetailStore()
 const distributionListStore = useDistributionListStore()
@@ -70,7 +72,7 @@ const createUpdateDto = (item: DistributionItem) => {
     throw Error('Unknown distribution item type')
 }
 
-const onAddExternalLink = (beforeSortableItem: DistributionItem | null) => {
+const onAddDistributionItem = () => {
   if (!isString(assetFileId.value)) {
     throw new Error('Asset file id is null')
   }
@@ -81,8 +83,8 @@ const onAddExternalLink = (beforeSortableItem: DistributionItem | null) => {
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
-const onDeleteExternalLink = async (index: number) => {
-  const distributionId = distributionListStore.list[index]?.id ?? null
+const onDeleteDistributionItem = async (item: SortableItem) => {
+  const distributionId = distributionListStore.list[item.index]?.id ?? null
   if (!isString(distributionId))
     return
 
@@ -97,7 +99,6 @@ const onDeleteExternalLink = async (index: number) => {
     distributionListStore.hideLoader()
   }
 }
-
 
 const onEdit = (data: SortableItem<DistributionItem>) => {
   distributionContent.value = createUpdateDto(data.raw)
@@ -125,11 +126,6 @@ const onDistributionUpsert = () => {
   emit('onDistributionUpsert')
 }
 
-const emit = defineEmits<{
-  (e: 'onDistributionUpsert'): void
-  (e: 'onDistributionDelete'): void
-}>()
-
 </script>
 
 <template>
@@ -142,29 +138,32 @@ const emit = defineEmits<{
       color="primary"
     />
   </div>
-    <ASortable
-      v-else
-      v-model="distributionListStore.list"
-      show-add-last-button
-      show-delete-button
-      disable-dragable
-      show-edit-button
-      @on-edit="onEdit"
-      @on-add-last="onAddExternalLink"
-      @on-delete="onDeleteExternalLink"
-    >
-      <template #item="{ item }: { item: SortableItem<DistributionItem> }">
-        <DistributionItemView v-model="item.raw as DistributionItem" :asset-type="assetType"/>
-      </template>
-    </ASortable>
-    <DistributionManageDialog
-      v-if="distributionContent"
-      v-model="distributionContent"
-      :distribution-manage-dialog="distributionManageDialog"
-      :asset-id="assetId"
-      :is-edit="distributionDialogEdit"
-      @on-distribution-upsert="onDistributionUpsert"
-      @on-cancel="closeDialog"
-      @on-distribution-type-select="onDistributionTypeSelect"
-    />
+  <ASortable
+    v-else
+    v-model="distributionListStore.list"
+    show-add-last-button
+    show-delete-button
+    disable-dragable
+    show-edit-button
+    @on-edit="onEdit"
+    @on-add-last="onAddDistributionItem"
+    @on-delete="onDeleteDistributionItem"
+  >
+    <template #item="{ item }: { item: SortableItem<DistributionItem> }">
+      <DistributionItemView
+        v-model="item.raw as DistributionItem"
+        :asset-type="assetType"
+      />
+    </template>
+  </ASortable>
+  <DistributionManageDialog
+    v-if="distributionContent"
+    v-model="distributionContent"
+    :distribution-manage-dialog="distributionManageDialog"
+    :asset-id="assetId"
+    :is-edit="distributionDialogEdit"
+    @on-distribution-upsert="onDistributionUpsert"
+    @on-cancel="closeDialog"
+    @on-distribution-type-select="onDistributionTypeSelect"
+  />
 </template>

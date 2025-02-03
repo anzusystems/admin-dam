@@ -131,7 +131,8 @@ export const DistributionItemResourceName = {
   Custom: 'distribution',
 } as const
 
-export type DistributionItemResourceNameType = (typeof DistributionItemResourceName)[keyof typeof DistributionItemResourceName]
+export type DistributionItemResourceNameType =
+  (typeof DistributionItemResourceName)[keyof typeof DistributionItemResourceName]
 
 export type DistributionItemTypeMap = {
   [DistributionItemResourceName.Jw]: DistributionJwItem,

@@ -1,6 +1,6 @@
 import type {
   DistributionYoutubeCreateRedistributeDto, DistributionYoutubeItem,
-  JwDistributionUpdateDto, YoutubeDistributionUpdateDto
+  YoutubeDistributionUpdateDto
 } from '@/types/coreDam/Distribution'
 import { DistributionYoutubePrivacyDefault } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'

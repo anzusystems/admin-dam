@@ -1,6 +1,6 @@
 import type {
   DistributionCustomCreateRedistributeDto,
-  CustomDistributionUpdateDto, JwDistributionUpdateDto, DistributionItem
+  CustomDistributionUpdateDto, DistributionItem
 } from '@/types/coreDam/Distribution'
 import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 import { DistributionItemResourceName } from '@/types/coreDam/Distribution'
