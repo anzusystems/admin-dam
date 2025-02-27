@@ -21,6 +21,8 @@ export function useLogFactory() {
         content: '',
         params: '',
         httpStatus: 0,
+        resourceName: '',
+        resourceIds: [],
       },
       _resourceName: '',
       _system: '',

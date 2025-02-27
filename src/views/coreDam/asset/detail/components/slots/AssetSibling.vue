@@ -10,7 +10,7 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
 import { storeToRefs } from 'pinia'
 
@@ -26,6 +26,7 @@ const assetDetailStore = useAssetDetailStore()
 const { siblingLoader } = storeToRefs(assetDetailStore)
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { t } = useI18n()
+const sort = ref(3)
 
 const { setAssetSibling, removeAssetSibling } = useAssetDetailSidebarSlotsAssetSiblingActions()
 
@@ -82,11 +83,13 @@ const pickAssetType = computed(() => {
       >
         <AAssetSelect
           v-if="pickAssetType"
+          v-model:sort="sort"
           :select-licences="[currentAssetLicenceId]"
           :min-count="1"
           :max-count="1"
           return-type="assetId"
           :asset-type="pickAssetType"
+          :initial-pagination-sort="{ key: '_score', order: 'desc' }"
           @on-confirm="selectAsset"
         >
           <template #activator="{ props: assetSelectProps }">
