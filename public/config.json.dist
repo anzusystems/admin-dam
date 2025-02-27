@@ -16,6 +16,7 @@
     "apiUrl": "${DAM_API_URL}",
     "apiTimeout": 30,
     "imageUrl": "${DAM_IMAGE_URL}",
+    "adminUrl": "${DAM_ADMIN_URL}",
     "authorCleanPhraseTestSample": "${DAM_AUTHOR_CLEAN_PHRASE_TEST_SAMPLE}"
   },
   "notification": {
