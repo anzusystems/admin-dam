@@ -7,19 +7,26 @@ import type {
   IntegerIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { PodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
-import type { PodcastLastImportStatus } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import type { PodcastModeType } from '@/model/coreDam/valueObject/PodcastMode'
+import type { PodcastLastImportStatusType } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 
 interface Texts {
   title: string
   description: string
 }
 
+interface Flags {
+  webPublicExportEnabled: boolean
+  mobilePublicExportEnabled: boolean
+}
+
 export interface Attributes {
   rssUrl: string
   extUrl: string
-  mode: PodcastMode
-  lastImportStatus: PodcastLastImportStatus
+  webOrderPosition: number
+  mobileOrderPosition: number
+  mode: PodcastModeType
+  lastImportStatus: PodcastLastImportStatusType
 }
 
 interface Dates {
@@ -31,6 +38,7 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   licence: IntegerIdNullable
   texts: Texts
   attributes: Attributes
+  flags: Flags
   dates: Dates
   links?: AssetFileLinks
   altLinks?: AssetFileLinks

@@ -7,7 +7,7 @@ import {
   ARow,
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete
+  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupEditActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import { useAssetLicenceGroupValidation } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'

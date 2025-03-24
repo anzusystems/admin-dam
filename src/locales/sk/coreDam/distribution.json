@@ -4,7 +4,7 @@
   },
   "distributionStatus": {
     "waiting": "Čaká",
-    "distributing": "Distribuovaný",
+    "distributing": "Distribuuje sa",
     "remoteProcessing": "Vzdialené spracovávanie",
     "distributed": "Distribuovaný",
     "failed": "Chyba"
@@ -15,6 +15,12 @@
     "quotaReached": "Dosiahnutá kvóta",
     "remoteProcessFailed": "Vzdialené spracovávanie zlyhalo",
     "validationFailed": "Chyba pri validácii"
+  },
+  "meta": {
+    "edit": "Upraviť distribúciu",
+    "create": "Vytvoriť distribúciu",
+    "showAdvanced": "Zobraziť pokročilú správu distribúcií",
+    "hideAdvanced": "Skryť pokročilú správu distribúcií"
   },
   "common": {
     "select": "Kategória distribúcie",

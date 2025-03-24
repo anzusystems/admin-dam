@@ -3,15 +3,13 @@ import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anz
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAuthorCleanPhraseOneStore } from '@/stores/coreDam/authorCleanPhraseStore'
-import AuthorRemoteAutocompleteCachedAuthorChip
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import AuthorCleanPhraseModeChip from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeChip.vue'
 import AuthorCleanPhraseTypeChip from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeChip.vue'
 
 const { authorCleanPhrase } = storeToRefs(useAuthorCleanPhraseOneStore())
 
 const { t } = useI18n()
-
 </script>
 
 <template>
@@ -21,25 +19,15 @@ const { t } = useI18n()
         :title="t('coreDam.authorCleanPhrase.model.phrase')"
         :value="authorCleanPhrase.phrase"
       />
-      <ARow
-        :title="t('coreDam.authorCleanPhrase.model.authorReplacement')"
-      >
-        <AuthorRemoteAutocompleteCachedAuthorChip  :id="authorCleanPhrase.authorReplacement"/>
+      <ARow :title="t('coreDam.authorCleanPhrase.model.authorReplacement')">
+        <AuthorRemoteAutocompleteCachedAuthorChip :id="authorCleanPhrase.authorReplacement" />
       </ARow>
 
-      <ARow
-        :title="t('coreDam.authorCleanPhrase.model.type')"
-      >
-        <AuthorCleanPhraseTypeChip
-          :type="authorCleanPhrase.type"
-        />
+      <ARow :title="t('coreDam.authorCleanPhrase.model.type')">
+        <AuthorCleanPhraseTypeChip :type="authorCleanPhrase.type" />
       </ARow>
-      <ARow
-        :title="t('coreDam.authorCleanPhrase.model.mode')"
-      >
-        <AuthorCleanPhraseModeChip
-          :mode="authorCleanPhrase.mode"
-        />
+      <ARow :title="t('coreDam.authorCleanPhrase.model.mode')">
+        <AuthorCleanPhraseModeChip :mode="authorCleanPhrase.mode" />
       </ARow>
       <ARow :title="t('coreDam.authorCleanPhrase.model.flags.wordBoundary')">
         <ABooleanValue

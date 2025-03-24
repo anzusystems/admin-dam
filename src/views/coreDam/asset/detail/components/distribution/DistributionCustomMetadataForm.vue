@@ -4,7 +4,7 @@ import {
   ACustomDataFormElement,
   type DamDistributionServiceName,
   isUndefined,
-  useDamConfigStore
+  useDamConfigStore,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'

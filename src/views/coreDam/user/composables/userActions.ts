@@ -1,12 +1,13 @@
 import { ref } from 'vue'
 import type { DamUser, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import {
-  cloneDeep, fetchDamAssetLicenceGroupListByIds,
+  cloneDeep,
+  fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserList,
   fetchDamUserListByIds,
   updateDamUser,
-  useAlerts
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
 import { storeToRefs } from 'pinia'

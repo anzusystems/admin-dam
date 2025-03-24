@@ -2,21 +2,24 @@ import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 
-export enum FooterViewUpload {
-  Hidden = 'hidden',
-  Minimal = 'minimal',
-  Compact = 'compact',
-  Full = 'full',
-}
+export const FooterViewUpload = {
+  Hidden: 'hidden',
+  Minimal: 'minimal',
+  Compact: 'compact',
+  Full: 'full',
+} as const
+
+export type FooterViewUploadType = (typeof FooterViewUpload)[keyof typeof FooterViewUpload]
+export const FooterViewUploadDefault = FooterViewUpload.Hidden
 
 const { customDialog } = useMainWrapper()
 
-const footerViewUpload = ref<FooterViewUpload>(FooterViewUpload.Hidden)
+const footerViewUpload = ref<FooterViewUploadType>(FooterViewUploadDefault)
 
 export function useAssetFooterUploadView() {
   const assetListStore = useAssetListStore()
 
-  const setFooterViewUpload = (value: FooterViewUpload) => {
+  const setFooterViewUpload = (value: FooterViewUploadType) => {
     footerViewUpload.value = value
   }
 

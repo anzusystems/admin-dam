@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "slug": "Slug",
+    "assetLicence": "Licence",
+    "type": "Type"
+  },
+  "filter": {
+    "id": "ID",
+    "type": "Type",
+    "slug": "Slug"
+  },
+  "exportType": {
+    "mobile": "Mobile",
+    "web": "Web"
+  },
+  "button": {
+    "create": "Add public export"
+  }
+}

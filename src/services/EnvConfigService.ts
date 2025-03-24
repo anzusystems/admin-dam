@@ -18,7 +18,8 @@ export const envConfig: EnvConfig = {
     apiUrl: '',
     apiTimeout: 1,
     imageUrl: '',
-    authorCleanPhraseTestSample: ''
+    adminUrl: '',
+    authorCleanPhraseTestSample: '',
   },
   notification: {
     enabled: true,
@@ -39,6 +40,7 @@ const setEnvConfig = (data: EnvConfig) => {
     envConfig.dam.apiUrl = data.dam.apiUrl
     envConfig.dam.apiTimeout = data.dam.apiTimeout
     envConfig.dam.imageUrl = data.dam.imageUrl
+    envConfig.dam.adminUrl = data.dam.adminUrl
     envConfig.dam.authorCleanPhraseTestSample = data.dam.authorCleanPhraseTestSample
     envConfig.notification.enabled = data.notification.enabled
     envConfig.notification.webSocketUrl = data.notification.webSocketUrl

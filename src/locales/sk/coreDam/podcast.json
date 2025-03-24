@@ -10,17 +10,25 @@
       "rssUrl": "RSS URL",
       "extUrl": "Externá URL podcastu",
       "mode": "Mód",
-      "lastImportStatus": "Posledný stav importu"
+      "lastImportStatus": "Posledný stav importu",
+      "webOrderPosition": "Poradie na webe",
+      "mobileOrderPosition": "Poradie v appke"
     },
     "dates": {
       "importFrom": "Import od"
     },
     "imagePreview": "Obrázok",
-    "altImage": "Alt Obrázok"
+    "altImage": "Alt Obrázok",
+    "flags": {
+      "webPublicExportEnabled": "Povolené na webe",
+      "mobilePublicExportEnabled": "Povolené v appke"
+    }
   },
   "filter": {
     "id": "ID",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "webPublicExportEnabled": "Povolené na webe",
+    "mobilePublicExportEnabled": "Povolené v appke"
   },
   "meta": {
     "create": "Vytvoriť podcast"

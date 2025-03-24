@@ -6,11 +6,11 @@ import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
 import { useDamAuthorType } from '@anzusystems/common-admin'
+import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 const { author } = useAuthorEditActions()
-
 const { v$ } = useAuthorValidation(author)
-
 const { t } = useI18n()
 
 const { authorTypeOptions } = useDamAuthorType()
@@ -55,6 +55,25 @@ const { authorTypeOptions } = useDamAuthorType()
             :label="t('coreDam.author.model.type')"
             :items="authorTypeOptions"
             data-cy="author-type"
+          />
+        </ARow>
+        <ARow>
+          <AuthorRemoteAutocomplete
+            v-model="author.currentAuthors"
+            can-be-current-author
+            :label="t('coreDam.author.model.currentAuthors')"
+            data-cy="authorCleanPhrase-authorReplacement"
+            multiple
+            clearable
+            :disabled="author.childAuthors.length !== 0"
+          />
+        </ARow>
+        <ARow :title="t('coreDam.author.model.childAuthors')">
+          <AuthorRemoteAutocompleteCachedAuthorChip
+            v-for="authorId in author.childAuthors"
+            :id="authorId"
+            :key="authorId"
+            class="pr-2"
           />
         </ARow>
       </VCol>

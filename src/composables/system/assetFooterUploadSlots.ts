@@ -1,18 +1,21 @@
 import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 
-export enum FooterViewUploadSlots {
-  Hidden = 'hidden',
-  Minimal = 'minimal',
-  Compact = 'compact',
-}
+export const FooterViewUploadSlots = {
+  Hidden: 'hidden',
+  Minimal: 'minimal',
+  Compact: 'compact',
+} as const
+
+export type FooterViewUploadSlotsType = (typeof FooterViewUploadSlots)[keyof typeof FooterViewUploadSlots]
+export const FooterViewUploadSlotsDefault = FooterViewUploadSlots.Hidden
 
 const { customDialog } = useMainWrapper()
 
-const footerViewUploadSlots = ref<FooterViewUploadSlots>(FooterViewUploadSlots.Hidden)
+const footerViewUploadSlots = ref<FooterViewUploadSlotsType>(FooterViewUploadSlotsDefault)
 
 export function useAssetFooterUploadSlotsView() {
-  const setFooterViewUploadSlots = (value: FooterViewUploadSlots) => {
+  const setFooterViewUploadSlots = (value: FooterViewUploadSlotsType) => {
     footerViewUploadSlots.value = value
   }
 

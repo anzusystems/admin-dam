@@ -7,16 +7,20 @@ const HEIGHT_COMPACT = 160
 const HEIGHT_FULL = 0
 const HEIGHT_HIDDEN = 0
 
-export enum ExternalProviderFooterViewSelected {
-  Hidden = 'hidden',
-  Minimal = 'minimal',
-  Compact = 'compact',
-  Full = 'full',
-}
+export const ExternalProviderFooterViewSelected = {
+  Hidden: 'hidden',
+  Minimal: 'minimal',
+  Compact: 'compact',
+  Full: 'full',
+} as const
+
+export type ExternalProviderFooterViewSelectedType =
+  (typeof ExternalProviderFooterViewSelected)[keyof typeof ExternalProviderFooterViewSelected]
+export const ExternalProviderFooterViewSelectedDefault = ExternalProviderFooterViewSelected.Hidden
 
 const { customFooterHeight, customDialog } = useMainWrapper()
 
-const getExternalProviderFooterViewSelectedHeight = (value: ExternalProviderFooterViewSelected) => {
+const getExternalProviderFooterViewSelectedHeight = (value: ExternalProviderFooterViewSelectedType) => {
   switch (value) {
     case ExternalProviderFooterViewSelected.Compact:
       return HEIGHT_COMPACT
@@ -29,14 +33,14 @@ const getExternalProviderFooterViewSelectedHeight = (value: ExternalProviderFoot
   }
 }
 
-const externalProviderFooterViewSelected = ref<ExternalProviderFooterViewSelected>(
-  ExternalProviderFooterViewSelected.Hidden
+const externalProviderFooterViewSelected = ref<ExternalProviderFooterViewSelectedType>(
+  ExternalProviderFooterViewSelectedDefault
 )
 
 export function useExternalProviderAssetFooterSelectedView() {
   const externalProviderAssetListStore = useExternalProviderAssetListStore()
 
-  const setExternalProviderFooterViewSelected = (value: ExternalProviderFooterViewSelected) => {
+  const setExternalProviderFooterViewSelected = (value: ExternalProviderFooterViewSelectedType) => {
     externalProviderFooterViewSelected.value = value
     customFooterHeight.value = getExternalProviderFooterViewSelectedHeight(externalProviderFooterViewSelected.value)
   }

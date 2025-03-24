@@ -1,7 +1,10 @@
 import type {
-  AnzuUserAndTimeTrackingAware, DocId,
-  DocIdNullable, IntegerId, IntegerIdNullable,
-  ResourceNameSystemAware
+  AnzuUserAndTimeTrackingAware,
+  DocId,
+  DocIdNullable,
+  IntegerId,
+  IntegerIdNullable,
+  ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 import type { AuthorCleanPhraseTypeType } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
 import type { AuthorCleanPhraseModeType } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
@@ -30,4 +33,3 @@ export interface AuthorCleanResultDto {
   authorNames: string[]
   authors: DocId[]
 }
-

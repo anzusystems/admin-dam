@@ -119,8 +119,10 @@ watch(
       #default
     >
       <div
-        :class="'dam-upload-queue__overlay dam-upload-queue__overlay--warning'+
-          ' d-flex align-center justify-center flex-column'"
+        :class="
+          'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
+            ' d-flex align-center justify-center flex-column'
+        "
       >
         <VIcon
           icon="mdi-alert"

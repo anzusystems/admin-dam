@@ -61,6 +61,11 @@
   },
   "filterTitle": "Filter",
   "noItemsFound": "No matching assets found",
+  "sibling": {
+    "title": "Sibling",
+    "select": "Select",
+    "noAsset": "No asset"
+  },
   "assetType": {
     "image": "Image",
     "audio": "Audio",

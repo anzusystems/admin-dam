@@ -33,7 +33,7 @@ export function useAuthorCleanPhraseFactory() {
 
   const createAuthorNameDto = (): AuthorNameDto => {
     return {
-      name: envConfig.dam.authorCleanPhraseTestSample
+      name: envConfig.dam.authorCleanPhraseTestSample,
     }
   }
 
@@ -41,7 +41,7 @@ export function useAuthorCleanPhraseFactory() {
     return {
       name: '',
       authors: [],
-      authorNames: []
+      authorNames: [],
     }
   }
 

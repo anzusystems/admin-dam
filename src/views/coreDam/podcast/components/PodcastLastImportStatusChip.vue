@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import {
-  type PodcastLastImportStatus,
+  type PodcastLastImportStatusType,
   usePodcastLastImportStatus,
 } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
 import { AChipNoLink } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
-    status: PodcastLastImportStatus
+    status: PodcastLastImportStatusType
   }>(),
   {}
 )

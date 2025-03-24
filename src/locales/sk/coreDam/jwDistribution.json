@@ -1,6 +1,7 @@
 {
   "model": {
     "distributionService": "Meno distribučnej služby",
+    "directSourceUrl": "Priama linka na video (mp4)",
     "texts": {
       "title": "Názov",
       "description": "Popis",

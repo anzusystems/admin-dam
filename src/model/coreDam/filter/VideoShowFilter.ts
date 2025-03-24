@@ -12,6 +12,12 @@ const filter = reactive({
   title: {
     ...makeFilter({ name: 'title', field: 'texts.title', variant: 'startsWith' }),
   },
+  webPublicExportEnabled: {
+    ...makeFilter({ name: 'webPublicExportEnabled', field: 'flags.webPublicExportEnabled' }),
+  },
+  mobilePublicExportEnabled: {
+    ...makeFilter({ name: 'mobilePublicExportEnabled', field: 'flags.mobilePublicExportEnabled' }),
+  },
 })
 
 export function useVideoShowListFilter() {

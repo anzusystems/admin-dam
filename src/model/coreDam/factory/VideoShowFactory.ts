@@ -12,6 +12,14 @@ export function useVideoShowFactory() {
       texts: {
         title: '',
       },
+      attributes: {
+        webOrderPosition: 0,
+        mobileOrderPosition: 0,
+      },
+      flags: {
+        webPublicExportEnabled: false,
+        mobilePublicExportEnabled: false,
+      },
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 1,

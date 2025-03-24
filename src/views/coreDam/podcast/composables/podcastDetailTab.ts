@@ -1,12 +1,14 @@
 import { ref } from 'vue'
 
-export enum PodcastDetailTab {
-  Detail = 'detail',
-  Episodes = 'episodes',
-  Default = Episodes,
-}
+export const PodcastDetailTab = {
+  Detail: 'detail',
+  Episodes: 'episodes',
+} as const
 
-const activeTab = ref<PodcastDetailTab>(PodcastDetailTab.Default)
+export type PodcastDetailTabType = (typeof PodcastDetailTab)[keyof typeof PodcastDetailTab]
+export const PodcastDetailTabDefault = PodcastDetailTab.Episodes
+
+const activeTab = ref<PodcastDetailTabType>(PodcastDetailTabDefault)
 
 export function usePodcastDetailTab() {
   return {

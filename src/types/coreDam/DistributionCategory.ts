@@ -4,7 +4,7 @@ import type {
   DamAssetTypeType,
   DocId,
   IntegerId,
-  ResourceNameSystemAware
+  ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 
 export interface DistributionCategory extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {

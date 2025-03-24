@@ -47,7 +47,7 @@ const modelValueComputed = computed({
 </template>
 
 <style lang="scss" scoped>
-@use "sass:map";
+@use 'sass:map';
 @use 'vuetify/lib/styles/settings/_variables.scss' as vars;
 
 .v-text-field--pill {

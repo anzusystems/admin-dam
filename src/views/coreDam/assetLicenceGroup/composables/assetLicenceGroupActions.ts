@@ -59,7 +59,7 @@ export const useAssetLicenceGroupDetailActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const res= await fetchAssetLicenceGroup(id)
+      const res = await fetchAssetLicenceGroup(id)
       addToCachedAssetLicences(res.licences)
       addToCachedExtSystems(res.extSystem)
       assetLicenceGroup.value = res
@@ -129,4 +129,3 @@ export const useAssetLicenceGroupEditActions = () => {
     resetStore: assetLicenceGroupOneStore.reset,
   }
 }
-

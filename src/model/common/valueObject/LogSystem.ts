@@ -1,14 +1,16 @@
 import { ref } from 'vue'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
 
-export enum LogSystem {
-  CoreDam = 'coreDam',
-  AdminDam = 'adminDam',
-  Default = CoreDam,
-}
+export const LogSystem = {
+  CoreDam: 'coreDam',
+  AdminDam: 'adminDam',
+} as const
+
+export type LogSystemType = (typeof LogSystem)[keyof typeof LogSystem]
+export const LogSystemDefault = LogSystem.CoreDam
 
 export function useLogSystem() {
-  const logSystemOptions = ref<ValueObjectOption<LogSystem>[]>([
+  const logSystemOptions = ref<ValueObjectOption<LogSystemType>[]>([
     {
       value: LogSystem.CoreDam,
       title: LogSystem.CoreDam,
@@ -19,7 +21,7 @@ export function useLogSystem() {
     },
   ])
 
-  const getLogSystemOption = (value: LogSystem) => {
+  const getLogSystemOption = (value: LogSystemType) => {
     return logSystemOptions.value.find((item) => item.value === value)
   }
 

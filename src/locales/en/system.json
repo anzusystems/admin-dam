@@ -1,4 +1,10 @@
 {
+  "datatable": {
+    "ordering": {
+      "webOrderPosition": "Web",
+      "mobileOrderPosition": "App"
+    }
+  },
   "upload": {
     "add": "Add to upload",
     "dragAndDrop": "Drag and drop files for upload",

@@ -68,6 +68,11 @@
       "list": "Pravidlá",
       "detail": "Pravidlo",
       "edit": "Pravidlo"
+    },
+    "publicExport": {
+      "list": "Verejné exporty",
+      "detail": "Verejný export",
+      "edit": "Verejný export"
     }
   },
   "anzuUser": {

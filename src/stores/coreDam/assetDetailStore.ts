@@ -9,6 +9,7 @@ interface State {
   asset: AssetDetailItemDto | null
   authorConflicts: DocId[]
   loader: boolean
+  siblingLoader: boolean
   detail: boolean
   view: 'list' | 'queue'
   metadataAreTouched: boolean
@@ -23,6 +24,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', {
     asset: null,
     authorConflicts: [],
     loader: false,
+    siblingLoader: false,
     detail: false,
     view: 'list',
     metadataAreTouched: false,

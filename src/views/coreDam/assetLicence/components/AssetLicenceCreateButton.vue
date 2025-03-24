@@ -7,7 +7,7 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete
+  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'

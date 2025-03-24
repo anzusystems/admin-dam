@@ -4,10 +4,10 @@ import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
-import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination } from '@anzusystems/common-admin'
+import { ADatatablePagination, DamAssetType, type DamAssetTypeType, type DocId } from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import AssetSibling from '@/views/coreDam/asset/detail/components/slots/AssetSibling.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -32,7 +32,7 @@ const {
   makeMainFile,
   duplicateSlot,
   switchSlot,
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+  // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
 
 onMounted(async () => {
@@ -50,6 +50,11 @@ onMounted(async () => {
       {{ t('coreDam.asset.slots.actions.refreshList') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
+  <AssetSibling
+    v-if="assetType === DamAssetType.Video || assetType === DamAssetType.Audio"
+    :asset-type="assetType"
+    :asset-id="assetId"
+  />
   <div
     v-if="assetSlotsStore.loader"
     class="d-flex w-100 h-100 justify-center align-center pa-2"

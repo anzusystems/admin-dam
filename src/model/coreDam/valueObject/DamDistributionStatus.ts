@@ -1,4 +1,8 @@
-import { DamDistributionStatus, type DamDistributionStatusType, type ValueObjectOption } from '@anzusystems/common-admin'
+import {
+  DamDistributionStatus,
+  type DamDistributionStatusType,
+  type ValueObjectOption,
+} from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 

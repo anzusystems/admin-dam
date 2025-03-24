@@ -62,6 +62,7 @@ const breadcrumbs = computed(() => {
 <template>
   <Teleport
     v-if="canTeleport"
+    defer
     to="#anzu-actionbar"
   >
     <div class="flex-grow-1 flex-shrink-1 min-width-0 overflow-hidden">

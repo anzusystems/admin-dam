@@ -4,11 +4,21 @@
     "licence": "Licencie",
     "texts": {
       "title": "Nadpis"
+    },
+    "attributes": {
+      "webOrderPosition": "Poradie na webe",
+      "mobileOrderPosition": "Poradie v appke"
+    },
+    "flags": {
+      "webPublicExportEnabled": "Povolené na webe",
+      "mobilePublicExportEnabled": "Povolené v appke"
     }
   },
   "filter": {
     "id": "ID",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "webPublicExportEnabled": "Povolené na webe",
+    "mobilePublicExportEnabled": "Povolené v appke"
   },
   "meta": {
     "create": "Vytvoriť video reláciu"

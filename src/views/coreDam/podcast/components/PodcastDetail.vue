@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { usePodcastOneStore } from '@/stores/coreDam/podcastStore'
@@ -31,6 +31,20 @@ const altImgSrc = computed(() => {
         :title="t('coreDam.podcast.model.texts.description')"
         :value="podcast.texts.description"
       />
+      <ARow
+        :title="t('coreDam.podcast.model.attributes.webOrderPosition')"
+        :value="podcast.attributes.webOrderPosition"
+      />
+      <ARow
+        :title="t('coreDam.podcast.model.attributes.mobileOrderPosition')"
+        :value="podcast.attributes.mobileOrderPosition"
+      />
+      <ARow :title="t('coreDam.podcast.model.flags.webPublicExportEnabled')">
+        <ABooleanValue :value="podcast.flags.webPublicExportEnabled" />
+      </ARow>
+      <ARow :title="t('coreDam.podcast.model.flags.mobilePublicExportEnabled')">
+        <ABooleanValue :value="podcast.flags.mobilePublicExportEnabled" />
+      </ARow>
       <ARow :title="t('coreDam.podcast.model.attributes.mode')">
         <PodcastModeChip :mode="podcast.attributes.mode" />
       </ARow>

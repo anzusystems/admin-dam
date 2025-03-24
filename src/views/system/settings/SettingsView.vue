@@ -3,6 +3,7 @@ import {
   ALanguageSelect,
   AThemeSelect,
   AvailableLanguagesSymbol,
+  type DamCurrentUserDto,
   DefaultLanguageSymbol,
   type LanguageCode,
   modifyLanguageSettings,
@@ -10,7 +11,8 @@ import {
 import { useI18n } from 'vue-i18n'
 import { inject } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { useAuth } from '@/composables/auth/auth.ts'
+import { SYSTEM_DAM } from '@/model/systems.ts'
 
 const { t } = useI18n()
 const configAvailableLanguages = inject<LanguageCode[]>(AvailableLanguagesSymbol, [])
@@ -30,6 +32,9 @@ const loadLanguageMessages = async (code: LanguageCode | 'default') => {
 const afterLanguageChange = async (language: LanguageCode) => {
   await loadLanguageMessages(language)
 }
+
+const { useCurrentUser } = useAuth()
+const { isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 </script>
 
 <template>
@@ -48,7 +53,7 @@ const afterLanguageChange = async (language: LanguageCode) => {
             </VCol>
             <VCol>
               <ALanguageSelect
-                :system="SYSTEM_CORE_DAM"
+                :is-administrator="isSuperAdmin"
                 @after-change="afterLanguageChange"
               />
             </VCol>

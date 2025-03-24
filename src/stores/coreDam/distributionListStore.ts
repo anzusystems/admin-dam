@@ -1,7 +1,14 @@
 import { fetchDistribution } from '@/services/api/coreDam/distributionApi'
-import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
-import type { DistributionAuth } from '@/types/coreDam/DistributionAuth'
-import { DistributionAuthStatus } from '@/types/coreDam/DistributionAuth'
+import type {
+  DistributionCustomItem,
+  DistributionJwItem,
+  DistributionYoutubeItem
+} from '@/types/coreDam/Distribution'
+import {
+  type DistributionAuth,
+  DistributionAuthStatus,
+  type DistributionAuthStatusType,
+} from '@/types/coreDam/DistributionAuth'
 import type { DamDistributionStatusType, DocId } from '@anzusystems/common-admin'
 import { type DamDistributionServiceName, DamDistributionStatus, isNull } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
@@ -71,7 +78,10 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
           }
       }
     },
-    setAuthStatus(distributionService: DamDistributionServiceName, status = DistributionAuthStatus.Idle) {
+    setAuthStatus(
+      distributionService: DamDistributionServiceName,
+      status: DistributionAuthStatusType = DistributionAuthStatus.Idle
+    ) {
       const authItem = this.getDistributionAuth(distributionService)
       if (authItem) {
         authItem.status = status

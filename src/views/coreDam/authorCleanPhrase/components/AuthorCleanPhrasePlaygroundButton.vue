@@ -1,19 +1,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  AChipNoLink,
-  ADialogToolbar, AFormTextarea,
-  ARow,
-  useAlerts
-} from '@anzusystems/common-admin'
+import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow, useAlerts } from '@anzusystems/common-admin'
 import { playground } from '@/services/api/coreDam/AuthorCleanPhraseApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAuthorCleanPhraseFactory } from '@/model/coreDam/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
-import AuthorRemoteAutocompleteCachedAuthorChip
-  from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 withDefaults(
   defineProps<{
@@ -58,14 +52,12 @@ const onConfirm = async () => {
       addToCachedAuthors(authorId)
     })
     fetchCachedAuthors()
-
   } catch (error) {
     showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
   }
 }
-
 </script>
 
 <template>
@@ -95,9 +87,7 @@ const onConfirm = async () => {
           data-cy="authorCleanPhrase-episode"
           :label="t('coreDam.authorCleanPhrase.dto.name')"
         />
-        <ARow
-          :title="t('coreDam.authorCleanPhrase.dto.authorNames')"
-        >
+        <ARow :title="t('coreDam.authorCleanPhrase.dto.authorNames')">
           <AChipNoLink
             v-for="authorName in authorCleanPhraseRes.authorNames"
             :key="authorName"
@@ -106,15 +96,12 @@ const onConfirm = async () => {
             {{ authorName }}
           </AChipNoLink>
         </ARow>
-        <ARow
-          :title="t('coreDam.authorCleanPhrase.dto.authors')"
-        >
+        <ARow :title="t('coreDam.authorCleanPhrase.dto.authors')">
           <AuthorRemoteAutocompleteCachedAuthorChip
             v-for="authorId in authorCleanPhraseRes.authors"
-            :key="authorId"
             :id="authorId"
-          >
-          </AuthorRemoteAutocompleteCachedAuthorChip>
+            :key="authorId"
+          />
         </ARow>
       </VCardText>
       <VCardActions>

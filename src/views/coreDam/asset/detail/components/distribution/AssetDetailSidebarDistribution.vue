@@ -9,8 +9,9 @@ import DistributionNewDialog from '@/views/coreDam/asset/detail/components/distr
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
 import type { AssetFileProcessStatusType, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import DistributionManage from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionManage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -54,6 +55,9 @@ const addNew = () => {
 onMounted(async () => {
   await getList()
 })
+
+const showAdvancedSettings = ref(false)
+const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvancedSettings.value)
 </script>
 
 <template>
@@ -102,6 +106,24 @@ onMounted(async () => {
         @change="getList"
       />
     </div>
+
+    <ABtnTertiary
+      density="compact"
+      class="mb-5 pl-0 pr-0 mt-5 mb-5"
+      @click.stop="toggleAdvancedSettings"
+    >
+      <span v-if="showAdvancedSettings">{{ t('coreDam.distribution.meta.hideAdvanced') }}</span>
+      <span v-else>{{ t('coreDam.distribution.meta.showAdvanced') }}</span>
+    </ABtnTertiary>
+
+    <DistributionManage
+      v-if="showAdvancedSettings"
+      :asset-type="assetType"
+      :asset-id="assetId"
+      :is-active="isActive"
+      @on-distribution-upsert="reloadList"
+      @on-distribution-delete="reloadList"
+    />
     <DistributionNewDialog
       :key="dialogKey"
       v-model="dialogNew"
