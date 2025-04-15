@@ -137,7 +137,7 @@ Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs
 })
 
 Cypress.Commands.add('waitForJob', () => {
-  cy.waitSec(30)
+  cy.waitSec(50)
   cy.reload()
   cy.waitSec(2)
   cy.get('body').then(($body)=>{

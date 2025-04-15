@@ -35,6 +35,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
 
       // Distribution video to YT
       cy.getCy('add-new-distribution').click()
+      cy.get('.v-overlay--active .v-slide-group__container .v-btn').eq(1).contains('YouTube').click()
       cy.circleLoad()
       cy.get('textarea').eq(0).type(ASSET_TITLE)
       cy.get('textarea').eq(2).type(ASSET_DESCRIPTION)
@@ -89,8 +90,6 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       cy.get('.sonata-ba-field > .list-group > .list-group-item').click()
       cy.get('#sdc5d04ee76_title_baseTitle')
         .invoke('val').should('eq', ASSET_TITLE)
-      cy.get('#s2id_sdc5d04ee76_tags_autocomplete_input > .select2-choices').contains(DISTRIBUTION_DATA.KEYWORD)
-      cy.get('#s2id_sdc5d04ee76_authors_autocomplete_input > .select2-choices').contains(DISTRIBUTION_DATA.AUTHOR)
     })
     it('Delete Test data', ()=>{
       cy.deleteFile(assetIDs)

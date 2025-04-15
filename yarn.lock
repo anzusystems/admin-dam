@@ -1936,7 +1936,7 @@ __metadata:
     "@vuelidate/validators": "npm:^2.0.4"
     "@vueuse/core": "npm:12.7.0"
     "@vueuse/integrations": "npm:12.7.0"
-    axios: "npm:^1.8.1"
+    axios: "npm:^1.8.4"
     cropperjs: "npm:^1.6.2"
     cypress: "npm:^14.1.0"
     cypress-downloadfile: "npm:1.2.4"
@@ -1960,7 +1960,7 @@ __metadata:
     universal-cookie: "npm:^7.2.2"
     unplugin: "npm:^2.2.0"
     uuid: "npm:^11.1.0"
-    vite: "npm:^6.2.0"
+    vite: "npm:^6.2.6"
     vite-plugin-vuetify: "npm:^2.1.0"
     vue: "npm:3.5.13"
     vue-i18n: "npm:^11.1.1"
@@ -2175,14 +2175,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.8.1":
-  version: 1.8.1
-  resolution: "axios@npm:1.8.1"
+"axios@npm:^1.8.4":
+  version: 1.8.4
+  resolution: "axios@npm:1.8.4"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/5a09a2b39e724e018bc94d0424bb1a6042e71864039fbcc8c8d9dd50f3acd9d01f81b895994c9b46bc82c026afa3dfd1ec343a27bfe4723b70841f3b3dd6edfa
+  checksum: 10/a10f0dd836613924e48cf03dc2eff3fd21b14f764807aedaee4880a70c0f142aaebdb21da7ce27104d4c16ca00d0e452a20a20851f60e385a8d5bad1ae909d46
   languageName: node
   linkType: hard
 
@@ -6799,9 +6799,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "vite@npm:6.2.0"
+"vite@npm:^6.2.6":
+  version: 6.2.6
+  resolution: "vite@npm:6.2.6"
   dependencies:
     esbuild: "npm:^0.25.0"
     fsevents: "npm:~2.3.3"
@@ -6847,7 +6847,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/5ffa8bb22881276d12cc38d15feaf7df6c95f902ac6c4cd983f27af1cdb6929cf9e3ef9d6dfe74e8af27f1c1adf4cdfeeeed7fada8a53011575241bdaf0ca6e5
+  checksum: 10/d8fb01a190e31fcf2189e028aed444d68255b5397d5e2c52fa73f8a0de0b052b06fbbe3793c88e7992f4297832336a23cf8bec14c88b9c2ef8aa0bce98219e50
   languageName: node
   linkType: hard
 
