@@ -11,15 +11,15 @@ import { useI18n } from 'vue-i18n'
 import {
   DistributionItemResourceName, type DistributionItemResourceNameType,
   type DistributionUpdateDto
-} from '@/types/coreDam/Distribution.ts'
+} from '@/types/coreDam/Distribution'
 import DistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionForm.vue'
-import { DistributionUpdateDtoValidationScopeSymbol } from '@/components/validationScopes.ts'
+import { DistributionUpdateDtoValidationScopeSymbol } from '@/components/validationScopes'
 import {
   useDistributionUpdateDtoValidations
-} from '@/views/coreDam/asset/detail/composables/distributionValidations.ts'
-import type { AssetSlot } from '@/types/coreDam/AssetSlot.ts'
+} from '@/views/coreDam/asset/detail/composables/distributionValidations'
+import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
-import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus.ts'
+import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
 import { upsertAssetDistributions } from '@/services/api/coreDam/distributionApi'
 
 const props = withDefaults(

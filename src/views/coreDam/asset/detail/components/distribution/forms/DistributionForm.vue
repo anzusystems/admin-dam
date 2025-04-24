@@ -3,7 +3,7 @@ import { ACard, type ValidationScope } from '@anzusystems/common-admin'
 import {
   DistributionItemResourceName,
   type DistributionItemResourceNameType, type DistributionUpdateDto
-} from '@/types/coreDam/Distribution.ts'
+} from '@/types/coreDam/Distribution'
 import { computed } from 'vue'
 import JwDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/JwDistributionForm.vue'
 import YoutubeDistributionForm
