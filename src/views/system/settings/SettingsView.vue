@@ -11,8 +11,8 @@ import {
 import { useI18n } from 'vue-i18n'
 import { inject } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-import { useAuth } from '@/composables/auth/auth.ts'
-import { SYSTEM_DAM } from '@/model/systems.ts'
+import { useAuth } from '@/composables/auth/auth'
+import { SYSTEM_DAM } from '@/model/systems'
 
 const { t } = useI18n()
 const configAvailableLanguages = inject<LanguageCode[]>(AvailableLanguagesSymbol, [])
