@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { DistributionItem } from '@/types/coreDam/Distribution.ts'
+import type { DistributionItem } from '@/types/coreDam/Distribution'
 import { computed } from 'vue'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem.ts'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient.ts'
+import { damClient } from '@/services/api/clients/damClient'
 
 const props = withDefaults(
   defineProps<{

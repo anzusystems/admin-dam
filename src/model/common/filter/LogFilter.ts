@@ -8,7 +8,7 @@ import {
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/logApi'
 import type { LogSystemType } from '@/model/common/valueObject/LogSystem'
-import { LogTypeDefault } from '@/model/common/valueObject/LogType.ts'
+import { LogTypeDefault } from '@/model/common/valueObject/LogType'
 
 const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper('common', ENTITY)
 

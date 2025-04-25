@@ -15,18 +15,18 @@ import {
   DistributionItemResourceName,
   type DistributionItemResourceNameType,
   type DistributionUpdateDto,
-} from '@/types/coreDam/Distribution.ts'
+} from '@/types/coreDam/Distribution'
 import DistributionManageDialog
   from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionManageDialog.vue'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore.ts'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import DistributionItemView from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionItemView.vue'
-import { useDistributionYoutubeFactory } from '@/model/coreDam/factory/DistributionYoutubeFactory.ts'
-import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory.ts'
+import { useDistributionYoutubeFactory } from '@/model/coreDam/factory/DistributionYoutubeFactory'
+import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
 import {
   distributionItemIsJwItem, distributionItemIsYoutubeItem, distributionItemIsCustomItem,
-} from '@/types/coreDam/Distribution.ts'
-import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory.ts'
-import { deleteDistribution } from '@/services/api/coreDam/distributionApi.ts'
+} from '@/types/coreDam/Distribution'
+import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
+import { deleteDistribution } from '@/services/api/coreDam/distributionApi'
 
 const props = withDefaults(
   defineProps<{

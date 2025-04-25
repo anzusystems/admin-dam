@@ -7,12 +7,12 @@ import {
 import {
   DistributionItemResourceName,
   type JwDistributionUpdateDto
-} from '@/types/coreDam/Distribution.ts'
+} from '@/types/coreDam/Distribution'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   useJwDistributionUpdateDtoValidations
-} from '@/views/coreDam/asset/detail/composables/distributionValidations.ts'
+} from '@/views/coreDam/asset/detail/composables/distributionValidations'
 
 const props = withDefaults(
   defineProps<{
