@@ -58,26 +58,26 @@ describe(`Test audio slots function, Env: ${CY.cfg}`,
     cy.get('.v-list').should('include.text', 'premiumbonus')
     cy.get('.v-list').contains('premium').click()
     cy.getCyVisibleClick('button-unset')
-    cy.get(':nth-child(1) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > :nth-child(1) > .v-row > :nth-child(1)') //free slot block
       .invoke('text').then((freeText)=>{
         cy.wrap(freeText).should('include', 'Súbor je neprístupný')
         cy.wrap(freeText).should('include', 'free')
         cy.wrap(freeText).should('include', 'Hlavný súbor')
     })
-    cy.get(':nth-child(2) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > .v-row > :nth-child(1)') //premium slot block
       .invoke('text').then((premiumText)=>{
         cy.wrap(premiumText).should('include', 'Súbor je neprístupný')
         cy.wrap(premiumText).should('include', 'premium')
         cy.wrap(premiumText).should('include', 'Hlavný súbor')
     })
     cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').click()
-    cy.get(':nth-child(1) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > :nth-child(1) > .v-row > :nth-child(1)') //free slot block
       .invoke('text').then((freeText)=>{
       cy.wrap(freeText).should('include', 'Súbor je neprístupný')
       cy.wrap(freeText).should('include', 'free')
       cy.wrap(freeText).should('include', 'Hlavný súbor')
     })
-    cy.get(':nth-child(2) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > .v-row > :nth-child(1)') //premium slot block
       .invoke('text').then((premiumText)=>{
       cy.wrap(premiumText).should('include', 'Súbor je neprístupný')
       cy.wrap(premiumText).should('include', 'premium')
@@ -85,13 +85,13 @@ describe(`Test audio slots function, Env: ${CY.cfg}`,
     })
     cy.getCyVisibleClick('button-podcast')
     cy.getCyVisibleClick('button-slots')
-    cy.get(':nth-child(1) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > :nth-child(1) > .v-row > :nth-child(1)') //free slot block
       .invoke('text').then((freeText)=>{
       cy.wrap(freeText).should('include', 'Súbor je neprístupný')
       cy.wrap(freeText).should('include', 'free')
       cy.wrap(freeText).should('include', 'Hlavný súbor')
     })
-    cy.get(':nth-child(2) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > .v-row > :nth-child(1)') //premium slot block
       .invoke('text').then((premiumText)=>{
       cy.wrap(premiumText).should('include', 'Súbor je neprístupný')
       cy.wrap(premiumText).should('include', 'premium')
@@ -107,14 +107,14 @@ describe(`Test audio slots function, Env: ${CY.cfg}`,
     cy.getCy('button-cancel').should('be.visible')
     cy.getCy('button-remove').should('be.visible')
     cy.getCyVisibleClick('button-unset')
-    cy.get(':nth-child(1) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > :nth-child(1) > .v-row > :nth-child(1)') //free slot block
       .invoke('text').then((freeText)=>{
       cy.wrap(freeText).should('include', 'free')
       cy.wrap(freeText).should('include', 'Žiaden súbor')
       expect(freeText).not.to.include('premium')
       expect(freeText).not.to.include('Hlavný súbor')
     })
-    cy.get(':nth-child(2) > .v-row > :nth-child(1)')
+    cy.get(':nth-child(2) > .v-row > :nth-child(1)') //premium slot block
       .invoke('text').then((premiumText)=>{
         cy.wrap(premiumText).should('include', 'Súbor je neprístupný')
         cy.wrap(premiumText).should('include', 'premium')
@@ -177,6 +177,25 @@ describe(`Test audio slots function, Env: ${CY.cfg}`,
         cy.wrap(bonusText).should('include', 'Súbor je prístupný')
         cy.wrap(bonusText).should('include', 'bonus')
         cy.wrap(bonusText).should('include', 'sample')
+    })
+  })
+  it('Twin slot', ()=>{
+    cy.visit(`/asset/${assetIDs}`)
+    cy.api_waitPageLoad('asset-edit')
+    cy.getCyVisibleClick('button-slots')
+    cy.get('.v-btn').contains('Pridať').click()
+    cy.get('.asset-list-tiles__item .line-clamp-1').eq(0).invoke('text').then((twinVideoAssetTitle)=> {
+      cy.get('.asset-list-tiles__item').eq(0).click()
+      cy.get('.v-btn').contains('Potvrdiť').click()
+      cy.get('.sidebar-info__content .v-chip--link').should('be.visible').click()
+      cy.get('[data-cy="custom-field-title"] textarea[rows]')
+        .should('have.value', twinVideoAssetTitle)
+      cy.visit(`/asset/${assetIDs}`)
+      cy.api_waitPageLoad('asset-edit')
+      cy.getCyVisibleClick('button-slots')
+      cy.get('.sidebar-info__content .v-chip--link').should('be.visible')
+      cy.get('.mdi-trash-can-outline').click()
+      cy.get('.sidebar-info__content .v-chip--link').should('not.exist')
     })
   })
   it('Delete Test data', ()=>{

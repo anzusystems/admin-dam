@@ -16,12 +16,13 @@ describe(`Test job function, Env: ${CY.cfg}`,
       cy.prepareData('audio/sample.mp3',true, assetIDs)
     })
     it('Test podcast synchronization JOB', ()=>{
-      cy.request(`${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/licence/100000/search?limit=6
-      &offset=0&order[createdAt]=desc&type=audio&status=with_file&visible=true&generatedBySystem=false&inPodcast=true`)
+      cy.request(`${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/licence/100000/search?limit=10
+      &offset=0&order[createdAt]=desc&type=audio&status=with_file&visible=true&generatedBySystem=false&inPodcast=true
+      &distributedInServices=artemis_podcast_cms`)
         .then((response)=>{
-          const assetID = response.body.data[5].id
-          const podcastID = response.body.data[5].podcasts[0]
-          const assetTitle = response.body.data[5].texts.displayTitle
+          const assetID = response.body.data[8].id
+          const podcastID = response.body.data[8].podcasts[0]
+          const assetTitle = response.body.data[8].texts.displayTitle
           cy.visit(`/podcast/${podcastID}`)
           cy.getCy('podcast-list').click()
           cy.getCy('podcast-id').contains(podcastID)
@@ -64,6 +65,17 @@ describe(`Test job function, Env: ${CY.cfg}`,
                 cy.wrap(premiumText).should('include', 'premium')
                 cy.wrap(premiumText).should('include', 'Hlavný súbor')
               })
+
+              cy.visit(`${CY.url.proto}://admin-dam.${CY.url.domain}/podcast/${podcastID}`)
+              cy.getCy('episode-list').click()
+              cy.getCy('table-detail').eq(0).click()
+              cy.contains('h4', 'Povolené na webe')
+                .parent()
+                .should('contain.text', 'nie')
+              cy.contains('h4', 'Povolené v appke')
+                .parent()
+                .should('contain.text', 'nie')
+
               cy.visit('/job')
               cy.getCy('button-create').click()
               cy.getCy('job-select').click()
@@ -76,10 +88,10 @@ describe(`Test job function, Env: ${CY.cfg}`,
               cy.waitForJob()
               cy.visit(`asset/${assetIDs[0]}`)
               cy.getCy('button-distribution').click()
-              cy.get('.sidebar-info__content .text-body-2', { timeout: 30000 }).contains('Distribuovaný')
+              cy.get('.sidebar-info__content .text-body-2').contains('Distribuovaný')
 
               cy.getCy('button-slots').click()
-              cy.get(':nth-child(1) > .v-row > :nth-child(1)')
+              cy.get(':nth-child(2) > :nth-child(1) > .v-row > :nth-child(1)')
                 .invoke('text').then((freeTextBlock)=> {
                 cy.wrap(freeTextBlock).should('include', 'Súbor je neprístupný')
                 cy.wrap(freeTextBlock).should('include', 'free')
@@ -91,6 +103,16 @@ describe(`Test job function, Env: ${CY.cfg}`,
                 cy.wrap(premiumTextBlock).should('include', 'Hlavný súbor')
                 cy.wrap(premiumTextBlock).should('include', 'sample')
               })
+
+              cy.visit(`${CY.url.proto}://admin-dam.${CY.url.domain}/podcast/${podcastID}`)
+              cy.getCy('episode-list').click()
+              cy.getCy('table-detail').eq(0).click()
+              cy.contains('h4', 'Povolené na webe')
+                .parent()
+                .should('contain.text', 'áno')
+              cy.contains('h4', 'Povolené v appke')
+                .parent()
+                .should('contain.text', 'áno')
           })
         })
     })

@@ -18,6 +18,7 @@ export default defineConfig({
   defaultCommandTimeout: 10000,
   viewportHeight: 1080,
   viewportWidth: 1920,
+  chromeWebSecurity: false,
   env: {
     cfg: 'stg', // local or stg
     loginUser: 'admin',
