@@ -11,17 +11,14 @@ describe(`List mode, Env: ${CY.cfg}`, () => {
       // Click the second <td> inside the row
       cy.get('td').eq(2).click();
       // Click on copy button
-      cy.get('.mdi-content-copy').first().click({force: true});
-
+      cy.getCy('table-copy').click();
     });
 
     // Confirm that success message appears
-    cy.get('.v-alert')
-      .should('be.visible')
-      .and('contain.text', 'ID bolo skopírované do schránky.');
+    cy.alertMessage('ID bolo skopírované do schránky')
 
     // Get the ID text to compare
-    cy.get('.anzu-copy-text').find('span').first().should('exist').should('be.visible').invoke('text').then((expectedId) => {
+    cy.get('.anzu-copy-text').find('span').first().invoke('text').then((expectedId) => {
       // Read from clipboard and compare
       cy.window().then((win) => {
         win.navigator.clipboard.readText().then((clipText) => {
@@ -32,7 +29,3 @@ describe(`List mode, Env: ${CY.cfg}`, () => {
 
   });
 });
-
-
-
-
