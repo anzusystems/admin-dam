@@ -2,7 +2,7 @@
 
 import { CY } from '../../utils/common'
 
-describe(`Layout Mode Switcher, Env: ${CY.cfg}`, () => {
+describe(`Layout Mode Switcher, Env: ${CY.cfg}`, { tags: ['@mode-toggle', '@display-modes'] }, () => {
   it('should display masonry layout in Tile mode', () => {
     cy.get('.mdi-view-compact').click();
 

@@ -2,7 +2,7 @@
 
 import { CY } from '../../utils/common'
 
-describe(`List mode, Env: ${CY.cfg}`, () => {
+describe(`List mode, Env: ${CY.cfg}`, { tags: ['@list-mode', '@display-modes'] }, () => {
   it('should copy ID to clipboard and show success label', () => {
     // Enable list mode
     cy.get('.mdi-view-headline').click();
