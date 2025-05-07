@@ -40,6 +40,12 @@ const filter = reactive({
   userId: {
     ...makeFilter({ name: 'userId', field: 'context.userId' }),
   },
+  resourceName: {
+    ...makeFilter({ name: 'resourceName', field: 'context.resourceName' }),
+  },
+  resourceId: {
+    ...makeFilter({ name: 'resourceIds', field: 'context.resourceIds', variant: 'in' }),
+  },
   datetimeFrom: {
     ...makeFilter({
       name: 'datetimeFrom',

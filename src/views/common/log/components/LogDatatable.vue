@@ -51,6 +51,9 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
     { key: 'message' },
     { key: 'context.appVersion' },
     { key: 'context.contextId' },
+    { key: 'context.httpStatus' },
+    { key: 'context.resourceName' },
+    { key: 'context.resourceIds' },
     { key: 'context.userId' },
     { key: 'context.ip' },
   ],
@@ -123,6 +126,9 @@ defineExpose({
           <div class="line-clamp-2">
             {{ item.message }}
           </div>
+        </template>
+        <template #item.context.resourceIds="{ item }: { item: DatatableItem }">
+          {{ item.context.resourceIds.join(', ') }}
         </template>
         <template #item.context.contextId="{ item }: { item: DatatableItem }">
           <ACopyText :value="item.context.contextId" />

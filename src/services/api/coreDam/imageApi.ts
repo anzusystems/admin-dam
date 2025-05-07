@@ -1,5 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { AssetFileRoute, DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import { apiDeleteOne, type AssetFileRoute, type DocId, type UploadQueueItem } from '@anzusystems/common-admin'
 import {
   apiFetchOne,
   HTTP_STATUS_CREATED,
@@ -181,25 +181,8 @@ export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
   })
 }
 
-export const deleteImage = (imageId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + imageId
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const deleteImage = (imageId: DocId) =>
+  apiDeleteOne(damClient, END_POINT + '/:id', { id: imageId }, SYSTEM_CORE_DAM, ENTITY )
 
 export const makeMainFile = (imageId: DocId, assetId: DocId) => {
   return new Promise((resolve, reject) => {

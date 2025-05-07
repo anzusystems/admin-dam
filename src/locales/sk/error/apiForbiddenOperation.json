@@ -9,5 +9,6 @@
   "not_allowed_download": "Stiahnutie súboru nie je povolené.",
   "licence_mismatch": "Pri akcii práca s nekorektným ID licencie (ID mismatch). V prípade potreby kontaktuje administrátora.",
   "asset_file_delete_during_reorder": "Nastala chyba počas zmeny poradia. V prípade potreby kontaktuje administrátora.",
-  "file_upload_too_many_files": "Prekročený limit počtu nahrávaných súborov."
+  "file_upload_too_many_files": "Prekročený limit počtu nahrávaných súborov.",
+  "file_is_used": "Súbor sa používa."
 }
