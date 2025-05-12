@@ -8,6 +8,7 @@
   "filter": {
     "id": "ID",
     "name": "Name",
+    "extSystem": "Ext system",
     "slug": "Slug"
   }
 }

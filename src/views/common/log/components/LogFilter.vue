@@ -10,7 +10,7 @@ import {
 } from '@anzusystems/common-admin'
 import { useLogSystem } from '@/model/common/valueObject/LogSystem'
 import { ref } from 'vue'
-import { LogType, useLogType } from '@/model/common/valueObject/LogType'
+import { useLogType } from '@/model/common/valueObject/LogType'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -155,7 +155,6 @@ const { logSystemOptions } = useLogSystem()
             />
           </VCol>
           <VCol
-            v-if="logFilter.type.model === LogType.Audit"
             cols="12"
             sm="6"
           >
@@ -165,7 +164,6 @@ const { logSystemOptions } = useLogSystem()
             />
           </VCol>
           <VCol
-            v-if="logFilter.type.model === LogType.Audit"
             cols="12"
             sm="6"
           >

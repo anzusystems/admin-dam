@@ -12,6 +12,9 @@ const filter = reactive({
   extId: {
     ...makeFilter({ name: 'extId' }),
   },
+  extSystem: {
+    ...makeFilter({ name: 'extSystem' }),
+  },
 })
 
 export function useAssetLicenceListFilter() {
