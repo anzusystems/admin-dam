@@ -9,5 +9,6 @@
   "not_allowed_download": "not_allowed_download error",
   "licence_mismatch": "licence_mismatch error",
   "asset_file_delete_during_reorder": "asset_file_delete_during_reorder error",
-  "file_upload_too_many_files": "file_upload_too_many_files error"
+  "file_upload_too_many_files": "file_upload_too_many_files error",
+  "file_is_used": "File is used."
 }

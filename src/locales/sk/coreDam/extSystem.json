@@ -8,6 +8,7 @@
   "filter": {
     "id": "ID",
     "name": "Meno",
+    "extSystem": "Externý systém",
     "slug": "Slug"
   }
 }

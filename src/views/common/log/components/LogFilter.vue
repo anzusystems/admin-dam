@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useLogType } from '@/model/common/valueObject/LogType'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import {
   AFilterDatetimePicker,
@@ -11,6 +10,7 @@ import {
 } from '@anzusystems/common-admin'
 import { useLogSystem } from '@/model/common/valueObject/LogSystem'
 import { ref } from 'vue'
+import { useLogType } from '@/model/common/valueObject/LogType'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -151,6 +151,24 @@ const { logSystemOptions } = useLogSystem()
           >
             <AFilterInteger
               v-model="logFilter.userId"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+          <VCol
+            cols="12"
+            sm="6"
+          >
+            <AFilterString
+              v-model="logFilter.resourceName"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+          <VCol
+            cols="12"
+            sm="6"
+          >
+            <AFilterString
+              v-model="logFilter.resourceId"
               @update:model-value="onAnyFilterUpdate"
             />
           </VCol>

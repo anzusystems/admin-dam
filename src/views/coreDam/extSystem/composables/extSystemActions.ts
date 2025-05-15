@@ -1,5 +1,11 @@
 import { ref } from 'vue'
-import type { DamExtSystem, FilterBag, Pagination } from '@anzusystems/common-admin'
+import {
+  type DamExtSystem, fetchDamExtSystemListByIds,
+  type FilterBag,
+  type IntegerId,
+  type Pagination,
+  type ValueObjectOption
+} from '@anzusystems/common-admin'
 import { fetchDamExtSystemList, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
 import { fetchExtSystem, updateExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { storeToRefs } from 'pinia'
@@ -8,6 +14,7 @@ import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
+import type { AxiosInstance } from 'axios'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -18,6 +25,31 @@ const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
+
+export const useExtSystemSelectActions = (client: () => AxiosInstance) => {
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    const extSystems = await fetchDamExtSystemList(client, pagination, filterBag)
+
+    return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
+      title: extSystem.slug,
+      value: extSystem.id,
+    }))
+  }
+
+  const fetchItemsByIds = async (ids: IntegerId[]) => {
+    const extSystems = await fetchDamExtSystemListByIds(client, ids)
+
+    return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
+      title: extSystem.slug,
+      value: extSystem.id,
+    }))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
+  }
+}
 
 export const useExtSystemListActions = () => {
   const listItems = ref<DamExtSystem[]>([])
