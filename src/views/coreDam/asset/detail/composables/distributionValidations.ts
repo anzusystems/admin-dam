@@ -4,10 +4,10 @@ import type { Ref } from 'vue'
 import type {
   DistributionUpdateDto,
   JwDistributionUpdateDto, YoutubeDistributionUpdateDto
-} from '@/types/coreDam/Distribution.ts'
+} from '@/types/coreDam/Distribution'
 import {
   DistributionUpdateDtoValidationScopeSymbol,
-} from '@/components/validationScopes.ts'
+} from '@/components/validationScopes'
 
 export function useDistributionUpdateDtoValidations(distribution: Ref<DistributionUpdateDto>) {
   const { required } = useValidate()

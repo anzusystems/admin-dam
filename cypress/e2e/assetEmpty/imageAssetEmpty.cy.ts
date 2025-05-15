@@ -31,7 +31,8 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
       cy.waitSec(1)
       cy.get('.sidebar-info__content').invoke('text').then((sidebarText) => {
         cy.wrap(sidebarText).should('include', 'Náhľady')
-        cy.wrap(sidebarText).should('include', 'Náhľad obrázku na mobile, počítači alebo v aplikácii')
+        cy.wrap(sidebarText).should('include', 'Náhľady sú určené pre hlavný obrázok v článku, ' +
+          'zoznamy článkov, titulky a rubriky. V tele článku sa zobrazuje formát bez orezania.')
       })
       cy.get('.w-100 .v-btn').should('be.visible')
 
