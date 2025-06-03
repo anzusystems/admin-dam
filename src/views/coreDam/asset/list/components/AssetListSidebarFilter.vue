@@ -368,7 +368,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
           </VCol>
           <VCol>
             <AFilterInteger
-              v-model="filter.slotsCountFrom"
+              v-model="filter.slotsCountUntil"
               @update:model-value="onAnyFilterUpdate"
               @keydown.enter="submitFilter"
             />
