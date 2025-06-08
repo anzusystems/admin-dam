@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
-import { ACustomDataForm, type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import {
+  ACustomDataForm,
+  type CustomDataValue,
+  type DamAssetTypeType,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetTypeType
-    modelValue: { [key: string]: any }
+    modelValue: { [key: string]: CustomDataValue }
     dataCy?: string
   }>(),
   {
@@ -15,7 +21,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: any): void
+  (e: 'update:modelValue', data: CustomDataValue): void
   (e: 'anyChange'): void
 }>()
 

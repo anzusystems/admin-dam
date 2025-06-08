@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ACropperjs, cropToRegion, regionToCrop, useAlerts } from '@anzusystems/common-admin'
-import { computed, onUnmounted, ref } from 'vue'
+import { ACropperjs, type ACropperjsExposed, cropToRegion, regionToCrop, useAlerts } from '@anzusystems/common-admin'
+import { type ComponentPublicInstance, computed, onUnmounted, ref, useTemplateRef } from 'vue'
 import { updateRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
 
@@ -11,7 +11,8 @@ const cropperContainerStyle = { overflow: 'hidden', maxHeight: 'calc(100vh - 160
 
 const imageRoiStore = useImageRoiStore()
 
-const cropper = ref<any>(null) // fix any
+const cropper = useTemplateRef<ComponentPublicInstance<{}, ACropperjsExposed>>('cropper')
+
 const cropperOpacityHide = ref(true)
 
 const imageUrl = computed(() => {
@@ -90,7 +91,6 @@ const showCropper = computed(() => {
 onUnmounted(() => {
   if (cropper.value) {
     cropper.value.destroy()
-    cropper.value = null
   }
 })
 </script>

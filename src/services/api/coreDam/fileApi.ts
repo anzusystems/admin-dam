@@ -1,6 +1,8 @@
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import {
+  deleteAudio,
   downloadLink as audioDownloadLink,
+  existingAudioToSlot,
   externalProviderUpload as audioExternalProviderUpload,
   makeMainFile as audioMakeMainFile,
   makePrivate as audioMakePrivate,
@@ -9,12 +11,11 @@ import {
   uploadChunk as audioUploadChunk,
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
-  deleteAudio,
-  existingAudioToSlot,
 } from '@/services/api/coreDam/audioApi'
 import {
   deleteDocument,
   downloadLink as documentDownloadLink,
+  existingDocumentToSlot,
   externalProviderUpload as documentExternalProviderUpload,
   makeMainFile as documentMakeMainFile,
   makePrivate as documentMakePrivate,
@@ -23,12 +24,11 @@ import {
   uploadChunk as documentUploadChunk,
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
-  existingDocumentToSlot,
 } from '@/services/api/coreDam/documentApi'
 import {
   deleteImage,
-  existingImageToSlot,
   downloadLink as imageDownloadLink,
+  existingImageToSlot,
   externalProviderUpload as imageExternalProviderUpload,
   makeMainFile as imageMakeMainFile,
   makePrivate as imageMakePrivate,
@@ -40,8 +40,8 @@ import {
 } from '@/services/api/coreDam/imageApi'
 import {
   deleteVideo,
-  existingVideoToSlot,
   downloadLink as videoDownloadLink,
+  existingVideoToSlot,
   externalProviderUpload as videoExternalProviderUpload,
   makeMainFile as videoMakeMainFile,
   unsetSlot as videoUnsetSlot,
@@ -54,13 +54,14 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import type { AssetFileDownloadLink, DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   AssetFileProcessStatus,
-  DamAssetType,
-  UploadQueueItemStatus,
   type AssetFileRoute,
+  DamAssetType,
   type DamUploadStartResponse,
   type DocId,
   type UploadQueueItem,
+  UploadQueueItemStatus,
 } from '@anzusystems/common-admin'
+import type { AxiosProgressEvent } from 'axios'
 
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
@@ -195,7 +196,7 @@ export const uploadChunk = (
   buffer: string,
   size: number,
   offset: number,
-  onUploadProgressCallback: any
+  onUploadProgressCallback: ((progressEvent: AxiosProgressEvent) => void) | undefined
 ) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {

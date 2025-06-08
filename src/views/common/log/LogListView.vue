@@ -11,7 +11,7 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const logFilter = useLogFilter()
 const activeTab = ref<null | string>(null)
 const datatables = ref<{ [key: string]: InstanceType<typeof LogDatatableType> | null }>({})
-const counts = ref<any>({})
+const counts = ref<Record<string, string>>({})
 
 const { listLoading } = useLogListActions()
 
@@ -92,8 +92,8 @@ watch(
         <LogDatatable
           :key="system"
           :ref="
-            (el: any) => {
-              datatables[system] = el
+            (el) => {
+              datatables[system] = el as any
             }
           "
           :system="system"

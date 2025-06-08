@@ -12,7 +12,7 @@ const props = withDefaults(
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: any): void
+  (e: 'update:modelValue', data: Filter): void
 }>()
 
 const value = computed({
