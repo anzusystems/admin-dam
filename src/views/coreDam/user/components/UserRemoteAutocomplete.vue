@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep, type IntegerId } from '@anzusystems/common-admin'
 import { useUserSelectActions } from '@/views/coreDam/user/composables/userActions'
 import { useUserFilter } from '@/model/coreDam/filter/UserFilter'
 import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: number | null | number[] | any
+    modelValue: IntegerId[]
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -24,15 +24,15 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: number | null | number[]): void
+  (e: 'update:modelValue', data: IntegerId[]): void
 }>()
 
 const modelValueComputed = computed({
   get() {
     return props.modelValue
   },
-  set(newValue: number | null | number[]) {
-    emit('update:modelValue', cloneDeep<number | null | number[]>(newValue))
+  set(newValue: IntegerId[]) {
+    emit('update:modelValue', cloneDeep(newValue))
   },
 })
 

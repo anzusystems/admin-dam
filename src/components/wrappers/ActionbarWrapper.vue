@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/composables/system/actionbar'
 import { computed } from 'vue'
+import type { UrlParams } from '@anzusystems/common-admin'
 import { isString, isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
 import { type RouteParams, type RouteRecordName, useRoute } from 'vue-router'
 
@@ -23,14 +24,23 @@ const parametrizeRoutePath = (to: {
   name: string | undefined | RouteRecordName
   params: RouteParams | undefined
 }) => {
-  const path = stringUrlTemplateReplaceVueRouter(to.path, to.params as any)
-  to.path = path
+  to.path = stringUrlTemplateReplaceVueRouter(to.path, to.params ? (to.params as unknown as UrlParams) : {})
   to.params = undefined
   to.name = undefined
 }
 
+interface Breadcrumb {
+  disabled: boolean
+  title: string
+  to: {
+    path: string
+    name: string | undefined | RouteRecordName
+    params: RouteParams | undefined
+  }
+}
+
 const breadcrumbs = computed(() => {
-  const final: any[] = []
+  const final: Breadcrumb[] = []
   route.matched
     .filter((item) => !isUndefined(item.meta.breadcrumbT))
     .forEach((value, index, array) => {

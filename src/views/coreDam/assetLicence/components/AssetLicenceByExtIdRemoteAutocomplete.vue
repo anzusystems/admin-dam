@@ -14,7 +14,7 @@ import { computed, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: number | null | number[] | any
+    modelValue: number | null | number[]
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -43,8 +43,8 @@ const modelValueComputed = computed({
   get() {
     return props.modelValue
   },
-  set(newValue: number | null | number[] | any) {
-    emit('update:modelValue', cloneDeep<number | null | number[] | any>(newValue))
+  set(newValue: number | null | number[]) {
+    emit('update:modelValue', cloneDeep<number | null | number[]>(newValue))
   },
 })
 

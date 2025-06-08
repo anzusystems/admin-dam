@@ -1,4 +1,4 @@
-import type { AxiosInstance } from 'axios'
+import type { AxiosInstance, AxiosProgressEvent } from 'axios'
 import axios, { type AxiosRequestConfig } from 'axios'
 import { envConfig } from '@/services/EnvConfigService'
 import { isNull } from '@anzusystems/common-admin'
@@ -12,7 +12,7 @@ let mainInstance: AxiosInstance | null = null
 
 const damClient = function (
   timeoutBase = envConfig.dam.apiTimeout,
-  onUploadProgressCallback: ((progressEvent: any) => void) | undefined = undefined
+  onUploadProgressCallback: ((progressEvent: AxiosProgressEvent) => void) | undefined = undefined
 ): AxiosInstance {
   if (isNull(mainInstance)) {
     mainInstance = axios.create({

@@ -1,6 +1,7 @@
 import type { DistributionFailReasonType } from '@/model/coreDam/valueObject/DistributionFailReason'
 import type { DistributionYoutubePrivacyType } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import type {
+  CustomDataValue,
   DamDistributionServiceName,
   DamDistributionStatusType,
   DatetimeUTCNullable,
@@ -74,7 +75,7 @@ export interface DistributionJwRedistributeDto extends DistributionJwCreateRedis
 export interface DistributionCustomCreateRedistributeDto {
   id: DocId
   publishAt: DatetimeUTCNullable
-  customData: Record<string, any>
+  customData: Record<string, CustomDataValue>
   distributionService: DamDistributionServiceName
   blockedBy: DocId[]
 }
@@ -113,11 +114,11 @@ export type DistributionDataItemTypeType = (typeof DistributionDataItemType)[key
 
 export interface DistributionDataItem {
   type: DistributionDataItemTypeType
-  value: any
+  value: string
 }
 
 export interface DistributionCustomItem extends DistributionItem {
-  customData: Record<string, any>
+  customData: Record<string, CustomDataValue>
   distributionData: Record<string, DistributionDataItem>
 }
 

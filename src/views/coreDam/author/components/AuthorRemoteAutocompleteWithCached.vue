@@ -1,5 +1,11 @@
-<script lang="ts" setup>
-import type { DamAuthor, IntegerId, ValidationScope } from '@anzusystems/common-admin'
+<script lang="ts" setup generic="I extends DamAuthorMinimal">
+import {
+  cloneDeep,
+  type DamAuthor,
+  type DamAuthorMinimal,
+  type IntegerId,
+  type ValidationScope,
+} from '@anzusystems/common-admin'
 import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
@@ -16,7 +22,7 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocId | null | DocId[] | any
+    modelValue: DocId[]
     queueId?: string | undefined
     label?: string | undefined
     required?: boolean | null
@@ -40,7 +46,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocId | null | DocId[]): void
+  (e: 'update:modelValue', data: DocId[]): void
 }>()
 
 const modelValueComputed = computed({
@@ -48,13 +54,13 @@ const modelValueComputed = computed({
     return props.modelValue
   },
   set(newValue) {
-    emit('update:modelValue', [...newValue])
+    emit('update:modelValue', cloneDeep(newValue))
   },
 })
 
 const search = ref<string>('')
 const loadingLocal = ref(false)
-const fetchedItemsMinimal = ref<Map<IntegerId | DocId, any>>(new Map())
+const fetchedItemsMinimal = ref<Map<IntegerId | DocId, I>>(new Map())
 
 const { t } = useI18n()
 
@@ -96,10 +102,7 @@ const afterCreate = (author: DamAuthor) => {
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, author.id]
     search.value = ''
-    return
   }
-  modelValueComputed.value = author.id
-  search.value = ''
 }
 
 const itemSlotIsSelected = (item: DocId) => {

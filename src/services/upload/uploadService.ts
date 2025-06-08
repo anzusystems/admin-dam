@@ -1,16 +1,16 @@
 import { ref } from 'vue'
-import { type UploadQueueItem, useDamUploadChunkSize } from '@anzusystems/common-admin'
 import {
   type AnzuApiValidationResponseData,
   axiosErrorResponseHasValidationData,
   i18n,
   isUndefined,
   NEW_LINE_MARK,
+  type UploadQueueItem,
   UploadQueueItemStatus,
+  useDamUploadChunkSize,
 } from '@anzusystems/common-admin'
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/services/api/coreDam/fileApi'
-import type { CancelTokenSource } from 'axios'
-import axios from 'axios'
+import axios, { type CancelTokenSource, isAxiosError } from 'axios'
 import { envConfig } from '@/services/EnvConfigService'
 import rusha from 'rusha'
 
@@ -28,9 +28,9 @@ const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
   return await uploadFinish(queueItem, sha)
 }
 
-const handleValidationErrorMessage = (error: Error | any) => {
+const handleValidationErrorMessage = (error: Error) => {
   const { t } = i18n.global || i18n
-  if (!error || !error.response || !error.response.data) {
+  if (!isAxiosError(error) || !error.response || !error.response.data) {
     // @ts-ignore
     return t('system.uploadErrors.unknownError')
   }
@@ -75,12 +75,15 @@ const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = undefined) {
+export function useUpload(
+  queueItem: UploadQueueItem,
+  uploadCallback: ((progress: number, speed: number, estimate: number) => void) | undefined = undefined
+) {
   const fileSize = ref(0)
 
   const progress = ref(0)
 
-  let speedStack: any[] = []
+  let speedStack: number[] = []
   let lastTimestamp = 0
   let endTimestamp = 0
   let lastLoaded = 0
@@ -142,7 +145,7 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
         // in error recompute
         if (axiosErrorResponseHasValidationData(error as Error)) {
           attempt = CHUNK_MAX_RETRY
-          queueItem.error.message = handleValidationErrorMessage(error)
+          queueItem.error.message = handleValidationErrorMessage(error as Error)
           return Promise.reject(error)
         }
 
@@ -165,7 +168,9 @@ export function useUpload(queueItem: UploadQueueItem, uploadCallback: any = unde
         const avgSpeed = Math.ceil(speedStack.reduce((sum, current) => sum + current) / speedStack.length)
         const remainingBytes = Math.ceil(fileSize.value * ((100 - progress.value) / 100))
 
-        uploadCallback(progress.value, avgSpeed, Math.ceil(remainingBytes / avgSpeed))
+        if (!isUndefined(uploadCallback)) {
+          uploadCallback(progress.value, avgSpeed, Math.ceil(remainingBytes / avgSpeed))
+        }
       }
 
       if (endTimestamp === 0) {

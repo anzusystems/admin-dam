@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { AFilterRemoteAutocomplete, type Filter } from '@anzusystems/common-admin'
-import { useExtSystemFilter } from '@/model/coreDam/filter/ExtSystemFilter.ts'
-import { useExtSystemSelectActions } from '@/views/coreDam/extSystem/composables/extSystemActions.ts'
-import { damClient } from '@/services/api/clients/damClient.ts'
+import { useExtSystemFilter } from '@/model/coreDam/filter/ExtSystemFilter'
+import { useExtSystemSelectActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
+import { damClient } from '@/services/api/clients/damClient'
 
 const modelValue = defineModel<Filter>({ required: true })
 

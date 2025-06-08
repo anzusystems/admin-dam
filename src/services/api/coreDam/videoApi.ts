@@ -15,6 +15,7 @@ import type { AssetFileDownloadLink, AssetFileVideo } from '@anzusystems/common-
 import type { AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
 import { damFileTypeFix } from '@anzusystems/common-admin'
+import type { AxiosProgressEvent } from 'axios'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -57,7 +58,7 @@ export const uploadChunk = (
   buffer: string,
   size: number,
   offset: number,
-  onUploadProgressCallback: ((progressEvent: any) => void) | undefined = undefined
+  onUploadProgressCallback: ((progressEvent: AxiosProgressEvent) => void) | undefined = undefined
 ) => {
   return new Promise((resolve, reject) => {
     const formData = new FormData()
@@ -282,7 +283,7 @@ export const fetchVideoFileDistributionPreviewList = (fileId: DocId, pagination:
   )
 
 export const setVideoFileDistributionPreview = (fileId: DocId, distributionId: DocId) =>
-  apiAnyRequest<null, any>(
+  apiAnyRequest<null>(
     damClient,
     'PATCH',
     END_POINT + '/:fileId/distribution-preview/:distributionId',

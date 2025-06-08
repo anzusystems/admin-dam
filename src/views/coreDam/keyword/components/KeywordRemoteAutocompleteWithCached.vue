@@ -1,5 +1,5 @@
-<script lang="ts" setup>
-import type { DamKeyword, IntegerId } from '@anzusystems/common-admin'
+<script lang="ts" setup generic="I extends DamKeywordMinimal">
+import type { DamKeyword, DamKeywordMinimal, IntegerId } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocompleteWithCached,
   type DocId,
@@ -23,7 +23,7 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocId | null | DocId[] | any
+    modelValue: DocId[]
     queueId?: string | undefined
     label?: string | undefined
     required?: boolean | null
@@ -45,7 +45,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocId | null | DocId[]): void
+  (e: 'update:modelValue', data: DocId[]): void
 }>()
 
 const modelValueComputed = computed({
@@ -59,7 +59,8 @@ const modelValueComputed = computed({
 
 const search = ref<string>('')
 const loadingLocal = ref(false)
-const fetchedItemsMinimal = ref<Map<IntegerId | DocId, any>>(new Map())
+
+const fetchedItemsMinimal = ref<Map<IntegerId | DocId, I>>(new Map())
 
 const requiredComputed = computed(() => !!props.required)
 
@@ -91,10 +92,7 @@ const afterCreate = (keyword: DamKeyword) => {
   if (isArray(modelValueComputed.value)) {
     modelValueComputed.value = [...modelValueComputed.value, keyword.id]
     search.value = ''
-    return
   }
-  modelValueComputed.value = keyword.id
-  search.value = ''
 }
 
 const itemSlotIsSelected = (item: DocId) => {

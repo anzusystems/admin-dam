@@ -21,7 +21,6 @@ declare module '@vue/runtime-core' {
     ABtnIcon: (typeof import('vuetify/components'))['VBtn']
     RouterLink: (typeof import('vue-router'))['RouterLink']
     RouterView: (typeof import('vue-router'))['RouterView']
-    Notifications: any // todo
     Acl: (typeof import('@anzusystems/common-admin'))['Acl']
   }
 }

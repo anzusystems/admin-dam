@@ -34,6 +34,7 @@ import {
   useDamConfigState,
   type ValidationError,
 } from '@anzusystems/common-admin'
+import { isAxiosError } from 'axios'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -168,14 +169,14 @@ export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
 
 const { showUnknownError, showApiValidationError } = useAlerts()
 
-const handleMetadataValidationError = (error: any, assetType: DamAssetTypeType) => {
+const handleMetadataValidationError = (error: Error, assetType: DamAssetTypeType) => {
   const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
   const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
   if (isUndefined(configAssetCustomFormElements)) {
     throw new Error('Custom form elements must be initialised.')
   }
-  if (!error || !error.response || !error.response.data) return
+  if (!isAxiosError(error) || !error.response || !error.response.data) return
   const data = error.response.data as AnzuApiValidationResponseData
   const items = [] as ValidationError[]
   for (const [key, values] of Object.entries(data.fields)) {
@@ -235,7 +236,7 @@ export const deleteAsset = (id: DocId) =>
   apiDeleteOne<AssetDetailItemDto>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocIdNullable) =>
-  apiAnyRequest<any, any>(
+  apiAnyRequest(
     damClient,
     'PUT',
     END_POINT + '/:assetId',
@@ -256,7 +257,7 @@ export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) =>
   )
 
 export const setSibling = (assetId: DocId, targetAssetId: DocId) =>
-  apiAnyRequest<any, AssetDetailItemDto>(
+  apiAnyRequest<object, AssetDetailItemDto>(
     damClient,
     'PATCH',
     END_POINT + '/:assetId/sibling/:targetAssetId',
@@ -267,7 +268,7 @@ export const setSibling = (assetId: DocId, targetAssetId: DocId) =>
   )
 
 export const removeSibling = (assetId: DocId) =>
-  apiAnyRequest<any, AssetDetailItemDto>(
+  apiAnyRequest<object, AssetDetailItemDto>(
     damClient,
     'PATCH',
     END_POINT + '/:assetId/sibling',

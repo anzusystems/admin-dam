@@ -11,6 +11,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
 import type { AssetFileDownloadLink, AssetFileImage } from '@anzusystems/common-admin'
 import { damFileTypeFix } from '@anzusystems/common-admin'
+import type { AxiosProgressEvent } from 'axios'
 
 const END_POINT = '/adm/v1/image'
 const CHUNK_UPLOAD_TIMEOUT = 420
@@ -53,7 +54,7 @@ export const uploadChunk = (
   buffer: string,
   size: number,
   offset: number,
-  onUploadProgressCallback: ((progressEvent: any) => void) | undefined = undefined
+  onUploadProgressCallback: ((progressEvent: AxiosProgressEvent) => void) | undefined = undefined
 ) => {
   return new Promise((resolve, reject) => {
     const formData = new FormData()
