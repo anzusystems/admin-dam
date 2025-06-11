@@ -62,18 +62,44 @@ const { t } = useI18n()
     @open-make-public-dialog="openMakeFilePrivateDialog"
   />
 
-  <AssetFileRouteChangeBtn
-    v-if="assetFile.mainRoute"
-    button-t="coreDam.asset.assetFilePublicLink.actions.makePrivate"
-    icon="mdi-lock"
-    :loading="loading"
-    @click.stop="makePrivate"
-  />
-  <AssetFileRouteChangeBtn
-    v-else
-    @click.stop="openMakeFilePrivateDialog"
-  />
-
+  <VMenu>
+    <template #activator="{ props }">
+      <VBtn
+        variant="text"
+        size="x-small"
+        icon="mdi-dots-vertical"
+        v-bind="props"
+      />
+    </template>
+    <VList density="compact">
+      <template v-if="assetFile.mainRoute">
+        <ACopyText
+          v-if="assetFile.mainRoute"
+          notify-t="coreDam.asset.assetFilePublicLink.actions.notify"
+          :value="assetFile.mainRoute.publicUrl"
+        >
+          <template #activator="{ props: copyButtonProps }">
+            <VListItem
+              v-bind="copyButtonProps"
+              :title="t('coreDam.asset.assetFilePublicLink.actions.copyUrl')"
+            />
+          </template>
+        </ACopyText>
+        <AssetFileRouteChangeBtn
+          variant="listItem"
+          button-t="coreDam.asset.assetFilePublicLink.actions.makePrivate"
+          icon="mdi-lock"
+          :loading="loading"
+          @click.stop="makePrivate"
+        />
+      </template>
+      <AssetFileRouteChangeBtn
+        v-else
+        variant="listItem"
+        @click.stop="openMakeFilePrivateDialog"
+      />
+    </VList>
+  </VMenu>
   <AssetFileRouteMakePublicDialog
     v-model="makeFilePrivateDialog"
     :asset-type="assetType"
@@ -81,26 +107,4 @@ const { t } = useI18n()
     :title="title"
     @after-update="emit('mainRouteChanged')"
   />
-
-  <ACopyText
-    v-if="assetFile.mainRoute"
-    notify-t="coreDam.asset.assetFilePublicLink.actions.notify"
-    :value="assetFile.mainRoute.publicUrl"
-  >
-    <template #activator="{ props: copyButtonProps }">
-      <VBtn
-        icon
-        size="x-small"
-        v-bind="copyButtonProps"
-      >
-        <VIcon icon="mdi-content-copy" />
-        <VTooltip
-          activator="parent"
-          location="bottom"
-        >
-          {{ t('coreDam.asset.assetFilePublicLink.actions.copyUrl') }}
-        </VTooltip>
-      </VBtn>
-    </template>
-  </ACopyText>
 </template>

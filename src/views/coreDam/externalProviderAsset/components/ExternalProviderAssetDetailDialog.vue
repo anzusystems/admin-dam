@@ -3,8 +3,7 @@ import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { DamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
@@ -12,6 +11,7 @@ import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProv
 import ExternalProviderAssetDetailDialogSidebar from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { useI18n } from 'vue-i18n'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void
@@ -89,6 +89,8 @@ const totalCountText = computed(() => {
     (pagination.hasNextPage ? '+' : '')
   )
 })
+
+const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
@@ -196,7 +198,7 @@ const totalCountText = computed(() => {
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <AssetImageRoiSelect />
+              <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
             <div
               v-else
