@@ -6,11 +6,10 @@ import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
-import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import type { DocId } from '@anzusystems/common-admin'
 import {
   assetFileIsImageFile,
+  DamAssetImageRoiSelect,
   browserHistoryReplaceUrlByRouter,
   DamAssetStatusDefault,
   DamAssetType,
@@ -18,6 +17,7 @@ import {
   isNull,
   useTheme,
 } from '@anzusystems/common-admin'
+import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -251,7 +251,7 @@ const assetMainFile = computed(() => {
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <AssetImageRoiSelect />
+              <DamAssetImageRoiSelect />
             </div>
             <div
               v-else

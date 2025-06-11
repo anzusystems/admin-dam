@@ -1,10 +1,17 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
-import { type DocId, isDocId, isString, useAlerts, useDamCachedUsers, useTheme } from '@anzusystems/common-admin'
+import {
+  DamAssetImageRoiSelect,
+  type DocId,
+  isDocId,
+  isString,
+  useAlerts,
+  useDamCachedUsers,
+  useTheme,
+} from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { storeToRefs } from 'pinia'
-import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
 import { AssetDetailTab, AssetDetailTabDefault, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
@@ -165,7 +172,7 @@ onMounted(() => {
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <AssetImageRoiSelect />
+              <DamAssetImageRoiSelect />
             </div>
             <div
               v-else

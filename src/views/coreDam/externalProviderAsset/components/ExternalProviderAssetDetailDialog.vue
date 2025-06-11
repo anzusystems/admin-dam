@@ -3,8 +3,7 @@ import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import AssetImageRoiSelect from '@/views/coreDam/asset/detail/components/AssetImageRoiSelect.vue'
-import { DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { DamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
@@ -196,7 +195,7 @@ const totalCountText = computed(() => {
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <AssetImageRoiSelect />
+              <DamAssetImageRoiSelect />
             </div>
             <div
               v-else
