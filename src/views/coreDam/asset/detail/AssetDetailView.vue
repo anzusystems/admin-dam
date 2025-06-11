@@ -20,6 +20,7 @@ import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -94,6 +95,8 @@ const resetAllStores = () => {
   assetDetailStore.directDetailLoad = false
   assetListStore.reset()
 }
+
+const { currentExtSystemId } = useCurrentExtSystem()
 
 onMounted(() => {
   resetAllStores()
@@ -172,7 +175,7 @@ onMounted(() => {
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <DamAssetImageRoiSelect />
+              <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
             <div
               v-else
