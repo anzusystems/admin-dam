@@ -2,7 +2,7 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
 import {
-  ACustomDataFormElement,
+  ACustomDataFormElement, type CustomDataValue,
   type DamAssetTypeType,
   isUndefined,
   useDamConfigState,
@@ -13,29 +13,32 @@ import { useI18n } from 'vue-i18n'
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetTypeType
-    modelValue: { [key: string]: any }
+    modelValue: { [key: string]: CustomDataValue }
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: any): void
-  (e: 'fillEmptyField', data: { assetType: DamAssetTypeType; elementProperty: string; value: any }): void
-  (e: 'replaceField', data: { assetType: DamAssetTypeType; elementProperty: string; value: any }): void
+  (e: 'update:modelValue', data: { [key: string]: CustomDataValue }): void
+  (
+    e: 'fillEmptyField',
+    data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }
+  ): void
+  (e: 'replaceField', data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }): void
 }>()
 
 const { t } = useI18n()
 
-const updateModelValue = (data: { property: string; value: any }) => {
-  const updated = {} as { [key: string]: any }
+const updateModelValue = (data: { property: string; value: CustomDataValue }) => {
+  const updated = {} as { [key: string]: CustomDataValue }
   updated[data.property] = data.value
   emit('update:modelValue', { ...props.modelValue, ...updated })
 }
 
-const fillEmptyField = (elementProperty: string, value: any) => {
+const fillEmptyField = (elementProperty: string, value: CustomDataValue) => {
   emit('fillEmptyField', { assetType: props.assetType, elementProperty, value })
 }
-const replaceField = (elementProperty: string, value: any) => {
+const replaceField = (elementProperty: string, value: CustomDataValue) => {
   emit('replaceField', { assetType: props.assetType, elementProperty, value })
 }
 

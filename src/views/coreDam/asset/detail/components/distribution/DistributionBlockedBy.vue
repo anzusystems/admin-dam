@@ -25,7 +25,7 @@ import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: any
+    modelValue: string[]
     distributionServiceName: DamDistributionServiceName
     config: DamDistributionRequirementsConfig
     assetFileId: DocIdNullable
@@ -34,10 +34,10 @@ const props = withDefaults(
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | null | string[]): void
+  (e: 'update:modelValue', data: string[]): void
 }>()
 
-const value = computed({
+const modelValueComputed = computed({
   get() {
     return props.modelValue
   },
@@ -82,18 +82,17 @@ const itemsComputed = computed(() => {
   })
 })
 
-const { required } = useValidate()
+const { requiredIf } = useValidate()
 
 const rules = computed(() => {
-  if (props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne) {
-    return {
-      required,
-    }
+  return {
+    modelValueComputed: {
+      required: requiredIf(props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne),
+    },
   }
-  return {}
 })
 
-const v$ = useVuelidate(rules, value)
+const v$ = useVuelidate(rules, { modelValueComputed })
 
 const onBlur = () => {
   v$.value.$touch()
@@ -118,7 +117,7 @@ watch(
 <template>
   <div v-if="config.blockedBy.length > 0">
     <VSelect
-      v-model="value"
+      v-model="modelValueComputed"
       multiple
       :items="itemsComputed"
       :error-messages="errorMessageComputed"

@@ -22,4 +22,12 @@ export const updateRoi = (id: DocId, data: RegionOfInterest) =>
   apiUpdateOne<RegionOfInterest>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const fetchImageRoiList = (imageId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<any[]>(damClient, END_POINT_IMAGE_ROI, { id: imageId }, pagination, filterBag, SYSTEM_CORE_DAM, ENTITY)
+  apiFetchList<RegionOfInterest[]>(
+    damClient,
+    END_POINT_IMAGE_ROI,
+    { id: imageId },
+    pagination,
+    filterBag,
+    SYSTEM_CORE_DAM,
+    ENTITY
+  )

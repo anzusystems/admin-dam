@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import {
-  ACustomDataFormElement,
+  ACustomDataFormElement, type CustomDataValue,
   type DamDistributionServiceName,
   isUndefined,
   useDamConfigStore,
@@ -12,17 +12,17 @@ import { computed } from 'vue'
 const props = withDefaults(
   defineProps<{
     distributionServiceName: DamDistributionServiceName
-    modelValue: { [key: string]: any }
+    modelValue: { [key: string]: CustomDataValue }
   }>(),
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: any): void
+  (e: 'update:modelValue', data: { [key: string]: CustomDataValue }): void
   (e: 'anyChange'): void
 }>()
 
-const updateModelValue = (data: { property: string; value: any }) => {
-  const updated = {} as { [key: string]: any }
+const updateModelValue = (data: { property: string; value: CustomDataValue }) => {
+  const updated = {} as { [key: string]: CustomDataValue }
   updated[data.property] = data.value
   emit('update:modelValue', { ...props.modelValue, ...updated })
   emit('anyChange')

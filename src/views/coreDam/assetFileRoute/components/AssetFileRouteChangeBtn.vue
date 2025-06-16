@@ -8,6 +8,7 @@ withDefaults(
     dataCy?: string
     loading?: boolean
     disabled?: boolean
+    variant?: 'button' | 'listItem'
   }>(),
   {
     buttonT: 'coreDam.asset.assetFilePublicLink.actions.makePublic',
@@ -15,6 +16,7 @@ withDefaults(
     dataCy: 'button-save',
     loading: undefined,
     disabled: undefined,
+    variant: 'button',
   }
 )
 
@@ -23,6 +25,7 @@ const { t } = useI18n()
 
 <template>
   <VBtn
+    v-if="variant === 'button'"
     size="x-small"
     icon
     variant="text"
@@ -38,4 +41,11 @@ const { t } = useI18n()
       {{ t(buttonT) }}
     </VTooltip>
   </VBtn>
+  <VListItem
+    v-else
+    :loading="loading"
+    :disabled="disabled"
+    :data-cy="dataCy"
+    :title="t(buttonT)"
+  />
 </template>

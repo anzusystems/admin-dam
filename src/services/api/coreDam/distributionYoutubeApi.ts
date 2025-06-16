@@ -92,7 +92,7 @@ export const fetchYoutubePlaylists = (distributionServiceName: DamDistributionSe
 }
 
 export const logoutYoutube = (distributionServiceName: DamDistributionServiceName) =>
-  apiFetchOne<any>(
+  apiFetchOne(
     damClient,
     END_POINT + '/:distributionServiceName/logout',
     { distributionServiceName },

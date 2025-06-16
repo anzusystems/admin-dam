@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, cloneDeep, type DocIdNullable } from '@anzusystems/common-admin'
 import { useVideoShowSelectActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowFilter } from '@/model/coreDam/filter/VideoShowFilter'
 import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | null | string[] | any
+    modelValue: DocIdNullable
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -24,15 +24,15 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | null | string[] | any): void
+  (e: 'update:modelValue', data: DocIdNullable): void
 }>()
 
 const modelValueComputed = computed({
   get() {
     return props.modelValue
   },
-  set(newValue: string | null | string[] | any) {
-    emit('update:modelValue', cloneDeep<string | null | string[] | any>(newValue))
+  set(newValue: DocIdNullable) {
+    emit('update:modelValue', cloneDeep(newValue))
   },
 })
 

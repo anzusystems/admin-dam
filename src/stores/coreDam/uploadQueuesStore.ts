@@ -12,7 +12,12 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import type { AssetFileFailReasonType, DamAssetTypeType, UploadQueueItemStatusType } from '@anzusystems/common-admin'
+import type {
+  AssetFileFailReasonType,
+  CustomDataValue,
+  DamAssetTypeType,
+  UploadQueueItemStatusType,
+} from '@anzusystems/common-admin'
 import {
   type AssetDetailItemDto,
   AssetFileLinkType,
@@ -488,7 +493,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
     },
     queueItemsReplaceEmptyCustomDataValue(
       queueId: string,
-      data: { assetType: DamAssetTypeType; elementProperty: string; value: any },
+      data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue },
       forceReplace = false
     ) {
       const items = this.queues[queueId].items
@@ -504,7 +509,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         }
       }
     },
-    queueItemsReplaceEmptyKeywords(queueId: string, value: any, forceReplace = false) {
+    queueItemsReplaceEmptyKeywords(queueId: string, value: string[], forceReplace = false) {
       const items = this.queues[queueId].items
       for (let i = 0; i < items.length; i++) {
         const item = items[i]
@@ -513,7 +518,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', {
         }
       }
     },
-    queueItemsReplaceEmptyAuthors(queueId: string, value: any, forceReplace = false) {
+    queueItemsReplaceEmptyAuthors(queueId: string, value: string[], forceReplace = false) {
       const items = this.queues[queueId].items
       for (let i = 0; i < items.length; i++) {
         const item = items[i]

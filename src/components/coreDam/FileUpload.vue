@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
 import { computed, ref, watch } from 'vue'
-import { arrayFlatten, arrayFromArgs, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
+import { arrayFlatten, arrayFromArgs, damFileTypeFix, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
-import { damFileTypeFix } from '@anzusystems/common-admin'
 
 type InputRef = null | HTMLInputElement
 
@@ -33,7 +32,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'change', event: DragEvent): void
-  (e: 'filesInput', files: any[]): void
+  (e: 'filesInput', files: File[]): void
 }>()
 
 const BLOCK_DOUBLE_CLICK_MS = 200
@@ -67,24 +66,58 @@ const onDrop = (event: DragEvent) => {
   }
 }
 
-const traverseFileTree = (item: any, path: string | undefined = undefined) => {
+interface FileSystemFileEntry extends FileSystemEntry {
+  file(callback: (file: File) => void): void
+}
+
+interface FileSystemDirectoryReader {
+  readEntries(callback: (entries: FileSystemEntry[]) => void): void
+}
+
+interface FileSystemDirectoryEntry extends FileSystemEntry {
+  createReader(): FileSystemDirectoryReader
+}
+
+// Type guards to narrow the types
+function isFileEntry(entry: FileSystemEntry): entry is FileSystemFileEntry {
+  return entry.isFile
+}
+
+function isDirectoryEntry(entry: FileSystemEntry): entry is FileSystemDirectoryEntry {
+  return entry.isDirectory
+}
+
+function flattenFileArray(array: (File | File[])[]): File[] {
+  const result: File[] = []
+
+  for (const item of array) {
+    if (Array.isArray(item)) {
+      result.push(...item)
+    } else {
+      result.push(item)
+    }
+  }
+
+  return result
+}
+
+const traverseFileTree = (item: FileSystemEntry, path = '') => {
   // Based on https://stackoverflow.com/questions/3590058
-  return new Promise((resolve) => {
-    path = path || ''
-    if (item.isFile) {
-      // Get file
-      item.file((file: any) => {
-        file.$path = path
+  return new Promise<File | File[]>((resolve) => {
+    if (isFileEntry(item)) {
+      item.file((file: File) => {
+        ;(file as File & { $path: string }).$path = path
         resolve(file)
       })
-    } else if (item.isDirectory) {
-      item.createReader().readEntries((entries: any) => {
-        const queue = []
+    } else if (isDirectoryEntry(item)) {
+      item.createReader().readEntries((entries: FileSystemEntry[]) => {
+        const queue: Promise<File | File[]>[] = []
         for (let i = 0; i < entries.length; i++) {
           queue.push(traverseFileTree(entries[i], path + item.name + '/'))
         }
         Promise.all(queue).then((filesArr) => {
-          resolve(arrayFromArgs(filesArr))
+          const flattenedFiles = flattenFileArray(filesArr)
+          resolve(flattenedFiles)
         })
       })
     }

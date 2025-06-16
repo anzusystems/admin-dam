@@ -3,7 +3,12 @@ import AssetCustomMetadataFormMassOperations from '@/components/coreDam/customMe
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import { ASystemEntityScope, DamAssetType, type DamAssetTypeType } from '@anzusystems/common-admin'
+import {
+  ASystemEntityScope,
+  type CustomDataValue,
+  DamAssetType,
+  type DamAssetTypeType,
+} from '@anzusystems/common-admin'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -14,7 +19,12 @@ const props = withDefaults(
   {}
 )
 
-const massOperationsData = ref({ image: {}, video: {}, audio: {}, document: {} })
+const massOperationsData = ref<{
+  image: Record<string, CustomDataValue>
+  video: Record<string, CustomDataValue>
+  audio: Record<string, CustomDataValue>
+  document: Record<string, CustomDataValue>
+}>({ image: {}, video: {}, audio: {}, document: {} })
 const massOperationsKeywords = ref([])
 const massOperationsAuthors = ref([])
 
@@ -24,10 +34,14 @@ const panels = ref<Array<string>>(['general'])
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const fillEmptyField = (data: { assetType: DamAssetTypeType; elementProperty: string; value: any }) => {
+const fillEmptyField = (data: {
+  assetType: DamAssetTypeType
+  elementProperty: string
+  value: CustomDataValue
+}) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data)
 }
-const replaceField = (data: { assetType: DamAssetTypeType; elementProperty: string; value: any }) => {
+const replaceField = (data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data, true)
 }
 const fillEmptyKeywords = () => {
