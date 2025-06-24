@@ -63,12 +63,12 @@ const { t } = useI18n()
   />
 
   <VMenu>
-    <template #activator="{ props }">
+    <template #activator="{ props: activatorProps }">
       <VBtn
         variant="text"
         size="x-small"
         icon="mdi-dots-vertical"
-        v-bind="props"
+        v-bind="activatorProps"
       />
     </template>
     <VList density="compact">
