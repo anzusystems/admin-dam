@@ -23,4 +23,7 @@ export interface EnvConfig {
     enabled: boolean
     webSocketUrl: string
   }
+  sentry: {
+    dsn: string
+  }
 }
