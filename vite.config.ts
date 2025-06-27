@@ -7,7 +7,7 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
-const shouldEnableSentry = !!process.env.APP_DEPLOY_ENV
+const shouldEnableSentry = !!process.env.APP_DEPLOY_ENV && !!process.env.SENTRY_URL
 
 export default defineConfig({
   build: {
