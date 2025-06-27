@@ -6,7 +6,7 @@ import {
   type DamCurrentUserDto,
   DefaultLanguageSymbol,
   type LanguageCode,
-  modifyLanguageSettings,
+  modifyLanguageSettings, useSentry, useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { inject } from 'vue'
@@ -35,6 +35,17 @@ const afterLanguageChange = async (language: LanguageCode) => {
 
 const { useCurrentUser } = useAuth()
 const { isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+const throwTestError = () => {
+  throw new Error('Force Test Error - error throw')
+}
+const { logError } = useSentry()
+
+const logTestError = () => {
+  logError(new Error('Force Test Error - useSentry logError'), { message: 'ArticleBodyEditor: onContentError' })
+}
+
+const { showUnreleasedFeatures } = useUnreleasedFeatures()
 </script>
 
 <template>
@@ -69,6 +80,49 @@ const { isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
               <AThemeSelect />
             </VCol>
           </VRow>
+        </VCol>
+      </VRow>
+      <VRow
+        v-if="isSuperAdmin"
+        align="center"
+        class="pb-2"
+      >
+        <VCol cols="3">
+          DEBUG: Test throw error
+        </VCol>
+        <VCol>
+          <VBtn @click.stop="throwTestError">
+            Throw
+          </VBtn>
+        </VCol>
+      </VRow>
+      <VRow
+        v-if="isSuperAdmin"
+        align="center"
+        class="pb-2"
+      >
+        <VCol cols="3">
+          DEBUG: Test log error
+        </VCol>
+        <VCol>
+          <VBtn @click.stop="logTestError">
+            Log
+          </VBtn>
+        </VCol>
+      </VRow>
+      <VRow
+        v-if="isSuperAdmin"
+        align="center"
+        class="pb-2"
+      >
+        <VCol cols="3">
+          DEBUG: Show unreleased features
+        </VCol>
+        <VCol>
+          <VSwitch
+            v-model="showUnreleasedFeatures"
+            :label="showUnreleasedFeatures ? 'Show' : 'Hide'"
+          />
         </VCol>
       </VRow>
     </VCardText>
