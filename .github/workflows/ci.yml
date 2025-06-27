@@ -17,8 +17,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - node-version: 24
-            docker-image: anzusystems/node:3.0.0-node24
+          - node-version: 22
+            docker-image: anzusystems/node:3.0.0-node22
 
     name: Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest

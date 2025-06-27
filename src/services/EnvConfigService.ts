@@ -25,6 +25,9 @@ export const envConfig: EnvConfig = {
     enabled: true,
     webSocketUrl: '',
   },
+  sentry: {
+    dsn: '',
+  },
 }
 
 const setEnvConfig = (data: EnvConfig) => {
@@ -45,6 +48,7 @@ const setEnvConfig = (data: EnvConfig) => {
     envConfig.notification.enabled = data.notification.enabled
     envConfig.notification.webSocketUrl = data.notification.webSocketUrl
     envConfig.uploadStatusFallback = data.uploadStatusFallback
+    envConfig.sentry.dsn = data.sentry.dsn
   } catch (err) {
     throw new Error('Unable to load env config. Incorrect fields in json.')
   }
