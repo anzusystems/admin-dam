@@ -15,12 +15,13 @@ import {
   i18n,
   type LanguageCode,
   loadCommonFonts,
-  type PluginOptions
+  type PluginOptions,
 } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
 import { damClient } from '@/services/api/clients/damClient'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
+import * as Sentry from '@sentry/vue'
 
 export const DEFAULT_LANGUAGE: LanguageCode = 'sk'
 export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['en', 'sk']
@@ -60,6 +61,31 @@ loadEnvConfig(() => {
     .component('AppLayoutDrawer', AppLayoutDrawer)
     .component('AppLayoutBlank', AppLayoutBlank)
     .component('AppLayoutFullscreen', AppLayoutFullscreen)
-  initErrorHandler(app)
+
+  if (envConfig.sentry.dsn) {
+    Sentry.init({
+      app,
+      dsn: envConfig.sentry.dsn,
+      release: envConfig.appVersion,
+      environment: envConfig.appEnvironment,
+      sendDefaultPii: true,
+      tracesSampleRate: 0,
+      profilesSampleRate: 0,
+      replaysOnErrorSampleRate: 0.2,
+      transport: Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport),
+      integrations: [
+        Sentry.browserTracingIntegration({ router, routeLabel: 'path' }),
+        Sentry.replayIntegration({
+          maskAllText: false,
+          maskAllInputs: false,
+          blockAllMedia: false,
+        }),
+        Sentry.httpClientIntegration(),
+      ],
+    })
+  } else {
+    initErrorHandler(app)
+  }
+
   app.mount('#app')
 })
