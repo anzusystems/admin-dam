@@ -121,6 +121,14 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <AFormTextField
+            v-model="podcastEpisode.attributes.rssUrl"
+            :label="t('coreDam.podcastEpisode.model.attributes.rssUrl')"
+            :v="v$.podcastEpisode.attributes.rssUrl"
+            data-cy="podcast-ext-rssUrl"
+          />
+        </ARow>
+        <ARow>
           <AFormDatetimePicker
             v-model="podcastEpisode.dates.publicationDate"
             :label="t('coreDam.podcastEpisode.model.dates.publicationDate')"
