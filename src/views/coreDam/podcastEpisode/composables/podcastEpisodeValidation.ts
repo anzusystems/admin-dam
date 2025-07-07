@@ -4,7 +4,7 @@ import useVuelidate from '@vuelidate/core'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { useValidate } from '@anzusystems/common-admin'
 
-const { required, maxLength, minLength, minValue, maxValue } = useValidate()
+const { required, maxLength, minLength, minValue, maxValue, url } = useValidate()
 
 export function usePodcastEpisodeValidation(podcastEpisode: Ref<PodcastEpisode>) {
   const rules = computed(() => ({
@@ -38,6 +38,11 @@ export function usePodcastEpisodeValidation(podcastEpisode: Ref<PodcastEpisode>)
         },
         extUrl: {
           maxLength: maxLength(2048),
+          url
+        },
+        rssUrl: {
+          maxLength: maxLength(2048),
+          url
         },
       },
     },
