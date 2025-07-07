@@ -63,7 +63,7 @@ export default defineConfigWithVueTs(
     },
     rules: {
       '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-empty-interface': 'off',
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single', 'avoid-escape'],
