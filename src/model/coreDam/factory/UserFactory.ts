@@ -42,7 +42,7 @@ export function useUserFactory() {
       id: 0,
       plainPassword: '',
       adminToExtSystems: user.adminToExtSystems,
-      userToExtSystems: [],
+      userToExtSystems: user.userToExtSystems,
       assetLicences: user.assetLicences,
       licenceGroups: user.licenceGroups,
       allowedAssetExternalProviders: user.allowedAssetExternalProviders,
