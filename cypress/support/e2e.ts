@@ -21,11 +21,11 @@ beforeEach(function () {
   cy.session(
     CY.loginUser,
     () => {
-      //Login with provided user
+      // Login with provided user
       cy.webLogin(CY.credentials[CY.loginUser].username, CY.credentials[CY.loginUser].password)
       cy.login(CY.loginUser)
       cy.changeToSlovakDarkTheme()
-      // go to main licence
+      // Go to main licence
       cy.changeLicence(100000)
     },
     {

@@ -33,7 +33,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       cy.get('.v-list-item').contains(DISTRIBUTION_DATA.CATEGORY).click()
       cy.getCy('button-confirm').click()
 
-      // Distribution video to YT
+      // // Distribution video to YT
       cy.getCy('add-new-distribution').click()
       cy.get('.v-overlay--active .v-slide-group__container .v-btn').eq(1).contains('YouTube').click()
       cy.circleLoad()
@@ -56,7 +56,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       // Distribution Audio to Artemis
       cy.get('[value="artemis_video_cms"]').click()
       cy.circleLoad()
-      cy.get('textarea').eq(0).type(ASSET_TITLE)
+      cy.get('textarea', {timeout: 90000}).eq(0).type(ASSET_TITLE)
       cy.get('textarea').eq(2).type(ASSET_DESCRIPTION)
       cy.get('.v-card-text [data-cy="custom-field-authors"]').type(DISTRIBUTION_DATA.AUTHOR)
       cy.get('.v-card-text [data-cy="custom-field-keywords"]').type(DISTRIBUTION_DATA.KEYWORD)

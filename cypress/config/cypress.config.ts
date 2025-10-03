@@ -20,7 +20,7 @@ export default defineConfig({
   viewportWidth: 1920,
   chromeWebSecurity: false,
   env: {
-    cfg: 'stg', // local or stg
+    cfg: 'dev', // local or stg
     loginUser: 'admin',
     failOnUncaughtException: false,
     visitBaseUrl: true,

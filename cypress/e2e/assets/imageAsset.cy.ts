@@ -58,7 +58,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
         .first().clear({ force: true })
       cy.get('[data-cy="custom-field-keywords"] .mdi-close-circle').click()
       cy.get('[data-cy="custom-field-authors"] .mdi-close-circle').click()
-      cy.getCy('button-save').eq(1).should('be.visible').click()
+      cy.getCy('button-save').should('be.visible').click()
       cy.alertMessage(ALERT_UPDATE)
       cy.getCy('button-meta').should('be.visible')
       cy.getCy('button-focus').should('be.visible')

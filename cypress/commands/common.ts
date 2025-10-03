@@ -77,7 +77,6 @@ Cypress.Commands.add('waitResponse', (request: string, timeout: number = 10000) 
 })
 
 Cypress.Commands.add('waitSec', (sec: number) => {
-  cy.log(`Wait for ${sec * 1000} sec`)
   cy.wait(sec * 1000)
 })
 
