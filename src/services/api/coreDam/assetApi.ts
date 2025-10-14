@@ -108,6 +108,9 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
 export const fetchAsset = (id: DocId) =>
   apiFetchOne<AssetDetailItemDto>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
+export const fetchAssetByFileId = (fileId: DocId) =>
+  apiFetchOne<AssetDetailItemDto>(damClient, END_POINT + '/asset-file/:fileId', { fileId }, SYSTEM_CORE_DAM, ENTITY)
+
 export const fetchAssetMetadata = (id: DocId) =>
   apiFetchOne<AssetMetadataDto>(damClient, END_POINT + '/:id/metadata', { id }, SYSTEM_CORE_DAM, ENTITY)
 
