@@ -23,6 +23,7 @@ const routes = {
     ASSET: {
       LIST: 'asset_list',
       DETAIL: 'asset_detail',
+      FILE_DETAIL: 'asset_fileDetail',
     },
     EXTERNAL_PROVIDER: {
       LIST: 'external_provider_list',

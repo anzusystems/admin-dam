@@ -1,10 +1,10 @@
 import { useAuth } from '@/composables/auth/auth'
 import { SYSTEM_DAM } from '@/model/systems'
-import { fetchAsset } from '@/services/api/coreDam/assetApi'
+import { fetchAsset, fetchAssetByFileId } from '@/services/api/coreDam/assetApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import type { DamAssetLicence, DamCurrentUserDto, DamExtSystem } from '@anzusystems/common-admin'
+import type { DamAssetLicence, DamCurrentUserDto, DamExtSystem, DocId } from '@anzusystems/common-admin'
 import { isDocId, isString, useDamConfigStore } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { readonly, ref, watch } from 'vue'
@@ -15,7 +15,9 @@ const currentExtSystem = ref<DamExtSystem>()
 const currentAssetLicence = ref<DamAssetLicence>()
 const currentAssetLicenceId = ref(0)
 
-export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: string | undefined = undefined) => {
+export const initCurrentExtSystemAndLicence = (
+  loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
+) => {
   const { useCurrentUser } = useAuth()
   const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
@@ -47,8 +49,37 @@ export const initCurrentExtSystemAndLicence = (loadFromAsset = false, assetId: s
       reject(false)
       return
     }
-    if (loadFromAsset && isString(assetId) && isDocId(assetId)) {
-      fetchAsset(assetId)
+    if (loadConfig?.type ==='assetId' && isString(loadConfig.id) && isDocId(loadConfig.id)) {
+      fetchAsset(loadConfig.id)
+        .then((assetRes) => {
+          fetchAssetLicence(assetRes.licence)
+            .then((licenceRes) => {
+              if (licenceRes.id && licenceRes.extSystem) {
+                const assetDetailStore = useAssetDetailStore()
+                assetDetailStore.directDetailLoad = true
+                assetDetailStore.setAsset(assetRes)
+                currentAssetLicenceId.value = licenceRes.id
+                currentExtSystemId.value = licenceRes.extSystem
+                resolve(true)
+                return
+              }
+              reject(false)
+              return
+            })
+            .catch(() => {
+              reject(false)
+              return
+            })
+          reject(false)
+          return
+        })
+        .catch(() => {
+          reject(false)
+          return
+        })
+    }
+    if (loadConfig?.type ==='assetFileId' && isString(loadConfig.id) && isDocId(loadConfig.id)) {
+      fetchAssetByFileId(loadConfig.id)
         .then((assetRes) => {
           fetchAssetLicence(assetRes.licence)
             .then((licenceRes) => {

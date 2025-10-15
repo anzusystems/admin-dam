@@ -33,6 +33,16 @@ export const assetRoutes: RouteRecordRaw[] = [
           layout: 'AppLayoutMain',
         },
       },
+      {
+        path: 'file/:id',
+        name: ROUTE.DAM.ASSET.FILE_DETAIL,
+        component: () => import('@/views/coreDam/asset/detail/AssetFileDetailView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_ASSET_READ],
+          layout: 'AppLayoutMain',
+        },
+      },
     ],
   },
 ]

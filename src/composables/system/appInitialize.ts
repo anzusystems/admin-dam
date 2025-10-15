@@ -35,7 +35,9 @@ export async function createAppInitialize(
     return
   }
   try {
-    await initCurrentExtSystemAndLicence(to.name === ROUTE.DAM.ASSET.DETAIL, to.params.id as string | undefined)
+    await initCurrentExtSystemAndLicence(
+      getInitCurrentExtSystemAndLicenceConfig(to, to.params.id as string | undefined)
+    )
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
@@ -84,4 +86,20 @@ export function useAppInitialize() {
     isAppInitialized,
     hasAppAuthCookie,
   }
+}
+
+function getInitCurrentExtSystemAndLicenceConfig(to: RouteLocationNormalized, id: string | undefined) {
+  if (to.name === ROUTE.DAM.ASSET.DETAIL) {
+    return {
+      type: 'assetId' as const,
+      id,
+    }
+  }
+  if (to.name === ROUTE.DAM.ASSET.FILE_DETAIL) {
+    return {
+      type: 'assetFileId' as const,
+      id,
+    }
+  }
+  return undefined
 }
