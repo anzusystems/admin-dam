@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { nextTick, onMounted, ref } from 'vue'
 import {
   DamAssetImageRoiSelect,
@@ -15,10 +15,9 @@ import { storeToRefs } from 'pinia'
 import { AssetDetailTab, AssetDetailTabDefault, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
-import { fetchAsset } from '@/services/api/coreDam/assetApi'
+import { fetchAssetByFileId } from '@/services/api/coreDam/assetApi'
 import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
-import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
@@ -29,7 +28,6 @@ defineEmits<{
 const { t } = useI18n()
 const { showErrorT, showErrorsDefault } = useAlerts()
 const route = useRoute()
-const router = useRouter()
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 const { asset } = storeToRefs(assetDetailStore)
@@ -51,12 +49,10 @@ const {
   toolbarTitle,
 } = useAssetDetailActions()
 
-const assetId = ref<DocId>('')
+const assetFileId = ref<DocId>('')
 
-const closeDialog = () => {
-  assetListStore.keyboardNavigationEnable()
-  assetDetailStore.hideDetail()
-  router.push({ name: ROUTE.DAM.ASSET.LIST })
+const afterDelete = () => {
+  asset.value = null
 }
 
 const getDetail = async () => {
@@ -70,8 +66,8 @@ const getDetail = async () => {
     })
     return
   }
-  assetId.value = isString(route.params.id) && isDocId(route.params.id) ? route.params.id.toString() : ''
-  if (assetId.value.length === 0) {
+  assetFileId.value = isString(route.params.id) && isDocId(route.params.id) ? route.params.id.toString() : ''
+  if (assetFileId.value.length === 0) {
     showErrorT('coreDam.asset.detail.incorrectId')
     return
   }
@@ -79,7 +75,7 @@ const getDetail = async () => {
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
   try {
-    const res = await fetchAsset(assetId.value)
+    const res = await fetchAssetByFileId(assetFileId.value)
     if (currentAssetLicenceId.value !== res.licence) {
       showErrorT('coreDam.asset.detail.licenceMismatch')
       assetDetailStore.hideLoader()
@@ -158,22 +154,6 @@ onMounted(() => {
                 {{ t('coreDam.asset.detail.toggleInfo') }}
               </VTooltip>
             </VBtn>
-            <VBtn
-              icon
-              variant="text"
-              :width="36"
-              :height="36"
-              class="mr-1"
-              @click.stop="closeDialog"
-            >
-              <VIcon icon="mdi-close" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
-                {{ t('common.button.close') }}
-              </VTooltip>
-            </VBtn>
           </div>
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
@@ -211,7 +191,7 @@ onMounted(() => {
               :asset-type="assetType"
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
-              @post-delete="closeDialog"
+              @post-delete="afterDelete"
               @main-route-changed="getDetail"
             />
           </div>

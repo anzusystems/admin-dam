@@ -123,6 +123,7 @@
 
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
+    "licenceMismatch": "Aktívna licencia a licencia assetu sa nezhoduje",
     "toggleInfo": "Info karta",
     "metadataToggle": {
       "show": "Skryť viac detailov",

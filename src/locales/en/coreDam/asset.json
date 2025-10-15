@@ -122,6 +122,7 @@
   },
   "detail": {
     "incorrectId": "Incorrect asset ID or rights",
+    "licenceMismatch": "Active licence and asset licence mismatch",
     "toggleInfo": "Toggle info",
     "metadataToggle": {
       "show": "Hide more metadata",
