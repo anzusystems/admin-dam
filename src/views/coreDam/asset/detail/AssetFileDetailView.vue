@@ -19,7 +19,7 @@ import { fetchAssetByFileId } from '@/services/api/coreDam/assetApi'
 import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
-import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -34,6 +34,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
+const { currentAssetLicenceId } = useCurrentAssetLicence()
 const {
   toggleSidebar,
   sidebar,
@@ -51,8 +52,7 @@ const {
 const assetFileId = ref<DocId>('')
 
 const afterDelete = () => {
-  // todo
-  console.log('after delete')
+  asset.value = null
 }
 
 const getDetail = async () => {
@@ -76,6 +76,11 @@ const getDetail = async () => {
   assetDetailStore.showDetail()
   try {
     const res = await fetchAssetByFileId(assetFileId.value)
+    if (currentAssetLicenceId.value !== res.licence) {
+      showErrorT('coreDam.asset.detail.licenceMismatch')
+      assetDetailStore.hideLoader()
+      return
+    }
     assetDetailStore.setAsset(res)
     addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
     fetchCachedUsers()
