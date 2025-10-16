@@ -128,7 +128,6 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const onConfirm = async () => {
   saving.value = true
   validateLicence.value.$touch()
-  console.log(validateLicence.value)
   if (
     validateLicence.value.$invalid ||
     !selectedLicence.value ||
