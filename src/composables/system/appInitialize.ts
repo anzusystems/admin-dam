@@ -29,7 +29,7 @@ export async function createAppInitialize(
   try {
     const updateCurrentUserPromise = fetchCurrentUser(damClient, '/adm/users/current')
     const loadDamConfigPromise = loadDamPrvConfig()
-    await Promise.allSettled([updateCurrentUserPromise, loadDamConfigPromise])
+    await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
     return
@@ -45,10 +45,9 @@ export async function createAppInitialize(
 
   try {
     const { currentExtSystemId } = useCurrentExtSystem()
-
     const loadDamConfigExtSystemPromise = loadDamConfigExtSystem(currentExtSystemId.value)
     const loadDamConfigAssetCustomFormElementsPromise = loadDamConfigAssetCustomFormElements(currentExtSystemId.value)
-    await Promise.allSettled([loadDamConfigExtSystemPromise, loadDamConfigAssetCustomFormElementsPromise])
+    await Promise.all([loadDamConfigExtSystemPromise, loadDamConfigAssetCustomFormElementsPromise])
     initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })
