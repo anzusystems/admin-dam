@@ -8,7 +8,7 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
-import type { AssetSearchListItemDto, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { type AssetSearchListItemDto, type DamAssetTypeType, type DocId, SortOrder } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
   browserHistoryReplaceUrlByRouter,
@@ -24,13 +24,34 @@ import { readonly, type Ref, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
+export const SORT_BY_SCORE_DATE = 'score_date'
+export const SORT_BY_SCORE_BEST = 'score_best'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
 const filter = useAssetListFilter()
 const pagination = usePagination()
-pagination.sortBy = 'createdAt'
-pagination.rowsPerPage = 25 // todo
+pagination.sortBy = SORT_BY_SCORE_DATE
+pagination.descending = true
+pagination.rowsPerPage = 25
+
+export const customSortOptions = [
+  {
+    id: 3,
+    titleT: 'common.system.datatable.ordering.mostRelevant',
+    sortBy: { key: SORT_BY_SCORE_BEST, order: SortOrder.Desc },
+  },
+  {
+    id: 1,
+    titleT: 'common.system.datatable.ordering.mostRecent',
+    sortBy: { key: SORT_BY_SCORE_DATE, order: SortOrder.Desc },
+  },
+  {
+    id: 2,
+    titleT: 'common.system.datatable.ordering.oldest',
+    sortBy: { key: SORT_BY_SCORE_DATE, order: SortOrder.Asc },
+  },
+]
 
 const filterIsTouched = ref(false)
 

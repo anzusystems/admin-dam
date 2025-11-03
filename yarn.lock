@@ -2309,7 +2309,7 @@ __metadata:
     universal-cookie: "npm:^7.2.2"
     unplugin: "npm:^2.3.5"
     uuid: "npm:^11.1.0"
-    vite: "npm:^7.1.9"
+    vite: "npm:^7.1.12"
     vite-plugin-vuetify: "npm:^2.1.1"
     vue: "npm:3.5.17"
     vue-eslint-parser: "npm:^10.1.4"
@@ -7490,9 +7490,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^7.1.9":
-  version: 7.1.9
-  resolution: "vite@npm:7.1.9"
+"vite@npm:^7.1.12":
+  version: 7.1.12
+  resolution: "vite@npm:7.1.12"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.5.0"
@@ -7541,7 +7541,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/361b8dfea414233927761fdb63ec38c2cc4630007efc33a7a02ef9a5c033552c41b2e95f7fcc9acf427da5a3cf194d62dc5f0853bc31e940a13528d0fb180132
+  checksum: 10/827a18e7365871532af74b2ec65cccecff1effccbf6fb5c32fa1f8d7bcea26f4403d6988db3fa39e9c09c8091b04654b6cfbcc6da5c5dc449eed2b07afc22d81
   languageName: node
   linkType: hard
 
