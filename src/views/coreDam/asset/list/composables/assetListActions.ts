@@ -24,13 +24,16 @@ import { readonly, type Ref, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
+export const SORT_BY_SCORE_DATE = 'score_date'
+export const SORT_BY_SCORE_BEST = 'score_best'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
 const filter = useAssetListFilter()
 const pagination = usePagination()
-pagination.sortBy = 'createdAt'
-pagination.rowsPerPage = 25 // todo
+pagination.sortBy = SORT_BY_SCORE_DATE
+pagination.descending = true
+pagination.rowsPerPage = 25
 
 const filterIsTouched = ref(false)
 

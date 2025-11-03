@@ -2,7 +2,11 @@
 import { computed, onMounted, onUnmounted } from 'vue'
 import { GridView, useGridView } from '@/composables/system/gridView'
 import AssetDetailDialog from '@/views/coreDam/asset/detail/components/AssetDetailDialog.vue'
-import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
+import {
+  SORT_BY_SCORE_BEST,
+  SORT_BY_SCORE_DATE,
+  useAssetListActions,
+} from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useI18n } from 'vue-i18n'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
 import AssetToolbarTypeFilters from '@/views/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
@@ -20,6 +24,7 @@ import { FooterViewUpload, useAssetFooterUploadView } from '@/composables/system
 import { onKeyUp } from '@vueuse/core'
 import AssetListTableView from '@/views/coreDam/asset/list/components/AssetListTableView.vue'
 import AssetListTilesView from '@/views/coreDam/asset/list/components/AssetListTilesView.vue'
+import { ADatatableOrdering, type DatatableOrderingOption, SortOrder } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -74,6 +79,32 @@ const componentComputed = computed(() => {
       return AssetListTilesView
   }
 })
+
+const customSortOptions = [
+  {
+    id: 3,
+    titleT: 'common.system.datatable.ordering.mostRelevant',
+    sortBy: { key: SORT_BY_SCORE_BEST, order: SortOrder.Desc },
+  },
+  {
+    id: 1,
+    titleT: 'common.system.datatable.ordering.mostRecent',
+    sortBy: { key: SORT_BY_SCORE_DATE, order: SortOrder.Desc },
+  },
+  {
+    id: 2,
+    titleT: 'common.system.datatable.ordering.oldest',
+    sortBy: { key: SORT_BY_SCORE_DATE, order: SortOrder.Asc },
+  },
+]
+
+const sortByChange = (data: DatatableOrderingOption) => {
+  if (data.sortBy) {
+    pagination.sortBy = data.sortBy.key
+    pagination.descending = data.sortBy.order === 'desc'
+    fetchAssetList()
+  }
+}
 
 onUnmounted(() => {
   listUnmounted()
@@ -155,6 +186,14 @@ onUnmounted(() => {
           {{ t('coreDam.asset.list.refresh') }}
         </VTooltip>
       </VBtn>
+      <VDivider
+        vertical
+        class="mx-1 my-2 hidden-xs"
+      />
+      <ADatatableOrdering
+        :custom-options="customSortOptions"
+        @sort-by-change="sortByChange"
+      />
       <VDivider
         vertical
         class="mx-1 my-2 hidden-xs"
