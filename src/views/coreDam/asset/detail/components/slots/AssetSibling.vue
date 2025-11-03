@@ -5,6 +5,7 @@ import {
   DamAssetType,
   type DamAssetTypeType,
   type DocId,
+  SortOrder,
 } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
@@ -13,6 +14,7 @@ import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { computed, ref } from 'vue'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
 import { storeToRefs } from 'pinia'
+import { customSortOptions, SORT_BY_SCORE_DATE } from '@/views/coreDam/asset/list/composables/assetListActions'
 
 const props = withDefaults(
   defineProps<{
@@ -26,7 +28,7 @@ const assetDetailStore = useAssetDetailStore()
 const { siblingLoader } = storeToRefs(assetDetailStore)
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { t } = useI18n()
-const sort = ref(3)
+const sort = ref(1)
 
 const { setAssetSibling, removeAssetSibling } = useAssetDetailSidebarSlotsAssetSiblingActions()
 
@@ -89,7 +91,8 @@ const pickAssetType = computed(() => {
           :max-count="1"
           return-type="assetId"
           :asset-type="pickAssetType"
-          :initial-pagination-sort="{ key: '_score', order: 'desc' }"
+          :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
+          :custom-sort-options="customSortOptions"
           @on-confirm="selectAsset"
         >
           <template #activator="{ props: assetSelectProps }">

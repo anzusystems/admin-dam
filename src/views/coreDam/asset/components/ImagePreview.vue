@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { AssetFileImage, AssetFileImagePreviewNullable } from '@anzusystems/common-admin'
+import { type AssetFileImage, type AssetFileImagePreviewNullable, SortOrder } from '@anzusystems/common-admin'
 import {
   AAssetSelect,
   ADialogToolbar,
@@ -14,6 +14,7 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import { customSortOptions, SORT_BY_SCORE_DATE } from '@/views/coreDam/asset/list/composables/assetListActions'
 
 const props = withDefaults(
   defineProps<{
@@ -182,6 +183,8 @@ watch(
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"
+        :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
+        :custom-sort-options="customSortOptions"
         @on-confirm="selectAsset"
       >
         <template #activator="{ props: assetSelectProps }">
