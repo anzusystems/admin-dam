@@ -71,7 +71,7 @@
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
       "changeToLicenceId": "Zmena na ID licencie",
-      "changeLicence": "Zmeniť licenciu: {currentLicence}"
+      "changeLicence": "Zmeniť licenciu:"
     }
   },
   "settings": {
