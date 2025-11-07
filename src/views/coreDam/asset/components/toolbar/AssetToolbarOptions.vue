@@ -33,14 +33,14 @@ const displayTextExtSystem = computed(() => {
   if (currentExtSystem.value && currentExtSystem.value.name.length > 0) {
     return currentExtSystem.value.name
   }
-  return currentExtSystemId.value
+  return currentExtSystemId.value + ''
 })
 
 const displayTextLicence = computed(() => {
   if (currentAssetLicence.value && currentAssetLicence.value.name.length > 0) {
     return currentAssetLicence.value.name
   }
-  return currentAssetLicenceId.value
+  return currentAssetLicenceId.value + ''
 })
 
 const dialog = ref(false)
