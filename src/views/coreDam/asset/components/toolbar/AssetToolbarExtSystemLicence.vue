@@ -1,29 +1,19 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
+
+withDefaults(
+  defineProps<{
+    extSystemName: string
+    licenceName: string
+  }>(),
+  {}
+)
 
 const { t } = useI18n()
 
-const { currentExtSystem } = useCurrentExtSystem()
-const { currentAssetLicence } = useCurrentAssetLicence()
-
 const dialog = ref(false)
-
-const displayTextExtSystem = computed(() => {
-  if (currentExtSystem.value) {
-    return currentExtSystem.value.name
-  }
-  return ''
-})
-
-const displayTextLicence = computed(() => {
-  if (currentAssetLicence.value) {
-    return currentAssetLicence.value.name
-  }
-  return ''
-})
 
 const openDialog = () => {
   dialog.value = true
@@ -40,20 +30,19 @@ const openDialog = () => {
     :height="34"
     @click.stop="openDialog"
   >
-    {{ displayTextLicence }}
     <VIcon icon="mdi-chevron-down" />
     <VTooltip
       activator="parent"
       location="bottom"
     >
-      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ displayTextExtSystem }}<br>
-      {{ t('system.mainBar.extSystemLicenceSwitch.licence') }}: {{ displayTextLicence }}
+      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ extSystemName }}<br>
+      {{ t('system.mainBar.extSystemLicenceSwitch.licence') }}: {{ licenceName }}
     </VTooltip>
   </VBtn>
   <AssetToolbarExtSystemLicenceDialog
     v-if="dialog"
     v-model="dialog"
-    :ext-system-name="displayTextExtSystem"
-    :licence-name="displayTextLicence"
+    :ext-system-name="extSystemName"
+    :licence-name="licenceName"
   />
 </template>

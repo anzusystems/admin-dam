@@ -4,9 +4,7 @@ import { fetchAsset, fetchAssetByFileId } from '@/services/api/coreDam/assetApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import {
-  type DamAssetLicence,
   type DamCurrentUserDto,
-  type DamExtSystem,
   type DocId,
   isDocId,
   isNull,
@@ -18,14 +16,13 @@ import { storeToRefs } from 'pinia'
 import { readonly, ref } from 'vue'
 
 const currentExtSystemId = ref(0)
-const currentExtSystem = ref<DamExtSystem>()
 
-const currentAssetLicence = ref<DamAssetLicence>()
 const currentAssetLicenceId = ref(0)
 
 export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
 ) => {
+  console.log('initCurrentExtSystemAndLicence', loadConfig)
   const { useCurrentUser } = useAuth()
   const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
@@ -52,6 +49,7 @@ export const initCurrentExtSystemAndLicence = async (
         return true
       }
     }
+    console.log('default')
     currentExtSystemId.value = damPrvConfig.value.settings.defaultExtSystemId
     currentAssetLicenceId.value = damPrvConfig.value.settings.defaultAssetLicenceId
     return true
@@ -85,13 +83,11 @@ export const initCurrentExtSystemAndLicence = async (
 export function useCurrentExtSystem() {
   return {
     currentExtSystemId: readonly(currentExtSystemId),
-    currentExtSystem: readonly(currentExtSystem),
   }
 }
 
 export function useCurrentAssetLicence() {
   return {
     currentAssetLicenceId: readonly(currentAssetLicenceId),
-    currentAssetLicence: readonly(currentAssetLicence),
   }
 }
