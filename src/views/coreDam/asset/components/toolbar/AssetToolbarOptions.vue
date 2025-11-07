@@ -52,15 +52,17 @@ const openDialog = () => {
 const { showErrorsDefault } = useAlerts()
 
 onMounted(async () => {
-  try {
-    const [assetLicence, extSystem] = await Promise.all([
-      fetchAssetLicence(currentAssetLicenceId.value),
-      fetchExtSystem(currentExtSystemId.value),
-    ])
-    currentAssetLicence.value = assetLicence
-    currentExtSystem.value = extSystem
-  } catch (error) {
-    showErrorsDefault(error)
+  if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
+    try {
+      const [assetLicence, extSystem] = await Promise.all([
+        fetchAssetLicence(currentAssetLicenceId.value),
+        fetchExtSystem(currentExtSystemId.value),
+      ])
+      currentAssetLicence.value = assetLicence
+      currentExtSystem.value = extSystem
+    } catch (error) {
+      showErrorsDefault(error)
+    }
   }
 })
 </script>
