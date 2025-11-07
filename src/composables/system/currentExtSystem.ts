@@ -22,7 +22,6 @@ const currentAssetLicenceId = ref(0)
 export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
 ) => {
-  console.log('initCurrentExtSystemAndLicence', loadConfig)
   const { useCurrentUser } = useAuth()
   const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
@@ -49,7 +48,6 @@ export const initCurrentExtSystemAndLicence = async (
         return true
       }
     }
-    console.log('default')
     currentExtSystemId.value = damPrvConfig.value.settings.defaultExtSystemId
     currentAssetLicenceId.value = damPrvConfig.value.settings.defaultAssetLicenceId
     return true
