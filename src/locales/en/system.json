@@ -71,7 +71,7 @@
       "description": "Important: Please finish all work first, any progress will be lost!",
       "confirm": "Confirm and reload admin",
       "changeToLicenceId": "Change to licence ID",
-      "changeLicence": "Change licence: {currentLicence}"
+      "changeLicence": "Change licence:"
     }
   },
   "settings": {
