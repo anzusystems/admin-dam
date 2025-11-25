@@ -43,18 +43,24 @@ const modelValueComputed = computed(() => {
   return props.modelValue
 })
 
-watch(modelValueComputed, async (newValue) => {
-  if (newValue) {
+watch(modelValueComputed, (newValue) => {
+  if (newValue && props.assetType !== DamAssetType.Image) {
     slug.value = stringToSlug(props.title)
   }
 })
 
-const { requiredIf, minLength, maxLength } = useValidate()
+const { required, minLength, maxLength } = useValidate()
 
 const rules = computed(() => {
+  if (props.assetType === DamAssetType.Image) {
+    return {
+      slug: {
+      },
+    }
+  }
   return {
     slug: {
-      required: requiredIf(props.assetType !== DamAssetType.Image),
+      required,
       minLength: minLength(3),
       maxLength: maxLength(128),
     },
