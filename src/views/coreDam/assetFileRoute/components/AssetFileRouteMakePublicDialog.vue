@@ -49,12 +49,12 @@ watch(modelValueComputed, async (newValue) => {
   }
 })
 
-const { required, minLength, maxLength } = useValidate()
+const { requiredIf, minLength, maxLength } = useValidate()
 
 const rules = computed(() => {
   return {
     slug: {
-      required,
+      required: requiredIf(props.assetType !== DamAssetType.Image),
       minLength: minLength(3),
       maxLength: maxLength(128),
     },
