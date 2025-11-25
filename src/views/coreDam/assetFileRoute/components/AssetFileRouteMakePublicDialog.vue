@@ -103,7 +103,7 @@ const onConfirm = async () => {
           v-if="assetType !== DamAssetType.Image"
           v-model="slug"
           :label="t('coreDam.asset.assetFilePublicLink.model.slug')"
-          :v="v$"
+          :v="v$.slug"
         />
       </VCardText>
       <VCardActions>
