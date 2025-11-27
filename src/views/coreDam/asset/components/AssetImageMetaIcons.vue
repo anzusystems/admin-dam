@@ -15,6 +15,7 @@ import {
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { isDefined } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -57,7 +58,7 @@ const checkDistributions = (icons: string[], titles: string[]) => {
   for (let i = 0; i < props.assetFileProperties.distributesInServices.length; i++) {
     const iconPath =
       damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]]?.iconPath
-    if (iconPath.length > 0 && !icons.includes(iconPath)) {
+    if (isDefined(iconPath) && iconPath.length > 0 && !icons.includes(iconPath)) {
       icons.push(iconPath)
       titles.push(damPrvConfig.value.distributionServices[props.assetFileProperties.distributesInServices[i]].title)
     }
