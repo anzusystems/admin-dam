@@ -21,7 +21,7 @@
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.47.0-beta.327",
+    "@anzusystems/common-admin": "1.47.0-beta.328",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^10.27.0",
     "@vuelidate/core": "^2.0.3",
