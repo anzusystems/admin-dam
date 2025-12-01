@@ -34,11 +34,7 @@ const panels = ref<Array<string>>(['general'])
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const fillEmptyField = (data: {
-  assetType: DamAssetTypeType
-  elementProperty: string
-  value: CustomDataValue
-}) => {
+const fillEmptyField = (data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }) => {
   uploadQueuesStore.queueItemsReplaceEmptyCustomDataValue(props.queueId, data)
 }
 const replaceField = (data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }) => {

@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useDamKeywordFactory } from '@anzusystems/common-admin'
 import type { DamKeyword } from '@anzusystems/common-admin'
+import { useDamKeywordFactory } from '@anzusystems/common-admin'
 
 const { createDefault } = useDamKeywordFactory()
 

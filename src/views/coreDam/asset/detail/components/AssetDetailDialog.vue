@@ -9,8 +9,8 @@ import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/As
 import type { DocId } from '@anzusystems/common-admin'
 import {
   assetFileIsImageFile,
-  DamAssetImageRoiSelect,
   browserHistoryReplaceUrlByRouter,
+  DamAssetImageRoiSelect,
   DamAssetStatusDefault,
   DamAssetType,
   DamAssetTypeDefault,

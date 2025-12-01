@@ -2,18 +2,17 @@
 import { ACard, type ValidationScope } from '@anzusystems/common-admin'
 import {
   DistributionItemResourceName,
-  type DistributionItemResourceNameType, type DistributionUpdateDto
+  type DistributionItemResourceNameType,
+  type DistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
 import { computed } from 'vue'
 import JwDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/JwDistributionForm.vue'
-import YoutubeDistributionForm
-  from '@/views/coreDam/asset/detail/components/distribution/forms/YoutubeDistributionForm.vue'
-import CustomDistributionForm
-  from '@/views/coreDam/asset/detail/components/distribution/forms/CustomDistributionForm.vue'
+import YoutubeDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/YoutubeDistributionForm.vue'
+import CustomDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/CustomDistributionForm.vue'
 
 withDefaults(
   defineProps<{
-    readonly?: boolean,
+    readonly?: boolean
     validationScope?: ValidationScope
   }>(),
   {
@@ -37,10 +36,7 @@ const DistributionItemFormComponent = (resourceName: DistributionItemResourceNam
   }
 }
 
-const rules = computed(() =>
-  DistributionItemFormComponent(distribution.value._resourceName)
-)
-
+const rules = computed(() => DistributionItemFormComponent(distribution.value._resourceName))
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
+import type { DamAuthor } from '@anzusystems/common-admin'
 import {
   ABooleanValue,
   ADatatableConfigButton,
@@ -18,7 +19,6 @@ import { ENTITY } from '@/services/api/coreDam/authorApi'
 import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
-import type { DamAuthor } from '@anzusystems/common-admin'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
 import AuthorTypeChip from '@/views/coreDam/author/components/AuthorTypeChip.vue'

@@ -8,12 +8,15 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
-import { type AssetSearchListItemDto, type DamAssetTypeType, type DocId, SortOrder } from '@anzusystems/common-admin'
 import {
   arrayItemToggle,
+  type AssetSearchListItemDto,
   browserHistoryReplaceUrlByRouter,
   DamAssetType,
+  type DamAssetTypeType,
+  type DocId,
   isNull,
+  SortOrder,
   useAlerts,
   useDamCachedUsers,
   useFilterHelpers,

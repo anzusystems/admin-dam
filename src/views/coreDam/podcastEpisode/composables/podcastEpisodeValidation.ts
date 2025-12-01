@@ -38,11 +38,11 @@ export function usePodcastEpisodeValidation(podcastEpisode: Ref<PodcastEpisode>)
         },
         extUrl: {
           maxLength: maxLength(2048),
-          url
+          url,
         },
         rssUrl: {
           maxLength: maxLength(2048),
-          url
+          url,
         },
       },
     },
