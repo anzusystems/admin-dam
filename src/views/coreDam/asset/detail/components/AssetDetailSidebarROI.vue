@@ -120,7 +120,7 @@ onMounted(async () => {
         {{ item.title }}
       </div>
       <img
-        :src="item.url"
+        :src="item.url + '?timestamp=' + imageRoiStore.timestampRoiPreviews"
         :width="item.width"
         :height="item.height"
         alt=""
