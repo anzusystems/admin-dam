@@ -14,6 +14,11 @@
     "mobile": "Appka",
     "web": "Web"
   },
+  "deviceType": {
+    "all": "Všetky",
+    "ios": "iOS",
+    "android": "Android"
+  },
   "button": {
     "create": "Pridať verejný export"
   }

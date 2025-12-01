@@ -1,0 +1,13 @@
+{
+  "model": {
+    "id": "ID",
+    "exportType": "Export type",
+    "deviceType": "Device type",
+    "podcast": "Podcast",
+    "body": "Body"
+  },
+  "meta": {
+    "create": "Create podcast export data",
+    "edit": "Edit podcast export data"
+  }
+}

@@ -19,6 +19,7 @@
     },
     "imagePreview": "Obrázok",
     "altImage": "Alt Obrázok",
+    "exportData": "Exportné dáta",
     "flags": {
       "webPublicExportEnabled": "Povolené na webe",
       "mobilePublicExportEnabled": "Povolené v appke"
