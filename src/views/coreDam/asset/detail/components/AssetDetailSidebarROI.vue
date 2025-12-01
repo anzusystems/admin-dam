@@ -113,7 +113,7 @@ onMounted(async () => {
   >
     <div
       v-for="item in imageRoiStore.roi?.links.image_roi_example"
-      :key="item.url"
+      :key="item.url + '?timestamp=' + imageRoiStore.timestampRoiPreviews"
       class="pb-2"
     >
       <div class="text-subtitle-2">
