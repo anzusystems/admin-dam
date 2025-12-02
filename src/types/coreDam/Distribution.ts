@@ -129,7 +129,7 @@ export const isDistributionCustomItem = (
 }
 
 export interface DistributionUpdateDto {
-  id: string,
+  id: string
   asset: DocId
   assetFile: DocId
   extId: string
@@ -138,15 +138,13 @@ export interface DistributionUpdateDto {
   _resourceName: DistributionItemResourceNameType
 }
 
-export interface YoutubeDistributionUpdateDto extends DistributionUpdateDto {
-}
+export interface YoutubeDistributionUpdateDto extends DistributionUpdateDto {}
 
 export interface JwDistributionUpdateDto extends DistributionUpdateDto {
   directSourceUrl: string
 }
 
-export interface CustomDistributionUpdateDto extends DistributionUpdateDto {
-}
+export interface CustomDistributionUpdateDto extends DistributionUpdateDto {}
 
 export const DistributionItemResourceName = {
   Jw: 'jwDistribution',
@@ -158,9 +156,9 @@ export type DistributionItemResourceNameType =
   (typeof DistributionItemResourceName)[keyof typeof DistributionItemResourceName]
 
 export type DistributionItemTypeMap = {
-  [DistributionItemResourceName.Jw]: DistributionJwItem,
-  [DistributionItemResourceName.Youtube]: DistributionYoutubeItem,
-  [DistributionItemResourceName.Custom]: DistributionCustomItem,
+  [DistributionItemResourceName.Jw]: DistributionJwItem
+  [DistributionItemResourceName.Youtube]: DistributionYoutubeItem
+  [DistributionItemResourceName.Custom]: DistributionCustomItem
 }
 
 export type DistributionItemTypes = DistributionItemTypeMap[keyof DistributionItemTypeMap]

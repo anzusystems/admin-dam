@@ -14,9 +14,9 @@ import {
   AFilterInteger,
   AFilterString,
   AFilterValueObjectOptionsSelect,
-  DamAuthorFilterRemoteAutocomplete,
-  DamKeywordFilterRemoteAutocomplete,
-  DamUserFilterRemoteAutocomplete,
+  DamAuthorFilterRemoteAutocompleteLegacy,
+  DamKeywordFilterRemoteAutocompleteLegacy,
+  DamUserFilterRemoteAutocompleteLegacy,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -81,7 +81,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VRow>
         <VRow>
           <VCol>
-            <DamKeywordFilterRemoteAutocomplete
+            <DamKeywordFilterRemoteAutocompleteLegacy
               v-model="filter.keywordIds"
               :ext-system="currentExtSystemId"
               @update:model-value="onAnyFilterUpdate"
@@ -90,7 +90,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VRow>
         <VRow>
           <VCol>
-            <DamAuthorFilterRemoteAutocomplete
+            <DamAuthorFilterRemoteAutocompleteLegacy
               v-model="filter.authorIds"
               :ext-system="currentExtSystemId"
               @update:model-value="onAnyFilterUpdate"
@@ -99,7 +99,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VRow>
         <VRow>
           <VCol>
-            <DamUserFilterRemoteAutocomplete
+            <DamUserFilterRemoteAutocompleteLegacy
               v-model="filter.createdByIds"
               @update:model-value="onAnyFilterUpdate"
             />

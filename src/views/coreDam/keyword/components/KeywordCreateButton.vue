@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValidationScope } from '@anzusystems/common-admin'
+import type { DamKeyword, ValidationScope } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextField,
@@ -10,13 +10,12 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
+  useDamKeywordFactory,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createKeyword, ENTITY } from '@/services/api/coreDam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useDamKeywordFactory } from '@anzusystems/common-admin'
-import type { DamKeyword } from '@anzusystems/common-admin'
 import { useKeywordValidation } from '@/views/coreDam/keyword/composables/keywordValidation'
 import { KeywordCreateValidationScopeSymbol } from '@/components/validationScopes'
 

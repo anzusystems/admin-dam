@@ -54,8 +54,7 @@ const { required, minLength, maxLength } = useValidate()
 const rules = computed(() => {
   if (props.assetType === DamAssetType.Image) {
     return {
-      slug: {
-      },
+      slug: {},
     }
   }
   return {

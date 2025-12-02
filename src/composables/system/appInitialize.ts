@@ -7,7 +7,13 @@ import { checkAbility } from '@/router/checkAbility'
 import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import { envConfig } from '@/services/EnvConfigService'
-import { isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import {
+  DamAssetType,
+  type DamAssetTypeType,
+  isDefined,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
@@ -21,7 +27,7 @@ export async function createAppInitialize(
 ) {
   const { isStatusNotDefined, isStatusSsoCommunicationFailure, isStatusInternalErrorFailure, isStatusUnauthorized } =
     useLoginStatus(to)
-  const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements } =
+  const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements, getDamConfigExtSystem } =
     useDamConfigState(damClient)
   const { useCurrentUser } = useAuth()
   const { fetchCurrentUser, currentUser } = useCurrentUser(SYSTEM_DAM)
@@ -45,9 +51,18 @@ export async function createAppInitialize(
 
   try {
     const { currentExtSystemId } = useCurrentExtSystem()
-    const loadDamConfigExtSystemPromise = loadDamConfigExtSystem(currentExtSystemId.value)
-    const loadDamConfigAssetCustomFormElementsPromise = loadDamConfigAssetCustomFormElements(currentExtSystemId.value)
-    await Promise.all([loadDamConfigExtSystemPromise, loadDamConfigAssetCustomFormElementsPromise])
+    await loadDamConfigExtSystem(currentExtSystemId.value)
+    const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+    if (isUndefined(configExtSystem)) {
+      next({ name: ROUTE.SYSTEM.LOGIN })
+      return
+    }
+    const enabledAssetTypes: DamAssetTypeType[] = []
+    if (configExtSystem.audio.enabled) enabledAssetTypes.push(DamAssetType.Audio)
+    if (configExtSystem.video.enabled) enabledAssetTypes.push(DamAssetType.Video)
+    if (configExtSystem.image.enabled) enabledAssetTypes.push(DamAssetType.Image)
+    if (configExtSystem.document.enabled) enabledAssetTypes.push(DamAssetType.Document)
+    await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
     initAppNotificationListeners()
   } catch (error) {
     next({ name: ROUTE.SYSTEM.LOGIN })

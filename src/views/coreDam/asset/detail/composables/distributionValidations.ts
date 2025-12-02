@@ -3,11 +3,10 @@ import useVuelidate from '@vuelidate/core'
 import type { Ref } from 'vue'
 import type {
   DistributionUpdateDto,
-  JwDistributionUpdateDto, YoutubeDistributionUpdateDto
+  JwDistributionUpdateDto,
+  YoutubeDistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
-import {
-  DistributionUpdateDtoValidationScopeSymbol,
-} from '@/components/validationScopes'
+import { DistributionUpdateDtoValidationScopeSymbol } from '@/components/validationScopes'
 
 export function useDistributionUpdateDtoValidations(distribution: Ref<DistributionUpdateDto>) {
   const { required } = useValidate()
@@ -40,7 +39,7 @@ export function useJwDistributionUpdateDtoValidations(
     distribution: {
       directSourceUrl: {
         required,
-        url
+        url,
       },
       distributionService: {
         required,
@@ -72,4 +71,3 @@ export function useYoutubeDistributionUpdateDtoValidations(
     v$,
   }
 }
-

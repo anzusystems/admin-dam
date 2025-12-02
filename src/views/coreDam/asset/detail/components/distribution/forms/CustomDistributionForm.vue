@@ -3,7 +3,7 @@ import type { ValidationScope } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
-    readonly?: boolean,
+    readonly?: boolean
     validationScope?: ValidationScope
   }>(),
   {
@@ -11,7 +11,6 @@ withDefaults(
     validationScope: undefined,
   }
 )
-
 </script>
 
 <template>

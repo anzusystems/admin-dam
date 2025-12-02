@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
   GrantOriginDefault,
-  useGrant,
-  useGrantOrigin,
   type GrantOriginType,
   type GrantType,
+  useGrant,
+  useGrantOrigin,
 } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 
