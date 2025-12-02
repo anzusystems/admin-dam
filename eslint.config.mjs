@@ -66,7 +66,7 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-empty-interface': 'off',
       '@stylistic/semi': ['error', 'never'],
-      '@stylistic/quotes': ['error', 'single', 'avoid-escape'],
+      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
       'vue/multi-word-component-names': [
         'error',
         {

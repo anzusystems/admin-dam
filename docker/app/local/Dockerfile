@@ -1,4 +1,4 @@
-FROM anzusystems/node:3.0.0-node22-nginx-browsers
+FROM anzusystems/node:3.0.0-node24-nginx-browsers
 
 #
 ### Basic arguments and variables

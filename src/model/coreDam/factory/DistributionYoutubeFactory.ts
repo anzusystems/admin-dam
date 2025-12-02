@@ -1,8 +1,8 @@
-import  {
-  type DistributionYoutubeCreateRedistributeDto,
+import {
   DistributionItemResourceName,
+  type DistributionYoutubeCreateRedistributeDto,
+  type DistributionYoutubeItem,
   type YoutubeDistributionUpdateDto,
-  type DistributionYoutubeItem
 } from '@/types/coreDam/Distribution'
 import { DistributionYoutubePrivacyDefault } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
 import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
@@ -38,7 +38,7 @@ export function useDistributionYoutubeFactory() {
       extId: item.extId,
       distributionService: item.distributionService,
       status: item.status,
-      _resourceName: DistributionItemResourceName.Youtube
+      _resourceName: DistributionItemResourceName.Youtube,
     }
   }
 
@@ -50,7 +50,7 @@ export function useDistributionYoutubeFactory() {
       extId: '',
       distributionService: '',
       status: DamDistributionStatus.Distributed,
-      _resourceName: DistributionItemResourceName.Youtube
+      _resourceName: DistributionItemResourceName.Youtube,
     }
   }
 

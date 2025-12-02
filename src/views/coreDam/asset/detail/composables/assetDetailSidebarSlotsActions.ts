@@ -1,9 +1,9 @@
 import { useAssetSlotFilter } from '@/model/coreDam/filter/AssetSlotFilter'
 import { fetchAssetSlotList, updateAssetSlots } from '@/services/api/coreDam/assetSlotApi'
 import {
-  makeMainFile as apiMakeMainFile,
   deleteFile,
   existingFileToSlot,
+  makeMainFile as apiMakeMainFile,
   unsetAssetSlot,
 } from '@/services/api/coreDam/fileApi'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'

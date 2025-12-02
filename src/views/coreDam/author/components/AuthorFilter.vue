@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
-import { useDamAuthorType } from '@anzusystems/common-admin'
 import {
   AFilterBooleanSelect,
   AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
+  useDamAuthorType,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 

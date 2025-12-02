@@ -2,7 +2,8 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
 import {
-  ACustomDataFormElement, type CustomDataValue,
+  ACustomDataFormElement,
+  type CustomDataValue,
   type DamAssetTypeType,
   isUndefined,
   useDamConfigState,
@@ -20,10 +21,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', data: { [key: string]: CustomDataValue }): void
-  (
-    e: 'fillEmptyField',
-    data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }
-  ): void
+  (e: 'fillEmptyField', data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }): void
   (e: 'replaceField', data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }): void
 }>()
 

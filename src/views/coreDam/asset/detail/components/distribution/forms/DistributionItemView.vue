@@ -9,8 +9,7 @@ const props = withDefaults(
   defineProps<{
     assetType: DamAssetTypeType
   }>(),
-  {
-  }
+  {}
 )
 
 const distribution = defineModel<DistributionItem>({ required: true })
@@ -25,7 +24,6 @@ if (isUndefined(configExtSystem)) {
 const serviceRequirements = computed(() => {
   return configExtSystem[props.assetType].distribution.distributionRequirements[distribution.value.distributionService]
 })
-
 </script>
 
 <template>

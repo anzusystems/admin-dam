@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields, useDamAuthorType } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
-import { useDamAuthorType } from '@anzusystems/common-admin'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 const { author } = storeToRefs(useAuthorOneStore())

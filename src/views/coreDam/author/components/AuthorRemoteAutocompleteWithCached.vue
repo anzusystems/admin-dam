@@ -1,12 +1,15 @@
 <script lang="ts" setup generic="I extends DamAuthorMinimal">
 import {
+  AFormRemoteAutocompleteWithCached,
   cloneDeep,
   type DamAuthor,
   type DamAuthorMinimal,
+  type DocId,
   type IntegerId,
+  isArray,
+  useValidate,
   type ValidationScope,
 } from '@anzusystems/common-admin'
-import { AFormRemoteAutocompleteWithCached, type DocId, isArray, useValidate } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
 import { computed, ref } from 'vue'

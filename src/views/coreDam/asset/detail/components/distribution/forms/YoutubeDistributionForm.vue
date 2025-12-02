@@ -1,23 +1,13 @@
 <script lang="ts" setup>
-import {
-  AFormValueObjectOptionsSelect,
-  ARow,
-  useDamConfigStore,
-  type ValidationScope,
-} from '@anzusystems/common-admin'
-import {
-  DistributionItemResourceName,
-  type YoutubeDistributionUpdateDto
-} from '@/types/coreDam/Distribution'
+import { AFormValueObjectOptionsSelect, ARow, useDamConfigStore, type ValidationScope } from '@anzusystems/common-admin'
+import { DistributionItemResourceName, type YoutubeDistributionUpdateDto } from '@/types/coreDam/Distribution'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  useYoutubeDistributionUpdateDtoValidations
-} from '@/views/coreDam/asset/detail/composables/distributionValidations'
+import { useYoutubeDistributionUpdateDtoValidations } from '@/views/coreDam/asset/detail/composables/distributionValidations'
 
 const props = withDefaults(
   defineProps<{
-    readonly?: boolean,
+    readonly?: boolean
     validationScope?: ValidationScope
   }>(),
   {
@@ -45,7 +35,6 @@ const { t } = useI18n()
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useYoutubeDistributionUpdateDtoValidations(distribution, props.validationScope)
-
 </script>
 
 <template>

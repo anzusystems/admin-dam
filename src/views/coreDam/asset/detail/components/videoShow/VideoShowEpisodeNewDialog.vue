@@ -1,7 +1,15 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { AFormDatetimePicker, type DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, AFormTextarea, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormDatetimePicker,
+  AFormTextarea,
+  ARow,
+  ASystemEntityScope,
+  type DocId,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpisodeFactory'

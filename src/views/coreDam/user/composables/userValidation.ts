@@ -1,9 +1,9 @@
 import type { DamUserUpdateDto, UserAuthTypeType } from '@anzusystems/common-admin'
 import { UserAuthType, useValidate } from '@anzusystems/common-admin'
+import type { ValidationRule } from '@vuelidate/core'
 import useVuelidate from '@vuelidate/core'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
-import type { ValidationRule } from '@vuelidate/core'
 
 export function useUpdateUserValidation(userUpdate: Ref<DamUserUpdateDto>, userAuthType: UserAuthTypeType) {
   const { required, minLength } = useValidate()

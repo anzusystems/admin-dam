@@ -6,7 +6,9 @@ import {
   type DamCurrentUserDto,
   DefaultLanguageSymbol,
   type LanguageCode,
-  modifyLanguageSettings, useSentry, useUnreleasedFeatures,
+  modifyLanguageSettings,
+  useSentry,
+  useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { inject } from 'vue'

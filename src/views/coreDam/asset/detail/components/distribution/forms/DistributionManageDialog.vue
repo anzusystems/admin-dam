@@ -1,22 +1,22 @@
 <script lang="ts" setup>
 import {
-  AFormValueObjectOptionsSelect,
-  AFormTextField,
-  ARow,
   ADialogToolbar,
-  useAlerts, type DocId
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  type DocId,
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
-  DistributionItemResourceName, type DistributionItemResourceNameType,
-  type DistributionUpdateDto
+  DistributionItemResourceName,
+  type DistributionItemResourceNameType,
+  type DistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
 import DistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionForm.vue'
 import { DistributionUpdateDtoValidationScopeSymbol } from '@/components/validationScopes'
-import {
-  useDistributionUpdateDtoValidations
-} from '@/views/coreDam/asset/detail/composables/distributionValidations'
+import { useDistributionUpdateDtoValidations } from '@/views/coreDam/asset/detail/composables/distributionValidations'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import { useDistributionStatus } from '@/model/coreDam/valueObject/DamDistributionStatus'
@@ -77,10 +77,7 @@ const onConfirm = async () => {
   }
 }
 
-const allowedDistributionResourceNames = [
-  DistributionItemResourceName.Jw,
-  DistributionItemResourceName.Youtube,
-]
+const allowedDistributionResourceNames = [DistributionItemResourceName.Jw, DistributionItemResourceName.Youtube]
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
@@ -96,7 +93,6 @@ const { DistributionStatusOptions } = useDistributionStatus()
 const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
   emit('onDistributionTypeSelect', value)
 }
-
 </script>
 
 <template>

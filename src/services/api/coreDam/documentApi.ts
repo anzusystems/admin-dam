@@ -1,7 +1,14 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { AssetFileRoute, DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import type {
+  AssetFileDocument,
+  AssetFileDownloadLink,
+  AssetFileRoute,
+  DocId,
+  UploadQueueItem,
+} from '@anzusystems/common-admin'
 import {
   apiFetchOne,
+  damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
@@ -9,8 +16,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { AssetFileDocument, AssetFileDownloadLink } from '@anzusystems/common-admin'
-import { damFileTypeFix } from '@anzusystems/common-admin'
 import type { AxiosProgressEvent } from 'axios'
 
 const END_POINT = '/adm/v1/document'

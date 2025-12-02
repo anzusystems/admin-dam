@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
 import { computed, ref } from 'vue'
 import {
@@ -8,34 +7,32 @@ import {
   type DocId,
   isString,
   type SortableItem,
-  useAlerts
+  useAlerts,
 } from '@anzusystems/common-admin'
 import {
   type DistributionItem,
+  distributionItemIsCustomItem,
+  distributionItemIsJwItem,
+  distributionItemIsYoutubeItem,
   DistributionItemResourceName,
   type DistributionItemResourceNameType,
   type DistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
-import DistributionManageDialog
-  from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionManageDialog.vue'
+import DistributionManageDialog from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionManageDialog.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import DistributionItemView from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionItemView.vue'
 import { useDistributionYoutubeFactory } from '@/model/coreDam/factory/DistributionYoutubeFactory'
 import { useDistributionJwFactory } from '@/model/coreDam/factory/DistributionJwFactory'
-import {
-  distributionItemIsJwItem, distributionItemIsYoutubeItem, distributionItemIsCustomItem,
-} from '@/types/coreDam/Distribution'
 import { useDistributionCustomFactory } from '@/model/coreDam/factory/DistributionCustomFactory'
 import { deleteDistribution } from '@/services/api/coreDam/distributionApi'
 
 const props = withDefaults(
   defineProps<{
-    isActive: boolean,
+    isActive: boolean
     assetType: DamAssetTypeType
     assetId: DocId
   }>(),
-  {
-  }
+  {}
 )
 
 const emit = defineEmits<{
@@ -63,13 +60,10 @@ const { createYoutubeUpdateDtoFromItemDto, createDefaultYoutubeUpdateDto } = use
 const { createCustomUpdateDtoFromItemDto, createDefaultCustomUpdateDto } = useDistributionCustomFactory()
 
 const createUpdateDto = (item: DistributionItem) => {
-    if (distributionItemIsJwItem(item))
-      return createJwUpdateDtoFromItemDto(item)
-    if (distributionItemIsYoutubeItem(item))
-      return createYoutubeUpdateDtoFromItemDto(item)
-  if (distributionItemIsCustomItem(item))
-      return createCustomUpdateDtoFromItemDto(item)
-    throw Error('Unknown distribution item type')
+  if (distributionItemIsJwItem(item)) return createJwUpdateDtoFromItemDto(item)
+  if (distributionItemIsYoutubeItem(item)) return createYoutubeUpdateDtoFromItemDto(item)
+  if (distributionItemIsCustomItem(item)) return createCustomUpdateDtoFromItemDto(item)
+  throw Error('Unknown distribution item type')
 }
 
 const onAddDistributionItem = () => {
@@ -85,8 +79,7 @@ const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onDeleteDistributionItem = async (item: SortableItem) => {
   const distributionId = distributionListStore.list[item.index]?.id ?? null
-  if (!isString(distributionId))
-    return
+  if (!isString(distributionId)) return
 
   distributionListStore.showLoader()
   try {
@@ -111,13 +104,13 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
     throw new Error('Asset file id is null')
   }
   if (value === DistributionItemResourceName.Jw) {
-    distributionContent.value =  createDefaultUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultUpdateDto(props.assetId, assetFileId.value)
   }
   if (value === DistributionItemResourceName.Youtube) {
-    distributionContent.value =  createDefaultYoutubeUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultYoutubeUpdateDto(props.assetId, assetFileId.value)
   }
   if (value === DistributionItemResourceName.Custom) {
-    distributionContent.value =  createDefaultCustomUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultCustomUpdateDto(props.assetId, assetFileId.value)
   }
 }
 
@@ -125,7 +118,6 @@ const onDistributionUpsert = () => {
   closeDialog()
   emit('onDistributionUpsert')
 }
-
 </script>
 
 <template>
