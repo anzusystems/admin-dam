@@ -1,0 +1,75 @@
+@use "vars/name";
+@use "vars/colors";
+
+.#{name.$editor} {
+  .#{name.$prosemirror} {
+    outline: none !important;
+    padding: 12px;
+    min-height: 180px;
+
+    p {
+      margin: 0 0 1em 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    u {
+      text-decoration: underline;
+    }
+
+    a {
+      color: colors.$brand-default;
+      text-decoration: underline;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    ul,
+    ol {
+      padding-left: 1.5rem;
+      margin: 1em 0;
+
+      li {
+        margin-bottom: 0.5em;
+
+        p {
+          margin: 0;
+        }
+      }
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+
+    ol {
+      list-style-type: decimal;
+    }
+
+    // Placeholder
+    p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      float: left;
+      color: rgb(var(--v-theme-on-surface), 0.38);
+      pointer-events: none;
+      height: 0;
+    }
+  }
+
+  .#{name.$prosemirror}-focused {
+    outline: none;
+  }
+}

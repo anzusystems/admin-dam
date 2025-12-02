@@ -38,7 +38,7 @@ const managedPodcastExportData = ref<PodcastExportData | null>(null)
 
 const onAddLastPodcastExportData = (beforeSortableItem: SortableItem<PodcastExportData> | null) => {
   const newItem = createPodcastExportData(podcast.value.id)
-  newItem.position = (beforeSortableItem?.position ?? 0) + 1
+  newItem.position = (beforeSortableItem?.raw.position ?? 0) + 1
   podcast.value.exportData.push(newItem)
   managedPodcastExportData.value = newItem
   podcastExportDataManageDialog.value = true
@@ -186,7 +186,9 @@ const onCancel = () => {
             @on-edit="onEditPodcastExportData"
           >
             <template #item="{ item }: { item: SortableItem<PodcastExportData> }">
+              {{ t('coreDam.podcastExportData.model.exportType') }}:
               <ExportTypeChip :type="item.raw.exportType" />
+              {{ t('coreDam.podcastExportData.model.deviceType') }}:
               <DeviceTypeChip :type="item.raw.deviceType" />
             </template>
           </ASortable>

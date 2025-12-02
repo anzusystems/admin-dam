@@ -55,17 +55,3 @@ onMounted(async () => {
     </div>
   </VToolbar>
 </template>
-
-<style lang="scss" scoped>
-.anzutap-toolbar {
-  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-
-  &__container {
-    display: flex;
-    gap: 2px;
-    padding: 4px 8px;
-    align-items: center;
-    width: 100%;
-  }
-}
-</style>

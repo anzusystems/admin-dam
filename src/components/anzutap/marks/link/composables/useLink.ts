@@ -5,6 +5,9 @@ import { computed, reactive, ref } from 'vue'
 export interface LinkDialogData {
   text: string
   href: string
+  variant: 'link' | 'button'
+  external: boolean
+  internal: string | null
   nofollow: boolean
 }
 
@@ -12,6 +15,9 @@ const insertMode = ref(false)
 const currentLink = reactive<LinkDialogData>({
   text: '',
   href: '',
+  variant: 'link',
+  external: false,
+  internal: null,
   nofollow: false,
 })
 
@@ -20,41 +26,56 @@ const isTextSelected = (editor: Editor): boolean => {
   return from !== to
 }
 
-export function useLink(editor: Editor | undefined) {
+export function useLink(editor: Editor | undefined | (() => Editor | undefined)) {
+  const getEditor = () => (typeof editor === 'function' ? editor() : editor)
   const getLinkData = () => {
-    if (isUndefined(editor)) return
+    const ed = getEditor()
+    if (isUndefined(ed)) return
     insertMode.value = false
     currentLink.text = ''
 
-    if (!editor.isActive('link') && !isTextSelected(editor)) {
+    if (!ed.isActive('link') && !isTextSelected(ed)) {
       insertMode.value = true
     }
 
-    const link = editor.getAttributes('link').href
-    const nofollow = Boolean(editor.getAttributes('link').nofollow)
+    const attrs = ed.getAttributes('link')
 
-    currentLink.href = isString(link) ? link : ''
-    currentLink.nofollow = nofollow
+    currentLink.href = isString(attrs.href) ? attrs.href : ''
+    currentLink.variant = attrs.variant || 'link'
+    currentLink.external = Boolean(attrs.external)
+    currentLink.internal = attrs.internal || null
+    currentLink.nofollow = Boolean(attrs.nofollow)
   }
 
   const dialog = computed({
     get(): boolean {
-      return editor?.storage.link?.dialog.value || false
+      const ed = getEditor()
+      return ed?.storage.link?.dialog.value || false
     },
     set(newValue: boolean) {
-      if (editor) {
-        editor.storage.link.dialog.value = newValue
+      const ed = getEditor()
+      if (ed && ed.storage.link) {
+        ed.storage.link.dialog.value = newValue
       }
     },
   })
 
   const updateLinkFromState = async () => {
-    if (isUndefined(editor)) return
+    const ed = getEditor()
+    if (isUndefined(ed)) return
     currentLink.href = currentLink.href.trim()
+
+    const linkAttrs = {
+      href: currentLink.href,
+      variant: currentLink.variant,
+      external: currentLink.external,
+      internal: currentLink.internal,
+      nofollow: currentLink.nofollow,
+    }
 
     if (insertMode.value) {
       // Insert new link with text
-      editor
+      ed
         .chain()
         .focus()
         .insertContent({
@@ -63,10 +84,7 @@ export function useLink(editor: Editor | undefined) {
           marks: [
             {
               type: 'link',
-              attrs: {
-                href: currentLink.href,
-                nofollow: currentLink.nofollow,
-              },
+              attrs: linkAttrs,
             },
           ],
         })
@@ -75,19 +93,17 @@ export function useLink(editor: Editor | undefined) {
     }
 
     // Update existing link
-    editor
+    ed
       .chain()
       .focus()
       .extendMarkRange('link')
-      .setLink({
-        href: currentLink.href,
-        nofollow: currentLink.nofollow,
-      })
+      .setLink(linkAttrs)
       .run()
   }
 
   const openDialog = () => {
-    if (isUndefined(editor)) return
+    const ed = getEditor()
+    if (isUndefined(ed)) return
     dialog.value = true
   }
 

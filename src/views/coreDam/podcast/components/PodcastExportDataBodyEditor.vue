@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { Editor, useEditor } from '@tiptap/vue-3'
+import { Editor } from '@tiptap/vue-3'
 import type { JSONContent } from '@tiptap/core'
 import Text from '@tiptap/extension-text'
 import Bold from '@tiptap/extension-bold'
 import Italic from '@tiptap/extension-italic'
 import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
+import { CustomLink } from '@/components/anzutap/extensions/CustomLink'
 import { onMounted, onUnmounted, ref, shallowRef, type Ref, watch, toRaw } from 'vue'
 import AnzutapEditor from '@/components/anzutap/components/AnzutapEditor.vue'
 import { cloneDeep } from '@anzusystems/common-admin'
-import { checkForEmptyDocument } from '@/model/coreDam/factory/DocumentFactory.ts'
+import { checkForEmptyDocument } from '@/model/coreDam/factory/DocumentFactory'
 
 const props = withDefaults(
   defineProps<{
@@ -45,11 +45,8 @@ const init = () => {
       Bold,
       Italic,
       Underline,
-      Link.configure({
+      CustomLink.configure({
         openOnClick: false,
-        HTMLAttributes: {
-          class: 'tiptap-link',
-        },
       }).extend({
         addStorage() {
           return {

@@ -9,7 +9,7 @@ import {
 import { useI18n } from 'vue-i18n'
 import type { Editor } from '@tiptap/core'
 import { useLink } from '@/components/anzutap/marks/link/composables/useLink'
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 
 const props = withDefaults(
@@ -22,7 +22,7 @@ const props = withDefaults(
 const { t } = useI18n()
 const { showValidationError } = useAlerts()
 
-const linkComposable = useLink(props.editor)
+const linkComposable = useLink(() => props.editor)
 const { dialog, updateLinkFromState, currentLink, insertMode, getLinkData } = linkComposable
 
 const confirmLoading = ref(false)
@@ -102,6 +102,13 @@ const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
         </ARow>
         <ARow>
           <VSwitch
+            v-model="currentLink.external"
+            :label="t('common.model.external')"
+            class="mt-0"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
             v-model="currentLink.nofollow"
             :label="t('common.model.nofollow')"
             class="mt-0"
@@ -124,9 +131,3 @@ const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
   </VDialog>
 </template>
 
-<style lang="scss" scoped>
-.link-panel {
-  background-color: rgb(var(--v-theme-surface));
-  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
-</style>

@@ -9,6 +9,7 @@ import type {
 } from '@anzusystems/common-admin'
 import type { PodcastModeType } from '@/model/coreDam/valueObject/PodcastMode'
 import type { PodcastLastImportStatusType } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import type { PodcastExportData } from '@/types/coreDam/PodcastExportData'
 
 interface Texts {
   title: string
