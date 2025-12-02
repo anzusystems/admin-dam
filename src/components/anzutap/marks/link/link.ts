@@ -78,7 +78,7 @@ export interface LinkOptions {
    * @default {}
    * @example { class: 'foo' }
    */
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, string | number | boolean | null | undefined>
 
   /**
    * A validation function which is used for configuring link verification for preventing XSS attacks.

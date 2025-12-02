@@ -1,11 +1,12 @@
 import { isString, isUndefined } from '@anzusystems/common-admin'
 import type { Editor } from '@tiptap/core'
 import { computed, reactive, ref } from 'vue'
-import { LinkVariantDefault, type LinkVariantType } from '@/components/anzutap/marks/link/composables/LinkVariant.ts'
+import { LinkVariantDefault, type LinkVariantType } from '@/components/anzutap/marks/link/composables/LinkVariant'
 import { validateLinkVariant } from '@/components/anzutap/marks/link/helpers/linkVariantValidation'
 import { MarkName } from '@/components/anzutap/marks/marks'
 import { isTextSelected } from '@/components/anzutap/utils/pm-utils'
-import type { LinkInternal } from '@/components/anzutap/marks/link/link.ts'
+import type { LinkInternal } from '@/components/anzutap/marks/link/link'
+import type { EditorStorageWithLink } from '@/components/anzutap/types/storage'
 
 export interface LinkDialogData {
   text: string
@@ -29,10 +30,14 @@ const currentLink = reactive<LinkDialogData>({
 export function useLink(editor: Editor | undefined) {
   const dialog = computed({
     get(): boolean {
-      return editor?.storage.link?.dialog.value || false
+      const storage = editor?.storage as EditorStorageWithLink
+      return storage?.link?.dialog.value || false
     },
     set(newValue: boolean) {
-      if (editor) editor.storage.link.dialog.value = newValue
+      if (editor) {
+        const storage = editor.storage as EditorStorageWithLink
+        if (storage.link) storage.link.dialog.value = newValue
+      }
     },
   })
 

@@ -7,7 +7,7 @@
 
   &__card {
     border-radius: 4px;
-    border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border: 1px solid rgb(var(--v-border-color), var(--v-border-opacity));
     background-color: rgb(var(--v-theme-surface));
     margin: 0;
     position: relative;
@@ -22,7 +22,7 @@
 
   &--readonly {
     .#{name.$editor}__content {
-      background-color: rgba(var(--v-theme-surface-variant), 0.3);
+      background-color: rgb(var(--v-theme-surface-variant), 0.3);
     }
   }
 

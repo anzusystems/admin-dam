@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/core'
 import { isDefined } from '@anzusystems/common-admin'
+import type { EditorStorageWithLink } from '@/components/anzutap/types/storage'
 
 export interface ToolbarItemButton {
   id: string
@@ -18,8 +19,10 @@ export interface ToolbarItemSeparator {
 
 export function useAnzutapToolbar(editor: Editor | undefined) {
   const openLinkDialog = () => {
-    if (!editor || !editor.storage.link) return
-    editor.storage.link.dialog.value = true
+    if (!editor) return
+    const storage = editor.storage as EditorStorageWithLink
+    if (!storage.link) return
+    storage.link.dialog.value = true
   }
 
   const itemsRow1: Array<ToolbarItemButton | ToolbarItemSeparator> = [
