@@ -7,7 +7,7 @@ import Italic from '@tiptap/extension-italic'
 import Underline from '@tiptap/extension-underline'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
-import { CustomLink } from '@/components/anzutap/extensions/CustomLink'
+import Link from '@/components/anzutap/marks/link/link'
 import { onMounted, onUnmounted, ref, shallowRef, type Ref, watch, toRaw } from 'vue'
 import AnzutapEditor from '@/components/anzutap/components/AnzutapEditor.vue'
 import { cloneDeep } from '@anzusystems/common-admin'
@@ -45,14 +45,8 @@ const init = () => {
       Bold,
       Italic,
       Underline,
-      CustomLink.configure({
+      Link.configure({
         openOnClick: false,
-      }).extend({
-        addStorage() {
-          return {
-            dialog: ref(false),
-          }
-        },
       }),
     ],
     onFocus: () => {
