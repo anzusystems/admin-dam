@@ -47,6 +47,23 @@ defineExpose({
 </script>
 
 <template>
+  <VCol
+    cols="12"
+    class="pa-0"
+  >
+    <h4
+      v-if="label"
+      class="w-100 font-weight-bold text-subtitle-2 d-flex gc-2 align-center justify-space-between"
+    >
+      <div>
+        <slot name="label-start" />
+        {{ label }}
+      </div>
+      <div>
+        <slot name="label-end" />
+      </div>
+    </h4>
+  </VCol>
   <div class="w-100 position-relative">
     <div
       class="anzutap w-100"

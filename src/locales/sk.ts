@@ -16,6 +16,7 @@ import job from '@/locales/sk/coreDam/job.json'
 import keyword from '@/locales/sk/coreDam/keyword.json'
 import podcast from '@/locales/sk/coreDam/podcast.json'
 import podcastEpisode from '@/locales/sk/coreDam/podcastEpisode.json'
+import podcastExportData from '@/locales/sk/coreDam/podcastExportData.json'
 import user from '@/locales/sk/coreDam/user.json'
 import videoShow from '@/locales/sk/coreDam/videoShow.json'
 import videoShowEpisode from '@/locales/sk/coreDam/videoShowEpisode.json'
@@ -27,12 +28,17 @@ import breadcrumb from '@/locales/sk/breadcrumb.json'
 import audioFile from '@/locales/sk/coreDam/audioFile.json'
 import videoFile from '@/locales/sk/coreDam/videoFile.json'
 import anzuUser from '@/locales/sk/common/anzuUser.json'
+import commonModel from '@/locales/sk/common/model.json'
 import authorCleanPhrase from '@/locales/sk/coreDam/authorCleanPhrase.json'
 import publicExport from '@/locales/sk/coreDam/publicExport.json'
 
 export default {
   common: {
     ...messagesSk.common,
+    model: {
+      ...messagesSk.common.model,
+      ...commonModel,
+    },
     anzuUser: {
       ...messagesSk.common.anzuUser,
       filter: {
@@ -58,6 +64,7 @@ export default {
     keyword,
     podcast,
     podcastEpisode,
+    podcastExportData,
     user,
     videoShow,
     videoShowEpisode,

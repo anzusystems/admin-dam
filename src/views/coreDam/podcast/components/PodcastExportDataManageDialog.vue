@@ -69,10 +69,10 @@ const onConfirm = () => {
         <span v-if="podcastExportData.id">{{ t('coreDam.podcastExportData.meta.edit') }}</span>
         <span v-else>{{ t('coreDam.podcastExportData.meta.create') }}</span>
       </ADialogToolbar>
-      <VCardText class="pb-6">
-        <VRow class="mt-1">
-          <VCol cols="6">
-            <ARow>
+      <VCardText>
+        <VRow>
+          <VCol cols="12">
+            <VRow>
               <AFormValueObjectOptionsSelect
                 v-model="podcastExportData.exportType"
                 :label="t('coreDam.podcastExportData.model.exportType')"
@@ -81,10 +81,8 @@ const onConfirm = () => {
                 :readonly="readonly"
                 data-cy="podcast-export-data-export-type"
               />
-            </ARow>
-          </VCol>
-          <VCol cols="6">
-            <ARow>
+            </VRow>
+            <VRow>
               <AFormValueObjectOptionsSelect
                 v-model="podcastExportData.deviceType"
                 :label="t('coreDam.podcastExportData.model.deviceType')"
@@ -93,17 +91,14 @@ const onConfirm = () => {
                 :readonly="readonly"
                 data-cy="podcast-export-data-device-type"
               />
-            </ARow>
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol cols="12">
-            <ARow>
+            </VRow>
+            <VRow>
               <PodcastExportDataBodyEditor
                 v-model="podcastExportData.body"
-                :editable="!props.readonly"
+                :label="t('coreDam.podcastExportData.model.body')"
+                :editable="!readonly"
               />
-            </ARow>
+            </VRow>
           </VCol>
         </VRow>
       </VCardText>

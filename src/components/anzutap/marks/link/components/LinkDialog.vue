@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import {
   ADialogToolbar,
-  AFormTextarea,
+  AFormTextarea, AFormTextField,
   ARow,
-  isNull,
-  isUndefined,
   useAlerts,
   useValidate,
 } from '@anzusystems/common-admin'
@@ -12,7 +10,6 @@ import { useI18n } from 'vue-i18n'
 import type { Editor } from '@tiptap/core'
 import { useLink } from '@/components/anzutap/marks/link/composables/useLink'
 import { computed, nextTick, ref, watch } from 'vue'
-import EmbedLink from '@/components/anzutap/components/EmbedLink.vue'
 import useVuelidate from '@vuelidate/core'
 
 const props = withDefaults(
@@ -24,7 +21,6 @@ const props = withDefaults(
 
 const { t } = useI18n()
 const { showValidationError } = useAlerts()
-const embedLinkInstance = ref<InstanceType<typeof EmbedLink> | null>(null)
 
 const linkComposable = useLink(props.editor)
 const { dialog, updateLinkFromState, currentLink, insertMode, getLinkData } = linkComposable
@@ -35,18 +31,10 @@ const onClose = () => {
   dialog.value = false
 }
 
-const validateLink = async (): Promise<boolean> => {
-  if (isNull(embedLinkInstance.value) || isUndefined(embedLinkInstance.value)) {
-    return false
-  }
-  return await embedLinkInstance.value?.validate()
-}
-
 const onConfirm = async () => {
   confirmLoading.value = true
-  vText$.value.$touch()
-  const linkValid = await validateLink()
-  if (vText$.value.$invalid || !linkValid) {
+  v$.value.$touch()
+  if (v$.value.$invalid) {
     showValidationError()
     confirmLoading.value = false
     return
@@ -59,65 +47,69 @@ const onConfirm = async () => {
 watch(dialog, (newValue, oldValue) => {
   if (newValue === oldValue) return
   if (newValue === false) {
-    embedLinkInstance.value?.resetValidate()
+    v$.value.$reset()
     return
   }
   // When dialog opens, load link data
-  getLinkData()
-  nextTick(() => {
-    embedLinkInstance.value?.focusFirst()
-  })
-})
-
-const { maxLength, minLength, requiredIf } = useValidate()
-
-const rules = computed(() => {
-  return {
-    text: {
-      required: requiredIf(() => {
-        return insertMode.value
-      }),
-      minLength: minLength(1),
-      maxLength: maxLength(4000),
-    },
+  if (props.editor && props.editor.storage.link) {
+    getLinkData()
   }
 })
 
-const vText$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
+const { maxLength, minLength, required, url } = useValidate()
+
+const rules = computed(() => ({
+  text: {
+    ...(insertMode.value ? { required } : {}),
+    minLength: minLength(1),
+    maxLength: maxLength(4000),
+  },
+  href: {
+    required,
+    url,
+  },
+}))
+
+const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
 </script>
 
 <template>
-  <VExpandTransition>
-    <div
-      v-if="dialog"
-      class="link-panel pa-4"
-    >
-      <div class="d-flex align-center mb-3">
-        <span class="text-subtitle-1 font-weight-medium">{{ t('common.model.link') }}</span>
+  <VDialog
+    :model-value="dialog"
+    :width="500"
+    :retain-focus="false"
+  >
+    <VCard v-if="dialog">
+      <ADialogToolbar @on-cancel="onClose">
+        {{ t('common.model.link') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ARow v-if="insertMode">
+          <AFormTextarea
+            v-model="currentLink.text"
+            :label="t('common.model.text')"
+            :v="v$.text"
+            required
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            v-model="currentLink.href"
+            :label="t('common.model.url')"
+            :v="v$.href"
+            required
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="currentLink.nofollow"
+            :label="t('common.model.nofollow')"
+            class="mt-0"
+          />
+        </ARow>
+      </VCardText>
+      <VCardActions>
         <VSpacer />
-        <VBtn
-          icon="mdi-close"
-          variant="text"
-          size="small"
-          @click="onClose"
-        />
-      </div>
-      <ARow>
-        <AFormTextarea
-          v-if="insertMode"
-          v-model="currentLink.text"
-          :label="t('common.model.text')"
-          :v="vText$.text"
-          required
-        />
-      </ARow>
-      <EmbedLink
-        ref="embedLinkInstance"
-        v-model:link="currentLink"
-        required
-        :nofollow-enabled="true"
-      />
-      <div class="d-flex justify-end mt-3 ga-2">
         <ABtnTertiary @click.stop="onClose">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
@@ -127,9 +119,9 @@ const vText$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
         >
           {{ t('common.button.confirm') }}
         </ABtnPrimary>
-      </div>
-    </div>
-  </VExpandTransition>
+      </VCardActions>
+    </VCard>
+  </VDialog>
 </template>
 
 <style lang="scss" scoped>

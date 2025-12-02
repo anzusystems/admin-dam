@@ -96,7 +96,7 @@ const onCancel = () => {
         <ARow>
           <AFormTextField
             v-model="podcast.attributes.mobileOrderPosition"
-            :label="t('coreDam.podcastEpodcastpisode.model.attributes.mobileOrderPosition')"
+            :label="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
             type="number"
             :step="1"
             data-cy="podcast-web-order-number"

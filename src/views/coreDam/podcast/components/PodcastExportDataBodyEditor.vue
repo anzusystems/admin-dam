@@ -11,13 +11,16 @@ import Paragraph from '@tiptap/extension-paragraph'
 import { onMounted, onUnmounted, ref, shallowRef, type Ref, watch, toRaw } from 'vue'
 import AnzutapEditor from '@/components/anzutap/components/AnzutapEditor.vue'
 import { cloneDeep } from '@anzusystems/common-admin'
+import { checkForEmptyDocument } from '@/model/coreDam/factory/DocumentFactory.ts'
 
 const props = withDefaults(
   defineProps<{
     editable?: boolean
+    label?: string | undefined
   }>(),
   {
     editable: false,
+    label: undefined,
   }
 )
 
@@ -27,7 +30,9 @@ const initialized = ref(false)
 const anzutapEditorComponent = ref<InstanceType<typeof AnzutapEditor> | null>(null)
 const editor: Ref<Editor | undefined> = shallowRef(undefined)
 
-const contentCloned = cloneDeep(toRaw(content.value))
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+let contentCloned = cloneDeep(toRaw(content.value))
+contentCloned = checkForEmptyDocument(contentCloned)
 
 const init = () => {
   editor.value = new Editor({
@@ -89,6 +94,7 @@ onUnmounted(() => {
     v-if="initialized && editor"
     ref="anzutapEditorComponent"
     :editor="editor"
+    :label="label"
     :editable="editable"
   />
 </template>
