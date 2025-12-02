@@ -38,7 +38,7 @@ const managedPodcastExportData = ref<PodcastExportData | null>(null)
 
 const onAddLastPodcastExportData = (beforeSortableItem: SortableItem<PodcastExportData> | null) => {
   const newItem = createPodcastExportData(podcast.value.id)
-  newItem.position = (beforeSortableItem?.raw.position ?? 0) + 1
+  newItem.position = (beforeSortableItem?.raw?.position ?? 0) + 1
   podcast.value.exportData.push(newItem)
   managedPodcastExportData.value = newItem
   podcastExportDataManageDialog.value = true
@@ -148,6 +148,24 @@ const onCancel = () => {
             clearable
           />
         </ARow>
+        <ARow :title="t('coreDam.podcast.model.exportData')">
+          <ASortable
+            v-model="podcast.exportData"
+            show-add-last-button
+            show-delete-button
+            show-edit-button
+            @on-add-last="onAddLastPodcastExportData"
+            @on-delete="onDeletePodcastExportData"
+            @on-edit="onEditPodcastExportData"
+          >
+            <template #item="{ item }: { item: SortableItem<PodcastExportData> }">
+              {{ t('coreDam.podcastExportData.model.exportType') }}:
+              <ExportTypeChip :type="item.raw.exportType" />
+              {{ t('coreDam.podcastExportData.model.deviceType') }}:
+              <DeviceTypeChip :type="item.raw.deviceType" />
+            </template>
+          </ASortable>
+        </ARow>
       </VCol>
       <VCol
         cols="12"
@@ -170,28 +188,6 @@ const onCancel = () => {
             v-model="podcast.altImage"
             show-actions
           />
-        </ARow>
-      </VCol>
-    </VRow>
-    <VRow>
-      <VCol cols="12">
-        <ARow :title="t('coreDam.podcast.model.exportData')">
-          <ASortable
-            v-model="podcast.exportData"
-            show-add-last-button
-            show-delete-button
-            show-edit-button
-            @on-add-last="onAddLastPodcastExportData"
-            @on-delete="onDeletePodcastExportData"
-            @on-edit="onEditPodcastExportData"
-          >
-            <template #item="{ item }: { item: SortableItem<PodcastExportData> }">
-              {{ t('coreDam.podcastExportData.model.exportType') }}:
-              <ExportTypeChip :type="item.raw.exportType" />
-              {{ t('coreDam.podcastExportData.model.deviceType') }}:
-              <DeviceTypeChip :type="item.raw.deviceType" />
-            </template>
-          </ASortable>
         </ARow>
       </VCol>
     </VRow>

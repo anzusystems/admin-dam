@@ -9,7 +9,7 @@ import {
 import { useI18n } from 'vue-i18n'
 import type { Editor } from '@tiptap/core'
 import { useLink } from '@/components/anzutap/marks/link/composables/useLink'
-import { computed, nextTick, ref, watch, useTemplateRef } from 'vue'
+import { computed, ref, watch } from 'vue'
 import useVuelidate from '@vuelidate/core'
 
 const props = withDefaults(
@@ -21,7 +21,6 @@ const props = withDefaults(
 
 const { t } = useI18n()
 const { showValidationError } = useAlerts()
-const hrefTextFieldInstance = useTemplateRef<InstanceType<typeof AFormTextField>>('hrefTextFieldInstance')
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { dialog, updateLinkFromState, currentLink, insertMode } = useLink(props.editor)
@@ -51,9 +50,6 @@ watch(dialog, (newValue, oldValue) => {
     v$.value.$reset()
     return
   }
-  nextTick(() => {
-    hrefTextFieldInstance.value?.focus()
-  })
 })
 
 const { maxLength, minLength, required, url } = useValidate()
@@ -94,7 +90,6 @@ const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
         </ARow>
         <ARow>
           <AFormTextField
-            ref="hrefTextFieldInstance"
             v-model="currentLink.href"
             :label="t('common.model.url')"
             :v="v$.href"
