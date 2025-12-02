@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useDamAuthorType } from '@anzusystems/common-admin'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 
 const { author } = storeToRefs(useAuthorOneStore())
 
@@ -55,6 +56,12 @@ const { getAuthorTypeOption } = useDamAuthorType()
           chip
           :value="author.flags.reviewed"
         />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.createdBy')">
+        <CachedDamUserChip :id="author.createdBy" />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.modifiedBy')">
+        <CachedDamUserChip :id="author.modifiedBy" />
       </ARow>
       <AUserAndTimeTrackingFields :data="author" />
     </VCol>

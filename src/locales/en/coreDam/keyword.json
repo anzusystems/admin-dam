@@ -4,7 +4,9 @@
     "name": "Name",
     "flags": {
       "reviewed": "Reviewed"
-    }
+    },
+    "createdBy": "Created by",
+    "modifiedBy": "Modified by"
   },
   "filter": {
     "id": "ID",
