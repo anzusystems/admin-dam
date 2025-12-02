@@ -1,0 +1,15 @@
+// Color families
+$white: #fff !default;
+$black: #000 !default;
+$gray-background: #f7f7f7 !default;
+
+// Editor
+$editor-card-outline-default: rgb(0 0 0 / 15%) !default;
+$editor-card-outline-hover: rgb(0 0 0 / 86%) !default;
+$editor-card-outline-focused: rgb(var(--v-theme-primary)) !default;
+
+// Text
+$text-default: rgb(var(--v-theme-on-surface)) !default;
+
+// Brand
+$brand-default: rgb(var(--v-theme-primary)) !default;
