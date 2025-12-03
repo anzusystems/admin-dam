@@ -1,5 +1,5 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { DamKeyword, DamKeywordMinimal, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import type { DamKeyword, DamKeywordMinimal, FilterBag, Pagination, ValueObjectOption, useDamCachedUsers } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/coreDam/keywordApi'
@@ -44,12 +44,15 @@ export const useKeywordListActions = () => {
 export const useKeywordDetailActions = () => {
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
+  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
       const keyword = await fetchKeyword(id)
       keywordOneStore.setKeyword(keyword)
+      addToCachedUsers(keyword.createdBy, keyword.modifiedBy)
+      fetchCachedUsers()
     } catch (error) {
       showErrorsDefault(error)
     } finally {

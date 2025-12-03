@@ -8,12 +8,20 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
+  ASortable,
   ASystemEntityScope,
+  type SortableItem,
 } from '@anzusystems/common-admin'
 import { usePodcastEditActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastValidation } from '@/views/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
 import ImagePreview from '@/views/coreDam/asset/components/ImagePreview.vue'
+import type { PodcastExportData } from '@/types/coreDam/PodcastExportData'
+import { usePodcastExportDataFactory } from '@/model/coreDam/factory/PodcastExportDataFactory'
+import DeviceTypeChip from '@/views/coreDam/publicExport/components/DeviceTypeChip.vue'
+import ExportTypeChip from '@/views/coreDam/publicExport/components/ExportTypeChip.vue'
+import PodcastExportDataManageDialog from '@/views/coreDam/podcast/components/PodcastExportDataManageDialog.vue'
+import { ref } from 'vue'
 
 const { podcast } = usePodcastEditActions()
 
@@ -22,6 +30,32 @@ const { v$ } = usePodcastValidation(podcast)
 const { t } = useI18n()
 
 const { podcastModeOptions } = usePodcastMode()
+
+const { createDefaultWithPodcast: createPodcastExportData } = usePodcastExportDataFactory()
+
+const podcastExportDataManageDialog = ref(false)
+const managedPodcastExportData = ref<PodcastExportData | null>(null)
+
+const onAddLastPodcastExportData = (beforeSortableItem: SortableItem<PodcastExportData> | null) => {
+  const newItem = createPodcastExportData(podcast.value.id)
+  newItem.position = (beforeSortableItem?.raw?.position ?? 0) + 1
+  podcast.value.exportData.push(newItem)
+  managedPodcastExportData.value = newItem
+  podcastExportDataManageDialog.value = true
+}
+
+const onDeletePodcastExportData = (item: SortableItem<PodcastExportData>) => {
+  podcast.value.exportData.splice(item.index, 1)
+}
+
+const onEditPodcastExportData = (item: SortableItem<PodcastExportData>) => {
+  managedPodcastExportData.value = item.raw
+  podcastExportDataManageDialog.value = true
+}
+
+const onCancel = () => {
+  managedPodcastExportData.value = null
+}
 </script>
 
 <template>
@@ -62,7 +96,7 @@ const { podcastModeOptions } = usePodcastMode()
         <ARow>
           <AFormTextField
             v-model="podcast.attributes.mobileOrderPosition"
-            :label="t('coreDam.podcastEpodcastpisode.model.attributes.mobileOrderPosition')"
+            :label="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
             type="number"
             :step="1"
             data-cy="podcast-web-order-number"
@@ -114,6 +148,24 @@ const { podcastModeOptions } = usePodcastMode()
             clearable
           />
         </ARow>
+        <ARow :title="t('coreDam.podcast.model.exportData')">
+          <ASortable
+            v-model="podcast.exportData"
+            show-add-last-button
+            show-delete-button
+            show-edit-button
+            @on-add-last="onAddLastPodcastExportData"
+            @on-delete="onDeletePodcastExportData"
+            @on-edit="onEditPodcastExportData"
+          >
+            <template #item="{ item }: { item: SortableItem<PodcastExportData> }">
+              {{ t('coreDam.podcastExportData.model.exportType') }}:
+              <ExportTypeChip :type="item.raw.exportType" />
+              {{ t('coreDam.podcastExportData.model.deviceType') }}:
+              <DeviceTypeChip :type="item.raw.deviceType" />
+            </template>
+          </ASortable>
+        </ARow>
       </VCol>
       <VCol
         cols="12"
@@ -139,5 +191,11 @@ const { podcastModeOptions } = usePodcastMode()
         </ARow>
       </VCol>
     </VRow>
+    <PodcastExportDataManageDialog
+      v-if="managedPodcastExportData"
+      v-model="managedPodcastExportData"
+      v-model:manage-dialog="podcastExportDataManageDialog"
+      @on-cancel="onCancel"
+    />
   </ASystemEntityScope>
 </template>

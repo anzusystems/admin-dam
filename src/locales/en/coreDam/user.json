@@ -18,7 +18,9 @@
     "superAdmin": "Super admin",
     "permissionGroups": "Permission Group",
     "allowedAssetExternalProviders": "Allowed External asset providers",
-    "allowedDistributionServices": "Allowed Distribution services"
+    "allowedDistributionServices": "Allowed Distribution services",
+    "createdBy": "Created by",
+    "modifiedBy": "Modified by"
   },
   "filter": {
     "id": "ID",

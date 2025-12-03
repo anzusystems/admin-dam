@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import type { DamAuthor, DamAuthorMinimal, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import type { DamAuthor, DamAuthorMinimal, FilterBag, Pagination, ValueObjectOption, useDamCachedUsers } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
@@ -47,6 +47,7 @@ export const useAuthorDetailActions = () => {
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -59,7 +60,9 @@ export const useAuthorDetailActions = () => {
       author.childAuthors.forEach((item) => {
         addToCachedAuthors(item)
       })
+      addToCachedUsers(author.createdBy, author.modifiedBy)
       fetchCachedAuthors()
+      fetchCachedUsers()
 
       authorOneStore.setAuthor(author)
     } catch (error) {

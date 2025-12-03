@@ -4,7 +4,9 @@
     "name": "Meno",
     "flags": {
       "reviewed": "Overený"
-    }
+    },
+    "createdBy": "Vytvoril",
+    "modifiedBy": "Upravil"
   },
   "filter": {
     "id": "ID",
