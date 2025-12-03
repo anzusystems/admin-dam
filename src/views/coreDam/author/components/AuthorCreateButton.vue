@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValidationScope } from '@anzusystems/common-admin'
+import type { DamAuthor, ValidationScope } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextField,
@@ -11,14 +11,13 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
+  useDamAuthorFactory,
+  useDamAuthorType,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthor, ENTITY } from '@/services/api/coreDam/authorApi'
-import { useDamAuthorFactory } from '@anzusystems/common-admin'
-import type { DamAuthor } from '@anzusystems/common-admin'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
-import { useDamAuthorType } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { AuthorCreateValidationScopeSymbol } from '@/components/validationScopes'
 

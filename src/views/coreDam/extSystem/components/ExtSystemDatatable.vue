@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -19,7 +20,6 @@ import { useRouter } from 'vue-router'
 import { useExtSystemListFilter } from '@/model/coreDam/filter/ExtSystemFilter'
 import { useExtSystemListActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemFilter from '@/views/coreDam/extSystem/components/ExtSystemFilter.vue'
-import type { DamExtSystem } from '@anzusystems/common-admin'
 
 import { ACL } from '@/composables/auth/auth'
 

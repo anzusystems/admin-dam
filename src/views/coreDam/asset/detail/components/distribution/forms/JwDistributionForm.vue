@@ -1,22 +1,19 @@
 <script lang="ts" setup>
 import {
-  AFormTextField, AFormValueObjectOptionsSelect,
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
   ARow,
-  type ValidationScope, useDamConfigStore,
+  useDamConfigStore,
+  type ValidationScope,
 } from '@anzusystems/common-admin'
-import {
-  DistributionItemResourceName,
-  type JwDistributionUpdateDto
-} from '@/types/coreDam/Distribution'
+import { DistributionItemResourceName, type JwDistributionUpdateDto } from '@/types/coreDam/Distribution'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  useJwDistributionUpdateDtoValidations
-} from '@/views/coreDam/asset/detail/composables/distributionValidations'
+import { useJwDistributionUpdateDtoValidations } from '@/views/coreDam/asset/detail/composables/distributionValidations'
 
 const props = withDefaults(
   defineProps<{
-    readonly?: boolean,
+    readonly?: boolean
     validationScope?: ValidationScope
   }>(),
   {
@@ -31,11 +28,11 @@ const distributionServices = computed(() => {
   return Object.entries(damConfigStore.damPrvConfig.distributionServices)
     .filter(([, value]) => value.type === DistributionItemResourceName.Jw)
     .map(([key, value]) => {
-    return {
-      title: value.title,
-      value: key,
-    }
-  })
+      return {
+        title: value.title,
+        value: key,
+      }
+    })
 })
 
 const distribution = defineModel<JwDistributionUpdateDto>({ required: true })
@@ -48,7 +45,6 @@ const { t } = useI18n()
 const onBlur = () => {
   v$.value.$touch()
 }
-
 </script>
 
 <template>

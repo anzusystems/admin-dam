@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import {
-  ACustomDataFormElement, type CustomDataValue,
+  ACustomDataFormElement,
+  type CustomDataValue,
   type DamDistributionServiceName,
   isUndefined,
   useDamConfigStore,

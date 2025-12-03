@@ -1,16 +1,19 @@
 import { damClient } from '@/services/api/clients/damClient'
-import { apiDeleteOne, type AssetFileRoute, type DocId, type UploadQueueItem } from '@anzusystems/common-admin'
+import type { AssetFileDownloadLink, AssetFileImage } from '@anzusystems/common-admin'
 import {
+  apiDeleteOne,
   apiFetchOne,
+  type AssetFileRoute,
+  damFileTypeFix,
+  type DocId,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
+  type UploadQueueItem,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetApi'
-import type { AssetFileDownloadLink, AssetFileImage } from '@anzusystems/common-admin'
-import { damFileTypeFix } from '@anzusystems/common-admin'
 import type { AxiosProgressEvent } from 'axios'
 
 const END_POINT = '/adm/v1/image'
@@ -183,7 +186,7 @@ export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
 }
 
 export const deleteImage = (imageId: DocId) =>
-  apiDeleteOne(damClient, END_POINT + '/:id', { id: imageId }, SYSTEM_CORE_DAM, ENTITY )
+  apiDeleteOne(damClient, END_POINT + '/:id', { id: imageId }, SYSTEM_CORE_DAM, ENTITY)
 
 export const makeMainFile = (imageId: DocId, assetId: DocId) => {
   return new Promise((resolve, reject) => {

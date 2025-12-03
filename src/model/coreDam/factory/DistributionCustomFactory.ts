@@ -1,9 +1,10 @@
 import type {
+  CustomDistributionUpdateDto,
   DistributionCustomCreateRedistributeDto,
-  CustomDistributionUpdateDto, DistributionItem
+  DistributionItem,
 } from '@/types/coreDam/Distribution'
-import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 import { DistributionItemResourceName } from '@/types/coreDam/Distribution'
+import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 
 export function useDistributionCustomFactory() {
   const createCreateDto = (): DistributionCustomCreateRedistributeDto => {
@@ -24,7 +25,7 @@ export function useDistributionCustomFactory() {
       extId: item.extId,
       distributionService: item.distributionService,
       status: item.status,
-      _resourceName: DistributionItemResourceName.Custom
+      _resourceName: DistributionItemResourceName.Custom,
     }
   }
 
@@ -36,7 +37,7 @@ export function useDistributionCustomFactory() {
       extId: '',
       distributionService: '',
       status: DamDistributionStatus.Distributed,
-      _resourceName: DistributionItemResourceName.Custom
+      _resourceName: DistributionItemResourceName.Custom,
     }
   }
 

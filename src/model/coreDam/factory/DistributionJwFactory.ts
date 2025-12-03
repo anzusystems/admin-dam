@@ -1,9 +1,10 @@
 import type {
-  DistributionJwCreateRedistributeDto, DistributionJwItem,
-  JwDistributionUpdateDto
+  DistributionJwCreateRedistributeDto,
+  DistributionJwItem,
+  JwDistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
-import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 import { DistributionItemResourceName } from '@/types/coreDam/Distribution'
+import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
 
 export function useDistributionJwFactory() {
   const createCreateDto = (): DistributionJwCreateRedistributeDto => {
@@ -30,7 +31,7 @@ export function useDistributionJwFactory() {
       extId: '',
       distributionService: '',
       status: DamDistributionStatus.Distributed,
-      _resourceName: DistributionItemResourceName.Jw
+      _resourceName: DistributionItemResourceName.Jw,
     }
   }
 
@@ -43,7 +44,7 @@ export function useDistributionJwFactory() {
       extId: item.extId,
       distributionService: item.distributionService,
       status: item.status,
-      _resourceName: DistributionItemResourceName.Jw
+      _resourceName: DistributionItemResourceName.Jw,
     }
   }
 
