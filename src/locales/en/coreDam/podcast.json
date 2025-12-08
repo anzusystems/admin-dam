@@ -19,6 +19,7 @@
     },
     "imagePreview": "Image",
     "altImage": "Alt Image",
+    "exportData": "Export Data",
     "flags": {
       "webPublicExportEnabled": "Web export enabled",
       "mobilePublicExportEnabled": "Mobile export enabled"

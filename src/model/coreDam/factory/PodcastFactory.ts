@@ -23,6 +23,7 @@ export function usePodcastFactory() {
         webOrderPosition: 0,
         mobileOrderPosition: 0,
       },
+      exportData: [],
       flags: {
         webPublicExportEnabled: false,
         mobilePublicExportEnabled: false,

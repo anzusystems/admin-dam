@@ -9,6 +9,7 @@ import type {
 } from '@anzusystems/common-admin'
 import type { PodcastModeType } from '@/model/coreDam/valueObject/PodcastMode'
 import type { PodcastLastImportStatusType } from '@/model/coreDam/valueObject/PodcastLastImportStatus'
+import type { PodcastExportData } from '@/types/coreDam/PodcastExportData'
 
 interface Texts {
   title: string
@@ -40,6 +41,7 @@ export interface Podcast extends AnzuUserAndTimeTrackingAware, ResourceNameSyste
   attributes: Attributes
   flags: Flags
   dates: Dates
+  exportData: PodcastExportData[]
   links?: AssetFileLinks
   altLinks?: AssetFileLinks
   imagePreview: AssetFileImagePreviewNullable

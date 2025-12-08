@@ -8,6 +8,7 @@ import ExternalProviderAssetChip from '@/views/coreDam/externalProviderAsset/com
 import DistributionServiceChip from '@/views/coreDam/distribution/components/DistributionServiceChip.vue'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import { ROUTE } from '@/router/routes'
+import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 
 const { user, userAssetLicenceGroups } = storeToRefs(useUserOneStore())
 
@@ -79,6 +80,12 @@ const { t } = useI18n()
         :title="t('coreDam.user.model.email')"
         :value="user.email"
       />
+      <ARow :title="t('coreDam.user.model.createdBy')">
+        <CachedDamUserChip :id="user.createdBy" />
+      </ARow>
+      <ARow :title="t('coreDam.user.model.modifiedBy')">
+        <CachedDamUserChip :id="user.modifiedBy" />
+      </ARow>
       <AUserAndTimeTrackingFields :data="user" />
     </VCol>
   </VRow>

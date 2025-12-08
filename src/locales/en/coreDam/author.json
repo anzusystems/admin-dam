@@ -8,7 +8,9 @@
       "reviewed": "Reviewed"
     },
     "currentAuthors": "Current authors",
-    "childAuthors": "Child authors"
+    "childAuthors": "Child authors",
+    "createdBy": "Created by",
+    "modifiedBy": "Modified by"
   },
   "filter": {
     "id": "ID",

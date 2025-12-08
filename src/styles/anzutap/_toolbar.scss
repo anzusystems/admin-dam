@@ -1,0 +1,63 @@
+@use "vars/name";
+@use "vars/colors";
+
+$background-color-gray: #f8f8f8 !default;
+$item-color: #666 !default;
+$divider-color: #888 !default;
+$btn-additional-size: 2px !default;
+$btn-height-default: calc(var(--v-btn-height) + #{$btn-additional-size}) !default;
+$btn-width-from-padding: calc((var(--v-btn-height) + #{$btn-additional-size}) * 0.5) !default;
+
+.#{name.$toolbar} {
+  z-index: 4;
+
+  &__container {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    margin: 4px 0;
+    gap: 4px;
+  }
+
+  &.v-toolbar {
+    background-color: colors.$white;
+    border-bottom: 1px solid rgb(var(--v-border-color), var(--v-border-opacity));
+    padding: 8px;
+
+    .v-toolbar__content {
+      flex-wrap: wrap;
+      padding: 0;
+    }
+  }
+
+  .#{name.$toolbar}__item {
+    height: $btn-height-default !important;
+    color: $item-color;
+    padding: 4px $btn-width-from-padding !important;
+    min-width: 36px;
+
+    &:hover {
+      background-color: $background-color-gray;
+    }
+
+    &.is-active {
+      background-color: rgb(var(--v-theme-primary), 0.1);
+      color: rgb(var(--v-theme-primary));
+    }
+
+    i {
+      font-size: 20px;
+    }
+  }
+
+  .v-btn--disabled {
+    opacity: 0.4;
+  }
+
+  .v-divider.v-divider--vertical {
+    margin: 0 4px;
+    height: 24px;
+    align-self: center;
+  }
+}

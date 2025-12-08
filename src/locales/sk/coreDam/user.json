@@ -18,7 +18,9 @@
     "superAdmin": "Super admin",
     "permissionGroups": "Skupina oprávnení",
     "allowedAssetExternalProviders": "Povolení externí provideri",
-    "allowedDistributionServices": "Povolené distribučné služby"
+    "allowedDistributionServices": "Povolené distribučné služby",
+    "createdBy": "Vytvoril",
+    "modifiedBy": "Upravil"
   },
   "filter": {
     "id": "ID",
