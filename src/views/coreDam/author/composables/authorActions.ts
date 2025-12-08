@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-import type { DamAuthor, DamAuthorMinimal, FilterBag, Pagination, ValueObjectOption, useDamCachedUsers } from '@anzusystems/common-admin'
+import type { DamAuthor, DamAuthorMinimal, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import useDamCachedUsers from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from '@/services/api/coreDam/authorApi'
 import { storeToRefs } from 'pinia'
