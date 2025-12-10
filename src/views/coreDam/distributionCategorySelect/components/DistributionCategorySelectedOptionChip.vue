@@ -11,9 +11,7 @@ const props = withDefaults(
 )
 
 const selectedOption = computed(() =>
-  props.distributionCategory?.selectedOptionsDetail?.find(
-    (select) => select.serviceSlug === props.serviceSlug
-  )
+  props.distributionCategory.selectedOptionsDetail.find((select) => select.serviceSlug === props.serviceSlug)
 )
 </script>
 
