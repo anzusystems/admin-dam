@@ -117,7 +117,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           #[dynamicDistributionServiceSlugSlot(distributionServiceSlug)]="{ item }: { item: DatatableItem }"
         >
           <DistributionCategorySelectedOptionChip
-            :distribution-category="item.raw as any"
+            :distribution-category="item"
             :service-slug="distributionServiceSlug"
           />
         </template>
