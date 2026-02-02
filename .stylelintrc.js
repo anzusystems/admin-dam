@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   extends: [
     'stylelint-config-standard-scss',
     'stylelint-config-recommended-vue/scss'
@@ -8,5 +8,9 @@ module.exports = {
     "no-descending-specificity": null,
     "no-duplicate-selectors": null,
     "color-function-notation": ["modern", { "ignore": ["with-var-inside"] }],
+    "scss/double-slash-comment-whitespace-inside": null,
+    "scss/double-slash-comment-empty-line-before": null,
+    "declaration-property-value-no-unknown": null,
+    "container-name-pattern": null,
   },
 }
