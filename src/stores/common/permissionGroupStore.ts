@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import { usePermissionGroupFactory } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
-interface State {
-  permissionGroup: PermissionGroup
-}
+export const usePermissionGroupOneStore = defineStore('commonPermissionGroupOneStore', () => {
+  const { createPermissionGroup } = usePermissionGroupFactory()
 
-const { createPermissionGroup } = usePermissionGroupFactory()
+  const permissionGroup = ref<PermissionGroup>(createPermissionGroup())
 
-export const usePermissionGroupOneStore = defineStore('commonPermissionGroupOneStore', {
-  state: (): State => ({
-    permissionGroup: createPermissionGroup(),
-  }),
-  actions: {
-    setPermissionGroup(permissionGroup: PermissionGroup) {
-      this.permissionGroup = permissionGroup
-    },
-    reset() {
-      this.permissionGroup = createPermissionGroup()
-    },
-  },
+  function setPermissionGroup(newPermissionGroup: PermissionGroup) {
+    permissionGroup.value = newPermissionGroup
+  }
+
+  function reset() {
+    permissionGroup.value = createPermissionGroup()
+  }
+
+  return {
+    permissionGroup,
+    setPermissionGroup,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

@@ -1,40 +1,49 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetExternalProviderDetailDto } from '@/types/coreDam/AssetExternalProvider'
+import { ref } from 'vue'
 
-interface State {
-  asset: AssetExternalProviderDetailDto | null
-  loader: boolean
-  detail: boolean
-}
+export const useExternalProviderAssetDetailStore = defineStore('damExternalProviderAssetDetailStore', () => {
+  const asset = ref<AssetExternalProviderDetailDto | null>(null)
+  const loader = ref(false)
+  const detail = ref(false)
 
-export const useExternalProviderAssetDetailStore = defineStore('damExternalProviderAssetDetailStore', {
-  state: (): State => ({
-    asset: null,
-    loader: false,
-    detail: false,
-  }),
-  actions: {
-    showDetail() {
-      this.detail = true
-    },
-    hideDetail() {
-      this.detail = false
-    },
-    showLoader() {
-      this.loader = true
-    },
-    hideLoader() {
-      this.loader = false
-    },
-    setAsset(asset: AssetExternalProviderDetailDto) {
-      this.asset = asset
-    },
-    reset() {
-      this.asset = null
-      this.loader = false
-      this.detail = false
-    },
-  },
+  function showDetail() {
+    detail.value = true
+  }
+
+  function hideDetail() {
+    detail.value = false
+  }
+
+  function showLoader() {
+    loader.value = true
+  }
+
+  function hideLoader() {
+    loader.value = false
+  }
+
+  function setAsset(newAsset: AssetExternalProviderDetailDto) {
+    asset.value = newAsset
+  }
+
+  function reset() {
+    asset.value = null
+    loader.value = false
+    detail.value = false
+  }
+
+  return {
+    asset,
+    loader,
+    detail,
+    showDetail,
+    hideDetail,
+    showLoader,
+    hideLoader,
+    setAsset,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

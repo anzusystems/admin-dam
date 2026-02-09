@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DamAuthor } from '@anzusystems/common-admin'
 import { useDamAuthorFactory } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
-const { createDefault } = useDamAuthorFactory()
+export const useAuthorOneStore = defineStore('authorOneStore', () => {
+  const { createDefault } = useDamAuthorFactory()
 
-interface State {
-  author: DamAuthor
-}
+  const author = ref<DamAuthor>(createDefault(0))
 
-export const useAuthorOneStore = defineStore('authorOneStore', {
-  state: (): State => ({
-    author: createDefault(0),
-  }),
-  actions: {
-    setAuthor(author: DamAuthor) {
-      this.author = author
-    },
-    reset() {
-      this.author = createDefault(0)
-    },
-  },
+  function setAuthor(newAuthor: DamAuthor) {
+    author.value = newAuthor
+  }
+
+  function reset() {
+    author.value = createDefault(0)
+  }
+
+  return {
+    author,
+    setAuthor,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

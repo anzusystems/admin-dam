@@ -122,6 +122,7 @@ const { assetTypeOptions } = useAssetType()
           <ARow>
             <AFormValueObjectOptionsSelect
               v-model="distributionCategory.type"
+              :v="v$.distributionCategory.type"
               :items="assetTypeOptions"
               data-cy="category-type"
             />

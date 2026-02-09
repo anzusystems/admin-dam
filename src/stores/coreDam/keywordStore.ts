@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DamKeyword } from '@anzusystems/common-admin'
 import { useDamKeywordFactory } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
-const { createDefault } = useDamKeywordFactory()
+export const useKeywordOneStore = defineStore('keywordOneStore', () => {
+  const { createDefault } = useDamKeywordFactory()
 
-interface State {
-  keyword: DamKeyword
-}
+  const keyword = ref<DamKeyword>(createDefault(0))
 
-export const useKeywordOneStore = defineStore('keywordOneStore', {
-  state: (): State => ({
-    keyword: createDefault(0),
-  }),
-  actions: {
-    setKeyword(keyword: DamKeyword) {
-      this.keyword = keyword
-    },
-    reset() {
-      this.keyword = createDefault(0)
-    },
-  },
+  function setKeyword(newKeyword: DamKeyword) {
+    keyword.value = newKeyword
+  }
+
+  function reset() {
+    keyword.value = createDefault(0)
+  }
+
+  return {
+    keyword,
+    setKeyword,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

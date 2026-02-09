@@ -8,102 +8,115 @@ import {
 import type { DamDistributionStatusType, DocId } from '@anzusystems/common-admin'
 import { type DamDistributionServiceName, DamDistributionStatus, isNull } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
 
-interface State {
-  list: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>
-  loader: boolean
-  auth: Array<DistributionAuth>
-}
+export const useDistributionListStore = defineStore('damDistributionListStore', () => {
+  const list = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
+  const loader = ref(false)
+  const auth = ref<Array<DistributionAuth>>([])
 
-export const useDistributionListStore = defineStore('damDistributionListStore', {
-  state: (): State => ({
-    list: [],
-    loader: false,
-    auth: [],
-  }),
-  getters: {
-    getDistributionAuth: (state) => {
-      return (distributionService: DamDistributionServiceName) => {
-        const foundIndex = state.auth.findIndex((item) => item.distributionService === distributionService)
-        if (foundIndex > -1) return state.auth[foundIndex]
-        return null
-      }
-    },
-  },
-  actions: {
-    showLoader() {
-      this.loader = true
-    },
-    hideLoader() {
-      this.loader = false
-    },
-    setList(items: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>) {
-      this.list = items
-    },
-    authorizationMessage(distributionService: DamDistributionServiceName, success: boolean) {
-      const found = this.getDistributionAuth(distributionService)
-      if (found) {
-        found.status = success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error
-        return
-      }
-      this.auth.push({
-        distributionService,
-        status: success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error,
-      })
-    },
-    async listItemMessageUpdate(distributionId: DocId, status: DamDistributionStatusType) {
-      switch (status) {
-        case DamDistributionStatus.Distributing:
-        case DamDistributionStatus.RemoteProcessing:
-          {
-            const foundIndex = this.list.findIndex((item) => item.id === distributionId)
-            if (foundIndex > -1) {
-              this.list[foundIndex].status = status
-            }
+  function getDistributionAuth(distributionService: DamDistributionServiceName) {
+    const foundIndex = auth.value.findIndex((item) => item.distributionService === distributionService)
+    if (foundIndex > -1) return auth.value[foundIndex]
+    return null
+  }
+
+  function showLoader() {
+    loader.value = true
+  }
+
+  function hideLoader() {
+    loader.value = false
+  }
+
+  function setList(items: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>) {
+    list.value = items
+  }
+
+  function authorizationMessage(distributionService: DamDistributionServiceName, success: boolean) {
+    const found = getDistributionAuth(distributionService)
+    if (found) {
+      found.status = success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error
+      return
+    }
+    auth.value.push({
+      distributionService,
+      status: success ? DistributionAuthStatus.Success : DistributionAuthStatus.Error,
+    })
+  }
+
+  async function listItemMessageUpdate(distributionId: DocId, status: DamDistributionStatusType) {
+    switch (status) {
+      case DamDistributionStatus.Distributing:
+      case DamDistributionStatus.RemoteProcessing:
+        {
+          const foundIndex = list.value.findIndex((item) => item.id === distributionId)
+          if (foundIndex > -1) {
+            list.value[foundIndex].status = status
           }
-          break
-        default:
-          try {
-            const res = await fetchDistribution(distributionId)
-            const foundIndex = this.list.findIndex((item) => item.id === res.id)
-            if (foundIndex > -1) {
-              this.list.splice(foundIndex, 1, res)
-            }
-          } catch (error) {
-            //
+        }
+        break
+      default:
+        try {
+          const res = await fetchDistribution(distributionId)
+          const foundIndex = list.value.findIndex((item) => item.id === res.id)
+          if (foundIndex > -1) {
+            list.value.splice(foundIndex, 1, res)
           }
-      }
-    },
-    setAuthStatus(
-      distributionService: DamDistributionServiceName,
-      status: DistributionAuthStatusType = DistributionAuthStatus.Idle
-    ) {
-      const authItem = this.getDistributionAuth(distributionService)
-      if (authItem) {
-        authItem.status = status
-        return
-      }
-      this.auth.push({ distributionService, status: status })
-    },
-    resetList() {
-      this.list = []
-    },
-    resetAuth(distributionService: DamDistributionServiceName | null = null) {
-      if (isNull(distributionService)) {
-        this.auth = []
-        return
-      }
-      const foundIndex = this.auth.findIndex((item) => item.distributionService === distributionService)
-      if (foundIndex > -1) {
-        this.auth.splice(foundIndex, 1)
-      }
-    },
-    reset() {
-      this.list = []
-      this.loader = false
-      this.auth = []
-    },
-  },
+        } catch (error) {
+          //
+        }
+    }
+  }
+
+  function setAuthStatus(
+    distributionService: DamDistributionServiceName,
+    status: DistributionAuthStatusType = DistributionAuthStatus.Idle
+  ) {
+    const authItem = getDistributionAuth(distributionService)
+    if (authItem) {
+      authItem.status = status
+      return
+    }
+    auth.value.push({ distributionService, status: status })
+  }
+
+  function resetList() {
+    list.value = []
+  }
+
+  function resetAuth(distributionService: DamDistributionServiceName | null = null) {
+    if (isNull(distributionService)) {
+      auth.value = []
+      return
+    }
+    const foundIndex = auth.value.findIndex((item) => item.distributionService === distributionService)
+    if (foundIndex > -1) {
+      auth.value.splice(foundIndex, 1)
+    }
+  }
+
+  function reset() {
+    list.value = []
+    loader.value = false
+    auth.value = []
+  }
+
+  return {
+    list,
+    loader,
+    auth,
+    getDistributionAuth,
+    showLoader,
+    hideLoader,
+    setList,
+    authorizationMessage,
+    listItemMessageUpdate,
+    setAuthStatus,
+    resetList,
+    resetAuth,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

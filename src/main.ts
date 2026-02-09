@@ -10,21 +10,13 @@ import { envConfig, loadEnvConfig } from '@/services/EnvConfigService'
 import { initErrorHandler } from '@/services/ErrorHandlerApiService'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import {
-  AnzuSystemsCommonAdmin,
-  i18n,
-  type LanguageCode,
-  loadCommonFonts,
-  type PluginOptions,
-} from '@anzusystems/common-admin'
+import { AnzuSystemsCommonAdmin, loadCommonFonts, type PluginOptions } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
 import { damClient } from '@/services/api/clients/damClient'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
 import * as Sentry from '@sentry/vue'
-
-export const DEFAULT_LANGUAGE: LanguageCode = 'sk'
-export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['en', 'sk']
+import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 
 dayjs.extend(Duration)
 
