@@ -23,7 +23,7 @@ export const useKeywordListActions = () => {
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
-    pagination.sortBy = filterBag.text.model ? null : 'id'
+    pagination.sortBy = filterBag.text.model ? null : 'createdAt'
     try {
       listItems.value = await fetchKeywordList(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {

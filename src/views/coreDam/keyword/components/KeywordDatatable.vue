@@ -48,6 +48,7 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   SYSTEM_CORE_DAM,
   ENTITY
 )
+pagination.sortBy = 'createdAt'
 
 const sortByChange = (option: DatatableOrderingOption) => {
   updateSortBy(option.sortBy)
@@ -72,7 +73,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableOrdering
+          variant="default"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -118,6 +122,7 @@ defineExpose({
         <template #bottom>
           <ADatatablePagination
             v-model="pagination"
+            var
             @change="getList"
           />
         </template>
