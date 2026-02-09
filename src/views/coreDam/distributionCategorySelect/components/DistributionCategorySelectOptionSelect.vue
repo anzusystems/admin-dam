@@ -68,6 +68,7 @@ const onBlur = () => {
     item-value="id"
     :label="select.serviceSlug"
     clearable
+    :disabled="select.options.length === 0"
     no-filter
     :error-messages="errorMessageComputed"
     data-cy="distribution-category-select"
