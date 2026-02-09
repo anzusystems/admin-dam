@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { usePodcastFactory } from '@/model/coreDam/factory/PodcastFactory'
 import type { Podcast } from '@/types/coreDam/Podcast'
+import { ref } from 'vue'
 
-const { createDefault } = usePodcastFactory()
+export const usePodcastOneStore = defineStore('podcastOneStore', () => {
+  const { createDefault } = usePodcastFactory()
 
-interface State {
-  podcast: Podcast
-}
+  const podcast = ref<Podcast>(createDefault(0))
 
-export const usePodcastOneStore = defineStore('podcastOneStore', {
-  state: (): State => ({
-    podcast: createDefault(0),
-  }),
-  actions: {
-    setPodcast(podcast: Podcast) {
-      this.podcast = podcast
-    },
-    reset() {
-      this.podcast = createDefault(0)
-    },
-  },
+  function setPodcast(newPodcast: Podcast) {
+    podcast.value = newPodcast
+  }
+
+  function reset() {
+    podcast.value = createDefault(0)
+  }
+
+  return {
+    podcast,
+    setPodcast,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

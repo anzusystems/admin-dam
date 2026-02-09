@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpisodeFactory'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
+import { ref } from 'vue'
 
-const { createDefault } = useVideoShowEpisodeFactory()
+export const useVideoShowEpisodeOneStore = defineStore('videoShowEpisodeOneStore', () => {
+  const { createDefault } = useVideoShowEpisodeFactory()
 
-interface State {
-  videoShowEpisode: VideoShowEpisode
-}
+  const videoShowEpisode = ref<VideoShowEpisode>(createDefault(0))
 
-export const useVideoShowEpisodeOneStore = defineStore('videoShowEpisodeOneStore', {
-  state: (): State => ({
-    videoShowEpisode: createDefault(0),
-  }),
-  actions: {
-    setVideoShowEpisode(videoShowEpisode: VideoShowEpisode) {
-      this.videoShowEpisode = videoShowEpisode
-    },
-    reset() {
-      this.videoShowEpisode = createDefault(0)
-    },
-  },
+  function setVideoShowEpisode(newVideoShowEpisode: VideoShowEpisode) {
+    videoShowEpisode.value = newVideoShowEpisode
+  }
+
+  function reset() {
+    videoShowEpisode.value = createDefault(0)
+  }
+
+  return {
+    videoShowEpisode,
+    setVideoShowEpisode,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

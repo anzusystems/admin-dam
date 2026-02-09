@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AnzuUser } from '@anzusystems/common-admin'
 import { useAnzuUserFactory } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
-interface State {
-  anzuUser: AnzuUser
-}
+export const useAnzuUserOneStore = defineStore('commonAnzuUserOneStore', () => {
+  const { createAnzuUser } = useAnzuUserFactory()
 
-const { createAnzuUser } = useAnzuUserFactory()
+  const anzuUser = ref<AnzuUser>(createAnzuUser())
 
-export const useAnzuUserOneStore = defineStore('commonAnzuUserOneStore', {
-  state: (): State => ({
-    anzuUser: createAnzuUser(),
-  }),
-  actions: {
-    setAnzuUser(anzuUser: AnzuUser) {
-      this.anzuUser = anzuUser
-    },
-    reset() {
-      this.anzuUser = createAnzuUser()
-    },
-  },
+  function setAnzuUser(newAnzuUser: AnzuUser) {
+    anzuUser.value = newAnzuUser
+  }
+
+  function reset() {
+    anzuUser.value = createAnzuUser()
+  }
+
+  return {
+    anzuUser,
+    setAnzuUser,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

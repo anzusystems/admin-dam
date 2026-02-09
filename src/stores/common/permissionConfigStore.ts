@@ -1,37 +1,42 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { PermissionConfig } from '@anzusystems/common-admin'
 import { usePermissionConfigFactory } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
-interface State {
-  permissionConfig: PermissionConfig
-  loadingPermissionConfig: boolean
-  isPermissionConfigInitialized: boolean
-}
+export const usePermissionConfigStore = defineStore('usePermissionConfigStore', () => {
+  const { createPermissionConfig } = usePermissionConfigFactory()
 
-const { createPermissionConfig } = usePermissionConfigFactory()
+  const permissionConfig = ref<PermissionConfig>(createPermissionConfig())
+  const loadingPermissionConfig = ref(false)
+  const isPermissionConfigInitialized = ref(false)
 
-export const usePermissionConfigStore = defineStore('usePermissionConfigStore', {
-  state: (): State => ({
-    permissionConfig: createPermissionConfig(),
-    loadingPermissionConfig: false,
-    isPermissionConfigInitialized: false,
-  }),
-  actions: {
-    setPermissionConfig(permissionConfig: PermissionConfig) {
-      this.permissionConfig = permissionConfig
-    },
-    setLoadingPermissionConfig(loadingPermissionConfig: boolean) {
-      this.loadingPermissionConfig = loadingPermissionConfig
-    },
-    setPermissionConfigInitialized(initialized: boolean) {
-      this.isPermissionConfigInitialized = initialized
-    },
-    reset() {
-      this.permissionConfig = createPermissionConfig()
-      this.loadingPermissionConfig = false
-      this.isPermissionConfigInitialized = false
-    },
-  },
+  function setPermissionConfig(newPermissionConfig: PermissionConfig) {
+    permissionConfig.value = newPermissionConfig
+  }
+
+  function setLoadingPermissionConfig(newLoadingPermissionConfig: boolean) {
+    loadingPermissionConfig.value = newLoadingPermissionConfig
+  }
+
+  function setPermissionConfigInitialized(initialized: boolean) {
+    isPermissionConfigInitialized.value = initialized
+  }
+
+  function reset() {
+    permissionConfig.value = createPermissionConfig()
+    loadingPermissionConfig.value = false
+    isPermissionConfigInitialized.value = false
+  }
+
+  return {
+    permissionConfig,
+    loadingPermissionConfig,
+    isPermissionConfigInitialized,
+    setPermissionConfig,
+    setLoadingPermissionConfig,
+    setPermissionConfigInitialized,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

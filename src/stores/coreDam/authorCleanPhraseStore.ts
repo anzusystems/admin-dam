@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
 import { useAuthorCleanPhraseFactory } from '@/model/coreDam/factory/AuthorCleanPhraseFactory'
+import { ref } from 'vue'
 
-const { createDefault } = useAuthorCleanPhraseFactory()
+export const useAuthorCleanPhraseOneStore = defineStore('authorCleanPhraseOneStore', () => {
+  const { createDefault } = useAuthorCleanPhraseFactory()
 
-interface State {
-  authorCleanPhrase: AuthorCleanPhrase
-}
+  const authorCleanPhrase = ref<AuthorCleanPhrase>(createDefault(0))
 
-export const useAuthorCleanPhraseOneStore = defineStore('authorCleanPhraseOneStore', {
-  state: (): State => ({
-    authorCleanPhrase: createDefault(0),
-  }),
-  actions: {
-    setAuthorCleanPhrase(authorCleanPhrase: AuthorCleanPhrase) {
-      this.authorCleanPhrase = authorCleanPhrase
-    },
-    reset() {
-      this.authorCleanPhrase = createDefault(0)
-    },
-  },
+  function setAuthorCleanPhrase(newAuthorCleanPhrase: AuthorCleanPhrase) {
+    authorCleanPhrase.value = newAuthorCleanPhrase
+  }
+
+  function reset() {
+    authorCleanPhrase.value = createDefault(0)
+  }
+
+  return {
+    authorCleanPhrase,
+    setAuthorCleanPhrase,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

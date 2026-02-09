@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-// @ts-nocheck
-// todo remove nocheck
 import { ACL, useAuth } from '@/composables/auth/auth'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -102,7 +100,6 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           :columns-all="columnsAll"
         />
       </div>
-      <!-- @vue-ignore -->
       <VDataTableServer
         class="a-datatable"
         :headers="columnsVisible"

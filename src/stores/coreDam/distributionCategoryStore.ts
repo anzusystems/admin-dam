@@ -4,36 +4,43 @@ import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
-const { createDefault } = useDistributionCategoryFactory()
+export const useDistributionCategoryOneStore = defineStore('distributionCategoryOneStore', () => {
+  const { createDefault } = useDistributionCategoryFactory()
 
-interface State {
-  distributionCategory: DistributionCategory
-  distributionCategorySelects: DistributionCategorySelect[]
-  distributionCategorySelectedOptions: Partial<Record<DamDistributionServiceName, DistributionCategoryOption | null>>
-}
+  const distributionCategory = ref<DistributionCategory>(createDefault(0))
+  const distributionCategorySelects = ref<DistributionCategorySelect[]>([])
+  const distributionCategorySelectedOptions = ref<
+    Partial<Record<DamDistributionServiceName, DistributionCategoryOption | null>>
+  >({})
 
-export const useDistributionCategoryOneStore = defineStore('distributionCategoryOneStore', {
-  state: (): State => ({
-    distributionCategory: createDefault(0),
-    distributionCategorySelects: [],
-    distributionCategorySelectedOptions: {},
-  }),
-  actions: {
-    setDistributionCategory(distributionCategory: DistributionCategory, selects: DistributionCategorySelect[]) {
-      this.distributionCategory = distributionCategory
-      this.distributionCategorySelects = selects
-      selects.forEach((select) => {
-        this.distributionCategorySelectedOptions[select.serviceSlug] =
-          distributionCategory.selectedOptionsDetail.find((option) => option.serviceSlug === select.serviceSlug) ?? null
-      })
-    },
-    reset() {
-      this.distributionCategory = createDefault(0)
-      this.distributionCategorySelects = []
-      this.distributionCategorySelectedOptions = {}
-    },
-  },
+  function setDistributionCategory(
+    newDistributionCategory: DistributionCategory,
+    selects: DistributionCategorySelect[]
+  ) {
+    distributionCategory.value = newDistributionCategory
+    distributionCategorySelects.value = selects
+    selects.forEach((select) => {
+      distributionCategorySelectedOptions.value[select.serviceSlug] =
+        newDistributionCategory.selectedOptionsDetail.find((option) => option.serviceSlug === select.serviceSlug) ??
+        null
+    })
+  }
+
+  function reset() {
+    distributionCategory.value = createDefault(0)
+    distributionCategorySelects.value = []
+    distributionCategorySelectedOptions.value = {}
+  }
+
+  return {
+    distributionCategory,
+    distributionCategorySelects,
+    distributionCategorySelectedOptions,
+    setDistributionCategory,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

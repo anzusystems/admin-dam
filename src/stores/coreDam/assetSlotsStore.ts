@@ -3,57 +3,61 @@ import { damClient } from '@/services/api/clients/damClient'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { cloneDeep, type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
-interface State {
-  assetSlotNames: string[]
-  list: Array<AssetSlot>
-  loader: boolean
-  // auth: Array<DistributionAuth>
-}
+export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
+  const assetSlotNames = ref<string[]>([])
+  const list = ref<Array<AssetSlot>>([])
+  const loader = ref(false)
 
-export const useAssetSlotsStore = defineStore('damAssetSlotsStore', {
-  state: (): State => ({
-    assetSlotNames: [],
-    list: [],
-    loader: false,
-    // auth: [],
-  }),
-  getters: {
-    getPositionedSlots: (state) => {
-      const data: Record<string, null | AssetSlot> = {}
-      for (let i = 0; i < state.assetSlotNames.length; i++) {
-        const found = state.list.find((item) => item.slotName === state.assetSlotNames[i])
-        data[state.assetSlotNames[i]] = found ? found : null
-      }
-      return data
-    },
-  },
-  actions: {
-    showLoader() {
-      this.loader = true
-    },
-    hideLoader() {
-      this.loader = false
-    },
-    setAssetSlotsNamesFromConfig(assetType: DamAssetTypeType) {
-      const { getDamConfigExtSystem } = useDamConfigState(damClient)
-      const { currentExtSystemId } = useCurrentExtSystem()
-      const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
-      if (isUndefined(configExtSystem)) {
-        throw new Error('Ext system must be initialised.')
-      }
-      this.assetSlotNames = cloneDeep(configExtSystem[assetType].slots)
-    },
-    setList(items: Array<AssetSlot>) {
-      this.list = items
-    },
-    reset() {
-      this.list = []
-      this.assetSlotNames = []
-      this.loader = false
-      // this.auth = []
-    },
-  },
+  const getPositionedSlots = computed(() => {
+    const data: Record<string, null | AssetSlot> = {}
+    for (let i = 0; i < assetSlotNames.value.length; i++) {
+      const found = list.value.find((item) => item.slotName === assetSlotNames.value[i])
+      data[assetSlotNames.value[i]] = found ? found : null
+    }
+    return data
+  })
+
+  function showLoader() {
+    loader.value = true
+  }
+
+  function hideLoader() {
+    loader.value = false
+  }
+
+  function setAssetSlotsNamesFromConfig(assetType: DamAssetTypeType) {
+    const { getDamConfigExtSystem } = useDamConfigState(damClient)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+    if (isUndefined(configExtSystem)) {
+      throw new Error('Ext system must be initialised.')
+    }
+    assetSlotNames.value = cloneDeep(configExtSystem[assetType].slots)
+  }
+
+  function setList(items: Array<AssetSlot>) {
+    list.value = items
+  }
+
+  function reset() {
+    list.value = []
+    assetSlotNames.value = []
+    loader.value = false
+  }
+
+  return {
+    assetSlotNames,
+    list,
+    loader,
+    getPositionedSlots,
+    showLoader,
+    hideLoader,
+    setAssetSlotsNamesFromConfig,
+    setList,
+    reset,
+  }
 })
 
 if (import.meta.hot) {

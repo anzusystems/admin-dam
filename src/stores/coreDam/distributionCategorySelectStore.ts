@@ -1,25 +1,26 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useDistributionCategorySelectFactory } from '@/model/coreDam/factory/DistributionCategorySelectFactory'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
+import { ref } from 'vue'
 
-const { createDefault } = useDistributionCategorySelectFactory()
+export const useDistributionCategorySelectOneStore = defineStore('distributionCategorySelectOneStore', () => {
+  const { createDefault } = useDistributionCategorySelectFactory()
 
-interface State {
-  distributionCategorySelect: DistributionCategorySelect
-}
+  const distributionCategorySelect = ref<DistributionCategorySelect>(createDefault(0))
 
-export const useDistributionCategorySelectOneStore = defineStore('distributionCategorySelectOneStore', {
-  state: (): State => ({
-    distributionCategorySelect: createDefault(0),
-  }),
-  actions: {
-    setDistributionCategorySelect(distributionCategorySelect: DistributionCategorySelect) {
-      this.distributionCategorySelect = distributionCategorySelect
-    },
-    reset() {
-      this.distributionCategorySelect = createDefault(0)
-    },
-  },
+  function setDistributionCategorySelect(newDistributionCategorySelect: DistributionCategorySelect) {
+    distributionCategorySelect.value = newDistributionCategorySelect
+  }
+
+  function reset() {
+    distributionCategorySelect.value = createDefault(0)
+  }
+
+  return {
+    distributionCategorySelect,
+    setDistributionCategorySelect,
+    reset,
+  }
 })
 
 if (import.meta.hot) {
