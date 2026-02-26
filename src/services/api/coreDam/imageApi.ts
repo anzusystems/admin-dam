@@ -307,3 +307,32 @@ export const makePrivate = (imageId: DocId) => {
       })
   })
 }
+
+export const updateImageFileOverrideInternal = (image: AssetFileImage, overrideInternal: boolean) => {
+  return new Promise<AssetFileImage>((resolve, reject) => {
+    const url = END_POINT + '/' + image.id
+    damClient()
+      .put(
+        url,
+        JSON.stringify({
+          ...image,
+          flags: {
+            ...image.flags,
+            overrideInternal,
+          },
+        })
+      )
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

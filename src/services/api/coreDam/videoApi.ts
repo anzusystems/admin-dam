@@ -252,6 +252,35 @@ export const downloadLink = (videoId: DocId) => {
   })
 }
 
+export const updateVideoFileOverrideInternal = (video: AssetFileVideo, overrideInternal: boolean) => {
+  return new Promise<AssetFileVideo>((resolve, reject) => {
+    const url = END_POINT + '/' + video.id
+    damClient()
+      .put(
+        url,
+        JSON.stringify({
+          ...video,
+          flags: {
+            ...video.flags,
+            overrideInternal,
+          },
+        })
+      )
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}
+
 export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePreviewNullable) => {
   return new Promise((resolve, reject) => {
     damClient()

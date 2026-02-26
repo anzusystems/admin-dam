@@ -291,3 +291,32 @@ export const makePrivate = (audioId: DocId) => {
       })
   })
 }
+
+export const updateAudioFileOverrideInternal = (audio: AssetFileAudio, overrideInternal: boolean) => {
+  return new Promise<AssetFileAudio>((resolve, reject) => {
+    const url = END_POINT + '/' + audio.id
+    damClient()
+      .put(
+        url,
+        JSON.stringify({
+          ...audio,
+          flags: {
+            ...audio.flags,
+            overrideInternal,
+          },
+        })
+      )
+      .then((res) => {
+        if (res.status === HTTP_STATUS_OK) {
+          resolve(res.data)
+        } else {
+          //
+          reject()
+        }
+      })
+      .catch((err) => {
+        //
+        reject(err)
+      })
+  })
+}

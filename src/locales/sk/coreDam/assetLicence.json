@@ -3,7 +3,13 @@
     "id": "ID",
     "name": "Meno",
     "extSystem": "Externý systém",
-    "extId": "Externé ID"
+    "extId": "Externé ID",
+    "internalRule": {
+      "active": "Interné pravidlo aktívne",
+      "markAsInternalSince": "Označiť ako interné od"
+    },
+    "internalRuleAuthors": "Autori interného pravidla",
+    "internalRuleUsers": "Používatelia interného pravidla"
   },
   "filter": {
     "id": "ID",

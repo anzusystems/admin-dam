@@ -10,6 +10,12 @@ export function useAssetLicenceFactory() {
       name: '',
       extSystem: null,
       extId: '',
+      internalRule: {
+        active: false,
+        markAsInternalSince: null,
+      },
+      internalRuleAuthors: [],
+      internalRuleUsers: [],
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 0,

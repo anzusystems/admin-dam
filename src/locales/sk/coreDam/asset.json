@@ -161,7 +161,11 @@
         "height": "Výška",
         "ratio": "Pomer strán",
         "animated": "Animované",
-        "mainRoute": "Originál"
+        "mainRoute": "Originál",
+        "flags": {
+          "internal": "Interný",
+          "overrideInternal": "Prepísať interné"
+        }
       }
     },
     "roi": {
