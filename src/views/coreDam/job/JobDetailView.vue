@@ -16,11 +16,15 @@ import JobDetailPodcastSynchronizer from '@/views/coreDam/job/components/JobDeta
 import JobDetailUserDataDelete from '@/views/coreDam/job/components/JobDetailUserDataDelete.vue'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
+  JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
   JOB_RESOURCE_IMAGE_COPY,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
+  JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
 } from '@/model/coreDam/valueObject/JobResource'
 import JobAuthorCurrentOptimize from '@/views/coreDam/job/components/JobAuthorCurrentOptimize.vue'
 import JobImageCopy from '@/views/coreDam/job/components/JobImageCopy.vue'
+import JobDetailAssetFileReprocessInternalFlag from '@/views/coreDam/job/components/JobDetailAssetFileReprocessInternalFlag.vue'
+import JobDetailSynchronizeImageChanged from '@/views/coreDam/job/components/JobDetailSynchronizeImageChanged.vue'
 
 const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 
@@ -40,6 +44,10 @@ const jobComponent = computed(() => {
       return JobAuthorCurrentOptimize
     case JOB_RESOURCE_IMAGE_COPY:
       return JobImageCopy
+    case JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG:
+      return JobDetailAssetFileReprocessInternalFlag
+    case JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED:
+      return JobDetailSynchronizeImageChanged
     case JOB_RESOURCE_USER_DATA_DELETE:
       return JobDetailUserDataDelete
     default:

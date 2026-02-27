@@ -4,7 +4,9 @@ import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_D
 import { computed, ref } from 'vue'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
+  JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
+  JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
   type JobResource,
   useJobResource,
 } from '@/model/coreDam/valueObject/JobResource'
@@ -12,6 +14,8 @@ import JobCreateFormPodcastSynchronizer from '@/views/coreDam/job/components/Job
 import JobCreateFormUserDataDelete from '@/views/coreDam/job/components/JobCreateFormUserDataDelete.vue'
 import JobCreateFormDefault from '@/views/coreDam/job/components/JobCreateFormDefault.vue'
 import JobCreateFormAuthorCurrentOptimize from '@/views/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
+import JobCreateFormAssetFileReprocessInternalFlag from '@/views/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
+import JobCreateFormSynchronizeImageChanged from '@/views/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue'
 
 withDefaults(
   defineProps<{
@@ -43,6 +47,10 @@ const jobComponent = computed(() => {
       return JobCreateFormPodcastSynchronizer
     case JOB_AUTHOR_CURRENT_OPTIMIZE:
       return JobCreateFormAuthorCurrentOptimize
+    case JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG:
+      return JobCreateFormAssetFileReprocessInternalFlag
+    case JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED:
+      return JobCreateFormSynchronizeImageChanged
     default:
       console.error('Unsupported type.')
       return JobCreateFormDefault

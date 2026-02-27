@@ -1,6 +1,12 @@
 import type { DocIdNullable, IntegerId, IntegerIdNullable, JobBase, JobUserDataDelete } from '@anzusystems/common-admin'
 import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
 
+export interface JobAssetFileReprocessInternalFlag extends JobBase<JobResource> {
+  targetLicenceId: IntegerId
+  processFrom: string | null
+  bulkSize: number
+}
+
 export interface JobPodcastSynchronizer extends JobBase<JobResource> {
   podcastId: DocIdNullable
   fullSync: boolean
@@ -32,4 +38,15 @@ export interface JobAuthorCurrentOptimize extends JobBase<JobResource> {
   authorId: DocIdNullable
 }
 
-export type Job = JobUserDataDelete | JobPodcastSynchronizer | JobImageCopy
+export interface JobSynchronizeImageChanged extends JobBase<JobResource> {
+  targetLicenceId: IntegerId
+  processFrom: string | null
+  bulkSize: number
+}
+
+export type Job =
+  | JobUserDataDelete
+  | JobPodcastSynchronizer
+  | JobImageCopy
+  | JobAssetFileReprocessInternalFlag
+  | JobSynchronizeImageChanged

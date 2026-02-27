@@ -1,7 +1,17 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useCommonJobFactory } from '@anzusystems/common-admin'
-import type { JobAuthorCurrentOptimize, JobPodcastSynchronizer } from '@/types/coreDam/Job'
-import { JOB_AUTHOR_CURRENT_OPTIMIZE, JOB_RESOURCE_PODCAST_SYNCHRONIZER } from '@/model/coreDam/valueObject/JobResource'
+import type {
+  JobAssetFileReprocessInternalFlag,
+  JobAuthorCurrentOptimize,
+  JobPodcastSynchronizer,
+  JobSynchronizeImageChanged,
+} from '@/types/coreDam/Job'
+import {
+  JOB_AUTHOR_CURRENT_OPTIMIZE,
+  JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
+  JOB_RESOURCE_PODCAST_SYNCHRONIZER,
+  JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
+} from '@/model/coreDam/valueObject/JobResource'
 
 export function useJobFactory() {
   const { createBase } = useCommonJobFactory()
@@ -25,8 +35,24 @@ export function useJobFactory() {
     }
   }
 
+  const createAssetFileReprocessInternalFlag = (): JobAssetFileReprocessInternalFlag => {
+    return {
+      ...createBase(JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG, SYSTEM_CORE_DAM),
+      ...{ targetLicenceId: 0, processFrom: null, bulkSize: 500 },
+    }
+  }
+
+  const createSynchronizeImageChanged = (): JobSynchronizeImageChanged => {
+    return {
+      ...createBase(JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED, SYSTEM_CORE_DAM),
+      ...{ targetLicenceId: 0, processFrom: null, bulkSize: 500 },
+    }
+  }
+
   return {
     createPodcastSynchronizer,
     createAuthorCurrentOptimize,
+    createAssetFileReprocessInternalFlag,
+    createSynchronizeImageChanged,
   }
 }
