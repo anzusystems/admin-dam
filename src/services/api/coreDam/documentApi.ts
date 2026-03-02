@@ -291,32 +291,3 @@ export const makePrivate = (documentId: DocId) => {
       })
   })
 }
-
-export const updateDocumentFileOverrideInternal = (document: AssetFileDocument, overrideInternal: boolean) => {
-  return new Promise<AssetFileDocument>((resolve, reject) => {
-    const url = END_POINT + '/' + document.id
-    damClient()
-      .put(
-        url,
-        JSON.stringify({
-          ...document,
-          flags: {
-            ...document.flags,
-            overrideInternal,
-          },
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}

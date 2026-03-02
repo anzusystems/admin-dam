@@ -2,10 +2,6 @@
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { ACL } from '@/composables/auth/auth'
 import { deleteAsset, updateAssetMetadata } from '@/services/api/coreDam/assetApi'
-import { updateImageFileOverrideInternal } from '@/services/api/coreDam/imageApi'
-import { updateAudioFileOverrideInternal } from '@/services/api/coreDam/audioApi'
-import { updateVideoFileOverrideInternal } from '@/services/api/coreDam/videoApi'
-import { updateDocumentFileOverrideInternal } from '@/services/api/coreDam/documentApi'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
@@ -14,10 +10,6 @@ import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/
 import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import {
   AActionDeleteButton,
-  assetFileIsAudioFile,
-  assetFileIsDocumentFile,
-  assetFileIsImageFile,
-  assetFileIsVideoFile,
   isNull,
   useAlerts,
 } from '@anzusystems/common-admin'
@@ -42,7 +34,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset, view, mainFileSingleUse, mainFileOverrideInternal } = useAssetDetailActions()
+const { asset, view, mainFileSingleUse, mainFileOverrideInternal, mainFileInternal } = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
@@ -50,20 +42,6 @@ const saveButtonLoading = ref(false)
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
-
-const saveOverrideInternal = async () => {
-  if (isNull(asset.value) || isNull(asset.value.mainFile)) return
-  const mainFile = asset.value.mainFile
-  if (assetFileIsImageFile(mainFile)) {
-    await updateImageFileOverrideInternal(mainFile, mainFileOverrideInternal.value)
-  } else if (assetFileIsAudioFile(mainFile)) {
-    await updateAudioFileOverrideInternal(mainFile, mainFileOverrideInternal.value)
-  } else if (assetFileIsVideoFile(mainFile)) {
-    await updateVideoFileOverrideInternal(mainFile, mainFileOverrideInternal.value)
-  } else if (assetFileIsDocumentFile(mainFile)) {
-    await updateDocumentFileOverrideInternal(mainFile, mainFileOverrideInternal.value)
-  }
-}
 
 const onSave = async () => {
   if (isNull(asset.value)) return
@@ -75,10 +53,9 @@ const onSave = async () => {
     return
   }
   try {
-    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
-    if (asset.value.mainFile) {
-      await saveOverrideInternal()
-    }
+    await updateAssetMetadata(
+      asset.value, mainFileSingleUse.value, mainFileOverrideInternal.value, mainFileInternal.value
+    )
     if (view.value === 'queue') {
       uploadQueueStore.updateAssetMetadata(asset.value)
     }

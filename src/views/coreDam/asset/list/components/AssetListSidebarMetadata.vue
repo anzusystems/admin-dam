@@ -58,7 +58,7 @@ const onSave = async () => {
   }
   try {
     metadataUnTouch()
-    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
+    await updateAssetMetadata(asset.value, mainFileSingleUse.value, null, null)
     showRecordWas('updated')
   } catch (error) {
     showErrorsDefault(error)

@@ -13,7 +13,6 @@ import KeywordRemoteAutocompleteWithCached from '@/views/coreDam/keyword/compone
 import { useKeywordAssetTypeConfig } from '@/views/coreDam/keyword/composables/keywordConfig'
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
-  ABooleanValue,
   ACopyText,
   assetFileIsAudioFile,
   assetFileIsImageFile,
@@ -159,19 +158,7 @@ const onAnyMetadataChange = () => {
               </VCol>
             </VRow>
             <VRow
-              v-if="asset.mainFile"
-              dense
-              class="my-2"
-            >
-              <VCol>
-                <div class="d-flex align-center">
-                  <span class="text-caption mr-2">{{ t('coreDam.asset.detail.info.field.flags.internal') }}:</span>
-                  <ABooleanValue :value="mainFileInternal" />
-                </div>
-              </VCol>
-            </VRow>
-            <VRow
-              v-if="asset.mainFile"
+              v-if="isTypeImage && asset.mainFile"
               dense
               class="my-2"
             >
@@ -179,6 +166,19 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                />
+              </VCol>
+            </VRow>
+            <VRow
+              v-if="isTypeImage && asset.mainFile"
+              dense
+              class="my-2"
+            >
+              <VCol>
+                <VSwitch
+                  v-model="mainFileInternal"
+                  :disabled="!mainFileOverrideInternal"
+                  :label="t('coreDam.asset.detail.info.field.flags.internal')"
                 />
               </VCol>
             </VRow>
