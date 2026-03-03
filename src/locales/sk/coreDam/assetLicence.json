@@ -5,11 +5,11 @@
     "extSystem": "Externý systém",
     "extId": "Externé ID",
     "internalRule": {
-      "active": "Interné pravidlo aktívne",
-      "markAsInternalSince": "Označiť ako interné od"
+      "active": "Aktívny processing interné",
+      "markAsInternalSince": "Procesuj príznak interné od"
     },
-    "internalRuleAuthors": "Autori interného pravidla",
-    "internalRuleUsers": "Používatelia interného pravidla"
+    "internalRuleAuthors": "Interný autori",
+    "internalRuleUsers": "Používatelia uploadujúci interné obrázky"
   },
   "filter": {
     "id": "ID",

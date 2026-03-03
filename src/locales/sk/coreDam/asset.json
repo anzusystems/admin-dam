@@ -164,7 +164,7 @@
         "mainRoute": "Originál",
         "flags": {
           "internal": "Interný",
-          "overrideInternal": "Preťažiť príznak interné"
+          "overrideInternal": "Preťažiť príznak interný"
         }
       }
     },
