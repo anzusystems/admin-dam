@@ -6,7 +6,7 @@ import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope, DamExtSy
 import { useAssetLicenceEditActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
 import { damClient } from '@/services/api/clients/damClient'
-import AuthorRemoteAutocompleteWithCached from '@/views/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import AuthorRemoteAutocomplete from '@/views/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import UserRemoteAutocomplete from '@/views/coreDam/user/components/UserRemoteAutocomplete.vue'
 
 const { assetLicence } = useAssetLicenceEditActions()
@@ -73,11 +73,10 @@ const { t } = useI18n()
             subject="author"
             system="dam"
           >
-            <AuthorRemoteAutocompleteWithCached
+            <AuthorRemoteAutocomplete
               v-model="assetLicence.internalRuleAuthors"
               :label="t('coreDam.assetLicence.model.internalRuleAuthors')"
               multiple
-              clearable
               data-cy="asset-licence-internal-rule-authors"
             />
           </ASystemEntityScope>
