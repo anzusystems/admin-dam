@@ -7,6 +7,7 @@
     "licence": "Licence",
     "targetLicenceId": "Target Licence Id",
     "processFrom": "Process from",
+    "processUntil": "Process until",
     "bulkSize": "Bulk size"
   },
   "jobResource": {

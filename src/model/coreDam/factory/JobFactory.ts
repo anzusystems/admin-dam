@@ -38,14 +38,14 @@ export function useJobFactory() {
   const createAssetFileReprocessInternalFlag = (): JobAssetFileReprocessInternalFlag => {
     return {
       ...createBase(JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG, SYSTEM_CORE_DAM),
-      ...{ targetLicenceId: 0, processFrom: null, bulkSize: 500 },
+      ...{ targetLicenceId: 0, processFrom: null, processUntil: null, bulkSize: 500 },
     }
   }
 
   const createSynchronizeImageChanged = (): JobSynchronizeImageChanged => {
     return {
       ...createBase(JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED, SYSTEM_CORE_DAM),
-      ...{ targetLicenceId: 0, processFrom: null, bulkSize: 500 },
+      ...{ targetLicenceId: 0, processFrom: null, processUntil: null, bulkSize: 500 },
     }
   }
 

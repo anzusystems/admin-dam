@@ -83,6 +83,14 @@ const onConfirm = async () => {
       />
     </ARow>
     <ARow>
+      <AFormDatetimePicker
+        v-model="job.processUntil"
+        :label="t('coreDam.job.model.processUntil')"
+        clearable
+        data-cy="processUntil"
+      />
+    </ARow>
+    <ARow>
       <AFormTextField
         v-model="job.bulkSize"
         :label="t('coreDam.job.model.bulkSize')"

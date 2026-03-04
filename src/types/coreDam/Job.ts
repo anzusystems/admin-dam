@@ -1,9 +1,10 @@
-import type { DocIdNullable, IntegerId, IntegerIdNullable, JobBase, JobUserDataDelete } from '@anzusystems/common-admin'
+import type { DatetimeUTCNullable, DocIdNullable, IntegerId, IntegerIdNullable, JobBase, JobUserDataDelete } from '@anzusystems/common-admin'
 import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
 
 export interface JobAssetFileReprocessInternalFlag extends JobBase<JobResource> {
   targetLicenceId: IntegerId
-  processFrom: string | null
+  processFrom: DatetimeUTCNullable
+  processUntil: DatetimeUTCNullable
   bulkSize: number
 }
 
@@ -40,7 +41,8 @@ export interface JobAuthorCurrentOptimize extends JobBase<JobResource> {
 
 export interface JobSynchronizeImageChanged extends JobBase<JobResource> {
   targetLicenceId: IntegerId
-  processFrom: string | null
+  processFrom: DatetimeUTCNullable
+  processUntil: DatetimeUTCNullable
   bulkSize: number
 }
 

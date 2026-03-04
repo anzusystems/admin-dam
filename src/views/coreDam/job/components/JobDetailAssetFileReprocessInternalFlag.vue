@@ -36,6 +36,9 @@ const { t } = useI18n()
         <ARow :title="t('coreDam.job.model.processFrom')">
           {{ job.processFrom }}
         </ARow>
+        <ARow :title="t('coreDam.job.model.processUntil')">
+          {{ job.processUntil }}
+        </ARow>
         <ARow :title="t('coreDam.job.model.bulkSize')">
           {{ job.bulkSize }}
         </ARow>
