@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import type { DamAssetLicence, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import type { DamAssetLicenceExtended } from '@/model/coreDam/type/AssetLicence'
 import { fetchDamAssetLicenceList, fetchDamAssetLicenceListByIds, useAlerts } from '@anzusystems/common-admin'
 import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
 import { storeToRefs } from 'pinia'
@@ -21,12 +22,12 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceListActions = () => {
-  const listItems = ref<DamAssetLicence[]>([])
+  const listItems = ref<DamAssetLicenceExtended[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchDamAssetLicenceList(damClient, pagination, filterBag)
+      listItems.value = await fetchDamAssetLicenceList(damClient, pagination, filterBag) as DamAssetLicenceExtended[]
       addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
       fetchCachedExtSystems()
     } catch (error) {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
+import type { DamAssetLicenceExtended } from '@/model/coreDam/type/AssetLicence'
 import {
   ACreateDialog,
   AFormTextField,
@@ -26,11 +26,11 @@ withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: DamAssetLicence): void
+  (e: 'onSuccess', data: DamAssetLicenceExtended): void
 }>()
 
 const { createDefault } = useAssetLicenceFactory()
-const assetLicence = ref<DamAssetLicence>(createDefault())
+const assetLicence = ref<DamAssetLicenceExtended>(createDefault())
 const dialog = ref(false)
 
 const { v$ } = useAssetLicenceValidation(assetLicence)
