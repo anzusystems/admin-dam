@@ -9,9 +9,13 @@ import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
+import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
+import { useDamCachedUsers } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
+const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+const { addToCachedUsers, fetchCachedUsers } = useDamCachedUsers()
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -55,6 +59,10 @@ export const useAssetLicenceDetailActions = () => {
       const assetLicence = await fetchAssetLicence(id)
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
+      addToCachedAuthors(...assetLicence.internalRuleAuthors)
+      addToCachedUsers(...assetLicence.internalRuleUsers)
+      fetchCachedAuthors()
+      fetchCachedUsers()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
       showErrorsDefault(error)
@@ -83,6 +91,10 @@ export const useAssetLicenceEditActions = () => {
       const assetLicence = await fetchAssetLicence(id)
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
+      addToCachedAuthors(...assetLicence.internalRuleAuthors)
+      addToCachedUsers(...assetLicence.internalRuleUsers)
+      fetchCachedAuthors()
+      fetchCachedUsers()
       assetLicenceOneStore.setAssetLicence(assetLicence)
     } catch (error) {
       showErrorsDefault(error)

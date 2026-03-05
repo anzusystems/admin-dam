@@ -51,7 +51,6 @@ const { t } = useI18n()
             data-cy="asset-licence-ext-system"
           />
         </ARow>
-        <VDivider class="my-4" />
         <ARow>
           <VSwitch
             v-model="assetLicence.internalRule.active"
@@ -69,19 +68,14 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <ASystemEntityScope
-            subject="author"
-            system="dam"
-          >
-            <AuthorRemoteAutocompleteWithCached
-              v-model="assetLicence.internalRuleAuthors"
-              :label="t('coreDam.assetLicence.model.internalRuleAuthors')"
-              :validation-scope="false"
-              multiple
-              clearable
-              data-cy="asset-licence-internal-rule-authors"
-            />
-          </ASystemEntityScope>
+          <AuthorRemoteAutocompleteWithCached
+            v-model="assetLicence.internalRuleAuthors"
+            :label="t('coreDam.assetLicence.model.internalRuleAuthors')"
+            :validation-scope="false"
+            multiple
+            clearable
+            data-cy="asset-licence-internal-rule-authors"
+          />
         </ARow>
         <ARow>
           <UserRemoteAutocomplete

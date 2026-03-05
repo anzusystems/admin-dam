@@ -26,7 +26,6 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.assetLicence.model.extSystem')">
         <CachedExtSystemChip :id="assetLicence.extSystem" />
       </ARow>
-      <VDivider class="my-4" />
       <ARow :title="t('coreDam.assetLicence.model.internalRule.active')">
         <ABooleanValue :value="assetLicence.internalRule.active" />
       </ARow>
@@ -36,28 +35,24 @@ const { t } = useI18n()
         :value="dateTimePretty(assetLicence.internalRule.markAsInternalSince)"
       />
       <ARow
-        v-if="assetLicence.internalRuleAuthors.length > 0"
         :title="t('coreDam.assetLicence.model.internalRuleAuthors')"
       >
-        <div class="d-flex flex-wrap gap-1">
-          <AuthorRemoteAutocompleteCachedAuthorChip
-            v-for="authorId in assetLicence.internalRuleAuthors"
-            :id="authorId"
-            :key="authorId"
-          />
-        </div>
+        <AuthorRemoteAutocompleteCachedAuthorChip
+          v-for="authorId in assetLicence.internalRuleAuthors"
+          :id="authorId"
+          :key="authorId"
+          class="mr-2 mt-2"
+        />
       </ARow>
       <ARow
-        v-if="assetLicence.internalRuleUsers.length > 0"
         :title="t('coreDam.assetLicence.model.internalRuleUsers')"
       >
-        <div class="d-flex flex-wrap gap-1">
-          <CachedDamUserChip
-            v-for="userId in assetLicence.internalRuleUsers"
-            :id="userId"
-            :key="userId"
-          />
-        </div>
+        <CachedDamUserChip
+          v-for="userId in assetLicence.internalRuleUsers"
+          :id="userId"
+          :key="userId"
+          class="mr-2 mt-2"
+        />
       </ARow>
     </VCol>
     <VCol cols="4">
