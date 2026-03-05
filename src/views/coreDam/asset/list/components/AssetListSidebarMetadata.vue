@@ -31,7 +31,10 @@ const saveButtonLoading = ref(false)
 
 const { t } = useI18n()
 
-const { asset, loader, metadataUnTouch, metadataAreTouched, mainFileSingleUse } = useAssetDetailActions()
+const {
+  asset, loader, metadataUnTouch, metadataAreTouched,
+  mainFileSingleUse, mainFileOverrideInternal, mainFileInternal,
+} = useAssetDetailActions()
 
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
@@ -58,7 +61,9 @@ const onSave = async () => {
   }
   try {
     metadataUnTouch()
-    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
+    await updateAssetMetadata(
+      asset.value, mainFileSingleUse.value, mainFileOverrideInternal.value, mainFileInternal.value
+    )
     showRecordWas('updated')
   } catch (error) {
     showErrorsDefault(error)

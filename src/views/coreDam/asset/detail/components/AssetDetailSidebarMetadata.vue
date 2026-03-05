@@ -8,7 +8,11 @@ import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/compo
 import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
+import {
+  AActionDeleteButton,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -30,7 +34,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset, view, mainFileSingleUse } = useAssetDetailActions()
+const { asset, view, mainFileSingleUse, mainFileOverrideInternal, mainFileInternal } = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
@@ -49,7 +53,9 @@ const onSave = async () => {
     return
   }
   try {
-    await updateAssetMetadata(asset.value, mainFileSingleUse.value)
+    await updateAssetMetadata(
+      asset.value, mainFileSingleUse.value, mainFileOverrideInternal.value, mainFileInternal.value
+    )
     if (view.value === 'queue') {
       uploadQueueStore.updateAssetMetadata(asset.value)
     }

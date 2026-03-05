@@ -3,7 +3,13 @@
     "id": "ID",
     "name": "Name",
     "extSystem": "External System",
-    "extId": "External ID"
+    "extId": "External ID",
+    "internalRule": {
+      "active": "Internal rule active",
+      "markAsInternalSince": "Mark as internal since"
+    },
+    "internalRuleAuthors": "Internal rule authors",
+    "internalRuleUsers": "Internal rule users"
   },
   "filter": {
     "id": "ID",

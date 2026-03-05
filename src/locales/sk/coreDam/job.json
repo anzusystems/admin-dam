@@ -4,11 +4,17 @@
     "fullSync": "Plná synchronizácia",
     "authorId": "Autor ID",
     "processAll": "Spracuj všetko",
-    "licence": "Licencia Id"
+    "licence": "Licencia Id",
+    "targetLicenceId": "Cieľová licencia Id",
+    "processFrom": "Spracovať od",
+    "processUntil": "Spracovať do",
+    "bulkSize": "Veľkosť dávky"
   },
   "jobResource": {
     "jobPodcastSynchronizer": "Podcastový synchronizátor",
     "jobAuthorCurrentOptimize": "Optimalizácia autorov",
-    "jobImageCopy": "Kopírovanie obrázkov"
+    "jobImageCopy": "Kopírovanie obrázkov",
+    "jobAssetFileReprocessInternalFlag": "Prepočet interného príznaku súborov",
+    "jobSynchronizeImageChanged": "Synchronizácia zmien obrázkov"
   }
 }

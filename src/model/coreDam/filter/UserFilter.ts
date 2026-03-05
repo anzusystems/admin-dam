@@ -21,7 +21,7 @@ export function useUserListFilter() {
 export function useUserFilter() {
   return reactive({
     email: {
-      ...makeFilter({ name: 'email', variant: 'startsWith' }),
+      ...makeFilter({ name: 'email', variant: 'contains' }),
     },
   })
 }

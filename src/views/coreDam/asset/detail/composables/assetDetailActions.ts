@@ -12,7 +12,16 @@ export function useAssetDetailActions() {
   const sidebar = ref(true)
 
   const assetDetailStore = useAssetDetailStore()
-  const { asset, authorConflicts, loader, metadataAreTouched, view, mainFileSingleUse } = storeToRefs(assetDetailStore)
+  const {
+    asset,
+    authorConflicts,
+    loader,
+    metadataAreTouched,
+    view,
+    mainFileSingleUse,
+    mainFileOverrideInternal,
+    mainFileInternal,
+  } = storeToRefs(assetDetailStore)
 
   const toggleSidebar = () => {
     sidebar.value = !sidebar.value
@@ -113,5 +122,7 @@ export function useAssetDetailActions() {
     assetMainFile,
     toolbarTitle,
     mainFileSingleUse,
+    mainFileOverrideInternal,
+    mainFileInternal,
   }
 }

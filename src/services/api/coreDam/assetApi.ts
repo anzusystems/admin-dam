@@ -43,6 +43,8 @@ export interface AssetMetadataBulkItem {
   described: boolean
   customData: AssetCustomData
   mainFileSingleUse: boolean | null
+  mainFileOverrideInternal: boolean
+  mainFileInternal: boolean
 }
 
 const BULK_METADATA_LIMIT = 10
@@ -125,6 +127,8 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
         described: true,
         customData: item.customData,
         mainFileSingleUse: item.mainFileSingleUse,
+        mainFileOverrideInternal: false,
+        mainFileInternal: false,
       })
     }
   })
@@ -199,7 +203,12 @@ const handleMetadataValidationError = (error: Error, assetType: DamAssetTypeType
   showUnknownError()
 }
 
-export const updateAssetMetadata = (asset: AssetDetailItemDto, mainFileSingleUse: boolean | null) => {
+export const updateAssetMetadata = (
+  asset: AssetDetailItemDto,
+  mainFileSingleUse: boolean | null,
+  mainFileOverrideInternal: boolean,
+  mainFileInternal: boolean,
+) => {
   return new Promise((resolve, reject) => {
     const data: AssetMetadataBulkItem = {
       id: asset.id,
@@ -208,6 +217,8 @@ export const updateAssetMetadata = (asset: AssetDetailItemDto, mainFileSingleUse
       described: true,
       customData: asset.metadata.customData,
       mainFileSingleUse: mainFileSingleUse,
+      mainFileOverrideInternal: mainFileOverrideInternal,
+      mainFileInternal: mainFileInternal,
     }
     damClient()
       .patch(END_POINT + '/metadata-bulk-update', JSON.stringify([data]))

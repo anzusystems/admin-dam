@@ -17,6 +17,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const lastFetched = ref(Date.now())
   const lastFetchedId = ref<DocId>('')
   const mainFileSingleUse = ref(false)
+  const mainFileOverrideInternal = ref(false)
+  const mainFileInternal = ref(false)
 
   function updateLastFetched(id: DocId) {
     lastFetchedId.value = id
@@ -42,6 +44,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function setAsset(newAsset: AssetDetailItemDto) {
     const { getAuthorConflicts } = useAssetSuggestions()
     mainFileSingleUse.value = newAsset?.mainFileSingleUse || false
+    mainFileOverrideInternal.value = newAsset?.mainFile?.flags.overrideInternal || false
+    mainFileInternal.value = newAsset?.mainFile?.flags.internal || false
     metadataAreTouched.value = false // todo check
     authorConflicts.value = getAuthorConflicts(newAsset.metadata.authorSuggestions)
     prefetchLazyData(newAsset) // todo check
@@ -82,6 +86,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     view.value = 'list'
     metadataAreTouched.value = false
     mainFileSingleUse.value = false
+    mainFileOverrideInternal.value = false
+    mainFileInternal.value = false
   }
 
   return {
@@ -96,6 +102,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     lastFetched,
     lastFetchedId,
     mainFileSingleUse,
+    mainFileOverrideInternal,
+    mainFileInternal,
     updateLastFetched,
     showDetail,
     hideDetail,

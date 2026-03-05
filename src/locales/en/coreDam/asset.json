@@ -160,7 +160,11 @@
         "height": "Height",
         "ratio": "Ratio",
         "animated": "Animated",
-        "mainRoute": "Original"
+        "mainRoute": "Original",
+        "flags": {
+          "internal": "Internal",
+          "overrideInternal": "Override internal flag"
+        }
       }
     },
     "roi": {
