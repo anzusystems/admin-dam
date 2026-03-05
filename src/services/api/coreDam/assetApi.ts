@@ -43,8 +43,8 @@ export interface AssetMetadataBulkItem {
   described: boolean
   customData: AssetCustomData
   mainFileSingleUse: boolean | null
-  mainFileOverrideInternal: boolean | null
-  mainFileInternal: boolean | null
+  mainFileOverrideInternal: boolean
+  mainFileInternal: boolean
 }
 
 const BULK_METADATA_LIMIT = 10
@@ -127,8 +127,8 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
         described: true,
         customData: item.customData,
         mainFileSingleUse: item.mainFileSingleUse,
-        mainFileOverrideInternal: null,
-        mainFileInternal: null,
+        mainFileOverrideInternal: false,
+        mainFileInternal: false,
       })
     }
   })
@@ -206,8 +206,8 @@ const handleMetadataValidationError = (error: Error, assetType: DamAssetTypeType
 export const updateAssetMetadata = (
   asset: AssetDetailItemDto,
   mainFileSingleUse: boolean | null,
-  mainFileOverrideInternal: boolean | null,
-  mainFileInternal: boolean | null,
+  mainFileOverrideInternal: boolean,
+  mainFileInternal: boolean,
 ) => {
   return new Promise((resolve, reject) => {
     const data: AssetMetadataBulkItem = {
