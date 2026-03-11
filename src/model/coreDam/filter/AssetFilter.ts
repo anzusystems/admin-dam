@@ -135,6 +135,9 @@ const filter = reactive({
   mainFileSingleUse: {
     ...makeFilter({ name: 'mainFileSingleUse', default: null }),
   },
+  mainFileInternal: {
+    ...makeFilter({ name: 'mainFileInternal', default: null }),
+  },
 })
 
 export function useAssetListFilter() {
