@@ -44,7 +44,8 @@
     "slotsCountUntil": "Slots count until",
     "createdAtFrom": "CreatedAt from",
     "createdAtUntil": "CreatedAt until",
-    "mainFileSingleUse": "Single-use license"
+    "mainFileSingleUse": "Single-use license",
+    "mainFileInternal": "Internal"
   },
   "meta": {
     "createEmpty": "Create empty asset"
