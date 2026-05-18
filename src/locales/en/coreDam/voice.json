@@ -1,0 +1,18 @@
+{
+  "model": {
+    "id": "ID",
+    "provider": "Provider",
+    "externalVoiceId": "External Voice ID",
+    "metadata": "Metadata (JSON)",
+    "primary": "Primary",
+    "active": "Active",
+    "modifiedAt": "Modified at"
+  },
+  "meta": {
+    "create": "Add Voice Binding",
+    "edit": "Edit Voice Binding"
+  },
+  "validation": {
+    "metadataInvalid": "Metadata must be a valid JSON object."
+  }
+}

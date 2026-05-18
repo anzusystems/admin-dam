@@ -31,6 +31,8 @@ import anzuUser from '@/locales/sk/common/anzuUser.json'
 import commonModel from '@/locales/sk/common/model.json'
 import authorCleanPhrase from '@/locales/sk/coreDam/authorCleanPhrase.json'
 import publicExport from '@/locales/sk/coreDam/publicExport.json'
+import voiceFamily from '@/locales/sk/coreDam/voiceFamily.json'
+import voice from '@/locales/sk/coreDam/voice.json'
 
 export default {
   common: {
@@ -72,6 +74,8 @@ export default {
     videoFile,
     authorCleanPhrase,
     publicExport,
+    voiceFamily,
+    voice,
   },
   auth,
   sidebar,

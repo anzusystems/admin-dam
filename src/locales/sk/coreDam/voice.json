@@ -1,0 +1,18 @@
+{
+  "model": {
+    "id": "ID",
+    "provider": "Poskytovateľ",
+    "externalVoiceId": "ID externého hlasu",
+    "metadata": "Metadáta (JSON)",
+    "primary": "Primárny",
+    "active": "Aktívny",
+    "modifiedAt": "Upravené"
+  },
+  "meta": {
+    "create": "Pridať hlasovú väzbu",
+    "edit": "Upraviť hlasovú väzbu"
+  },
+  "validation": {
+    "metadataInvalid": "Metadáta musia byť platný JSON objekt."
+  }
+}

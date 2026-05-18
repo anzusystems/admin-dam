@@ -22,6 +22,7 @@ import { ANotFoundView } from '@anzusystems/common-admin'
 import { assetLicenceGroupRoutes } from '@/router/routes/coreDam/assetLicenceGroup'
 import { authorCleanPhraseRoutes } from '@/router/routes/coreDam/authorCleanPhrase'
 import { publicExportRoutes } from '@/router/routes/coreDam/publicExport'
+import { voiceFamilyRoutes } from '@/router/routes/coreDam/voiceFamily'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -50,6 +51,7 @@ const vueRouter = createRouter({
     ...distributionCategorySelectRoutes,
     ...authorCleanPhraseRoutes,
     ...publicExportRoutes,
+    ...voiceFamilyRoutes,
     ...podcastRoutes,
     ...videoShowRoutes,
     ...jobRoutes,

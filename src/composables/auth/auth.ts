@@ -109,6 +109,17 @@ export const ACL = {
   DAM_PUBLIC_EXPORT_READ: 'dam_publicExport_read',
   DAM_PUBLIC_EXPORT_DELETE: 'dam_publicExport_delete',
   DAM_PUBLIC_EXPORT_UI: 'dam_publicExport_ui',
+  // TTS — VoiceFamily
+  DAM_TTS_VOICE_FAMILY_READ: 'dam_ttsVoiceFamily_read',
+  DAM_TTS_VOICE_FAMILY_CREATE: 'dam_ttsVoiceFamily_create',
+  DAM_TTS_VOICE_FAMILY_UPDATE: 'dam_ttsVoiceFamily_update',
+  DAM_TTS_VOICE_FAMILY_DELETE: 'dam_ttsVoiceFamily_delete',
+  DAM_TTS_VOICE_FAMILY_UI: 'dam_ttsVoiceFamily_ui',
+  // TTS — Voice
+  DAM_TTS_VOICE_READ: 'dam_ttsVoice_read',
+  DAM_TTS_VOICE_CREATE: 'dam_ttsVoice_create',
+  DAM_TTS_VOICE_UPDATE: 'dam_ttsVoice_update',
+  DAM_TTS_VOICE_DELETE: 'dam_ttsVoice_delete',
 } as const
 export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]

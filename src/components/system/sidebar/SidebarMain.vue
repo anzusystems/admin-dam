@@ -146,6 +146,14 @@ const { t } = useI18n()
         data-cy="public-export"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_TTS_VOICE_FAMILY_UI">
+      <VListItem
+        :to="{ name: ROUTE.DAM.VOICE_FAMILY.LIST }"
+        prepend-icon="mdi-microphone-variant"
+        :title="t('sidebar.settings.voiceFamilies')"
+        data-cy="voice-family-settings"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
       <VListItem
         :to="{ name: ROUTE.COMMON.LOG.LIST }"

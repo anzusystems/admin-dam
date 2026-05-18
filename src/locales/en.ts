@@ -30,6 +30,8 @@ import jsValidation from '@/locales/en/error/jsValidation.json'
 import breadcrumb from '@/locales/en/breadcrumb.json'
 import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
 import publicExport from '@/locales/en/coreDam/publicExport.json'
+import voiceFamily from '@/locales/en/coreDam/voiceFamily.json'
+import voice from '@/locales/en/coreDam/voice.json'
 
 export default {
   common: {
@@ -70,6 +72,8 @@ export default {
     audioFile,
     videoFile,
     publicExport,
+    voiceFamily,
+    voice,
   },
   auth,
   sidebar,

@@ -1,0 +1,28 @@
+{
+  "model": {
+    "id": "ID",
+    "slug": "Slug",
+    "displayName": "Display Name",
+    "language": "Language",
+    "preferredProvider": "Preferred Provider",
+    "active": "Active"
+  },
+  "filter": {
+    "id": "ID",
+    "displayName": "Display Name",
+    "language": "Language",
+    "active": "Active"
+  },
+  "meta": {
+    "create": "Create voice family"
+  },
+  "button": {
+    "create": "Create voice family"
+  },
+  "voices": "Voice Bindings",
+  "ttsProvider": {
+    "none": "None",
+    "elevenlabs": "ElevenLabs",
+    "googleTts": "Google TTS"
+  }
+}

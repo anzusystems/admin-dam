@@ -1,0 +1,28 @@
+{
+  "model": {
+    "id": "ID",
+    "slug": "Slug",
+    "displayName": "Zobrazovaný názov",
+    "language": "Jazyk",
+    "preferredProvider": "Preferovaný poskytovateľ",
+    "active": "Aktívny"
+  },
+  "filter": {
+    "id": "ID",
+    "displayName": "Zobrazovaný názov",
+    "language": "Jazyk",
+    "active": "Aktívny"
+  },
+  "meta": {
+    "create": "Vytvoriť hlasovú rodinu"
+  },
+  "button": {
+    "create": "Vytvoriť hlasovú rodinu"
+  },
+  "voices": "Hlasové väzby",
+  "ttsProvider": {
+    "none": "Žiadny",
+    "elevenlabs": "ElevenLabs",
+    "googleTts": "Google TTS"
+  }
+}
