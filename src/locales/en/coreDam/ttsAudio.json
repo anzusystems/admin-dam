@@ -1,0 +1,32 @@
+{
+  "model": {
+    "voiceFamilySlug": "Voice family",
+    "mode": "Mode",
+    "title": "Title"
+  },
+  "filter": {
+    "voiceFamilySlug": "Voice family slug"
+  },
+  "button": {
+    "synthesize": "Synthesize",
+    "cancelJob": "Cancel job"
+  },
+  "synthesize": {
+    "title": "Synthesize TTS audio",
+    "text": "Text",
+    "textPlaceholder": "Paste the article text here…",
+    "includeInRecommendedPodcast": "Include in recommended podcast",
+    "alreadyPending": "An identical job is already pending — no new job was created.",
+    "alreadyExists": "Asset already generated — no new job was created."
+  },
+  "cancelJob": {
+    "title": "Cancel pending TTS job",
+    "description": "Request cancellation of a pending audio narration job. If the worker has already swapped the result, the cancel may not take effect.",
+    "reason": "Reason (optional, audit)",
+    "swapCompleted": "Cancel requested but the worker already swapped the result.",
+    "alreadyFailed": "Job already failed — nothing to cancel."
+  },
+  "voiceFamilySelect": {
+    "systemDefault": "System default voice"
+  }
+}

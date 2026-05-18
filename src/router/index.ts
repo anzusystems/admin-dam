@@ -23,6 +23,7 @@ import { assetLicenceGroupRoutes } from '@/router/routes/coreDam/assetLicenceGro
 import { authorCleanPhraseRoutes } from '@/router/routes/coreDam/authorCleanPhrase'
 import { publicExportRoutes } from '@/router/routes/coreDam/publicExport'
 import { voiceFamilyRoutes } from '@/router/routes/coreDam/voiceFamily'
+import { ttsAudioRoutes } from '@/router/routes/coreDam/ttsAudio'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -52,6 +53,7 @@ const vueRouter = createRouter({
     ...authorCleanPhraseRoutes,
     ...publicExportRoutes,
     ...voiceFamilyRoutes,
+    ...ttsAudioRoutes,
     ...podcastRoutes,
     ...videoShowRoutes,
     ...jobRoutes,

@@ -78,6 +78,9 @@
       "list": "Hlasové rodiny",
       "detail": "Hlasová rodina",
       "edit": "Hlasová rodina"
+    },
+    "ttsAudio": {
+      "list": "TTS Audio"
     }
   },
   "anzuUser": {

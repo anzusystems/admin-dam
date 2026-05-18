@@ -78,6 +78,9 @@
       "list": "Voice Families",
       "detail": "Voice Family",
       "edit": "Voice Family"
+    },
+    "ttsAudio": {
+      "list": "TTS Audio"
     }
   },
   "anzuUser": {

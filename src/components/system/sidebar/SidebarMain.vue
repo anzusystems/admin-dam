@@ -154,6 +154,14 @@ const { t } = useI18n()
         data-cy="voice-family-settings"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_TTS_AUDIO_UI">
+      <VListItem
+        :to="{ name: ROUTE.DAM.TTS_AUDIO.LIST }"
+        prepend-icon="mdi-text-to-speech"
+        :title="t('sidebar.settings.ttsAudio')"
+        data-cy="tts-audio-settings"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
       <VListItem
         :to="{ name: ROUTE.COMMON.LOG.LIST }"

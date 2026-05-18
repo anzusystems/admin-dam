@@ -1,0 +1,32 @@
+{
+  "model": {
+    "voiceFamilySlug": "Hlasová rodina",
+    "mode": "Mód",
+    "title": "Nadpis"
+  },
+  "filter": {
+    "voiceFamilySlug": "Slug hlasovej rodiny"
+  },
+  "button": {
+    "synthesize": "Syntetizovať",
+    "cancelJob": "Zrušiť job"
+  },
+  "synthesize": {
+    "title": "Syntetizovať TTS audio",
+    "text": "Text",
+    "textPlaceholder": "Vložte text článku tu…",
+    "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
+    "alreadyPending": "Rovnaký job už čaká — nový sa nevytvoril.",
+    "alreadyExists": "Asset už bol vygenerovaný — nový job sa nevytvoril."
+  },
+  "cancelJob": {
+    "title": "Zrušiť čakajúci TTS job",
+    "description": "Požiadať o zrušenie čakajúceho audio-narration jobu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné.",
+    "reason": "Dôvod (voliteľné, audit)",
+    "swapCompleted": "Zrušenie požiadané, ale worker už stihol výsledok prehodiť.",
+    "alreadyFailed": "Job už zlyhal — niet čo zrušiť."
+  },
+  "voiceFamilySelect": {
+    "systemDefault": "Systémový predvolený hlas"
+  }
+}

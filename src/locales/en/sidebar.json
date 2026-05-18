@@ -19,6 +19,7 @@
     "job": "System jobs",
     "authorCleanPhrase": "Author clean",
     "publicExport": "Public Export",
-    "voiceFamilies": "Voice Families"
+    "voiceFamilies": "Voice Families",
+    "ttsAudio": "TTS Audio"
   }
 }

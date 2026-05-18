@@ -33,6 +33,7 @@ import authorCleanPhrase from '@/locales/sk/coreDam/authorCleanPhrase.json'
 import publicExport from '@/locales/sk/coreDam/publicExport.json'
 import voiceFamily from '@/locales/sk/coreDam/voiceFamily.json'
 import voice from '@/locales/sk/coreDam/voice.json'
+import ttsAudio from '@/locales/sk/coreDam/ttsAudio.json'
 
 export default {
   common: {
@@ -76,6 +77,7 @@ export default {
     publicExport,
     voiceFamily,
     voice,
+    ttsAudio,
   },
   auth,
   sidebar,

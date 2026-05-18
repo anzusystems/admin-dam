@@ -120,6 +120,11 @@ export const ACL = {
   DAM_TTS_VOICE_CREATE: 'dam_ttsVoice_create',
   DAM_TTS_VOICE_UPDATE: 'dam_ttsVoice_update',
   DAM_TTS_VOICE_DELETE: 'dam_ttsVoice_delete',
+  // TTS — Audio
+  DAM_TTS_AUDIO_UI: 'dam_ttsAudio_ui',
+  DAM_TTS_AUDIO_READ: 'dam_ttsAudio_read',
+  DAM_TTS_AUDIO_SYNTHESIZE: 'dam_ttsAudio_synthesize',
+  DAM_TTS_AUDIO_CANCEL_JOB: 'dam_ttsAudio_cancelJob',
 } as const
 export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]
