@@ -7,7 +7,7 @@ import {
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
 } from '@anzusystems/common-admin'
-import { useTtsAudioListFilter } from '@/model/coreDam/filter/TtsAudioFilter'
+import { useTtsNarrationRequestListFilter } from '@/model/coreDam/filter/TtsNarrationRequestFilter'
 import { useTtsRequestStatus } from '@/model/coreDam/valueObject/TtsRequestStatus'
 
 const emit = defineEmits<{
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const filter = useTtsAudioListFilter()
+const filter = useTtsNarrationRequestListFilter()
 const touched = ref(false)
 
 const submitFilter = () => {
@@ -62,7 +62,7 @@ const { ttsRequestStatusOptions } = useTtsRequestStatus()
         >
           <AFilterString
             v-model="filter.voiceFamilySlug"
-            :label="t('coreDam.ttsAudio.filter.voiceFamilySlug')"
+            :label="t('coreDam.ttsNarrationRequest.filter.voiceFamilySlug')"
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>

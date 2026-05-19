@@ -20,6 +20,6 @@
     "authorCleanPhrase": "Author clean",
     "publicExport": "Public Export",
     "voiceFamilies": "Voice Families",
-    "ttsAudio": "TTS Audio"
+    "ttsNarrationRequest": "TTS Audio"
   }
 }

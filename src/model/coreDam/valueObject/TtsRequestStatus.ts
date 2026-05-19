@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
-import { TtsRequestStatus } from '@/types/coreDam/TtsAudio'
+import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
 
 export const ttsRequestStatusColors: Record<TtsRequestStatus, string | undefined> = {
   [TtsRequestStatus.Waiting]: 'warning',
@@ -15,11 +15,11 @@ export function useTtsRequestStatus() {
   const { t } = useI18n()
 
   const ttsRequestStatusOptions = ref<ValueObjectOption<TtsRequestStatus>[]>([
-    { value: TtsRequestStatus.Waiting, title: t('coreDam.ttsAudio.status.waiting') },
-    { value: TtsRequestStatus.Processing, title: t('coreDam.ttsAudio.status.processing') },
-    { value: TtsRequestStatus.Done, title: t('coreDam.ttsAudio.status.done') },
-    { value: TtsRequestStatus.Failed, title: t('coreDam.ttsAudio.status.failed') },
-    { value: TtsRequestStatus.Cancelled, title: t('coreDam.ttsAudio.status.cancelled') },
+    { value: TtsRequestStatus.Waiting, title: t('coreDam.ttsNarrationRequest.status.waiting') },
+    { value: TtsRequestStatus.Processing, title: t('coreDam.ttsNarrationRequest.status.processing') },
+    { value: TtsRequestStatus.Done, title: t('coreDam.ttsNarrationRequest.status.done') },
+    { value: TtsRequestStatus.Failed, title: t('coreDam.ttsNarrationRequest.status.failed') },
+    { value: TtsRequestStatus.Cancelled, title: t('coreDam.ttsNarrationRequest.status.cancelled') },
   ])
 
   const getTtsRequestStatusOption = (value: TtsRequestStatus) => {

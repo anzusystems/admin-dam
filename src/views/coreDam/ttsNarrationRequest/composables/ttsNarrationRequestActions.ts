@@ -6,13 +6,13 @@ import type {
   TtsNarrationRequest,
   TtsSynthesizeRequest,
   TtsSynthesizeResponse,
-} from '@/types/coreDam/TtsAudio'
-import { TtsCancelRequestStatus, TtsRequestStatus, TtsSynthesizeStatus } from '@/types/coreDam/TtsAudio'
+} from '@/types/coreDam/TtsNarrationRequest'
+import { TtsCancelRequestStatus, TtsRequestStatus, TtsSynthesizeStatus } from '@/types/coreDam/TtsNarrationRequest'
 import {
   cancelTtsNarrationRequest,
   fetchTtsNarrationRequestList,
-  synthesizeTtsAudio,
-} from '@/services/api/coreDam/ttsAudioApi'
+  synthesizeTtsNarrationRequest,
+} from '@/services/api/coreDam/ttsNarrationRequestApi'
 
 const { showRecordWas, showErrorsDefault, showWarning } = useAlerts()
 
@@ -29,7 +29,7 @@ const listLoading = ref(false)
 const synthesizeButtonLoading = ref(false)
 const cancelRequestButtonLoading = ref(false)
 
-export const useTtsAudioListActions = () => {
+export const useTtsNarrationRequestListActions = () => {
   const listItems = ref<Array<TtsNarrationRequest>>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
@@ -51,17 +51,17 @@ export const useTtsAudioListActions = () => {
   }
 }
 
-export const useTtsAudioSynthesizeActions = () => {
+export const useTtsNarrationRequestSynthesizeActions = () => {
   const synthesize = async (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse | null> => {
     synthesizeButtonLoading.value = true
     try {
-      const res = await synthesizeTtsAudio(payload)
+      const res = await synthesizeTtsNarrationRequest(payload)
       if (res.status === TtsSynthesizeStatus.Pending) {
         showRecordWas('created')
       } else if (res.status === TtsSynthesizeStatus.AlreadyPending) {
-        showWarning('coreDam.ttsAudio.synthesize.alreadyPending')
+        showWarning('coreDam.ttsNarrationRequest.synthesize.alreadyPending')
       } else if (res.status === TtsSynthesizeStatus.AlreadyExists) {
-        showWarning('coreDam.ttsAudio.synthesize.alreadyExists')
+        showWarning('coreDam.ttsNarrationRequest.synthesize.alreadyExists')
       }
       return res
     } catch (error) {
@@ -78,7 +78,7 @@ export const useTtsAudioSynthesizeActions = () => {
   }
 }
 
-export const useTtsAudioCancelRequestActions = () => {
+export const useTtsNarrationRequestCancelRequestActions = () => {
   const cancelRequest = async (
     requestId: DocId,
     payload: TtsCancelRequestPayload
@@ -89,9 +89,9 @@ export const useTtsAudioCancelRequestActions = () => {
       if (res.status === TtsCancelRequestStatus.Cancelled) {
         showRecordWas('updated')
       } else if (res.status === TtsCancelRequestStatus.SwapCompleted) {
-        showWarning('coreDam.ttsAudio.cancelRequest.swapCompleted')
+        showWarning('coreDam.ttsNarrationRequest.cancelRequest.swapCompleted')
       } else if (res.status === TtsCancelRequestStatus.AlreadyFailed) {
-        showWarning('coreDam.ttsAudio.cancelRequest.alreadyFailed')
+        showWarning('coreDam.ttsNarrationRequest.cancelRequest.alreadyFailed')
       }
       return res
     } catch (error) {

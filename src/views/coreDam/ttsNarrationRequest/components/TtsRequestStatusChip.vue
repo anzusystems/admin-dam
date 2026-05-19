@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
-import { TtsRequestStatus } from '@/types/coreDam/TtsAudio'
+import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
 import { ttsRequestStatusColors, useTtsRequestStatus } from '@/model/coreDam/valueObject/TtsRequestStatus'
 
 const props = withDefaults(

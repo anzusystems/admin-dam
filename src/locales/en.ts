@@ -32,7 +32,7 @@ import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
 import publicExport from '@/locales/en/coreDam/publicExport.json'
 import voiceFamily from '@/locales/en/coreDam/voiceFamily.json'
 import voice from '@/locales/en/coreDam/voice.json'
-import ttsAudio from '@/locales/en/coreDam/ttsAudio.json'
+import ttsNarrationRequest from '@/locales/en/coreDam/ttsNarrationRequest.json'
 
 export default {
   common: {
@@ -75,7 +75,7 @@ export default {
     publicExport,
     voiceFamily,
     voice,
-    ttsAudio,
+    ttsNarrationRequest,
   },
   auth,
   sidebar,

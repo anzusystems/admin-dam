@@ -39,7 +39,7 @@ onMounted(async () => {
 const items = computed<ValueObjectOption<string | null>[]>(() => {
   const result: ValueObjectOption<string | null>[] = []
   if (props.allowNull) {
-    result.push({ title: t('coreDam.ttsAudio.voiceFamilySelect.systemDefault'), value: null })
+    result.push({ title: t('coreDam.ttsNarrationRequest.voiceFamilySelect.systemDefault'), value: null })
   }
   voiceFamilies.value.forEach((f) => {
     result.push({ title: `${f.slug} — ${f.displayName}`, value: f.slug })
@@ -52,7 +52,7 @@ const items = computed<ValueObjectOption<string | null>[]>(() => {
   <AFormValueObjectOptionsSelect
     :model-value="modelValue"
     :items="items"
-    :label="label ?? t('coreDam.ttsAudio.model.voiceFamilySlug')"
+    :label="label ?? t('coreDam.ttsNarrationRequest.model.voiceFamilySlug')"
     :loading="loading"
     :disabled="disabled"
     :data-cy="dataCy"

@@ -79,7 +79,7 @@
       "detail": "Voice Family",
       "edit": "Voice Family"
     },
-    "ttsAudio": {
+    "ttsNarrationRequest": {
       "list": "TTS Audio"
     }
   },

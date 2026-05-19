@@ -13,7 +13,7 @@ export interface TtsSynthesizeForm {
   text: string
 }
 
-export function useTtsAudioSynthesizeValidation(
+export function useTtsNarrationRequestSynthesizeValidation(
   form: Ref<TtsSynthesizeForm>,
   validationScope: ValidationScope = undefined
 ) {

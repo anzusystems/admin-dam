@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ADialogToolbar, ARow } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { useTtsAudioCancelRequestActions } from '@/views/coreDam/ttsAudio/composables/ttsAudioActions'
+import { useTtsNarrationRequestCancelRequestActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +19,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { cancelRequestButtonLoading, cancelRequest } = useTtsAudioCancelRequestActions()
+const { cancelRequestButtonLoading, cancelRequest } = useTtsNarrationRequestCancelRequestActions()
 
 const reason = ref('')
 
@@ -52,16 +52,16 @@ const onConfirm = async () => {
   >
     <VCard v-if="modelValue && requestId">
       <ADialogToolbar @on-cancel="close">
-        {{ t('coreDam.ttsAudio.cancelRequest.title') }}
+        {{ t('coreDam.ttsNarrationRequest.cancelRequest.title') }}
       </ADialogToolbar>
       <VCardText>
         <p class="mb-3">
-          {{ t('coreDam.ttsAudio.cancelRequest.description') }}
+          {{ t('coreDam.ttsNarrationRequest.cancelRequest.description') }}
         </p>
         <ARow>
           <VTextarea
             v-model="reason"
-            :label="t('coreDam.ttsAudio.cancelRequest.reason')"
+            :label="t('coreDam.ttsNarrationRequest.cancelRequest.reason')"
             rows="3"
             variant="outlined"
             density="compact"
@@ -84,7 +84,7 @@ const onConfirm = async () => {
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >
-          {{ t('coreDam.ttsAudio.button.cancelRequest') }}
+          {{ t('coreDam.ttsNarrationRequest.button.cancelRequest') }}
         </ABtnPrimary>
       </VCardActions>
     </VCard>

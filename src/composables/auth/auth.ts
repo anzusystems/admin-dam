@@ -120,12 +120,12 @@ export const ACL = {
   DAM_TTS_VOICE_CREATE: 'dam_ttsVoice_create',
   DAM_TTS_VOICE_UPDATE: 'dam_ttsVoice_update',
   DAM_TTS_VOICE_DELETE: 'dam_ttsVoice_delete',
-  // TTS — Audio
-  DAM_TTS_AUDIO_UI: 'dam_ttsAudio_ui',
-  DAM_TTS_AUDIO_READ: 'dam_ttsAudio_read',
-  DAM_TTS_AUDIO_SYNTHESIZE: 'dam_ttsAudio_synthesize',
-  DAM_TTS_AUDIO_CANCEL_REQUEST: 'dam_ttsAudio_cancelRequest',
-  DAM_TTS_AUDIO_LIST_REQUESTS: 'dam_ttsAudio_listRequests',
+  // TTS — NarrationRequest
+  DAM_TTS_NARRATION_REQUEST_UI: 'dam_ttsNarrationRequest_ui',
+  DAM_TTS_ASSET_READ: 'dam_ttsAsset_read',
+  DAM_TTS_NARRATION_REQUEST_SYNTHESIZE: 'dam_ttsNarrationRequest_synthesize',
+  DAM_TTS_NARRATION_REQUEST_CANCEL: 'dam_ttsNarrationRequest_cancel',
+  DAM_TTS_NARRATION_REQUEST_LIST: 'dam_ttsNarrationRequest_list',
   // TTS — ExtSystem settings
   DAM_EXT_SYSTEM_UPDATE_TTS_SETTINGS: 'dam_extSystem_updateTtsSettings',
 } as const

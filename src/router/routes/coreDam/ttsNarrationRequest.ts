@@ -3,24 +3,24 @@ import type { RouteRecordRaw } from 'vue-router'
 import { AEmptyRouterView } from '@anzusystems/common-admin'
 import { ACL } from '@/composables/auth/auth'
 
-export const ttsAudioRoutes: RouteRecordRaw[] = [
+export const ttsNarrationRequestRoutes: RouteRecordRaw[] = [
   {
-    path: '/tts-audio',
+    path: '/tts-narration-request',
     component: AEmptyRouterView,
     meta: {
       requiresAuth: true,
       requiredPermissions: [],
       layout: 'AppLayoutDrawer',
-      breadcrumbT: 'breadcrumb.coreDam.ttsAudio.list',
+      breadcrumbT: 'breadcrumb.coreDam.ttsNarrationRequest.list',
     },
     children: [
       {
         path: '',
-        name: ROUTE.DAM.TTS_AUDIO.LIST,
-        component: () => import('@/views/coreDam/ttsAudio/TtsAudioListView.vue'),
+        name: ROUTE.DAM.TTS_NARRATION_REQUEST.LIST,
+        component: () => import('@/views/coreDam/ttsNarrationRequest/TtsNarrationRequestListView.vue'),
         meta: {
           requiresAuth: true,
-          requiredPermissions: [ACL.DAM_TTS_AUDIO_READ],
+          requiredPermissions: [ACL.DAM_TTS_ASSET_READ],
           layout: 'AppLayoutDrawer',
         },
       },

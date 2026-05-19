@@ -8,15 +8,15 @@ import type {
   TtsNarrationRequest,
   TtsSynthesizeRequest,
   TtsSynthesizeResponse,
-} from '@/types/coreDam/TtsAudio'
+} from '@/types/coreDam/TtsNarrationRequest'
 
-const END_POINT = '/adm/v1/tts-audio'
-export const ENTITY = 'ttsAudio'
+const END_POINT = '/adm/v1/tts-narration-request'
+export const ENTITY = 'ttsNarrationRequest'
 
 export const fetchTtsNarrationRequestList = (pagination: Pagination, filterBag: FilterBag) =>
   apiFetchList<TtsNarrationRequest[]>(
     damClient,
-    END_POINT + '/requests',
+    END_POINT,
     {},
     pagination,
     filterBag,
@@ -24,7 +24,7 @@ export const fetchTtsNarrationRequestList = (pagination: Pagination, filterBag: 
     ENTITY
   )
 
-export const synthesizeTtsAudio = async (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse> => {
+export const synthesizeTtsNarrationRequest = async (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse> => {
   const res = await damClient().post<TtsSynthesizeResponse>(`${END_POINT}/synthesize`, JSON.stringify(payload))
   return res.data
 }
@@ -34,7 +34,7 @@ export const cancelTtsNarrationRequest = async (
   payload: TtsCancelRequestPayload
 ): Promise<TtsCancelRequestResponse> => {
   const res = await damClient().post<TtsCancelRequestResponse>(
-    `${END_POINT}/request/${requestId}/cancel`,
+    `${END_POINT}/${requestId}/cancel`,
     JSON.stringify(payload)
   )
   return res.data

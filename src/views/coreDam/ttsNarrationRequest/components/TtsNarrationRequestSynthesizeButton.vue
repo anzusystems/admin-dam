@@ -3,12 +3,12 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ADialogToolbar, AFormTextarea, ARow, useAlerts } from '@anzusystems/common-admin'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
-import { useTtsAudioSynthesizeActions } from '@/views/coreDam/ttsAudio/composables/ttsAudioActions'
+import { useTtsNarrationRequestSynthesizeActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
   type TtsSynthesizeForm,
-  useTtsAudioSynthesizeValidation,
-} from '@/views/coreDam/ttsAudio/composables/ttsAudioValidation'
-import VoiceFamilySelect from '@/views/coreDam/ttsAudio/components/VoiceFamilySelect.vue'
+  useTtsNarrationRequestSynthesizeValidation,
+} from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestValidation'
+import VoiceFamilySelect from '@/views/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue'
 
 withDefaults(
   defineProps<{
@@ -28,14 +28,14 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const { showValidationError } = useAlerts()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
-const { synthesizeButtonLoading, synthesize } = useTtsAudioSynthesizeActions()
+const { synthesizeButtonLoading, synthesize } = useTtsNarrationRequestSynthesizeActions()
 
 const dialog = ref(false)
 const form = ref<TtsSynthesizeForm>({ text: '' })
 const voiceFamilySlug = ref<string | null>(null)
 const includeInRecommendedPodcast = ref(false)
 
-const { v$ } = useTtsAudioSynthesizeValidation(form)
+const { v$ } = useTtsNarrationRequestSynthesizeValidation(form)
 
 const open = () => {
   form.value = { text: '' }
@@ -75,7 +75,7 @@ const onConfirm = async () => {
     rounded="pill"
     @click.stop="open"
   >
-    {{ t('coreDam.ttsAudio.button.synthesize') }}
+    {{ t('coreDam.ttsNarrationRequest.button.synthesize') }}
   </ABtnPrimary>
 
   <VDialog
@@ -85,14 +85,14 @@ const onConfirm = async () => {
   >
     <VCard v-if="dialog">
       <ADialogToolbar @on-cancel="close">
-        {{ t('coreDam.ttsAudio.synthesize.title') }}
+        {{ t('coreDam.ttsNarrationRequest.synthesize.title') }}
       </ADialogToolbar>
       <VCardText>
         <ARow>
           <AFormTextarea
             v-model="form.text"
-            :label="t('coreDam.ttsAudio.synthesize.text')"
-            :placeholder="t('coreDam.ttsAudio.synthesize.textPlaceholder')"
+            :label="t('coreDam.ttsNarrationRequest.synthesize.text')"
+            :placeholder="t('coreDam.ttsNarrationRequest.synthesize.textPlaceholder')"
             :v="v$.form.text"
             :rows="10"
             required
@@ -110,7 +110,7 @@ const onConfirm = async () => {
           <VSwitch
             v-model="includeInRecommendedPodcast"
             class="pl-2"
-            :label="t('coreDam.ttsAudio.synthesize.includeInRecommendedPodcast')"
+            :label="t('coreDam.ttsNarrationRequest.synthesize.includeInRecommendedPodcast')"
             hide-details
             data-cy="synthesize-include-recommended-podcast"
           />
@@ -129,7 +129,7 @@ const onConfirm = async () => {
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >
-          {{ t('coreDam.ttsAudio.button.synthesize') }}
+          {{ t('coreDam.ttsNarrationRequest.button.synthesize') }}
         </ABtnPrimary>
       </VCardActions>
     </VCard>

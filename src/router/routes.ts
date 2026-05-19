@@ -105,8 +105,8 @@ const routes = {
       DETAIL: 'voiceFamily_detail',
       EDIT: 'voiceFamily_edit',
     },
-    TTS_AUDIO: {
-      LIST: 'ttsAudio_list',
+    TTS_NARRATION_REQUEST: {
+      LIST: 'ttsNarrationRequest_list',
     },
   },
   SYSTEM: {
