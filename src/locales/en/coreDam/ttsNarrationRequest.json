@@ -20,6 +20,17 @@
     "failed": "Failed",
     "cancelled": "Cancelled"
   },
+  "mode": {
+    "initial": "Initial",
+    "regenerate": "Regenerate"
+  },
+  "assetStatus": {
+    "active": "Active",
+    "superseding": "Regenerating",
+    "cancelling": "Cancelling",
+    "failed": "Failed",
+    "unpublished": "Unpublished"
+  },
   "button": {
     "synthesize": "Synthesize",
     "cancelRequest": "Cancel request"
@@ -41,5 +52,55 @@
   },
   "voiceFamilySelect": {
     "systemDefault": "System default voice"
+  },
+  "detail": {
+    "requestSection": "Request",
+    "ttsAssetSection": "TTS Asset",
+    "noTtsAsset": "No TTS asset (request not finished or not retained)",
+    "fields": {
+      "id": "ID",
+      "status": "Status",
+      "mode": "Mode",
+      "voiceFamilySlug": "Voice family",
+      "title": "Title",
+      "openInitialKey": "Open initial key",
+      "cancelRequested": "Cancel requested",
+      "failureReason": "Failure reason",
+      "createdAt": "Created",
+      "startedAt": "Started at",
+      "finishedAt": "Finished at",
+      "extResourceName": "Ext resource name",
+      "extId": "Ext ID",
+      "extVersion": "Ext version",
+      "podcastAutoPodcastId": "Auto podcast ID",
+      "podcastRecommendedId": "Recommended podcast ID",
+      "includeInRecommended": "Include in recommended",
+      "assetId": "Asset ID",
+      "assetDiscriminator": "Discriminator",
+      "assetVoiceFamilySlug": "Voice family",
+      "externalVoiceId": "External voice ID",
+      "assetStatus": "Status",
+      "assetFailureReason": "Failure reason",
+      "assetIsStaging": "Staging",
+      "includeInRecommendedPodcast": "Include in recommended podcast",
+      "assetGeneratedAt": "Generated at",
+      "assetLastRegeneratedAt": "Last regenerated at",
+      "assetCreatedAt": "Created",
+      "assetModifiedAt": "Modified",
+      "sourceTextHash": "Source text hash",
+      "stableAssetId": "Stable asset",
+      "resultAssetId": "Result asset",
+      "createdBy": "Created by",
+      "modifiedBy": "Modified by",
+      "modifiedAt": "Modified",
+      "voiceFamilyKeywordId": "Voice family keyword",
+      "assetAutoPodcastId": "Auto podcast",
+      "assetRecommendedPodcastId": "Recommended podcast",
+      "assetExtResourceName": "Ext resource name",
+      "assetExtId": "Ext ID",
+      "assetExtVersion": "Ext version",
+      "assetLicenceId": "Asset licence",
+      "assetVoiceFamilyId": "Voice family"
+    }
   }
 }

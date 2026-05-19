@@ -80,6 +80,7 @@
       "edit": "Hlasová rodina"
     },
     "ttsNarrationRequest": {
+      "detail": "Detail",
       "list": "TTS Audio"
     }
   },

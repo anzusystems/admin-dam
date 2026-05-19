@@ -123,9 +123,10 @@ export const ACL = {
   // TTS — NarrationRequest
   DAM_TTS_NARRATION_REQUEST_UI: 'dam_ttsNarrationRequest_ui',
   DAM_TTS_ASSET_READ: 'dam_ttsAsset_read',
+  DAM_TTS_NARRATION_REQUEST_LIST: 'dam_ttsNarrationRequest_list',
+  DAM_TTS_NARRATION_REQUEST_READ: 'dam_ttsNarrationRequest_read',
   DAM_TTS_NARRATION_REQUEST_SYNTHESIZE: 'dam_ttsNarrationRequest_synthesize',
   DAM_TTS_NARRATION_REQUEST_CANCEL: 'dam_ttsNarrationRequest_cancel',
-  DAM_TTS_NARRATION_REQUEST_LIST: 'dam_ttsNarrationRequest_list',
   // TTS — ExtSystem settings
   DAM_EXT_SYSTEM_UPDATE_TTS_SETTINGS: 'dam_extSystem_updateTtsSettings',
 } as const

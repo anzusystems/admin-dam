@@ -80,6 +80,7 @@
       "edit": "Voice Family"
     },
     "ttsNarrationRequest": {
+      "detail": "Detail",
       "list": "TTS Audio"
     }
   },

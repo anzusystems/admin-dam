@@ -20,6 +20,17 @@
     "failed": "Zlyhalo",
     "cancelled": "Zrušené"
   },
+  "mode": {
+    "initial": "Prvotné",
+    "regenerate": "Regenerácia"
+  },
+  "assetStatus": {
+    "active": "Aktívne",
+    "superseding": "Regeneruje sa",
+    "cancelling": "Ruší sa",
+    "failed": "Zlyhalo",
+    "unpublished": "Nepublikované"
+  },
   "button": {
     "synthesize": "Syntetizovať",
     "cancelRequest": "Zrušiť request"
@@ -41,5 +52,55 @@
   },
   "voiceFamilySelect": {
     "systemDefault": "Systémový predvolený hlas"
+  },
+  "detail": {
+    "requestSection": "Request",
+    "ttsAssetSection": "TTS Asset",
+    "noTtsAsset": "Žiadny TTS asset (request neskončil alebo výsledok nebol zachovaný)",
+    "fields": {
+      "id": "ID",
+      "status": "Stav",
+      "mode": "Mód",
+      "voiceFamilySlug": "Hlasová rodina",
+      "title": "Nadpis",
+      "openInitialKey": "Kľúč počiatočného otvárania",
+      "cancelRequested": "Zrušenie požiadané",
+      "failureReason": "Dôvod zlyhania",
+      "createdAt": "Vytvorené",
+      "startedAt": "Začaté",
+      "finishedAt": "Skončené",
+      "extResourceName": "Ext názov zdroja",
+      "extId": "Ext ID",
+      "extVersion": "Ext verzia",
+      "podcastAutoPodcastId": "ID auto-podcastu",
+      "podcastRecommendedId": "ID odporúčaného podcastu",
+      "includeInRecommended": "Zaradiť do odporúčaných",
+      "assetId": "ID assetu",
+      "assetDiscriminator": "Diskriminátor",
+      "assetVoiceFamilySlug": "Hlasová rodina",
+      "externalVoiceId": "Externé ID hlasu",
+      "assetStatus": "Stav",
+      "assetFailureReason": "Dôvod zlyhania",
+      "assetIsStaging": "Staging",
+      "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
+      "assetGeneratedAt": "Vygenerované",
+      "assetLastRegeneratedAt": "Posledná regenerácia",
+      "assetCreatedAt": "Vytvorené",
+      "assetModifiedAt": "Upravené",
+      "sourceTextHash": "Hash zdrojového textu",
+      "stableAssetId": "Stabilný asset",
+      "resultAssetId": "Výsledný asset",
+      "createdBy": "Vytvoril",
+      "modifiedBy": "Upravil",
+      "modifiedAt": "Upravené",
+      "voiceFamilyKeywordId": "Kľúčové slovo hlasovej rodiny",
+      "assetAutoPodcastId": "Auto podcast",
+      "assetRecommendedPodcastId": "Odporúčaný podcast",
+      "assetExtResourceName": "Ext názov zdroja",
+      "assetExtId": "Ext ID",
+      "assetExtVersion": "Ext verzia",
+      "assetLicenceId": "Asset licencia",
+      "assetVoiceFamilyId": "Hlasová rodina"
+    }
   }
 }

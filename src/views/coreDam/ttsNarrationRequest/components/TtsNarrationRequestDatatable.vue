@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
   ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
+  ATableDetailButton,
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
   type DocId,
@@ -14,23 +16,33 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/ttsNarrationRequestApi'
+import { ROUTE } from '@/router/routes'
 import { isCancellableRequest, useTtsNarrationRequestListActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { useTtsNarrationRequestListFilter } from '@/model/coreDam/filter/TtsNarrationRequestFilter'
 import TtsNarrationRequestFilter from '@/views/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue'
 import TtsRequestStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
+import TtsRequestModeChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
 import TtsCancelRequestDialog from '@/views/coreDam/ttsNarrationRequest/dialogs/TtsCancelRequestDialog.vue'
 import type { TtsNarrationRequest } from '@/types/coreDam/TtsNarrationRequest'
-import { ACL } from '@/composables/auth/auth'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 type DatatableItem = TtsNarrationRequest
 
+const router = useRouter()
 const { t } = useI18n()
+const { can } = useAuth()
 const filter = useTtsNarrationRequestListFilter()
 const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = useTtsNarrationRequestListActions()
 
 const cancelDialog = ref(false)
 const cancelTargetRequestId = ref<DocId | null>(null)
+
+const onRowClick = (_event: unknown, { item }: { item: DatatableItem }) => {
+  if (item.id && can(ACL.DAM_TTS_NARRATION_REQUEST_READ)) {
+    router.push({ name: ROUTE.DAM.TTS_NARRATION_REQUEST.DETAIL, params: { id: item.id } })
+  }
+}
 
 const openCancel = (requestId: DocId) => {
   cancelTargetRequestId.value = requestId
@@ -95,9 +107,13 @@ defineExpose({
       :items="listItems"
       :items-length="listItems.length"
       item-value="id"
+      @click:row="onRowClick"
     >
       <template #item.status="{ item }: { item: DatatableItem }">
         <TtsRequestStatusChip :status="item.status" />
+      </template>
+      <template #item.mode="{ item }: { item: DatatableItem }">
+        <TtsRequestModeChip :mode="item.mode" />
       </template>
       <template #item.startedAt="{ item }: { item: DatatableItem }">
         <ADatetime :date-time="item.startedAt" />
@@ -111,6 +127,12 @@ defineExpose({
       <template #item.actions="{ item }: { item: DatatableItem }">
         <div class="d-flex justify-end">
           <ATableCopyIdButton :id="item.id" />
+          <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_READ">
+            <ATableDetailButton
+              :record-id="item.id"
+              :route-name="ROUTE.DAM.TTS_NARRATION_REQUEST.DETAIL"
+            />
+          </Acl>
           <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_CANCEL">
             <VBtn
               v-if="isCancellableRequest(item)"

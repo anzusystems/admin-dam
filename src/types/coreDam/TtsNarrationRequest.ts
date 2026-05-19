@@ -1,5 +1,44 @@
 import type { DatetimeUTCNullable, DocId, DocIdNullable, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 
+export const TtsAudioStatus = {
+  Active: 'active',
+  Superseding: 'superseding',
+  Cancelling: 'cancelling',
+  Failed: 'failed',
+  Unpublished: 'unpublished',
+} as const
+export type TtsAudioStatus = (typeof TtsAudioStatus)[keyof typeof TtsAudioStatus]
+
+export interface TtsAsset {
+  assetId: DocId
+  extResourceName: string | null
+  extId: string | null
+  extVersion: string | null
+  assetLicenceId: IntegerId
+  voiceFamilySlug: string
+  voiceFamilyId: DocId
+  discriminator: string
+  externalVoiceId: string
+  sourceTextHash: string
+  sourceTextSnapshot: string
+  generatedAt: DatetimeUTCNullable
+  lastRegeneratedAt: DatetimeUTCNullable
+  status: TtsAudioStatus
+  failureReason: string | null
+  isStaging: boolean
+  includeInRecommendedPodcast: boolean
+  autoPodcastId: DocIdNullable
+  recommendedPodcastId: DocIdNullable
+  voiceFamilyKeywordId: DocIdNullable
+  createdAt: DatetimeUTCNullable
+  modifiedAt: DatetimeUTCNullable
+}
+
+export interface TtsNarrationRequestDetail {
+  request: TtsNarrationRequest
+  ttsAsset: TtsAsset | null
+}
+
 export const TtsRequestMode = {
   Initial: 'initial',
   Regenerate: 'regenerate',
@@ -42,7 +81,7 @@ export interface TtsNarrationRequest {
   openInitialKey: string | null
   stableAssetId: DocIdNullable
   resultAssetId: DocIdNullable
-  assetLicenceId: DocIdNullable
+  assetLicenceId: IntegerIdNullable
   voiceFamilySlug: string | null
   title: string | null
   cancelRequested: boolean

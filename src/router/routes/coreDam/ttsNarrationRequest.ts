@@ -24,6 +24,17 @@ export const ttsNarrationRequestRoutes: RouteRecordRaw[] = [
           layout: 'AppLayoutDrawer',
         },
       },
+      {
+        path: ':id',
+        name: ROUTE.DAM.TTS_NARRATION_REQUEST.DETAIL,
+        component: () => import('@/views/coreDam/ttsNarrationRequest/TtsNarrationRequestDetailView.vue'),
+        meta: {
+          requiresAuth: true,
+          requiredPermissions: [ACL.DAM_TTS_NARRATION_REQUEST_READ],
+          layout: 'AppLayoutDrawer',
+          breadcrumbT: 'breadcrumb.coreDam.ttsNarrationRequest.detail',
+        },
+      },
     ],
   },
 ]
