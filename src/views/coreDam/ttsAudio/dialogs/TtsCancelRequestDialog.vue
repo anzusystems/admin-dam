@@ -2,13 +2,13 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ADialogToolbar, ARow } from '@anzusystems/common-admin'
-import type { IntegerId } from '@anzusystems/common-admin'
-import { useTtsAudioCancelJobActions } from '@/views/coreDam/ttsAudio/composables/ttsAudioActions'
+import type { DocId } from '@anzusystems/common-admin'
+import { useTtsAudioCancelRequestActions } from '@/views/coreDam/ttsAudio/composables/ttsAudioActions'
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean
-    jobId: IntegerId | null
+    requestId: DocId | null
   }>(),
   {}
 )
@@ -19,7 +19,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { cancelJobButtonLoading, cancelJob } = useTtsAudioCancelJobActions()
+const { cancelRequestButtonLoading, cancelRequest } = useTtsAudioCancelRequestActions()
 
 const reason = ref('')
 
@@ -35,8 +35,8 @@ const close = () => {
 }
 
 const onConfirm = async () => {
-  if (!props.jobId) return
-  const res = await cancelJob(props.jobId, { reason: reason.value || null })
+  if (!props.requestId) return
+  const res = await cancelRequest(props.requestId, { reason: reason.value || null })
   if (res !== null) {
     emit('onSuccess')
     close()
@@ -50,23 +50,23 @@ const onConfirm = async () => {
     :width="500"
     @update:model-value="(val) => emit('update:modelValue', val)"
   >
-    <VCard v-if="modelValue && jobId">
+    <VCard v-if="modelValue && requestId">
       <ADialogToolbar @on-cancel="close">
-        {{ t('coreDam.ttsAudio.cancelJob.title') }}
+        {{ t('coreDam.ttsAudio.cancelRequest.title') }}
       </ADialogToolbar>
       <VCardText>
         <p class="mb-3">
-          {{ t('coreDam.ttsAudio.cancelJob.description') }}
+          {{ t('coreDam.ttsAudio.cancelRequest.description') }}
         </p>
         <ARow>
           <VTextarea
             v-model="reason"
-            :label="t('coreDam.ttsAudio.cancelJob.reason')"
+            :label="t('coreDam.ttsAudio.cancelRequest.reason')"
             rows="3"
             variant="outlined"
             density="compact"
             hide-details
-            data-cy="cancel-job-reason"
+            data-cy="cancel-request-reason"
           />
         </ARow>
       </VCardText>
@@ -80,11 +80,11 @@ const onConfirm = async () => {
         </ABtnTertiary>
         <ABtnPrimary
           color="error"
-          :loading="cancelJobButtonLoading"
+          :loading="cancelRequestButtonLoading"
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >
-          {{ t('coreDam.ttsAudio.button.cancelJob') }}
+          {{ t('coreDam.ttsAudio.button.cancelRequest') }}
         </ABtnPrimary>
       </VCardActions>
     </VCard>

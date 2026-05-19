@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ABooleanValue, ADatatablePagination, ADatetime, useAlerts, usePagination } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
@@ -7,7 +7,7 @@ import { fetchVoiceListByFamily, deleteVoice } from '@/services/api/coreDam/voic
 import type { Voice } from '@/types/coreDam/Voice'
 import VoiceBindingCreateDialog from '@/views/coreDam/voiceFamily/dialogs/VoiceBindingCreateDialog.vue'
 import VoiceBindingEditDialog from '@/views/coreDam/voiceFamily/dialogs/VoiceBindingEditDialog.vue'
-import { ACL } from '@/composables/auth/auth'
+import { ACL, useAuth } from '@/composables/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -18,6 +18,10 @@ const props = withDefaults(
 
 const { t } = useI18n()
 const { showRecordWas, showErrorsDefault } = useAlerts()
+const { can } = useAuth()
+
+const canEdit = computed(() => can(ACL.DAM_TTS_VOICE_UPDATE))
+const canDelete = computed(() => can(ACL.DAM_TTS_VOICE_DELETE))
 
 const voices = ref<Voice[]>([])
 const loading = ref(false)
@@ -40,6 +44,10 @@ const fetchVoices = async () => {
 const onEditVoice = (voice: Voice) => {
   selectedVoice.value = voice
   editDialog.value = true
+}
+
+const onRowClick = (event: unknown, { item }: { item: Voice }) => {
+  if (canEdit.value) onEditVoice(item)
 }
 
 const onDeleteVoice = async (voice: Voice) => {
@@ -90,6 +98,7 @@ onMounted(() => {
       :items="voices"
       :items-length="pagination.totalCount"
       item-value="id"
+      @click:row="onRowClick"
     >
       <template #item.primary="{ item }: { item: Voice }">
         <ABooleanValue
@@ -108,28 +117,41 @@ onMounted(() => {
       </template>
       <template #item.actions="{ item }: { item: Voice }">
         <div class="d-flex justify-end">
-          <Acl :permission="ACL.DAM_TTS_VOICE_UPDATE">
-            <VBtn
-              icon
-              size="small"
-              variant="text"
-              @click.stop="onEditVoice(item)"
+          <VBtn
+            v-if="canEdit"
+            variant="text"
+            icon
+            size="small"
+            class="mx-1"
+            @click.stop="onEditVoice(item)"
+          >
+            <VIcon icon="mdi-pencil" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
             >
-              <VIcon>mdi-pencil</VIcon>
-            </VBtn>
-          </Acl>
-          <Acl :permission="ACL.DAM_TTS_VOICE_DELETE">
-            <VBtn
-              icon
-              size="small"
-              variant="text"
-              color="error"
-              :title="t('common.system.delete')"
-              @click.stop="onDeleteVoice(item)"
-            >
-              <VIcon>mdi-trash-can-outline</VIcon>
-            </VBtn>
-          </Acl>
+              {{ t('coreDam.voice.button.edit') }}
+            </VTooltip>
+          </VBtn>
+          <VBtn
+            v-if="canDelete"
+            variant="text"
+            icon
+            size="small"
+            class="mx-1"
+          >
+            <VIcon icon="mdi-dots-horizontal" />
+            <VMenu activator="parent">
+              <VCard min-width="200">
+                <VList>
+                  <VListItem
+                    :title="t('coreDam.voice.button.delete')"
+                    @click.stop="onDeleteVoice(item)"
+                  />
+                </VList>
+              </VCard>
+            </VMenu>
+          </VBtn>
         </div>
       </template>
       <template #bottom>

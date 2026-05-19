@@ -15,7 +15,6 @@
     "jobAuthorCurrentOptimize": "Author current optimize",
     "jobImageCopy": "Image copy",
     "jobAssetFileReprocessInternalFlag": "Asset file reprocess internal flag",
-    "jobSynchronizeImageChanged": "Synchronize image changed",
-    "jobAudioNarration": "Audio narration"
+    "jobSynchronizeImageChanged": "Synchronize image changed"
   }
 }

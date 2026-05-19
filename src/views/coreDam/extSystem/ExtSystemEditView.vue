@@ -2,9 +2,11 @@
 import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ROUTE } from '@/router/routes'
 import { useExtSystemEditActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemEditForm from '@/views/coreDam/extSystem/components/ExtSystemEditForm.vue'
+import ExtSystemTtsSettingsForm from '@/views/coreDam/extSystem/components/ExtSystemTtsSettingsForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -12,6 +14,8 @@ const id = stringToInt(route.params.id)
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, extSystem } =
   useExtSystemEditActions()
+
+const { t } = useI18n()
 
 const getData = () => {
   fetchData(id)
@@ -42,6 +46,16 @@ onBeforeUnmount(() => {
   <ACard :loading="detailLoading">
     <VCardText>
       <ExtSystemEditForm />
+    </VCardText>
+  </ACard>
+
+  <ACard
+    class="mt-4"
+    :loading="detailLoading"
+    :title="t('coreDam.extSystem.ttsSettings.title')"
+  >
+    <VCardText>
+      <ExtSystemTtsSettingsForm />
     </VCardText>
   </ACard>
 </template>

@@ -12,6 +12,10 @@
     "create": "Pridať hlasovú väzbu",
     "edit": "Upraviť hlasovú väzbu"
   },
+  "button": {
+    "edit": "Upraviť",
+    "delete": "Zmazať"
+  },
   "validation": {
     "metadataInvalid": "Metadáta musia byť platný JSON objekt."
   }

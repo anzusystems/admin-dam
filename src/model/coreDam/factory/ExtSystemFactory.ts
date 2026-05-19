@@ -1,10 +1,11 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamExtSystem } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
+import type { ExtSystem } from '@/types/coreDam/ExtSystem'
+import { TtsActiveProviderMode } from '@/types/coreDam/TtsActiveProviderMode'
 
 export function useExtSystemFactory() {
-  const createDefault = (): DamExtSystem => {
+  const createDefault = (): ExtSystem => {
     return {
       id: 0,
       name: '',
@@ -16,6 +17,11 @@ export function useExtSystemFactory() {
       modifiedBy: 0,
       _resourceName: ENTITY,
       _system: SYSTEM_CORE_DAM,
+      ttsSettings: {
+        autoPodcastId: null,
+        recommendedPodcastId: null,
+        activeProviderMode: TtsActiveProviderMode.Auto,
+      },
     }
   }
 

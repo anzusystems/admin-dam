@@ -15,7 +15,6 @@
     "jobAuthorCurrentOptimize": "Optimalizácia autorov",
     "jobImageCopy": "Kopírovanie obrázkov",
     "jobAssetFileReprocessInternalFlag": "Prepočet interného príznaku súborov",
-    "jobSynchronizeImageChanged": "Synchronizácia zmien obrázkov",
-    "jobAudioNarration": "Audio narácia"
+    "jobSynchronizeImageChanged": "Synchronizácia zmien obrázkov"
   }
 }

@@ -6,7 +6,6 @@ export const JOB_AUTHOR_CURRENT_OPTIMIZE = 'jobAuthorCurrentOptimize'
 export const JOB_RESOURCE_IMAGE_COPY = 'jobImageCopy'
 export const JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG = 'jobAssetFileReprocessInternalFlag'
 export const JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED = 'jobSynchronizeImageChanged'
-export const JOB_RESOURCE_AUDIO_NARRATION = 'jobAudioNarration'
 
 export type JobResource =
   | typeof JOB_RESOURCE_PODCAST_SYNCHRONIZER
@@ -14,7 +13,6 @@ export type JobResource =
   | typeof JOB_AUTHOR_CURRENT_OPTIMIZE
   | typeof JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG
   | typeof JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED
-  | typeof JOB_RESOURCE_AUDIO_NARRATION
   | JobBaseResource
 
 export function useJobResource() {
@@ -40,10 +38,6 @@ export function useJobResource() {
     {
       title: t('coreDam.job.jobResource.jobSynchronizeImageChanged'),
       value: 'jobSynchronizeImageChanged',
-    },
-    {
-      title: t('coreDam.job.jobResource.jobAudioNarration'),
-      value: 'jobAudioNarration',
     },
   ])
 }

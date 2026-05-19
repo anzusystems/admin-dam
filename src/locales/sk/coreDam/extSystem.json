@@ -10,5 +10,16 @@
     "name": "Meno",
     "extSystem": "Externý systém",
     "slug": "Slug"
+  },
+  "ttsSettings": {
+    "title": "TTS nastavenia",
+    "autoPodcast": "Auto podcast",
+    "recommendedPodcast": "Odporúčaný podcast",
+    "activeProviderMode": "Aktívny TTS poskytovateľ",
+    "modes": {
+      "elevenlabs": "ElevenLabs",
+      "google_tts": "Google TTS",
+      "auto": "Automaticky"
+    }
   }
 }

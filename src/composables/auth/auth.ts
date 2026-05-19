@@ -124,7 +124,10 @@ export const ACL = {
   DAM_TTS_AUDIO_UI: 'dam_ttsAudio_ui',
   DAM_TTS_AUDIO_READ: 'dam_ttsAudio_read',
   DAM_TTS_AUDIO_SYNTHESIZE: 'dam_ttsAudio_synthesize',
-  DAM_TTS_AUDIO_CANCEL_JOB: 'dam_ttsAudio_cancelJob',
+  DAM_TTS_AUDIO_CANCEL_REQUEST: 'dam_ttsAudio_cancelRequest',
+  DAM_TTS_AUDIO_LIST_REQUESTS: 'dam_ttsAudio_listRequests',
+  // TTS — ExtSystem settings
+  DAM_EXT_SYSTEM_UPDATE_TTS_SETTINGS: 'dam_extSystem_updateTtsSettings',
 } as const
 export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]

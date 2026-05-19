@@ -6,9 +6,9 @@ import {
   AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
-  useJobStatus,
 } from '@anzusystems/common-admin'
 import { useTtsAudioListFilter } from '@/model/coreDam/filter/TtsAudioFilter'
+import { useTtsRequestStatus } from '@/model/coreDam/valueObject/TtsRequestStatus'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -33,7 +33,7 @@ const onAnyFilterUpdate = () => {
   touched.value = true
 }
 
-const { jobStatusOptions } = useJobStatus()
+const { ttsRequestStatusOptions } = useTtsRequestStatus()
 </script>
 
 <template>
@@ -52,7 +52,7 @@ const { jobStatusOptions } = useJobStatus()
         >
           <AFilterValueObjectOptionsSelect
             v-model="filter.status"
-            :items="jobStatusOptions"
+            :items="ttsRequestStatusOptions"
             @update:model-value="onAnyFilterUpdate"
           />
         </VCol>

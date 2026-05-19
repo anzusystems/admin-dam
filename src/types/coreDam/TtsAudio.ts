@@ -1,18 +1,58 @@
-import type { IntegerId, JobBase } from '@anzusystems/common-admin'
-import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
+import type { DatetimeUTCNullable, DocId, DocIdNullable, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 
-export const TtsJobMode = {
+export const TtsRequestMode = {
   Initial: 'initial',
   Regenerate: 'regenerate',
 } as const
-export type TtsJobMode = (typeof TtsJobMode)[keyof typeof TtsJobMode]
+export type TtsRequestMode = (typeof TtsRequestMode)[keyof typeof TtsRequestMode]
 
-export interface JobAudioNarration extends JobBase<JobResource> {
+export const TtsRequestStatus = {
+  Waiting: 'waiting',
+  Processing: 'processing',
+  Done: 'done',
+  Failed: 'failed',
+  Cancelled: 'cancelled',
+} as const
+export type TtsRequestStatus = (typeof TtsRequestStatus)[keyof typeof TtsRequestStatus]
+
+export interface TtsNarrationRequestExtRef {
+  extResourceName: string | null
+  extId: string | null
+  extVersion: string | null
+}
+
+export interface TtsNarrationRequestSource {
+  text: string | null
+  hash: string | null
+}
+
+export interface TtsNarrationRequestPodcastOptions {
+  autoPodcastId: DocIdNullable
+  recommendedPodcastId: DocIdNullable
+  includeInRecommended: boolean
+}
+
+export interface TtsNarrationRequest {
+  id: DocId
+  status: TtsRequestStatus
+  mode: TtsRequestMode
+  startedAt: DatetimeUTCNullable
+  finishedAt: DatetimeUTCNullable
+  failureReason: string | null
+  openInitialKey: string | null
+  stableAssetId: DocIdNullable
+  resultAssetId: DocIdNullable
+  assetLicenceId: DocIdNullable
   voiceFamilySlug: string | null
   title: string | null
-  mode: TtsJobMode
   cancelRequested: boolean
-  failureReason: string | null
+  createdAt: DatetimeUTCNullable
+  modifiedAt: DatetimeUTCNullable
+  createdBy: IntegerIdNullable
+  modifiedBy: IntegerIdNullable
+  extRef: TtsNarrationRequestExtRef
+  source: TtsNarrationRequestSource
+  podcastOptions: TtsNarrationRequestPodcastOptions
 }
 
 export const TtsSynthesizeStatus = {
@@ -22,12 +62,12 @@ export const TtsSynthesizeStatus = {
 } as const
 export type TtsSynthesizeStatus = (typeof TtsSynthesizeStatus)[keyof typeof TtsSynthesizeStatus]
 
-export const TtsCancelJobStatus = {
+export const TtsCancelRequestStatus = {
   Cancelled: 'cancelled',
   SwapCompleted: 'swap_completed',
   AlreadyFailed: 'already_failed',
 } as const
-export type TtsCancelJobStatus = (typeof TtsCancelJobStatus)[keyof typeof TtsCancelJobStatus]
+export type TtsCancelRequestStatus = (typeof TtsCancelRequestStatus)[keyof typeof TtsCancelRequestStatus]
 
 export interface TtsSynthesizeRequest {
   text: string
@@ -37,15 +77,15 @@ export interface TtsSynthesizeRequest {
 }
 
 export interface TtsSynthesizeResponse {
-  jobId: IntegerId
+  requestId: DocId
   status: TtsSynthesizeStatus
 }
 
-export interface TtsCancelJobRequest {
+export interface TtsCancelRequestPayload {
   reason: string | null
 }
 
-export interface TtsCancelJobResponse {
-  status: TtsCancelJobStatus
+export interface TtsCancelRequestResponse {
+  status: TtsCancelRequestStatus
   tooLate: boolean
 }

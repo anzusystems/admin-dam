@@ -7,7 +7,7 @@ const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 
 const filter = reactive({
   status: {
-    ...makeFilter({ name: 'status', variant: 'in', titleT: 'common.job.filter.status' }),
+    ...makeFilter({ name: 'status', variant: 'in', titleT: 'coreDam.ttsAudio.filter.status' }),
   },
   voiceFamilySlug: {
     ...makeFilter({ name: 'voiceFamilySlug', titleT: 'coreDam.ttsAudio.filter.voiceFamilySlug' }),
@@ -17,7 +17,7 @@ const filter = reactive({
       name: 'startedAtFrom',
       field: 'startedAt',
       variant: 'gte',
-      titleT: 'common.job.filter.startedAtFrom',
+      titleT: 'coreDam.ttsAudio.filter.startedAtFrom',
     }),
   },
   startedAtUntil: {
@@ -25,7 +25,7 @@ const filter = reactive({
       name: 'startedAtUntil',
       field: 'startedAt',
       variant: 'lte',
-      titleT: 'common.job.filter.startedAtUntil',
+      titleT: 'coreDam.ttsAudio.filter.startedAtUntil',
     }),
   },
 })

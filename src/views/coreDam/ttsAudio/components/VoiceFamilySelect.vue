@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAlerts } from '@anzusystems/common-admin'
+import { AFormValueObjectOptionsSelect, useAlerts, type ValueObjectOption } from '@anzusystems/common-admin'
 import { useCachedVoiceFamilies } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const props = withDefaults(
@@ -36,8 +36,8 @@ onMounted(async () => {
   }
 })
 
-const items = computed(() => {
-  const result: { title: string; value: string | null }[] = []
+const items = computed<ValueObjectOption<string | null>[]>(() => {
+  const result: ValueObjectOption<string | null>[] = []
   if (props.allowNull) {
     result.push({ title: t('coreDam.ttsAudio.voiceFamilySelect.systemDefault'), value: null })
   }
@@ -49,19 +49,13 @@ const items = computed(() => {
 </script>
 
 <template>
-  <VSelect
+  <AFormValueObjectOptionsSelect
     :model-value="modelValue"
     :items="items"
     :label="label ?? t('coreDam.ttsAudio.model.voiceFamilySlug')"
     :loading="loading"
     :disabled="disabled"
     :data-cy="dataCy"
-    item-title="title"
-    item-value="value"
-    clearable
-    hide-details
-    variant="outlined"
-    density="compact"
     @update:model-value="(val) => emit('update:modelValue', (val as string | null) ?? null)"
   />
 </template>

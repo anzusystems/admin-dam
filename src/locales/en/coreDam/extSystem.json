@@ -10,5 +10,16 @@
     "name": "Name",
     "extSystem": "Ext system",
     "slug": "Slug"
+  },
+  "ttsSettings": {
+    "title": "TTS Settings",
+    "autoPodcast": "Auto Podcast",
+    "recommendedPodcast": "Recommended Podcast",
+    "activeProviderMode": "Active TTS Provider",
+    "modes": {
+      "elevenlabs": "ElevenLabs",
+      "google_tts": "Google TTS",
+      "auto": "Auto"
+    }
   }
 }

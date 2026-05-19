@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, ARow, useAlerts } from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextarea, ARow, useAlerts } from '@anzusystems/common-admin'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { useTtsAudioSynthesizeActions } from '@/views/coreDam/ttsAudio/composables/ttsAudioActions'
 import {
-  TTS_SYNTHESIZE_TEXT_MAX,
-  TTS_SYNTHESIZE_TEXT_MIN,
   type TtsSynthesizeForm,
   useTtsAudioSynthesizeValidation,
 } from '@/views/coreDam/ttsAudio/composables/ttsAudioValidation'
@@ -38,8 +36,6 @@ const voiceFamilySlug = ref<string | null>(null)
 const includeInRecommendedPodcast = ref(false)
 
 const { v$ } = useTtsAudioSynthesizeValidation(form)
-
-const charCount = computed(() => form.value.text.length)
 
 const open = () => {
   form.value = { text: '' }
@@ -93,19 +89,14 @@ const onConfirm = async () => {
       </ADialogToolbar>
       <VCardText>
         <ARow>
-          <VTextarea
+          <AFormTextarea
             v-model="form.text"
             :label="t('coreDam.ttsAudio.synthesize.text')"
             :placeholder="t('coreDam.ttsAudio.synthesize.textPlaceholder')"
-            :error-messages="v$.form.text.$errors.map((e) => e.$message as string)"
-            :counter="TTS_SYNTHESIZE_TEXT_MAX"
-            :hint="`${charCount} / ${TTS_SYNTHESIZE_TEXT_MAX}  (min ${TTS_SYNTHESIZE_TEXT_MIN})`"
-            persistent-hint
-            rows="10"
-            variant="outlined"
-            density="compact"
+            :v="v$.form.text"
+            :rows="10"
+            required
             data-cy="synthesize-text"
-            @blur="v$.form.text.$touch()"
           />
         </ARow>
         <ARow>

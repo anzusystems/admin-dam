@@ -2,29 +2,42 @@
   "model": {
     "voiceFamilySlug": "Hlasová rodina",
     "mode": "Mód",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "status": "Stav",
+    "startedAt": "Začaté",
+    "finishedAt": "Skončené"
   },
   "filter": {
-    "voiceFamilySlug": "Slug hlasovej rodiny"
+    "voiceFamilySlug": "Slug hlasovej rodiny",
+    "status": "Stav",
+    "startedAtFrom": "Začaté od",
+    "startedAtUntil": "Začaté do"
+  },
+  "status": {
+    "waiting": "Čaká",
+    "processing": "Spracováva sa",
+    "done": "Hotové",
+    "failed": "Zlyhalo",
+    "cancelled": "Zrušené"
   },
   "button": {
     "synthesize": "Syntetizovať",
-    "cancelJob": "Zrušiť job"
+    "cancelRequest": "Zrušiť request"
   },
   "synthesize": {
     "title": "Syntetizovať TTS audio",
     "text": "Text",
     "textPlaceholder": "Vložte text článku tu…",
     "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
-    "alreadyPending": "Rovnaký job už čaká — nový sa nevytvoril.",
-    "alreadyExists": "Asset už bol vygenerovaný — nový job sa nevytvoril."
+    "alreadyPending": "Rovnaký request už čaká — nový sa nevytvoril.",
+    "alreadyExists": "Asset už bol vygenerovaný — nový request sa nevytvoril."
   },
-  "cancelJob": {
-    "title": "Zrušiť čakajúci TTS job",
-    "description": "Požiadať o zrušenie čakajúceho audio-narration jobu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné.",
+  "cancelRequest": {
+    "title": "Zrušiť čakajúci TTS request",
+    "description": "Požiadať o zrušenie čakajúceho audio-narration requestu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné.",
     "reason": "Dôvod (voliteľné, audit)",
     "swapCompleted": "Zrušenie požiadané, ale worker už stihol výsledok prehodiť.",
-    "alreadyFailed": "Job už zlyhal — niet čo zrušiť."
+    "alreadyFailed": "Request už zlyhal — niet čo zrušiť."
   },
   "voiceFamilySelect": {
     "systemDefault": "Systémový predvolený hlas"

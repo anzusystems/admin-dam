@@ -10,7 +10,7 @@ import {
   useDamCachedUsers,
   type ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { fetchExtSystem, updateExtSystem } from '@/services/api/coreDam/extSystemApi'
+import { fetchExtSystem, updateExtSystem, updateExtSystemTtsSettings } from '@/services/api/coreDam/extSystemApi'
 import { storeToRefs } from 'pinia'
 import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
@@ -28,6 +28,7 @@ const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
+const ttsSettingsSaveButtonLoading = ref(false)
 
 export const useExtSystemSelectActions = (client: () => AxiosInstance) => {
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
@@ -144,13 +145,28 @@ export const useExtSystemEditActions = () => {
     }
   }
 
+  const onUpdateTtsSettings = async () => {
+    ttsSettingsSaveButtonLoading.value = true
+    try {
+      const updated = await updateExtSystemTtsSettings(extSystemOneStore.extSystem.id, extSystem.value.ttsSettings)
+      extSystemOneStore.setExtSystem(updated)
+      showRecordWas('updated')
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      ttsSettingsSaveButtonLoading.value = false
+    }
+  }
+
   return {
     detailLoading,
     saveButtonLoading,
     saveAndCloseButtonLoading,
+    ttsSettingsSaveButtonLoading,
     extSystem,
     fetchData,
     onUpdate,
+    onUpdateTtsSettings,
     resetStore: extSystemOneStore.reset,
   }
 }

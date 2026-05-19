@@ -1,42 +1,41 @@
 import { ref } from 'vue'
-import { type FilterBag, type IntegerId, JobStatus, type Pagination, useAlerts } from '@anzusystems/common-admin'
+import { type DocId, type FilterBag, type Pagination, useAlerts } from '@anzusystems/common-admin'
 import type {
-  JobAudioNarration,
-  TtsCancelJobRequest,
-  TtsCancelJobResponse,
+  TtsCancelRequestPayload,
+  TtsCancelRequestResponse,
+  TtsNarrationRequest,
   TtsSynthesizeRequest,
   TtsSynthesizeResponse,
 } from '@/types/coreDam/TtsAudio'
-import { TtsCancelJobStatus, TtsSynthesizeStatus } from '@/types/coreDam/TtsAudio'
+import { TtsCancelRequestStatus, TtsRequestStatus, TtsSynthesizeStatus } from '@/types/coreDam/TtsAudio'
 import {
-  cancelTtsAudioJob,
-  fetchTtsAudioJobList,
+  cancelTtsNarrationRequest,
+  fetchTtsNarrationRequestList,
   synthesizeTtsAudio,
 } from '@/services/api/coreDam/ttsAudioApi'
 
 const { showRecordWas, showErrorsDefault, showWarning } = useAlerts()
 
-const CANCELLABLE_STATUSES: ReadonlyArray<string> = [
-  JobStatus.Waiting,
-  JobStatus.Processing,
-  JobStatus.AwaitingBatchProcess,
+const CANCELLABLE_STATUSES: ReadonlyArray<TtsRequestStatus> = [
+  TtsRequestStatus.Waiting,
+  TtsRequestStatus.Processing,
 ]
 
-export const isCancellableJob = (job: JobAudioNarration): boolean =>
-  !job.cancelRequested && CANCELLABLE_STATUSES.includes(job.status)
+export const isCancellableRequest = (request: TtsNarrationRequest): boolean =>
+  !request.cancelRequested && CANCELLABLE_STATUSES.includes(request.status)
 
 const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const synthesizeButtonLoading = ref(false)
-const cancelJobButtonLoading = ref(false)
+const cancelRequestButtonLoading = ref(false)
 
 export const useTtsAudioListActions = () => {
-  const listItems = ref<Array<JobAudioNarration>>([])
+  const listItems = ref<Array<TtsNarrationRequest>>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchTtsAudioJobList(pagination, filterBag)
+      listItems.value = await fetchTtsNarrationRequestList(pagination, filterBag)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -79,29 +78,32 @@ export const useTtsAudioSynthesizeActions = () => {
   }
 }
 
-export const useTtsAudioCancelJobActions = () => {
-  const cancelJob = async (jobId: IntegerId, payload: TtsCancelJobRequest): Promise<TtsCancelJobResponse | null> => {
-    cancelJobButtonLoading.value = true
+export const useTtsAudioCancelRequestActions = () => {
+  const cancelRequest = async (
+    requestId: DocId,
+    payload: TtsCancelRequestPayload
+  ): Promise<TtsCancelRequestResponse | null> => {
+    cancelRequestButtonLoading.value = true
     try {
-      const res = await cancelTtsAudioJob(jobId, payload)
-      if (res.status === TtsCancelJobStatus.Cancelled) {
+      const res = await cancelTtsNarrationRequest(requestId, payload)
+      if (res.status === TtsCancelRequestStatus.Cancelled) {
         showRecordWas('updated')
-      } else if (res.status === TtsCancelJobStatus.SwapCompleted) {
-        showWarning('coreDam.ttsAudio.cancelJob.swapCompleted')
-      } else if (res.status === TtsCancelJobStatus.AlreadyFailed) {
-        showWarning('coreDam.ttsAudio.cancelJob.alreadyFailed')
+      } else if (res.status === TtsCancelRequestStatus.SwapCompleted) {
+        showWarning('coreDam.ttsAudio.cancelRequest.swapCompleted')
+      } else if (res.status === TtsCancelRequestStatus.AlreadyFailed) {
+        showWarning('coreDam.ttsAudio.cancelRequest.alreadyFailed')
       }
       return res
     } catch (error) {
       showErrorsDefault(error)
       return null
     } finally {
-      cancelJobButtonLoading.value = false
+      cancelRequestButtonLoading.value = false
     }
   }
 
   return {
-    cancelJobButtonLoading,
-    cancelJob,
+    cancelRequestButtonLoading,
+    cancelRequest,
   }
 }

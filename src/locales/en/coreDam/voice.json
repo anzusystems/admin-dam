@@ -12,6 +12,10 @@
     "create": "Add Voice Binding",
     "edit": "Edit Voice Binding"
   },
+  "button": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
   "validation": {
     "metadataInvalid": "Metadata must be a valid JSON object."
   }

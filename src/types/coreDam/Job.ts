@@ -46,12 +46,9 @@ export interface JobSynchronizeImageChanged extends JobBase<JobResource> {
   bulkSize: number
 }
 
-import type { JobAudioNarration } from '@/types/coreDam/TtsAudio'
-
 export type Job =
   | JobUserDataDelete
   | JobPodcastSynchronizer
   | JobImageCopy
   | JobAssetFileReprocessInternalFlag
   | JobSynchronizeImageChanged
-  | JobAudioNarration

@@ -32,16 +32,10 @@ const loadVoiceFamilies = async (): Promise<VoiceFamily[]> => {
   return fetchPromise
 }
 
-const clearVoiceFamiliesCache = () => {
-  voiceFamilies.value = []
-  fetchPromise = null
-}
-
 export const useCachedVoiceFamilies = () => {
   return {
     voiceFamilies,
     loading,
     loadVoiceFamilies,
-    clearVoiceFamiliesCache,
   }
 }

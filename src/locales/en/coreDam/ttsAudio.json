@@ -2,29 +2,42 @@
   "model": {
     "voiceFamilySlug": "Voice family",
     "mode": "Mode",
-    "title": "Title"
+    "title": "Title",
+    "status": "Status",
+    "startedAt": "Started at",
+    "finishedAt": "Finished at"
   },
   "filter": {
-    "voiceFamilySlug": "Voice family slug"
+    "voiceFamilySlug": "Voice family slug",
+    "status": "Status",
+    "startedAtFrom": "Started from",
+    "startedAtUntil": "Started until"
+  },
+  "status": {
+    "waiting": "Waiting",
+    "processing": "Processing",
+    "done": "Done",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
   },
   "button": {
     "synthesize": "Synthesize",
-    "cancelJob": "Cancel job"
+    "cancelRequest": "Cancel request"
   },
   "synthesize": {
     "title": "Synthesize TTS audio",
     "text": "Text",
     "textPlaceholder": "Paste the article text here…",
     "includeInRecommendedPodcast": "Include in recommended podcast",
-    "alreadyPending": "An identical job is already pending — no new job was created.",
-    "alreadyExists": "Asset already generated — no new job was created."
+    "alreadyPending": "An identical request is already pending — no new request was created.",
+    "alreadyExists": "Asset already generated — no new request was created."
   },
-  "cancelJob": {
-    "title": "Cancel pending TTS job",
-    "description": "Request cancellation of a pending audio narration job. If the worker has already swapped the result, the cancel may not take effect.",
+  "cancelRequest": {
+    "title": "Cancel pending TTS request",
+    "description": "Request cancellation of a pending audio narration request. If the worker has already swapped the result, the cancel may not take effect.",
     "reason": "Reason (optional, audit)",
     "swapCompleted": "Cancel requested but the worker already swapped the result.",
-    "alreadyFailed": "Job already failed — nothing to cancel."
+    "alreadyFailed": "Request already failed — nothing to cancel."
   },
   "voiceFamilySelect": {
     "systemDefault": "System default voice"
