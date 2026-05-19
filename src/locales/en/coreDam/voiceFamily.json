@@ -5,7 +5,8 @@
     "displayName": "Display Name",
     "language": "Language",
     "preferredProvider": "Preferred Provider",
-    "active": "Active"
+    "active": "Active",
+    "keyword": "Keyword"
   },
   "filter": {
     "id": "ID",

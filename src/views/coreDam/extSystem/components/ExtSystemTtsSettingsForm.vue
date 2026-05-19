@@ -7,6 +7,7 @@ import { useExtSystemEditActions } from '@/views/coreDam/extSystem/composables/e
 import { useTtsActiveProviderMode } from '@/model/coreDam/valueObject/TtsActiveProviderMode'
 import { AActionSaveButton, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
+import VoiceFamilyRemoteAutocomplete from '@/views/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
 
 const { extSystem, ttsSettingsSaveButtonLoading, onUpdateTtsSettings } = useExtSystemEditActions()
 
@@ -50,6 +51,15 @@ const { t } = useI18n()
               :label="t('coreDam.extSystem.ttsSettings.recommendedPodcast')"
               clearable
               data-cy="ext-system-tts-recommended-podcast"
+            />
+          </ARow>
+          <ARow>
+            <VoiceFamilyRemoteAutocomplete
+              v-model="extSystem.ttsSettings.defaultVoiceFamilyId"
+              :ext-system-id="extSystem.id"
+              :label="t('coreDam.extSystem.ttsSettings.defaultVoiceFamily')"
+              clearable
+              data-cy="ext-system-tts-default-voice-family"
             />
           </ARow>
           <ARow>

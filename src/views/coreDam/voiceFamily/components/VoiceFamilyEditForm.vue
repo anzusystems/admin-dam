@@ -3,6 +3,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/voiceFamilyApi'
 import { useI18n } from 'vue-i18n'
 import {
+  AFormRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
@@ -11,11 +12,15 @@ import {
 import { useVoiceFamilyEditActions } from '@/views/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyValidation } from '@/views/coreDam/voiceFamily/composables/voiceFamilyValidation'
 import { useTtsProvider } from '@/model/coreDam/valueObject/TtsProvider'
+import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
+import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 
 const { voiceFamily } = useVoiceFamilyEditActions()
 
 const { v$ } = useVoiceFamilyValidation(voiceFamily)
 const { ttsProviderOptionsNullable } = useTtsProvider()
+const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
+const keywordInnerFilter = useKeywordFilter()
 const { t } = useI18n()
 </script>
 
@@ -53,6 +58,18 @@ const { t } = useI18n()
             :label="t('coreDam.voiceFamily.model.preferredProvider')"
             :items="ttsProviderOptionsNullable"
             data-cy="voice-family-preferred-provider"
+          />
+        </ARow>
+        <ARow>
+          <AFormRemoteAutocomplete
+            v-model="voiceFamily.keyword"
+            :label="t('coreDam.voiceFamily.model.keyword')"
+            :fetch-items="fetchKeywordItems"
+            :fetch-items-by-ids="fetchKeywordItemsByIds"
+            :inner-filter="keywordInnerFilter"
+            clearable
+            filter-by-field="text"
+            data-cy="voice-family-keyword"
           />
         </ARow>
         <ARow>

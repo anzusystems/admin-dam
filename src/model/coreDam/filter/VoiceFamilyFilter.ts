@@ -23,3 +23,11 @@ const filter = reactive({
 export function useVoiceFamilyListFilter() {
   return filter
 }
+
+export function useVoiceFamilyFilter() {
+  return reactive({
+    displayName: {
+      ...makeFilter({ name: 'displayName', variant: 'startsWith' }),
+    },
+  })
+}

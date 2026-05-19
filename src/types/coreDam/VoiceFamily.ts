@@ -1,4 +1,11 @@
-import type { AnzuUserAndTimeTrackingAware, DatetimeUTC, DocId, IntegerId, ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type {
+  AnzuUserAndTimeTrackingAware,
+  DatetimeUTC,
+  DocId,
+  DocIdNullable,
+  IntegerId,
+  ResourceNameSystemAware,
+} from '@anzusystems/common-admin'
 import type { TtsProvider } from '@/types/coreDam/TtsProvider'
 
 export const RESOURCE_VOICE_FAMILY = 'voiceFamily'
@@ -11,6 +18,7 @@ export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameS
   language: string
   preferredProvider: TtsProvider | null
   active: boolean
+  keyword: DocIdNullable
   createdAt: DatetimeUTC
   modifiedAt: DatetimeUTC
 }
@@ -22,6 +30,7 @@ export interface VoiceFamilyCreate {
   language: string
   preferredProvider: TtsProvider | null
   active: boolean
+  keyword: DocIdNullable
 }
 
 export interface VoiceFamilyUpdate {
@@ -29,4 +38,5 @@ export interface VoiceFamilyUpdate {
   language: string
   preferredProvider: TtsProvider | null
   active: boolean
+  keyword: DocIdNullable
 }

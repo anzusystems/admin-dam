@@ -16,6 +16,7 @@
     "autoPodcast": "Auto podcast",
     "recommendedPodcast": "Odporúčaný podcast",
     "activeProviderMode": "Aktívny TTS poskytovateľ",
+    "defaultVoiceFamily": "Predvolená hlasová rodina",
     "modes": {
       "elevenlabs": "ElevenLabs",
       "google_tts": "Google TTS",

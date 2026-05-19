@@ -21,6 +21,7 @@ export function useExtSystemFactory() {
         autoPodcastId: null,
         recommendedPodcastId: null,
         activeProviderMode: TtsActiveProviderMode.Auto,
+        defaultVoiceFamilyId: null,
       },
     }
   }

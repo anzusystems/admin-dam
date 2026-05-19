@@ -1,10 +1,12 @@
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { DocId, FilterBag, IntegerId, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
   deleteVoiceFamily,
   fetchVoiceFamily,
   fetchVoiceFamilyList,
+  fetchVoiceFamilyListByExtSystem,
+  fetchVoiceFamilyListByIds,
   updateVoiceFamily,
 } from '@/services/api/coreDam/voiceFamilyApi'
 import type { VoiceFamily, VoiceFamilyUpdate } from '@/types/coreDam/VoiceFamily'
@@ -119,6 +121,7 @@ export const useVoiceFamilyEditActions = () => {
         language: voiceFamily.value.language,
         preferredProvider: voiceFamily.value.preferredProvider,
         active: voiceFamily.value.active,
+        keyword: voiceFamily.value.keyword,
       }
       await updateVoiceFamily(voiceFamilyOneStore.voiceFamily.id, payload)
       showRecordWas('updated')
@@ -143,5 +146,32 @@ export const useVoiceFamilyEditActions = () => {
     fetchData,
     onUpdate,
     resetStore: voiceFamilyOneStore.reset,
+  }
+}
+
+export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => IntegerId)) => {
+  const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    const items = await fetchVoiceFamilyListByExtSystem(resolveExtSystemId(), pagination, filterBag)
+
+    return <ValueObjectOption<DocId>[]>items.map((voiceFamily: VoiceFamily) => ({
+      title: voiceFamily.displayName,
+      value: voiceFamily.id,
+    }))
+  }
+
+  const fetchItemsByIds = async (ids: DocId[]) => {
+    const items = await fetchVoiceFamilyListByIds(resolveExtSystemId(), ids)
+
+    return <ValueObjectOption<DocId>[]>items.map((voiceFamily: VoiceFamily) => ({
+      title: voiceFamily.displayName,
+      value: voiceFamily.id,
+    }))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
   }
 }

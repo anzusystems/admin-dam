@@ -5,7 +5,8 @@
     "displayName": "Zobrazovaný názov",
     "language": "Jazyk",
     "preferredProvider": "Preferovaný poskytovateľ",
-    "active": "Aktívny"
+    "active": "Aktívny",
+    "keyword": "Kľúčové slovo"
   },
   "filter": {
     "id": "ID",
