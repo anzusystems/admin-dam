@@ -20,10 +20,5 @@
   "button": {
     "create": "Create voice family"
   },
-  "voices": "Voice Bindings",
-  "ttsProvider": {
-    "none": "None",
-    "elevenlabs": "ElevenLabs",
-    "googleTts": "Google TTS"
-  }
+  "voices": "Voice Bindings"
 }

@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope, useAlerts } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/coreDam/voiceApi'
+import { ADialogToolbar, useAlerts } from '@anzusystems/common-admin'
 import { updateVoice } from '@/services/api/coreDam/voiceApi'
-import type { Voice, VoiceUpdate } from '@/types/coreDam/Voice'
-import { useTtsProvider } from '@/model/coreDam/valueObject/TtsProvider'
+import type { Voice } from '@/types/coreDam/Voice'
+import VoiceManage from '@/views/coreDam/voiceFamily/components/VoiceManage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -23,39 +21,19 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { showRecordWas, showErrorsDefault } = useAlerts()
-const { ttsProviderOptions } = useTtsProvider()
 
 const saveButtonLoading = ref(false)
 const localVoice = ref<Voice | null>(null)
-const metadataRaw = ref('')
-const metadataError = ref<string | null>(null)
-
-const parsedMetadata = computed<Record<string, unknown> | null>(() => {
-  if (!metadataRaw.value.trim()) return {}
-  try {
-    const parsed = JSON.parse(metadataRaw.value)
-    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return null
-    return parsed as Record<string, unknown>
-  } catch {
-    return null
-  }
-})
 
 watch(
   () => props.voice,
   (newVoice) => {
-    metadataError.value = null
     if (newVoice) {
       localVoice.value = { ...newVoice }
-      metadataRaw.value = Object.keys(newVoice.metadata).length > 0 ? JSON.stringify(newVoice.metadata, null, 2) : ''
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
-
-const onMetadataBlur = () => {
-  metadataError.value = parsedMetadata.value === null ? t('coreDam.voice.validation.metadataInvalid') : null
-}
 
 const onCancel = () => {
   emit('update:modelValue', false)
@@ -63,21 +41,10 @@ const onCancel = () => {
 
 const onConfirm = async () => {
   if (!localVoice.value) return
-  if (parsedMetadata.value === null) {
-    metadataError.value = t('coreDam.voice.validation.metadataInvalid')
-    return
-  }
 
   saveButtonLoading.value = true
   try {
-    const payload: VoiceUpdate = {
-      externalVoiceId: localVoice.value.externalVoiceId,
-      metadata: parsedMetadata.value,
-      primary: localVoice.value.primary,
-      active: localVoice.value.active,
-    }
-
-    await updateVoice(localVoice.value.id, payload)
+    await updateVoice(localVoice.value.id, localVoice.value)
     showRecordWas('updated')
     emit('update:modelValue', false)
     emit('onSuccess')
@@ -87,7 +54,6 @@ const onConfirm = async () => {
     saveButtonLoading.value = false
   }
 }
-
 </script>
 
 <template>
@@ -102,52 +68,10 @@ const onConfirm = async () => {
         {{ t('coreDam.voice.meta.edit') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
-          <ARow>
-            <AFormValueObjectOptionsSelect
-              v-model="localVoice.provider"
-              :label="t('coreDam.voice.model.provider')"
-              :items="ttsProviderOptions"
-              readonly
-            />
-          </ARow>
-          <ARow>
-            <AFormTextField
-              v-model="localVoice.externalVoiceId"
-              :label="t('coreDam.voice.model.externalVoiceId')"
-              data-cy="voice-external-id"
-            />
-          </ARow>
-          <ARow>
-            <VTextarea
-              v-model="metadataRaw"
-              :label="t('coreDam.voice.model.metadata')"
-              :error-messages="metadataError ? [metadataError] : []"
-              rows="4"
-              data-cy="voice-metadata"
-              @blur="onMetadataBlur"
-            />
-          </ARow>
-          <ARow>
-            <VSwitch
-              v-model="localVoice.primary"
-              class="pl-2"
-              :label="t('coreDam.voice.model.primary')"
-              data-cy="voice-is-primary"
-            />
-          </ARow>
-          <ARow>
-            <VSwitch
-              v-model="localVoice.active"
-              class="pl-2"
-              :label="t('coreDam.voice.model.active')"
-              data-cy="voice-is-active"
-            />
-          </ARow>
-        </ASystemEntityScope>
+        <VoiceManage
+          :voice="localVoice"
+          @update:voice="localVoice = $event"
+        />
       </VCardText>
       <VCardActions>
         <VSpacer />

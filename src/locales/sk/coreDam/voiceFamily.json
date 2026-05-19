@@ -20,10 +20,5 @@
   "button": {
     "create": "Vytvoriť hlasovú rodinu"
   },
-  "voices": "Hlasové väzby",
-  "ttsProvider": {
-    "none": "Žiadny",
-    "elevenlabs": "ElevenLabs",
-    "googleTts": "Google TTS"
-  }
+  "voices": "Hlasové väzby"
 }

@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ACreateDialog, AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { ACreateDialog } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/coreDam/voiceApi'
 import { createVoice } from '@/services/api/coreDam/voiceApi'
-import { useVoiceFactory } from '@/model/coreDam/factory/VoiceFactory'
+import { useVoiceKindFactory } from '@/model/coreDam/factory/VoiceFactory'
 import type { Voice } from '@/types/coreDam/Voice'
-import { useTtsProvider } from '@/model/coreDam/valueObject/TtsProvider'
+import { VoiceDiscriminator } from '@/types/coreDam/Voice'
+import VoiceManage from '@/views/coreDam/voiceFamily/components/VoiceManage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -27,48 +26,18 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { createVoiceKind } = useVoiceKindFactory()
+
+const voice = ref<Voice | null>(null)
 const dialog = ref(false)
-const { createDefault } = useVoiceFactory()
-const { ttsProviderOptions } = useTtsProvider()
-
-const voice = ref<Voice>(createDefault())
-const metadataRaw = ref('')
-const metadataError = ref<string | null>(null)
-
-const parsedMetadata = computed<Record<string, unknown> | null>(() => {
-  if (!metadataRaw.value.trim()) return {}
-  try {
-    const parsed = JSON.parse(metadataRaw.value)
-    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return null
-    return parsed as Record<string, unknown>
-  } catch {
-    return null
-  }
-})
 
 const onOpen = () => {
-  voice.value = createDefault(props.voiceFamilyId)
-  metadataRaw.value = ''
-  metadataError.value = null
-}
-
-const onMetadataBlur = () => {
-  metadataError.value = parsedMetadata.value === null ? t('coreDam.voice.validation.metadataInvalid') : null
+  voice.value = createVoiceKind(VoiceDiscriminator.Elevenlabs, props.voiceFamilyId)
 }
 
 const create = async () => {
-  if (parsedMetadata.value === null) {
-    metadataError.value = t('coreDam.voice.validation.metadataInvalid')
-    throw new Error(metadataError.value)
-  }
-  return await createVoice({
-    voiceFamilyId: voice.value.voiceFamilyId,
-    provider: voice.value.provider,
-    externalVoiceId: voice.value.externalVoiceId,
-    metadata: parsedMetadata.value,
-    primary: voice.value.primary,
-    active: voice.value.active,
-  })
+  if (!voice.value) throw new Error('Voice is not initialized')
+  return await createVoice(voice.value)
 }
 </script>
 
@@ -88,52 +57,11 @@ const create = async () => {
       {{ t('coreDam.voice.meta.create') }}
     </template>
     <template #content>
-      <ASystemEntityScope
-        :system="SYSTEM_CORE_DAM"
-        :subject="ENTITY"
-      >
-        <ARow>
-          <AFormValueObjectOptionsSelect
-            v-model="voice.provider"
-            :label="t('coreDam.voice.model.provider')"
-            :items="ttsProviderOptions"
-            data-cy="voice-provider"
-          />
-        </ARow>
-        <ARow>
-          <AFormTextField
-            v-model="voice.externalVoiceId"
-            :label="t('coreDam.voice.model.externalVoiceId')"
-            data-cy="voice-external-id"
-          />
-        </ARow>
-        <ARow>
-          <VTextarea
-            v-model="metadataRaw"
-            :label="t('coreDam.voice.model.metadata')"
-            :error-messages="metadataError ? [metadataError] : []"
-            rows="4"
-            data-cy="voice-metadata"
-            @blur="onMetadataBlur"
-          />
-        </ARow>
-        <ARow>
-          <VSwitch
-            v-model="voice.primary"
-            class="pl-2"
-            :label="t('coreDam.voice.model.primary')"
-            data-cy="voice-is-primary"
-          />
-        </ARow>
-        <ARow>
-          <VSwitch
-            v-model="voice.active"
-            class="pl-2"
-            :label="t('coreDam.voice.model.active')"
-            data-cy="voice-is-active"
-          />
-        </ARow>
-      </ASystemEntityScope>
+      <VoiceManage
+        v-if="voice"
+        :voice="voice"
+        @update:voice="voice = $event"
+      />
     </template>
   </ACreateDialog>
 </template>

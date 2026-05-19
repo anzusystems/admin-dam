@@ -7,6 +7,7 @@ import { fetchVoiceListByFamily, deleteVoice } from '@/services/api/coreDam/voic
 import type { Voice } from '@/types/coreDam/Voice'
 import VoiceBindingCreateDialog from '@/views/coreDam/voiceFamily/dialogs/VoiceBindingCreateDialog.vue'
 import VoiceBindingEditDialog from '@/views/coreDam/voiceFamily/dialogs/VoiceBindingEditDialog.vue'
+import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import { ACL, useAuth } from '@/composables/auth/auth'
 
 const props = withDefaults(
@@ -88,9 +89,9 @@ onMounted(() => {
       class="a-datatable"
       :loading="loading"
       :headers="[
-        { title: t('coreDam.voice.model.provider'), key: 'provider', sortable: false },
+        { title: t('coreDam.voice.model.discriminator'), key: 'discriminator', sortable: false },
         { title: t('coreDam.voice.model.externalVoiceId'), key: 'externalVoiceId', sortable: false },
-        { title: t('coreDam.voice.model.primary'), key: 'primary', sortable: false },
+        { title: t('coreDam.voice.model.main'), key: 'main', sortable: false },
         { title: t('coreDam.voice.model.active'), key: 'active', sortable: false },
         { title: t('coreDam.voice.model.modifiedAt'), key: 'modifiedAt', sortable: false },
         { title: '', key: 'actions', sortable: false, align: 'end' },
@@ -100,10 +101,13 @@ onMounted(() => {
       item-value="id"
       @click:row="onRowClick"
     >
-      <template #item.primary="{ item }: { item: Voice }">
+      <template #item.discriminator="{ item }: { item: Voice }">
+        <VoiceDiscriminatorChip :discriminator="item.discriminator" />
+      </template>
+      <template #item.main="{ item }: { item: Voice }">
         <ABooleanValue
           chip
-          :value="item.primary"
+          :value="item.main"
         />
       </template>
       <template #item.active="{ item }: { item: Voice }">

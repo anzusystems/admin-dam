@@ -11,14 +11,14 @@ import {
 } from '@anzusystems/common-admin'
 import { useVoiceFamilyEditActions } from '@/views/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyValidation } from '@/views/coreDam/voiceFamily/composables/voiceFamilyValidation'
-import { useTtsProvider } from '@/model/coreDam/valueObject/TtsProvider'
+import { useVoiceDiscriminator } from '@/model/coreDam/valueObject/VoiceDiscriminator'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 
 const { voiceFamily } = useVoiceFamilyEditActions()
 
 const { v$ } = useVoiceFamilyValidation(voiceFamily)
-const { ttsProviderOptionsNullable } = useTtsProvider()
+const { valueObjectOptionsNullable: ttsProviderOptionsNullable } = useVoiceDiscriminator()
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 const keywordInnerFilter = useKeywordFilter()
 const { t } = useI18n()

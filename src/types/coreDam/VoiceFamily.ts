@@ -6,7 +6,7 @@ import type {
   IntegerId,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { TtsProvider } from '@/types/coreDam/TtsProvider'
+import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 
 export const RESOURCE_VOICE_FAMILY = 'voiceFamily'
 
@@ -16,7 +16,7 @@ export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameS
   slug: string
   displayName: string
   language: string
-  preferredProvider: TtsProvider | null
+  preferredProvider: VoiceDiscriminatorType | null
   active: boolean
   keyword: DocIdNullable
   createdAt: DatetimeUTC
@@ -28,7 +28,7 @@ export interface VoiceFamilyCreate {
   slug: string
   displayName: string
   language: string
-  preferredProvider: TtsProvider | null
+  preferredProvider: VoiceDiscriminatorType | null
   active: boolean
   keyword: DocIdNullable
 }
@@ -36,7 +36,7 @@ export interface VoiceFamilyCreate {
 export interface VoiceFamilyUpdate {
   displayName: string
   language: string
-  preferredProvider: TtsProvider | null
+  preferredProvider: VoiceDiscriminatorType | null
   active: boolean
   keyword: DocIdNullable
 }

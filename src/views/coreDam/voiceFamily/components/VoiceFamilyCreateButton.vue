@@ -14,7 +14,7 @@ import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVoiceFamilyFactory } from '@/model/coreDam/factory/VoiceFamilyFactory'
 import type { VoiceFamily, VoiceFamilyCreate } from '@/types/coreDam/VoiceFamily'
 import { useVoiceFamilyValidation } from '@/views/coreDam/voiceFamily/composables/voiceFamilyValidation'
-import { useTtsProvider } from '@/model/coreDam/valueObject/TtsProvider'
+import { useVoiceDiscriminator } from '@/model/coreDam/valueObject/VoiceDiscriminator'
 
 withDefaults(
   defineProps<{
@@ -38,7 +38,7 @@ const dialog = ref(false)
 
 const { v$ } = useVoiceFamilyValidation(voiceFamily)
 const { t } = useI18n()
-const { ttsProviderOptionsNullable } = useTtsProvider()
+const { valueObjectOptionsNullable: ttsProviderOptionsNullable } = useVoiceDiscriminator()
 
 const onOpen = () => {
   voiceFamily.value = createDefault(currentExtSystemId.value)

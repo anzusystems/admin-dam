@@ -1,12 +1,27 @@
 {
+  "discriminator": {
+    "none": "None",
+    "elevenlabs": "ElevenLabs",
+    "google_tts": "Google TTS"
+  },
+  "ssmlGender": {
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "NEUTRAL": "Neutral"
+  },
   "model": {
     "id": "ID",
-    "provider": "Provider",
+    "discriminator": "Provider",
     "externalVoiceId": "External Voice ID",
-    "metadata": "Metadata (JSON)",
-    "primary": "Primary",
+    "main": "Main",
     "active": "Active",
-    "modifiedAt": "Modified at"
+    "modifiedAt": "Modified at",
+    "modelId": "Model",
+    "stability": "Stability",
+    "similarityBoost": "Similarity Boost",
+    "ssmlGender": "SSML Gender",
+    "speakingRate": "Speaking Rate",
+    "pitch": "Pitch"
   },
   "meta": {
     "create": "Add Voice Binding",
@@ -15,8 +30,5 @@
   "button": {
     "edit": "Edit",
     "delete": "Delete"
-  },
-  "validation": {
-    "metadataInvalid": "Metadata must be a valid JSON object."
   }
 }
