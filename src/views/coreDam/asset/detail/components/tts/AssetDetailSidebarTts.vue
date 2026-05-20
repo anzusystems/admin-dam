@@ -1,0 +1,156 @@
+<script lang="ts" setup>
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ACopyText, ADatetime, ARow, type DocId } from '@anzusystems/common-admin'
+import { fetchTtsAsset } from '@/services/api/coreDam/ttsAssetApi'
+import type { TtsAssetDetail } from '@/types/coreDam/TtsAsset'
+import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
+import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
+import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
+import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
+import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
+import CachedTtsNarrationRequestChip from '@/views/coreDam/ttsNarrationRequest/components/CachedTtsNarrationRequestChip.vue'
+import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
+import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
+import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
+import { useCachedTtsNarrationRequests } from '@/views/coreDam/ttsNarrationRequest/composables/cachedTtsNarrationRequests'
+
+const props = defineProps<{
+  assetId: DocId
+}>()
+
+const { t } = useI18n()
+
+const loading = ref(false)
+const detail = ref<TtsAssetDetail | null>(null)
+
+const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
+const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
+const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
+const { addToCachedTtsNarrationRequests, fetchCachedTtsNarrationRequests } = useCachedTtsNarrationRequests()
+
+const load = async () => {
+  loading.value = true
+  try {
+    const data = await fetchTtsAsset(props.assetId)
+    detail.value = data
+    if (!data) return
+
+    if (data.lastRequestId) addToCachedTtsNarrationRequests([data.lastRequestId])
+
+    const tts = data.tts
+    if (tts) {
+      if (tts.voiceFamilyId) addToCachedVoiceFamilies([tts.voiceFamilyId])
+      if (tts.voiceFamilyKeywordId) addToCachedKeywords([tts.voiceFamilyKeywordId])
+      addToCachedAssetLicences([tts.assetLicenceId])
+      const podcastIds = [tts.autoPodcastId, tts.recommendedPodcastId].filter(
+        (id): id is string => id !== null && id !== undefined
+      )
+      if (podcastIds.length > 0) addToCachedPodcasts(podcastIds)
+    }
+
+    await Promise.all([
+      fetchCachedVoiceFamilies(),
+      fetchCachedKeywords(),
+      fetchCachedAssetLicences(),
+      fetchCachedPodcasts(),
+      fetchCachedTtsNarrationRequests(),
+    ])
+  } finally {
+    loading.value = false
+  }
+}
+
+watch(() => props.assetId, load, { immediate: true })
+</script>
+
+<template>
+  <div
+    v-if="loading"
+    class="d-flex w-100 justify-center align-center pa-2"
+  >
+    <VProgressCircular
+      indeterminate
+      color="primary"
+    />
+  </div>
+  <div
+    v-else-if="!detail || !detail.tts"
+    class="pa-4 text-caption"
+  >
+    {{ t('coreDam.asset.detail.tts.noEntry') }}
+  </div>
+  <div
+    v-else
+    class="px-2 py-2 tts-sidebar-panel"
+  >
+    <ARow :title="t('coreDam.asset.detail.tts.status')">
+      <TtsAudioStatusChip :status="detail.tts.status" />
+    </ARow>
+    <ARow :title="t('coreDam.asset.detail.tts.voiceFamily')">
+      <CachedVoiceFamilyChip :id="detail.tts.voiceFamilyId" />
+    </ARow>
+    <ARow :title="t('coreDam.asset.detail.tts.voice')">
+      <VoiceDiscriminatorChip :discriminator="detail.tts.discriminator" />
+    </ARow>
+    <ARow
+      v-if="detail.tts.assetLicenceId !== null"
+      :title="t('coreDam.asset.detail.tts.assetLicence')"
+    >
+      <CachedAssetLicenceChip :id="detail.tts.assetLicenceId" />
+    </ARow>
+    <ARow
+      v-if="detail.tts.voiceFamilyKeywordId"
+      :title="t('coreDam.asset.detail.tts.voiceFamilyKeyword')"
+    >
+      <CachedKeywordChip :id="detail.tts.voiceFamilyKeywordId" />
+    </ARow>
+    <ARow
+      v-if="detail.tts.autoPodcastId"
+      :title="t('coreDam.asset.detail.tts.autoPodcast')"
+    >
+      <CachedPodcastChip :id="detail.tts.autoPodcastId" />
+    </ARow>
+    <ARow
+      v-if="detail.tts.recommendedPodcastId"
+      :title="t('coreDam.asset.detail.tts.recommendedPodcast')"
+    >
+      <CachedPodcastChip :id="detail.tts.recommendedPodcastId" />
+    </ARow>
+    <ARow
+      v-if="detail.tts.extResourceName"
+      :title="t('coreDam.asset.detail.tts.extRef')"
+    >
+      <ACopyText :value="`${detail.tts.extResourceName}/${detail.tts.extId ?? ''}`" />
+    </ARow>
+    <ARow
+      v-if="detail.tts.failureReason"
+      :title="t('coreDam.asset.detail.tts.failureReason')"
+      :value="detail.tts.failureReason"
+    />
+    <ARow :title="t('coreDam.asset.detail.tts.generatedAt')">
+      <ADatetime :date-time="detail.tts.generatedAt" />
+    </ARow>
+    <ARow :title="t('coreDam.asset.detail.tts.lastRegeneratedAt')">
+      <ADatetime :date-time="detail.tts.lastRegeneratedAt" />
+    </ARow>
+    <ARow
+      v-if="detail.lastRequestId"
+      :title="t('coreDam.asset.detail.tts.sourceRequest')"
+    >
+      <CachedTtsNarrationRequestChip :id="detail.lastRequestId" />
+    </ARow>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.tts-sidebar-panel {
+  // Narrow sidebar container has overflow-y:auto but no overflow-x clip — long UUIDs in
+  // ACopyText / chip labels force a horizontal scrollbar without this guard.
+  overflow-x: hidden;
+  overflow-wrap: anywhere;
+}
+</style>

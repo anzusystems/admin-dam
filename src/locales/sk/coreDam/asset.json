@@ -14,6 +14,7 @@
     "authorIds": "Autori",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
+    "fromTts": "Syntetické (TTS)",
     "distributedInServices": "Distribuované v službách",
     "slotNames": "Mená slotov",
     "visible": "Viditeľný",
@@ -54,6 +55,7 @@
     "low": "Nízka kvalita",
     "slots": "Sloty",
     "rss": "RSS",
+    "tts": "Syntetické (TTS)",
     "fullHd": "FullHD",
     "2k": "2K",
     "qhd": "QHD",
@@ -137,8 +139,24 @@
       "distribution": "Distribúcia",
       "slots": "Sloty",
       "podcast": "Podcasty",
+      "tts": "TTS",
       "videoShow": "Video relácie",
       "imagePreview": "Miniatúra"
+    },
+    "tts": {
+      "noEntry": "Pre tento asset nie sú TTS údaje.",
+      "status": "Stav",
+      "voiceFamily": "Rodina hlasov",
+      "voice": "Hlas",
+      "assetLicence": "Licencia",
+      "voiceFamilyKeyword": "Kľúčové slovo rodiny",
+      "autoPodcast": "Automatický podcast",
+      "recommendedPodcast": "Odporúčaný podcast",
+      "extRef": "Externý odkaz",
+      "failureReason": "Dôvod zlyhania",
+      "generatedAt": "Vygenerované",
+      "lastRegeneratedAt": "Posledne regenerované",
+      "sourceRequest": "Zdrojový request"
     },
     "info": {
       "status": {

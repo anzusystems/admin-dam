@@ -1,4 +1,5 @@
 import type { DatetimeUTCNullable, DocId, DocIdNullable, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
+import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 
 export const TtsAudioStatus = {
   Active: 'active',
@@ -17,7 +18,7 @@ export interface TtsAsset {
   assetLicenceId: IntegerId
   voiceFamilySlug: string
   voiceFamilyId: DocId
-  discriminator: string
+  discriminator: VoiceDiscriminatorType
   externalVoiceId: string
   sourceTextHash: string
   sourceTextSnapshot: string
@@ -69,6 +70,11 @@ export interface TtsNarrationRequestPodcastOptions {
   autoPodcastId: DocIdNullable
   recommendedPodcastId: DocIdNullable
   includeInRecommended: boolean
+}
+
+export interface TtsNarrationRequestMinimal {
+  id: DocId
+  displayText: string
 }
 
 export interface TtsNarrationRequest {

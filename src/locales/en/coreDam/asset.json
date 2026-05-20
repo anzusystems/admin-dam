@@ -14,6 +14,7 @@
     "authorIds": "Authors",
     "createdByIds": "CreatedBy",
     "fromRss": "From RSS",
+    "fromTts": "Synthesized (TTS)",
     "distributedInServices": "Distributed in services",
     "slotNames": "Slot names",
     "visible": "Visible",
@@ -54,6 +55,7 @@
     "low": "Low quality",
     "slots": "Slots",
     "rss": "RSS",
+    "tts": "Synthesized (TTS)",
     "fullHd": "FullHD",
     "2k": "2K",
     "qhd": "QHD",
@@ -136,8 +138,24 @@
       "distribution": "Distribution",
       "slots": "Slots",
       "podcast": "Podcast",
+      "tts": "TTS",
       "videoShow": "Video show",
       "imagePreview": "Image preview"
+    },
+    "tts": {
+      "noEntry": "No TTS metadata for this asset.",
+      "status": "Status",
+      "voiceFamily": "Voice family",
+      "voice": "Voice",
+      "assetLicence": "Asset licence",
+      "voiceFamilyKeyword": "Voice family keyword",
+      "autoPodcast": "Auto podcast",
+      "recommendedPodcast": "Recommended podcast",
+      "extRef": "External ref",
+      "failureReason": "Failure reason",
+      "generatedAt": "Generated at",
+      "lastRegeneratedAt": "Last regenerated at",
+      "sourceRequest": "Source request"
     },
     "info": {
       "status": {

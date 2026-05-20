@@ -57,6 +57,9 @@ const filter = reactive({
   fromRss: {
     ...makeFilter({ name: 'fromRss', default: null }),
   },
+  fromTts: {
+    ...makeFilter({ name: 'fromTts', default: null }),
+  },
   slotNames: {
     ...makeFilter({ name: 'slotNames', default: [] }),
   },

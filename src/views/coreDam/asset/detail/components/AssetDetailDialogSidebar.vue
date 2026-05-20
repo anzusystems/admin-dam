@@ -10,6 +10,9 @@ import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/
 import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
 import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
+import AssetDetailSidebarTts from '@/views/coreDam/asset/detail/components/tts/AssetDetailSidebarTts.vue'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { storeToRefs } from 'pinia'
 import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
@@ -67,6 +70,9 @@ if (isUndefined(configExtSystem)) {
 const typeHasDistributions = computed(() => {
   return configExtSystem[props.assetType].distribution.distributionServices.length > 0
 })
+
+const { asset } = storeToRefs(useAssetDetailStore())
+const isFromTts = computed(() => asset.value?.assetFileProperties?.fromTts === true)
 </script>
 
 <template>
@@ -105,6 +111,13 @@ const typeHasDistributions = computed(() => {
           data-cy="button-podcast"
         >
           {{ t('coreDam.asset.detail.tabs.podcast') }}
+        </VTab>
+        <VTab
+          v-if="isAudio && isFromTts"
+          :value="AssetDetailTab.Tts"
+          data-cy="button-tts"
+        >
+          {{ t('coreDam.asset.detail.tabs.tts') }}
         </VTab>
         <VTab
           v-if="isVideo"
@@ -173,6 +186,12 @@ const typeHasDistributions = computed(() => {
             :asset-id="assetId"
             :is-active="activeTab === AssetDetailTab.Podcast"
           />
+        </div>
+        <div
+          v-if="isAudio && isFromTts && activeTab === AssetDetailTab.Tts"
+          class="py-2"
+        >
+          <AssetDetailSidebarTts :asset-id="assetId" />
         </div>
         <div
           v-if="isVideo && activeTab === AssetDetailTab.VideoShow"
