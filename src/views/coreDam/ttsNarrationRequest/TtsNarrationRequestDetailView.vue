@@ -17,7 +17,6 @@ import type { TtsNarrationRequestDetail } from '@/types/coreDam/TtsNarrationRequ
 import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
-import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
 import TtsRequestStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import TtsRequestModeChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
 import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
@@ -26,7 +25,6 @@ import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/Cached
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
@@ -37,7 +35,6 @@ const loading = ref(true)
 const detail = ref<TtsNarrationRequestDetail | null>(null)
 
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
-const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
 
@@ -50,26 +47,12 @@ onMounted(async () => {
     if (data) {
       const { request, ttsAsset } = data
 
-      const podcastIds = [
-        request.podcastOptions.autoPodcastId,
-        request.podcastOptions.recommendedPodcastId,
-        ttsAsset?.autoPodcastId,
-        ttsAsset?.recommendedPodcastId,
-      ].filter((id): id is string => id !== null && id !== undefined)
-      if (podcastIds.length > 0) addToCachedPodcasts(podcastIds)
-
       if (ttsAsset?.voiceFamilyKeywordId) addToCachedKeywords([ttsAsset.voiceFamilyKeywordId])
-
-      const assetLicenceIds = [request.assetLicenceId, ttsAsset?.assetLicenceId].filter(
-        (id): id is number => id !== null && id !== undefined
-      )
-      if (assetLicenceIds.length > 0) addToCachedAssetLicences(assetLicenceIds)
-
+      if (request.assetLicenceId !== null) addToCachedAssetLicences([request.assetLicenceId])
       if (ttsAsset?.voiceFamilyId) addToCachedVoiceFamilies([ttsAsset.voiceFamilyId])
 
       await Promise.all([
         fetchCachedKeywords(),
-        fetchCachedPodcasts(),
         fetchCachedAssetLicences(),
         fetchCachedVoiceFamilies(),
       ])
@@ -104,7 +87,7 @@ onMounted(async () => {
             <TtsRequestModeChip :mode="detail.request.mode" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLicenceId')">
-            <template v-if="detail.request.assetLicenceId">
+            <template v-if="detail.request.assetLicenceId !== null">
               <CachedAssetLicenceChip :id="detail.request.assetLicenceId" />
             </template>
             <template v-else>
@@ -158,9 +141,6 @@ onMounted(async () => {
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.startedAt')">
             <ADatetime :date-time="detail.request.startedAt" />
           </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.finishedAt')">
-            <ADatetime :date-time="detail.request.finishedAt" />
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extResourceName')">
             {{ detail.request.extRef.extResourceName }}
           </ARow>
@@ -170,26 +150,10 @@ onMounted(async () => {
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extVersion')">
             {{ detail.request.extRef.extVersion }}
           </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.podcastAutoPodcastId')">
-            <template v-if="detail.request.podcastOptions.autoPodcastId">
-              <CachedPodcastChip :id="detail.request.podcastOptions.autoPodcastId" />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.podcastRecommendedId')">
-            <template v-if="detail.request.podcastOptions.recommendedPodcastId">
-              <CachedPodcastChip :id="detail.request.podcastOptions.recommendedPodcastId" />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.includeInRecommended')">
             <ABooleanValue
               chip
-              :value="detail.request.podcastOptions.includeInRecommended"
+              :value="detail.request.includeInRecommended"
             />
           </ARow>
           <AUserAndTimeTrackingFields :data="detail.request" />
@@ -212,15 +176,8 @@ onMounted(async () => {
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetDiscriminator')">
             <VoiceDiscriminatorChip :discriminator="(detail.ttsAsset.discriminator as VoiceDiscriminatorType)" />
           </ARow>
-          <ARow
-            :title="t('coreDam.ttsNarrationRequest.detail.fields.assetVoiceFamilySlug')"
-            :value="detail.ttsAsset.voiceFamilySlug"
-          />
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetVoiceFamilyId')">
             <CachedVoiceFamilyChip :id="detail.ttsAsset.voiceFamilyId" />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLicenceId')">
-            <CachedAssetLicenceChip :id="detail.ttsAsset.assetLicenceId" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.externalVoiceId')">
             <ACopyText :value="detail.ttsAsset.externalVoiceId" />
@@ -232,16 +189,10 @@ onMounted(async () => {
             :title="t('coreDam.ttsNarrationRequest.detail.fields.assetFailureReason')"
             :value="detail.ttsAsset.failureReason"
           />
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetIsStaging')">
+          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetStaging')">
             <ABooleanValue
               chip
-              :value="detail.ttsAsset.isStaging"
-            />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.includeInRecommendedPodcast')">
-            <ABooleanValue
-              chip
-              :value="detail.ttsAsset.includeInRecommendedPodcast"
+              :value="detail.ttsAsset.staging"
             />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.voiceFamilyKeywordId')">
@@ -252,30 +203,8 @@ onMounted(async () => {
               —
             </template>
           </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetAutoPodcastId')">
-            <template v-if="detail.ttsAsset.autoPodcastId">
-              <CachedPodcastChip :id="detail.ttsAsset.autoPodcastId" />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetRecommendedPodcastId')">
-            <template v-if="detail.ttsAsset.recommendedPodcastId">
-              <CachedPodcastChip :id="detail.ttsAsset.recommendedPodcastId" />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
         </VCol>
         <VCol cols="4">
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetGeneratedAt')">
-            <ADatetime :date-time="detail.ttsAsset.generatedAt" />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLastRegeneratedAt')">
-            <ADatetime :date-time="detail.ttsAsset.lastRegeneratedAt" />
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetCreatedAt')">
             <ADatetime :date-time="detail.ttsAsset.createdAt" />
           </ARow>
@@ -290,9 +219,6 @@ onMounted(async () => {
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetExtId')">
             {{ detail.ttsAsset.extId }}
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetExtVersion')">
-            {{ detail.ttsAsset.extVersion }}
           </ARow>
         </VCol>
       </VRow>

@@ -81,7 +81,7 @@
       "externalVoiceId": "Externé ID hlasu",
       "assetStatus": "Stav",
       "assetFailureReason": "Dôvod zlyhania",
-      "assetIsStaging": "Staging",
+      "assetStaging": "Staging",
       "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
       "assetGeneratedAt": "Vygenerované",
       "assetLastRegeneratedAt": "Posledná regenerácia",

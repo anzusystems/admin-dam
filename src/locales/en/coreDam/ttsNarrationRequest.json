@@ -81,7 +81,7 @@
       "externalVoiceId": "External voice ID",
       "assetStatus": "Status",
       "assetFailureReason": "Failure reason",
-      "assetIsStaging": "Staging",
+      "assetStaging": "Staging",
       "includeInRecommendedPodcast": "Include in recommended podcast",
       "assetGeneratedAt": "Generated at",
       "assetLastRegeneratedAt": "Last regenerated at",

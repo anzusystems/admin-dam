@@ -57,7 +57,6 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
     { key: 'mode', title: t('coreDam.ttsNarrationRequest.model.mode') },
     { key: 'title', title: t('coreDam.ttsNarrationRequest.model.title') },
     { key: 'startedAt', title: t('coreDam.ttsNarrationRequest.model.startedAt') },
-    { key: 'finishedAt', title: t('coreDam.ttsNarrationRequest.model.finishedAt') },
     { key: 'createdAt', title: t('common.model.tracking.created') },
   ],
   datatableHiddenColumns,
@@ -117,9 +116,6 @@ defineExpose({
       </template>
       <template #item.startedAt="{ item }: { item: DatatableItem }">
         <ADatetime :date-time="item.startedAt" />
-      </template>
-      <template #item.finishedAt="{ item }: { item: DatatableItem }">
-        <ADatetime :date-time="item.finishedAt" />
       </template>
       <template #item.createdAt="{ item }: { item: DatatableItem }">
         <ADatetime :date-time="item.createdAt" />

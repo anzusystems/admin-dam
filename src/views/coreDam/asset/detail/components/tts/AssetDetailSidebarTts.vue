@@ -8,13 +8,9 @@ import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/T
 import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
 import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
-import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
-import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
 import CachedTtsNarrationRequestChip from '@/views/coreDam/ttsNarrationRequest/components/CachedTtsNarrationRequestChip.vue'
 import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 import { useCachedTtsNarrationRequests } from '@/views/coreDam/ttsNarrationRequest/composables/cachedTtsNarrationRequests'
 
 const props = defineProps<{
@@ -28,8 +24,6 @@ const detail = ref<TtsAssetDetail | null>(null)
 
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
-const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
-const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 const { addToCachedTtsNarrationRequests, fetchCachedTtsNarrationRequests } = useCachedTtsNarrationRequests()
 
 const load = async () => {
@@ -45,18 +39,11 @@ const load = async () => {
     if (tts) {
       if (tts.voiceFamilyId) addToCachedVoiceFamilies([tts.voiceFamilyId])
       if (tts.voiceFamilyKeywordId) addToCachedKeywords([tts.voiceFamilyKeywordId])
-      addToCachedAssetLicences([tts.assetLicenceId])
-      const podcastIds = [tts.autoPodcastId, tts.recommendedPodcastId].filter(
-        (id): id is string => id !== null && id !== undefined
-      )
-      if (podcastIds.length > 0) addToCachedPodcasts(podcastIds)
     }
 
     await Promise.all([
       fetchCachedVoiceFamilies(),
       fetchCachedKeywords(),
-      fetchCachedAssetLicences(),
-      fetchCachedPodcasts(),
       fetchCachedTtsNarrationRequests(),
     ])
   } finally {
@@ -97,28 +84,10 @@ watch(() => props.assetId, load, { immediate: true })
       <VoiceDiscriminatorChip :discriminator="detail.tts.discriminator" />
     </ARow>
     <ARow
-      v-if="detail.tts.assetLicenceId !== null"
-      :title="t('coreDam.asset.detail.tts.assetLicence')"
-    >
-      <CachedAssetLicenceChip :id="detail.tts.assetLicenceId" />
-    </ARow>
-    <ARow
       v-if="detail.tts.voiceFamilyKeywordId"
       :title="t('coreDam.asset.detail.tts.voiceFamilyKeyword')"
     >
       <CachedKeywordChip :id="detail.tts.voiceFamilyKeywordId" />
-    </ARow>
-    <ARow
-      v-if="detail.tts.autoPodcastId"
-      :title="t('coreDam.asset.detail.tts.autoPodcast')"
-    >
-      <CachedPodcastChip :id="detail.tts.autoPodcastId" />
-    </ARow>
-    <ARow
-      v-if="detail.tts.recommendedPodcastId"
-      :title="t('coreDam.asset.detail.tts.recommendedPodcast')"
-    >
-      <CachedPodcastChip :id="detail.tts.recommendedPodcastId" />
     </ARow>
     <ARow
       v-if="detail.tts.extResourceName"
@@ -131,11 +100,8 @@ watch(() => props.assetId, load, { immediate: true })
       :title="t('coreDam.asset.detail.tts.failureReason')"
       :value="detail.tts.failureReason"
     />
-    <ARow :title="t('coreDam.asset.detail.tts.generatedAt')">
-      <ADatetime :date-time="detail.tts.generatedAt" />
-    </ARow>
-    <ARow :title="t('coreDam.asset.detail.tts.lastRegeneratedAt')">
-      <ADatetime :date-time="detail.tts.lastRegeneratedAt" />
+    <ARow :title="t('coreDam.asset.detail.tts.createdAt')">
+      <ADatetime :date-time="detail.tts.createdAt" />
     </ARow>
     <ARow
       v-if="detail.lastRequestId"

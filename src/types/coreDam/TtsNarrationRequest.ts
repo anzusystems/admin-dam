@@ -10,26 +10,23 @@ export const TtsAudioStatus = {
 } as const
 export type TtsAudioStatus = (typeof TtsAudioStatus)[keyof typeof TtsAudioStatus]
 
+/**
+ * Snapshot of the generation moment for a TTS-produced Asset. Mirrors the bundle entity shape
+ * after simplify — derivable state lives on Asset / tenant config / PodcastEpisode / request
+ * audit, not here.
+ */
 export interface TtsAsset {
   assetId: DocId
   extResourceName: string | null
   extId: string | null
-  extVersion: string | null
-  assetLicenceId: IntegerId
-  voiceFamilySlug: string
   voiceFamilyId: DocId
   discriminator: VoiceDiscriminatorType
   externalVoiceId: string
   sourceTextHash: string
   sourceTextSnapshot: string
-  generatedAt: DatetimeUTCNullable
-  lastRegeneratedAt: DatetimeUTCNullable
   status: TtsAudioStatus
   failureReason: string | null
-  isStaging: boolean
-  includeInRecommendedPodcast: boolean
-  autoPodcastId: DocIdNullable
-  recommendedPodcastId: DocIdNullable
+  staging: boolean
   voiceFamilyKeywordId: DocIdNullable
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
@@ -63,13 +60,6 @@ export interface TtsNarrationRequestExtRef {
 
 export interface TtsNarrationRequestSource {
   text: string | null
-  hash: string | null
-}
-
-export interface TtsNarrationRequestPodcastOptions {
-  autoPodcastId: DocIdNullable
-  recommendedPodcastId: DocIdNullable
-  includeInRecommended: boolean
 }
 
 export interface TtsNarrationRequestMinimal {
@@ -82,7 +72,6 @@ export interface TtsNarrationRequest {
   status: TtsRequestStatus
   mode: TtsRequestMode
   startedAt: DatetimeUTCNullable
-  finishedAt: DatetimeUTCNullable
   failureReason: string | null
   openInitialKey: string | null
   stableAssetId: DocIdNullable
@@ -91,13 +80,13 @@ export interface TtsNarrationRequest {
   voiceFamilySlug: string | null
   title: string | null
   cancelRequested: boolean
+  includeInRecommended: boolean
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
   createdBy: IntegerIdNullable
   modifiedBy: IntegerIdNullable
   extRef: TtsNarrationRequestExtRef
   source: TtsNarrationRequestSource
-  podcastOptions: TtsNarrationRequestPodcastOptions
 }
 
 export const TtsSynthesizeStatus = {
