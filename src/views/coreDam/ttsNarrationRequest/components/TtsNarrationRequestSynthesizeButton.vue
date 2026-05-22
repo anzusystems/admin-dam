@@ -1,8 +1,19 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, AFormTextarea, ARow, useAlerts } from '@anzusystems/common-admin'
-import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
+import {
+  ADialogToolbar,
+  AFormTextarea,
+  ARow,
+  ASystemEntityScope,
+  DamAssetLicenceRemoteAutocomplete,
+  DamExtSystemRemoteAutocomplete,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
+import { ENTITY } from '@/services/api/coreDam/ttsNarrationRequestApi'
 import { useTtsNarrationRequestSynthesizeActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
   type TtsSynthesizeForm,
@@ -27,19 +38,28 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { showValidationError } = useAlerts()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { currentExtSystemId } = useCurrentExtSystem()
 const { synthesizeButtonLoading, synthesize } = useTtsNarrationRequestSynthesizeActions()
 
 const dialog = ref(false)
 const form = ref<TtsSynthesizeForm>({ text: '' })
+const extSystemId = ref<number | null>(null)
 const voiceFamilySlug = ref<string | null>(null)
+const assetLicenceId = ref<number | null>(null)
 const includeInRecommendedPodcast = ref(false)
 
 const { v$ } = useTtsNarrationRequestSynthesizeValidation(form)
 
+watch(extSystemId, () => {
+  voiceFamilySlug.value = null
+  assetLicenceId.value = null
+})
+
 const open = () => {
   form.value = { text: '' }
+  extSystemId.value = currentExtSystemId.value > 0 ? currentExtSystemId.value : null
   voiceFamilySlug.value = null
+  assetLicenceId.value = null
   includeInRecommendedPodcast.value = false
   v$.value.$reset()
   dialog.value = true
@@ -51,7 +71,7 @@ const close = () => {
 
 const onConfirm = async () => {
   v$.value.$touch()
-  if (v$.value.$invalid) {
+  if (v$.value.$invalid || extSystemId.value === null) {
     showValidationError()
     return
   }
@@ -59,7 +79,8 @@ const onConfirm = async () => {
     text: form.value.text,
     voiceFamilySlug: voiceFamilySlug.value,
     includeInRecommendedPodcast: includeInRecommendedPodcast.value,
-    assetLicence: currentAssetLicenceId.value,
+    extSystem: extSystemId.value,
+    assetLicence: assetLicenceId.value,
   })
   if (res !== null) {
     emit('onSuccess')
@@ -88,33 +109,59 @@ const onConfirm = async () => {
         {{ t('coreDam.ttsNarrationRequest.synthesize.title') }}
       </ADialogToolbar>
       <VCardText>
-        <ARow>
-          <AFormTextarea
-            v-model="form.text"
-            :label="t('coreDam.ttsNarrationRequest.synthesize.text')"
-            :placeholder="t('coreDam.ttsNarrationRequest.synthesize.textPlaceholder')"
-            :v="v$.form.text"
-            :rows="10"
-            required
-            data-cy="synthesize-text"
-          />
-        </ARow>
-        <ARow>
-          <VoiceFamilySelect
-            v-model="voiceFamilySlug"
-            allow-null
-            data-cy="synthesize-voice-family"
-          />
-        </ARow>
-        <ARow>
-          <VSwitch
-            v-model="includeInRecommendedPodcast"
-            class="pl-2"
-            :label="t('coreDam.ttsNarrationRequest.synthesize.includeInRecommendedPodcast')"
-            hide-details
-            data-cy="synthesize-include-recommended-podcast"
-          />
-        </ARow>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
+          <ARow>
+            <AFormTextarea
+              v-model="form.text"
+              :label="t('coreDam.ttsNarrationRequest.synthesize.text')"
+              :placeholder="t('coreDam.ttsNarrationRequest.synthesize.textPlaceholder')"
+              :v="v$.form.text"
+              :rows="10"
+              required
+              data-cy="synthesize-text"
+            />
+          </ARow>
+          <ARow>
+            <DamExtSystemRemoteAutocomplete
+              v-model="extSystemId"
+              :client="damClient"
+              :label="t('coreDam.ttsNarrationRequest.synthesize.extSystem')"
+              required
+              data-cy="synthesize-ext-system"
+            />
+          </ARow>
+          <ARow>
+            <VoiceFamilySelect
+              v-model="voiceFamilySlug"
+              :ext-system-id="extSystemId"
+              allow-null
+              data-cy="synthesize-voice-family"
+            />
+          </ARow>
+          <ARow>
+            <DamAssetLicenceRemoteAutocomplete
+              v-model="assetLicenceId"
+              :client="damClient"
+              :ext-system-id="extSystemId"
+              :label="t('coreDam.ttsNarrationRequest.synthesize.assetLicence')"
+              :disabled="extSystemId === null"
+              clearable
+              data-cy="synthesize-asset-licence"
+            />
+          </ARow>
+          <ARow>
+            <VSwitch
+              v-model="includeInRecommendedPodcast"
+              class="pl-2"
+              :label="t('coreDam.ttsNarrationRequest.synthesize.includeInRecommendedPodcast')"
+              hide-details
+              data-cy="synthesize-include-recommended-podcast"
+            />
+          </ARow>
+        </ASystemEntityScope>
       </VCardText>
       <VCardActions>
         <VSpacer />

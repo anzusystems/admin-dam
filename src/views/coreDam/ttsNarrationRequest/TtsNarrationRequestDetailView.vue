@@ -23,9 +23,11 @@ import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/T
 import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const route = useRoute()
@@ -36,6 +38,7 @@ const detail = ref<TtsNarrationRequestDetail | null>(null)
 
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
 
 onMounted(async () => {
@@ -49,11 +52,13 @@ onMounted(async () => {
 
       if (ttsAsset?.voiceFamilyKeywordId) addToCachedKeywords([ttsAsset.voiceFamilyKeywordId])
       if (request.assetLicenceId !== null) addToCachedAssetLicences([request.assetLicenceId])
+      addToCachedExtSystems([request.extSystemId])
       if (ttsAsset?.voiceFamilyId) addToCachedVoiceFamilies([ttsAsset.voiceFamilyId])
 
       await Promise.all([
         fetchCachedKeywords(),
         fetchCachedAssetLicences(),
+        fetchCachedExtSystems(),
         fetchCachedVoiceFamilies(),
       ])
     }
@@ -85,6 +90,9 @@ onMounted(async () => {
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.mode')">
             <TtsRequestModeChip :mode="detail.request.mode" />
+          </ARow>
+          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extSystemId')">
+            <CachedExtSystemChip :id="detail.request.extSystemId" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLicenceId')">
             <template v-if="detail.request.assetLicenceId !== null">

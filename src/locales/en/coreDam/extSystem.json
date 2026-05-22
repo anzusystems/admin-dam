@@ -17,6 +17,7 @@
     "recommendedPodcast": "Recommended Podcast",
     "activeProviderMode": "Active TTS Provider",
     "defaultVoiceFamily": "Default Voice Family",
+    "ttsDefaultAssetLicence": "Default Asset Licence (TTS fallback)",
     "modes": {
       "elevenlabs": "ElevenLabs",
       "google_tts": "Google TTS",

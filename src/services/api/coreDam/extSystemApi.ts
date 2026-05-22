@@ -1,11 +1,17 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamExtSystem, IntegerId } from '@anzusystems/common-admin'
+import type { DamExtSystem, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 import { apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import type { ExtSystem, ExtSystemTtsSettings } from '@/types/coreDam/ExtSystem'
 
 const END_POINT = '/adm/v1/ext-system'
 export const ENTITY = 'extSystem'
+
+// ttsDefaultAssetLicence is FK on ExtSystem entity (not in embed — Doctrine embeds can't hold associations),
+// but the update endpoint accepts it alongside ttsSettings fields.
+export interface ExtSystemTtsSettingsUpdatePayload extends ExtSystemTtsSettings {
+  ttsDefaultAssetLicence: IntegerIdNullable
+}
 
 export const updateExtSystem = (id: number, data: DamExtSystem) =>
   apiUpdateOne<DamExtSystem>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
@@ -13,8 +19,8 @@ export const updateExtSystem = (id: number, data: DamExtSystem) =>
 export const fetchExtSystem = (id: number) =>
   apiFetchOne<ExtSystem>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
-export const updateExtSystemTtsSettings = (extSystemId: IntegerId, data: ExtSystemTtsSettings) =>
-  apiUpdateOne<ExtSystemTtsSettings, ExtSystem>(
+export const updateExtSystemTtsSettings = (extSystemId: IntegerId, data: ExtSystemTtsSettingsUpdatePayload) =>
+  apiUpdateOne<ExtSystemTtsSettingsUpdatePayload, ExtSystem>(
     damClient,
     data,
     END_POINT + '/:extSystemId/tts-settings',

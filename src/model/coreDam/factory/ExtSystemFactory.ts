@@ -23,6 +23,7 @@ export function useExtSystemFactory() {
         activeProviderMode: TtsActiveProviderMode.Auto,
         defaultVoiceFamilyId: null,
       },
+      ttsDefaultAssetLicence: null,
     }
   }
 

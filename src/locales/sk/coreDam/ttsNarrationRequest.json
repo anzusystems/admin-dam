@@ -39,6 +39,9 @@
     "title": "Syntetizovať TTS audio",
     "text": "Text",
     "textPlaceholder": "Vložte text článku tu…",
+    "extSystem": "Externý systém",
+    "assetLicence": "Asset licencia",
+    "assetLicencePlaceholder": "Nechaj prázdne pre default ext-systému",
     "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
     "alreadyPending": "Rovnaký request už čaká — nový sa nevytvoril.",
     "alreadyExists": "Asset už bol vygenerovaný — nový request sa nevytvoril."
@@ -99,6 +102,7 @@
       "assetExtResourceName": "Ext názov zdroja",
       "assetExtId": "Ext ID",
       "assetExtVersion": "Ext verzia",
+      "extSystemId": "Externý systém",
       "assetLicenceId": "Asset licencia",
       "assetVoiceFamilyId": "Hlasová rodina"
     }

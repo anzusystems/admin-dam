@@ -1,12 +1,20 @@
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AFormValueObjectOptionsSelect, useAlerts, type ValueObjectOption } from '@anzusystems/common-admin'
-import { useCachedVoiceFamilies } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
+import {
+  AFormValueObjectOptionsSelect,
+  type IntegerId,
+  type IntegerIdNullable,
+  usePagination,
+  useAlerts,
+  type ValueObjectOption,
+} from '@anzusystems/common-admin'
+import { fetchVoiceFamilyListByExtSystem } from '@/services/api/coreDam/voiceFamilyApi'
+import type { VoiceFamily } from '@/types/coreDam/VoiceFamily'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | null
+    extSystemId: IntegerIdNullable
     label?: string
     allowNull?: boolean
     disabled?: boolean
@@ -20,42 +28,64 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | null): void
-}>()
+const modelValue = defineModel<string | null>({ required: true })
 
 const { t } = useI18n()
 const { showErrorsDefault } = useAlerts()
-const { voiceFamilies, loading, loadVoiceFamilies } = useCachedVoiceFamilies()
 
-onMounted(async () => {
+const loading = ref(false)
+const voiceFamilies = ref<VoiceFamily[]>([])
+let loadedForExtSystemId: IntegerId | null = null
+
+const loadForExtSystem = async (extSystemId: IntegerId) => {
+  if (loadedForExtSystemId === extSystemId) return
+  loading.value = true
   try {
-    await loadVoiceFamilies()
+    const pagination = usePagination('slug')
+    pagination.rowsPerPage = 200
+    voiceFamilies.value = await fetchVoiceFamilyListByExtSystem(extSystemId, pagination, {})
+    loadedForExtSystemId = extSystemId
   } catch (error) {
     showErrorsDefault(error)
+  } finally {
+    loading.value = false
   }
-})
+}
+
+watch(
+  () => props.extSystemId,
+  (newValue) => {
+    if (newValue === null) {
+      voiceFamilies.value = []
+      loadedForExtSystemId = null
+      return
+    }
+    loadForExtSystem(newValue)
+  },
+  { immediate: true }
+)
 
 const items = computed<ValueObjectOption<string | null>[]>(() => {
   const result: ValueObjectOption<string | null>[] = []
   if (props.allowNull) {
     result.push({ title: t('coreDam.ttsNarrationRequest.voiceFamilySelect.systemDefault'), value: null })
   }
-  voiceFamilies.value.forEach((f) => {
-    result.push({ title: `${f.slug} — ${f.displayName}`, value: f.slug })
+  voiceFamilies.value.forEach((family) => {
+    result.push({ title: `${family.slug} — ${family.displayName}`, value: family.slug })
   })
   return result
 })
+
+const disabledComputed = computed(() => props.disabled || props.extSystemId === null)
 </script>
 
 <template>
   <AFormValueObjectOptionsSelect
-    :model-value="modelValue"
+    v-model="modelValue"
     :items="items"
     :label="label ?? t('coreDam.ttsNarrationRequest.model.voiceFamilySlug')"
     :loading="loading"
-    :disabled="disabled"
+    :disabled="disabledComputed"
     :data-cy="dataCy"
-    @update:model-value="(val) => emit('update:modelValue', (val as string | null) ?? null)"
   />
 </template>

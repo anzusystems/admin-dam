@@ -39,6 +39,9 @@
     "title": "Synthesize TTS audio",
     "text": "Text",
     "textPlaceholder": "Paste the article text here…",
+    "extSystem": "Ext system",
+    "assetLicence": "Asset licence",
+    "assetLicencePlaceholder": "Leave empty to use ext-system default",
     "includeInRecommendedPodcast": "Include in recommended podcast",
     "alreadyPending": "An identical request is already pending — no new request was created.",
     "alreadyExists": "Asset already generated — no new request was created."
@@ -99,6 +102,7 @@
       "assetExtResourceName": "Ext resource name",
       "assetExtId": "Ext ID",
       "assetExtVersion": "Ext version",
+      "extSystemId": "Ext system",
       "assetLicenceId": "Asset licence",
       "assetVoiceFamilyId": "Voice family"
     }

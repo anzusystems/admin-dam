@@ -148,7 +148,10 @@ export const useExtSystemEditActions = () => {
   const onUpdateTtsSettings = async () => {
     ttsSettingsSaveButtonLoading.value = true
     try {
-      const updated = await updateExtSystemTtsSettings(extSystemOneStore.extSystem.id, extSystem.value.ttsSettings)
+      const updated = await updateExtSystemTtsSettings(extSystemOneStore.extSystem.id, {
+        ...extSystem.value.ttsSettings,
+        ttsDefaultAssetLicence: extSystem.value.ttsDefaultAssetLicence,
+      })
       extSystemOneStore.setExtSystem(updated)
       showRecordWas('updated')
     } catch (error) {

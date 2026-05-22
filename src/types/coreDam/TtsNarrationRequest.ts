@@ -76,6 +76,7 @@ export interface TtsNarrationRequest {
   openInitialKey: string | null
   stableAssetId: DocIdNullable
   resultAssetId: DocIdNullable
+  extSystemId: IntegerId
   assetLicenceId: IntegerIdNullable
   voiceFamilySlug: string | null
   title: string | null
@@ -107,7 +108,8 @@ export interface TtsSynthesizeRequest {
   text: string
   voiceFamilySlug: string | null
   includeInRecommendedPodcast: boolean
-  assetLicence: IntegerId
+  extSystem: IntegerId
+  assetLicence: IntegerId | null
 }
 
 export interface TtsSynthesizeResponse {
