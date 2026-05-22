@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useIntervalFn } from '@vueuse/core'
 import {
   AActionCloseButton,
   ABooleanValue,
@@ -10,10 +11,14 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
 import { fetchTtsNarrationRequest } from '@/services/api/coreDam/ttsNarrationRequestApi'
-import type { TtsNarrationRequestDetail } from '@/types/coreDam/TtsNarrationRequest'
+import {
+  IN_PROGRESS_TTS_REQUEST_STATUSES,
+  type TtsNarrationRequestDetail,
+} from '@/types/coreDam/TtsNarrationRequest'
 import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
@@ -32,6 +37,7 @@ import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composab
 
 const route = useRoute()
 const { t } = useI18n()
+const { showErrorsDefault } = useAlerts()
 
 const loading = ref(true)
 const detail = ref<TtsNarrationRequestDetail | null>(null)
@@ -40,6 +46,31 @@ const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
+
+const POLL_INTERVAL_MS = 5000
+
+const isInProgress = (): boolean =>
+  detail.value !== null && IN_PROGRESS_TTS_REQUEST_STATUSES.includes(detail.value.request.status)
+
+const refresh = async () => {
+  try {
+    const data = await fetchTtsNarrationRequest(route.params.id as string)
+    detail.value = data
+    if (data?.ttsAsset?.voiceFamilyId) {
+      addToCachedVoiceFamilies([data.ttsAsset.voiceFamilyId])
+      await fetchCachedVoiceFamilies()
+    }
+    if (!isInProgress()) pausePolling()
+  } catch (error) {
+    // Stop polling on error to avoid infinite retry on a persistent failure; show toast once.
+    pausePolling()
+    showErrorsDefault(error)
+  }
+}
+
+const { pause: pausePolling, resume: resumePolling } = useIntervalFn(refresh, POLL_INTERVAL_MS, {
+  immediate: false,
+})
 
 onMounted(async () => {
   loading.value = true
@@ -61,6 +92,8 @@ onMounted(async () => {
         fetchCachedExtSystems(),
         fetchCachedVoiceFamilies(),
       ])
+
+      if (isInProgress()) resumePolling()
     }
   } finally {
     loading.value = false

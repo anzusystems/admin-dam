@@ -16,6 +16,7 @@
   "status": {
     "waiting": "Waiting",
     "processing": "Processing",
+    "assembling": "Assembling",
     "done": "Done",
     "failed": "Failed",
     "cancelled": "Cancelled"
@@ -42,6 +43,8 @@
     "extSystem": "Ext system",
     "assetLicence": "Asset licence",
     "assetLicencePlaceholder": "Leave empty to use ext-system default",
+    "assetLicenceDefaultPlaceholder": "Default: {name}",
+    "estimatedDurationUnit": "min",
     "includeInRecommendedPodcast": "Include in recommended podcast",
     "alreadyPending": "An identical request is already pending — no new request was created.",
     "alreadyExists": "Asset already generated — no new request was created."

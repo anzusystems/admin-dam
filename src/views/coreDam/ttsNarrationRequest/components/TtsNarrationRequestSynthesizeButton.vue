@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   ADialogToolbar,
@@ -8,12 +8,15 @@ import {
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
+  type IntegerIdNullable,
   useAlerts,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/ttsNarrationRequestApi'
+import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
+import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useTtsNarrationRequestSynthesizeActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
   type TtsSynthesizeForm,
@@ -37,22 +40,57 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { showValidationError } = useAlerts()
+const { showValidationError, showErrorsDefault } = useAlerts()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { synthesizeButtonLoading, synthesize } = useTtsNarrationRequestSynthesizeActions()
 
 const dialog = ref(false)
 const form = ref<TtsSynthesizeForm>({ text: '' })
-const extSystemId = ref<number | null>(null)
+const extSystemId = ref<IntegerIdNullable>(null)
 const voiceFamilySlug = ref<string | null>(null)
-const assetLicenceId = ref<number | null>(null)
+const assetLicenceId = ref<IntegerIdNullable>(null)
 const includeInRecommendedPodcast = ref(false)
+const defaultAssetLicenceId = ref<IntegerIdNullable>(null)
 
 const { v$ } = useTtsNarrationRequestSynthesizeValidation(form)
+const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
 
-watch(extSystemId, () => {
+// Rough heuristic: ~14 chars/sec average speech rate across Slavic languages.
+const CHARS_PER_SECOND = 14
+const TEXT_MAX_LENGTH = 50_000
+
+const textLength = computed(() => form.value.text.length)
+const estimatedSeconds = computed(() => Math.ceil(textLength.value / CHARS_PER_SECOND))
+const estimatedDurationLabel = computed(() => {
+  if (textLength.value === 0) return ''
+  const min = Math.floor(estimatedSeconds.value / 60)
+  const sec = estimatedSeconds.value % 60
+  return `${min}:${sec.toString().padStart(2, '0')}`
+})
+
+const assetLicencePlaceholder = computed(() => {
+  if (defaultAssetLicenceId.value === null) return undefined
+  const cached = getCachedAssetLicence(defaultAssetLicenceId.value)
+  return cached?.name
+    ? t('coreDam.ttsNarrationRequest.synthesize.assetLicenceDefaultPlaceholder', { name: cached.name })
+    : undefined
+})
+
+watch(extSystemId, async (newId) => {
   voiceFamilySlug.value = null
   assetLicenceId.value = null
+  defaultAssetLicenceId.value = null
+  if (newId === null) return
+  try {
+    const ext = await fetchExtSystem(newId)
+    defaultAssetLicenceId.value = ext.ttsDefaultAssetLicence
+    if (ext.ttsDefaultAssetLicence !== null) {
+      addToCachedAssetLicences([ext.ttsDefaultAssetLicence])
+      await fetchCachedAssetLicences()
+    }
+  } catch (error) {
+    showErrorsDefault(error)
+  }
 })
 
 const open = () => {
@@ -60,6 +98,7 @@ const open = () => {
   extSystemId.value = currentExtSystemId.value > 0 ? currentExtSystemId.value : null
   voiceFamilySlug.value = null
   assetLicenceId.value = null
+  defaultAssetLicenceId.value = null
   includeInRecommendedPodcast.value = false
   v$.value.$reset()
   dialog.value = true
@@ -123,6 +162,15 @@ const onConfirm = async () => {
               required
               data-cy="synthesize-text"
             />
+            <div class="text-caption text-medium-emphasis d-flex justify-end mt-n4 mb-2 px-2">
+              <span>{{ textLength.toLocaleString() }} / {{ TEXT_MAX_LENGTH.toLocaleString() }}</span>
+              <span
+                v-if="estimatedDurationLabel"
+                class="ml-3"
+              >
+                ≈ {{ estimatedDurationLabel }} {{ t('coreDam.ttsNarrationRequest.synthesize.estimatedDurationUnit') }}
+              </span>
+            </div>
           </ARow>
           <ARow>
             <DamExtSystemRemoteAutocomplete
@@ -147,6 +195,7 @@ const onConfirm = async () => {
               :client="damClient"
               :ext-system-id="extSystemId"
               :label="t('coreDam.ttsNarrationRequest.synthesize.assetLicence')"
+              :placeholder="assetLicencePlaceholder"
               :disabled="extSystemId === null"
               clearable
               data-cy="synthesize-asset-licence"
