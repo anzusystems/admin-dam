@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep, type DocId, type DocIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, type DocId, type DocIdNullable } from '@anzusystems/common-admin'
 import { usePodcastSelectActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/model/coreDam/filter/PodcastFilter'
-import { computed } from 'vue'
 
-type ModelValue = DocIdNullable | DocId[]
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: ModelValue
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -25,18 +21,8 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: ModelValue): void
-}>()
 
-const modelValueComputed = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue: ModelValue) {
-    emit('update:modelValue', cloneDeep(newValue))
-  },
-})
+const modelValue = defineModel<DocIdNullable | DocId[]>({ required: true })
 
 const { fetchItems, fetchItemsByIds } = usePodcastSelectActions()
 
@@ -45,7 +31,7 @@ const innerFilter = usePodcastFilter()
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValueComputed"
+    v-model="modelValue"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"

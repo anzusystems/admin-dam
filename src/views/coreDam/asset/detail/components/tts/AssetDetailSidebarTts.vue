@@ -25,7 +25,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const { showSuccess, showErrorsDefault } = useAlerts()
+const { showSuccessT, showErrorsDefault } = useAlerts()
 
 const loading = ref(false)
 const saving = ref(false)
@@ -67,7 +67,7 @@ const savePodcasts = async () => {
   try {
     await updateTtsAssetPodcasts(props.assetId, editedPodcastIds.value)
     if (detail.value) detail.value.podcastIds = [...editedPodcastIds.value]
-    showSuccess(t('common.alerts.success.saved'))
+    showSuccessT('common.success.saved')
   } catch (error) {
     showErrorsDefault(error)
   } finally {
