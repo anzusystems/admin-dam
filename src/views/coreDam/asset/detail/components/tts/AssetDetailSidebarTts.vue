@@ -1,14 +1,21 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ACopyText, ADatetime, ARow, type DocId } from '@anzusystems/common-admin'
-import { fetchTtsAsset } from '@/services/api/coreDam/ttsAssetApi'
+import {
+  ACopyText,
+  ADatetime,
+  ARow,
+  type DocId,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import { fetchTtsAsset, updateTtsAssetPodcasts } from '@/services/api/coreDam/ttsAssetApi'
 import type { TtsAssetDetail } from '@/types/coreDam/TtsAsset'
 import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
 import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
 import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
 import CachedTtsNarrationRequestChip from '@/views/coreDam/ttsNarrationRequest/components/CachedTtsNarrationRequestChip.vue'
+import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedTtsNarrationRequests } from '@/views/coreDam/ttsNarrationRequest/composables/cachedTtsNarrationRequests'
@@ -18,9 +25,12 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const { showSuccess, showErrorsDefault } = useAlerts()
 
 const loading = ref(false)
+const saving = ref(false)
 const detail = ref<TtsAssetDetail | null>(null)
+const editedPodcastIds = ref<DocId[]>([])
 
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
@@ -31,6 +41,7 @@ const load = async () => {
   try {
     const data = await fetchTtsAsset(props.assetId)
     detail.value = data
+    editedPodcastIds.value = [...(data?.podcastIds ?? [])]
     if (!data) return
 
     if (data.lastRequestId) addToCachedTtsNarrationRequests([data.lastRequestId])
@@ -48,6 +59,19 @@ const load = async () => {
     ])
   } finally {
     loading.value = false
+  }
+}
+
+const savePodcasts = async () => {
+  saving.value = true
+  try {
+    await updateTtsAssetPodcasts(props.assetId, editedPodcastIds.value)
+    if (detail.value) detail.value.podcastIds = [...editedPodcastIds.value]
+    showSuccess(t('common.alerts.success.saved'))
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    saving.value = false
   }
 }
 
@@ -108,6 +132,22 @@ watch(() => props.assetId, load, { immediate: true })
       :title="t('coreDam.asset.detail.tts.sourceRequest')"
     >
       <CachedTtsNarrationRequestChip :id="detail.lastRequestId" />
+    </ARow>
+    <ARow :title="t('coreDam.asset.detail.tts.podcasts')">
+      <PodcastRemoteAutocomplete
+        v-model="editedPodcastIds"
+        multiple
+        clearable
+      />
+      <ABtnPrimary
+        class="mt-2"
+        :loading="saving"
+        :disabled="saving"
+        size="small"
+        @click.stop="savePodcasts"
+      >
+        {{ t('common.button.save') }}
+      </ABtnPrimary>
     </ARow>
   </div>
 </template>
