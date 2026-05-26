@@ -18,8 +18,6 @@ export function useExtSystemFactory() {
       _resourceName: ENTITY,
       _system: SYSTEM_CORE_DAM,
       ttsSettings: {
-        autoPodcastId: null,
-        recommendedPodcastId: null,
         activeProviderMode: TtsActiveProviderMode.Auto,
         defaultVoiceFamilyId: null,
       },

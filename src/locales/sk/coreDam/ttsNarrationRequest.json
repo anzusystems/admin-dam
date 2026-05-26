@@ -45,7 +45,6 @@
     "assetLicencePlaceholder": "Nechaj prázdne pre default ext-systému",
     "assetLicenceDefaultPlaceholder": "Default: {name}",
     "estimatedDurationUnit": "min",
-    "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
     "alreadyPending": "Rovnaký request už čaká — nový sa nevytvoril.",
     "alreadyExists": "Asset už bol vygenerovaný — nový request sa nevytvoril."
   },
@@ -88,7 +87,6 @@
       "assetStatus": "Stav",
       "assetFailureReason": "Dôvod zlyhania",
       "assetStaging": "Staging",
-      "includeInRecommendedPodcast": "Zaradiť do odporúčaného podcastu",
       "assetGeneratedAt": "Vygenerované",
       "assetLastRegeneratedAt": "Posledná regenerácia",
       "assetCreatedAt": "Vytvorené",

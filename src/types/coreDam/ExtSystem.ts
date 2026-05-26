@@ -2,8 +2,6 @@ import type { DamExtSystem, DocIdNullable, IntegerIdNullable } from '@anzusystem
 import type { TtsActiveProviderMode } from '@/types/coreDam/TtsActiveProviderMode'
 
 export interface ExtSystemTtsSettings {
-  autoPodcastId: DocIdNullable
-  recommendedPodcastId: DocIdNullable
   activeProviderMode: TtsActiveProviderMode
   defaultVoiceFamilyId: DocIdNullable
 }

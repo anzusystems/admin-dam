@@ -13,8 +13,6 @@
   },
   "ttsSettings": {
     "title": "TTS nastavenia",
-    "autoPodcast": "Auto podcast",
-    "recommendedPodcast": "Odporúčaný podcast",
     "activeProviderMode": "Aktívny TTS poskytovateľ",
     "defaultVoiceFamily": "Predvolená hlasová rodina",
     "ttsDefaultAssetLicence": "Predvolená Asset licencia (TTS fallback)",

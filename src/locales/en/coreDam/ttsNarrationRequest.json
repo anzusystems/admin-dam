@@ -45,7 +45,6 @@
     "assetLicencePlaceholder": "Leave empty to use ext-system default",
     "assetLicenceDefaultPlaceholder": "Default: {name}",
     "estimatedDurationUnit": "min",
-    "includeInRecommendedPodcast": "Include in recommended podcast",
     "alreadyPending": "An identical request is already pending — no new request was created.",
     "alreadyExists": "Asset already generated — no new request was created."
   },
@@ -88,7 +87,6 @@
       "assetStatus": "Status",
       "assetFailureReason": "Failure reason",
       "assetStaging": "Staging",
-      "includeInRecommendedPodcast": "Include in recommended podcast",
       "assetGeneratedAt": "Generated at",
       "assetLastRegeneratedAt": "Last regenerated at",
       "assetCreatedAt": "Created",

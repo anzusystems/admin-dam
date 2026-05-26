@@ -13,8 +13,6 @@
   },
   "ttsSettings": {
     "title": "TTS Settings",
-    "autoPodcast": "Auto Podcast",
-    "recommendedPodcast": "Recommended Podcast",
     "activeProviderMode": "Active TTS Provider",
     "defaultVoiceFamily": "Default Voice Family",
     "ttsDefaultAssetLicence": "Default Asset Licence (TTS fallback)",

@@ -12,7 +12,6 @@ import {
   DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
-import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 import VoiceFamilyRemoteAutocomplete from '@/views/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
 
 const { extSystem, ttsSettingsSaveButtonLoading, onUpdateTtsSettings } = useExtSystemEditActions()
@@ -41,22 +40,6 @@ const { t } = useI18n()
               item-title="title"
               item-value="value"
               data-cy="ext-system-tts-active-provider-mode"
-            />
-          </ARow>
-          <ARow>
-            <PodcastRemoteAutocomplete
-              v-model="extSystem.ttsSettings.autoPodcastId"
-              :label="t('coreDam.extSystem.ttsSettings.autoPodcast')"
-              clearable
-              data-cy="ext-system-tts-auto-podcast"
-            />
-          </ARow>
-          <ARow>
-            <PodcastRemoteAutocomplete
-              v-model="extSystem.ttsSettings.recommendedPodcastId"
-              :label="t('coreDam.extSystem.ttsSettings.recommendedPodcast')"
-              clearable
-              data-cy="ext-system-tts-recommended-podcast"
             />
           </ARow>
           <ARow>

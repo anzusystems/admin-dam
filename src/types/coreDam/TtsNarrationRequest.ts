@@ -114,7 +114,7 @@ export type TtsCancelRequestStatus = (typeof TtsCancelRequestStatus)[keyof typeo
 export interface TtsSynthesizeRequest {
   text: string
   voiceFamilySlug: string | null
-  includeInRecommendedPodcast: boolean
+  podcasts: DocId[]
   extSystem: IntegerId
   assetLicence: IntegerId | null
 }

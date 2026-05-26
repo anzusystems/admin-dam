@@ -49,7 +49,6 @@ const form = ref<TtsSynthesizeForm>({ text: '' })
 const extSystemId = ref<IntegerIdNullable>(null)
 const voiceFamilySlug = ref<string | null>(null)
 const assetLicenceId = ref<IntegerIdNullable>(null)
-const includeInRecommendedPodcast = ref(false)
 const defaultAssetLicenceId = ref<IntegerIdNullable>(null)
 
 const { v$ } = useTtsNarrationRequestSynthesizeValidation(form)
@@ -99,7 +98,6 @@ const open = () => {
   voiceFamilySlug.value = null
   assetLicenceId.value = null
   defaultAssetLicenceId.value = null
-  includeInRecommendedPodcast.value = false
   v$.value.$reset()
   dialog.value = true
 }
@@ -117,7 +115,7 @@ const onConfirm = async () => {
   const res = await synthesize({
     text: form.value.text,
     voiceFamilySlug: voiceFamilySlug.value,
-    includeInRecommendedPodcast: includeInRecommendedPodcast.value,
+    podcasts: [],
     extSystem: extSystemId.value,
     assetLicence: assetLicenceId.value,
   })
@@ -199,15 +197,6 @@ const onConfirm = async () => {
               :disabled="extSystemId === null"
               clearable
               data-cy="synthesize-asset-licence"
-            />
-          </ARow>
-          <ARow>
-            <VSwitch
-              v-model="includeInRecommendedPodcast"
-              class="pl-2"
-              :label="t('coreDam.ttsNarrationRequest.synthesize.includeInRecommendedPodcast')"
-              hide-details
-              data-cy="synthesize-include-recommended-podcast"
             />
           </ARow>
         </ASystemEntityScope>
