@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useAuthorCleanPhraseEditActions } from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
 import AuthorCleanPhraseEditForm from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -43,7 +42,7 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
       <AActionCloseButton
-        :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL"
+        :route-name="'/(coreDam)/author-clean-phrase/[id]'"
         :route-params="{ id: id }"
       />
     </template>

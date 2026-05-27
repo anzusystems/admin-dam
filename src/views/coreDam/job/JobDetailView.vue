@@ -9,7 +9,6 @@ import {
   stringToInt,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import { useJobDetailActions } from '@/views/coreDam/job/composables/jobActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import JobDetailPodcastSynchronizer from '@/views/coreDam/job/components/JobDetailPodcastSynchronizer.vue'
@@ -59,7 +58,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper>
     <template #buttons>
-      <AActionCloseButton :route-name="ROUTE.DAM.JOB.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/job'" />
     </template>
   </ActionbarWrapper>
 

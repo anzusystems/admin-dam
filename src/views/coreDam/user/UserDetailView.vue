@@ -4,7 +4,6 @@ import { useUserDetailActions } from '@/views/coreDam/user/composables/userActio
 import { useRoute } from 'vue-router'
 import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
@@ -33,7 +32,7 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.DAM.USER.EDIT"
+          :route-name="'/(coreDam)/user/[id]/edit'"
         />
         <AActionEditButton
           v-if="!detailLoading"
@@ -43,7 +42,7 @@ onBeforeUnmount(() => {
           button-t="coreDam.user.button.editPermissions"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.USER.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/user'" />
     </template>
   </ActionbarWrapper>
 

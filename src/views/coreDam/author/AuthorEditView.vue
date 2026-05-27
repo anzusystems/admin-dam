@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorEditForm from '@/views/coreDam/author/components/AuthorEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -35,7 +34,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/author'" />
     </template>
   </ActionbarWrapper>
 

@@ -13,7 +13,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategorySelectApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { useDistributionCategorySelectListActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
@@ -38,7 +37,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_READ)) {
-    router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/distribution-category-select/[id]', params: { id: item.id } })
   }
 }
 
@@ -96,13 +95,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.DETAIL"
+                :route-name="'/(coreDam)/distribution-category-select/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"
+                :route-name="'/(coreDam)/distribution-category-select/[id]/edit'"
               />
             </Acl>
           </div>

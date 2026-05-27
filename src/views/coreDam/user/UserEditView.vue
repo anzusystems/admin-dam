@@ -4,7 +4,6 @@ import UserEditForm from '@/views/coreDam/user/components/UserEditForm.vue'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
-import { ROUTE } from '@/router/routes'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -36,7 +35,7 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
 
-      <AActionCloseButton :route-name="ROUTE.DAM.USER.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/user'" />
     </template>
   </ActionbarWrapper>
 

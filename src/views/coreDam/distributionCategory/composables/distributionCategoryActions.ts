@@ -1,7 +1,6 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useDistributionCategorySelectListFilter } from '@/model/coreDam/filter/DistributionCategorySelectFilter'
-import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import {
   createDistributionCategory,
@@ -155,7 +154,7 @@ export const useDistributionCategoryCreateActions = () => {
       const res = await createDistributionCategory(distributionCategory.value)
       showRecordWas('created')
       if (successCallbackAction) successCallbackAction() // dialog.value = false
-      router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST, params: { id: res.id } })
+      router.push({ name: '/(coreDam)/distribution-category', params: { id: res.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -212,7 +211,7 @@ export const useDistributionCategoryEditActions = () => {
       await updateDistributionCategory(distributionCategoryOneStore.distributionCategory.id, distributionCategory.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST })
+      router.push({ name: '/(coreDam)/distribution-category' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

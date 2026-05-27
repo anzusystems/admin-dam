@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { IntegerId } from '@anzusystems/common-admin'
 import { ACachedChip } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 
 withDefaults(
@@ -18,7 +17,7 @@ const { getCachedExtSystem } = useCachedExtSystems()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedExtSystem"
-    :route="ROUTE.DAM.EXT_SYSTEM.DETAIL"
+    :route="'/(coreDam)/ext-system/[id]'"
     display-text-path="name"
   />
 </template>

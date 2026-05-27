@@ -13,7 +13,6 @@ import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAuthorCleanPhraseOneStore } from '@/stores/coreDam/authorCleanPhraseStore'
-import { ROUTE } from '@/router/routes'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -54,7 +53,7 @@ export const useAuthorCleanPhraseRemoveActions = () => {
     try {
       await deleteAuthorCleanPhrase(id)
       showRecordWas('updated')
-      router.push({ name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.LIST })
+      router.push({ name: '/(coreDam)/author-clean-phrase' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -128,7 +127,7 @@ export const useAuthorCleanPhraseEditActions = () => {
       showRecordWas('updated')
 
       router.push({
-        name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL,
+        name: '/(coreDam)/author-clean-phrase/[id]',
         params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
       })
     } catch (error) {

@@ -19,7 +19,6 @@ import { useUserOneStore } from '@/stores/coreDam/userStore'
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { damClient } from '@/services/api/clients/damClient'
@@ -121,7 +120,7 @@ export const useUserEditActions = () => {
       await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.USER.LIST })
+      router.push({ name: '/(coreDam)/user' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

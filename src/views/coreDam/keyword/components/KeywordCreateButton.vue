@@ -12,7 +12,6 @@ import {
   useAlerts,
   useDamKeywordFactory,
 } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createKeyword, ENTITY } from '@/services/api/coreDam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -83,7 +82,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: res.id } })
+      router.push({ name: '/(coreDam)/keyword/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

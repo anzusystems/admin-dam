@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useExtSystemEditActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemEditForm from '@/views/coreDam/extSystem/components/ExtSystemEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -35,7 +34,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/ext-system'" />
     </template>
   </ActionbarWrapper>
 

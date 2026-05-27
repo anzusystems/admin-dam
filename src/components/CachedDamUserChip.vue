@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, shallowRef, watch } from 'vue'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import {
   AAnzuUserAvatar,
@@ -37,7 +36,7 @@ const text = computed(() => {
 })
 
 const onClick = () => {
-  router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: props.id } })
+  router.push({ name: '/(coreDam)/user/[id]', params: { id: props.id } })
 }
 
 watch(

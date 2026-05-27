@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useDistributionCategoryEditActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryEditForm from '@/views/coreDam/distributionCategory/components/DistributionCategoryEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -42,7 +41,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/distribution-category'" />
     </template>
   </ActionbarWrapper>
 

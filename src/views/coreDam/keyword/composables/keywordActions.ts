@@ -7,7 +7,6 @@ import { storeToRefs } from 'pinia'
 import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -99,7 +98,7 @@ export const useKeywordEditActions = () => {
       await updateKeyword(keywordOneStore.keyword.id, keyword.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.KEYWORD.LIST })
+      router.push({ name: '/(coreDam)/keyword' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

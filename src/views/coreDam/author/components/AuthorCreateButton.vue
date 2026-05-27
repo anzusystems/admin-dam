@@ -14,7 +14,6 @@ import {
   useDamAuthorFactory,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createAuthor, ENTITY } from '@/services/api/coreDam/authorApi'
 import { useAuthorValidation } from '@/views/coreDam/author/composables/authorValidation'
@@ -85,7 +84,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: res.id } })
+      router.push({ name: '/(coreDam)/author/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

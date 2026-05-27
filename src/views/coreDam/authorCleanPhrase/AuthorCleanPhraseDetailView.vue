@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import {
   AActionCloseButton,
   AActionDeleteButton,
@@ -43,7 +42,7 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: id }"
-          :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.EDIT"
+          :route-name="'/(coreDam)/author-clean-phrase/[id]/edit'"
         />
       </Acl>
       <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
@@ -53,7 +52,7 @@ onBeforeUnmount(() => {
           @delete-record="removeAuthorCleanPhrase(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrase'" />
     </template>
   </ActionbarWrapper>
 

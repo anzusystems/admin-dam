@@ -43,7 +43,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.USER.LIST }"
+        :to="{ name: '/(coreDam)/user' }"
         prepend-icon="mdi-account-multiple"
         :title="t('sidebar.settings.users')"
         data-cy="user-settings"
@@ -51,7 +51,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_EXT_SYSTEM_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.EXT_SYSTEM.LIST }"
+        :to="{ name: '/(coreDam)/ext-system' }"
         prepend-icon="mdi-television-stop"
         :title="t('sidebar.settings.extSystems')"
         data-cy="ext-system-settings"
@@ -59,7 +59,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.ASSET_LICENCE.LIST }"
+        :to="{ name: '/(coreDam)/asset-licence' }"
         prepend-icon="mdi-account-key"
         :title="t('sidebar.settings.assetLicences')"
         data-cy="asset-licence-settings"
@@ -67,7 +67,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.ASSET_LICENCE_GROUP.LIST }"
+        :to="{ name: '/(coreDam)/asset-licence-group' }"
         prepend-icon="mdi-account-key"
         :title="t('sidebar.settings.assetLicenceGroups')"
         data-cy="asset-licence-group-settings"
@@ -75,7 +75,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.AUTHOR.LIST }"
+        :to="{ name: '/(coreDam)/author' }"
         prepend-icon="mdi-account-circle-outline"
         :title="t('sidebar.settings.authors')"
         data-cy="author-settings"
@@ -83,7 +83,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.KEYWORD.LIST }"
+        :to="{ name: '/(coreDam)/keyword' }"
         prepend-icon="mdi-file-key-outline"
         :title="t('sidebar.settings.keywords')"
         data-cy="keyword-settings"
@@ -91,7 +91,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST }"
+        :to="{ name: '/(coreDam)/distribution-category' }"
         prepend-icon="mdi-folder-edit"
         :title="t('sidebar.settings.distributionCategory')"
         data-cy="distribution-category-settings"
@@ -99,7 +99,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST }"
+        :to="{ name: '/(coreDam)/distribution-category-select' }"
         prepend-icon="mdi-form-dropdown"
         :title="t('sidebar.settings.distributionCategorySelect')"
         data-cy="distribution-category-select-settings"
@@ -124,7 +124,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.JOB.LIST }"
+        :to="{ name: '/(coreDam)/job' }"
         prepend-icon="mdi-file-cabinet"
         :title="t('sidebar.settings.job')"
         data-cy="job-settings"
@@ -132,7 +132,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.LIST }"
+        :to="{ name: '/(coreDam)/author-clean-phrase' }"
         prepend-icon="mdi-spray-bottle"
         :title="t('sidebar.settings.authorCleanPhrase')"
         data-cy="job-settings"
@@ -140,7 +140,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
       <VListItem
-        :to="{ name: ROUTE.DAM.PUBLIC_EXPORT.LIST }"
+        :to="{ name: '/(coreDam)/public-export' }"
         prepend-icon="mdi-export"
         :title="t('sidebar.settings.publicExport')"
         data-cy="public-export"

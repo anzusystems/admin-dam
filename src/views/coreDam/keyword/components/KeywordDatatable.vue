@@ -16,7 +16,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/keywordApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
@@ -38,7 +37,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_KEYWORD_READ)) {
-    router.push({ name: ROUTE.DAM.KEYWORD.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/keyword/[id]', params: { id: item.id } })
   }
 }
 
@@ -108,13 +107,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_KEYWORD_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.KEYWORD.DETAIL"
+                :route-name="'/(coreDam)/keyword/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.KEYWORD.EDIT"
+                :route-name="'/(coreDam)/keyword/[id]/edit'"
               />
             </Acl>
           </div>

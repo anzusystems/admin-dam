@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import {
   AActionCloseButton,
   AActionDeleteButton,
@@ -43,7 +42,7 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: id }"
-          :route-name="ROUTE.DAM.PUBLIC_EXPORT.EDIT"
+          :route-name="'/(coreDam)/public-export/[id]/edit'"
         />
       </Acl>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
@@ -53,7 +52,7 @@ onBeforeUnmount(() => {
           @delete-record="removePublicExport(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.PUBLIC_EXPORT.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/public-export'" />
     </template>
   </ActionbarWrapper>
 

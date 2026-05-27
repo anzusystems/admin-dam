@@ -67,7 +67,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.USER.LIST }"
+        :to="{ name: '/(coreDam)/user' }"
         prepend-icon="mdi-account-multiple"
         data-cy="user-settings"
       >
@@ -81,7 +81,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_EXT_SYSTEM_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.EXT_SYSTEM.LIST }"
+        :to="{ name: '/(coreDam)/ext-system' }"
         prepend-icon="mdi-television-stop"
         data-cy="ext-system-settings"
       >
@@ -95,7 +95,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.ASSET_LICENCE.LIST }"
+        :to="{ name: '/(coreDam)/asset-licence' }"
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-settings"
       >
@@ -109,7 +109,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.ASSET_LICENCE_GROUP.LIST }"
+        :to="{ name: '/(coreDam)/asset-licence-group' }"
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-group-settings"
       >
@@ -123,7 +123,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.AUTHOR.LIST }"
+        :to="{ name: '/(coreDam)/author' }"
         prepend-icon="mdi-account-circle-outline"
         data-cy="author-settings"
       >
@@ -137,7 +137,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.KEYWORD.LIST }"
+        :to="{ name: '/(coreDam)/keyword' }"
         prepend-icon="mdi-file-key-outline"
         data-cy="keyword-settings"
       >
@@ -151,7 +151,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.LIST }"
+        :to="{ name: '/(coreDam)/distribution-category' }"
         prepend-icon="mdi-folder-edit"
         data-cy="distribution-category-settings"
       >
@@ -165,7 +165,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST }"
+        :to="{ name: '/(coreDam)/distribution-category-select' }"
         prepend-icon="mdi-form-dropdown"
         data-cy="distribution-category-select-settings"
       >
@@ -208,7 +208,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.JOB.LIST }"
+        :to="{ name: '/(coreDam)/job' }"
         prepend-icon="mdi-file-cabinet"
         data-cy="job-settings"
       >

@@ -16,7 +16,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/userApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import UserFilter from '@/views/coreDam/user/components/UserFilter.vue'
 import { useUserListFilter } from '@/model/coreDam/filter/UserFilter'
@@ -38,7 +37,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_USER_READ)) {
-    router.push({ name: ROUTE.DAM.USER.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/user/[id]', params: { id: item.id } })
   }
 }
 
@@ -98,13 +97,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_USER_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.USER.DETAIL"
+                :route-name="'/(coreDam)/user/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.USER.EDIT"
+                :route-name="'/(coreDam)/user/[id]/edit'"
               />
             </Acl>
           </div>

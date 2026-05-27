@@ -15,7 +15,6 @@ import { storeToRefs } from 'pinia'
 import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import type { AxiosInstance } from 'axios'
 
@@ -135,7 +134,7 @@ export const useExtSystemEditActions = () => {
       await updateExtSystem(extSystemOneStore.extSystem.id, extSystem.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.EXT_SYSTEM.LIST })
+      router.push({ name: '/(coreDam)/ext-system' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

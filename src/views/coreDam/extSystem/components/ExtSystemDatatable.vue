@@ -15,7 +15,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useExtSystemListFilter } from '@/model/coreDam/filter/ExtSystemFilter'
 import { useExtSystemListActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
@@ -33,7 +32,7 @@ const { fetchList, listItems, datatableHiddenColumns } = useExtSystemListActions
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
-    router.push({ name: ROUTE.DAM.EXT_SYSTEM.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/ext-system/[id]', params: { id: item.id } })
   }
 }
 
@@ -97,13 +96,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_EXT_SYSTEM_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.EXT_SYSTEM.DETAIL"
+                :route-name="'/(coreDam)/ext-system/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT"
+                :route-name="'/(coreDam)/ext-system/[id]/edit'"
               />
             </Acl>
           </div>

@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useKeywordDetailActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import KeywordDetail from '@/views/coreDam/keyword/components/KeywordDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -33,10 +32,10 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.DAM.KEYWORD.EDIT"
+          :route-name="'/(coreDam)/keyword/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.KEYWORD.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/keyword'" />
     </template>
   </ActionbarWrapper>
 

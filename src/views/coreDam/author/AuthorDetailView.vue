@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useAuthorDetailActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorDetail from '@/views/coreDam/author/components/AuthorDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -33,10 +32,10 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.DAM.AUTHOR.EDIT"
+          :route-name="'/(coreDam)/author/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.AUTHOR.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/author'" />
     </template>
   </ActionbarWrapper>
 

@@ -9,53 +9,6 @@ const routes = {
       DETAIL: 'asset_detail',
       FILE_DETAIL: 'asset_fileDetail',
     },
-    EXTERNAL_PROVIDER: {
-      LIST: 'external_provider_list',
-    },
-    USER: {
-      LIST: 'user_list',
-      DETAIL: 'user_detail',
-      EDIT: 'user_edit',
-    },
-    EXT_SYSTEM: {
-      LIST: 'extSystem_list',
-      DETAIL: 'extSystem_detail',
-      EDIT: 'extSystem_edit',
-    },
-    JOB: {
-      LIST: 'job_list',
-      DETAIL: 'job_detail',
-    },
-    ASSET_LICENCE: {
-      LIST: 'assetLicence_list',
-      DETAIL: 'assetLicence_detail',
-      EDIT: 'assetLicence_edit',
-    },
-    ASSET_LICENCE_GROUP: {
-      LIST: 'assetLicenceGroup_list',
-      DETAIL: 'assetLicenceGroup_detail',
-      EDIT: 'assetLicenceGroup_edit',
-    },
-    AUTHOR: {
-      LIST: 'author_list',
-      DETAIL: 'author_detail',
-      EDIT: 'author_edit',
-    },
-    KEYWORD: {
-      LIST: 'keyword_list',
-      DETAIL: 'keyword_detail',
-      EDIT: 'keyword_edit',
-    },
-    DISTRIBUTION_CATEGORY: {
-      LIST: 'distributionCategory_list',
-      DETAIL: 'distributionCategory_detail',
-      EDIT: 'distributionCategory_edit',
-    },
-    DISTRIBUTION_CATEGORY_SELECT: {
-      LIST: 'distributionCategorySelect_list',
-      DETAIL: 'distributionCategorySelect_detail',
-      EDIT: 'distributionCategorySelect_edit',
-    },
     PODCAST: {
       LIST: 'podcast_list',
       DETAIL: 'podcast_detail',
@@ -73,16 +26,6 @@ const routes = {
     VIDEO_SHOW_EPISODE: {
       DETAIL: 'videoShowEpisode_detail',
       EDIT: 'videoShowEpisode_edit',
-    },
-    AUTHOR_CLEAN_PHRASE: {
-      DETAIL: 'authorCleanPhrase_detail',
-      EDIT: 'authorCleanPhrase_edit',
-      LIST: 'authorCleanPhrase_list',
-    },
-    PUBLIC_EXPORT: {
-      DETAIL: 'publicExport_detail',
-      EDIT: 'publicExport_edit',
-      LIST: 'publicExport_list',
     },
   },
 }

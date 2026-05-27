@@ -7,7 +7,6 @@ import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtS
 import ExternalProviderAssetChip from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
 import DistributionServiceChip from '@/views/coreDam/distribution/components/DistributionServiceChip.vue'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
-import { ROUTE } from '@/router/routes'
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 
 const { user, userAssetLicenceGroups } = storeToRefs(useUserOneStore())
@@ -26,7 +25,7 @@ const { t } = useI18n()
           label
           size="small"
           class="mr-1"
-          :to="{ name: ROUTE.DAM.ASSET_LICENCE_GROUP.DETAIL, params: { id: userAssetLicenceGroup.id } }"
+          :to="{ name: '/(coreDam)/asset-licence-group/[id]', params: { id: userAssetLicenceGroup.id } }"
         >
           {{ userAssetLicenceGroup.name }}
         </VChip>

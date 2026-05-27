@@ -12,7 +12,6 @@ import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { usePublicExportOneStore } from '@/stores/coreDam/publicExportStore'
-import { ROUTE } from '@/router/routes'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -58,7 +57,7 @@ export const usePublicExportRemoveActions = () => {
     try {
       await deletePublicExport(id)
       showRecordWas('updated')
-      router.push({ name: ROUTE.DAM.PUBLIC_EXPORT.LIST })
+      router.push({ name: '/(coreDam)/public-export' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -133,7 +132,7 @@ export const usePublicExportEditActions = () => {
       showRecordWas('updated')
 
       router.push({
-        name: ROUTE.DAM.PUBLIC_EXPORT.DETAIL,
+        name: '/(coreDam)/public-export/[id]',
         params: { id: publicExportOneStore.publicExport.id },
       })
     } catch (error) {

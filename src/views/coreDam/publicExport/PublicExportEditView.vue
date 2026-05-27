@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { usePublicExportEditActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import PublicExportEditForm from '@/views/coreDam/publicExport/components/PublicExportEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -36,7 +35,7 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
       <AActionCloseButton
-        :route-name="ROUTE.DAM.PUBLIC_EXPORT.DETAIL"
+        :route-name="'/(coreDam)/public-export/[id]'"
         :route-params="{ id: id }"
       />
     </template>

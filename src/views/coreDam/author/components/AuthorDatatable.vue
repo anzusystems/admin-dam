@@ -16,7 +16,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
@@ -36,7 +35,7 @@ const getList = () => {
 }
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: ROUTE.DAM.AUTHOR.DETAIL, params: { id: item.id } })
+  router.push({ name: '/(coreDam)/author/[id]', params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -111,12 +110,12 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :record-id="item.id"
-              :route-name="ROUTE.DAM.AUTHOR.DETAIL"
+              :route-name="'/(coreDam)/author/[id]'"
             />
             <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.AUTHOR.EDIT"
+                :route-name="'/(coreDam)/author/[id]/edit'"
               />
             </Acl>
           </div>

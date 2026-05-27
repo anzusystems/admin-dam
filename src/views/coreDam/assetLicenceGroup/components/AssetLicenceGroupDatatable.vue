@@ -15,7 +15,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceGroupApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupFilter from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupFilter.vue'
@@ -39,7 +38,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_ASSET_LICENCE_GROUP_READ))
-    router.push({ name: ROUTE.DAM.ASSET_LICENCE_GROUP.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/asset-licence-group/[id]', params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -119,13 +118,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.ASSET_LICENCE_GROUP.DETAIL"
+                :route-name="'/(coreDam)/asset-licence-group/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.ASSET_LICENCE_GROUP.EDIT"
+                :route-name="'/(coreDam)/asset-licence-group/[id]/edit'"
               />
             </Acl>
           </div>

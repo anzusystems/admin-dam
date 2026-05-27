@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia'
 import { fetchAssetLicenceGroup, updateAssetLicenceGroup } from '@/services/api/coreDam/assetLicenceGroupApi'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { damClient } from '@/services/api/clients/damClient'
@@ -110,7 +109,7 @@ export const useAssetLicenceGroupEditActions = () => {
       await updateAssetLicenceGroup(assetLicenceGroupOneStore.assetLicenceGroup.id, assetLicenceGroup.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.ASSET_LICENCE.LIST })
+      router.push({ name: '/(coreDam)/asset-licence' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

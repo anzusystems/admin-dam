@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useAssetLicenceEditActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceEditForm from '@/views/coreDam/assetLicence/components/AssetLicenceEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -35,7 +34,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="ROUTE.DAM.ASSET_LICENCE.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/asset-licence'" />
     </template>
   </ActionbarWrapper>
 

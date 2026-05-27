@@ -2,7 +2,6 @@
 import { ACL, useAuth } from '@/composables/auth/auth'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ROUTE } from '@/router/routes'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import DistributionCategoryFilter from '@/views/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
@@ -51,7 +50,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_READ)) {
-    router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/distribution-category/[id]', params: { id: item.id } })
   }
 }
 
@@ -130,13 +129,13 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.DETAIL"
+                :route-name="'/(coreDam)/distribution-category/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY.EDIT"
+                :route-name="'/(coreDam)/distribution-category/[id]/edit'"
               />
             </Acl>
           </div>

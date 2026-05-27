@@ -11,7 +11,6 @@ import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCat
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { ROUTE } from '@/router/routes'
 import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
 const { showValidationError, showRecordWas, showErrorsDefault, showApiValidationError } = useAlerts()
@@ -104,7 +103,7 @@ export const useDistributionCategorySelectEditActions = () => {
       )
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST })
+      router.push({ name: '/(coreDam)/distribution-category-select' })
     } catch (error) {
       if (isAnzuApiValidationError(error)) {
         const updatedErrors = new Map<string, string[]>()

@@ -5,7 +5,6 @@ import { fetchAuthor, fetchAuthorList, fetchAuthorListByIds, updateAuthor } from
 import { storeToRefs } from 'pinia'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useAuthorOneStore } from '@/stores/coreDam/authorStore'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
@@ -119,7 +118,7 @@ export const useAuthorEditActions = () => {
       await updateAuthor(authorOneStore.author.id, author.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.AUTHOR.LIST })
+      router.push({ name: '/(coreDam)/author' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

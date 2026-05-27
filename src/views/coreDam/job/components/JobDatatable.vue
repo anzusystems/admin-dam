@@ -2,7 +2,6 @@
 import { useRouter } from 'vue-router'
 import { useJobListFilter } from '@/model/coreDam/filter/JobFilter'
 import { useJobListActions } from '@/views/coreDam/job/composables/jobActions'
-import { ROUTE } from '@/router/routes'
 import { onMounted } from 'vue'
 import JobFilter from '@/views/coreDam/job/components/JobFilter.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -38,7 +37,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_JOB_READ)) {
-    router.push({ name: ROUTE.DAM.JOB.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/job/[id]', params: { id: item.id } })
   }
 }
 
@@ -122,7 +121,7 @@ defineExpose({
             <Acl :permission="ACL.DAM_JOB_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.DAM.JOB.DETAIL"
+                :route-name="'/(coreDam)/job/[id]'"
               />
             </Acl>
           </div>

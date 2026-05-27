@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import ExtSystemDetail from '@/views/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -33,10 +32,10 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.DAM.EXT_SYSTEM.EDIT"
+          :route-name="'/(coreDam)/ext-system/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.EXT_SYSTEM.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/ext-system'" />
     </template>
   </ActionbarWrapper>
 

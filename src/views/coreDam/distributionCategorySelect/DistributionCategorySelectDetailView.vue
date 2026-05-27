@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useDistributionCategorySelectDetailActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import DistributionCategorySelectDetail from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -34,10 +33,10 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.EDIT"
+          :route-name="'/(coreDam)/distribution-category-select/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.DISTRIBUTION_CATEGORY_SELECT.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/distribution-category-select'" />
     </template>
   </ActionbarWrapper>
 

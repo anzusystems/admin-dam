@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import { useAssetLicenceGroupDetailActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupDetail from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -33,10 +32,10 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.DAM.ASSET_LICENCE_GROUP.EDIT"
+          :route-name="'/(coreDam)/asset-licence-group/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.ASSET_LICENCE_GROUP.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/asset-licence-group'" />
     </template>
   </ActionbarWrapper>
 

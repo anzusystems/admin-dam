@@ -12,7 +12,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/publicExportApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import PublicExportFilter from '@/views/coreDam/publicExport/components/PublicExportFilter.vue'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
@@ -31,7 +30,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = usePublicExportListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: ROUTE.DAM.PUBLIC_EXPORT.DETAIL, params: { id: item.id } })
+  router.push({ name: '/(coreDam)/public-export/[id]', params: { id: item.id } })
 }
 
 const getList = () => {
@@ -104,13 +103,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_PUBLIC_EXPORT_READ">
               <ATableDetailButton
                 :route-params="{ id: item.id }"
-                :route-name="ROUTE.DAM.PUBLIC_EXPORT.DETAIL"
+                :route-name="'/(coreDam)/public-export/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
               <ATableEditButton
                 :route-params="{ id: item.id }"
-                :route-name="ROUTE.DAM.PUBLIC_EXPORT.EDIT"
+                :route-name="'/(coreDam)/public-export/[id]/edit'"
               />
             </Acl>
           </div>

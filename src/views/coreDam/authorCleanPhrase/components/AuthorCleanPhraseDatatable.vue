@@ -12,7 +12,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/AuthorCleanPhraseApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import AuthorCleanPhraseFilter from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
@@ -31,7 +30,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = useAuthorCleanPhraseListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL, params: { id: item.id } })
+  router.push({ name: '/(coreDam)/author-clean-phrase/[id]', params: { id: item.id } })
 }
 
 const getList = () => {
@@ -97,13 +96,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
               <ATableDetailButton
                 :route-params="{ id: item.id }"
-                :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.DETAIL"
+                :route-name="'/(coreDam)/author-clean-phrase/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
               <ATableEditButton
                 :route-params="{ id: item.id }"
-                :route-name="ROUTE.DAM.AUTHOR_CLEAN_PHRASE.EDIT"
+                :route-name="'/(coreDam)/author-clean-phrase/[id]/edit'"
               />
             </Acl>
           </div>
