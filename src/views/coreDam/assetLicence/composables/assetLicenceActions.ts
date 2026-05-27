@@ -98,7 +98,7 @@ export const useAssetLicenceEditActions = () => {
       await updateAssetLicence(assetLicenceOneStore.assetLicence.id, assetLicence.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/asset-licence' })
+      router.push({ name: '/(coreDam)/asset-licences' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

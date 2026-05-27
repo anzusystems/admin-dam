@@ -15,10 +15,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrase' },
+    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrases' },
     {
       title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.detail'),
-      routeName: '/(coreDam)/author-clean-phrase/[id]',
+      routeName: '/(coreDam)/author-clean-phrases/[id]',
     },
   ])
 )
@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: id }"
-          :route-name="'/(coreDam)/author-clean-phrase/[id]/edit'"
+          :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
         />
       </Acl>
       <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
@@ -56,7 +56,7 @@ onBeforeUnmount(() => {
           @delete-record="removeAuthorCleanPhrase(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrase'" />
+      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrases'" />
     </template>
   </ActionbarWrapper>
 

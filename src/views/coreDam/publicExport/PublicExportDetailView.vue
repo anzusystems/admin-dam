@@ -15,10 +15,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-export' },
+    { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
     {
       title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.detail'),
-      routeName: '/(coreDam)/public-export/[id]',
+      routeName: '/(coreDam)/public-exports/[id]',
     },
   ])
 )
@@ -46,13 +46,13 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: id }"
-          :route-name="'/(coreDam)/public-export/[id]/edit'"
+          :route-name="'/(coreDam)/public-exports/[id]/edit'"
         />
       </Acl>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
         <AActionDeleteButton v-if="!detailLoading" data-cy="button-delete" @delete-record="removePublicExport(id)" />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/public-export'" />
+      <AActionCloseButton :route-name="'/(coreDam)/public-exports'" />
     </template>
   </ActionbarWrapper>
 

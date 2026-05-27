@@ -39,7 +39,7 @@ watch(
 
 const href = computed(() => {
   if (!image.value) return undefined
-  return router.resolve({ name: '/(coreDam)/asset/[id]', params: { id: image.value.asset } }).href
+  return router.resolve({ name: '/(coreDam)/assets/[id]', params: { id: image.value.asset } }).href
 })
 </script>
 

@@ -28,7 +28,7 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-category' },
+    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
   ])
 )
 </script>

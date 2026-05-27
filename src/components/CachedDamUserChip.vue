@@ -28,7 +28,7 @@ const text = computed(() => {
 
 const onClick = () => {
   if (!props.id) return
-  router.push({ name: '/(coreDam)/user/[id]', params: { id: String(props.id) } })
+  router.push({ name: '/(coreDam)/users/[id]', params: { id: String(props.id) } })
 }
 
 watch(

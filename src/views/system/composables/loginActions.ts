@@ -13,7 +13,7 @@ export const useSimpleLoginActions = () => {
   const onLogin = async () => {
     try {
       await login(simpleLoginForm.value)
-      router.push({ name: '/(coreDam)/asset' })
+      router.push({ name: '/(coreDam)/assets' })
     } catch (error) {
       // todo check for possible errors and display correct one
       showErrorT('auth.simpleLogin.alerts.failure')

@@ -15,10 +15,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-group' },
+    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
     {
       title: t('breadcrumb.permissionGroup.edit'),
-      routeName: '/(common)/permission-group/[id]/edit',
+      routeName: '/(common)/permission-groups/[id]/edit',
     },
   ])
 )
@@ -40,7 +40,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton :loading="saveButtonLoading" @save-record="updatePermissionGroup" />
-      <AActionCloseButton :route-name="'/(common)/permission-group'" />
+      <AActionCloseButton :route-name="'/(common)/permission-groups'" />
     </template>
   </ActionbarWrapper>
 

@@ -17,7 +17,7 @@ const afterCreate = () => {
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-export' }])
+  computed(() => [{ title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' }])
 )
 </script>
 

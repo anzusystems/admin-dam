@@ -16,7 +16,7 @@ const { getCachedVideoShow } = useCachedVideoShows()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedVideoShow"
-    :route="'/(coreDam)/video-show/[id]'"
+    :route="'/(coreDam)/video-shows/[id]'"
     display-text-path="title"
   />
 </template>

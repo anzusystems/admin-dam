@@ -99,7 +99,7 @@ export const useDistributionCategorySelectEditActions = () => {
       )
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/distribution-category-select' })
+      router.push({ name: '/(coreDam)/distribution-category-selects' })
     } catch (error) {
       if (isAnzuApiValidationError(error)) {
         const updatedErrors = new Map<string, string[]>()

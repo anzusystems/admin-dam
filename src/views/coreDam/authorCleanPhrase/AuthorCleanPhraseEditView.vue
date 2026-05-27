@@ -21,10 +21,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrase' },
+    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrases' },
     {
       title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.edit'),
-      routeName: '/(coreDam)/author-clean-phrase/[id]/edit',
+      routeName: '/(coreDam)/author-clean-phrases/[id]/edit',
     },
   ])
 )
@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrase/[id]'" :route-params="{ id: id }" />
+      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrases/[id]'" :route-params="{ id: id }" />
     </template>
   </ActionbarWrapper>
 

@@ -96,7 +96,7 @@ export const useVideoShowEditActions = () => {
       await updateVideoShow(videoShowOneStore.videoShow.id, videoShow.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/video-show' })
+      router.push({ name: '/(coreDam)/video-shows' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

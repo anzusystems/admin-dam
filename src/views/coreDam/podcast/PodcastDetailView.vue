@@ -46,10 +46,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcast' },
+    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
     {
       title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.detail'),
-      routeName: '/(coreDam)/podcast/[id]',
+      routeName: '/(coreDam)/podcasts/[id]',
       routeParams: { id: podcastId },
     },
   ])
@@ -82,10 +82,10 @@ const afterPodcastEpisodeCreate = () => {
           v-show="activeTab === PodcastDetailTab.Detail"
           v-if="!detailLoading"
           :record-id="podcastId"
-          :route-name="'/(coreDam)/podcast/[id]/edit'"
+          :route-name="'/(coreDam)/podcasts/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/podcast'" />
+      <AActionCloseButton :route-name="'/(coreDam)/podcasts'" />
     </template>
   </ActionbarWrapper>
 

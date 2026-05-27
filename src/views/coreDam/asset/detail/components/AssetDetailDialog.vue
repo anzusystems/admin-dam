@@ -37,7 +37,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset' })
+  browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
 }
 
 const postDelete = (data: DocId) => {

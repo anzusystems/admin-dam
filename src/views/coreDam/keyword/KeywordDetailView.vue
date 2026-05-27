@@ -11,10 +11,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keyword' },
+    { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' },
     {
       title: keyword.value.name || t('breadcrumb.coreDam.keyword.detail'),
-      routeName: '/(coreDam)/keyword/[id]',
+      routeName: '/(coreDam)/keywords/[id]',
     },
   ])
 )
@@ -39,9 +39,9 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
-        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/keyword/[id]/edit'" />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/keywords/[id]/edit'" />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/keyword'" />
+      <AActionCloseButton :route-name="'/(coreDam)/keywords'" />
     </template>
   </ActionbarWrapper>
 

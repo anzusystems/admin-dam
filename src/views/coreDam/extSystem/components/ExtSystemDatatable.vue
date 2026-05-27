@@ -30,7 +30,7 @@ const { fetchList, listItems, datatableHiddenColumns } = useExtSystemListActions
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
-    router.push({ name: '/(coreDam)/ext-system/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/ext-systems/[id]', params: { id: item.id } })
   }
 }
 
@@ -89,10 +89,10 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_EXT_SYSTEM_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/ext-system/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/ext-systems/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/ext-system/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/ext-systems/[id]/edit'" />
             </Acl>
           </div>
         </template>

@@ -127,7 +127,7 @@ export const useExtSystemEditActions = () => {
       await updateExtSystem(extSystemOneStore.extSystem.id, extSystem.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/ext-system' })
+      router.push({ name: '/(coreDam)/ext-systems' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

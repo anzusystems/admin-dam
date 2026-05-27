@@ -12,7 +12,7 @@ const breadcrumbs = defineBreadcrumbs(
   computed(() => [
     {
       title: t('breadcrumb.coreDam.distributionCategorySelect.list'),
-      routeName: '/(coreDam)/distribution-category-select',
+      routeName: '/(coreDam)/distribution-category-selects',
     },
   ])
 )

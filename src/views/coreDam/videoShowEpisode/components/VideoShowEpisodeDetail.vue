@@ -16,7 +16,7 @@ const router = useRouter()
 
 const onAssetChipClick = () => {
   if (!videoShowEpisode.value.asset) return
-  router.push({ name: '/(coreDam)/asset/[id]', params: { id: videoShowEpisode.value.asset } })
+  router.push({ name: '/(coreDam)/assets/[id]', params: { id: videoShowEpisode.value.asset } })
 }
 </script>
 

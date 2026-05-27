@@ -33,7 +33,7 @@ const getList = () => {
 }
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: '/(coreDam)/author/[id]', params: { id: item.id } })
+  router.push({ name: '/(coreDam)/authors/[id]', params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -100,9 +100,9 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/author/[id]'" />
+            <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/authors/[id]'" />
             <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/author/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/authors/[id]/edit'" />
             </Acl>
           </div>
         </template>

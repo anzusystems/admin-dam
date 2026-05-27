@@ -60,7 +60,7 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     return '/unauthorized'
   } else if (to.path === '/') {
     initialized.value = true
-    return { name: '/(coreDam)/asset' }
+    return { name: '/(coreDam)/assets' }
   } else {
     initialized.value = true
     return await checkAbility(to)
@@ -85,13 +85,13 @@ export function useAppInitialize() {
 }
 
 function getInitCurrentExtSystemAndLicenceConfig(to: RouteLocationNormalized, id: string | undefined) {
-  if (to.name === '/(coreDam)/asset/[id]') {
+  if (to.name === '/(coreDam)/assets/[id]') {
     return {
       type: 'assetId' as const,
       id,
     }
   }
-  if (to.name === '/(coreDam)/asset/file/[id]') {
+  if (to.name === '/(coreDam)/assets/file/[id]') {
     return {
       type: 'assetFileId' as const,
       id,

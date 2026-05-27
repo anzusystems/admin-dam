@@ -94,7 +94,7 @@ export const useKeywordEditActions = () => {
       await updateKeyword(keywordOneStore.keyword.id, keyword.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/keyword' })
+      router.push({ name: '/(coreDam)/keywords' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

@@ -6,7 +6,7 @@ const { t } = useI18n()
 
 <template>
   <VList density="compact" nav color="primary">
-    <VListItem :to="{ name: '/(coreDam)/asset' }" prepend-icon="mdi-home">
+    <VListItem :to="{ name: '/(coreDam)/assets' }" prepend-icon="mdi-home">
       <VTooltip location="right" activator="parent">
         {{ t('sidebar.settings.backToAssets') }}
       </VTooltip>
@@ -18,21 +18,21 @@ const { t } = useI18n()
       </VTooltip>
     </VListItem>
     <Acl :permission="ACL.DAM_PODCAST_UI">
-      <VListItem :to="{ name: '/(coreDam)/podcast' }" prepend-icon="mdi-podcast" data-cy="podcast-settings">
+      <VListItem :to="{ name: '/(coreDam)/podcasts' }" prepend-icon="mdi-podcast" data-cy="podcast-settings">
         <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.podcasts') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_UI">
-      <VListItem :to="{ name: '/(coreDam)/video-show' }" prepend-icon="mdi-video-box" data-cy="video-show-settings">
+      <VListItem :to="{ name: '/(coreDam)/video-shows' }" prepend-icon="mdi-video-box" data-cy="video-show-settings">
         <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.videoShows') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
-      <VListItem :to="{ name: '/(coreDam)/user' }" prepend-icon="mdi-account-multiple" data-cy="user-settings">
+      <VListItem :to="{ name: '/(coreDam)/users' }" prepend-icon="mdi-account-multiple" data-cy="user-settings">
         <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.users') }}
         </VTooltip>
@@ -40,7 +40,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_EXT_SYSTEM_UI">
       <VListItem
-        :to="{ name: '/(coreDam)/ext-system' }"
+        :to="{ name: '/(coreDam)/ext-systems' }"
         prepend-icon="mdi-television-stop"
         data-cy="ext-system-settings"
       >
@@ -51,7 +51,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
       <VListItem
-        :to="{ name: '/(coreDam)/asset-licence' }"
+        :to="{ name: '/(coreDam)/asset-licences' }"
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-settings"
       >
@@ -62,7 +62,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
       <VListItem
-        :to="{ name: '/(coreDam)/asset-licence-group' }"
+        :to="{ name: '/(coreDam)/asset-licence-groups' }"
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-group-settings"
       >
@@ -73,7 +73,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
-        :to="{ name: '/(coreDam)/author' }"
+        :to="{ name: '/(coreDam)/authors' }"
         prepend-icon="mdi-account-circle-outline"
         data-cy="author-settings"
       >
@@ -83,7 +83,7 @@ const { t } = useI18n()
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
-      <VListItem :to="{ name: '/(coreDam)/keyword' }" prepend-icon="mdi-file-key-outline" data-cy="keyword-settings">
+      <VListItem :to="{ name: '/(coreDam)/keywords' }" prepend-icon="mdi-file-key-outline" data-cy="keyword-settings">
         <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.keywords') }}
         </VTooltip>
@@ -91,7 +91,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UI">
       <VListItem
-        :to="{ name: '/(coreDam)/distribution-category' }"
+        :to="{ name: '/(coreDam)/distribution-categories' }"
         prepend-icon="mdi-folder-edit"
         data-cy="distribution-category-settings"
       >
@@ -102,7 +102,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UI">
       <VListItem
-        :to="{ name: '/(coreDam)/distribution-category-select' }"
+        :to="{ name: '/(coreDam)/distribution-category-selects' }"
         prepend-icon="mdi-form-dropdown"
         data-cy="distribution-category-select-settings"
       >
@@ -114,7 +114,7 @@ const { t } = useI18n()
     <VDivider />
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_UI">
       <VListItem
-        :to="{ name: '/(common)/permission-group' }"
+        :to="{ name: '/(common)/permission-groups' }"
         prepend-icon="mdi-folder-account-outline"
         data-cy="permission-group-settings"
       >
@@ -125,7 +125,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
-        :to="{ name: '/(common)/anzu-user' }"
+        :to="{ name: '/(common)/anzu-users' }"
         prepend-icon="mdi-account-edit-outline"
         data-cy="user-permissions"
       >
@@ -135,14 +135,14 @@ const { t } = useI18n()
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
-      <VListItem :to="{ name: '/(coreDam)/job' }" prepend-icon="mdi-file-cabinet" data-cy="job-settings">
+      <VListItem :to="{ name: '/(coreDam)/jobs' }" prepend-icon="mdi-file-cabinet" data-cy="job-settings">
         <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.job') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
-      <VListItem :to="{ name: '/(common)/log' }" prepend-icon="mdi-math-log" data-cy="log-settings">
+      <VListItem :to="{ name: '/(common)/logs' }" prepend-icon="mdi-math-log" data-cy="log-settings">
         <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.log') }}
         </VTooltip>

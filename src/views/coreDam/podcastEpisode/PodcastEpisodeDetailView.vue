@@ -22,10 +22,10 @@ const getDetail = () => {
 
 const onSuccessfulCallback = () => {
   if (podcastEpisode.value.podcast) {
-    router.push({ name: '/(coreDam)/podcast/[id]', params: { id: podcastEpisode.value.podcast } })
+    router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisode.value.podcast } })
     return
   }
-  router.push({ name: '/(coreDam)/podcast' })
+  router.push({ name: '/(coreDam)/podcasts' })
 }
 
 onMounted(() => {
@@ -40,15 +40,15 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcast' },
+    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
     {
       title: t('breadcrumb.coreDam.podcast.detail'),
-      routeName: '/(coreDam)/podcast/[id]',
+      routeName: '/(coreDam)/podcasts/[id]',
       routeParams: { id: podcastId },
     },
     {
       title: podcastEpisode.value.texts.title || t('breadcrumb.coreDam.podcastEpisode.detail'),
-      routeName: '/(coreDam)/podcast/[id]/episode/[episodeId]',
+      routeName: '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
       routeParams: { id: podcastId, episodeId: id },
     },
   ])
@@ -62,7 +62,7 @@ const breadcrumbs = defineBreadcrumbs(
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: podcastId, episodeId: id }"
-          :route-name="'/(coreDam)/podcast/[id]/episode/[episodeId]/edit'"
+          :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'"
         />
       </Acl>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
@@ -72,7 +72,7 @@ const breadcrumbs = defineBreadcrumbs(
           @delete-record="deletePodcast(id, onSuccessfulCallback)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/podcast/[id]'" :route-params="{ id: podcastId }" />
+      <AActionCloseButton :route-name="'/(coreDam)/podcasts/[id]'" :route-params="{ id: podcastId }" />
     </template>
   </ActionbarWrapper>
 

@@ -14,10 +14,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-system' },
+    { title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-systems' },
     {
       title: extSystem.value.name || t('breadcrumb.coreDam.extSystem.edit'),
-      routeName: '/(coreDam)/ext-system/[id]/edit',
+      routeName: '/(coreDam)/ext-systems/[id]/edit',
     },
   ])
 )
@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/ext-system'" />
+      <AActionCloseButton :route-name="'/(coreDam)/ext-systems'" />
     </template>
   </ActionbarWrapper>
 

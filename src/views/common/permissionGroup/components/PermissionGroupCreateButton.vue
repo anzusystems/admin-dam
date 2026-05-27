@@ -67,7 +67,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(common)/permission-group/[id]', params: { id: res.id } })
+      router.push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

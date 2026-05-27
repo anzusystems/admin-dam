@@ -145,7 +145,7 @@ export const useDistributionCategoryCreateActions = () => {
       const res = await createDistributionCategory(distributionCategory.value)
       showRecordWas('created')
       if (successCallbackAction) successCallbackAction() // dialog.value = false
-      router.push({ name: '/(coreDam)/distribution-category/[id]', params: { id: res.id } })
+      router.push({ name: '/(coreDam)/distribution-categories/[id]', params: { id: res.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -202,7 +202,7 @@ export const useDistributionCategoryEditActions = () => {
       await updateDistributionCategory(distributionCategoryOneStore.distributionCategory.id, distributionCategory.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/distribution-category' })
+      router.push({ name: '/(coreDam)/distribution-categories' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

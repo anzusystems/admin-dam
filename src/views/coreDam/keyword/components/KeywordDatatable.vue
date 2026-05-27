@@ -35,7 +35,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_KEYWORD_READ)) {
-    router.push({ name: '/(coreDam)/keyword/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/keywords/[id]', params: { id: item.id } })
   }
 }
 
@@ -94,10 +94,10 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_KEYWORD_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/keyword/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/keywords/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/keyword/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/keywords/[id]/edit'" />
             </Acl>
           </div>
         </template>

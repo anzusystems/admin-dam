@@ -77,7 +77,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(coreDam)/keyword/[id]', params: { id: res.id } })
+      router.push({ name: '/(coreDam)/keywords/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

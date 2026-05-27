@@ -62,7 +62,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       await apiUpdateAnzuUser(anzuUserOneStore.anzuUser.id, anzuUserOneStore.anzuUser)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(common)/anzu-user' })
+      router.push({ name: '/(common)/anzu-users' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -82,10 +82,10 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       const anzuUserRes = await apiCreateAnzuUser(anzuUserOneStore.anzuUser)
       showRecordWas('created')
       if (close) {
-        router.push({ name: '/(common)/anzu-user' })
+        router.push({ name: '/(common)/anzu-users' })
         return
       }
-      router.push({ name: '/(common)/anzu-user/[id]', params: { id: String(anzuUserRes.id) } })
+      router.push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

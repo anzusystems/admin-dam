@@ -11,7 +11,7 @@ const datatable = ref<InstanceType<typeof UserDatatable> | null>(null)
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/user' }])
+  computed(() => [{ title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' }])
 )
 </script>
 

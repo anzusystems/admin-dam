@@ -15,10 +15,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.log.list'), routeName: '/(common)/log' },
+    { title: t('breadcrumb.log.list'), routeName: '/(common)/logs' },
     {
       title: t('breadcrumb.log.detail'),
-      routeName: '/(common)/log/[system]/[type]/[id]',
+      routeName: '/(common)/logs/[system]/[type]/[id]',
     },
   ])
 )
@@ -39,7 +39,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButton :route-name="'/(common)/log'" />
+      <AActionCloseButton :route-name="'/(common)/logs'" />
     </template>
   </ActionbarWrapper>
 

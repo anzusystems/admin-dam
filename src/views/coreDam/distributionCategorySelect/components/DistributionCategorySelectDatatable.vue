@@ -35,7 +35,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_READ)) {
-    router.push({ name: '/(coreDam)/distribution-category-select/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/distribution-category-selects/[id]', params: { id: item.id } })
   }
 }
 
@@ -88,12 +88,12 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/distribution-category-select/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/distribution-category-selects/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="'/(coreDam)/distribution-category-select/[id]/edit'"
+                :route-name="'/(coreDam)/distribution-category-selects/[id]/edit'"
               />
             </Acl>
           </div>

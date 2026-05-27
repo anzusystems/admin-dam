@@ -40,7 +40,7 @@ const { fetchList, listItems, datatableHiddenColumns } = usePodcastEpisodeListAc
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({
-    name: '/(coreDam)/podcast/[id]/episode/[episodeId]',
+    name: '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
     params: { id: props.podcastId, episodeId: item.id },
   })
 }
@@ -143,13 +143,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_READ">
               <ATableDetailButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
-                :route-name="'/(coreDam)/podcast/[id]/episode/[episodeId]'"
+                :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
               <ATableEditButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
-                :route-name="'/(coreDam)/podcast/[id]/episode/[episodeId]/edit'"
+                :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'"
               />
             </Acl>
           </div>

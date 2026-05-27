@@ -48,7 +48,7 @@ export const useAuthorCleanPhraseRemoveActions = () => {
     try {
       await deleteAuthorCleanPhrase(id)
       showRecordWas('updated')
-      router.push({ name: '/(coreDam)/author-clean-phrase' })
+      router.push({ name: '/(coreDam)/author-clean-phrases' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -122,7 +122,7 @@ export const useAuthorCleanPhraseEditActions = () => {
       showRecordWas('updated')
 
       router.push({
-        name: '/(coreDam)/author-clean-phrase/[id]',
+        name: '/(coreDam)/author-clean-phrases/[id]',
         params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
       })
     } catch (error) {

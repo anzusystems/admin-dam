@@ -43,7 +43,7 @@ const assetId = ref<DocId>('')
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  router.push({ name: '/(coreDam)/asset' })
+  router.push({ name: '/(coreDam)/assets' })
 }
 
 const getDetail = async () => {

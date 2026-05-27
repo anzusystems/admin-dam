@@ -34,7 +34,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_JOB_READ)) {
-    router.push({ name: '/(coreDam)/job/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/jobs/[id]', params: { id: item.id } })
   }
 }
 
@@ -113,7 +113,7 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_JOB_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/job/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/jobs/[id]'" />
             </Acl>
           </div>
         </template>

@@ -41,7 +41,7 @@ const { can } = useAuth()
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_READ)) {
     router.push({
-      name: '/(coreDam)/video-show/[id]/episode/[episodeId]',
+      name: '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
       params: { id: props.videoShowId, episodeId: item.id },
     })
   }
@@ -138,11 +138,11 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :route-params="{ id: props.videoShowId, episodeId: item.id }"
-              :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]'"
+              :route-name="'/(coreDam)/video-shows/[id]/episodes/[episodeId]'"
             />
             <ATableEditButton
               :route-params="{ id: props.videoShowId, episodeId: item.id }"
-              :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]/edit'"
+              :route-name="'/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'"
             />
           </div>
         </template>

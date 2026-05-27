@@ -52,7 +52,7 @@ export const usePublicExportRemoveActions = () => {
     try {
       await deletePublicExport(id)
       showRecordWas('updated')
-      router.push({ name: '/(coreDam)/public-export' })
+      router.push({ name: '/(coreDam)/public-exports' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -127,7 +127,7 @@ export const usePublicExportEditActions = () => {
       showRecordWas('updated')
 
       router.push({
-        name: '/(coreDam)/public-export/[id]',
+        name: '/(coreDam)/public-exports/[id]',
         params: { id: publicExportOneStore.publicExport.id },
       })
     } catch (error) {

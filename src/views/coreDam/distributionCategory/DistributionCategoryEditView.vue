@@ -21,10 +21,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-category' },
+    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
     {
       title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.edit'),
-      routeName: '/(coreDam)/distribution-category/[id]/edit',
+      routeName: '/(coreDam)/distribution-categories/[id]/edit',
     },
   ])
 )
@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/distribution-category'" />
+      <AActionCloseButton :route-name="'/(coreDam)/distribution-categories'" />
     </template>
   </ActionbarWrapper>
 

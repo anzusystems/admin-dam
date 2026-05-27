@@ -93,7 +93,7 @@ export const useVideoShowEpisodeEditActions = () => {
       showRecordWas('updated')
       if (!close || !videoShowEpisodeOneStore.videoShowEpisode.videoShow) return
       router.push({
-        name: '/(coreDam)/video-show/[id]',
+        name: '/(coreDam)/video-shows/[id]',
         params: { id: videoShowEpisodeOneStore.videoShowEpisode.videoShow },
       })
     } catch (error) {

@@ -114,7 +114,7 @@ export const useAuthorEditActions = () => {
       await updateAuthor(authorOneStore.author.id, author.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/author' })
+      router.push({ name: '/(coreDam)/authors' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

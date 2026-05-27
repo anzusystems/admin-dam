@@ -23,7 +23,7 @@ const { t } = useI18n()
           label
           size="small"
           class="mr-1"
-          :to="{ name: '/(coreDam)/asset-licence-group/[id]', params: { id: userAssetLicenceGroup.id } }"
+          :to="{ name: '/(coreDam)/asset-licence-groups/[id]', params: { id: userAssetLicenceGroup.id } }"
         >
           {{ userAssetLicenceGroup.name }}
         </VChip>

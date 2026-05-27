@@ -55,10 +55,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/job' },
+    { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' },
     {
       title: t('breadcrumb.coreDam.job.detail'),
-      routeName: '/(coreDam)/job/[id]',
+      routeName: '/(coreDam)/jobs/[id]',
     },
   ])
 )
@@ -67,7 +67,7 @@ const breadcrumbs = defineBreadcrumbs(
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButton :route-name="'/(coreDam)/job'" />
+      <AActionCloseButton :route-name="'/(coreDam)/jobs'" />
     </template>
   </ActionbarWrapper>
 

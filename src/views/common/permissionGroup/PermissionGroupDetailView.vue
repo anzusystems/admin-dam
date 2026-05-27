@@ -16,10 +16,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-group' },
+    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
     {
       title: t('breadcrumb.permissionGroup.detail'),
-      routeName: '/(common)/permission-group/[id]',
+      routeName: '/(common)/permission-groups/[id]',
     },
   ])
 )
@@ -41,12 +41,12 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl v-if="!detailLoading" :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-        <AActionEditButton :record-id="id" :route-name="'/(common)/permission-group/[id]/edit'" />
+        <AActionEditButton :record-id="id" :route-name="'/(common)/permission-groups/[id]/edit'" />
       </Acl>
       <Acl v-if="!detailLoading" :permission="ACL.DAM_PERMISSION_GROUP_DELETE">
         <AActionDeleteButton @delete-record="deletePermissionGroup(id)" />
       </Acl>
-      <AActionCloseButton :route-name="'/(common)/permission-group'" />
+      <AActionCloseButton :route-name="'/(common)/permission-groups'" />
     </template>
   </ActionbarWrapper>
 

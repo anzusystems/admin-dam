@@ -17,7 +17,7 @@ const { listLoading } = useAnzuUserActions(damClient)
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-user' }])
+  computed(() => [{ title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' }])
 )
 </script>
 

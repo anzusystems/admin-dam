@@ -28,7 +28,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = useAuthorCleanPhraseListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: '/(coreDam)/author-clean-phrase/[id]', params: { id: item.id } })
+  router.push({ name: '/(coreDam)/author-clean-phrases/[id]', params: { id: item.id } })
 }
 
 const getList = () => {
@@ -89,12 +89,15 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
-              <ATableDetailButton :route-params="{ id: item.id }" :route-name="'/(coreDam)/author-clean-phrase/[id]'" />
+              <ATableDetailButton
+                :route-params="{ id: item.id }"
+                :route-name="'/(coreDam)/author-clean-phrases/[id]'"
+              />
             </Acl>
             <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
               <ATableEditButton
                 :route-params="{ id: item.id }"
-                :route-name="'/(coreDam)/author-clean-phrase/[id]/edit'"
+                :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
               />
             </Acl>
           </div>

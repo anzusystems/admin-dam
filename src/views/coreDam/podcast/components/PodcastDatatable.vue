@@ -34,7 +34,7 @@ const getList = () => {
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
-    router.push({ name: '/(coreDam)/podcast/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: item.id } })
   }
 }
 
@@ -123,8 +123,8 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/podcast/[id]'" />
-            <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/podcast/[id]/edit'" />
+            <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/podcasts/[id]'" />
+            <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/podcasts/[id]/edit'" />
           </div>
         </template>
         <template #bottom>

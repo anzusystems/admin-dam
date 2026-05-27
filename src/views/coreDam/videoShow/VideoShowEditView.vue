@@ -26,10 +26,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
     {
       title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.edit'),
-      routeName: '/(coreDam)/video-show/[id]/edit',
+      routeName: '/(coreDam)/video-shows/[id]/edit',
       routeParams: { id },
     },
   ])
@@ -45,7 +45,7 @@ const breadcrumbs = defineBreadcrumbs(
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/video-show'" />
+      <AActionCloseButton :route-name="'/(coreDam)/video-shows'" />
     </template>
   </ActionbarWrapper>
 

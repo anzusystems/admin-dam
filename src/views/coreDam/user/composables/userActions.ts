@@ -108,7 +108,7 @@ export const useUserEditActions = () => {
       await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/user' })
+      router.push({ name: '/(coreDam)/users' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

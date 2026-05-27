@@ -11,10 +11,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/author' },
+    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
     {
       title: author.value.name || t('breadcrumb.coreDam.author.detail'),
-      routeName: '/(coreDam)/author/[id]',
+      routeName: '/(coreDam)/authors/[id]',
     },
   ])
 )
@@ -39,9 +39,9 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/author/[id]/edit'" />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/authors/[id]/edit'" />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/author'" />
+      <AActionCloseButton :route-name="'/(coreDam)/authors'" />
     </template>
   </ActionbarWrapper>
 

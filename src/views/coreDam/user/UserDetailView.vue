@@ -11,10 +11,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/user' },
+    { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
     {
       title: user.value.id + '' || t('breadcrumb.coreDam.user.detail'),
-      routeName: '/(coreDam)/user/[id]',
+      routeName: '/(coreDam)/users/[id]',
     },
   ])
 )
@@ -39,16 +39,16 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_USER_UPDATE">
-        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/user/[id]/edit'" />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/users/[id]/edit'" />
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="'/(common)/anzu-user/[id]/edit'"
+          :route-name="'/(common)/anzu-users/[id]/edit'"
           variant="secondary"
           button-t="coreDam.user.button.editPermissions"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/user'" />
+      <AActionCloseButton :route-name="'/(coreDam)/users'" />
     </template>
   </ActionbarWrapper>
 

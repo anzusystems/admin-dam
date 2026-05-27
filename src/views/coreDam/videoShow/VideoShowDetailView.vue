@@ -46,10 +46,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
     {
       title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.detail'),
-      routeName: '/(coreDam)/video-show/[id]',
+      routeName: '/(coreDam)/video-shows/[id]',
       routeParams: { id: videoShowId },
     },
   ])
@@ -82,10 +82,10 @@ const afterVideoShowEpisodeCreate = () => {
           v-show="activeTab === VideoShowDetailTab.Detail"
           v-if="!detailLoading"
           :record-id="videoShowId"
-          :route-name="'/(coreDam)/video-show/[id]/edit'"
+          :route-name="'/(coreDam)/video-shows/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/video-show'" />
+      <AActionCloseButton :route-name="'/(coreDam)/video-shows'" />
     </template>
   </ActionbarWrapper>
 

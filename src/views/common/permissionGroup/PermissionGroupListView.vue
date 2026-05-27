@@ -18,7 +18,7 @@ const { listLoading } = usePermissionGroupActions(damClient)
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-group' }])
+  computed(() => [{ title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' }])
 )
 </script>
 

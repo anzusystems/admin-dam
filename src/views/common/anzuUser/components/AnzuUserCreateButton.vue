@@ -69,7 +69,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(common)/anzu-user/[id]', params: { id: String(res.id) } })
+      router.push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
     }
   } catch (error) {
     showErrorsDefault(error)

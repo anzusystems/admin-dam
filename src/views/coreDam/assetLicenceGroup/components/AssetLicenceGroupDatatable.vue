@@ -36,7 +36,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_ASSET_LICENCE_GROUP_READ))
-    router.push({ name: '/(coreDam)/asset-licence-group/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/asset-licence-groups/[id]', params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
@@ -108,10 +108,10 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/asset-licence-group/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/asset-licence-groups/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/asset-licence-group/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/asset-licence-groups/[id]/edit'" />
             </Acl>
           </div>
         </template>

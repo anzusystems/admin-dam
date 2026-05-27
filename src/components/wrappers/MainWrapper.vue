@@ -26,7 +26,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2 pr-1">
         <div class="d-flex align-center">
           <div class="main-logo mr-sm-2 pl-1">
-            <RouterLink :to="{ name: '/(coreDam)/asset' }">
+            <RouterLink :to="{ name: '/(coreDam)/assets' }">
               <img width="104" height="42" :src="logoFull" alt="ADAM" class="hidden-xs" />
               <img width="42" height="42" :src="logoNoText" alt="ADAM" class="hidden-sm-and-up" />
             </RouterLink>

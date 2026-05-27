@@ -11,10 +11,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-group' },
+    { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-groups' },
     {
       title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.detail'),
-      routeName: '/(coreDam)/asset-licence-group/[id]',
+      routeName: '/(coreDam)/asset-licence-groups/[id]',
     },
   ])
 )
@@ -42,10 +42,10 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="'/(coreDam)/asset-licence-group/[id]/edit'"
+          :route-name="'/(coreDam)/asset-licence-groups/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/asset-licence-group'" />
+      <AActionCloseButton :route-name="'/(coreDam)/asset-licence-groups'" />
     </template>
   </ActionbarWrapper>
 

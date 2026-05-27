@@ -28,7 +28,7 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = usePublicExportListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: '/(coreDam)/public-export/[id]', params: { id: item.id } })
+  router.push({ name: '/(coreDam)/public-exports/[id]', params: { id: item.id } })
 }
 
 const getList = () => {
@@ -96,10 +96,10 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_PUBLIC_EXPORT_READ">
-              <ATableDetailButton :route-params="{ id: item.id }" :route-name="'/(coreDam)/public-export/[id]'" />
+              <ATableDetailButton :route-params="{ id: item.id }" :route-name="'/(coreDam)/public-exports/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
-              <ATableEditButton :route-params="{ id: item.id }" :route-name="'/(coreDam)/public-export/[id]/edit'" />
+              <ATableEditButton :route-params="{ id: item.id }" :route-name="'/(coreDam)/public-exports/[id]/edit'" />
             </Acl>
           </div>
         </template>

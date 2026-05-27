@@ -9,11 +9,11 @@ const router = useRouter()
 const route = useRoute()
 
 const backToDam = () => {
-  router.push({ name: '/(coreDam)/asset' })
+  router.push({ name: '/(coreDam)/assets' })
 }
 
 const goToExternalProvider = (provider: string) => {
-  router.push({ name: '/(coreDam)/external-provider/[provider]', params: { provider } })
+  router.push({ name: '/(coreDam)/external-providers/[provider]', params: { provider } })
 }
 
 const { getDamConfigExtSystem } = useDamConfigState(damClient)
@@ -34,7 +34,7 @@ const show = computed(() => {
 const activeDisplayText = computed(() => {
   const providerParam = (route.params as { provider?: string }).provider as undefined | string
   const matchedProvider = providerParam ? externalProviders.value[providerParam] : undefined
-  if (route.name === '/(coreDam)/external-provider/[provider]' && matchedProvider) {
+  if (route.name === '/(coreDam)/external-providers/[provider]' && matchedProvider) {
     return matchedProvider.title
   }
   return t('system.mainBar.customIntegrations.assets')

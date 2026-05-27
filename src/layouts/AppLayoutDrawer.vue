@@ -61,7 +61,7 @@ const { theme } = useTheme()
       <!--          <VAppBarNavIcon @click.stop="navIconClick" />-->
       <!--          <VSpacer />-->
       <!--          <VBtn-->
-      <!--            :to="{ name: '/(coreDam)/asset' }"-->
+      <!--            :to="{ name: '/(coreDam)/assets' }"-->
       <!--            size="small"-->
       <!--            variant="text"-->
       <!--            class="mx-2"-->

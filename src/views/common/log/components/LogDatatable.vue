@@ -34,7 +34,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
     if (!filter.type.model) return
     router.push({
-      name: '/(common)/log/[system]/[type]/[id]',
+      name: '/(common)/logs/[system]/[type]/[id]',
       params: { id: String(item.id), system: item.context.appSystem, type: filter.type.model },
     })
   }
@@ -134,7 +134,7 @@ defineExpose({
           <div class="d-flex justify-end">
             <VBtn
               :to="{
-                name: '/(common)/log/[system]/[type]/[id]',
+                name: '/(common)/logs/[system]/[type]/[id]',
                 params: { id: item.id, system: system, type: filter.type.model },
               }"
               class="ml-1"

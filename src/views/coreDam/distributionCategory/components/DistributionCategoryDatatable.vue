@@ -48,7 +48,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_DISTRIBUTION_CATEGORY_READ)) {
-    router.push({ name: '/(coreDam)/distribution-category/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/distribution-categories/[id]', params: { id: item.id } })
   }
 }
 
@@ -122,10 +122,10 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/distribution-category/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/distribution-categories/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/distribution-category/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/distribution-categories/[id]/edit'" />
             </Acl>
           </div>
         </template>

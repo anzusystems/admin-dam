@@ -7,7 +7,7 @@ import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, videoShowEpisode } = useVideoShowEpisodeDetailActions()
 
-const route = useRoute('/(coreDam)/video-show/[id]/episode/[episodeId]')
+const route = useRoute('/(coreDam)/video-shows/[id]/episodes/[episodeId]')
 const id = route.params.episodeId.toString()
 const videoShowId = route.params.id.toString()
 
@@ -27,15 +27,15 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
     {
       title: t('breadcrumb.coreDam.videoShow.detail'),
-      routeName: '/(coreDam)/video-show/[id]',
+      routeName: '/(coreDam)/video-shows/[id]',
       routeParams: { id: videoShowId },
     },
     {
       title: videoShowEpisode.value.texts.title || t('breadcrumb.coreDam.videoShowEpisode.detail'),
-      routeName: '/(coreDam)/video-show/[id]/episode/[episodeId]',
+      routeName: '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
       routeParams: { id: videoShowId, episodeId: id },
     },
   ])
@@ -49,10 +49,10 @@ const breadcrumbs = defineBreadcrumbs(
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: videoShowId, episodeId: id }"
-          :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]/edit'"
+          :route-name="'/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/video-show/[id]'" :route-params="{ id: videoShowId }" />
+      <AActionCloseButton :route-name="'/(coreDam)/video-shows/[id]'" :route-params="{ id: videoShowId }" />
     </template>
   </ActionbarWrapper>
 

@@ -12,7 +12,7 @@ const router = useRouter()
 
 const onAssetChipClick = () => {
   if (isString(props.id)) {
-    router.push({ name: '/(coreDam)/asset/[id]', params: { id: props.id } })
+    router.push({ name: '/(coreDam)/assets/[id]', params: { id: props.id } })
   }
 }
 </script>

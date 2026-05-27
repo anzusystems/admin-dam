@@ -16,7 +16,7 @@ const { getCachedPodcast } = useCachedPodcasts()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedPodcast"
-    :route="'/(coreDam)/podcast/[id]'"
+    :route="'/(coreDam)/podcasts/[id]'"
     display-text-path="title"
   />
 </template>

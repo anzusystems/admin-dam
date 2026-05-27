@@ -16,7 +16,7 @@ const { getCachedAssetLicence } = useCachedAssetLicences()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedAssetLicence"
-    :route="'/(coreDam)/asset-licence/[id]'"
+    :route="'/(coreDam)/asset-licences/[id]'"
     display-text-path="name"
   />
 </template>

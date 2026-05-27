@@ -111,7 +111,7 @@ export const usePodcastEpisodeEditActions = () => {
       await updatePodcastEpisode(podcastEpisodeOneStore.podcastEpisode.id, podcastEpisode.value)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
-      router.push({ name: '/(coreDam)/podcast/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
+      router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

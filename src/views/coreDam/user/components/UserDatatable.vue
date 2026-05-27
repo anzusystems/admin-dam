@@ -35,7 +35,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_USER_READ)) {
-    router.push({ name: '/(coreDam)/user/[id]', params: { id: item.id } })
+    router.push({ name: '/(coreDam)/users/[id]', params: { id: item.id } })
   }
 }
 
@@ -90,10 +90,10 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_USER_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/user/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/users/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/user/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/users/[id]/edit'" />
             </Acl>
           </div>
         </template>

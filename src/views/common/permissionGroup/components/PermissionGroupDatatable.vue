@@ -30,7 +30,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_PERMISSION_GROUP_READ)) {
-    router.push({ name: '/(common)/permission-group/[id]', params: { id: item.id } })
+    router.push({ name: '/(common)/permission-groups/[id]', params: { id: item.id } })
   }
 }
 
@@ -99,10 +99,10 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_READ">
-              <ATableDetailButton :record-id="item.id" :route-name="'/(common)/permission-group/[id]'" />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(common)/permission-groups/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-              <ATableEditButton :record-id="item.id" :route-name="'/(common)/permission-group/[id]/edit'" />
+              <ATableEditButton :record-id="item.id" :route-name="'/(common)/permission-groups/[id]/edit'" />
             </Acl>
           </div>
         </template>

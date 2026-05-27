@@ -9,7 +9,7 @@ const { listLoading } = useExtSystemListActions()
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-system' }])
+  computed(() => [{ title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-systems' }])
 )
 </script>
 

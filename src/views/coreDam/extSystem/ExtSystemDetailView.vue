@@ -11,10 +11,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-system' },
+    { title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-systems' },
     {
       title: extSystem.value.name || t('breadcrumb.coreDam.extSystem.detail'),
-      routeName: '/(coreDam)/ext-system/[id]',
+      routeName: '/(coreDam)/ext-systems/[id]',
     },
   ])
 )
@@ -39,9 +39,9 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
-        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/ext-system/[id]/edit'" />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/ext-systems/[id]/edit'" />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/ext-system'" />
+      <AActionCloseButton :route-name="'/(coreDam)/ext-systems'" />
     </template>
   </ActionbarWrapper>
 

@@ -31,7 +31,10 @@ const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 const onEditMore = async () => {
   assetDetailStore.showDetail()
   if (!assetDetailStore.asset) return
-  browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset/[id]', params: { id: assetDetailStore.asset.id } })
+  browserHistoryReplaceUrlByRouter(router, {
+    name: '/(coreDam)/assets/[id]',
+    params: { id: assetDetailStore.asset.id },
+  })
 }
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })

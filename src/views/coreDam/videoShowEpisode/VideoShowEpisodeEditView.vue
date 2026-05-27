@@ -4,7 +4,7 @@ import { useVideoShowEpisodeEditActions } from '@/views/coreDam/videoShowEpisode
 import VideoShowEpisodeEditForm from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const route = useRoute('/(coreDam)/video-show/[id]/episode/[episodeId]/edit')
+const route = useRoute('/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit')
 const id = route.params.episodeId.toString()
 const videoShowId = route.params.id.toString()
 
@@ -34,15 +34,15 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
     {
       title: t('breadcrumb.coreDam.videoShow.detail'),
-      routeName: '/(coreDam)/video-show/[id]',
+      routeName: '/(coreDam)/video-shows/[id]',
       routeParams: { id: videoShowId },
     },
     {
       title: videoShowEpisode.value.texts.title || t('breadcrumb.coreDam.videoShowEpisode.edit'),
-      routeName: '/(coreDam)/video-show/[id]/episode/[episodeId]/edit',
+      routeName: '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
       routeParams: { id: videoShowId, episodeId: id },
     },
   ])
@@ -58,7 +58,7 @@ const breadcrumbs = defineBreadcrumbs(
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/video-show/[id]'" :route-params="{ id: videoShowId }" />
+      <AActionCloseButton :route-name="'/(coreDam)/video-shows/[id]'" :route-params="{ id: videoShowId }" />
     </template>
   </ActionbarWrapper>
 

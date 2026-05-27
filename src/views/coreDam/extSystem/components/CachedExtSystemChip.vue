@@ -16,7 +16,7 @@ const { getCachedExtSystem } = useCachedExtSystems()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedExtSystem"
-    :route="'/(coreDam)/ext-system/[id]'"
+    :route="'/(coreDam)/ext-systems/[id]'"
     display-text-path="name"
   />
 </template>

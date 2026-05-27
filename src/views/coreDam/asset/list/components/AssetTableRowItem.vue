@@ -135,7 +135,7 @@ onMounted(() => {
     <td>
       <div class="d-flex justify-end">
         <ATableCopyIdButton :id="asset.id" />
-        <ATableEditButton :record-id="asset.id" :route-name="'/(coreDam)/asset/[id]'" @click.stop="showDetail" />
+        <ATableEditButton :record-id="asset.id" :route-name="'/(coreDam)/assets/[id]'" @click.stop="showDetail" />
       </div>
     </td>
   </tr>

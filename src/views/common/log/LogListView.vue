@@ -55,7 +55,9 @@ watch(
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(computed(() => [{ title: t('breadcrumb.log.list'), routeName: '/(common)/log' }]))
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.log.list'), routeName: '/(common)/logs' }])
+)
 </script>
 
 <template>

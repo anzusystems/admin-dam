@@ -96,7 +96,7 @@ export const usePodcastEditActions = () => {
       await updatePodcast(podcastOneStore.podcast.id, podcast.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/podcast' })
+      router.push({ name: '/(coreDam)/podcasts' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
