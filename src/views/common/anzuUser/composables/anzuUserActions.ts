@@ -5,7 +5,6 @@ import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
@@ -67,7 +66,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       await apiUpdateAnzuUser(anzuUserOneStore.anzuUser.id, anzuUserOneStore.anzuUser)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.COMMON.ANZU_USER.LIST })
+      router.push({ name: '/(common)/anzu-user' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -87,10 +86,10 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
       const anzuUserRes = await apiCreateAnzuUser(anzuUserOneStore.anzuUser)
       showRecordWas('created')
       if (close) {
-        router.push({ name: ROUTE.COMMON.ANZU_USER.LIST })
+        router.push({ name: '/(common)/anzu-user' })
         return
       }
-      router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: anzuUserRes.id } })
+      router.push({ name: '/(common)/anzu-user/[id]', params: { id: anzuUserRes.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

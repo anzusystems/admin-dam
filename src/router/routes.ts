@@ -3,22 +3,6 @@ import { objectDeepFreeze } from '@anzusystems/common-admin'
 
 const routes = {
   DEFAULT: 'asset_list',
-  COMMON: {
-    LOG: {
-      LIST: 'common_log_list',
-      DETAIL: 'common_log_detail',
-    },
-    PERMISSION_GROUP: {
-      LIST: 'permissionGroup_list',
-      DETAIL: 'permissionGroup_detail',
-      EDIT: 'permissionGroup_edit',
-    },
-    ANZU_USER: {
-      LIST: 'common_anzuUser_list',
-      DETAIL: 'common_anzuUser_detail',
-      EDIT: 'common_anzuUser_edit',
-    },
-  },
   DAM: {
     ASSET: {
       LIST: 'asset_list',

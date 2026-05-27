@@ -2,7 +2,6 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import PermissionGroupEditForm from '@/views/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { damClient } from '@/services/api/clients/damClient'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
@@ -34,7 +33,7 @@ onBeforeUnmount(() => {
         :loading="saveButtonLoading"
         @save-record="updatePermissionGroup"
       />
-      <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
+      <AActionCloseButton :route-name="'/(common)/permission-group'" />
     </template>
   </ActionbarWrapper>
 

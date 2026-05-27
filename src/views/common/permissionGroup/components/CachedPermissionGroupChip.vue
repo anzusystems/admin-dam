@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { IntegerId } from '@anzusystems/common-admin'
 import { ACachedChip } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 withDefaults(
@@ -18,7 +17,7 @@ const { getCachedPermissionGroup } = useCachedPermissionGroups()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedPermissionGroup"
-    :route="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"
+    :route="'/(common)/permission-group/[id]'"
     display-text-path="title"
   />
 </template>

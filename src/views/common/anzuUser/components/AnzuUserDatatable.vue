@@ -16,7 +16,6 @@ import {
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
@@ -37,7 +36,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_USER_READ)) {
-    router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(common)/anzu-user/[id]', params: { id: item.id } })
   }
 }
 
@@ -152,14 +151,14 @@ defineExpose({
               <ATableDetailButton
                 v-if="item.id"
                 :record-id="item.id"
-                :route-name="ROUTE.COMMON.ANZU_USER.DETAIL"
+                :route-name="'/(common)/anzu-user/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
               <ATableEditButton
                 v-if="item.id"
                 :record-id="item.id"
-                :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
+                :route-name="'/(common)/anzu-user/[id]/edit'"
               />
             </Acl>
           </div>

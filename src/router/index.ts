@@ -6,14 +6,11 @@ import { externalProviderRoutes } from '@/router/routes/coreDam/externalProvider
 import { userRoutes } from '@/router/routes/coreDam/user'
 import { extSystemRoutes } from '@/router/routes/coreDam/extSystem'
 import { assetLicenceRoutes } from '@/router/routes/coreDam/assetLicence'
-import { permissionGroupRoutes } from '@/router/routes/common/permissionGroup'
 import { authorRoutes } from '@/router/routes/coreDam/author'
 import { keywordRoutes } from '@/router/routes/coreDam/keyword'
 import { distributionCategoryRoutes } from '@/router/routes/coreDam/distributionCategory'
 import { distributionCategorySelectRoutes } from '@/router/routes/coreDam/distributionCategorySelect'
-import { commonLogRoutes } from '@/router/routes/common/log'
 import { podcastRoutes } from '@/router/routes/coreDam/podcast'
-import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
 import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
 import { jobRoutes } from '@/router/routes/coreDam/job'
 import { assetLicenceGroupRoutes } from '@/router/routes/coreDam/assetLicenceGroup'
@@ -30,8 +27,6 @@ const vueRouter = createRouter({
     ...extSystemRoutes,
     ...assetLicenceRoutes,
     ...assetLicenceGroupRoutes,
-    ...permissionGroupRoutes,
-    ...anzuUserRoutes,
     ...authorRoutes,
     ...keywordRoutes,
     ...distributionCategoryRoutes,
@@ -41,7 +36,6 @@ const vueRouter = createRouter({
     ...podcastRoutes,
     ...videoShowRoutes,
     ...jobRoutes,
-    ...commonLogRoutes,
   ],
 })
 

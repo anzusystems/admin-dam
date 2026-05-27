@@ -8,7 +8,6 @@ import {
   ACard,
   stringToInt,
 } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
@@ -43,7 +42,7 @@ onBeforeUnmount(() => {
       >
         <AActionEditButton
           :record-id="id"
-          :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
+          :route-name="'/(common)/permission-group/[id]/edit'"
         />
       </Acl>
       <Acl
@@ -52,7 +51,7 @@ onBeforeUnmount(() => {
       >
         <AActionDeleteButton @delete-record="deletePermissionGroup(id)" />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.COMMON.PERMISSION_GROUP.LIST" />
+      <AActionCloseButton :route-name="'/(common)/permission-group'" />
     </template>
   </ActionbarWrapper>
 

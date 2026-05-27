@@ -12,7 +12,6 @@ import {
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
 import type { AxiosInstance } from 'axios'
@@ -73,7 +72,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: res.id } })
+      router.push({ name: '/(common)/permission-group/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

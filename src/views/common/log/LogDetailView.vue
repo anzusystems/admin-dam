@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, ACard } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useLogDetailActions } from '@/views/common/log/composables/logActions'
 import LogDetail from '@/views/common/log/components/LogDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -30,7 +29,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper>
     <template #buttons>
-      <AActionCloseButton :route-name="ROUTE.COMMON.LOG.LIST" />
+      <AActionCloseButton :route-name="'/(common)/log'" />
     </template>
   </ActionbarWrapper>
 

@@ -14,7 +14,6 @@ import {
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
@@ -33,7 +32,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_PERMISSION_GROUP_READ)) {
-    router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(common)/permission-group/[id]', params: { id: item.id } })
   }
 }
 
@@ -107,13 +106,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_READ">
               <ATableDetailButton
                 :record-id="item.id"
-                :route-name="ROUTE.COMMON.PERMISSION_GROUP.DETAIL"
+                :route-name="'/(common)/permission-group/[id]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="ROUTE.COMMON.PERMISSION_GROUP.EDIT"
+                :route-name="'/(common)/permission-group/[id]/edit'"
               />
             </Acl>
           </div>

@@ -108,7 +108,7 @@ const { t } = useI18n()
     <VDivider />
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_UI">
       <VListItem
-        :to="{ name: ROUTE.COMMON.PERMISSION_GROUP.LIST }"
+        :to="{ name: '/(common)/permission-group' }"
         prepend-icon="mdi-folder-account-outline"
         :title="t('sidebar.settings.permissionGroups')"
         data-cy="permission-group-settings"
@@ -116,7 +116,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
-        :to="{ name: ROUTE.COMMON.ANZU_USER.LIST }"
+        :to="{ name: '/(common)/anzu-user' }"
         prepend-icon="mdi-account-edit-outline"
         :title="t('sidebar.settings.anzuUser')"
         data-cy="user-permissions"
@@ -148,7 +148,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
       <VListItem
-        :to="{ name: ROUTE.COMMON.LOG.LIST }"
+        :to="{ name: '/(common)/log' }"
         prepend-icon="mdi-math-log"
         :title="t('sidebar.settings.log')"
         data-cy="log-settings"

@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserDetail from '@/views/common/anzuUser/components/AnzuUserDetail.vue'
@@ -36,11 +35,11 @@ onBeforeUnmount(() => {
       >
         <AActionEditButton
           :record-id="id"
-          :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
+          :route-name="'/(common)/anzu-user/[id]/edit'"
           :loading="detailLoading"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.COMMON.ANZU_USER.LIST" />
+      <AActionCloseButton :route-name="'/(common)/anzu-user'" />
     </template>
   </ActionbarWrapper>
 

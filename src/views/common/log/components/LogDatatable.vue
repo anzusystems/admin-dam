@@ -10,7 +10,6 @@ import {
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
-import { ROUTE } from '@/router/routes'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -37,7 +36,7 @@ const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
     router.push({
-      name: ROUTE.COMMON.LOG.DETAIL,
+      name: '/(common)/log/[system]/[type]/[id]',
       params: { id: item.id, system: item.context.appSystem, type: filter.type.model },
     })
   }
@@ -143,7 +142,7 @@ defineExpose({
           <div class="d-flex justify-end">
             <VBtn
               :to="{
-                name: ROUTE.COMMON.LOG.DETAIL,
+                name: '/(common)/log/[system]/[type]/[id]',
                 params: { id: item.id, system: system, type: filter.type.model },
               }"
               class="ml-1"

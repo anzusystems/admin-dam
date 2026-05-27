@@ -38,7 +38,7 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="ROUTE.COMMON.ANZU_USER.EDIT"
+          :route-name="'/(common)/anzu-user/[id]/edit'"
           variant="secondary"
           button-t="coreDam.user.button.editPermissions"
         />

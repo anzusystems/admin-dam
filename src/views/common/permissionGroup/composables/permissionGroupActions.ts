@@ -6,7 +6,6 @@ import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
 import { storeToRefs } from 'pinia'
 import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import useVuelidate from '@vuelidate/core'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
@@ -59,7 +58,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
     try {
       await apiDeletePermissionGroup(id)
       showRecordWas('deleted')
-      router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
+      router.push({ name: '/(common)/permission-group' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -83,7 +82,7 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       )
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
+      router.push({ name: '/(common)/permission-group' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -103,10 +102,10 @@ export const usePermissionGroupActions = (client: () => AxiosInstance) => {
       const permissionGroupRes = await apiCreatePermissionGroup(permissionGroupOneStore.permissionGroup)
       showRecordWas('created')
       if (close) {
-        router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.LIST })
+        router.push({ name: '/(common)/permission-group' })
         return
       }
-      router.push({ name: ROUTE.COMMON.PERMISSION_GROUP.DETAIL, params: { id: permissionGroupRes.id } })
+      router.push({ name: '/(common)/permission-group/[id]', params: { id: permissionGroupRes.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

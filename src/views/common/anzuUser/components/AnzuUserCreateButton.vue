@@ -12,7 +12,6 @@ import {
   useAnzuUserFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserCreateValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
@@ -75,7 +74,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: ROUTE.COMMON.ANZU_USER.DETAIL, params: { id: res.id } })
+      router.push({ name: '/(common)/anzu-user/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)
