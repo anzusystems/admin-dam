@@ -5,13 +5,11 @@ import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import { useDamConfigState, useDamConfigStore } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
+import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 export const beforeEachRoute = async (
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext
-) => {
+  to: RouteLocationNormalized
+): Promise<NavigationGuardReturn> => {
   const { loadDamPubConfig } = useDamConfigState(damClient)
   const damConfigStore = useDamConfigStore()
   const { initialized } = storeToRefs(damConfigStore)
@@ -19,19 +17,17 @@ export const beforeEachRoute = async (
   if (!initLanguageMessagesLoaded.value) await initLoadLanguageMessages()
   if (!initialized.value.damPubConfig) await loadDamPubConfig()
   if (to.meta.requiresAuth) {
-    await checkGuard(to, from, next)
-  } else {
-    next()
+    return await checkGuard(to)
   }
 }
 
-const checkGuard = async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+const checkGuard = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
   const { isAppInitialized, hasAppAuthCookie } = useAppInitialize()
   if (isAppInitialized()) {
-    await checkAbility(to, from, next)
+    return await checkAbility(to)
   } else if (hasAppAuthCookie()) {
-    await createAppInitialize(to, from, next)
+    return await createAppInitialize(to)
   } else {
-    next({ name: ROUTE.SYSTEM.LOGIN })
+    return { name: ROUTE.SYSTEM.LOGIN }
   }
 }

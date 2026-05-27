@@ -69,8 +69,8 @@ const vueRouter = createRouter({
   ],
 })
 
-vueRouter.beforeEach(async (to, from, next) => {
-  await beforeEachRoute(to, from, next)
+vueRouter.beforeEach(async (to) => {
+  return await beforeEachRoute(to)
 })
 
 export const router = vueRouter

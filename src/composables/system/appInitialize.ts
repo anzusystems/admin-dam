@@ -16,15 +16,13 @@ import {
 } from '@anzusystems/common-admin'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { ref } from 'vue'
-import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
+import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 const initialized = ref(false)
 
 export async function createAppInitialize(
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext
-) {
+  to: RouteLocationNormalized
+): Promise<NavigationGuardReturn> {
   const { isStatusNotDefined, isStatusSsoCommunicationFailure, isStatusInternalErrorFailure, isStatusUnauthorized } =
     useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements, getDamConfigExtSystem } =
@@ -37,16 +35,14 @@ export async function createAppInitialize(
     const loadDamConfigPromise = loadDamPrvConfig()
     await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
   } catch (error) {
-    next({ name: ROUTE.SYSTEM.LOGIN })
-    return
+    return { name: ROUTE.SYSTEM.LOGIN }
   }
   try {
     await initCurrentExtSystemAndLicence(
       getInitCurrentExtSystemAndLicenceConfig(to, to.params.id as string | undefined)
     )
   } catch (error) {
-    next({ name: ROUTE.SYSTEM.LOGIN })
-    return
+    return { name: ROUTE.SYSTEM.LOGIN }
   }
 
   try {
@@ -54,8 +50,7 @@ export async function createAppInitialize(
     await loadDamConfigExtSystem(currentExtSystemId.value)
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
     if (isUndefined(configExtSystem)) {
-      next({ name: ROUTE.SYSTEM.LOGIN })
-      return
+      return { name: ROUTE.SYSTEM.LOGIN }
     }
     const enabledAssetTypes: DamAssetTypeType[] = []
     if (configExtSystem.audio?.enabled) enabledAssetTypes.push(DamAssetType.Audio)
@@ -65,23 +60,22 @@ export async function createAppInitialize(
     await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
     initAppNotificationListeners()
   } catch (error) {
-    next({ name: ROUTE.SYSTEM.LOGIN })
-    return
+    return { name: ROUTE.SYSTEM.LOGIN }
   }
 
   if (
     (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
     isUndefined(currentUser.value)
   ) {
-    next({ name: ROUTE.SYSTEM.LOGIN })
+    return { name: ROUTE.SYSTEM.LOGIN }
   } else if (isStatusUnauthorized()) {
-    next({ name: ROUTE.SYSTEM.UNAUTHORIZED })
+    return { name: ROUTE.SYSTEM.UNAUTHORIZED }
   } else if (to.path === '/') {
     initialized.value = true
-    next({ name: ROUTE.DEFAULT })
+    return { name: ROUTE.DEFAULT }
   } else {
     initialized.value = true
-    await checkAbility(to, from, next)
+    return await checkAbility(to)
   }
 }
 
