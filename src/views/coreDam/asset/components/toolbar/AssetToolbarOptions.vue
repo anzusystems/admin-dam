@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
 import { computed, onMounted, ref } from 'vue'
@@ -85,7 +84,7 @@ onMounted(async () => {
           <VDivider />
           <Acl :permission="ACL.DAM_PODCAST_UI">
             <VListItem
-              :to="{ name: ROUTE.DAM.PODCAST.LIST }"
+              :to="{ name: '/(coreDam)/podcast' }"
               :title="t('system.mainBar.podcasts')"
               prepend-icon="mdi-podcast"
               data-cy="button-main-podcast"
@@ -93,7 +92,7 @@ onMounted(async () => {
           </Acl>
           <Acl :permission="ACL.DAM_VIDEO_SHOW_UI">
             <VListItem
-              :to="{ name: ROUTE.DAM.VIDEO_SHOW.LIST }"
+              :to="{ name: '/(coreDam)/video-show' }"
               :title="t('system.mainBar.videoShows')"
               prepend-icon="mdi-video"
               data-cy="button-main-video-show"
@@ -119,7 +118,7 @@ onMounted(async () => {
           <VListItem
             v-show="variant === 'settings'"
             prepend-icon="mdi-home"
-            :to="{ name: ROUTE.DAM.ASSET.LIST }"
+            :to="{ name: '/(coreDam)/asset' }"
             :title="t('system.currentUser.backToAssets')"
           />
         </VList>

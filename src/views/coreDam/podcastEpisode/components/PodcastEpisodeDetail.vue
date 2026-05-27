@@ -14,7 +14,6 @@ import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/views/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { prettyDuration } from '@/utils/file'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
@@ -27,7 +26,7 @@ const imageSrc = computed(() => {
 })
 
 const onAssetChipClick = () => {
-  router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: podcastEpisode.value.asset } })
+  router.push({ name: '/(coreDam)/asset/[id]', params: { id: podcastEpisode.value.asset } })
 }
 </script>
 

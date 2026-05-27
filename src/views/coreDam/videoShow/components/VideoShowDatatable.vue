@@ -16,7 +16,6 @@ import {
   type DatatableOrderingOptions,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useVideoShowListActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowFilter from '@/views/coreDam/videoShow/components/VideoShowFilter.vue'
@@ -39,7 +38,7 @@ const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_VIDEO_SHOW_READ)) {
-    router.push({ name: ROUTE.DAM.VIDEO_SHOW.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/video-show/[id]', params: { id: item.id } })
   }
 }
 
@@ -138,11 +137,11 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :record-id="item.id"
-              :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL"
+              :route-name="'/(coreDam)/video-show/[id]'"
             />
             <ATableEditButton
               :record-id="item.id"
-              :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT"
+              :route-name="'/(coreDam)/video-show/[id]/edit'"
             />
           </div>
         </template>

@@ -1,6 +1,5 @@
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { useAssetListFilter } from '@/model/coreDam/filter/AssetFilter'
-import { ROUTE } from '@/router/routes'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/services/api/coreDam/assetApi'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
@@ -165,7 +164,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
-    browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: data.assetId } })
+    browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset/[id]', params: { id: data.assetId } })
     if (checkQuickDetailReFetch(data.assetId)) {
       assetDetailStore.hideLoader()
       return
@@ -259,7 +258,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()
     const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
-    browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset/[id]', params: { id: newAssetId } })
     if (checkQuickDetailReFetch(newAssetId)) {
       assetDetailStore.hideLoader()
       return
@@ -274,7 +273,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     if (isNull(assetListStore.activeItemIndex)) return
     assetDetailStore.showLoader()
     const newAssetId = assetListStore.list[assetListStore.activeItemIndex].asset.id
-    browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: newAssetId } })
+    browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset/[id]', params: { id: newAssetId } })
     if (checkQuickDetailReFetch(newAssetId)) {
       assetDetailStore.hideLoader()
       return

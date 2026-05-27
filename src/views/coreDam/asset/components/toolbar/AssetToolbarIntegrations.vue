@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
@@ -13,7 +12,7 @@ const router = useRouter()
 const route = useRoute()
 
 const backToDam = () => {
-  router.push({ name: ROUTE.DAM.ASSET.LIST })
+  router.push({ name: '/(coreDam)/asset' })
 }
 
 const goToExternalProvider = (provider: string) => {

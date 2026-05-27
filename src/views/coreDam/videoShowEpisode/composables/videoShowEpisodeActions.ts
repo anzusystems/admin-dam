@@ -11,7 +11,6 @@ import { storeToRefs } from 'pinia'
 import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -99,7 +98,7 @@ export const useVideoShowEpisodeEditActions = () => {
       showRecordWas('updated')
       if (!close || !videoShowEpisodeOneStore.videoShowEpisode.videoShow) return
       router.push({
-        name: ROUTE.DAM.VIDEO_SHOW.DETAIL,
+        name: '/(coreDam)/video-show/[id]',
         params: { id: videoShowEpisodeOneStore.videoShowEpisode.videoShow },
       })
     } catch (error) {

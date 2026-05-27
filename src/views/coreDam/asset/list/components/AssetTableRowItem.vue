@@ -17,7 +17,6 @@ import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMeta
 import { onMounted } from 'vue'
 import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
-import { ROUTE } from '@/router/routes'
 
 const props = withDefaults(
   defineProps<{
@@ -148,7 +147,7 @@ onMounted(() => {
         <ATableCopyIdButton :id="asset.id" />
         <ATableEditButton
           :record-id="asset.id"
-          :route-name="ROUTE.DAM.ASSET.DETAIL"
+          :route-name="'/(coreDam)/asset/[id]'"
           @click.stop="showDetail"
         />
       </div>

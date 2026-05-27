@@ -18,7 +18,6 @@ import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/As
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
 import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
-import { ROUTE } from '@/router/routes'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
@@ -56,7 +55,7 @@ const assetId = ref<DocId>('')
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  router.push({ name: ROUTE.DAM.ASSET.LIST })
+  router.push({ name: '/(coreDam)/asset' })
 }
 
 const getDetail = async () => {

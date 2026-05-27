@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { usePodcastEpisodeEditActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import PodcastEpisodeEditForm from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -37,7 +36,7 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
       <AActionCloseButton
-        :route-name="ROUTE.DAM.PODCAST.DETAIL"
+        :route-name="'/(coreDam)/podcast/[id]'"
         :route-params="{ id: podcastId }"
       />
     </template>

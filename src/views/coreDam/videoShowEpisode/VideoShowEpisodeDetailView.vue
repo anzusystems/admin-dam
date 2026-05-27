@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeDetailActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
@@ -34,11 +33,11 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: videoShowId, episodeId: id }"
-          :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT"
+          :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]/edit'"
         />
       </Acl>
       <AActionCloseButton
-        :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL"
+        :route-name="'/(coreDam)/video-show/[id]'"
         :route-params="{ id: videoShowId }"
       />
     </template>

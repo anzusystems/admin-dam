@@ -1,18 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes as fileBasedRoutes, handleHotUpdate } from 'vue-router/auto-routes'
+import { routes, handleHotUpdate } from 'vue-router/auto-routes'
 import { beforeEachRoute } from '@/router/beforeEachRoute'
-import { assetRoutes } from '@/router/routes/coreDam/asset'
-import { podcastRoutes } from '@/router/routes/coreDam/podcast'
-import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
 
 const vueRouter = createRouter({
   history: createWebHistory(),
-  routes: [
-    ...fileBasedRoutes,
-    ...assetRoutes,
-    ...podcastRoutes,
-    ...videoShowRoutes,
-  ],
+  routes,
 })
 
 if (import.meta.hot) {

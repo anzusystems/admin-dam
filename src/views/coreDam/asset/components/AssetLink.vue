@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { DocId } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +13,7 @@ const props = withDefaults(
 const router = useRouter()
 
 const href = computed(() => {
-  return router.resolve({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: props.assetId } }).href
+  return router.resolve({ name: '/(coreDam)/asset/[id]', params: { id: props.assetId } }).href
 })
 </script>
 

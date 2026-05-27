@@ -17,7 +17,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/videoShowEpisodeApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { useVideoShowEpisodeListActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeListFilter } from '@/model/coreDam/filter/VideoShowEpisodeFilter'
@@ -45,7 +44,7 @@ const { can } = useAuth()
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_VIDEO_SHOW_EPISODE_READ)) {
     router.push({
-      name: ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL,
+      name: '/(coreDam)/video-show/[id]/episode/[episodeId]',
       params: { id: props.videoShowId, episodeId: item.id },
     })
   }
@@ -154,11 +153,11 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :route-params="{ id: props.videoShowId, episodeId: item.id }"
-              :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.DETAIL"
+              :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]'"
             />
             <ATableEditButton
               :route-params="{ id: props.videoShowId, episodeId: item.id }"
-              :route-name="ROUTE.DAM.VIDEO_SHOW_EPISODE.EDIT"
+              :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]/edit'"
             />
           </div>
         </template>

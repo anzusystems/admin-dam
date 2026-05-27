@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import { ROUTE } from '@/router/routes'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
@@ -45,7 +44,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const closeDialog = () => {
   assetListStore.keyboardNavigationEnable()
   assetDetailStore.hideDetail()
-  browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.LIST })
+  browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset' })
 }
 
 const postDelete = (data: DocId) => {

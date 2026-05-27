@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { DocId } from '@anzusystems/common-admin'
 import { COMMON_CONFIG, isString } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 
 const props = withDefaults(
@@ -15,7 +14,7 @@ const router = useRouter()
 
 const onAssetChipClick = () => {
   if (isString(props.id)) {
-    router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: props.id } })
+    router.push({ name: '/(coreDam)/asset/[id]', params: { id: props.id } })
   }
 }
 </script>

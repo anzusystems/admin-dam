@@ -17,7 +17,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastEpisodeApi'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
@@ -43,7 +42,10 @@ const { resetFilter, submitFilter } = useFilterHelpers()
 const { fetchList, listItems, datatableHiddenColumns } = usePodcastEpisodeListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: ROUTE.DAM.PODCAST_EPISODE.DETAIL, params: { id: props.podcastId, episodeId: item.id } })
+  router.push({
+    name: '/(coreDam)/podcast/[id]/episode/[episodeId]',
+    params: { id: props.podcastId, episodeId: item.id },
+  })
 }
 
 const getList = () => {
@@ -158,13 +160,13 @@ defineExpose({
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_READ">
               <ATableDetailButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
-                :route-name="ROUTE.DAM.PODCAST_EPISODE.DETAIL"
+                :route-name="'/(coreDam)/podcast/[id]/episode/[episodeId]'"
               />
             </Acl>
             <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
               <ATableEditButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
-                :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT"
+                :route-name="'/(coreDam)/podcast/[id]/episode/[episodeId]/edit'"
               />
             </Acl>
           </div>

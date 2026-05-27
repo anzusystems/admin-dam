@@ -16,7 +16,6 @@ import AssetInfobox from '@/views/coreDam/asset/components/AssetInfobox.vue'
 import useVuelidate from '@vuelidate/core'
 import { AssetMetadataValidationScopeSymbol } from '@/components/validationScopes'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { ACL } from '@/composables/auth/auth'
 
@@ -42,7 +41,7 @@ const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 const onEditMore = async () => {
   assetDetailStore.showDetail()
   if (!assetDetailStore.asset) return
-  browserHistoryReplaceUrlByRouter(router, { name: ROUTE.DAM.ASSET.DETAIL, params: { id: assetDetailStore.asset.id } })
+  browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/asset/[id]', params: { id: assetDetailStore.asset.id } })
 }
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })

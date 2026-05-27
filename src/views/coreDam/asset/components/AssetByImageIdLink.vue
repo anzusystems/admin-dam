@@ -2,7 +2,6 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import type { AssetFileImage, DocId } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 
 const props = withDefaults(
@@ -42,7 +41,7 @@ watch(
 
 const href = computed(() => {
   if (!image.value) return undefined
-  return router.resolve({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: image.value.asset } }).href
+  return router.resolve({ name: '/(coreDam)/asset/[id]', params: { id: image.value.asset } }).href
 })
 </script>
 

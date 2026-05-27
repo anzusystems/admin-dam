@@ -16,7 +16,6 @@ import {
   type DatatableOrderingOptions,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import { usePodcastListActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastFilter from '@/views/coreDam/podcast/components/PodcastFilter.vue'
@@ -37,7 +36,7 @@ const getList = () => {
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
-    router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: item.id } })
+    router.push({ name: '/(coreDam)/podcast/[id]', params: { id: item.id } })
   }
 }
 
@@ -140,11 +139,11 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :record-id="item.id"
-              :route-name="ROUTE.DAM.PODCAST.DETAIL"
+              :route-name="'/(coreDam)/podcast/[id]'"
             />
             <ATableEditButton
               :record-id="item.id"
-              :route-name="ROUTE.DAM.PODCAST.EDIT"
+              :route-name="'/(coreDam)/podcast/[id]/edit'"
             />
           </div>
         </template>

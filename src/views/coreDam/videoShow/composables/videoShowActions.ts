@@ -13,7 +13,6 @@ import { storeToRefs } from 'pinia'
 import { useVideoShowOneStore } from '@/stores/coreDam/videoShowStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -102,7 +101,7 @@ export const useVideoShowEditActions = () => {
       await updateVideoShow(videoShowOneStore.videoShow.id, videoShow.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.VIDEO_SHOW.LIST })
+      router.push({ name: '/(coreDam)/video-show' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

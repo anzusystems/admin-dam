@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import { useVideoShowDetailActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowDetail from '@/views/coreDam/videoShow/components/VideoShowDetail.vue'
@@ -75,10 +74,10 @@ const afterVideoShowEpisodeCreate = () => {
           v-show="activeTab === VideoShowDetailTab.Detail"
           v-if="!detailLoading"
           :record-id="videoShowId"
-          :route-name="ROUTE.DAM.VIDEO_SHOW.EDIT"
+          :route-name="'/(coreDam)/video-show/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.VIDEO_SHOW.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/video-show'" />
     </template>
   </ActionbarWrapper>
 

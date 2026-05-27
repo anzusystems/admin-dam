@@ -3,7 +3,6 @@ import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { login } from '@/services/api/coreDam/authApi'
 import { useAlerts } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 import type { SimpleLoginForm } from '@/types/coreDam/Auth'
 
@@ -18,7 +17,7 @@ export const useSimpleLoginActions = () => {
   const onLogin = async () => {
     try {
       await login(simpleLoginForm.value)
-      router.push({ name: ROUTE.DEFAULT })
+      router.push({ name: '/(coreDam)/asset' })
     } catch (error) {
       // todo check for possible errors and display correct one
       showErrorT('auth.simpleLogin.alerts.failure')

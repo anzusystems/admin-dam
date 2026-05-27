@@ -4,7 +4,6 @@ import { initCurrentExtSystemAndLicence, useCurrentExtSystem } from '@/composabl
 import { useLoginStatus } from '@/composables/system/loginStatus'
 import { SYSTEM_DAM } from '@/model/systems'
 import { checkAbility } from '@/router/checkAbility'
-import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import { envConfig } from '@/services/EnvConfigService'
 import {
@@ -72,7 +71,7 @@ export async function createAppInitialize(
     return '/unauthorized'
   } else if (to.path === '/') {
     initialized.value = true
-    return { name: ROUTE.DEFAULT }
+    return { name: '/(coreDam)/asset' }
   } else {
     initialized.value = true
     return await checkAbility(to)
@@ -97,13 +96,13 @@ export function useAppInitialize() {
 }
 
 function getInitCurrentExtSystemAndLicenceConfig(to: RouteLocationNormalized, id: string | undefined) {
-  if (to.name === ROUTE.DAM.ASSET.DETAIL) {
+  if (to.name === '/(coreDam)/asset/[id]') {
     return {
       type: 'assetId' as const,
       id,
     }
   }
-  if (to.name === ROUTE.DAM.ASSET.FILE_DETAIL) {
+  if (to.name === '/(coreDam)/asset/file/[id]') {
     return {
       type: 'assetFileId' as const,
       id,

@@ -10,7 +10,6 @@ import {
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
-import { ROUTE } from '@/router/routes'
 import { useRouter } from 'vue-router'
 
 const { videoShowEpisode } = storeToRefs(useVideoShowEpisodeOneStore())
@@ -19,7 +18,7 @@ const { t } = useI18n()
 const router = useRouter()
 
 const onAssetChipClick = () => {
-  router.push({ name: ROUTE.DAM.ASSET.DETAIL, params: { id: videoShowEpisode.value.asset } })
+  router.push({ name: '/(coreDam)/asset/[id]', params: { id: videoShowEpisode.value.asset } })
 }
 </script>
 

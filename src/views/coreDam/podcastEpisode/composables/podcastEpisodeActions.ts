@@ -12,7 +12,6 @@ import { storeToRefs } from 'pinia'
 import { usePodcastEpisodeOneStore } from '@/stores/coreDam/podcastEpisodeStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -117,7 +116,7 @@ export const usePodcastEpisodeEditActions = () => {
       await updatePodcastEpisode(podcastEpisodeOneStore.podcastEpisode.id, podcastEpisode.value)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
-      router.push({ name: ROUTE.DAM.PODCAST.DETAIL, params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
+      router.push({ name: '/(coreDam)/podcast/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

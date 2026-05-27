@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 import { usePodcastDetailActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastDetail from '@/views/coreDam/podcast/components/PodcastDetail.vue'
@@ -75,10 +74,10 @@ const afterPodcastEpisodeCreate = () => {
           v-show="activeTab === PodcastDetailTab.Detail"
           v-if="!detailLoading"
           :record-id="podcastId"
-          :route-name="ROUTE.DAM.PODCAST.EDIT"
+          :route-name="'/(coreDam)/podcast/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="ROUTE.DAM.PODCAST.LIST" />
+      <AActionCloseButton :route-name="'/(coreDam)/podcast'" />
     </template>
   </ActionbarWrapper>
 

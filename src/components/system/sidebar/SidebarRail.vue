@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ROUTE } from '@/router/routes'
 import { useI18n } from 'vue-i18n'
 
 import { ACL } from '@/composables/auth/auth'
@@ -14,7 +13,7 @@ const { t } = useI18n()
     color="primary"
   >
     <VListItem
-      :to="{ name: ROUTE.DAM.ASSET.LIST }"
+      :to="{ name: '/(coreDam)/asset' }"
       prepend-icon="mdi-home"
     >
       <VTooltip
@@ -39,7 +38,7 @@ const { t } = useI18n()
     </VListItem>
     <Acl :permission="ACL.DAM_PODCAST_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.PODCAST.LIST }"
+        :to="{ name: '/(coreDam)/podcast' }"
         prepend-icon="mdi-podcast"
         data-cy="podcast-settings"
       >
@@ -53,7 +52,7 @@ const { t } = useI18n()
     </Acl>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_UI">
       <VListItem
-        :to="{ name: ROUTE.DAM.VIDEO_SHOW.LIST }"
+        :to="{ name: '/(coreDam)/video-show' }"
         prepend-icon="mdi-video-box"
         data-cy="video-show-settings"
       >

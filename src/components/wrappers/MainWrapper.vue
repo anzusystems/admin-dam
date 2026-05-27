@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n'
 import AssetFooterUploadSlotsOverlay from '@/views/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
-import { ROUTE } from '@/router/routes'
 import AssetToolbarIntegrations from '@/views/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
@@ -33,7 +32,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2 pr-1">
         <div class="d-flex align-center">
           <div class="main-logo mr-sm-2 pl-1">
-            <RouterLink :to="{ name: ROUTE.DAM.ASSET.LIST }">
+            <RouterLink :to="{ name: '/(coreDam)/asset' }">
               <img
                 width="104"
                 height="42"

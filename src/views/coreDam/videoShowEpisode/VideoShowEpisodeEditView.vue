@@ -2,7 +2,6 @@
 import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 import { useVideoShowEpisodeEditActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeEditForm from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -44,7 +43,7 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
       <AActionCloseButton
-        :route-name="ROUTE.DAM.VIDEO_SHOW.DETAIL"
+        :route-name="'/(coreDam)/video-show/[id]'"
         :route-params="{ id: videoShowId }"
       />
     </template>

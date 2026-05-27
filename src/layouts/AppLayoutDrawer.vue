@@ -93,7 +93,7 @@ const { theme } = useTheme()
       <!--          <VAppBarNavIcon @click.stop="navIconClick" />-->
       <!--          <VSpacer />-->
       <!--          <VBtn-->
-      <!--            :to="{ name: ROUTE.DAM.ASSET.LIST }"-->
+      <!--            :to="{ name: '/(coreDam)/asset' }"-->
       <!--            size="small"-->
       <!--            variant="text"-->
       <!--            class="mx-2"-->

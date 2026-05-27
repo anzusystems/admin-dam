@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { ROUTE } from '@/router/routes'
 import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
@@ -25,9 +24,9 @@ const getDetail = () => {
 
 const closeRoute = computed(() => {
   if (podcastEpisode.value.podcast) {
-    return { name: ROUTE.DAM.PODCAST.DETAIL, params: { id: podcastEpisode.value.podcast } }
+    return { name: '/(coreDam)/podcast/[id]', params: { id: podcastEpisode.value.podcast } }
   }
-  return { name: ROUTE.DAM.PODCAST.LIST }
+  return { name: '/(coreDam)/podcast' }
 })
 
 const onSuccessfulCallback = () => {
@@ -50,7 +49,7 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: podcastId, episodeId: id }"
-          :route-name="ROUTE.DAM.PODCAST_EPISODE.EDIT"
+          :route-name="'/(coreDam)/podcast/[id]/episode/[episodeId]/edit'"
         />
       </Acl>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_DELETE">
@@ -61,7 +60,7 @@ onBeforeUnmount(() => {
         />
       </Acl>
       <AActionCloseButton
-        :route-name="ROUTE.DAM.PODCAST.DETAIL"
+        :route-name="'/(coreDam)/podcast/[id]'"
         :route-params="{ id: podcastId }"
       />
     </template>

@@ -13,7 +13,6 @@ import { storeToRefs } from 'pinia'
 import { usePodcastOneStore } from '@/stores/coreDam/podcastStore'
 import useVuelidate from '@vuelidate/core'
 import { useRouter } from 'vue-router'
-import { ROUTE } from '@/router/routes'
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -102,7 +101,7 @@ export const usePodcastEditActions = () => {
       await updatePodcast(podcastOneStore.podcast.id, podcast.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: ROUTE.DAM.PODCAST.LIST })
+      router.push({ name: '/(coreDam)/podcast' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
