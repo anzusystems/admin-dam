@@ -154,7 +154,7 @@ export const useDistributionCategoryCreateActions = () => {
       const res = await createDistributionCategory(distributionCategory.value)
       showRecordWas('created')
       if (successCallbackAction) successCallbackAction() // dialog.value = false
-      router.push({ name: '/(coreDam)/distribution-category', params: { id: res.id } })
+      router.push({ name: '/(coreDam)/distribution-category/[id]', params: { id: res.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

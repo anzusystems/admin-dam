@@ -109,7 +109,7 @@ export const useAssetLicenceGroupEditActions = () => {
       await updateAssetLicenceGroup(assetLicenceGroupOneStore.assetLicenceGroup.id, assetLicenceGroup.value)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/asset-licence' })
+      router.push({ name: '/(coreDam)/asset-licence-group' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
