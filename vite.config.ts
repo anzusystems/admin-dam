@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import VueRouter from 'vue-router/vite'
 import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
@@ -50,6 +51,36 @@ export default defineConfig({
       runtimeOnly: false,
       globalSFCScope: true,
       include: path.resolve(_dirname, './src/locales/**.json'),
+    }),
+    AutoImport({
+      imports: [
+        'vue',
+        'vue-router',
+        'pinia',
+        {
+          'vue-i18n': ['useI18n'],
+          '@vuelidate/core': ['useVuelidate'],
+          '@anzusystems/common-admin': [
+            'isUndefined', 'isDefined', 'isNull', 'isString', 'isArray',
+            'isInt', 'isNumber', 'isEmpty', 'isEmptyObject', 'isFunction',
+            'dateTimeNow', 'dateTimeFriendly', 'cloneDeep', 'stringToInt',
+            'stringToKebabCase', 'useAlerts', 'useValidate', 'defineBreadcrumbs',
+            'defineCached', 'DATETIME_MAX', 'DATETIME_MIN', 'HTTP_STATUS_OK',
+            'HTTP_STATUS_UNAUTHORIZED', 'SORT_BY_ID', 'useTheme',
+          ],
+        },
+        {
+          from: '@anzusystems/common-admin',
+          imports: [
+            'IntegerId', 'IntegerIdNullable', 'DocId', 'DatetimeUTC',
+            'DatetimeUTCNullable', 'ValueObjectOption',
+            'AnzuUserAndTimeTrackingAware', 'ResourceNameSystemAware', 'SortableItem',
+          ],
+          type: true,
+        },
+      ],
+      dts: 'src/auto-imports.d.ts',
+      vueTemplate: true,
     }),
     sentryVitePlugin({
       disable: !shouldEnableSentry,

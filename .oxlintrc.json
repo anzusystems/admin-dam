@@ -17,7 +17,8 @@
     ".stylelintrc.js",
     "cypress/**",
     "eslint.config.mjs",
-    "src/typed-router.d.ts"
+    "src/typed-router.d.ts",
+    "src/auto-imports.d.ts"
   ],
   "rules": {
     "vue/no-arrow-functions-in-watch": "error",
