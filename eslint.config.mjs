@@ -1,43 +1,12 @@
 import stylistic from '@stylistic/eslint-plugin'
-// import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 import pluginVue from 'eslint-plugin-vue'
 import pluginPinia from 'eslint-plugin-pinia'
 import pluginVuetify from 'eslint-plugin-vuetify'
 import oxlint from 'eslint-plugin-oxlint'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 
-const tsExtensionPlugin = {
-  rules: {
-    'no-ts-extension': {
-      meta: {
-        type: 'problem',
-        docs: {
-          description: 'Disallow .ts extension in import statements',
-        },
-        fixable: 'code',
-        schema: [],
-      },
-      create(context) {
-        return {
-          ImportDeclaration(node) {
-            const source = node.source.value
-            if (typeof source === 'string' && source.endsWith('.ts')) {
-              context.report({
-                node,
-                message: 'Do not include .ts extension in import paths',
-                fix(fixer) {
-                  const sourceText = node.source.raw
-                  const newSource = sourceText.replace(/\.ts(['"])$/, '$1')
-                  return fixer.replaceText(node.source, newSource)
-                },
-              })
-            }
-          },
-        }
-      },
-    },
-  },
-}
+import { recommended as anzuRecommended } from '@anzusystems/common-admin/eslint'
+import validRouteName from './eslint/rules/valid-route-name.mjs'
 
 export default defineConfigWithVueTs(
   {
@@ -67,19 +36,23 @@ export default defineConfigWithVueTs(
       'pinia/require-setup-store-properties-export': 'error',
     },
   },
-  {
-    plugins: {
-      'ts-extension': tsExtensionPlugin,
-    },
-    rules: {
-      'ts-extension/no-ts-extension': 'error',
-    },
-  },
+  anzuRecommended({
+    // common-admin marks legacy filter/datatable/api helpers as deprecated; the
+    // codebase still uses them in many places. Surface as warning so CI passes —
+    // dedicated cleanup PR will migrate to the new APIs.
+    deprecatedImports: { severity: 'warn' },
+  }),
   {
     plugins: {
       '@stylistic': stylistic,
+      'anzu-local': {
+        rules: {
+          'valid-route-name': validRouteName,
+        },
+      },
     },
     rules: {
+      'anzu-local/valid-route-name': 'error',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-empty-interface': 'off',
@@ -121,5 +94,4 @@ export default defineConfigWithVueTs(
     },
   },
   ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json')
-  // skipFormatting,
 )

@@ -10,8 +10,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "production": "vite build --mode production",
-    "development": "vite build --mode development --sourcemap",
+    "production": "yarn browserslist:update && vite build --mode production",
+    "development": "yarn browserslist:update && vite build --mode development --sourcemap",
     "preview": "vite preview",
     "ci": "run-s --print-name generate:dts lint:tsc lint:oxlint lint:eslint lint:stylelint",
     "lint": "[ \"$*\" = \"--fix\" ] && yarn lint:fix || yarn ci",
@@ -24,10 +24,9 @@
     "lint:eslint:fix": "eslint --fix",
     "lint:stylelint": "stylelint **/*.{scss,vue}",
     "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix",
-    "lint:prettier": "prettier -c \"src/**/*.{ts,vue}\"",
-    "lint:prettier:fix": "prettier -w \"src/**/*.{ts,vue}\"",
     "format": "oxfmt src/",
     "format:check": "oxfmt src/ --check",
+    "browserslist:update": "npx --yes browserslist@latest --update-db",
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
@@ -70,7 +69,6 @@
     "@types/rusha": "^0.8.3",
     "@types/sortablejs": "^1.15.9",
     "@vitejs/plugin-vue": "^6.0.7",
-    "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/language-server": "3.3.2",
     "@vue/tsconfig": "^0.9.1",
@@ -89,7 +87,6 @@
     "oxlint": "1.62.0",
     "postcss": "^8.5.15",
     "postcss-html": "^1.8.1",
-    "prettier": "^3.8.3",
     "sass": "^1.100.0",
     "stylelint": "^17.12.0",
     "stylelint-config-recommended-vue": "^1.6.1",
