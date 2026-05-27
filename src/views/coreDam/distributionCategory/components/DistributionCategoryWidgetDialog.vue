@@ -6,7 +6,7 @@ import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
-import type { DamAssetTypeType, DocIdNullable } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(

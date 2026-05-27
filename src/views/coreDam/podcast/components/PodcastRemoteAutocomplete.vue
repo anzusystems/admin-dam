@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, type DocIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { usePodcastSelectActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/model/coreDam/filter/PodcastFilter'
 

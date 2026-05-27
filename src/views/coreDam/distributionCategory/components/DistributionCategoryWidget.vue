@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
-import type { DocIdNullable } from '@anzusystems/common-admin'
 import { DamAssetTypeDefault } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'

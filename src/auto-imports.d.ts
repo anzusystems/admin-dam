@@ -115,7 +115,7 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { IntegerId, IntegerIdNullable, DocId, DatetimeUTC, DatetimeUTCNullable, ValueObjectOption, AnzuUserAndTimeTrackingAware, ResourceNameSystemAware, SortableItem } from '@anzusystems/common-admin'
+  export type { IntegerId, IntegerIdNullable, DocId, DocIdNullable, DatetimeUTC, DatetimeUTCNullable, ValueObjectOption, AnzuUserAndTimeTrackingAware, ResourceNameSystemAware, SortableItem } from '@anzusystems/common-admin'
   import('@anzusystems/common-admin')
 }
 

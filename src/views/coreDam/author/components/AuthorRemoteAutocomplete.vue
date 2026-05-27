@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { DocIdNullable } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'

@@ -1,4 +1,4 @@
-import type { DamDistributionServiceTypeType, DocIdNullable } from '@anzusystems/common-admin'
+import type { DamDistributionServiceTypeType } from '@anzusystems/common-admin'
 
 const dialogCancel = ref(false)
 const distributionIdToCancel = ref<DocIdNullable>(null)

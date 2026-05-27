@@ -72,7 +72,7 @@ export default defineConfig({
         {
           from: '@anzusystems/common-admin',
           imports: [
-            'IntegerId', 'IntegerIdNullable', 'DocId', 'DatetimeUTC',
+            'IntegerId', 'IntegerIdNullable', 'DocId', 'DocIdNullable', 'DatetimeUTC',
             'DatetimeUTCNullable', 'ValueObjectOption',
             'AnzuUserAndTimeTrackingAware', 'ResourceNameSystemAware', 'SortableItem',
           ],
