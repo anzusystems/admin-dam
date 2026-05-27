@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AnzuUserListView from '@/views/common/anzuUser/AnzuUserListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AnzuUserListView from '@/domains/common/anzuUser/components/AnzuUserListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

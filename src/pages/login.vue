@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginView from '@/views/system/LoginView.vue'
+import LoginView from '@/domains/system/views/LoginView.vue'
 
 definePage({
   meta: {

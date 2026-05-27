@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { AAlerts, ASystemBar } from '@anzusystems/common-admin'
-import { envConfig } from '@/services/EnvConfigService'
-import ActionbarTeleportTarget from '@/components/system/ActionbarTeleportTarget.vue'
+import { envConfig } from '@/shared/EnvConfigService'
+import ActionbarTeleportTarget from '@/domains/system/components/ActionbarTeleportTarget.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
 import { useDisplay } from 'vuetify'
-import SidebarMain from '@/components/system/sidebar/SidebarMain.vue'
-import SidebarRail from '@/components/system/sidebar/SidebarRail.vue'
-import SidebarAppendMain from '@/components/system/sidebar/SidebarAppendMain.vue'
-import SidebarAppendRail from '@/components/system/sidebar/SidebarAppendRail.vue'
+import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
+import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
+import SidebarAppendMain from '@/domains/system/components/sidebar/SidebarAppendMain.vue'
+import SidebarAppendRail from '@/domains/system/components/sidebar/SidebarAppendRail.vue'
 
 const { mobile } = useDisplay()
 
@@ -32,24 +32,55 @@ const { theme } = useTheme()
   <AAlerts />
   <VApp :theme="theme">
     <ASystemBar :current-version="envConfig.appVersion" />
-    <VNavigationDrawer v-model="drawer" :rail="rail">
+    <VNavigationDrawer
+      v-model="drawer"
+      :rail="rail"
+    >
       <SidebarMain v-show="!rail" />
-      <SidebarRail v-show="rail" v-if="!mobile" />
+      <SidebarRail
+        v-show="rail"
+        v-if="!mobile"
+      />
       <template #append>
         <VDivider />
         <SidebarAppendMain :class="{ 'd-flex': !rail, 'd-none': rail }" />
-        <SidebarAppendRail v-if="!mobile" :class="{ 'd-flex': rail, 'd-none': !rail }" />
+        <SidebarAppendRail
+          v-if="!mobile"
+          :class="{ 'd-flex': rail, 'd-none': !rail }"
+        />
       </template>
     </VNavigationDrawer>
-    <VAppBar density="compact" elevation="0" class="system-border-b" :order="-1">
+    <VAppBar
+      density="compact"
+      elevation="0"
+      class="system-border-b"
+      :order="-1"
+    >
       <div class="d-flex pr-2 w-100 justify-space-between full-width align-center">
         <div class="d-flex align-center">
-          <VAppBarNavIcon data-cy="navbar-collapse" size="small" class="mx-1" @click.stop="navIconClick" />
+          <VAppBarNavIcon
+            data-cy="navbar-collapse"
+            size="small"
+            class="mx-1"
+            @click.stop="navIconClick"
+          />
         </div>
         <div class="main-logo mr-sm-2">
           <RouterLink to="/">
-            <img width="104" height="42" :src="logoFull" alt="Admin" class="hidden-xs" />
-            <img width="42" height="42" :src="logoNoText" alt="DAM" class="hidden-sm-and-up" />
+            <img
+              width="104"
+              height="42"
+              :src="logoFull"
+              alt="Admin"
+              class="hidden-xs"
+            >
+            <img
+              width="42"
+              height="42"
+              :src="logoNoText"
+              alt="DAM"
+              class="hidden-sm-and-up"
+            >
           </RouterLink>
         </div>
         <KeepAlive>
@@ -90,7 +121,10 @@ const { theme } = useTheme()
     <!--      </div>-->
     <!--    </VAppBar>-->
     <VMain>
-      <VContainer class="pa-2" fluid>
+      <VContainer
+        class="pa-2"
+        fluid
+      >
         <slot />
       </VContainer>
     </VMain>

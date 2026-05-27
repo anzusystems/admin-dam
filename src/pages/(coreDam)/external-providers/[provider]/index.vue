@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ExternalProviderAssetListView from '@/views/coreDam/externalProviderAsset/ExternalProviderAssetListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import ExternalProviderAssetListView from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

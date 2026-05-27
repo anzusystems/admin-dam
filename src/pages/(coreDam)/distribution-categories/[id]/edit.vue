@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DistributionCategoryEditView from '@/views/coreDam/distributionCategory/DistributionCategoryEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import DistributionCategoryEditView from '@/domains/coreDam/distributionCategory/components/DistributionCategoryEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

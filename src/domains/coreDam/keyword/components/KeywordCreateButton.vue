@@ -1,0 +1,164 @@
+<script lang="ts" setup>
+import type { DamKeyword, ValidationScope } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  useDamKeywordFactory,
+} from '@anzusystems/common-admin'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { createKeyword, ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useKeywordValidation } from '@/domains/coreDam/keyword/composables/keywordValidation'
+import { KeywordCreateValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+
+const props = withDefaults(
+  defineProps<{
+    initialValue?: string
+    disableRedirect?: boolean
+    variant?: 'button' | 'icon'
+    buttonT?: string
+    buttonClass?: string
+    dataCy?: string
+    disabled?: boolean | undefined
+    validationScope?: ValidationScope
+  }>(),
+  {
+    initialValue: '',
+    disableRedirect: false,
+    variant: 'button',
+    buttonT: 'common.button.create',
+    buttonClass: 'ml-2',
+    dataCy: undefined,
+    disabled: undefined,
+    validationScope: KeywordCreateValidationScopeSymbol,
+  }
+)
+const emit = defineEmits<{
+  (e: 'onSuccess', data: DamKeyword): void
+}>()
+
+const { currentExtSystemId } = useCurrentExtSystem()
+
+const { createDefault } = useDamKeywordFactory()
+const keyword = ref<DamKeyword>(createDefault(currentExtSystemId.value))
+const dialog = ref(false)
+const buttonLoading = ref(false)
+
+const onClick = () => {
+  keyword.value = createDefault(currentExtSystemId.value, true)
+  keyword.value.name = props.initialValue
+  dialog.value = true
+}
+
+const onCancel = () => {
+  dialog.value = false
+}
+
+const router = useRouter()
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const { v$ } = useKeywordValidation(keyword, props.validationScope)
+const { t } = useI18n()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+const onConfirm = async () => {
+  if (buttonLoading.value) return
+  try {
+    buttonLoading.value = true
+    v$.value.$touch()
+    if (v$.value.$invalid) {
+      showValidationError()
+      buttonLoading.value = false
+      return
+    }
+    const res = await createKeyword(keyword.value)
+    emit('onSuccess', res)
+    showRecordWas('created')
+    dialog.value = false
+    if (!isUndefined(res.id) && !props.disableRedirect) {
+      router.push({ name: '/(coreDam)/keywords/[id]', params: { id: res.id } })
+    }
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    buttonLoading.value = false
+  }
+}
+</script>
+
+<template>
+  <ABtnPrimary
+    v-if="variant === 'button'"
+    :class="buttonClass"
+    :data-cy="dataCy"
+    :disabled="disabled"
+    rounded="pill"
+    @click.stop="onClick"
+  >
+    {{ t(buttonT) }}
+  </ABtnPrimary>
+  <VBtn
+    v-else
+    :class="buttonClass"
+    :data-cy="dataCy"
+    icon
+    :disabled="disabled"
+    variant="text"
+    size="small"
+    @click.stop="onClick"
+  >
+    <VIcon icon="mdi-plus" />
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('coreDam.keyword.button.add') }}
+    </VTooltip>
+  </VBtn>
+  <VDialog v-model="dialog">
+    <VCard
+      v-if="dialog"
+      width="500"
+      class="mt-0 mr-auto ml-auto"
+      data-cy="create-panel"
+    >
+      <ADialogToolbar @on-cancel="onCancel">
+        {{ t('coreDam.keyword.meta.create') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
+          <ARow>
+            <AFormTextField
+              v-model="keyword.name"
+              :label="t('coreDam.keyword.model.name')"
+              :v="v$.keyword.name"
+              required
+              data-cy="keyword-name"
+              @keyup.enter="onConfirm"
+            />
+          </ARow>
+        </ASystemEntityScope>
+      </VCardText>
+      <VCardActions>
+        <VSpacer />
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="onCancel"
+        >
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="buttonLoading"
+          data-cy="button-confirm"
+          @click.stop="onConfirm"
+        >
+          {{ t(buttonT) }}
+        </ABtnPrimary>
+      </VCardActions>
+    </VCard>
+  </VDialog>
+</template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import UserListView from '@/views/coreDam/user/UserListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import UserListView from '@/domains/coreDam/user/components/UserListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

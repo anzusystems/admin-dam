@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PodcastEpisodeDetailView from '@/views/coreDam/podcastEpisode/PodcastEpisodeDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import PodcastEpisodeDetailView from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

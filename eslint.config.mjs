@@ -37,10 +37,9 @@ export default defineConfigWithVueTs(
     },
   },
   anzuRecommended({
-    // common-admin marks legacy filter/datatable/api helpers as deprecated; the
-    // codebase still uses them in many places. Surface as warning so CI passes —
-    // dedicated cleanup PR will migrate to the new APIs.
-    deprecatedImports: { severity: 'warn' },
+    // Disabled during the domain-driven restructure to keep CI signal clean.
+    // Re-enable in the dedicated deprecated-imports cleanup PR.
+    deprecatedImports: 'off',
   }),
   {
     plugins: {

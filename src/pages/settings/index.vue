@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SettingsView from '@/views/system/settings/SettingsView.vue'
+import SettingsView from '@/domains/system/views/settings/SettingsView.vue'
 
 definePage({
   meta: {

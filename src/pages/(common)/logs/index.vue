@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import LogListView from '@/views/common/log/LogListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import LogListView from '@/domains/common/log/components/LogListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

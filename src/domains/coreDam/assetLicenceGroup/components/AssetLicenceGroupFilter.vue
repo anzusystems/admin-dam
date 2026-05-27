@@ -1,0 +1,47 @@
+<script lang="ts" setup>
+import { useAssetLicenceGroupListFilter } from '@/domains/coreDam/assetLicenceGroup/filter/AssetLicenceGroupFilter'
+import { AFilterInteger, AFilterWrapper } from '@anzusystems/common-admin'
+
+const emit = defineEmits<{
+  (e: 'submitFilter'): void
+  (e: 'resetFilter'): void
+}>()
+
+const filterAssetLicenceGroup = useAssetLicenceGroupListFilter()
+const touched = ref(false)
+
+const submitFilter = () => {
+  touched.value = false
+  emit('submitFilter')
+}
+
+const resetFilter = () => {
+  touched.value = false
+  emit('resetFilter')
+}
+
+const onAnyFilterUpdate = () => {
+  touched.value = true
+}
+</script>
+
+<template>
+  <VForm
+    name="search"
+    @submit.prevent="submitFilter"
+  >
+    <AFilterWrapper
+      :touched="touched"
+      @reset-filter="resetFilter"
+    >
+      <VRow class="align-start">
+        <VCol cols="1">
+          <AFilterInteger
+            v-model="filterAssetLicenceGroup.id"
+            @update:model-value="onAnyFilterUpdate"
+          />
+        </VCol>
+      </VRow>
+    </AFilterWrapper>
+  </VForm>
+</template>

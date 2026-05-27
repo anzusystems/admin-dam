@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AssetDetailView from '@/views/coreDam/asset/detail/AssetDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AssetDetailView from '@/domains/coreDam/asset/components/detail/AssetDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

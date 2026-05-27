@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AssetLicenceGroupListView from '@/views/coreDam/assetLicenceGroup/AssetLicenceGroupListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AssetLicenceGroupListView from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

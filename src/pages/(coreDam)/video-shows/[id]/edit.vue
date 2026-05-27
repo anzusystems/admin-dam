@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VideoShowEditView from '@/views/coreDam/videoShow/VideoShowEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import VideoShowEditView from '@/domains/coreDam/videoShow/components/VideoShowEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

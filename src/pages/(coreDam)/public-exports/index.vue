@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PublicExportListView from '@/views/coreDam/publicExport/PublicExportListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import PublicExportListView from '@/domains/coreDam/publicExport/components/PublicExportListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

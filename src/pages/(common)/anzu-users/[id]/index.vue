@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AnzuUserDetailView from '@/views/common/anzuUser/AnzuUserDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AnzuUserDetailView from '@/domains/common/anzuUser/components/AnzuUserDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/anzu-users/:id(\\d+)',

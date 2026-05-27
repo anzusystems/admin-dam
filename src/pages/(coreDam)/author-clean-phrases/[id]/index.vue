@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AuthorCleanPhraseDetailView from '@/views/coreDam/authorCleanPhrase/AuthorCleanPhraseDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AuthorCleanPhraseDetailView from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PermissionGroupListView from '@/views/common/permissionGroup/PermissionGroupListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import PermissionGroupListView from '@/domains/common/permissionGroup/components/PermissionGroupListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

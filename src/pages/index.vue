@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HomepageView from '@/views/system/HomepageView.vue'
+import HomepageView from '@/domains/system/views/HomepageView.vue'
 
 definePage({
   meta: {

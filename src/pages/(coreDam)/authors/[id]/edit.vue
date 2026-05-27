@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AuthorEditView from '@/views/coreDam/author/AuthorEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AuthorEditView from '@/domains/coreDam/author/components/AuthorEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

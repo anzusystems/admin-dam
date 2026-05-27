@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import UserDetailView from '@/views/coreDam/user/UserDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import UserDetailView from '@/domains/coreDam/user/components/UserDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/users/:id(\\d+)',

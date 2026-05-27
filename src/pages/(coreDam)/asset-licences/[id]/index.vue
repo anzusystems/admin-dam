@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AssetLicenceDetailView from '@/views/coreDam/assetLicence/AssetLicenceDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AssetLicenceDetailView from '@/domains/coreDam/assetLicence/components/AssetLicenceDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/asset-licences/:id(\\d+)',

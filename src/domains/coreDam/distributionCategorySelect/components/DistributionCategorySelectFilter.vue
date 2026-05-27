@@ -1,0 +1,77 @@
+<script lang="ts" setup>
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import { useDistributionCategorySelectListFilter } from '@/domains/coreDam/distributionCategorySelect/filter/DistributionCategorySelectFilter'
+import {
+  AFilterInteger,
+  AFilterString,
+  AFilterValueObjectOptionsSelect,
+  AFilterWrapper,
+} from '@anzusystems/common-admin'
+
+const emit = defineEmits<{
+  (e: 'submitFilter'): void
+  (e: 'resetFilter'): void
+}>()
+
+const filter = useDistributionCategorySelectListFilter()
+const touched = ref(false)
+
+const submitFilter = () => {
+  touched.value = false
+  emit('submitFilter')
+}
+
+const resetFilter = () => {
+  touched.value = false
+  emit('resetFilter')
+}
+
+const { assetTypeOptions } = useAssetType()
+
+const onAnyFilterUpdate = () => {
+  touched.value = true
+}
+</script>
+
+<template>
+  <VForm
+    name="search"
+    @submit.prevent="submitFilter"
+  >
+    <AFilterWrapper
+      :touched="touched"
+      enable-top
+      @reset-filter="resetFilter"
+    >
+      <template #top>
+        <VRow class="align-start">
+          <VCol
+            cols="12"
+            md="6"
+          >
+            <AFilterValueObjectOptionsSelect
+              v-model="filter.type"
+              :items="assetTypeOptions"
+              @change="submitFilter"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+      </template>
+      <VRow class="align-start">
+        <VCol cols="1">
+          <AFilterInteger
+            v-model="filter.id"
+            @update:model-value="onAnyFilterUpdate"
+          />
+        </VCol>
+        <VCol cols="2">
+          <AFilterString
+            v-model="filter.serviceSlug"
+            @update:model-value="onAnyFilterUpdate"
+          />
+        </VCol>
+      </VRow>
+    </AFilterWrapper>
+  </VForm>
+</template>

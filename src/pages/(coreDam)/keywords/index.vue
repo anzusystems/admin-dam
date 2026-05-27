@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import KeywordListView from '@/views/coreDam/keyword/KeywordListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import KeywordListView from '@/domains/coreDam/keyword/components/KeywordListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AnzuUserEditView from '@/views/common/anzuUser/AnzuUserEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AnzuUserEditView from '@/domains/common/anzuUser/components/AnzuUserEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/anzu-users/:id(\\d+)/edit',

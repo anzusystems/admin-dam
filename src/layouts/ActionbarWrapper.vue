@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useActionbar } from '@/composables/system/actionbar'
+import { useActionbar } from '@/domains/system/composables/actionbar'
 import { type BreadcrumbItem, type Breadcrumbs } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -32,13 +32,32 @@ const breadcrumbTo = (item: BreadcrumbItem, index: number) => {
 </script>
 
 <template>
-  <Teleport v-if="canTeleport" defer to="#anzu-actionbar">
+  <Teleport
+    v-if="canTeleport"
+    defer
+    to="#anzu-actionbar"
+  >
     <div class="flex-grow-1 flex-shrink-1 min-width-0 overflow-hidden">
       <slot name="breadcrumbs">
-        <div v-if="!isUndefined(breadcrumbs)" class="d-flex align-center min-width-0">
-          <VBreadcrumbsDivider v-if="breadcrumbs.items.value.length > 0" class="px-1"> &raquo; </VBreadcrumbsDivider>
-          <VBreadcrumbs :key="String(route.name ?? '')" class="pl-1 min-width-0" density="compact">
-            <template v-for="(breadcrumb, index) in breadcrumbs.items.value" :key="breadcrumb.routeName">
+        <div
+          v-if="!isUndefined(breadcrumbs)"
+          class="d-flex align-center min-width-0"
+        >
+          <VBreadcrumbsDivider
+            v-if="breadcrumbs.items.value.length > 0"
+            class="px-1"
+          >
+            &raquo;
+          </VBreadcrumbsDivider>
+          <VBreadcrumbs
+            :key="String(route.name ?? '')"
+            class="pl-1 min-width-0"
+            density="compact"
+          >
+            <template
+              v-for="(breadcrumb, index) in breadcrumbs.items.value"
+              :key="breadcrumb.routeName"
+            >
               <VBreadcrumbsItem
                 :to="breadcrumbTo(breadcrumb, index)"
                 :disabled="false"
@@ -48,7 +67,9 @@ const breadcrumbTo = (item: BreadcrumbItem, index: number) => {
                   {{ breadcrumb.title }}
                 </div>
               </VBreadcrumbsItem>
-              <VBreadcrumbsDivider v-if="index < breadcrumbs.items.value.length - 1"> &raquo; </VBreadcrumbsDivider>
+              <VBreadcrumbsDivider v-if="index < breadcrumbs.items.value.length - 1">
+                &raquo;
+              </VBreadcrumbsDivider>
             </template>
           </VBreadcrumbs>
         </div>

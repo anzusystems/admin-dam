@@ -1,0 +1,59 @@
+import { type FilterBag, type Pagination, useJobApi } from '@anzusystems/common-admin'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { useJobOneStore } from '@/domains/coreDam/job/store/jobStore'
+import type { Job } from '@/domains/coreDam/job/types/Job'
+
+const { showErrorsDefault } = useAlerts()
+
+const datatableHiddenColumns = ref<Array<string>>([])
+const listLoading = ref(false)
+const detailLoading = ref(false)
+
+const { fetchJobList, fetchJob } = useJobApi<Job>(damClient, SYSTEM_CORE_DAM)
+
+export const useJobListActions = () => {
+  const listItems = ref<Array<Job>>([])
+
+  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+    listLoading.value = true
+    try {
+      listItems.value = await fetchJobList(pagination, filterBag)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      listLoading.value = false
+    }
+  }
+
+  return {
+    datatableHiddenColumns,
+    listLoading,
+    listItems,
+    fetchList,
+  }
+}
+
+export const useJobDetailActions = () => {
+  const jobOneStore = useJobOneStore()
+  const { job } = storeToRefs(jobOneStore)
+
+  const fetchData = async (id: number) => {
+    detailLoading.value = true
+    try {
+      const job = await fetchJob(id)
+      jobOneStore.setJob(job)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  return {
+    job,
+    detailLoading,
+    fetchData,
+    resetStore: jobOneStore.reset,
+  }
+}

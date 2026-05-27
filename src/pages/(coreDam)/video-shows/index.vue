@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VideoShowListView from '@/views/coreDam/videoShow/VideoShowListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import VideoShowListView from '@/domains/coreDam/videoShow/components/VideoShowListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

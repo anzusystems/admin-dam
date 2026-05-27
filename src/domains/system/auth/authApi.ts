@@ -1,0 +1,13 @@
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { apiAnyRequest } from '@anzusystems/common-admin'
+import type { SimpleLoginForm } from '@/domains/system/auth/simpleLogin'
+
+export const AUTH_PATH_PREFIX = '/auth'
+export const AUTH_LOGIN_PATH = AUTH_PATH_PREFIX + '/login'
+
+export const login = (data: SimpleLoginForm) =>
+  apiAnyRequest<SimpleLoginForm>(damClient, 'POST', AUTH_LOGIN_PATH, {}, data, SYSTEM_CORE_DAM, '')
+
+export const refreshToken = () =>
+  apiAnyRequest<object>(damClient, 'POST', AUTH_PATH_PREFIX + '/refresh-token', {}, {}, SYSTEM_CORE_DAM, '')

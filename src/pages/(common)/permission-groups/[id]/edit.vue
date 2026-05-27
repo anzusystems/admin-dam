@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PermissionGroupEditView from '@/views/common/permissionGroup/PermissionGroupEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import PermissionGroupEditView from '@/domains/common/permissionGroup/components/PermissionGroupEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/permission-groups/:id(\\d+)/edit',

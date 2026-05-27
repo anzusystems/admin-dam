@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import JobListView from '@/views/coreDam/job/JobListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import JobListView from '@/domains/coreDam/job/components/JobListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

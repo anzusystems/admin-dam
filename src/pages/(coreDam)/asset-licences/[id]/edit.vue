@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AssetLicenceEditView from '@/views/coreDam/assetLicence/AssetLicenceEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AssetLicenceEditView from '@/domains/coreDam/assetLicence/components/AssetLicenceEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/asset-licences/:id(\\d+)/edit',

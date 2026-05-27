@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AssetLicenceGroupDetailView from '@/views/coreDam/assetLicenceGroup/AssetLicenceGroupDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AssetLicenceGroupDetailView from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/asset-licence-groups/:id(\\d+)',

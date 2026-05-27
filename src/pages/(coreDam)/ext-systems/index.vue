@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ExtSystemListView from '@/views/coreDam/extSystem/ExtSystemListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import ExtSystemListView from '@/domains/coreDam/extSystem/components/ExtSystemListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

@@ -1,7 +1,7 @@
-import { createAppInitialize, useAppInitialize } from '@/composables/system/appInitialize'
+import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 import { checkAbility } from '@/router/checkAbility'
-import { damClient } from '@/services/api/clients/damClient'
+import { damClient } from '@/shared/apiClients/damClient'
 import { useDamConfigState, useDamConfigStore } from '@anzusystems/common-admin'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 

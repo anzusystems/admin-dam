@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ALogoutView } from '@anzusystems/common-admin'
-import { envConfig } from '@/services/EnvConfigService'
+import { envConfig } from '@/shared/EnvConfigService'
 
 definePage({
   meta: {

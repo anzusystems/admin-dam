@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ClosePageView from '@/views/system/ClosePageView.vue'
+import ClosePageView from '@/domains/system/views/ClosePageView.vue'
 
 definePage({
   meta: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PublicExportDetailView from '@/views/coreDam/publicExport/PublicExportDetailView.vue'
-import { ACL } from '@/composables/auth/auth'
+import PublicExportDetailView from '@/domains/coreDam/publicExport/components/PublicExportDetailView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/public-exports/:id(\\d+)',

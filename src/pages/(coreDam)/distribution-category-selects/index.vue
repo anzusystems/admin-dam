@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DistributionCategorySelectListView from '@/views/coreDam/distributionCategorySelect/DistributionCategorySelectListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import DistributionCategorySelectListView from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

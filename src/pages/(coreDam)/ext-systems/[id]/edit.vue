@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ExtSystemEditView from '@/views/coreDam/extSystem/ExtSystemEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import ExtSystemEditView from '@/domains/coreDam/extSystem/components/ExtSystemEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/ext-systems/:id(\\d+)/edit',

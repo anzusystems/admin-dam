@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PublicExportEditView from '@/views/coreDam/publicExport/PublicExportEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import PublicExportEditView from '@/domains/coreDam/publicExport/components/PublicExportEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/public-exports/:id(\\d+)/edit',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import UserEditView from '@/views/coreDam/user/UserEditView.vue'
-import { ACL } from '@/composables/auth/auth'
+import UserEditView from '@/domains/coreDam/user/components/UserEditView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   path: '/users/:id(\\d+)/edit',

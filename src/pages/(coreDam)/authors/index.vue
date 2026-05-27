@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AuthorListView from '@/views/coreDam/author/AuthorListView.vue'
-import { ACL } from '@/composables/auth/auth'
+import AuthorListView from '@/domains/coreDam/author/components/AuthorListView.vue'
+import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
   meta: {

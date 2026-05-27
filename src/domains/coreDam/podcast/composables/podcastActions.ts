@@ -1,0 +1,144 @@
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import {
+  fetchPodcast,
+  fetchPodcastListByExtSystem,
+  fetchPodcastListByIds,
+  updatePodcast,
+} from '@/domains/coreDam/podcast/api/podcastApi'
+import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
+import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
+
+const { currentExtSystemId } = useCurrentExtSystem()
+
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+const datatableHiddenColumns = ref<Array<string>>(['id'])
+const listLoading = ref(false)
+const detailLoading = ref(false)
+const saveButtonLoading = ref(false)
+const saveAndCloseButtonLoading = ref(false)
+
+export const usePodcastListActions = () => {
+  const listItems = ref<Podcast[]>([])
+
+  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+    listLoading.value = true
+    try {
+      listItems.value = await fetchPodcastListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      listLoading.value = false
+    }
+  }
+
+  return {
+    datatableHiddenColumns,
+    listLoading,
+    listItems,
+    fetchList,
+  }
+}
+
+export const usePodcastDetailActions = () => {
+  const podcastOneStore = usePodcastOneStore()
+  const { podcast } = storeToRefs(podcastOneStore)
+
+  const fetchData = async (id: string) => {
+    detailLoading.value = true
+    try {
+      const podcast = await fetchPodcast(id)
+      podcastOneStore.setPodcast(podcast)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  return {
+    detailLoading,
+    podcast,
+    fetchData,
+    resetStore: podcastOneStore.reset,
+  }
+}
+
+export const usePodcastEditActions = () => {
+  const v$ = useVuelidate()
+  const router = useRouter()
+  const podcastOneStore = usePodcastOneStore()
+  const { podcast } = storeToRefs(podcastOneStore)
+
+  const fetchData = async (id: string) => {
+    detailLoading.value = true
+    try {
+      const podcast = await fetchPodcast(id)
+      podcastOneStore.setPodcast(podcast)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  const onUpdate = async (close = false) => {
+    try {
+      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
+      v$.value.$touch()
+      if (v$.value.$invalid) {
+        showValidationError()
+        saveButtonLoading.value = false
+        saveAndCloseButtonLoading.value = false
+        return
+      }
+      await updatePodcast(podcastOneStore.podcast.id, podcast.value)
+      showRecordWas('updated')
+      if (!close) return
+      router.push({ name: '/(coreDam)/podcasts' })
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      saveButtonLoading.value = false
+      saveAndCloseButtonLoading.value = false
+    }
+  }
+
+  return {
+    detailLoading,
+    saveButtonLoading,
+    saveAndCloseButtonLoading,
+    podcast,
+    fetchData,
+    onUpdate,
+    resetStore: podcastOneStore.reset,
+  }
+}
+
+export const usePodcastSelectActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    const podcasts = await fetchPodcastListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+
+    return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
+      title: podcast.texts.title,
+      value: podcast.id,
+    }))
+  }
+
+  const fetchItemsByIds = async (ids: string[]) => {
+    const podcasts = await fetchPodcastListByIds(currentExtSystemId.value, ids)
+
+    return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
+      title: podcast.texts.title,
+      value: podcast.id,
+    }))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
+  }
+}
