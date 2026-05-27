@@ -2,7 +2,6 @@ import type { FilterBag, Pagination, PermissionGroup } from '@anzusystems/common
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
 import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore'
-import useVuelidate from '@vuelidate/core'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()

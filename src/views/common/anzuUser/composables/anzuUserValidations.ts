@@ -1,4 +1,3 @@
-import useVuelidate from '@vuelidate/core'
 import type { AnzuUser } from '@anzusystems/common-admin'
 
 const { email, required, maxLength, minLength } = useValidate()

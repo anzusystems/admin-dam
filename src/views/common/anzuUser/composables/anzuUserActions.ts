@@ -2,7 +2,6 @@ import type { AnzuUser, DamUser, FilterBag, Pagination } from '@anzusystems/comm
 import { fetchDamUserList, fetchDamUserListByIds } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserApi } from '@/services/api/common/anzuUserApi'
-import useVuelidate from '@vuelidate/core'
 import { useAnzuUserOneStore } from '@/stores/common/anzuUserStore'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 

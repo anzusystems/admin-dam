@@ -1,4 +1,3 @@
-import useVuelidate from '@vuelidate/core'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 
 const { required, minLength, maxLength } = useValidate()

@@ -10,9 +10,6 @@ import {
   useAlerts,
   useValidate,
 } from '@anzusystems/common-admin'
-import useVuelidate from '@vuelidate/core'
-import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{

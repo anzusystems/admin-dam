@@ -8,11 +8,8 @@ import {
   type AssetFile,
   type AssetFileMainRouteAware,
   type DamAssetTypeType,
-  type DocId,
   useAlerts,
 } from '@anzusystems/common-admin'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
