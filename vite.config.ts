@@ -2,6 +2,7 @@ import path, { dirname } from 'path'
 import { fileURLToPath, URL } from 'url'
 import { defineConfig, type UserConfigExport } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import VueRouter from 'vue-router/vite'
 import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
@@ -24,6 +25,23 @@ export default defineConfig({
     },
   },
   plugins: [
+    VueRouter({
+      routesFolder: 'src/pages',
+      dts: 'src/typed-router.d.ts',
+      importMode: process.env.NODE_ENV === 'production' ? 'async' : 'sync',
+      getRouteName: (node) => {
+        let name = ''
+        let current = node
+        while (current.parent) {
+          const segment = current.value.rawSegment === 'index' ? '' : current.value.rawSegment
+          if (segment) {
+            name = '/' + segment + name
+          }
+          current = current.parent
+        }
+        return name || '/'
+      },
+    }),
     vue(),
     vuetify({
       autoImport: true,

@@ -47,5 +47,9 @@ lerna-debug.log*
 # Docker
 docker-compose.override.yml*
 
+# Temporary route migration artifacts
+routes-baseline.txt
+routes-current.txt
+
 # Exclusions
 !.gitkeep

@@ -3,7 +3,7 @@ import { useActionbar } from '@/composables/system/actionbar'
 import { computed } from 'vue'
 import type { UrlParams } from '@anzusystems/common-admin'
 import { isString, isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
-import { type RouteParams, type RouteRecordName, useRoute } from 'vue-router'
+import { type RouteParamsGeneric, type RouteRecordName, useRoute } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{
@@ -22,7 +22,7 @@ const route = useRoute()
 const parametrizeRoutePath = (to: {
   path: string
   name: string | undefined | RouteRecordName
-  params: RouteParams | undefined
+  params: RouteParamsGeneric | undefined
 }) => {
   to.path = stringUrlTemplateReplaceVueRouter(to.path, to.params ? (to.params as unknown as UrlParams) : {})
   to.params = undefined
@@ -35,7 +35,7 @@ interface Breadcrumb {
   to: {
     path: string
     name: string | undefined | RouteRecordName
-    params: RouteParams | undefined
+    params: RouteParamsGeneric | undefined
   }
 }
 
@@ -45,7 +45,7 @@ const breadcrumbs = computed(() => {
     .filter((item) => !isUndefined(item.meta.breadcrumbT))
     .forEach((value, index, array) => {
       if (value.path.length === 0) return
-      const to: { path: string; name: string | undefined | RouteRecordName; params: RouteParams | undefined } = {
+      const to: { path: string; name: string | undefined | RouteRecordName; params: RouteParamsGeneric | undefined } = {
         path: value.path,
         name: value.name ?? undefined,
         params: { ...route.params },

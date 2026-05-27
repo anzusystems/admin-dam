@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { routes as fileBasedRoutes, handleHotUpdate } from 'vue-router/auto-routes'
 import { beforeEachRoute } from '@/router/beforeEachRoute'
 import { systemRoutes } from '@/router/routes/system'
 import { ROUTE } from '@/router/routes'
@@ -26,6 +27,7 @@ import { publicExportRoutes } from '@/router/routes/coreDam/publicExport'
 const vueRouter = createRouter({
   history: createWebHistory(),
   routes: [
+    ...fileBasedRoutes,
     {
       path: '/',
       component: HomepageView,
@@ -68,6 +70,10 @@ const vueRouter = createRouter({
     },
   ],
 })
+
+if (import.meta.hot) {
+  handleHotUpdate(vueRouter)
+}
 
 vueRouter.beforeEach(async (to) => {
   return await beforeEachRoute(to)
