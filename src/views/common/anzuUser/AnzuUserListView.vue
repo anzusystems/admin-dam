@@ -2,7 +2,7 @@
 import { damClient } from '@/services/api/clients/damClient'
 import AnzuUserDatatable from '@/views/common/anzuUser/components/AnzuUserDatatable.vue'
 import AnzuUserCreateButton from '@/views/common/anzuUser/components/AnzuUserCreateButton.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import { ACard, useI18n } from '@anzusystems/common-admin'
 import { ACL } from '@/composables/auth/auth'

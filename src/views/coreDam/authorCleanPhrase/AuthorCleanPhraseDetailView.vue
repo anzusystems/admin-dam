@@ -5,7 +5,7 @@ import {
   useAuthorCleanPhraseRemoveActions,
 } from '@/views/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
 import AuthorCleanPhraseDetail from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, authorCleanPhrase } = useAuthorCleanPhraseDetailActions()

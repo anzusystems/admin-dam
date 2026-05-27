@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { usePodcastEditActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastEditForm from '@/views/coreDam/podcast/components/PodcastEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()

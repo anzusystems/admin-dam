@@ -7,7 +7,7 @@ import {
   useI18n,
 } from '@anzusystems/common-admin'
 import { useJobDetailActions } from '@/views/coreDam/job/composables/jobActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import JobDetailPodcastSynchronizer from '@/views/coreDam/job/components/JobDetailPodcastSynchronizer.vue'
 import JobDetailUserDataDelete from '@/views/coreDam/job/components/JobDetailUserDataDelete.vue'
 import {

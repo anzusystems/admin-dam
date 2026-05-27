@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeEditActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeEditForm from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute('/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit')
 const id = route.params.episodeId.toString()

@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectDetailActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import DistributionCategorySelectDetail from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, distributionCategorySelect } =

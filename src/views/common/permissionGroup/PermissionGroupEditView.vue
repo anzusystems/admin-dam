@@ -3,7 +3,7 @@ import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusyst
 import PermissionGroupEditForm from '@/views/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { damClient } from '@/services/api/clients/damClient'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

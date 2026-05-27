@@ -4,7 +4,7 @@ import AuthorDatatable from '@/views/coreDam/author/components/AuthorDatatable.v
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
 import type AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = useAuthorListActions()

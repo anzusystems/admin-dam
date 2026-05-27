@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupEditActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupEditForm from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

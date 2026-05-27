@@ -3,7 +3,7 @@ import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const route = useRoute()

@@ -7,7 +7,7 @@ import {
   useSentry,
   useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { useAuth } from '@/composables/auth/auth'
 import { SYSTEM_DAM } from '@/model/systems'
 

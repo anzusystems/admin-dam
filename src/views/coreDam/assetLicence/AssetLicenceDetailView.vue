@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceDetailActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceDetail from '@/views/coreDam/assetLicence/components/AssetLicenceDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, assetLicence } = useAssetLicenceDetailActions()

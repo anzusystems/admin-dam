@@ -2,7 +2,7 @@
 import { ACard, useI18n } from '@anzusystems/common-admin'
 import AssetLicenceGroupDatatable from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDatatable.vue'
 import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import AssetLicenceGroupCreateButton from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
 
 import { ACL } from '@/composables/auth/auth'

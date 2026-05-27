@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { usePublicExportEditActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import PublicExportEditForm from '@/views/coreDam/publicExport/components/PublicExportEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

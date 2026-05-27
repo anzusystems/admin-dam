@@ -3,7 +3,7 @@ import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusyst
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserDetail from '@/views/common/anzuUser/components/AnzuUserDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const route = useRoute()

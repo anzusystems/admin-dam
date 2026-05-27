@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 import { useDistributionCategoryListFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
 import DistributionCategoryCreateButton from '@/views/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'

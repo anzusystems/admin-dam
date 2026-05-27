@@ -3,7 +3,7 @@ import { ACard, useI18n } from '@anzusystems/common-admin'
 import PodcastCreateButton from '@/views/coreDam/podcast/components/PodcastCreateButton.vue'
 import PodcastDatatable from '@/views/coreDam/podcast/components/PodcastDatatable.vue'
 import { usePodcastListActions } from '@/views/coreDam/podcast/composables/podcastActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = usePodcastListActions()

@@ -3,7 +3,7 @@ import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusyst
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserEditForm from '@/views/common/anzuUser/components/AnzuUserEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

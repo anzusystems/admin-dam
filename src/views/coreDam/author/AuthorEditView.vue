@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorEditForm from '@/views/coreDam/author/components/AuthorEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()

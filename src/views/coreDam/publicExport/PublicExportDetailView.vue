@@ -5,7 +5,7 @@ import {
   usePublicExportRemoveActions,
 } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import PublicExportDetail from '@/views/coreDam/publicExport/components/PublicExportDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, publicExport } = usePublicExportDetailActions()

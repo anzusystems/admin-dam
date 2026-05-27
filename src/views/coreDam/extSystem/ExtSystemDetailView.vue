@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import ExtSystemDetail from '@/views/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, extSystem } = useExtSystemDetailActions()

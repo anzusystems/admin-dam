@@ -3,7 +3,7 @@ import { ACard, useI18n } from '@anzusystems/common-admin'
 import AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import AssetLicenceCreateButton from '@/views/coreDam/assetLicence/components/AssetLicenceCreateButton.vue'
 import { useAssetLicenceListActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { listLoading } = useAssetLicenceListActions()

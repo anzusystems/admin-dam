@@ -6,7 +6,7 @@ import { PodcastDetailTab, usePodcastDetailTab } from '@/views/coreDam/podcast/c
 import PodcastEpisodeDatatable from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import PodcastEpisodeCreateButton from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
 import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, podcast } = usePodcastDetailActions()

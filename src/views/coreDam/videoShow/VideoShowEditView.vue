@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useVideoShowEditActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowEditForm from '@/views/coreDam/videoShow/components/VideoShowEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()

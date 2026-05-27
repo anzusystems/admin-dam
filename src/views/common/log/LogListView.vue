@@ -5,7 +5,7 @@ import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { ACard, useI18n } from '@anzusystems/common-admin'
 import LogFilter from '@/views/common/log/components/LogFilter.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const logFilter = useLogFilter()
 const activeTab = ref<null | string>(null)

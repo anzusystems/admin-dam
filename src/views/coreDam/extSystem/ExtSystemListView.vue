@@ -2,7 +2,7 @@
 import { ACard, useI18n } from '@anzusystems/common-admin'
 import ExtSystemDatatable from '@/views/coreDam/extSystem/components/ExtSystemDatatable.vue'
 import { useExtSystemListActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useExtSystemListActions()
 

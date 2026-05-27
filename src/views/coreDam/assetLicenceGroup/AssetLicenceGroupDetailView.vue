@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupDetailActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupDetail from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, assetLicenceGroup } = useAssetLicenceGroupDetailActions()

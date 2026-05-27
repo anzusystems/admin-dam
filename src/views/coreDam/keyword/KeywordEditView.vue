@@ -2,7 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useKeywordEditActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import KeywordEditForm from '@/views/coreDam/keyword/components/KeywordEditForm.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()

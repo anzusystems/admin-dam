@@ -2,7 +2,7 @@
 import { ACard, useI18n } from '@anzusystems/common-admin'
 import DistributionCategorySelectDatatable from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectDatatable.vue'
 import { useDistributionCategorySelectListActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useDistributionCategorySelectListActions()
 

@@ -2,7 +2,7 @@
 import { AActionCloseButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useLogDetailActions } from '@/views/common/log/composables/logActions'
 import LogDetail from '@/views/common/log/components/LogDetail.vue'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
 const id = (route.params as { id: string }).id

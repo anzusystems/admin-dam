@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 import PublicExportDatatable from '@/views/coreDam/publicExport/components/PublicExportDatatable.vue'
 import PublicExportCreateButton from '@/views/coreDam/publicExport/components/PublicExportCreateButton.vue'

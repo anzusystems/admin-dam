@@ -2,7 +2,7 @@
 import UserDetail from '@/views/coreDam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/views/coreDam/user/composables/userActions'
 import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, user } = useUserDetailActions()
