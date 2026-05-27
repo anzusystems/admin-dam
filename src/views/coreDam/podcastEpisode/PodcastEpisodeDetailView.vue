@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
@@ -15,22 +15,19 @@ const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const route = useRoute()
 const router = useRouter()
-const podcastId = route.params.id.toString()
-const id = route.params.episodeId.toString()
+const podcastId = (route.params as { id: string }).id.toString()
+const id = (route.params as { episodeId: string }).episodeId.toString()
 
 const getDetail = () => {
   fetchData(id)
 }
 
-const closeRoute = computed(() => {
-  if (podcastEpisode.value.podcast) {
-    return { name: '/(coreDam)/podcast/[id]', params: { id: podcastEpisode.value.podcast } }
-  }
-  return { name: '/(coreDam)/podcast' }
-})
-
 const onSuccessfulCallback = () => {
-  router.push(closeRoute.value)
+  if (podcastEpisode.value.podcast) {
+    router.push({ name: '/(coreDam)/podcast/[id]', params: { id: podcastEpisode.value.podcast } })
+    return
+  }
+  router.push({ name: '/(coreDam)/podcast' })
 }
 
 onMounted(() => {

@@ -7,7 +7,7 @@ import KeywordEditForm from '@/views/coreDam/keyword/components/KeywordEditForm.
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = route.params.id.toString()
+const id = (route.params as { id: string }).id.toString()
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, keyword } =
   useKeywordEditActions()

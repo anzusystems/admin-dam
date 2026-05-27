@@ -27,7 +27,7 @@ export default defineConfig({
   plugins: [
     VueRouter({
       routesFolder: 'src/pages',
-      dts: false,
+      dts: 'src/typed-router.d.ts',
       importMode: process.env.NODE_ENV === 'production' ? 'async' : 'sync',
       getRouteName: (node) => {
         let name = ''

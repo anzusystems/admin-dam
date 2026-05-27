@@ -1,6 +1,5 @@
 import {
   isNull,
-  isString,
   isUndefined,
   useAlerts,
   useDamConfigState,
@@ -209,11 +208,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const route = useRoute()
   const router = useRouter()
   const validateRouteProvider = async () => {
-    if (!(isString(route.params.provider) && configExtSystem.assetExternalProviders?.[route.params.provider])) {
+    const provider = (route.params as { provider?: string }).provider
+    if (!provider || !configExtSystem.assetExternalProviders?.[provider]) {
       await router.push('/not-found')
       return
     }
-    activeExternalProvider.value = route.params.provider
+    activeExternalProvider.value = provider
   }
 
   const listMounted = async () => {

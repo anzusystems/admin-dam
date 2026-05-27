@@ -38,7 +38,7 @@ export async function createAppInitialize(
   }
   try {
     await initCurrentExtSystemAndLicence(
-      getInitCurrentExtSystemAndLicenceConfig(to, to.params.id as string | undefined)
+      getInitCurrentExtSystemAndLicenceConfig(to, (to.params as { id?: string }).id)
     )
   } catch (error) {
     return '/login'

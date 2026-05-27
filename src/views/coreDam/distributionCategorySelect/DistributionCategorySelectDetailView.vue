@@ -11,7 +11,7 @@ const { detailLoading, fetchData, resetStore, distributionCategorySelect } =
   useDistributionCategorySelectDetailActions()
 
 const route = useRoute()
-const id = route.params.id.toString()
+const id = (route.params as { id: string }).id.toString()
 
 const getDetail = () => {
   fetchData(id)

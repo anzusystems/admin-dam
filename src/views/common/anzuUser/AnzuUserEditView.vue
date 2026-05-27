@@ -8,7 +8,7 @@ import AnzuUserEditForm from '@/views/common/anzuUser/components/AnzuUserEditFor
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const { resetAnzuUserStore, fetchAnzuUser, updateAnzuUser, detailLoading, saveButtonLoading } =
   useAnzuUserActions(damClient)

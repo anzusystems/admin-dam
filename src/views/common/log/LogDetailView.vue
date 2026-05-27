@@ -7,9 +7,9 @@ import LogDetail from '@/views/common/log/components/LogDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = route.params.id as string
-const system = route.params.system as string
-const type = route.params.type as string
+const id = (route.params as { id: string }).id
+const system = (route.params as { system: string }).system
+const type = (route.params as { type: string }).type
 
 const { detailLoading, fetchData, resetStore } = useLogDetailActions()
 

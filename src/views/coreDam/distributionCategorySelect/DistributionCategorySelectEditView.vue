@@ -7,7 +7,7 @@ import DistributionCategorySelectEditForm from '@/views/coreDam/distributionCate
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = route.params.id.toString()
+const id = (route.params as { id: string }).id.toString()
 
 const {
   saveButtonLoading,

@@ -7,7 +7,7 @@ import AuthorEditForm from '@/views/coreDam/author/components/AuthorEditForm.vue
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = route.params.id.toString()
+const id = (route.params as { id: string }).id.toString()
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, author } =
   useAuthorEditActions()

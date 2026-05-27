@@ -35,9 +35,10 @@ const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
+    if (!filter.type.model) return
     router.push({
       name: '/(common)/log/[system]/[type]/[id]',
-      params: { id: item.id, system: item.context.appSystem, type: filter.type.model },
+      params: { id: String(item.id), system: item.context.appSystem, type: filter.type.model },
     })
   }
 }

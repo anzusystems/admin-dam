@@ -9,7 +9,7 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const { fetchAnzuUser, resetAnzuUserStore, detailLoading } = useAnzuUserActions(damClient)
 

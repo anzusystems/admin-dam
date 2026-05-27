@@ -69,7 +69,8 @@ const getDetail = async () => {
     })
     return
   }
-  assetId.value = isString(route.params.id) && isDocId(route.params.id) ? route.params.id.toString() : ''
+  const rawId = (route.params as { id: string }).id
+  assetId.value = isString(rawId) && isDocId(rawId) ? rawId.toString() : ''
   if (assetId.value.length === 0) {
     showErrorT('coreDam.asset.detail.incorrectId')
     return

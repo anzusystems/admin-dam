@@ -6,7 +6,7 @@ import { useVideoShowEpisodeEditActions } from '@/views/coreDam/videoShowEpisode
 import VideoShowEpisodeEditForm from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
-const route = useRoute()
+const route = useRoute('/(coreDam)/video-show/[id]/episode/[episodeId]/edit')
 const id = route.params.episodeId.toString()
 const videoShowId = route.params.id.toString()
 

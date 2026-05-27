@@ -26,6 +26,7 @@ const imageSrc = computed(() => {
 })
 
 const onAssetChipClick = () => {
+  if (!podcastEpisode.value.asset) return
   router.push({ name: '/(coreDam)/asset/[id]', params: { id: podcastEpisode.value.asset } })
 }
 </script>

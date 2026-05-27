@@ -24,7 +24,7 @@ import JobImageCopy from '@/views/coreDam/job/components/JobImageCopy.vue'
 const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const getDetail = () => {
   fetchData(id)

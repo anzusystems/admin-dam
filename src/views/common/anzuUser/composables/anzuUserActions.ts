@@ -89,7 +89,7 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
         router.push({ name: '/(common)/anzu-user' })
         return
       }
-      router.push({ name: '/(common)/anzu-user/[id]', params: { id: anzuUserRes.id } })
+      router.push({ name: '/(common)/anzu-user/[id]', params: { id: String(anzuUserRes.id) } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

@@ -16,7 +16,7 @@ const { detailLoading, fetchData, resetStore, podcast } = usePodcastDetailAction
 const { listLoading } = usePodcastEpisodeListActions()
 
 const route = useRoute()
-const podcastId = route.params.id.toString()
+const podcastId = (route.params as { id: string }).id.toString()
 
 const loadPodcastEpisodeDatatable = ref(false)
 const { activeTab } = usePodcastDetailTab()

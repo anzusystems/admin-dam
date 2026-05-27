@@ -2,7 +2,7 @@
 import { useActionbar } from '@/composables/system/actionbar'
 import { computed } from 'vue'
 import type { UrlParams } from '@anzusystems/common-admin'
-import { isString, isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
+import { isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
 import { type RouteParamsGeneric, type RouteRecordName, useRoute } from 'vue-router'
 
 const props = withDefaults(
@@ -45,9 +45,9 @@ const breadcrumbs = computed(() => {
     .filter((item) => !isUndefined(item.meta.breadcrumbT))
     .forEach((value, index, array) => {
       if (value.path.length === 0) return
-      const to: { path: string; name: string | undefined | RouteRecordName; params: RouteParamsGeneric | undefined } = {
+      const to: { path: string; name: RouteRecordName | undefined; params: RouteParamsGeneric | undefined } = {
         path: value.path,
-        name: value.name ?? undefined,
+        name: value.name as RouteRecordName | undefined,
         params: { ...route.params },
       }
       if (isUndefined(to.name) && to.path.indexOf(':') > -1) parametrizeRoutePath(to)
@@ -85,7 +85,7 @@ const breadcrumbs = computed(() => {
             &raquo;
           </VBreadcrumbsDivider>
           <VBreadcrumbs
-            :key="isString(route.name) ? route.name : route.fullPath"
+            :key="String(route.name ?? '')"
             class="pl-1 min-width-0"
             density="compact"
           >

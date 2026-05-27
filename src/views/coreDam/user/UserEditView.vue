@@ -7,7 +7,7 @@ import { useUserEditActions } from '@/views/coreDam/user/composables/userActions
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, user } =
   useUserEditActions()

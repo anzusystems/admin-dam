@@ -35,7 +35,7 @@ const show = computed(() => {
 })
 
 const activeDisplayText = computed(() => {
-  const providerParam = route.params.provider as undefined | string
+  const providerParam = (route.params as { provider?: string }).provider as undefined | string
   const matchedProvider = providerParam ? externalProviders.value[providerParam] : undefined
   if (route.name === '/(coreDam)/external-provider/[provider]' && matchedProvider) {
     return matchedProvider.title

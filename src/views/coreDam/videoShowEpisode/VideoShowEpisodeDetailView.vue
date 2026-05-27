@@ -9,7 +9,7 @@ import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, videoShowEpisode } = useVideoShowEpisodeDetailActions()
 
-const route = useRoute()
+const route = useRoute('/(coreDam)/video-show/[id]/episode/[episodeId]')
 const id = route.params.episodeId.toString()
 const videoShowId = route.params.id.toString()
 

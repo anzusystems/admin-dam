@@ -10,7 +10,7 @@ import { ACL } from '@/composables/auth/auth'
 const { detailLoading, fetchData, resetStore, distributionCategory } = useDistributionCategoryDetailActions()
 
 const route = useRoute()
-const id = route.params.id.toString()
+const id = (route.params as { id: string }).id.toString()
 
 const getDetail = () => {
   fetchData(id)

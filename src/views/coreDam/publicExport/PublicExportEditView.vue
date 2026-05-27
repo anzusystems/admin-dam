@@ -7,7 +7,7 @@ import PublicExportEditForm from '@/views/coreDam/publicExport/components/Public
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading, publicExport } =
   usePublicExportEditActions()

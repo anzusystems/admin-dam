@@ -8,7 +8,7 @@ import { usePermissionGroupActions } from '@/views/common/permissionGroup/compos
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, detailLoading, saveButtonLoading } =
   usePermissionGroupActions(damClient)

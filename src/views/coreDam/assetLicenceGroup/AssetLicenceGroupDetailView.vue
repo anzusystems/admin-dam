@@ -10,7 +10,7 @@ import { ACL } from '@/composables/auth/auth'
 const { detailLoading, fetchData, resetStore, assetLicenceGroup } = useAssetLicenceGroupDetailActions()
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const getDetail = () => {
   fetchData(id)

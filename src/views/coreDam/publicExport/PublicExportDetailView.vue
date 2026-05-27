@@ -20,7 +20,7 @@ const { detailLoading, fetchData, resetStore, publicExport } = usePublicExportDe
 const { removePublicExport } = usePublicExportRemoveActions()
 
 const route = useRoute()
-const id = stringToInt(route.params.id)
+const id = stringToInt((route.params as { id: string }).id)
 
 const getDetail = () => {
   fetchData(id)

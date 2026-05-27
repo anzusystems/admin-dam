@@ -16,7 +16,7 @@ const { detailLoading, fetchData, resetStore, videoShow } = useVideoShowDetailAc
 const { listLoading } = useVideoShowEpisodeListActions()
 
 const route = useRoute()
-const videoShowId = route.params.id.toString()
+const videoShowId = (route.params as { id: string }).id.toString()
 
 const loadVideoShowEpisodeDatatable = ref(false)
 const { activeTab } = useVideoShowDetailTab()
