@@ -49,17 +49,31 @@ export default defineConfig({
           if (
             id.includes('node_modules/vue/') ||
             id.includes('node_modules/vue-router/') ||
-            id.includes('node_modules/pinia/') ||
+            id.includes('node_modules/pinia/')
+          ) {
+            return 'vue-core'
+          }
+          // i18n stack
+          if (
             id.includes('node_modules/vue-i18n/') ||
             id.includes('node_modules/@intlify/')
           ) {
-            return 'vue-core'
+            return 'vue-i18n'
           }
           // Vuetify UI framework
           if (id.includes('node_modules/vuetify/')) {
             return 'vuetify'
           }
-          // Anzu admin library
+          // Anzu admin library — split common-admin's pre-bundled sub-files (each ~150-950kB raw)
+          if (id.includes('node_modules/@anzusystems/common-admin/dist/labs')) {
+            return 'common-admin-labs'
+          }
+          if (id.includes('node_modules/@anzusystems/common-admin/dist/AFormRemoteAutocomplete')) {
+            return 'common-admin-autocomplete'
+          }
+          if (id.includes('node_modules/@anzusystems/common-admin/dist/index-')) {
+            return 'common-admin-internals'
+          }
           if (id.includes('node_modules/@anzusystems/common-admin/')) {
             return 'common-admin'
           }
@@ -77,6 +91,19 @@ export default defineConfig({
           // Sentry
           if (id.includes('node_modules/@sentry/')) {
             return 'sentry'
+          }
+          // Vendor utility libs (axios, vuelidate, floating-ui, jwt, cookie, uuid, rusha, sortablejs)
+          if (
+            id.includes('node_modules/axios/') ||
+            id.includes('node_modules/@vuelidate/') ||
+            id.includes('node_modules/@floating-ui/') ||
+            id.includes('node_modules/jwt-decode/') ||
+            id.includes('node_modules/universal-cookie/') ||
+            id.includes('node_modules/uuid/') ||
+            id.includes('node_modules/rusha/') ||
+            id.includes('node_modules/sortablejs/')
+          ) {
+            return 'vendor-utils'
           }
         },
         chunkFileNames: (chunkInfo) => {
