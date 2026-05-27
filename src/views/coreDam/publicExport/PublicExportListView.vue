@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 import PublicExportDatatable from '@/views/coreDam/publicExport/components/PublicExportDatatable.vue'
@@ -14,10 +14,16 @@ const datatable = ref<InstanceType<typeof PublicExportDatatable> | null>(null)
 const afterCreate = () => {
   datatable.value?.refresh()
 }
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-export' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
         <PublicExportCreateButton

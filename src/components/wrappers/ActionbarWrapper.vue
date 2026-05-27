@@ -1,72 +1,35 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/composables/system/actionbar'
-import { computed } from 'vue'
-import type { UrlParams } from '@anzusystems/common-admin'
-import { isUndefined, stringUrlTemplateReplaceVueRouter, useI18n } from '@anzusystems/common-admin'
-import { type RouteParamsGeneric, type RouteRecordName, useRoute } from 'vue-router'
+import { type BreadcrumbItem, type Breadcrumbs, isUndefined } from '@anzusystems/common-admin'
+import { useRoute } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{
-    lastBreadcrumbTitle?: string | undefined
+    breadcrumbs?: Breadcrumbs | undefined
   }>(),
   {
-    lastBreadcrumbTitle: undefined,
+    breadcrumbs: undefined,
   }
 )
 
 const { canTeleport } = useActionbar()
-
-const { t } = useI18n()
 const route = useRoute()
 
-const parametrizeRoutePath = (to: {
-  path: string
-  name: string | undefined | RouteRecordName
-  params: RouteParamsGeneric | undefined
-}) => {
-  to.path = stringUrlTemplateReplaceVueRouter(to.path, to.params ? (to.params as unknown as UrlParams) : {})
-  to.params = undefined
-  to.name = undefined
-}
-
-interface Breadcrumb {
-  disabled: boolean
-  title: string
-  to: {
-    path: string
-    name: string | undefined | RouteRecordName
-    params: RouteParamsGeneric | undefined
+const breadcrumbTo = (item: BreadcrumbItem, index: number) => {
+  if (
+    isUndefined(props.breadcrumbs) ||
+    (!props.breadcrumbs.options.linkLastItem && index === props.breadcrumbs.items.value.length - 1)
+  ) {
+    return undefined
   }
+  if (!isUndefined(item.routeParams)) {
+    return { name: item.routeName, params: { ...item.routeParams } }
+  }
+  if (!isUndefined(item.id)) {
+    return { name: item.routeName, params: { id: item.id } }
+  }
+  return { name: item.routeName }
 }
-
-const breadcrumbs = computed(() => {
-  const final: Breadcrumb[] = []
-  route.matched
-    .filter((item) => !isUndefined(item.meta.breadcrumbT))
-    .forEach((value, index, array) => {
-      if (value.path.length === 0) return
-      const to: { path: string; name: RouteRecordName | undefined; params: RouteParamsGeneric | undefined } = {
-        path: value.path,
-        name: value.name as RouteRecordName | undefined,
-        params: { ...route.params },
-      }
-      if (isUndefined(to.name) && to.path.indexOf(':') > -1) parametrizeRoutePath(to)
-      if (index === array.length - 1 && props.lastBreadcrumbTitle) {
-        final.push({
-          disabled: false,
-          title: t(value.meta.breadcrumbT as string) + ': ' + props.lastBreadcrumbTitle,
-          to: to,
-        })
-      } else if (value.meta.breadcrumbT) {
-        final.push({
-          disabled: false,
-          title: value.meta.breadcrumbT ? t(value.meta.breadcrumbT as string) : '',
-          to: to,
-        })
-      }
-    })
-  return final
-})
 </script>
 
 <template>
@@ -77,9 +40,12 @@ const breadcrumbs = computed(() => {
   >
     <div class="flex-grow-1 flex-shrink-1 min-width-0 overflow-hidden">
       <slot name="breadcrumbs">
-        <div class="d-flex align-center min-width-0">
+        <div
+          v-if="!isUndefined(breadcrumbs)"
+          class="d-flex align-center min-width-0"
+        >
           <VBreadcrumbsDivider
-            v-if="breadcrumbs.length > 0"
+            v-if="breadcrumbs.items.value.length > 0"
             class="px-1"
           >
             &raquo;
@@ -90,19 +56,19 @@ const breadcrumbs = computed(() => {
             density="compact"
           >
             <template
-              v-for="(breadcrumb, index) in breadcrumbs"
-              :key="breadcrumb.to.path"
+              v-for="(breadcrumb, index) in breadcrumbs.items.value"
+              :key="breadcrumb.routeName"
             >
               <VBreadcrumbsItem
-                :to="breadcrumb.to"
+                :to="breadcrumbTo(breadcrumb, index)"
                 :disabled="false"
-                :class="{ 'min-width-0': index === breadcrumbs.length - 1 }"
+                :class="{ 'min-width-0': index === breadcrumbs.items.value.length - 1 }"
               >
                 <div class="v-breadcrumbs-item__text">
                   {{ breadcrumb.title }}
                 </div>
               </VBreadcrumbsItem>
-              <VBreadcrumbsDivider v-if="index < breadcrumbs.length - 1">
+              <VBreadcrumbsDivider v-if="index < breadcrumbs.items.value.length - 1">
                 &raquo;
               </VBreadcrumbsDivider>
             </template>

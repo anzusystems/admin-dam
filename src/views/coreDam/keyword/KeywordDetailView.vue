@@ -1,13 +1,25 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import { useKeywordDetailActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import KeywordDetail from '@/views/coreDam/keyword/components/KeywordDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, keyword } = useKeywordDetailActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keyword' },
+    {
+      title: keyword.value.name || t('breadcrumb.coreDam.keyword.detail'),
+      routeName: '/(coreDam)/keyword/[id]',
+    },
+  ])
+)
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="keyword.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
         <AActionEditButton

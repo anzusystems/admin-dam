@@ -1,17 +1,23 @@
 <script lang="ts" setup>
 import UserDatatable from '@/views/coreDam/user/components/UserDatatable.vue'
-import { ACard } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 import { useUserListActions } from '@/views/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 
 const { listLoading } = useUserListActions()
 
 const datatable = ref<InstanceType<typeof UserDatatable> | null>(null)
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/user' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper />
+  <ActionbarWrapper :breadcrumbs="breadcrumbs" />
 
   <ACard :loading="listLoading">
     <VCardText>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { usePodcastDetailActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastDetail from '@/views/coreDam/podcast/components/PodcastDetail.vue'
@@ -47,6 +47,17 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcast' },
+    {
+      title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.detail'),
+      routeName: '/(coreDam)/podcast/[id]',
+      routeParams: { id: podcastId },
+    },
+  ])
+)
+
 const afterPodcastEpisodeCreate = () => {
   if (activeTab.value === PodcastDetailTab.Episodes) {
     loadPodcastEpisodeDatatable.value = false
@@ -58,7 +69,7 @@ const afterPodcastEpisodeCreate = () => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="podcast.texts.title">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_CREATE">
         <PodcastEpisodeCreateButton

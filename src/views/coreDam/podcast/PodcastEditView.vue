@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePodcastEditActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastEditForm from '@/views/coreDam/podcast/components/PodcastEditForm.vue'
@@ -23,10 +23,23 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcast' },
+    {
+      title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.edit'),
+      routeName: '/(coreDam)/podcast/[id]/edit',
+      routeParams: { id },
+    },
+  ])
+)
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="podcast.texts.title">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

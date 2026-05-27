@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import {
   AActionCloseButton,
   AActionDeleteButton,
   AActionEditButton,
   ACard,
+  defineBreadcrumbs,
   stringToInt,
+  useI18n,
 } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
@@ -19,6 +21,18 @@ const id = stringToInt((route.params as { id: string }).id)
 
 const { deletePermissionGroup, fetchPermissionGroup, resetPermissionGroupStore, detailLoading } =
   usePermissionGroupActions(damClient)
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-group' },
+    {
+      title: t('breadcrumb.permissionGroup.detail'),
+      routeName: '/(common)/permission-group/[id]',
+    },
+  ])
+)
 
 const getDetail = () => {
   fetchPermissionGroup(id)
@@ -34,7 +48,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl
         v-if="!detailLoading"

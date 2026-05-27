@@ -3,7 +3,7 @@ import type LogDatatableType from '@/views/common/log/components/LogDatatable.vu
 import LogDatatable from '@/views/common/log/components/LogDatatable.vue'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { computed, ref, watch } from 'vue'
-import { ACard, isNull } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, isNull, useI18n } from '@anzusystems/common-admin'
 import LogFilter from '@/views/common/log/components/LogFilter.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -53,10 +53,16 @@ watch(
   },
   { immediate: true }
 )
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.log.list'), routeName: '/(common)/log' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper />
+  <ActionbarWrapper :breadcrumbs="breadcrumbs" />
 
   <ACard :loading="listLoading">
     <VCardText>

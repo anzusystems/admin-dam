@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import AuthorDatatable from '@/views/coreDam/author/components/AuthorDatatable.vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -15,10 +15,16 @@ const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 const afterCreate = () => {
   datatable.value?.refresh()
 }
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/author' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_CREATE">
         <AuthorCreateButton

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAssetLicenceEditActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceEditForm from '@/views/coreDam/assetLicence/components/AssetLicenceEditForm.vue'
@@ -11,6 +11,18 @@ const id = stringToInt((route.params as { id: string }).id)
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, assetLicence } =
   useAssetLicenceEditActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.assetLicence.list'), routeName: '/(coreDam)/asset-licence' },
+    {
+      title: assetLicence.value.name || t('breadcrumb.coreDam.assetLicence.edit'),
+      routeName: '/(coreDam)/asset-licence/[id]/edit',
+    },
+  ])
+)
 
 const getData = () => {
   fetchData(id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="assetLicence.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

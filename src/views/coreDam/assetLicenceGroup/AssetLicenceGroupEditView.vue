@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAssetLicenceGroupEditActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupEditForm from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditForm.vue'
@@ -19,6 +19,18 @@ const {
   assetLicenceGroup,
 } = useAssetLicenceGroupEditActions()
 
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-group' },
+    {
+      title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.edit'),
+      routeName: '/(coreDam)/asset-licence-group/[id]/edit',
+    },
+  ])
+)
+
 const getData = () => {
   fetchData(id)
 }
@@ -33,7 +45,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="assetLicenceGroup.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

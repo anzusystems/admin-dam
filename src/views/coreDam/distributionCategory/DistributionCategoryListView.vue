@@ -9,7 +9,7 @@ import {
   useDistributionCategoryManageActions,
 } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 
 const filter = useDistributionCategoryListFilter()
@@ -24,10 +24,18 @@ const onCreateSuccess = (type: DamAssetTypeType) => {
   filter.type.model = type
   datatable.value?.refresh()
 }
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-category' },
+  ])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_CREATE">
         <DistributionCategoryCreateButton

@@ -3,15 +3,21 @@ import {
   ALanguageSelect,
   AThemeSelect,
   type DamCurrentUserDto,
+  defineBreadcrumbs,
+  useI18n,
   useSentry,
   useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { useAuth } from '@/composables/auth/auth'
 import { SYSTEM_DAM } from '@/model/systems'
 
 const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }])
+)
 
 const afterLanguageChange = async () => {
   window.location.reload()
@@ -33,7 +39,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
 </script>
 
 <template>
-  <ActionbarWrapper />
+  <ActionbarWrapper :breadcrumbs="breadcrumbs" />
 
   <VCard>
     <VCardText>

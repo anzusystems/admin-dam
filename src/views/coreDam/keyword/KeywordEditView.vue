@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useKeywordEditActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import KeywordEditForm from '@/views/coreDam/keyword/components/KeywordEditForm.vue'
@@ -11,6 +11,18 @@ const id = (route.params as { id: string }).id.toString()
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, keyword } =
   useKeywordEditActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keyword' },
+    {
+      title: keyword.value.name || t('breadcrumb.coreDam.keyword.edit'),
+      routeName: '/(coreDam)/keyword/[id]/edit',
+    },
+  ])
+)
 
 const getData = () => {
   fetchData(id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="keyword.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import AssetLicenceCreateButton from '@/views/coreDam/assetLicence/components/AssetLicenceCreateButton.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useAssetLicenceListActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
@@ -14,10 +14,16 @@ const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 const afterCreate = () => {
   datatable.value?.refresh()
 }
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.coreDam.assetLicence.list'), routeName: '/(coreDam)/asset-licence' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_ASSET_LICENCE_CREATE">
         <AssetLicenceCreateButton

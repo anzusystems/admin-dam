@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import {
+  AActionCloseButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useI18n,
+} from '@anzusystems/common-admin'
 import { useVideoShowEpisodeDetailActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -24,10 +30,28 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    {
+      title: t('breadcrumb.coreDam.videoShow.detail'),
+      routeName: '/(coreDam)/video-show/[id]',
+      routeParams: { id: videoShowId },
+    },
+    {
+      title: videoShowEpisode.value.texts.title || t('breadcrumb.coreDam.videoShowEpisode.detail'),
+      routeName: '/(coreDam)/video-show/[id]/episode/[episodeId]',
+      routeParams: { id: videoShowId, episodeId: id },
+    },
+  ])
+)
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="videoShowEpisode.texts.title">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
         <AActionEditButton

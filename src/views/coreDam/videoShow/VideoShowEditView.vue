@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useVideoShowEditActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowEditForm from '@/views/coreDam/videoShow/components/VideoShowEditForm.vue'
@@ -23,10 +23,23 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    {
+      title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.edit'),
+      routeName: '/(coreDam)/video-show/[id]/edit',
+      routeParams: { id },
+    },
+  ])
+)
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="videoShow.texts.title">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

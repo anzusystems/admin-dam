@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import { useVideoShowDetailActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowDetail from '@/views/coreDam/videoShow/components/VideoShowDetail.vue'
@@ -47,6 +47,17 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-show' },
+    {
+      title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.detail'),
+      routeName: '/(coreDam)/video-show/[id]',
+      routeParams: { id: videoShowId },
+    },
+  ])
+)
+
 const afterVideoShowEpisodeCreate = () => {
   if (activeTab.value === VideoShowDetailTab.Episodes) {
     loadVideoShowEpisodeDatatable.value = false
@@ -58,7 +69,7 @@ const afterVideoShowEpisodeCreate = () => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="videoShow.texts.title">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_CREATE">
         <VideoShowEpisodeCreateButton

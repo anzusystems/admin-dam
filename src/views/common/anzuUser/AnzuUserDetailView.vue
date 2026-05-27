@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserDetail from '@/views/common/anzuUser/components/AnzuUserDetail.vue'
@@ -12,6 +12,18 @@ const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
 const { fetchAnzuUser, resetAnzuUserStore, detailLoading } = useAnzuUserActions(damClient)
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-user' },
+    {
+      title: t('breadcrumb.anzuUser.detail'),
+      routeName: '/(common)/anzu-user/[id]',
+    },
+  ])
+)
 
 const getDetail = () => {
   fetchAnzuUser(id)
@@ -27,7 +39,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl
         v-if="!detailLoading"

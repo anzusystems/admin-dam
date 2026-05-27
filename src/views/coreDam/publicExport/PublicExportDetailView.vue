@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import {
   AActionCloseButton,
   AActionDeleteButton,
   AActionEditButton,
   ACard,
+  defineBreadcrumbs,
   stringToInt,
+  useI18n,
 } from '@anzusystems/common-admin'
 import {
   usePublicExportDetailActions,
@@ -18,6 +20,18 @@ import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, publicExport } = usePublicExportDetailActions()
 const { removePublicExport } = usePublicExportRemoveActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-export' },
+    {
+      title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.detail'),
+      routeName: '/(coreDam)/public-export/[id]',
+    },
+  ])
+)
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -36,7 +50,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="publicExport.slug">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
         <AActionEditButton

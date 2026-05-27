@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthorEditActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorEditForm from '@/views/coreDam/author/components/AuthorEditForm.vue'
@@ -11,6 +11,18 @@ const id = (route.params as { id: string }).id.toString()
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, author } =
   useAuthorEditActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/author' },
+    {
+      title: author.value.name || t('breadcrumb.coreDam.author.edit'),
+      routeName: '/(coreDam)/author/[id]/edit',
+    },
+  ])
+)
 
 const getData = () => {
   fetchData(id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="author.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

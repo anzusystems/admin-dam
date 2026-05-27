@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
 import UserEditForm from '@/views/coreDam/user/components/UserEditForm.vue'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -11,6 +11,18 @@ const id = stringToInt((route.params as { id: string }).id)
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, user } =
   useUserEditActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/user' },
+    {
+      title: user.value.id + '' || t('breadcrumb.coreDam.user.edit'),
+      routeName: '/(coreDam)/user/[id]/edit',
+    },
+  ])
+)
 
 const getData = () => {
   fetchData(id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="user.id + ''">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

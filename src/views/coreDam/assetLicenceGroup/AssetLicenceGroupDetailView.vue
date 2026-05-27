@@ -1,13 +1,25 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useAssetLicenceGroupDetailActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupDetail from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, assetLicenceGroup } = useAssetLicenceGroupDetailActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-group' },
+    {
+      title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.detail'),
+      routeName: '/(coreDam)/asset-licence-group/[id]',
+    },
+  ])
+)
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="assetLicenceGroup.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UPDATE">
         <AActionEditButton

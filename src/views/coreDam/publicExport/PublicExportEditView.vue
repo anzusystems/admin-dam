@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePublicExportEditActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import PublicExportEditForm from '@/views/coreDam/publicExport/components/PublicExportEditForm.vue'
@@ -11,6 +11,18 @@ const id = stringToInt((route.params as { id: string }).id)
 
 const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading, publicExport } =
   usePublicExportEditActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-export' },
+    {
+      title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.edit'),
+      routeName: '/(coreDam)/public-export/[id]/edit',
+    },
+  ])
+)
 
 const getData = () => {
   fetchData(id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="publicExport.slug">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"

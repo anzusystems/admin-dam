@@ -4,9 +4,11 @@ import {
   AActionCloseButton,
   ACard,
   AJobDetailCommon,
+  defineBreadcrumbs,
   isUndefined,
   JOB_RESOURCE_USER_DATA_DELETE,
   stringToInt,
+  useI18n,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useJobDetailActions } from '@/views/coreDam/job/composables/jobActions'
@@ -53,10 +55,22 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/job' },
+    {
+      title: t('breadcrumb.coreDam.job.detail'),
+      routeName: '/(coreDam)/job/[id]',
+    },
+  ])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionCloseButton :route-name="'/(coreDam)/job'" />
     </template>

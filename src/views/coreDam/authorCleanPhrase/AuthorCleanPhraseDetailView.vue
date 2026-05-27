@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import {
   AActionCloseButton,
   AActionDeleteButton,
   AActionEditButton,
   ACard,
+  defineBreadcrumbs,
   stringToInt,
+  useI18n,
 } from '@anzusystems/common-admin'
 import {
   useAuthorCleanPhraseDetailActions,
@@ -18,6 +20,18 @@ import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, authorCleanPhrase } = useAuthorCleanPhraseDetailActions()
 const { removeAuthorCleanPhrase } = useAuthorCleanPhraseRemoveActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrase' },
+    {
+      title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.detail'),
+      routeName: '/(coreDam)/author-clean-phrase/[id]',
+    },
+  ])
+)
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -36,7 +50,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="authorCleanPhrase.phrase">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
         <AActionEditButton

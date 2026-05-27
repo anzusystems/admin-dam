@@ -1,13 +1,25 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import { useAuthorDetailActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorDetail from '@/views/coreDam/author/components/AuthorDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, author } = useAuthorDetailActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/author' },
+    {
+      title: author.value.name || t('breadcrumb.coreDam.author.detail'),
+      routeName: '/(coreDam)/author/[id]',
+    },
+  ])
+)
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="author.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
         <AActionEditButton

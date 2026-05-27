@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import PermissionGroupDatatable from '@/views/common/permissionGroup/components/PermissionGroupDatatable.vue'
 import PermissionGroupCreateButton from '@/views/common/permissionGroup/components/PermissionGroupCreateButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import { ACL } from '@/composables/auth/auth'
 
 const datatable = ref<InstanceType<typeof PermissionGroupDatatable> | null>(null)
@@ -15,10 +15,16 @@ const afterCreate = () => {
 }
 
 const { listLoading } = usePermissionGroupActions(damClient)
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-group' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_PERMISSION_GROUP_CREATE">
         <PermissionGroupCreateButton

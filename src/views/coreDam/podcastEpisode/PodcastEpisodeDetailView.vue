@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router'
-import { onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import {
+  AActionCloseButton,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useI18n,
+} from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
@@ -37,10 +44,28 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resetStore()
 })
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcast' },
+    {
+      title: t('breadcrumb.coreDam.podcast.detail'),
+      routeName: '/(coreDam)/podcast/[id]',
+      routeParams: { id: podcastId },
+    },
+    {
+      title: podcastEpisode.value.texts.title || t('breadcrumb.coreDam.podcastEpisode.detail'),
+      routeName: '/(coreDam)/podcast/[id]/episode/[episodeId]',
+      routeParams: { id: podcastId, episodeId: id },
+    },
+  ])
+)
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="podcastEpisode.texts.title">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
         <AActionEditButton

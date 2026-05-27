@@ -1,13 +1,25 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionEditButton, ACard, stringToInt } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import ExtSystemDetail from '@/views/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
 const { detailLoading, fetchData, resetStore, extSystem } = useExtSystemDetailActions()
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-system' },
+    {
+      title: extSystem.value.name || t('breadcrumb.coreDam.extSystem.detail'),
+      routeName: '/(coreDam)/ext-system/[id]',
+    },
+  ])
+)
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -26,7 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="extSystem.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
         <AActionEditButton

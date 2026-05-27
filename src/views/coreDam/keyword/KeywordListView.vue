@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ACard } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
 import KeywordCreateButton from '@/views/coreDam/keyword/components/KeywordCreateButton.vue'
 import KeywordDatatable from '@/views/coreDam/keyword/components/KeywordDatatable.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type AssetLicenceDatatable from '@/views/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -17,10 +17,16 @@ const afterCreate = () => {
     datatable.value?.refresh()
   }, 1000)
 }
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keyword' }])
+)
 </script>
 
 <template>
-  <ActionbarWrapper>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_KEYWORD_CREATE">
         <KeywordCreateButton

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDistributionCategoryEditActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryEditForm from '@/views/coreDam/distributionCategory/components/DistributionCategoryEditForm.vue'
@@ -19,6 +19,18 @@ const {
   distributionCategory,
 } = useDistributionCategoryEditActions()
 
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [
+    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-category' },
+    {
+      title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.edit'),
+      routeName: '/(coreDam)/distribution-category/[id]/edit',
+    },
+  ])
+)
+
 const getData = () => {
   fetchData(id)
 }
@@ -33,7 +45,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="distributionCategory.name">
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"
