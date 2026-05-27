@@ -52,7 +52,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const fetchAssetList = async () => {
     if (!activeExternalProvider.value) return
     pagination.page = 1
-    pagination.rowsPerPage = configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 0
+    pagination.rowsPerPage = configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 10
     try {
       externalProviderAssetListStore.showLoader('hard')
       externalProviderAssetListStore.setList(
@@ -79,7 +79,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
     if (!activeExternalProvider.value) return
     pagination.page = pagination.page + 1
-    pagination.rowsPerPage = configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 0
+    pagination.rowsPerPage = configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 10
     try {
       externalProviderAssetListStore.showLoader('soft')
       externalProviderAssetListStore.appendList(
