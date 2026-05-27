@@ -101,15 +101,6 @@ const routes = {
       LIST: 'publicExport_list',
     },
   },
-  SYSTEM: {
-    HOMEPAGE: 'homepage',
-    UNAUTHORIZED: 'unauthorized',
-    LOGIN: 'login',
-    LOGOUT: 'logout',
-    NOT_FOUND: 'notfound',
-    SETTINGS: 'settings',
-    CLOSE_PAGE: 'close_page',
-  },
 }
 
 export const ROUTE: Immutable<typeof routes> = objectDeepFreeze(routes)

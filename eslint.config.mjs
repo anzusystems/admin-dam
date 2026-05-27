@@ -85,12 +85,7 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/no-empty-interface': 'off',
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
-      'vue/multi-word-component-names': [
-        'error',
-        {
-          ignores: ['Acl'],
-        },
-      ],
+      'vue/multi-word-component-names': 'off',
       'vue/valid-v-slot': ['error', { allowModifiers: true }],
       '@stylistic/object-curly-spacing': ['error', 'always'],
       '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],

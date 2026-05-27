@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes as fileBasedRoutes, handleHotUpdate } from 'vue-router/auto-routes'
 import { beforeEachRoute } from '@/router/beforeEachRoute'
-import { systemRoutes } from '@/router/routes/system'
-import { ROUTE } from '@/router/routes'
 import { assetRoutes } from '@/router/routes/coreDam/asset'
 import { externalProviderRoutes } from '@/router/routes/coreDam/externalProvider'
 import { userRoutes } from '@/router/routes/coreDam/user'
@@ -18,8 +16,6 @@ import { podcastRoutes } from '@/router/routes/coreDam/podcast'
 import { anzuUserRoutes } from '@/router/routes/common/anzuUser'
 import { videoShowRoutes } from '@/router/routes/coreDam/videoShow'
 import { jobRoutes } from '@/router/routes/coreDam/job'
-import HomepageView from '@/views/system/HomepageView.vue'
-import { ANotFoundView } from '@anzusystems/common-admin'
 import { assetLicenceGroupRoutes } from '@/router/routes/coreDam/assetLicenceGroup'
 import { authorCleanPhraseRoutes } from '@/router/routes/coreDam/authorCleanPhrase'
 import { publicExportRoutes } from '@/router/routes/coreDam/publicExport'
@@ -28,16 +24,6 @@ const vueRouter = createRouter({
   history: createWebHistory(),
   routes: [
     ...fileBasedRoutes,
-    {
-      path: '/',
-      component: HomepageView,
-      name: ROUTE.SYSTEM.HOMEPAGE,
-      meta: {
-        requiresAuth: true,
-        requiredPermissions: [],
-        layout: 'AppLayoutFullscreen',
-      },
-    },
     ...assetRoutes,
     ...externalProviderRoutes,
     ...userRoutes,
@@ -56,18 +42,6 @@ const vueRouter = createRouter({
     ...videoShowRoutes,
     ...jobRoutes,
     ...commonLogRoutes,
-    ...systemRoutes,
-    {
-      path: '/:pathMatch(.*)*',
-      component: ANotFoundView,
-      props: { returnRouteName: ROUTE.SYSTEM.HOMEPAGE },
-      name: ROUTE.SYSTEM.NOT_FOUND,
-      meta: {
-        requiresAuth: false,
-        requiredPermissions: [],
-        layout: 'AppLayoutFullscreen',
-      },
-    },
   ],
 })
 

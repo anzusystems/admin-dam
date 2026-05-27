@@ -1,7 +1,6 @@
 import { createAppInitialize, useAppInitialize } from '@/composables/system/appInitialize'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 import { checkAbility } from '@/router/checkAbility'
-import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import { useDamConfigState, useDamConfigStore } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
@@ -28,6 +27,6 @@ const checkGuard = async (to: RouteLocationNormalized): Promise<NavigationGuardR
   } else if (hasAppAuthCookie()) {
     return await createAppInitialize(to)
   } else {
-    return { name: ROUTE.SYSTEM.LOGIN }
+    return '/login'
   }
 }

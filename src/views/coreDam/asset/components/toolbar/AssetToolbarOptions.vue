@@ -111,7 +111,7 @@ onMounted(async () => {
           <VDivider />
           <VListItem
             v-show="variant === 'main'"
-            :to="{ name: ROUTE.SYSTEM.SETTINGS }"
+            to="/settings"
             :title="t('system.currentUser.settings')"
             prepend-icon="mdi-cog"
             data-cy="button-settings"

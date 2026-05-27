@@ -21,7 +21,6 @@ import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
-import { ROUTE } from '@/router/routes'
 import { useRoute, useRouter } from 'vue-router'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -211,7 +210,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const router = useRouter()
   const validateRouteProvider = async () => {
     if (!(isString(route.params.provider) && configExtSystem.assetExternalProviders?.[route.params.provider])) {
-      await router.push({ name: ROUTE.SYSTEM.NOT_FOUND })
+      await router.push('/not-found')
       return
     }
     activeExternalProvider.value = route.params.provider

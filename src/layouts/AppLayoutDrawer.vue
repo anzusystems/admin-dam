@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
-import { ROUTE } from '@/router/routes'
 import { envConfig } from '@/services/EnvConfigService'
 import ActionbarTeleportTarget from '@/components/system/ActionbarTeleportTarget.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
@@ -68,7 +67,7 @@ const { theme } = useTheme()
           />
         </div>
         <div class="main-logo mr-sm-2">
-          <RouterLink :to="{ name: ROUTE.SYSTEM.HOMEPAGE }">
+          <RouterLink to="/">
             <img
               width="104"
               height="42"

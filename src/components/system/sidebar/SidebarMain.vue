@@ -20,7 +20,7 @@ const { t } = useI18n()
     />
     <VDivider />
     <VListItem
-      :to="{ name: ROUTE.SYSTEM.SETTINGS }"
+      to="/settings"
       prepend-icon="mdi-cog"
       :title="t('sidebar.settings.settings')"
       data-cy="personal-settings"

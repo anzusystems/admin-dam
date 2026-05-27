@@ -35,14 +35,14 @@ export async function createAppInitialize(
     const loadDamConfigPromise = loadDamPrvConfig()
     await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
   } catch (error) {
-    return { name: ROUTE.SYSTEM.LOGIN }
+    return '/login'
   }
   try {
     await initCurrentExtSystemAndLicence(
       getInitCurrentExtSystemAndLicenceConfig(to, to.params.id as string | undefined)
     )
   } catch (error) {
-    return { name: ROUTE.SYSTEM.LOGIN }
+    return '/login'
   }
 
   try {
@@ -50,7 +50,7 @@ export async function createAppInitialize(
     await loadDamConfigExtSystem(currentExtSystemId.value)
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
     if (isUndefined(configExtSystem)) {
-      return { name: ROUTE.SYSTEM.LOGIN }
+      return '/login'
     }
     const enabledAssetTypes: DamAssetTypeType[] = []
     if (configExtSystem.audio?.enabled) enabledAssetTypes.push(DamAssetType.Audio)
@@ -60,16 +60,16 @@ export async function createAppInitialize(
     await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
     initAppNotificationListeners()
   } catch (error) {
-    return { name: ROUTE.SYSTEM.LOGIN }
+    return '/login'
   }
 
   if (
     (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
     isUndefined(currentUser.value)
   ) {
-    return { name: ROUTE.SYSTEM.LOGIN }
+    return '/login'
   } else if (isStatusUnauthorized()) {
-    return { name: ROUTE.SYSTEM.UNAUTHORIZED }
+    return '/unauthorized'
   } else if (to.path === '/') {
     initialized.value = true
     return { name: ROUTE.DEFAULT }

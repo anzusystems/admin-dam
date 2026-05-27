@@ -15,6 +15,6 @@ export const checkAbility = async (
     return
   } else {
     // todo show error?
-    return { name: 'unauthorized' }
+    return '/unauthorized'
   }
 }
