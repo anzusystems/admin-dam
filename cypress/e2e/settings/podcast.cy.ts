@@ -32,12 +32,12 @@ describe(`Test Podcast function, Env: ${CY.cfg}`,
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/podcast')
+        cy.urlContains('/podcasts')
         PODCAST_ID = text
       })
   })
   it('Edit podcast', () => {
-    cy.visit('/podcast')
+    cy.visit('/podcasts')
     cy.getCy('filter-string').first().type(`${PODCAST_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')
@@ -73,7 +73,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`,
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/podcast')
+        cy.urlContains('/podcasts')
         EPISODE_ID = text
       })
   })
@@ -107,7 +107,7 @@ describe(`Test Podcast function, Env: ${CY.cfg}`,
     cy.cardLoad()
     cy.getCyVisibleClick('button-delete')
     cy.getCyVisibleClick('button-confirm-delete')
-    cy.urlContains('/episode')
+    cy.urlContains('/episodes')
     cy.getCy('episode-list').click()
     cy.getCyVisibleClick('filter-reset')
     cy.contains(`${EPISODE_ID}`).should('not.exist')

@@ -29,12 +29,12 @@ describe(`Test authors function, Env: ${CY.cfg}`,
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/author')
+        cy.urlContains('/authors')
         USER_ID = text
       })
   })
   it('Edit author', () => {
-    cy.visit('/author')
+    cy.visit('/authors')
     cy.getCy('filter-string', 20000).first().type(`${USER_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')

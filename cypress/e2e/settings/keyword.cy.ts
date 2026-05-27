@@ -22,7 +22,7 @@ describe(`Test keyword function, Env: ${CY.cfg}`,
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/keyword')
+        cy.urlContains('/keywords')
         KEYWORD_ID = text
       })
   })

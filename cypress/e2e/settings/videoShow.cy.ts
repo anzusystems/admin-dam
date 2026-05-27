@@ -25,12 +25,12 @@ describe(`Test video shows function, Env: ${CY.cfg}`,
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/video-show')
+        cy.urlContains('/video-shows')
         VIDEO_SHOW_ID = text
       })
   })
   it('Edit video show', ()=>{
-    cy.visit('/video-show')
+    cy.visit('/video-shows')
     cy.getCy('filter-string').first().type(`${VIDEO_SHOW_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')

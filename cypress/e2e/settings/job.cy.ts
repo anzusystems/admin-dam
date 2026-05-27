@@ -76,7 +76,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
                 .parent()
                 .should('contain.text', 'nie')
 
-              cy.visit('/job')
+              cy.visit('/jobs')
               cy.getCy('button-create').click()
               cy.getCy('job-select').click()
               cy.get('.v-list-item').contains('Podcastový synchronizátor').click()

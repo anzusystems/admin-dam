@@ -6,7 +6,7 @@ let PUBLIC_EXPORT_ID = ''
 describe(`Test public export function, Env: ${CY.cfg}`,
   { tags: ['@publicExport', '@settings'], env: { visitBaseUrl: false } }, () => {
     it('Create public export', () => {
-      cy.visit('/public-export')
+      cy.visit('/public-exports')
       cy.getCy('button-create').click()
       cy.getCy('publicExport-slug').type('cms-cypress')
       cy.getCy('user-asset-licences').type('Sme Family').click()
@@ -23,7 +23,7 @@ describe(`Test public export function, Env: ${CY.cfg}`,
           cy.urlContains(text)
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(text)
-          cy.urlContains('/public-export')
+          cy.urlContains('/public-exports')
           PUBLIC_EXPORT_ID = text
         })
     })

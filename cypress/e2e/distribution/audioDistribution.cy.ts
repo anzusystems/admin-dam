@@ -77,7 +77,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
         .should('include.text', 'Distribuovaný')  // JW distribution
 
       // Logs core-dam check
-      cy.visit('/log')
+      cy.visit('/logs')
       cy.getCy('filter-value').first().click()
       cy.contains('.v-list-item', 'coreDam').click()
       cy.getCy('filter-submit').click()

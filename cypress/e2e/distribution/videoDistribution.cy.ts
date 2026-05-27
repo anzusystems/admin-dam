@@ -74,7 +74,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
         .should('include.text', 'Distribuovaný')  // YT distribution
 
       // Logs core-dam check
-      cy.visit('/log')
+      cy.visit('/logs')
       cy.getCy('filter-value').first().click()
       cy.contains('.v-list-item', 'coreDam').click()
       cy.getCy('filter-submit').click()

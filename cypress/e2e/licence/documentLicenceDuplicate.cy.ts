@@ -16,7 +16,7 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
       cy.prepareData('document/sample.xls', 0)
     })
   it('Cms-system 1', () => {
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
 
       let idx = 0
@@ -27,7 +27,7 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
       })
     })
     it('CMS-system 2',()=>{
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
       cy.changeLicence(TESTED_LICENCE_IDS.CMS_SPECTATOR)
 
@@ -42,7 +42,7 @@ describe(`Test asset document licence duplicate function, Env: ${CY.cfg}`,
       cy.deleteFile(fileIDs)
     })
     it('Back to main cms licence', ()=>{
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_SPECTATOR)
       cy.changeLicence(TESTED_LICENCE_IDS.CMS_MAIN)
     })

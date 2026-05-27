@@ -28,7 +28,7 @@ describe(
           cy.urlContains(text)
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(text)
-          cy.urlContains('/asset-licence')
+          cy.urlContains('/asset-licences')
           LICENCE_ID = text
         })
     })
