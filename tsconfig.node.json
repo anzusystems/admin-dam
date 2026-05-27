@@ -3,9 +3,7 @@
   "include": [
     "vite.config.*",
     "vitest.config.*",
-    "cypress.config.*",
-    "nightwatch.conf.*",
-    "playwright.config.*"
+    "cypress.config.*"
   ],
   "compilerOptions": {
     "noEmit": true,

@@ -5,6 +5,8 @@ import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+import browserslist from 'browserslist'
+import { browserslistToTargets } from 'lightningcss'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
 const shouldEnableSentry = !!process.env.APP_DEPLOY_ENV && !!process.env.SENTRY_URL
@@ -12,6 +14,14 @@ const shouldEnableSentry = !!process.env.APP_DEPLOY_ENV && !!process.env.SENTRY_
 export default defineConfig({
   build: {
     sourcemap: shouldEnableSentry ? 'hidden' : false,
+    target: 'es2019',
+    cssMinify: 'lightningcss',
+  },
+  css: {
+    transformer: 'lightningcss',
+    lightningcss: {
+      targets: browserslistToTargets(browserslist('supports css-cascade-layers')),
+    },
   },
   plugins: [
     vue(),

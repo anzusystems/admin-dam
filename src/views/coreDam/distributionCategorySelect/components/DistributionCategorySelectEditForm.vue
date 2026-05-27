@@ -68,15 +68,11 @@ const removeItem = (index: number) => {
     </div>
     <VBtn
       class="mx-2"
-      dark
       color="indigo"
       data-cy="button-add-option"
       @click="addOption"
     >
-      <VIcon
-        dark
-        icon="mdi-plus"
-      />
+      <VIcon icon="mdi-plus" />
     </VBtn>
   </ASystemEntityScope>
 </template>

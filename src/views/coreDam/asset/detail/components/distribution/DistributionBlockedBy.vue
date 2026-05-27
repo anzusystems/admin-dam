@@ -75,7 +75,7 @@ const itemsComputed = computed(() => {
   return distributions.value.map((item) => {
     return {
       title:
-        (configExtSystem[props.assetType]?.distribution.distributionRequirements[item.distributionService]?.title ||
+        (configExtSystem[props.assetType]?.distribution?.distributionRequirements[item.distributionService]?.title ??
           item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
       value: item.id,
     }

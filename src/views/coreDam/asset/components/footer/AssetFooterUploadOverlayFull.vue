@@ -124,13 +124,13 @@ const onSaveAndClose = async () => {
           <div>
             <div
               v-if="isUploading"
-              class="text-subtitle-2 d-flex align-center"
+              class="text-label-large d-flex align-center"
             >
               {{ t('coreDam.asset.upload.title') }}
             </div>
             <div
               v-else
-              class="text-subtitle-2 d-flex align-center text-green-darken-3 font-weight-bold"
+              class="text-label-large d-flex align-center text-green-darken-3 font-weight-bold"
             >
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
@@ -139,7 +139,7 @@ const onSaveAndClose = async () => {
         <VSpacer />
         <div
           v-if="isUploading"
-          class="text-caption d-flex align-center"
+          class="text-body-small d-flex align-center"
         >
           <VProgressCircular
             indeterminate

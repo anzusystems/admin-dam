@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import {
-  ADialogToolbar,
-  AFormTextarea, AFormTextField,
-  ARow,
-  useAlerts,
-  useValidate,
-} from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextarea, AFormTextField, ARow, useAlerts, useValidate } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import type { Editor } from '@tiptap/core'
 import { useLink } from '@/components/anzutap/marks/link/composables/useLink'
@@ -126,4 +120,3 @@ const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
     </VCard>
   </VDialog>
 </template>
-

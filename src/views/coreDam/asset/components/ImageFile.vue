@@ -111,7 +111,6 @@ watch(
     :width="width"
     :height="width"
     :src="src"
-    contain
   >
     <template #placeholder />
     <template

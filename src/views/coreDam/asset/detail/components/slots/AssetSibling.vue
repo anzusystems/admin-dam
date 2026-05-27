@@ -58,7 +58,7 @@ const pickAssetType = computed(() => {
 <template>
   <div
     v-if="assetDetailStore.asset"
-    class="pa-4 pb-8 text-body-2"
+    class="pa-4 pb-8 text-body-medium"
   >
     <VRow>
       <VCol>
@@ -112,7 +112,7 @@ const pickAssetType = computed(() => {
   </div>
   <div
     v-else
-    class="pa-4 text-caption"
+    class="pa-4 text-body-small"
   >
     {{ t('coreDam.asset.sibling.noAsset') }}
   </div>

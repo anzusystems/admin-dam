@@ -247,7 +247,7 @@ onMounted(async () => {
           <div v-show="showAdvanced">
             <VRow>
               <VCol>
-                <div class="text-caption">
+                <div class="text-body-small">
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
                   }})<br>
@@ -271,7 +271,7 @@ onMounted(async () => {
             </VRow>
           </div>
           <div class="d-flex align-center w-100">
-            <div class="text-caption font-weight-bold">
+            <div class="text-body-small font-weight-bold">
               {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
             </div>
             <div class="w-100">

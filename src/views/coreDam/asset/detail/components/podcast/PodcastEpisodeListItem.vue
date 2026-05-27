@@ -20,7 +20,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="d-flex align-center w-100 pa-4 pb-8 text-body-2">
+  <div class="d-flex align-center w-100 pa-4 pb-8 text-body-medium">
     <div class="w-100">
       <div class="font-weight-bold">
         {{ item.texts.title }}

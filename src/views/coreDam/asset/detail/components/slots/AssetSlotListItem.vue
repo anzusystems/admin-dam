@@ -144,7 +144,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
 </script>
 
 <template>
-  <div class="pa-4 pb-8 text-body-2">
+  <div class="pa-4 pb-8 text-body-medium">
     <VRow v-if="uploadQueueItemInAnyProgress">
       <VCol>
         <div class="font-weight-bold">

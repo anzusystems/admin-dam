@@ -118,7 +118,7 @@ const { t } = useI18n()
             <tr>
               <td
                 :colspan="isEdit ? 3 : 2"
-                class="text-h6"
+                class="text-headline-small"
               >
                 {{ translatePermission('subjects', permissionSubject) }}
               </td>
@@ -129,7 +129,7 @@ const { t } = useI18n()
             >
               <td>
                 {{ translatePermission('actions', permissionAction) }}
-                <div class="text-caption text-disabled">
+                <div class="text-body-small text-disabled">
                   {{ permissionSubject }}_{{ permissionAction }}
                 </div>
               </td>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ToolbarItemButton, ToolbarItemSeparator } from './anzutapToolbar'
+import type { ToolbarItemButton, ToolbarItemSeparator } from '@/components/anzutap/components/anzutapToolbar'
 
 withDefaults(
   defineProps<{

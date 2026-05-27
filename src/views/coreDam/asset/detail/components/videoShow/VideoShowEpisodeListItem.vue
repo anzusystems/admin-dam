@@ -14,7 +14,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="pa-4 pb-8 text-body-2">
+  <div class="pa-4 pb-8 text-body-medium">
     <VRow>
       <VCol>
         <div class="font-weight-bold">

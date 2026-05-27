@@ -22,14 +22,15 @@ if (isUndefined(configExtSystem)) {
 }
 
 const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType].distribution.distributionRequirements[distribution.value.distributionService]
+  const requirements = configExtSystem[props.assetType]?.distribution?.distributionRequirements
+  return requirements?.[distribution.value.distributionService]
 })
 </script>
 
 <template>
   <VRow>
     <VCol>
-      <span class="font-weight-bold">{{ serviceRequirements.title }}</span> {{ distribution.extId }}
+      <span class="font-weight-bold">{{ serviceRequirements?.title }}</span> {{ distribution.extId }}
     </VCol>
   </VRow>
 </template>

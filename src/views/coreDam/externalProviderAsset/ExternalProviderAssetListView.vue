@@ -123,7 +123,7 @@ onUnmounted(() => {
       </div>
       <div
         v-else
-        class="text-h6 text-medium-emphasis d-flex w-100 h-100 align-center justify-center"
+        class="text-headline-small text-medium-emphasis d-flex w-100 h-100 align-center justify-center"
       >
         {{ t('coreDam.asset.noItemsFound') }}
       </div>

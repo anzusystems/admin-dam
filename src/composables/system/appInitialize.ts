@@ -58,10 +58,10 @@ export async function createAppInitialize(
       return
     }
     const enabledAssetTypes: DamAssetTypeType[] = []
-    if (configExtSystem.audio.enabled) enabledAssetTypes.push(DamAssetType.Audio)
-    if (configExtSystem.video.enabled) enabledAssetTypes.push(DamAssetType.Video)
-    if (configExtSystem.image.enabled) enabledAssetTypes.push(DamAssetType.Image)
-    if (configExtSystem.document.enabled) enabledAssetTypes.push(DamAssetType.Document)
+    if (configExtSystem.audio?.enabled) enabledAssetTypes.push(DamAssetType.Audio)
+    if (configExtSystem.video?.enabled) enabledAssetTypes.push(DamAssetType.Video)
+    if (configExtSystem.image?.enabled) enabledAssetTypes.push(DamAssetType.Image)
+    if (configExtSystem.document?.enabled) enabledAssetTypes.push(DamAssetType.Document)
     await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
     initAppNotificationListeners()
   } catch (error) {

@@ -35,7 +35,7 @@ const onAnyFilterUpdate = () => {
       :touched="touched"
       @reset-filter="resetFilter"
     >
-      <VRow align="start">
+      <VRow class="align-start">
         <VCol cols="4">
           <AFilterString
             v-model="filter.id"

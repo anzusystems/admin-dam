@@ -49,7 +49,7 @@ const onImport = () => {
       :title="t('coreDam.asset.detail.info.metadata')"
       value="meta"
     >
-      <VExpansionPanelText class="text-caption">
+      <VExpansionPanelText class="text-body-small">
         <VRow
           v-for="(value, key) in asset.metadata"
           :key="key"
@@ -69,7 +69,7 @@ const onImport = () => {
       :title="t('coreDam.asset.detail.info.file')"
       value="info"
     >
-      <VExpansionPanelText class="text-caption">
+      <VExpansionPanelText class="text-body-small">
         <VRow>
           <VCol
             cols="4"

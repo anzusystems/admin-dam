@@ -1,17 +1,11 @@
 <script lang="ts" setup>
 import type { PodcastExportData } from '@/types/coreDam/PodcastExportData'
-import {
-  ADialogToolbar,
-  AFormValueObjectOptionsSelect,
-  useAlerts,
-} from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormValueObjectOptionsSelect, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useExportTypeTypes } from '@/model/coreDam/valueObject/ExportType'
 import { useDeviceTypeTypes } from '@/model/coreDam/valueObject/DeviceType'
-import {
-  usePodcastExportDataValidation,
-} from '@/views/coreDam/podcast/composables/podcastExportDataValidations'
+import { usePodcastExportDataValidation } from '@/views/coreDam/podcast/composables/podcastExportDataValidations'
 import PodcastExportDataBodyEditor from '@/views/coreDam/podcast/components/PodcastExportDataBodyEditor.vue'
 
 withDefaults(

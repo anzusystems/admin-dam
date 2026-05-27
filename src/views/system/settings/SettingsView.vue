@@ -39,10 +39,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
     <VCardText>
       <VRow>
         <VCol cols="12">
-          <VRow
-            align="center"
-            class="pb-2"
-          >
+          <VRow class="pb-2 align-center">
             <VCol cols="1">
               {{ t('system.settings.locale') }}
             </VCol>
@@ -53,10 +50,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
               />
             </VCol>
           </VRow>
-          <VRow
-            align="center"
-            class="pb-2"
-          >
+          <VRow class="pb-2 align-center">
             <VCol cols="1">
               {{ t('system.settings.theme') }}
             </VCol>
@@ -68,8 +62,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
       </VRow>
       <VRow
         v-if="isSuperAdmin"
-        align="center"
-        class="pb-2"
+        class="pb-2 align-center"
       >
         <VCol cols="3">
           DEBUG: Test throw error
@@ -82,8 +75,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
       </VRow>
       <VRow
         v-if="isSuperAdmin"
-        align="center"
-        class="pb-2"
+        class="pb-2 align-center"
       >
         <VCol cols="3">
           DEBUG: Test log error
@@ -96,8 +88,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
       </VRow>
       <VRow
         v-if="isSuperAdmin"
-        align="center"
-        class="pb-2"
+        class="pb-2 align-center"
       >
         <VCol cols="3">
           DEBUG: Show unreleased features

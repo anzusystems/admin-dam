@@ -15,4 +15,3 @@ export const NodeName = {
   TableHeader: 'tableHeader',
   TableCell: 'tableCell',
 }
-

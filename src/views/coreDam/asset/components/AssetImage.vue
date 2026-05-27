@@ -140,7 +140,7 @@ const { remainingTimeShort } = useRemainingTime()
           :size="iconSize"
           :width="iconSize / 10"
         />
-        <div class="text-caption text-center">
+        <div class="text-body-small text-center">
           {{ t('system.upload.waiting') }}
         </div>
       </div>
@@ -157,7 +157,7 @@ const { remainingTimeShort } = useRemainingTime()
         />
         <div
           v-if="!disableProcessingText"
-          class="text-caption text-center"
+          class="text-body-small text-center"
         >
           {{ t('system.upload.processing') }}
         </div>
@@ -175,7 +175,7 @@ const { remainingTimeShort } = useRemainingTime()
         >
           {{ uploadingPercentage }}
         </VProgressCircular>
-        <div class="text-caption text-center">
+        <div class="text-body-small text-center">
           {{ t('system.upload.uploading') }}
           <span
             v-if="remainingTime"
@@ -225,7 +225,7 @@ const { remainingTimeShort } = useRemainingTime()
           color="success"
           :size="iconSize"
         />
-        <div class="text-caption text-center">
+        <div class="text-body-small text-center">
           {{ t('system.upload.done') }}
         </div>
       </div>
@@ -302,7 +302,7 @@ const { remainingTimeShort } = useRemainingTime()
         color="success"
         :size="iconSize"
       />
-      <div class="text-caption text-center">
+      <div class="text-body-small text-center">
         {{ t('system.upload.done') }}
       </div>
     </div>

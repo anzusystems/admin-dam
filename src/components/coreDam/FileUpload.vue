@@ -338,7 +338,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     @drop="onDrop"
     @click.stop="clickDropzone"
   >
-    <div class="text-h1">
+    <div class="text-display-large">
       {{ t('system.upload.dragAndDrop') }}
     </div>
   </div>

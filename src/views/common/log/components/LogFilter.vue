@@ -50,7 +50,7 @@ const { logSystemOptions } = useLogSystem()
       enable-top
       @reset-filter="resetFilter"
     >
-      <VRow align="start">
+      <VRow class="align-start">
         <VCol
           class="pb-0"
           cols="12"
@@ -91,7 +91,7 @@ const { logSystemOptions } = useLogSystem()
         </VCol>
       </VRow>
       <template #top>
-        <VRow align="start">
+        <VRow class="align-start">
           <VCol
             class="pb-0"
             cols="12"
@@ -117,7 +117,7 @@ const { logSystemOptions } = useLogSystem()
         </VRow>
       </template>
       <template #advanced>
-        <VRow align="start">
+        <VRow class="align-start">
           <VCol
             cols="12"
             sm="2"

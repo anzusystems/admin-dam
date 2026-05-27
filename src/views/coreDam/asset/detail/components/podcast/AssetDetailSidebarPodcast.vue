@@ -84,7 +84,7 @@ onMounted(async () => {
   </div>
   <div
     v-else-if="listItems.length === 0"
-    class="pa-4 text-caption"
+    class="pa-4 text-body-small"
   >
     {{ t('coreDam.podcastEpisode.common.noEntries') }}
   </div>

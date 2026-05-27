@@ -80,7 +80,7 @@ const selectMultiple = () => {
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
       />
-      <div class="dam-image-grid__item-text text-caption px-2 py-1">
+      <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
           <div class="line-clamp-1">
             {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}

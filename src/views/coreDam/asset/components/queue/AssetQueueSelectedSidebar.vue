@@ -129,7 +129,7 @@ onMounted(() => {
         <VTab>{{ t('coreDam.asset.massOperations.title') }}</VTab>
       </VTabs>
       <div class="sidebar-info__content">
-        <div class="text-caption pa-3">
+        <div class="text-body-small pa-3">
           {{ t('coreDam.asset.massOperations.description') }}
         </div>
         <VExpansionPanels
@@ -144,7 +144,7 @@ onMounted(() => {
           >
             <VExpansionPanelText>
               <VRow
-                dense
+                density="compact"
                 class="my-2"
               >
                 <VCol>
@@ -196,7 +196,7 @@ onMounted(() => {
                 </VCol>
               </VRow>
               <VRow
-                dense
+                density="compact"
                 class="my-2"
               >
                 <VCol>

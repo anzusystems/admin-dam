@@ -2,6 +2,7 @@
 # Script used to run the linter check in the application container
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+ARGS="$*"
 cd "${PROJECT_ROOT}" || exit 1
 # Initialize default variables
 # shellcheck disable=SC1091
@@ -13,11 +14,20 @@ docker_env_vars
 
 if [ -f /.dockerenv ]; then
     env-config
-    echo "[INFO] Running Yarn lint"
-    yarn lint:tsc
-    yarn lint:eslint
-    yarn lint:stylelint
+    if [[ "$1" == -* ]] || [ $# -eq 0 ]; then
+        echo "[INFO] Running Yarn lint $@"
+        yarn run lint "$@"
+    else
+        SCRIPT=$1
+        shift
+        # Automatically prefix with 'lint:' if the specific script doesn't exist but the prefixed one does
+        if ! grep -q "\"$SCRIPT\":" package.json && grep -q "\"lint:$SCRIPT\":" package.json; then
+            SCRIPT="lint:$SCRIPT"
+        fi
+        echo "[INFO] Running Yarn $SCRIPT $@"
+        yarn run "$SCRIPT" "$@"
+    fi
     exit
 fi
 
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/lint\'
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/lint "${ARGS}"\'

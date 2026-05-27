@@ -102,7 +102,7 @@ onMounted(async () => {
         >
           <div
             v-if="listItems.length === 0"
-            class="text-center text-caption w-100 pa-2"
+            class="text-center text-body-small w-100 pa-2"
           >
             {{ t('coreDam.distribution.common.noEntries') }}
           </div>
@@ -129,7 +129,7 @@ onMounted(async () => {
       <VCardActions>
         <div
           v-if="lastSelectedItem"
-          class="text-caption pl-2"
+          class="text-body-small pl-2"
         >
           {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>

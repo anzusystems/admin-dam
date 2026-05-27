@@ -34,7 +34,7 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
     if (isUndefined(configExtSystem)) {
       throw new Error('Ext system must be initialised.')
     }
-    assetSlotNames.value = cloneDeep(configExtSystem[assetType].slots)
+    assetSlotNames.value = cloneDeep(configExtSystem[assetType]?.slots ?? [])
   }
 
   function setList(items: Array<AssetSlot>) {

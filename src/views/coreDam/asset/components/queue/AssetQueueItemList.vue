@@ -109,7 +109,7 @@ const { remainingTimeShort } = useRemainingTime()
             </VTooltip>
           </VBtn>
         </div>
-        <div class="text-caption text-truncate">
+        <div class="text-body-small text-truncate">
           {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
           <VTooltip
             v-if="item.displayTitle"
@@ -121,7 +121,7 @@ const { remainingTimeShort } = useRemainingTime()
         </div>
         <div
           v-if="item.progress.remainingTime && item.progress.remainingTime > 0"
-          class="ml-auto text-caption font-weight-bold text-no-wrap"
+          class="ml-auto text-body-small font-weight-bold text-no-wrap"
         >
           {{ remainingTimeShort(item.progress.remainingTime) }}
         </div>

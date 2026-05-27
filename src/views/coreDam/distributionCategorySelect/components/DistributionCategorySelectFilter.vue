@@ -45,7 +45,7 @@ const onAnyFilterUpdate = () => {
       @reset-filter="resetFilter"
     >
       <template #top>
-        <VRow align="start">
+        <VRow class="align-start">
           <VCol
             cols="12"
             md="6"
@@ -59,7 +59,7 @@ const onAnyFilterUpdate = () => {
           </VCol>
         </VRow>
       </template>
-      <VRow align="start">
+      <VRow class="align-start">
         <VCol cols="1">
           <AFilterInteger
             v-model="filter.id"

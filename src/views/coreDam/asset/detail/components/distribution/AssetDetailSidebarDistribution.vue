@@ -71,7 +71,7 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
         {{ t('coreDam.distribution.common.addButton') }}
       </ABtnPrimary>
     </AssetDetailSidebarActionsWrapper>
-    <div class="px-4 text-caption">
+    <div class="px-4 text-body-small">
       {{ t('coreDam.distribution.common.list') }}:
     </div>
     <div
@@ -85,7 +85,7 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
     </div>
     <div
       v-else-if="distributionListStore.list.length === 0"
-      class="pa-4 text-caption"
+      class="pa-4 text-body-small"
     >
       {{ t('coreDam.distribution.common.noEntries') }}
     </div>

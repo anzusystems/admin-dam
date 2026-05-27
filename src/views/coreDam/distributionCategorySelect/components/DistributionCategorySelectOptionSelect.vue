@@ -39,7 +39,7 @@ if (isUndefined(configExtSystem)) {
 
 const isRequired = computed(() => {
   return (
-    configExtSystem[props.select.type].distribution.distributionRequirements[props.select.serviceSlug]?.categorySelect
+    configExtSystem[props.select.type]?.distribution?.distributionRequirements[props.select.serviceSlug]?.categorySelect
       ?.required ?? false
   )
 })

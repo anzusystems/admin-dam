@@ -103,7 +103,8 @@ export const useDistributionCategoryManageActions = () => {
 
   const getAvailableDistributionServiceSlugs = (assetType: DamAssetTypeType) => {
     const serviceSlugs: string[] = []
-    Object.entries(configExtSystem[assetType].distribution.distributionRequirements).forEach(([service, config]) => {
+    const requirements = configExtSystem[assetType]?.distribution?.distributionRequirements ?? {}
+    Object.entries(requirements).forEach(([service, config]) => {
       if (config.categorySelect.enabled) {
         serviceSlugs.push(service)
       }

@@ -43,7 +43,7 @@ const { jobStatusOptions } = useJobStatus()
       :touched="touched"
       @reset-filter="resetFilter"
     >
-      <VRow align="start">
+      <VRow class="align-start">
         <VCol
           cols="12"
           sm="3"

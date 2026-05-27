@@ -17,7 +17,7 @@ const onSubmit = () => {
       class="login-form pa-4 system-border-a"
       data-cy="login-form"
     >
-      <h1 class="display-1 my-3">
+      <h1 class="text-headline-large my-3">
         ADAM
         <svg
           width="1000"
@@ -27,7 +27,7 @@ const onSubmit = () => {
           <use xlink:href="#svg-logo" />
         </svg>
       </h1>
-      <h4 class="mb-3 body-1">
+      <h4 class="mb-3 text-body-large">
         <span>{{ t('auth.simpleLogin.description') }}</span>
       </h4>
       <VForm>

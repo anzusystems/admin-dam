@@ -53,7 +53,7 @@ defineExpose({
   >
     <h4
       v-if="label"
-      class="w-100 font-weight-bold text-subtitle-2 d-flex gc-2 align-center justify-space-between"
+      class="w-100 font-weight-bold text-label-large d-flex gc-2 align-center justify-space-between"
     >
       <div>
         <slot name="label-start" />

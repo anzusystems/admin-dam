@@ -62,8 +62,8 @@ watch(
 
 <template>
   <div class="d-flex flex-column w-100">
-    <VRow align="center">
-      <VCol class="text-caption">
+    <VRow class="align-center">
+      <VCol class="text-body-small">
         {{ t('coreDam.distribution.common.select') }}:
       </VCol>
     </VRow>
@@ -96,7 +96,7 @@ watch(
     </VRow>
     <VRow
       v-else
-      align="center"
+      class="align-center"
     >
       <VCol>
         <div class="font-weight-bold">

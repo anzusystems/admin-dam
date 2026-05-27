@@ -125,19 +125,19 @@ watch(
 <template>
   <div
     v-if="isFailed"
-    class="text-caption"
+    class="text-body-small"
   >
     {{ t('system.imagePreview.status.isFailedInfo') }}
   </div>
   <div
     v-if="isDuplicate"
-    class="text-caption"
+    class="text-body-small"
   >
     {{ t('system.imagePreview.status.isDuplicateInfo') }}
   </div>
   <div
     v-if="isProcessing"
-    class="text-caption"
+    class="text-body-small"
   >
     {{ t('system.imagePreview.status.isProcessingInfo') }}
   </div>
@@ -166,7 +166,6 @@ watch(
       :height="height"
       :max-height="300"
       :src="src"
-      contain
     />
     <div v-if="showActions">
       <slot name="actions-start" />

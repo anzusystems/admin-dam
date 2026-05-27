@@ -148,7 +148,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
               </VTooltip>
             </VBtn>
           </div>
-          <div class="text-subtitle-2 d-flex">
+          <div class="text-label-large d-flex">
             <div class="pr-4">
               {{ totalCountText }}
             </div>

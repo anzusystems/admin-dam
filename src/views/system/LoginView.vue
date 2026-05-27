@@ -20,7 +20,7 @@ const { t } = useI18n()
     </div>
   </div>
   <div class="full-screen-page-footer px-10">
-    <div class="text-medium-emphasis text-caption font-weight-light text-center">
+    <div class="text-medium-emphasis text-body-small font-weight-light text-center">
       {{ t('common.system.version') }}: {{ envConfig.appVersion }}
     </div>
   </div>

@@ -33,10 +33,10 @@ if (isUndefined(configExtSystem)) {
 
 const items = computed(() => {
   return [
-    ...configExtSystem.audio.slots,
-    ...configExtSystem.image.slots,
-    ...configExtSystem.video.slots,
-    ...configExtSystem.document.slots,
+    ...(configExtSystem.audio?.slots ?? []),
+    ...(configExtSystem.image?.slots ?? []),
+    ...(configExtSystem.video?.slots ?? []),
+    ...(configExtSystem.document?.slots ?? []),
   ]
     .filter((value, index, array) => array.indexOf(value) === index)
     .map((item) => ({ title: item, value: item }))

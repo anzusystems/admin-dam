@@ -94,7 +94,7 @@ const onAnyMetadataChange = () => {
           <template #after-pinned>
             <VRow
               v-if="keywordEnabled"
-              dense
+              density="compact"
               class="my-2"
             >
               <VCol>
@@ -117,7 +117,7 @@ const onAnyMetadataChange = () => {
             </VRow>
             <VRow
               v-if="authorEnabled"
-              dense
+              density="compact"
               class="my-2"
             >
               <VCol>
@@ -140,7 +140,7 @@ const onAnyMetadataChange = () => {
               </VCol>
             </VRow>
             <VRow
-              dense
+              density="compact"
               class="my-2"
             >
               <VCol>
@@ -159,7 +159,7 @@ const onAnyMetadataChange = () => {
       :title="t('coreDam.asset.detail.info.file')"
       value="file"
     >
-      <VExpansionPanelText class="text-caption">
+      <VExpansionPanelText class="text-body-small">
         <!-- all types -->
         <VRow>
           <VCol cols="3">

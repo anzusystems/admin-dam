@@ -251,9 +251,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         queues.value[queueId].items[foundIndex].authors = res[i].authors
         queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
         queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
-        queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(
-          res[i].metadata.authorSuggestions
-        )
+        queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
         queues.value[queueId].items[foundIndex].canEditMetadata = true
         addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
       }

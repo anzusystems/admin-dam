@@ -17,7 +17,7 @@ const { t } = useI18n()
           v-for="option in distributionCategorySelect.options"
           :key="option.id"
           class="mt-2 pl-0"
-          two-line
+          lines="two"
         >
           <VListItemTitle>{{ option.name }}</VListItemTitle>
           <VListItemSubtitle>{{ option.value }}</VListItemSubtitle>

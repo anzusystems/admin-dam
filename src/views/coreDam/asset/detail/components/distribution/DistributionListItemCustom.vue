@@ -41,14 +41,14 @@ if (isUndefined(configExtSystem)) {
 }
 
 const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType].distribution.distributionRequirements[props.item.distributionService]
+  return configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
 })
 </script>
 
 <template>
   <div
     v-if="serviceRequirements"
-    class="text-body-2"
+    class="text-body-medium"
   >
     <VRow>
       <VCol>

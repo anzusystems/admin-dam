@@ -6,10 +6,7 @@ import {
 import { isUndefined, useSentry } from '@anzusystems/common-admin'
 
 export function isValidLinkVariant(value: unknown): value is LinkVariantType {
-  return (
-    typeof value === 'string' &&
-    (value === LinkVariant.Link)
-  )
+  return typeof value === 'string' && value === LinkVariant.Link
 }
 
 export function validateLinkVariant(

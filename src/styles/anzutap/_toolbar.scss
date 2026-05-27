@@ -1,5 +1,5 @@
-@use "vars/name";
-@use "vars/colors";
+@use 'vars/name';
+@use 'vars/colors';
 
 $background-color-gray: #f8f8f8 !default;
 $item-color: #666 !default;
@@ -42,7 +42,7 @@ $btn-width-from-padding: calc((var(--v-btn-height) + #{$btn-additional-size}) * 
     }
 
     &.is-active {
-      background-color: rgb(var(--v-theme-primary), 0.1);
+      background-color: rgb(var(--v-theme-primary) / 10%);
       color: rgb(var(--v-theme-primary));
     }
 

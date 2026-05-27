@@ -8,6 +8,7 @@ export function useUserFactory() {
     return {
       id: 0,
       email: '',
+      locale: null,
       person: {
         firstName: '',
         lastName: '',

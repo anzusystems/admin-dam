@@ -28,7 +28,7 @@ if (isUndefined(configExtSystem)) {
 }
 
 const externalProviders = computed(() => {
-  return configExtSystem.assetExternalProviders
+  return configExtSystem.assetExternalProviders ?? {}
 })
 
 const show = computed(() => {
@@ -38,7 +38,7 @@ const show = computed(() => {
 const activeDisplayText = computed(() => {
   const providerParam = route.params.provider as undefined | string
   if (route.name === ROUTE.DAM.EXTERNAL_PROVIDER.LIST && providerParam && externalProviders.value[providerParam]) {
-    return externalProviders.value[providerParam].title
+    return externalProviders.value[providerParam]!.title
   }
   return t('system.mainBar.customIntegrations.assets')
 })

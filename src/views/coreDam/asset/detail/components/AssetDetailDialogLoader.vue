@@ -73,7 +73,7 @@ const totalCountText = computed(() => {
         </div>
         <div
           v-if="assetDetailStore.view === 'list'"
-          class="text-subtitle-2 d-flex"
+          class="text-label-large d-flex"
         >
           <div class="pr-4">
             {{ totalCountText }}

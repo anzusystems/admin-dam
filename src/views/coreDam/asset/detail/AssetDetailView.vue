@@ -135,7 +135,7 @@ onMounted(() => {
           :height="64"
           class="system-border-b pr-1"
         >
-          <div class="text-subtitle-2 d-flex pl-2">
+          <div class="text-label-large d-flex pl-2">
             <div>{{ toolbarTitle }}</div>
           </div>
           <VSpacer />

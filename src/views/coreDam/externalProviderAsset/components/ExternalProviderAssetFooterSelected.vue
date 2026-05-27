@@ -76,7 +76,7 @@ const onImport = () => {
       >
         <div class="d-flex px-2">
           <div>
-            <span class="text-caption font-weight-bold">
+            <span class="text-body-small font-weight-bold">
               {{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}
             </span>
           </div>

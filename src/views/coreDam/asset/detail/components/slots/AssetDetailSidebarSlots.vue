@@ -66,7 +66,7 @@ onMounted(async () => {
   </div>
   <div
     v-else-if="assetSlotsStore.assetSlotNames.length === 0"
-    class="pa-4 text-caption"
+    class="pa-4 text-body-small"
   >
     {{ t('coreDam.asset.slots.noEntries') }}
   </div>

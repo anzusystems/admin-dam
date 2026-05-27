@@ -272,7 +272,7 @@ onUnmounted(() => {
             </div>
             <div
               v-if="item.error.message.length"
-              class="text-caption"
+              class="text-body-small"
               v-text="item.error.message"
             />
             <div v-else-if="item.error.assetFileFailReason !== AssetFileFailReason.None">
@@ -280,14 +280,14 @@ onUnmounted(() => {
             </div>
             <div
               v-else
-              class="text-caption"
+              class="text-body-small"
             >
               {{ t('system.uploadErrors.unknownError') }}
             </div>
           </div>
         </div>
         <VRow
-          dense
+          density="compact"
           class="my-2"
         >
           <VCol>
@@ -353,8 +353,8 @@ onUnmounted(() => {
         </VRow>
         <VRow
           v-if="item.displayTitle"
-          dense
-          class="my-2 mb-3 mt-0 text-caption"
+          density="compact"
+          class="my-2 mb-3 mt-0 text-body-small"
         >
           <VCol class="pt-0">
             {{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}
@@ -370,7 +370,7 @@ onUnmounted(() => {
             <template #after-pinned>
               <VRow
                 v-if="keywordEnabled"
-                dense
+                density="compact"
                 class="my-2"
               >
                 <VCol>
@@ -393,7 +393,7 @@ onUnmounted(() => {
               </VRow>
               <VRow
                 v-if="authorEnabled"
-                dense
+                density="compact"
                 class="my-2"
               >
                 <VCol>
@@ -416,7 +416,7 @@ onUnmounted(() => {
                 </VCol>
               </VRow>
               <VRow
-                dense
+                density="compact"
                 class="my-2"
               >
                 <VCol>

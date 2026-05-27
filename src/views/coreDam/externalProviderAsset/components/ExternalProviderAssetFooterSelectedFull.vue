@@ -62,7 +62,7 @@ const onImport = () => {
       >
         <div class="d-flex align-center pa-2">
           <div>
-            <span class="text-subtitle-2">{{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}</span>
+            <span class="text-label-large">{{ t('coreDam.asset.selected.selectedFiles') }}: {{ queueTotalCount }}</span>
           </div>
         </div>
         <VSpacer />

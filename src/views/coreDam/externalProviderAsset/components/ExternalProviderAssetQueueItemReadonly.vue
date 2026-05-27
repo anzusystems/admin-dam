@@ -43,7 +43,7 @@ const imageSrc = computed(() => {
         />
       </div>
       <VRow
-        dense
+        density="compact"
         class="my-2"
       >
         <VCol>
@@ -58,19 +58,19 @@ const imageSrc = computed(() => {
           </div>
         </VCol>
       </VRow>
-      <VRow class="text-caption">
+      <VRow class="text-body-small">
         <VCol>{{ t('coreDam.asset.externalProvider.id') }}</VCol>
         <VCol cols="9">
           {{ item.externalProviderAssetId }}
         </VCol>
       </VRow>
-      <VRow class="text-caption">
+      <VRow class="text-body-small">
         <VCol>{{ t('coreDam.asset.detail.info.field.type') }}</VCol>
         <VCol cols="9">
           {{ item.assetType }}
         </VCol>
       </VRow>
-      <VRow class="text-caption">
+      <VRow class="text-body-small">
         <VCol>{{ t('coreDam.asset.externalProvider.title') }}</VCol>
         <VCol cols="9">
           {{ item.displayTitle }}
@@ -79,7 +79,7 @@ const imageSrc = computed(() => {
       <VRow
         v-for="(value, key) in item.externalProviderMetadata"
         :key="key"
-        class="text-caption"
+        class="text-body-small"
       >
         <VCol>{{ key }}</VCol>
         <VCol cols="9">

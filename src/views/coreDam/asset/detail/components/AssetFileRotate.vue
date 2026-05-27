@@ -39,7 +39,7 @@ const { t } = useI18n()
 
 <template>
   <div>
-    <div class="text-caption">
+    <div class="text-body-small">
       {{ t('coreDam.asset.detail.roi.rotate.rotateMainFileImage') }}
     </div>
     <div

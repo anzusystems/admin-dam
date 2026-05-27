@@ -58,13 +58,13 @@ const isUploading = computed(() => {
           <div class="d-flex align-center">
             <div
               v-if="isUploading"
-              class="text-caption d-flex align-center font-weight-bold"
+              class="text-body-small d-flex align-center font-weight-bold"
             >
               {{ t('coreDam.asset.upload.title') }}
             </div>
             <div
               v-else
-              class="text-caption d-flex align-center text-green-darken-3 font-weight-bold"
+              class="text-body-small d-flex align-center text-green-darken-3 font-weight-bold"
             >
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
@@ -74,7 +74,7 @@ const isUploading = computed(() => {
         <div class="d-flex align-center pr-1">
           <div
             v-if="isUploading"
-            class="text-caption mr-2 d-flex align-center"
+            class="text-body-small mr-2 d-flex align-center"
           >
             <VProgressCircular
               indeterminate
@@ -129,7 +129,7 @@ const isUploading = computed(() => {
         density="compact"
         :height="48"
       >
-        <div class="ml-2 text-caption">
+        <div class="ml-2 text-body-small">
           {{ t('coreDam.asset.upload.newAssetsUploadOverlayTitle') }}
         </div>
         <VSpacer />

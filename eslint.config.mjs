@@ -2,6 +2,8 @@ import stylistic from '@stylistic/eslint-plugin'
 // import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 import pluginVue from 'eslint-plugin-vue'
 import pluginPinia from 'eslint-plugin-pinia'
+import pluginVuetify from 'eslint-plugin-vuetify'
+import oxlint from 'eslint-plugin-oxlint'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 
 const tsExtensionPlugin = {
@@ -49,6 +51,7 @@ export default defineConfigWithVueTs(
   pluginVue.configs['flat/essential'],
   pluginVue.configs['flat/strongly-recommended'],
   pluginVue.configs['flat/recommended'],
+  ...pluginVuetify.configs['flat/recommended-v4'],
   vueTsConfigs.recommended,
   {
     plugins: {
@@ -121,6 +124,7 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
     },
-  }
+  },
+  ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json')
   // skipFormatting,
 )

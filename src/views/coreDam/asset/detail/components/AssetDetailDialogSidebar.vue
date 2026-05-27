@@ -65,7 +65,7 @@ if (isUndefined(configExtSystem)) {
 }
 
 const typeHasDistributions = computed(() => {
-  return configExtSystem[props.assetType].distribution.distributionServices.length > 0
+  return (configExtSystem[props.assetType]?.distribution?.distributionServices.length ?? 0) > 0
 })
 </script>
 

@@ -38,7 +38,7 @@ const { exportTypeOptions } = useExportTypeTypes()
       :touched="touched"
       @reset-filter="resetFilter"
     >
-      <VRow align="start">
+      <VRow class="align-start">
         <VCol cols="3">
           <AFilterString
             v-model="filter.id"

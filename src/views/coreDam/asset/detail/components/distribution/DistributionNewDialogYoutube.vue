@@ -444,7 +444,7 @@ onUnmounted(async () => {
         />
       </div>
     </div>
-    <DistributionYoutubeTermOfUse class="pa-4 text-caption" />
+    <DistributionYoutubeTermOfUse class="pa-4 text-body-small" />
   </VCardText>
   <VCardActions>
     <DistributionNewDialogYoutubeLogoutButton

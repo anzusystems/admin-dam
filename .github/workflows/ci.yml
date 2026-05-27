@@ -18,7 +18,7 @@ jobs:
       matrix:
         include:
           - node-version: 24
-            docker-image: anzusystems/node:4.0.0-node24-nginx-browsers
+            docker-image: anzusystems/node:4.1.0-node24-nginx-browsers
 
     name: Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest

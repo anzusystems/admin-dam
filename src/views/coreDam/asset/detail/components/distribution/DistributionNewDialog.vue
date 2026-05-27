@@ -58,7 +58,7 @@ if (isUndefined(configExtSystem)) {
 }
 
 const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType].distribution.distributionRequirements
+  return configExtSystem[props.assetType]?.distribution?.distributionRequirements ?? {}
 })
 
 const activeConfig = computed(() => {
