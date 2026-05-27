@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/videoShowEpisodeApi'
-import { useI18n } from 'vue-i18n'
 import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeEditActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeValidation } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
@@ -14,15 +13,9 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ASystemEntityScope
-    :system="SYSTEM_CORE_DAM"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <VRow>
-      <VCol
-        cols="12"
-        md="8"
-      >
+      <VCol cols="12" md="8">
         <ARow>
           <AFormTextField
             v-model="videoShowEpisode.texts.title"
@@ -69,10 +62,7 @@ const { t } = useI18n()
           />
         </ARow>
       </VCol>
-      <VCol
-        cols="12"
-        md="4"
-      />
+      <VCol cols="12" md="4" />
     </VRow>
   </ASystemEntityScope>
 </template>

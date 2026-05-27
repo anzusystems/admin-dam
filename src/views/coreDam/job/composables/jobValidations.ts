@@ -1,9 +1,5 @@
-import useVuelidate from '@vuelidate/core'
-import type { Ref } from 'vue'
-import { stringToInt, useValidate } from '@anzusystems/common-admin'
 import * as validators from '@vuelidate/validators'
 import type { Job } from '@/types/coreDam/Job'
-import { useI18n } from 'vue-i18n'
 import type { JobResource } from '@/model/coreDam/valueObject/JobResource'
 
 const { required } = useValidate()

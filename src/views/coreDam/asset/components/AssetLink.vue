@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import type { DocId } from '@anzusystems/common-admin'
-
 const props = withDefaults(
   defineProps<{
     assetId: DocId
@@ -18,11 +14,7 @@ const href = computed(() => {
 </script>
 
 <template>
-  <VBtn
-    :href="href"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <VBtn :href="href" target="_blank" rel="noopener noreferrer">
     <slot />
   </VBtn>
 </template>

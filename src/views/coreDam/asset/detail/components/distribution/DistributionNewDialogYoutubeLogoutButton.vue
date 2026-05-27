@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { ADialogToolbar, useAlerts } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
+import { ADialogToolbar } from '@anzusystems/common-admin'
 import { logoutYoutube } from '@/services/api/coreDam/distributionYoutubeApi'
-import { ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -47,12 +45,7 @@ const confirmLogout = async () => {
     {{ t('coreDam.youtubeDistribution.logout.logoutOpen') }}
   </ABtnTertiary>
   <VDialog v-model="dialog">
-    <VCard
-      v-if="dialog"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
-      data-cy="create-panel"
-    >
+    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <ADialogToolbar @on-cancel="closeDialog">
         {{ t('coreDam.youtubeDistribution.logout.logoutTitle') }}
       </ADialogToolbar>
@@ -61,17 +54,10 @@ const confirmLogout = async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="closeDialog"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="closeDialog">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="buttonLoading"
-          data-cy="button-confirm"
-          @click.stop="confirmLogout"
-        >
+        <ABtnPrimary :loading="buttonLoading" data-cy="button-confirm" @click.stop="confirmLogout">
           {{ t('coreDam.youtubeDistribution.logout.logoutConfirm') }}
         </ABtnPrimary>
       </VCardActions>

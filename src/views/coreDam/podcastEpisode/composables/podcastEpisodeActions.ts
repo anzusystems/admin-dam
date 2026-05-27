@@ -1,6 +1,4 @@
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import {
   deletePodcastEpisode,
   fetchPodcastEpisode,
@@ -8,10 +6,7 @@ import {
   updatePodcastEpisode,
 } from '@/services/api/coreDam/podcastEpisodeApi'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
-import { storeToRefs } from 'pinia'
 import { usePodcastEpisodeOneStore } from '@/stores/coreDam/podcastEpisodeStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

@@ -1,6 +1,4 @@
-import { useValidate, type ValidationScope } from '@anzusystems/common-admin'
-import useVuelidate from '@vuelidate/core'
-import type { Ref } from 'vue'
+import { type ValidationScope } from '@anzusystems/common-admin'
 import type {
   DistributionUpdateDto,
   JwDistributionUpdateDto,

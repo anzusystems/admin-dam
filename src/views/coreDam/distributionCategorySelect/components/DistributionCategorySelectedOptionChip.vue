@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -16,10 +15,7 @@ const selectedOption = computed(() =>
 </script>
 
 <template>
-  <VChip
-    v-if="selectedOption"
-    size="small"
-  >
+  <VChip v-if="selectedOption" size="small">
     {{ selectedOption.name }}
   </VChip>
   <span v-else>-</span>

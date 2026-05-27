@@ -5,7 +5,7 @@ import {
   type YoutubeDistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
 import { DistributionYoutubePrivacyDefault } from '@/model/coreDam/valueObject/DistributionYoutubePrivacy'
-import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
+import { DamDistributionStatus } from '@anzusystems/common-admin'
 
 export function useDistributionYoutubeFactory() {
   const createCreateDto = (): DistributionYoutubeCreateRedistributeDto => {

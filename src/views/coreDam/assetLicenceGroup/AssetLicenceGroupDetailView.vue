@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupDetailActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupDetail from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'

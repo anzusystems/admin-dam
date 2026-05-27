@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
-import { useI18n } from 'vue-i18n'
 import {
   AFormDatetimePicker,
   AFormTextarea,
@@ -10,7 +9,6 @@ import {
   ARow,
   ASortable,
   ASystemEntityScope,
-  type SortableItem,
 } from '@anzusystems/common-admin'
 import { usePodcastEditActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastValidation } from '@/views/coreDam/podcast/composables/podcastValidation'
@@ -21,7 +19,6 @@ import { usePodcastExportDataFactory } from '@/model/coreDam/factory/PodcastExpo
 import DeviceTypeChip from '@/views/coreDam/publicExport/components/DeviceTypeChip.vue'
 import ExportTypeChip from '@/views/coreDam/publicExport/components/ExportTypeChip.vue'
 import PodcastExportDataManageDialog from '@/views/coreDam/podcast/components/PodcastExportDataManageDialog.vue'
-import { ref } from 'vue'
 
 const { podcast } = usePodcastEditActions()
 
@@ -59,15 +56,9 @@ const onCancel = () => {
 </script>
 
 <template>
-  <ASystemEntityScope
-    :system="SYSTEM_CORE_DAM"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <VRow>
-      <VCol
-        cols="12"
-        md="8"
-      >
+      <VCol cols="12" md="8">
         <ARow>
           <AFormTextField
             v-model="podcast.texts.title"
@@ -167,27 +158,12 @@ const onCancel = () => {
           </ASortable>
         </ARow>
       </VCol>
-      <VCol
-        cols="12"
-        md="4"
-      >
-        <ARow
-          :title="t('coreDam.podcast.model.imagePreview')"
-          data-cy="select-image-preview"
-        >
-          <ImagePreview
-            v-model="podcast.imagePreview"
-            show-actions
-          />
+      <VCol cols="12" md="4">
+        <ARow :title="t('coreDam.podcast.model.imagePreview')" data-cy="select-image-preview">
+          <ImagePreview v-model="podcast.imagePreview" show-actions />
         </ARow>
-        <ARow
-          :title="t('coreDam.podcast.model.altImage')"
-          data-cy="select-image-alt"
-        >
-          <ImagePreview
-            v-model="podcast.altImage"
-            show-actions
-          />
+        <ARow :title="t('coreDam.podcast.model.altImage')" data-cy="select-image-alt">
+          <ImagePreview v-model="podcast.altImage" show-actions />
         </ARow>
       </VCol>
     </VRow>

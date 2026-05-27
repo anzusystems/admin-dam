@@ -6,22 +6,13 @@ import { SYSTEM_DAM } from '@/model/systems'
 import { checkAbility } from '@/router/checkAbility'
 import { damClient } from '@/services/api/clients/damClient'
 import { envConfig } from '@/services/EnvConfigService'
-import {
-  DamAssetType,
-  type DamAssetTypeType,
-  isDefined,
-  isUndefined,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
+import { DamAssetType, type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { ref } from 'vue'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 const initialized = ref(false)
 
-export async function createAppInitialize(
-  to: RouteLocationNormalized
-): Promise<NavigationGuardReturn> {
+export async function createAppInitialize(to: RouteLocationNormalized): Promise<NavigationGuardReturn> {
   const { isStatusNotDefined, isStatusSsoCommunicationFailure, isStatusInternalErrorFailure, isStatusUnauthorized } =
     useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements, getDamConfigExtSystem } =
@@ -37,9 +28,7 @@ export async function createAppInitialize(
     return '/login'
   }
   try {
-    await initCurrentExtSystemAndLicence(
-      getInitCurrentExtSystemAndLicenceConfig(to, (to.params as { id?: string }).id)
-    )
+    await initCurrentExtSystemAndLicence(getInitCurrentExtSystemAndLicenceConfig(to, (to.params as { id?: string }).id))
   } catch (error) {
     return '/login'
   }

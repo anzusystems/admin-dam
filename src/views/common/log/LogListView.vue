@@ -2,8 +2,7 @@
 import type LogDatatableType from '@/views/common/log/components/LogDatatable.vue'
 import LogDatatable from '@/views/common/log/components/LogDatatable.vue'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
-import { computed, ref, watch } from 'vue'
-import { ACard, defineBreadcrumbs, isNull, useI18n } from '@anzusystems/common-admin'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import LogFilter from '@/views/common/log/components/LogFilter.vue'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -56,9 +55,7 @@ watch(
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.log.list'), routeName: '/(common)/log' }])
-)
+const breadcrumbs = defineBreadcrumbs(computed(() => [{ title: t('breadcrumb.log.list'), routeName: '/(common)/log' }]))
 </script>
 
 <template>
@@ -66,35 +63,16 @@ const breadcrumbs = defineBreadcrumbs(
 
   <ACard :loading="listLoading">
     <VCardText>
-      <LogFilter
-        @submit-filter="submitFilter"
-        @reset-filter="resetFilter"
-      />
-      <VTabs
-        v-if="systems.length > 1"
-        v-model="activeTab"
-        color="primary"
-      >
-        <VTab
-          v-for="system in logFilter.system.model"
-          :key="system"
-          :value="system"
-        >
+      <LogFilter @submit-filter="submitFilter" @reset-filter="resetFilter" />
+      <VTabs v-if="systems.length > 1" v-model="activeTab" color="primary">
+        <VTab v-for="system in logFilter.system.model" :key="system" :value="system">
           <span>{{ system }}</span>
-          <VChip
-            v-if="counts[system]"
-            class="ml-1"
-            size="small"
-          >
+          <VChip v-if="counts[system]" class="ml-1" size="small">
             {{ counts[system] }}
           </VChip>
         </VTab>
       </VTabs>
-      <div
-        v-for="system in logFilter.system.model"
-        v-show="system === activeTab"
-        :key="system"
-      >
+      <div v-for="system in logFilter.system.model" v-show="system === activeTab" :key="system">
         <LogDatatable
           :key="system"
           :ref="

@@ -1,6 +1,4 @@
-import type { FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import {
   deleteAuthorCleanPhrase,
   fetchAuthorCleanPhrase,
@@ -8,9 +6,6 @@ import {
   updateAuthorCleanPhrase,
 } from '@/services/api/coreDam/AuthorCleanPhraseApi'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
-import { storeToRefs } from 'pinia'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useAuthorCleanPhraseOneStore } from '@/stores/coreDam/authorCleanPhraseStore'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'

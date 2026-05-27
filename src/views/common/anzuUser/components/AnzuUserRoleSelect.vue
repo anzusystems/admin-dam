@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import type { AxiosInstance } from 'axios'
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
-import { computed } from 'vue'
 
 const props = defineProps<{
   modelValue: string[]

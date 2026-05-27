@@ -18,16 +18,11 @@ import {
   ASystemEntityScope,
   ATableCopyIdButton,
   DamAssetStatusDefault,
-  type DocId,
-  isNull,
   prettyBytes,
   type UploadQueueItem,
   UploadQueueItemStatus,
   type UploadQueueItemStatusType,
-  useAlerts,
 } from '@anzusystems/common-admin'
-import { computed, onUnmounted, type Ref, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -159,9 +154,8 @@ const status = computed(() => {
   return props.item.assetStatus
 })
 
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
 const cancelItem = () => {
@@ -204,13 +198,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <VCol
-    xxl="2"
-    xl="3"
-    md="4"
-    sm="6"
-    cols="12"
-  >
+  <VCol xxl="2" xl="3" md="4" sm="6" cols="12">
     <div class="dam-upload-queue__item">
       <div class="dam-upload-queue__item-card">
         <div class="position-relative">
@@ -233,24 +221,14 @@ onUnmounted(() => {
             v-if="item.isDuplicate"
             :class="
               'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
-                ' d-flex align-center justify-center flex-column'
+              ' d-flex align-center justify-center flex-column'
             "
           >
-            <VIcon
-              icon="mdi-alert"
-              class="ma-1"
-              size="x-small"
-              color="warning"
-            />
+            <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="warning" />
             <div class="text-warning">
               {{ t('coreDam.asset.queueItem.duplicate') }}
             </div>
-            <AssetLink
-              v-if="item.duplicateAssetId"
-              :asset-id="item.duplicateAssetId"
-              variant="text"
-              size="small"
-            >
+            <AssetLink v-if="item.duplicateAssetId" :asset-id="item.duplicateAssetId" variant="text" size="small">
               {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
             </AssetLink>
           </div>
@@ -258,38 +236,23 @@ onUnmounted(() => {
             v-if="item.error.hasError"
             :class="
               'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
-                ' d-flex align-center justify-center flex-column'
+              ' d-flex align-center justify-center flex-column'
             "
           >
-            <VIcon
-              icon="mdi-alert"
-              class="ma-1"
-              size="x-small"
-              color="error"
-            />
+            <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="error" />
             <div class="text-error">
               {{ t('coreDam.asset.queueItem.error') }}
             </div>
-            <div
-              v-if="item.error.message.length"
-              class="text-body-small"
-              v-text="item.error.message"
-            />
+            <div v-if="item.error.message.length" class="text-body-small" v-text="item.error.message" />
             <div v-else-if="item.error.assetFileFailReason !== AssetFileFailReason.None">
               <AssetFileFailReasonChip :reason="item.error.assetFileFailReason" />
             </div>
-            <div
-              v-else
-              class="text-body-small"
-            >
+            <div v-else class="text-body-small">
               {{ t('system.uploadErrors.unknownError') }}
             </div>
           </div>
         </div>
-        <VRow
-          density="compact"
-          class="my-2"
-        >
+        <VRow density="compact" class="my-2">
           <VCol>
             <div class="w-100 d-flex justify-space-between align-center">
               <div>
@@ -319,25 +282,13 @@ onUnmounted(() => {
                   @click.stop="refresh"
                 >
                   <VIcon icon="mdi-refresh" />
-                  <VTooltip
-                    activator="parent"
-                    location="bottom"
-                  >
+                  <VTooltip activator="parent" location="bottom">
                     {{ t('common.button.refresh') }}
                   </VTooltip>
                 </VBtn>
-                <VBtn
-                  v-if="showCancel"
-                  icon
-                  size="small"
-                  variant="text"
-                  @click.stop="cancelItem"
-                >
+                <VBtn v-if="showCancel" icon size="small" variant="text" @click.stop="cancelItem">
                   <VIcon icon="mdi-close-circle-outline" />
-                  <VTooltip
-                    activator="parent"
-                    location="bottom"
-                  >
+                  <VTooltip activator="parent" location="bottom">
                     {{ t('common.button.cancel') }}
                   </VTooltip>
                 </VBtn>
@@ -351,33 +302,18 @@ onUnmounted(() => {
             </div>
           </VCol>
         </VRow>
-        <VRow
-          v-if="item.displayTitle"
-          density="compact"
-          class="my-2 mb-3 mt-0 text-body-small"
-        >
+        <VRow v-if="item.displayTitle" density="compact" class="my-2 mb-3 mt-0 text-body-small">
           <VCol class="pt-0">
             {{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}
             <span v-if="item.file?.size">&nbsp;({{ prettyBytes(item.file.size) }})</span>
           </VCol>
         </VRow>
         <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
-          <AssetCustomMetadataForm
-            v-if="item"
-            v-model="customData"
-            :asset-type="assetType"
-          >
+          <AssetCustomMetadataForm v-if="item" v-model="customData" :asset-type="assetType">
             <template #after-pinned>
-              <VRow
-                v-if="keywordEnabled"
-                density="compact"
-                class="my-2"
-              >
+              <VRow v-if="keywordEnabled" density="compact" class="my-2">
                 <VCol>
-                  <ASystemEntityScope
-                    subject="keyword"
-                    system="dam"
-                  >
+                  <ASystemEntityScope subject="keyword" system="dam">
                     <KeywordRemoteAutocompleteWithCached
                       v-model="keywords"
                       :queue-id="queueId"
@@ -391,16 +327,9 @@ onUnmounted(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow
-                v-if="authorEnabled"
-                density="compact"
-                class="my-2"
-              >
+              <VRow v-if="authorEnabled" density="compact" class="my-2">
                 <VCol>
-                  <ASystemEntityScope
-                    subject="author"
-                    system="dam"
-                  >
+                  <ASystemEntityScope subject="author" system="dam">
                     <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
                       :queue-id="queueId"
@@ -415,15 +344,9 @@ onUnmounted(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow
-                density="compact"
-                class="my-2"
-              >
+              <VRow density="compact" class="my-2">
                 <VCol>
-                  <VSwitch
-                    v-model="mainFileSingleUse"
-                    :label="t('common.damImage.asset.model.mainFileSingleUse')"
-                  />
+                  <VSwitch v-model="mainFileSingleUse" :label="t('common.damImage.asset.model.mainFileSingleUse')" />
                 </VCol>
               </VRow>
             </template>

@@ -1,22 +1,14 @@
 <script lang="ts" setup generic="I extends DamAuthorMinimal">
 import {
   AFormRemoteAutocompleteWithCached,
-  cloneDeep,
   type DamAuthor,
   type DamAuthorMinimal,
-  type DocId,
-  type IntegerId,
-  isArray,
-  useValidate,
   type ValidationScope,
 } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/views/coreDam/author/composables/authorActions'
 import { useAuthorFilter } from '@/model/coreDam/filter/AuthorFilter'
-import { computed, ref } from 'vue'
 import AuthorCreateButton from '@/views/coreDam/author/components/AuthorCreateButton.vue'
-import { useVuelidate } from '@vuelidate/core'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
-import { useI18n } from 'vue-i18n'
 import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/views/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
 import {
   useCachedAuthors,
@@ -73,7 +65,6 @@ const { requiredIf } = useValidate()
 
 const rules = {
   modelValueComputed: {
-    // eslint-disable-next-line vue/no-ref-object-reactivity-loss
     required: requiredIf(requiredComputed.value),
   },
 }
@@ -171,18 +162,9 @@ const showAdd = computed(() => {
       @keyup.,="onCommaKeyup"
     >
       <template #item="{ props: itemSlotProps, item: itemSlotItem }">
-        <VListItem
-          v-bind="itemSlotProps"
-          @click.prevent=""
-        >
-          <template
-            v-if="multiple"
-            #prepend
-          >
-            <VCheckboxBtn
-              :model-value="itemSlotIsSelected(itemSlotItem.value)"
-              :ripple="false"
-            />
+        <VListItem v-bind="itemSlotProps" @click.prevent="">
+          <template v-if="multiple" #prepend>
+            <VCheckboxBtn :model-value="itemSlotIsSelected(itemSlotItem.value)" :ripple="false" />
           </template>
           <template #title>
             <AuthorRemoteAutocompleteCachedAuthorChip
@@ -206,10 +188,7 @@ const showAdd = computed(() => {
         />
       </template>
       <template #append-item>
-        <VListItem
-          v-if="showAdd"
-          class="a-authors-append-item"
-        >
+        <VListItem v-if="showAdd" class="a-authors-append-item">
           <ABtnSecondary
             size="small"
             :text="addNewAuthorText"
@@ -231,10 +210,7 @@ const showAdd = computed(() => {
       />
     </div>
   </div>
-  <div
-    v-if="!disabled && authorConflicts && authorConflicts.length > 0"
-    class="d-flex flex-column"
-  >
+  <div v-if="!disabled && authorConflicts && authorConflicts.length > 0" class="d-flex flex-column">
     <div>
       <span class="text-body-small">{{ t('common.damImage.author.conflicts') }}</span>
     </div>

@@ -2,7 +2,6 @@
 import AnzutapToolbar from '@/components/anzutap/components/AnzutapToolbar.vue'
 import AnzutapDialogs from '@/components/anzutap/components/AnzutapDialogs.vue'
 import { type Editor, EditorContent } from '@tiptap/vue-3'
-import { computed, ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -47,14 +46,8 @@ defineExpose({
 </script>
 
 <template>
-  <VCol
-    cols="12"
-    class="pa-0"
-  >
-    <h4
-      v-if="label"
-      class="w-100 font-weight-bold text-label-large d-flex gc-2 align-center justify-space-between"
-    >
+  <VCol cols="12" class="pa-0">
+    <h4 v-if="label" class="w-100 font-weight-bold text-label-large d-flex gc-2 align-center justify-space-between">
       <div>
         <slot name="label-start" />
         {{ label }}
@@ -65,25 +58,11 @@ defineExpose({
     </h4>
   </VCol>
   <div class="w-100 position-relative">
-    <div
-      class="anzutap w-100"
-      :class="anzutapClass"
-    >
+    <div class="anzutap w-100" :class="anzutapClass">
       <div class="anzutap__card">
-        <AnzutapToolbar
-          :editor="editor"
-          :editable="editable"
-        />
-        <AnzutapDialogs
-          v-if="editable"
-          :editor="editor"
-        />
-        <EditorContent
-          v-if="editor"
-          :editor="editor"
-          class="anzutap__content"
-          @click.prevent="focusIfNot"
-        />
+        <AnzutapToolbar :editor="editor" :editable="editable" />
+        <AnzutapDialogs v-if="editable" :editor="editor" />
+        <EditorContent v-if="editor" :editor="editor" class="anzutap__content" @click.prevent="focusIfNot" />
       </div>
     </div>
   </div>

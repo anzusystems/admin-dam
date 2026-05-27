@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueEditable from '@/views/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { bulkUpdateAssetsMetadata } from '@/services/api/coreDam/assetApi'
 import AssetFooterUploadButtonStop from '@/views/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
-import { useAlerts, useTheme } from '@anzusystems/common-admin'
 import AssetUpload from '@/views/coreDam/asset/components/AssetUpload.vue'
-import { useI18n } from 'vue-i18n'
-import useVuelidate from '@vuelidate/core'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
 import { useDisplay } from 'vuetify'
 
@@ -114,48 +110,24 @@ const onSaveAndClose = async () => {
     :class="'asset-footer--' + footerViewUpload + ' asset-footer__upload--' + footerViewUpload"
   >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar
-        class="w-100 system-border-b pr-1"
-        :color="toolbarColor"
-        density="compact"
-        :height="64"
-      >
+      <VToolbar class="w-100 system-border-b pr-1" :color="toolbarColor" density="compact" :height="64">
         <div class="d-flex align-center px-2">
           <div>
-            <div
-              v-if="isUploading"
-              class="text-label-large d-flex align-center"
-            >
+            <div v-if="isUploading" class="text-label-large d-flex align-center">
               {{ t('coreDam.asset.upload.title') }}
             </div>
-            <div
-              v-else
-              class="text-label-large d-flex align-center text-green-darken-3 font-weight-bold"
-            >
+            <div v-else class="text-label-large d-flex align-center text-green-darken-3 font-weight-bold">
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
           </div>
         </div>
         <VSpacer />
-        <div
-          v-if="isUploading"
-          class="text-body-small d-flex align-center"
-        >
-          <VProgressCircular
-            indeterminate
-            color="primary"
-            size="16"
-            width="2"
-            class="mr-1"
-          />
+        <div v-if="isUploading" class="text-body-small d-flex align-center">
+          <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1" />
           <div>{{ t('coreDam.asset.upload.uploading') }} {{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
         </div>
         <div class="d-flex align-center">
-          <VDivider
-            v-show="isUploading"
-            vertical
-            class="mx-4 my-2"
-          />
+          <VDivider v-show="isUploading" vertical class="mx-4 my-2" />
           <ABtnPrimary
             v-if="isFinished"
             :height="36"
@@ -178,21 +150,12 @@ const onSaveAndClose = async () => {
             @click.stop="onSave"
           >
             <VIcon icon="mdi-content-save" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('coreDam.asset.upload.save') }}
             </VTooltip>
           </VBtn>
-          <AssetUpload
-            :height="36"
-            variant="icon"
-          />
-          <VDivider
-            vertical
-            class="mx-4 my-2"
-          />
+          <AssetUpload :height="36" variant="icon" />
+          <VDivider vertical class="mx-4 my-2" />
           <VBtn
             :height="36"
             :width="36"
@@ -204,10 +167,7 @@ const onSaveAndClose = async () => {
             @click.stop="toggleMassOperations"
           >
             <VIcon icon="mdi-tag-text-outline" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('coreDam.asset.massOperations.title') }}
             </VTooltip>
           </VBtn>
@@ -222,10 +182,7 @@ const onSaveAndClose = async () => {
             @click.stop="setMinimalUpload"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('common.system.modal.hide') }}
             </VTooltip>
           </VBtn>
@@ -237,10 +194,7 @@ const onSaveAndClose = async () => {
           />
         </div>
       </VToolbar>
-      <AssetQueueEditable
-        :queue-id="QUEUE_ID_UPLOAD_GLOBAL"
-        :mass-operations="massOperations"
-      />
+      <AssetQueueEditable :queue-id="QUEUE_ID_UPLOAD_GLOBAL" :mass-operations="massOperations" />
     </div>
     <AssetUpload />
   </div>

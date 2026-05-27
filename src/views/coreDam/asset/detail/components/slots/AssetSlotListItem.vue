@@ -18,15 +18,10 @@ import {
   AssetFileProcessStatus,
   DamAssetType,
   type DamAssetTypeType,
-  type DocId,
-  isUndefined,
   type UploadQueueItem,
   UploadQueueItemStatus,
-  useAlerts,
 } from '@anzusystems/common-admin'
 import { useClipboard } from '@vueuse/core'
-import { computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -166,10 +161,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
       <VCol v-if="itemHasFile && item && item.assetFile">
         <div class="font-weight-bold">
           {{ slotName }} <span v-if="item && item.main">({{ t('coreDam.asset.slots.mainFile') }})</span>
-          <AssetFileDuplicateChip
-            v-if="statusComputed === AssetFileProcessStatus.Duplicate"
-            class="ml-2"
-          />
+          <AssetFileDuplicateChip v-if="statusComputed === AssetFileProcessStatus.Duplicate" class="ml-2" />
           <div v-if="statusComputed === AssetFileProcessStatus.Failed">
             {{ t('coreDam.distribution.common.failReason') }}:
             <AssetFileFailReasonChip
@@ -198,10 +190,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div>{{ t('coreDam.asset.slots.noFile') }}</div>
       </VCol>
-      <VCol
-        cols="3"
-        class="text-right"
-      >
+      <VCol cols="3" class="text-right">
         <AssetUpload
           v-if="!itemHasFile"
           :height="40"
@@ -213,17 +202,8 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :multiple="false"
           :asset-type="assetType"
         />
-        <VBtn
-          v-if="itemHasFile"
-          variant="text"
-          icon
-          size="small"
-          class="mx-1"
-        >
-          <VIcon
-            icon="mdi-dots-horizontal"
-            data-cy="button-slot-actions"
-          />
+        <VBtn v-if="itemHasFile" variant="text" icon size="small" class="mx-1">
+          <VIcon icon="mdi-dots-horizontal" data-cy="button-slot-actions" />
           <VMenu activator="parent">
             <VCard min-width="300">
               <VList>
@@ -264,10 +244,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
               </VList>
             </VCard>
           </VMenu>
-          <VTooltip
-            activator="parent"
-            location="bottom"
-          >
+          <VTooltip activator="parent" location="bottom">
             {{ t('coreDam.asset.slots.actions.slotOptions') }}
           </VTooltip>
         </VBtn>

@@ -13,17 +13,11 @@ import {
   browserHistoryReplaceUrlByRouter,
   DamAssetType,
   type DamAssetTypeType,
-  type DocId,
-  isNull,
   SortOrder,
-  useAlerts,
   useDamCachedUsers,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { readonly, type Ref, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'

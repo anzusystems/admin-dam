@@ -34,18 +34,9 @@ const { t } = useI18n()
     :data-cy="dataCy"
   >
     <VIcon :icon="icon" />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VTooltip activator="parent" location="bottom">
       {{ t(buttonT) }}
     </VTooltip>
   </VBtn>
-  <VListItem
-    v-else
-    :loading="loading"
-    :disabled="disabled"
-    :data-cy="dataCy"
-    :title="t(buttonT)"
-  />
+  <VListItem v-else :loading="loading" :disabled="disabled" :data-cy="dataCy" :title="t(buttonT)" />
 </template>

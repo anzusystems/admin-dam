@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { storeToRefs } from 'pinia'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/composables/system/assetDetailTab'
-import { DamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { DamAssetImageRoiSelect, DamAssetType } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 import ExternalProviderAssetDetailDialogSidebar from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
-import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const emit = defineEmits<{
@@ -94,56 +91,21 @@ const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
-  <VDialog
-    v-model="externalProviderAssetDetailStore.detail"
-    fullscreen
-  >
-    <AssetDetailDialogLoader
-      v-if="externalProviderAssetDetailStore.loader"
-      @close-dialog="closeDialog"
-    />
-    <VCard
-      v-else-if="asset"
-      class="dam-image-detail"
-      :class="{ 'dam-image-detail--sidebar-active': sidebar }"
-    >
+  <VDialog v-model="externalProviderAssetDetailStore.detail" fullscreen>
+    <AssetDetailDialogLoader v-if="externalProviderAssetDetailStore.loader" @close-dialog="closeDialog" />
+    <VCard v-else-if="asset" class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
       <div class="dam-image-detail__wrapper d-flex flex-column">
-        <VToolbar
-          :color="toolbarColor"
-          density="compact"
-          :height="64"
-          class="system-border-b"
-        >
+        <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b">
           <div>
-            <VBtn
-              variant="text"
-              icon
-              class="mx-1"
-              :width="36"
-              :height="36"
-              @click.stop="prevItem"
-            >
+            <VBtn variant="text" icon class="mx-1" :width="36" :height="36" @click.stop="prevItem">
               <VIcon icon="mdi-chevron-left" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.prev') }}
               </VTooltip>
             </VBtn>
-            <VBtn
-              variant="text"
-              icon
-              class="mr-2"
-              :width="36"
-              :height="36"
-              @click.stop="nextItem"
-            >
+            <VBtn variant="text" icon class="mr-2" :width="36" :height="36" @click.stop="nextItem">
               <VIcon icon="mdi-chevron-right" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.next') }}
               </VTooltip>
             </VBtn>
@@ -167,26 +129,13 @@ const { currentExtSystemId } = useCurrentExtSystem()
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.detail.toggleInfo') }}
               </VTooltip>
             </VBtn>
-            <VBtn
-              icon
-              variant="text"
-              :width="36"
-              :height="36"
-              class="mr-1"
-              @click.stop="closeDialog"
-            >
+            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
               <VIcon icon="mdi-close" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('common.button.close') }}
               </VTooltip>
             </VBtn>
@@ -194,31 +143,14 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div
-              v-if="activeTab === AssetDetailTab.ROI"
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
-            <div
-              v-else
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
-              <div
-                v-if="imageLoading && isTypeImage"
-                class="d-flex w-100 h-100 align-center justify-center"
-              >
-                <VProgressCircular
-                  indeterminate
-                  color="white"
-                />
+            <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
+              <div v-if="imageLoading && isTypeImage" class="d-flex w-100 h-100 align-center justify-center">
+                <VProgressCircular indeterminate color="white" />
               </div>
-              <AssetImage
-                :src="imageSrc"
-                use-component
-                @load="onImageLoad"
-                @error="onImageLoad"
-              />
+              <AssetImage :src="imageSrc" use-component @load="onImageLoad" @error="onImageLoad" />
             </div>
           </div>
           <div class="h-100 d-flex dam-image-detail__sidebar system-border-l">

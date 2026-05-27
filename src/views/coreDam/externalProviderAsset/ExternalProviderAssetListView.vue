@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
 import { useExternalProviderAssetListActions } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetListActions'
 import { useGridView } from '@/composables/system/gridView'
-import { useI18n } from 'vue-i18n'
 import ExternalProviderAssetListItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetListItem.vue'
 import ExternalProviderAssetDetailDialog from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetDetailDialog.vue'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
@@ -77,20 +75,11 @@ onUnmounted(() => {
 <template>
   <MainWrapper>
     <template #default>
-      <div
-        v-if="loader.hard"
-        class="d-flex w-100 h-100 align-center justify-center"
-      >
-        <VProgressCircular
-          indeterminate
-          color="primary"
-        />
+      <div v-if="loader.hard" class="d-flex w-100 h-100 align-center justify-center">
+        <VProgressCircular indeterminate color="primary" />
       </div>
       <div v-else-if="items.length">
-        <div
-          class="dam-image-grid"
-          :class="'dam-image-grid--' + gridView"
-        >
+        <div class="dam-image-grid" :class="'dam-image-grid--' + gridView">
           <ExternalProviderAssetListItem
             v-for="(item, index) in items"
             :key="item.asset.id"
@@ -101,30 +90,14 @@ onUnmounted(() => {
             @toggle-selected="toggleSelected"
             @select-multiple="selectMultiple"
           />
-          <div
-            v-if="loader.soft"
-            class="w-100 d-flex align-center justify-center pa-4"
-          >
-            <VProgressCircular
-              indeterminate
-              color="primary"
-            />
+          <div v-if="loader.soft" class="w-100 d-flex align-center justify-center pa-4">
+            <VProgressCircular indeterminate color="primary" />
           </div>
-          <div
-            v-if="loadOnScroll"
-            v-intersect="autoloadOnIntersect"
-            class="w-100"
-          />
+          <div v-if="loadOnScroll" v-intersect="autoloadOnIntersect" class="w-100" />
         </div>
-        <ExternalProviderAssetDetailDialog
-          @prev-item="prevItem"
-          @next-item="nextItem"
-        />
+        <ExternalProviderAssetDetailDialog @prev-item="prevItem" @next-item="nextItem" />
       </div>
-      <div
-        v-else
-        class="text-headline-small text-medium-emphasis d-flex w-100 h-100 align-center justify-center"
-      >
+      <div v-else class="text-headline-small text-medium-emphasis d-flex w-100 h-100 align-center justify-center">
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
     </template>
@@ -132,36 +105,18 @@ onUnmounted(() => {
       <ExternalProviderAssetToolbarSearch />
     </template>
     <template #main-bar-right>
-      <AssetUpload
-        variant="button"
-        :button-text="t('system.mainBar.upload')"
-      />
+      <AssetUpload variant="button" :button-text="t('system.mainBar.upload')" />
     </template>
     <template #second-bar-right>
-      <VBtn
-        variant="text"
-        icon
-        size="x-small"
-        class="ml-1"
-        @click.stop="fetchAssetList"
-      >
+      <VBtn variant="text" icon size="x-small" class="ml-1" @click.stop="fetchAssetList">
         <VIcon icon="mdi-refresh" />
-        <VTooltip
-          activator="parent"
-          location="bottom"
-        >
+        <VTooltip activator="parent" location="bottom">
           {{ t('coreDam.asset.list.refresh') }}
         </VTooltip>
       </VBtn>
-      <VDivider
-        vertical
-        class="mx-1 my-2 hidden-xs"
-      />
+      <VDivider vertical class="mx-1 my-2 hidden-xs" />
       <GridViewToggle class="hidden-xs" />
-      <VDivider
-        vertical
-        class="mx-1 my-2"
-      />
+      <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>
       <ExternalProviderAssetListSidebarFilter />

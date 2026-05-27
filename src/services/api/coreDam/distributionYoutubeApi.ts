@@ -1,4 +1,4 @@
-import type { DamDistributionServiceName, DocId } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import {
   apiCreateOne,
   apiFetchList,

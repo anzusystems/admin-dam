@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import type { AssetFileImage, DocId } from '@anzusystems/common-admin'
+import type { AssetFileImage } from '@anzusystems/common-admin'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
 
 const props = withDefaults(
@@ -46,13 +44,7 @@ const href = computed(() => {
 </script>
 
 <template>
-  <VBtn
-    v-if="href"
-    :href="href"
-    target="_blank"
-    rel="noopener noreferrer"
-    :loading="loading"
-  >
+  <VBtn v-if="href" :href="href" target="_blank" rel="noopener noreferrer" :loading="loading">
     <slot />
   </VBtn>
 </template>

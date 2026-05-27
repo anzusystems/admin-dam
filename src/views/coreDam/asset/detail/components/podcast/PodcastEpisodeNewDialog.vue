@@ -1,22 +1,11 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import type { DocId } from '@anzusystems/common-admin'
-import {
-  ADialogToolbar,
-  AFormTextarea,
-  AFormTextField,
-  ARow,
-  ASystemEntityScope,
-  isNull,
-  useAlerts,
-} from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextarea, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/model/coreDam/factory/PodcastEpisodeFactory'
 import { createPodcastEpisode, ENTITY, prepareFormDataPodcastEpisode } from '@/services/api/coreDam/podcastEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { usePodcastEpisodeValidation } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
-import { useI18n } from 'vue-i18n'
 import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 
 const props = withDefaults(
@@ -108,19 +97,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog
-    v-model="value"
-    :width="500"
-  >
+  <VDialog v-model="value" :width="500">
     <VCard v-if="value">
       <ADialogToolbar @on-cancel="closeDialog(false)">
         {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <ARow>
             <PodcastRemoteAutocomplete
               v-model="podcastEpisode.podcast"
@@ -129,14 +112,8 @@ onMounted(async () => {
               :label="t('coreDam.podcastEpisode.model.podcast')"
             />
           </ARow>
-          <div
-            v-if="loadingFormData"
-            class="d-flex w-100 justify-center align-center pa-2"
-          >
-            <VProgressCircular
-              indeterminate
-              color="primary"
-            />
+          <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
+            <VProgressCircular indeterminate color="primary" />
           </div>
           <template v-if="podcastEpisode.podcast && !loadingFormData">
             <ARow>
@@ -188,17 +165,10 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="closeDialog(false)"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="closeDialog(false)">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="saving"
-          data-cy="button-add"
-          @click.stop="submit"
-        >
+        <ABtnPrimary :loading="saving" data-cy="button-add" @click.stop="submit">
           {{ t('common.button.add') }}
         </ABtnPrimary>
       </VCardActions>

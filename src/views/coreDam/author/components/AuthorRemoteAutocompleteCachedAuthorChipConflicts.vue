@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import type { CachedItem, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
-import { isUndefined } from '@anzusystems/common-admin'
+import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
-import { computed, shallowRef, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -50,19 +48,8 @@ watch(
 </script>
 
 <template>
-  <VChip
-    size="small"
-    closable
-    close-icon="mdi-plus"
-    @click:close="clickClose"
-  >
+  <VChip size="small" closable close-icon="mdi-plus" @click:close="clickClose">
     {{ displayTitle }}
-    <VProgressCircular
-      v-if="!loaded"
-      :size="12"
-      :width="2"
-      indeterminate
-      class="mx-1"
-    />
+    <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="mx-1" />
   </VChip>
 </template>

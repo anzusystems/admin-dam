@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DamKeyword } from '@anzusystems/common-admin'
 import { useDamKeywordFactory } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 
 export const useKeywordOneStore = defineStore('keywordOneStore', () => {
   const { createDefault } = useDamKeywordFactory()

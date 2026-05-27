@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
-import { AFormRemoteAutocomplete, cloneDeep } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupFilter } from '@/model/common/filter/PermissionGroupFilter'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

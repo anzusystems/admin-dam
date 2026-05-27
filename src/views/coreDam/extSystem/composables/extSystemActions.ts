@@ -1,20 +1,13 @@
-import { ref } from 'vue'
 import {
   type DamExtSystem,
   fetchDamExtSystemList,
   fetchDamExtSystemListByIds,
   type FilterBag,
-  type IntegerId,
   type Pagination,
-  useAlerts,
   useDamCachedUsers,
-  type ValueObjectOption,
 } from '@anzusystems/common-admin'
 import { fetchExtSystem, updateExtSystem } from '@/services/api/coreDam/extSystemApi'
-import { storeToRefs } from 'pinia'
 import { useExtSystemOneStore } from '@/stores/coreDam/extSystemStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 import { damClient } from '@/services/api/clients/damClient'
 import type { AxiosInstance } from 'axios'
 

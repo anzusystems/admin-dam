@@ -8,8 +8,6 @@ import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/c
 import { useAssetDetailDistributionDialogCancel } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialogCancel'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { DamDistributionServiceType, useDamConfigStore } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

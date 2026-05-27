@@ -1,18 +1,12 @@
 <script lang="ts" setup generic="I extends DamKeywordMinimal">
-import type { DamKeyword, DamKeywordMinimal, IntegerId } from '@anzusystems/common-admin'
+import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocompleteWithCached,
-  type DocId,
-  isArray,
-  useAlerts,
   useDamKeywordFactory,
-  useValidate,
   type ValidationScope,
 } from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
-import { computed, ref } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/views/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
@@ -172,18 +166,9 @@ const showAdd = computed(() => {
       @keyup.,="onCommaKeyup"
     >
       <template #item="{ props: itemSlotProps, item: itemSlotItem }">
-        <VListItem
-          v-bind="itemSlotProps"
-          @click.prevent=""
-        >
-          <template
-            v-if="multiple"
-            #prepend
-          >
-            <VCheckboxBtn
-              :model-value="itemSlotIsSelected(itemSlotItem.value)"
-              :ripple="false"
-            />
+        <VListItem v-bind="itemSlotProps" @click.prevent="">
+          <template v-if="multiple" #prepend>
+            <VCheckboxBtn :model-value="itemSlotIsSelected(itemSlotItem.value)" :ripple="false" />
           </template>
           <template #title>
             <KeywordRemoteAutocompleteCachedKeywordChip
@@ -206,10 +191,7 @@ const showAdd = computed(() => {
         />
       </template>
       <template #append-item>
-        <VListItem
-          v-if="showAdd"
-          class="a-keywords-append-item"
-        >
+        <VListItem v-if="showAdd" class="a-keywords-append-item">
           <ABtnSecondary
             size="small"
             :text="addNewKeywordText"

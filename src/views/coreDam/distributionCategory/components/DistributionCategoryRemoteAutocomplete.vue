@@ -3,7 +3,6 @@ import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectActions } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/model/coreDam/filter/DistributionCategoryFilter'
-import { onMounted } from 'vue'
 
 const props = withDefaults(
   defineProps<{

@@ -10,12 +10,8 @@ import {
   type AssetFileProperties,
   DamAssetType,
   type DamAssetTypeType,
-  isDefined,
   useDamConfigStore,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -97,7 +93,7 @@ const data = computed(() => {
       :src="item"
       alt=""
       :title="data.titles[index] || ''"
-    >
+    />
   </div>
 </template>
 

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { type GrantType, useGrant } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 
 const props = defineProps<{
   availableGrants: GrantType[]
@@ -21,13 +20,7 @@ const { getGrantOption } = useGrant()
 </script>
 
 <template>
-  <VBtnToggle
-    v-model="selectedGrant"
-    divided
-    density="compact"
-    variant="outlined"
-    class="text-disabled"
-  >
+  <VBtnToggle v-model="selectedGrant" divided density="compact" variant="outlined" class="text-disabled">
     <VBtn
       v-for="availableGrant in availableGrants"
       :key="availableGrant"

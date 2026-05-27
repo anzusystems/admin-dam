@@ -7,7 +7,6 @@ import {
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
 } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -35,21 +34,11 @@ const onAnyFilterUpdate = () => {
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AFilterWrapper
-      :touched="touched"
-      enable-top
-      @reset-filter="resetFilter"
-    >
+  <VForm name="search" @submit.prevent="submitFilter">
+    <AFilterWrapper :touched="touched" enable-top @reset-filter="resetFilter">
       <template #top>
         <VRow class="align-start">
-          <VCol
-            cols="12"
-            md="6"
-          >
+          <VCol cols="12" md="6">
             <AFilterValueObjectOptionsSelect
               v-model="filter.type"
               :items="assetTypeOptions"
@@ -61,16 +50,10 @@ const onAnyFilterUpdate = () => {
       </template>
       <VRow class="align-start">
         <VCol cols="1">
-          <AFilterInteger
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterInteger v-model="filter.id" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="2">
-          <AFilterString
-            v-model="filter.serviceSlug"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.serviceSlug" @update:model-value="onAnyFilterUpdate" />
         </VCol>
       </VRow>
     </AFilterWrapper>

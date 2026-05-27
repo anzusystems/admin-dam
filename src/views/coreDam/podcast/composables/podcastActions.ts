@@ -1,7 +1,5 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import {
   fetchPodcast,
   fetchPodcastListByExtSystem,
@@ -9,10 +7,7 @@ import {
   updatePodcast,
 } from '@/services/api/coreDam/podcastApi'
 import type { Podcast } from '@/types/coreDam/Podcast'
-import { storeToRefs } from 'pinia'
 import { usePodcastOneStore } from '@/stores/coreDam/podcastStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 
 const { currentExtSystemId } = useCurrentExtSystem()
 

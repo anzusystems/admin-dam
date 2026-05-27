@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AAlerts, useTheme } from '@anzusystems/common-admin'
+import { AAlerts } from '@anzusystems/common-admin'
 
 const { theme } = useTheme()
 </script>

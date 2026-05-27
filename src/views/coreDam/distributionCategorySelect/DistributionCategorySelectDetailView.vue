@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectDetailActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import DistributionCategorySelectDetail from '@/views/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'

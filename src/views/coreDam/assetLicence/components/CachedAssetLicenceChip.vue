@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { IntegerId } from '@anzusystems/common-admin'
 import { ACachedChip } from '@anzusystems/common-admin'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 

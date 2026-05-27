@@ -2,8 +2,6 @@
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 import { ADialogToolbar } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -57,37 +55,24 @@ const onDuplicate = () => {
     data-cy="button-slot-duplicate"
     @click.stop="openDialog"
   />
-  <VDialog
-    v-model="dialog"
-    :width="600"
-  >
+  <VDialog v-model="dialog" :width="600">
     <VCard v-if="dialog">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.asset.slots.actions.duplicate') }}
       </ADialogToolbar>
       <VCardText>
         <div class="mb-1">
-          <div class="font-weight-bold">
-            {{ t('coreDam.asset.slots.name') }}:
-          </div>
+          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
           {{ item?.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">
-            {{ t('coreDam.asset.slots.file') }}:
-          </div>
+          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
           {{ fileTitle }}
         </div>
-        <div
-          v-if="targetOptions.length === 0"
-          class="my-2 text-warning"
-        >
+        <div v-if="targetOptions.length === 0" class="my-2 text-warning">
           {{ t('coreDam.asset.slots.duplicate.onlyToEmptyWarning') }}
         </div>
-        <div
-          v-else
-          class="my-2"
-        >
+        <div v-else class="my-2">
           <VSelect
             v-model="targetSlot"
             data-cy="button-choose-slot"
@@ -98,10 +83,7 @@ const onDuplicate = () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

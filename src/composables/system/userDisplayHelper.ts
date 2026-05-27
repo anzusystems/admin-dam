@@ -1,4 +1,3 @@
-import { isUndefined } from '@anzusystems/common-admin'
 import type { UserMinimal } from '@/types/coreDam/User'
 
 export function useUserDisplayHelper() {

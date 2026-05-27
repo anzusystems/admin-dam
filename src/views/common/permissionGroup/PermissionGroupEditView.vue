@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import PermissionGroupEditForm from '@/views/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { damClient } from '@/services/api/clients/damClient'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
@@ -41,10 +39,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionSaveButton
-        :loading="saveButtonLoading"
-        @save-record="updatePermissionGroup"
-      />
+      <AActionSaveButton :loading="saveButtonLoading" @save-record="updatePermissionGroup" />
       <AActionCloseButton :route-name="'/(common)/permission-group'" />
     </template>
   </ActionbarWrapper>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAssetFileFailReason } from '@/model/coreDam/valueObject/AssetFileFailReason'
 import { AChipNoLink, type AssetFileFailReasonType } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

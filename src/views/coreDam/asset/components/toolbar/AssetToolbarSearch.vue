@@ -10,13 +10,7 @@ const submitFilter = () => {
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AssetSearchInput
-      v-model="filter.text.model"
-      @submit="submitFilter"
-    />
+  <VForm name="search" @submit.prevent="submitFilter">
+    <AssetSearchInput v-model="filter.text.model" @submit="submitFilter" />
   </VForm>
 </template>

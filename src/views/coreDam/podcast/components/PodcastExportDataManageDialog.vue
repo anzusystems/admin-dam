@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { PodcastExportData } from '@/types/coreDam/PodcastExportData'
-import { ADialogToolbar, AFormValueObjectOptionsSelect, useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ADialogToolbar, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
 import { useExportTypeTypes } from '@/model/coreDam/valueObject/ExportType'
 import { useDeviceTypeTypes } from '@/model/coreDam/valueObject/DeviceType'
 import { usePodcastExportDataValidation } from '@/views/coreDam/podcast/composables/podcastExportDataValidations'
@@ -51,11 +49,7 @@ const onConfirm = () => {
 </script>
 
 <template>
-  <VDialog
-    v-model="podcastExportDataManageDialog"
-    :width="900"
-    scrollable
-  >
+  <VDialog v-model="podcastExportDataManageDialog" :width="900" scrollable>
     <VCard v-if="podcastExportDataManageDialog">
       <ADialogToolbar @on-cancel="podcastExportDataManageDialog = false">
         <span v-if="podcastExportData.id">{{ t('coreDam.podcastExportData.meta.edit') }}</span>

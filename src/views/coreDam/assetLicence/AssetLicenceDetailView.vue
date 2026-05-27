@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceDetailActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceDetail from '@/views/coreDam/assetLicence/components/AssetLicenceDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -41,11 +39,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_ASSET_LICENCE_UPDATE">
-        <AActionEditButton
-          v-if="!detailLoading"
-          :record-id="id"
-          :route-name="'/(coreDam)/asset-licence/[id]/edit'"
-        />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/asset-licence/[id]/edit'" />
       </Acl>
       <AActionCloseButton :route-name="'/(coreDam)/asset-licence'" />
     </template>

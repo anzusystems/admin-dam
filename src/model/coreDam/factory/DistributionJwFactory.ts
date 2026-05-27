@@ -4,7 +4,7 @@ import type {
   JwDistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
 import { DistributionItemResourceName } from '@/types/coreDam/Distribution'
-import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
+import { DamDistributionStatus } from '@anzusystems/common-admin'
 
 export function useDistributionJwFactory() {
   const createCreateDto = (): DistributionJwCreateRedistributeDto => {

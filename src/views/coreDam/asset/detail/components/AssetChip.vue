@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { DocId } from '@anzusystems/common-admin'
-import { COMMON_CONFIG, isString } from '@anzusystems/common-admin'
-import { useRouter } from 'vue-router'
+import { COMMON_CONFIG } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -20,13 +18,7 @@ const onAssetChipClick = () => {
 </script>
 
 <template>
-  <VChip
-    v-if="id"
-    size="small"
-    :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
-    label
-    @click.stop="onAssetChipClick"
-  >
+  <VChip v-if="id" size="small" :append-icon="COMMON_CONFIG.CHIP.ICON.LINK" label @click.stop="onAssetChipClick">
     {{ id }}
   </VChip>
 </template>

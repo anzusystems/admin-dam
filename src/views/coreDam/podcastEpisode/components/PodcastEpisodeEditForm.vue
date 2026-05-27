@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastEpisodeApi'
-import { useI18n } from 'vue-i18n'
 import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { usePodcastEpisodeEditActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeValidation } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
@@ -15,15 +14,9 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ASystemEntityScope
-    :system="SYSTEM_CORE_DAM"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <VRow>
-      <VCol
-        cols="12"
-        md="8"
-      >
+      <VCol cols="12" md="8">
         <ARow>
           <AFormTextField
             v-model="podcastEpisode.texts.title"
@@ -135,16 +128,9 @@ const { t } = useI18n()
           />
         </ARow>
       </VCol>
-      <VCol
-        cols="12"
-        md="4"
-      >
+      <VCol cols="12" md="4">
         <ARow>
-          <ImagePreview
-            v-model="podcastEpisode.imagePreview"
-            show-actions
-            data-cy="select-image-preview"
-          />
+          <ImagePreview v-model="podcastEpisode.imagePreview" show-actions data-cy="select-image-preview" />
         </ARow>
       </VCol>
     </VRow>

@@ -2,8 +2,6 @@
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -60,12 +58,7 @@ const status = computed(() => {
           v-if="item.isDuplicate"
           class="dam-upload-queue__duplicate-overlay d-flex align-center justify-center flex-column"
         >
-          <VIcon
-            icon="mdi-alert"
-            class="ma-1"
-            size="x-small"
-            color="orange-darken-3"
-          />
+          <VIcon icon="mdi-alert" class="ma-1" size="x-small" color="orange-darken-3" />
           <div class="text-orange-darken-3">
             {{ t('coreDam.asset.detail.info.status.duplicate') }}
           </div>

@@ -1,7 +1,4 @@
-import type { Ref } from 'vue'
-import { computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
-import { type DamAssetLicenceGroup, useValidate } from '@anzusystems/common-admin'
+import { type DamAssetLicenceGroup } from '@anzusystems/common-admin'
 
 export function useAssetLicenceGroupValidation(assetLicenceGroup: Ref<DamAssetLicenceGroup>) {
   const { required, minLength, minValue } = useValidate()

@@ -1,6 +1,5 @@
 import type { LinkVariantType } from '@/components/anzutap/marks/link/composables/LinkVariant'
 import { LinkVariant, LinkVariantDefault } from '@/components/anzutap/marks/link/composables/LinkVariant'
-import { isString } from '@anzusystems/common-admin'
 
 export const getVariantFromHref = (href: string | null | undefined): LinkVariantType => {
   if (!href || !isString(href)) {

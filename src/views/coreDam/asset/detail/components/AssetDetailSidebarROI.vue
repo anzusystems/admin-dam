@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { useImageRoiStore } from '@/stores/coreDam/imageRoiStore'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import { useI18n } from 'vue-i18n'
 import AssetFileRotate from '@/views/coreDam/asset/detail/components/AssetFileRotate.vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { onMounted } from 'vue'
-import { assetFileIsImageFile, cloneDeep, usePagination } from '@anzusystems/common-admin'
+import { assetFileIsImageFile, usePagination } from '@anzusystems/common-admin'
 import { fetchImageRoiList, fetchRoi } from '@/services/api/coreDam/imageRoiApi'
 import { useImageRoiFilter } from '@/model/coreDam/filter/ImageRoiFilter'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
@@ -79,18 +77,12 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnTertiary
-      v-if="!imageRoiStore.loader"
-      @click.stop="imageRoiStore.forceReloadRoiPreviews()"
-    >
+    <ABtnTertiary v-if="!imageRoiStore.loader" @click.stop="imageRoiStore.forceReloadRoiPreviews()">
       {{ t('coreDam.asset.detail.roi.refresh') }}
     </ABtnTertiary>
   </AssetDetailSidebarActionsWrapper>
   <div class="px-3">
-    <AssetDetailSlotSelect
-      class="mt-4"
-      @active-slot-change="activeSlotChange"
-    />
+    <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
     <div class="v-expansion-panel-title px-0">
       {{ t('coreDam.asset.detail.roi.title') }}
     </div>
@@ -98,19 +90,10 @@ onMounted(async () => {
       {{ t('coreDam.asset.detail.roi.description') }}
     </div>
   </div>
-  <div
-    v-if="imageRoiStore.loader"
-    class="w-100 h-100 d-flex align-center justify-center"
-  >
-    <VProgressCircular
-      indeterminate
-      color="primary"
-    />
+  <div v-if="imageRoiStore.loader" class="w-100 h-100 d-flex align-center justify-center">
+    <VProgressCircular indeterminate color="primary" />
   </div>
-  <div
-    v-else-if="imageRoiStore.roi"
-    class="crop-preview pa-2"
-  >
+  <div v-else-if="imageRoiStore.roi" class="crop-preview pa-2">
     <div
       v-for="item in imageRoiStore.roi?.links.image_roi_example"
       :key="item.url + '?timestamp=' + imageRoiStore.timestampRoiPreviews"
@@ -124,7 +107,7 @@ onMounted(async () => {
         :width="item.width"
         :height="item.height"
         alt=""
-      >
+      />
     </div>
   </div>
   <AssetFileRotate

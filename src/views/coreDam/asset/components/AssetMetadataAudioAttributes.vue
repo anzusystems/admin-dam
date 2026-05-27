@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import type { AssetFileAudio } from '@anzusystems/common-admin'
 import { prettyDuration } from '@/utils/file'
 

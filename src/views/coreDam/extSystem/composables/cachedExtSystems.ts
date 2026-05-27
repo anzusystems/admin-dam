@@ -1,5 +1,5 @@
-import type { DamExtSystem, DamExtSystemMinimal, IntegerId } from '@anzusystems/common-admin'
-import { defineCached, fetchDamExtSystemListByIds } from '@anzusystems/common-admin'
+import type { DamExtSystem, DamExtSystemMinimal } from '@anzusystems/common-admin'
+import { fetchDamExtSystemListByIds } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 
 const mapFullToMinimal = (extSystem: DamExtSystem): DamExtSystemMinimal => ({

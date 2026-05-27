@@ -7,7 +7,6 @@ import {
   DamAssetStatus,
   type DamAssetStatusType,
 } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
@@ -40,23 +39,17 @@ const { t } = useI18n()
     <VAlert type="error">
       {{ t('coreDam.asset.detail.info.status.failed') }}
       <div v-if="assetMainFileFailReason">
-        <br>
+        <br />
         <AssetFileFailReasonChip :reason="assetMainFileFailReason" />
       </div>
     </VAlert>
   </div>
-  <div
-    v-else-if="assetStatus === DamAssetStatus.Deleting"
-    class="w-100 pa-2 text-body-small"
-  >
+  <div v-else-if="assetStatus === DamAssetStatus.Deleting" class="w-100 pa-2 text-body-small">
     <VAlert type="error">
       {{ t('coreDam.asset.detail.info.status.deleting') }}
     </VAlert>
   </div>
-  <div
-    v-else-if="assetStatus === DamAssetStatus.Draft"
-    class="w-100 pa-2 text-body-small"
-  >
+  <div v-else-if="assetStatus === DamAssetStatus.Draft" class="w-100 pa-2 text-body-small">
     <VAlert type="warning">
       {{ t('coreDam.asset.detail.info.status.draft') }}
     </VAlert>

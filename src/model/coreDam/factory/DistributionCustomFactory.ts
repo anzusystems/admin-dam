@@ -4,7 +4,7 @@ import type {
   DistributionItem,
 } from '@/types/coreDam/Distribution'
 import { DistributionItemResourceName } from '@/types/coreDam/Distribution'
-import { DamDistributionStatus, type DocId } from '@anzusystems/common-admin'
+import { DamDistributionStatus } from '@anzusystems/common-admin'
 
 export function useDistributionCustomFactory() {
   const createCreateDto = (): DistributionCustomCreateRedistributeDto => {

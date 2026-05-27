@@ -8,8 +8,8 @@ import {
 } from '@/services/api/coreDam/fileApi'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { cloneDeep, useAlerts, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetTypeType) {
   const assetSlotsStore = useAssetSlotsStore()

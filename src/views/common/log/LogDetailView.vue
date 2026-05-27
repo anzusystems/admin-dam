@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useLogDetailActions } from '@/views/common/log/composables/logActions'
 import LogDetail from '@/views/common/log/components/LogDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'

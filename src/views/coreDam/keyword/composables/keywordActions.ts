@@ -1,12 +1,8 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { DamKeyword, DamKeywordMinimal, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useDamCachedUsers, useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { DamKeyword, DamKeywordMinimal, FilterBag, Pagination } from '@anzusystems/common-admin'
+import { useDamCachedUsers } from '@anzusystems/common-admin'
 import { fetchKeyword, fetchKeywordList, fetchKeywordListByIds, updateKeyword } from '@/services/api/coreDam/keywordApi'
-import { storeToRefs } from 'pinia'
 import { useKeywordOneStore } from '@/stores/coreDam/keywordStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

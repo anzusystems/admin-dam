@@ -1,11 +1,7 @@
-import { ref } from 'vue'
-import type { DamAssetLicence, FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { fetchDamAssetLicenceList, fetchDamAssetLicenceListByIds, useAlerts } from '@anzusystems/common-admin'
+import type { DamAssetLicence, FilterBag, Pagination } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceList, fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
 import { useAssetLicenceOneStore } from '@/stores/coreDam/assetLicenceStore'
-import { storeToRefs } from 'pinia'
 import { fetchAssetLicence, updateAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { damClient } from '@/services/api/clients/damClient'
 

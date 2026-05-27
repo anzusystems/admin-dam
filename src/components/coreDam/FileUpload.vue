@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
-import { computed, ref, watch } from 'vue'
-import { arrayFlatten, arrayFromArgs, damFileTypeFix, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
+import { arrayFlatten, arrayFromArgs, damFileTypeFix } from '@anzusystems/common-admin'
 
 type InputRef = null | HTMLInputElement
 
@@ -272,23 +270,10 @@ watch(selectedFiles, (newValue, oldValue) => {
 </script>
 
 <template>
-  <div
-    v-if="variant === 'icon'"
-    class="dam-upload-icon d-inline-flex"
-  >
-    <VBtn
-      tabindex="-1"
-      icon
-      variant="text"
-      :height="height"
-      :width="height"
-      @click.stop="clickDropzone"
-    >
+  <div v-if="variant === 'icon'" class="dam-upload-icon d-inline-flex">
+    <VBtn tabindex="-1" icon variant="text" :height="height" :width="height" @click.stop="clickDropzone">
       <VIcon icon="mdi-plus" />
-      <VTooltip
-        activator="parent"
-        location="bottom"
-      >
+      <VTooltip activator="parent" location="bottom">
         {{ t('system.upload.add') }}
       </VTooltip>
     </VBtn>
@@ -302,29 +287,13 @@ watch(selectedFiles, (newValue, oldValue) => {
     :width="height"
     @click.stop="clickDropzone"
   >
-    <VIcon
-      icon="mdi-plus"
-      :size="18"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VIcon icon="mdi-plus" :size="18" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('system.upload.add') }}
     </VTooltip>
   </VBtn>
-  <div
-    v-if="variant === 'button'"
-    class="dam-upload-button d-inline-flex"
-  >
-    <VBtn
-      tabindex="-1"
-      color="primary"
-      rounded="pill"
-      variant="flat"
-      :height="height"
-      @click.stop="clickDropzone"
-    >
+  <div v-if="variant === 'button'" class="dam-upload-button d-inline-flex">
+    <VBtn tabindex="-1" color="primary" rounded="pill" variant="flat" :height="height" @click.stop="clickDropzone">
       <template #prepend>
         <VIcon icon="mdi-upload" />
       </template>
@@ -353,7 +322,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     type="file"
     @change="onFileChange"
     @reset="onReset"
-  >
+  />
 </template>
 
 <style lang="scss">

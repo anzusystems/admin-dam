@@ -1,15 +1,8 @@
 <script setup lang="ts">
 import AssetQueueItemEditable from '@/views/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
-import { computed, onMounted, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
-import {
-  AssetFileProcessStatus,
-  DamAssetStatus,
-  type DocId,
-  type UploadQueueItem,
-  useAlerts,
-} from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, DamAssetStatus, type UploadQueueItem } from '@anzusystems/common-admin'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { fetchAsset } from '@/services/api/coreDam/assetApi'
@@ -79,10 +72,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    class="asset-queue-editable"
-    :class="{ 'asset-queue-editable--sidebar-active': massOperations }"
-  >
+  <div class="asset-queue-editable" :class="{ 'asset-queue-editable--sidebar-active': massOperations }">
     <div class="asset-queue-editable__left">
       <div class="overflow-y-auto overflow-x-hidden h-100">
         <VRow class="dam-upload-queue dam-upload-queue--editable pa-2 mb-5">
@@ -105,10 +95,7 @@ onMounted(() => {
         </VRow>
       </div>
     </div>
-    <div
-      v-if="list.length > 1"
-      class="asset-queue-editable__sidebar system-border-l"
-    >
+    <div v-if="list.length > 1" class="asset-queue-editable__sidebar system-border-l">
       <AssetQueueSelectedSidebar :queue-id="queueId" />
     </div>
   </div>

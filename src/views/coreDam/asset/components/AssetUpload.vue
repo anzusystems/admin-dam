@@ -8,13 +8,9 @@ import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import {
   ADialogToolbar,
   type DamAssetTypeType,
-  type DocId,
-  isUndefined,
   useDamAcceptTypeAndSizeHelper,
   useDamConfigState,
 } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -121,14 +117,8 @@ const { t } = useI18n()
     :multiple="multiple"
     @files-input="assetUpload"
   />
-  <VDialog
-    v-model="uploadDialog"
-    :width="500"
-  >
-    <VCard
-      v-if="uploadDialog"
-      data-cy="delete-panel"
-    >
+  <VDialog v-model="uploadDialog" :width="500">
+    <VCard v-if="uploadDialog" data-cy="delete-panel">
       <ADialogToolbar @on-cancel="onDialogCancel">
         {{ t('system.upload.limits.uploadWarning') }}
       </ADialogToolbar>
@@ -141,7 +131,7 @@ const { t } = useI18n()
           <span v-if="uploadQueueTotalCount > 0">{{
             t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
           }}</span>
-          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
           {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </VCardText>
@@ -150,11 +140,7 @@ const { t } = useI18n()
         <ABtnTertiary @click.stop="onDialogCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          v-if="!alreadyAtUploadLimit"
-          :loading="uploadDialogLoader"
-          @click.stop="onDialogConfirm"
-        >
+        <ABtnPrimary v-if="!alreadyAtUploadLimit" :loading="uploadDialogLoader" @click.stop="onDialogConfirm">
           {{ t('system.upload.limits.actionAddFirstItems', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </ABtnPrimary>
       </VCardActions>

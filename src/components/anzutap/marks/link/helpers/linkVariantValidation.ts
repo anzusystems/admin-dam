@@ -3,7 +3,7 @@ import {
   LinkVariantDefault,
   type LinkVariantType,
 } from '@/components/anzutap/marks/link/composables/LinkVariant'
-import { isUndefined, useSentry } from '@anzusystems/common-admin'
+import { useSentry } from '@anzusystems/common-admin'
 
 export function isValidLinkVariant(value: unknown): value is LinkVariantType {
   return typeof value === 'string' && value === LinkVariant.Link

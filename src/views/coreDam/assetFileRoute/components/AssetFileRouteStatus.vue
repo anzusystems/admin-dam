@@ -16,22 +16,10 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <VChip
-    v-if="assetFileRoute.mainRoute"
-    color="success"
-    label
-    size="small"
-    class="mr-2"
-  >
+  <VChip v-if="assetFileRoute.mainRoute" color="success" label size="small" class="mr-2">
     {{ t('coreDam.asset.assetFilePublicLink.status.public') }}
   </VChip>
-  <VChip
-    v-else
-    color="primary"
-    label
-    size="small"
-    class="mr-2"
-  >
+  <VChip v-else color="primary" label size="small" class="mr-2">
     {{ t('coreDam.asset.assetFilePublicLink.status.private') }}
   </VChip>
 </template>

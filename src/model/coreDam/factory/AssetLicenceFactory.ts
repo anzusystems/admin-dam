@@ -1,6 +1,5 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { DamAssetLicence } from '@anzusystems/common-admin'
-import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 
 export function useAssetLicenceFactory() {

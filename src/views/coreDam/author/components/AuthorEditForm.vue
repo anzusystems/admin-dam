@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
-import { useI18n } from 'vue-i18n'
 import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
@@ -22,15 +21,9 @@ const { authorTypeOptions } = useDamAuthorType()
 </script>
 
 <template>
-  <ASystemEntityScope
-    :system="SYSTEM_CORE_DAM"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <VRow>
-      <VCol
-        cols="12"
-        md="8"
-      >
+      <VCol cols="12" md="8">
         <ARow>
           <AFormTextField
             v-model="author.name"

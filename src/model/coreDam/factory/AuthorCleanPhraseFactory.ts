@@ -1,5 +1,3 @@
-import type { IntegerId } from '@anzusystems/common-admin'
-import { dateTimeNow } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { AuthorCleanPhrase, AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'
 import { ENTITY } from '@/services/api/coreDam/AuthorCleanPhraseApi'

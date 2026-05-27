@@ -8,11 +8,8 @@ import {
   type DamAssetTypeType,
   type DamDistributionServiceTypeType,
   DamDistributionStatus,
-  isUndefined,
   useDamConfigState,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -42,10 +39,7 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="serviceRequirements"
-    class="text-body-medium"
-  >
+  <div v-if="serviceRequirements" class="text-body-medium">
     <VRow>
       <VCol>
         <div class="font-weight-bold">
@@ -56,12 +50,7 @@ const serviceRequirements = computed(() => {
     <VRow>
       <VCol>
         {{ t('coreDam.distribution.common.status') }}: <DistributionStatusChip :status="item.status" />
-        <ABtnTertiary
-          v-if="showRedistribute"
-          class="ml-2"
-          size="small"
-          @click.stop="emit('openRedistribute')"
-        >
+        <ABtnTertiary v-if="showRedistribute" class="ml-2" size="small" @click.stop="emit('openRedistribute')">
           {{ t('coreDam.distribution.common.redistributeButton') }}
         </ABtnTertiary>
       </VCol>

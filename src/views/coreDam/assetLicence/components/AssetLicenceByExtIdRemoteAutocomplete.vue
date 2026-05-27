@@ -1,16 +1,11 @@
 <script lang="ts" setup>
 import {
   AFormRemoteAutocomplete,
-  cloneDeep,
   type FilterBag,
-  type IntegerId,
-  type IntegerIdNullable,
-  isString,
   type Pagination,
   useDamAssetLicenceFilter,
 } from '@anzusystems/common-admin'
 import { useAssetLicenceByExtIdSelectActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
-import { computed, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import AssetToolbarExtSystemLicenceDialog from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 
 withDefaults(
@@ -31,11 +29,8 @@ const openDialog = () => {
     @click.stop="openDialog"
   >
     <VIcon icon="mdi-chevron-down" />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
-      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ extSystemName }}<br>
+    <VTooltip activator="parent" location="bottom">
+      {{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}: {{ extSystemName }}<br />
       {{ t('system.mainBar.extSystemLicenceSwitch.licence') }}: {{ licenceName }}
     </VTooltip>
   </VBtn>

@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import UserEditForm from '@/views/coreDam/user/components/UserEditForm.vue'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 import { useUserEditActions } from '@/views/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 

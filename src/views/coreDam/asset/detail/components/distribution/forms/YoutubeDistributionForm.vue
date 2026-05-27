@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { AFormValueObjectOptionsSelect, ARow, useDamConfigStore, type ValidationScope } from '@anzusystems/common-admin'
 import { DistributionItemResourceName, type YoutubeDistributionUpdateDto } from '@/types/coreDam/Distribution'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useYoutubeDistributionUpdateDtoValidations } from '@/views/coreDam/asset/detail/composables/distributionValidations'
 
 const props = withDefaults(

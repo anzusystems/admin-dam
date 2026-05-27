@@ -1,6 +1,3 @@
-import { ref } from 'vue'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
 export const LogSystem = {
   CoreDam: 'coreDam',
   AdminDam: 'adminDam',

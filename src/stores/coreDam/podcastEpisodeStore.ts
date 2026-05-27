@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import { usePodcastEpisodeFactory } from '@/model/coreDam/factory/PodcastEpisodeFactory'
 import type { PodcastEpisode } from '@/types/coreDam/PodcastEpisode'
-import { ref } from 'vue'
 
 export const usePodcastEpisodeOneStore = defineStore('podcastEpisodeOneStore', () => {
   const { createDefault } = usePodcastEpisodeFactory()

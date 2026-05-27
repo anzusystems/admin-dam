@@ -2,7 +2,6 @@ import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalPr
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
-import { isNull, useAlerts } from '@anzusystems/common-admin'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'

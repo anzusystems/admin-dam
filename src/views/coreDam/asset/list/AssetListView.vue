@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted } from 'vue'
 import { GridView, useGridView } from '@/composables/system/gridView'
 import AssetDetailDialog from '@/views/coreDam/asset/detail/components/AssetDetailDialog.vue'
 import { customSortOptions, useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { useI18n } from 'vue-i18n'
 import MainWrapper from '@/components/wrappers/MainWrapper.vue'
 import AssetToolbarTypeFilters from '@/views/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import GridViewToggle from '@/components/system/GridViewToggle.vue'
@@ -92,43 +90,20 @@ onUnmounted(() => {
 <template>
   <MainWrapper>
     <template #default>
-      <div
-        v-if="loader.hard"
-        class="d-flex w-100 h-100 align-center justify-center"
-      >
-        <VProgressCircular
-          indeterminate
-          color="primary"
-        />
+      <div v-if="loader.hard" class="d-flex w-100 h-100 align-center justify-center">
+        <VProgressCircular indeterminate color="primary" />
       </div>
       <div v-else-if="items.length">
         <div>
           <component :is="componentComputed" />
-          <div
-            v-if="loader.soft"
-            class="w-100 d-flex align-center justify-center pa-4"
-          >
-            <VProgressCircular
-              indeterminate
-              color="primary"
-            />
+          <div v-if="loader.soft" class="w-100 d-flex align-center justify-center pa-4">
+            <VProgressCircular indeterminate color="primary" />
           </div>
-          <div
-            v-if="loadOnScroll"
-            v-intersect="autoloadOnIntersect"
-            class="w-100"
-          />
+          <div v-if="loadOnScroll" v-intersect="autoloadOnIntersect" class="w-100" />
         </div>
-        <AssetDetailDialog
-          @prev-item="prevItem"
-          @next-item="nextItem"
-          @main-route-changed="refreshActiveItem"
-        />
+        <AssetDetailDialog @prev-item="prevItem" @next-item="nextItem" @main-route-changed="refreshActiveItem" />
       </div>
-      <div
-        v-else
-        class="text-headline-small text-medium-emphasis d-flex w-100 h-100 align-center justify-center"
-      >
+      <div v-else class="text-headline-small text-medium-emphasis d-flex w-100 h-100 align-center justify-center">
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
     </template>
@@ -136,51 +111,24 @@ onUnmounted(() => {
       <AssetToolbarSearch />
     </template>
     <template #main-bar-right>
-      <AssetUpload
-        variant="button"
-        :button-text="t('system.mainBar.upload')"
-      />
+      <AssetUpload variant="button" :button-text="t('system.mainBar.upload')" />
     </template>
     <template #second-bar-left>
-      <VDivider
-        vertical
-        class="ml-1 mr-2 my-2"
-      />
+      <VDivider vertical class="ml-1 mr-2 my-2" />
       <AssetToolbarTypeFilters />
     </template>
     <template #second-bar-right>
-      <VBtn
-        variant="text"
-        icon
-        size="x-small"
-        class="ml-1"
-        @click.stop="fetchAssetList"
-      >
+      <VBtn variant="text" icon size="x-small" class="ml-1" @click.stop="fetchAssetList">
         <VIcon icon="mdi-refresh" />
-        <VTooltip
-          activator="parent"
-          location="bottom"
-        >
+        <VTooltip activator="parent" location="bottom">
           {{ t('coreDam.asset.list.refresh') }}
         </VTooltip>
       </VBtn>
-      <VDivider
-        vertical
-        class="mx-1 my-2 hidden-xs"
-      />
-      <ADatatableOrdering
-        :custom-options="customSortOptions"
-        @sort-by-change="sortByChange"
-      />
-      <VDivider
-        vertical
-        class="mx-1 my-2 hidden-xs"
-      />
+      <VDivider vertical class="mx-1 my-2 hidden-xs" />
+      <ADatatableOrdering :custom-options="customSortOptions" @sort-by-change="sortByChange" />
+      <VDivider vertical class="mx-1 my-2 hidden-xs" />
       <GridViewToggle class="hidden-xs" />
-      <VDivider
-        vertical
-        class="mx-1 my-2"
-      />
+      <VDivider vertical class="mx-1 my-2" />
     </template>
     <template #sidebar-left>
       <AssetListSidebarFilter />

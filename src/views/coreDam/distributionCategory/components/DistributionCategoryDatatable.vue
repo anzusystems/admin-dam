@@ -19,8 +19,6 @@ import {
   type DatatableOrderingOption,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
-import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 
 type DatatableItem = DistributionCategory
 
@@ -57,7 +55,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
 const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
   [
     ...[{ key: 'id' }, { key: 'name' }, { key: 'type' }],
-    // eslint-disable-next-line vue/no-ref-object-reactivity-loss
+
     ...distributionServicesTableColumns.value,
     ...[{ key: 'createdAt' }, { key: 'modifiedAt' }],
   ],
@@ -94,10 +92,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -127,24 +122,15 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_READ">
-              <ATableDetailButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/distribution-category/[id]'"
-              />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/distribution-category/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UPDATE">
-              <ATableEditButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/distribution-category/[id]/edit'"
-              />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/distribution-category/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

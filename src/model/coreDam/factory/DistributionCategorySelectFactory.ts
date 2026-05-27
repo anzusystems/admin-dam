@@ -1,7 +1,7 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategorySelectApi'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
-import { DamAssetTypeDefault, dateTimeNow } from '@anzusystems/common-admin'
+import { DamAssetTypeDefault } from '@anzusystems/common-admin'
 
 export function useDistributionCategorySelectFactory() {
   const createDefault = (extSystemId: number): DistributionCategorySelect => {

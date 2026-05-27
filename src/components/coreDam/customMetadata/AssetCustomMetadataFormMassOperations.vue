@@ -5,11 +5,8 @@ import {
   ACustomDataFormElement,
   type CustomDataValue,
   type DamAssetTypeType,
-  isUndefined,
   useDamConfigState,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -55,18 +52,10 @@ const elements = computed(() => {
 
 <template>
   <div class="w-100">
-    <VRow
-      v-for="element in elements"
-      :key="element.id"
-      density="compact"
-      class="mt-1"
-    >
+    <VRow v-for="element in elements" :key="element.id" density="compact" class="mt-1">
       <VCol>
         <div v-if="element.attributes.readonly" />
-        <div
-          v-else
-          class="d-flex"
-        >
+        <div v-else class="d-flex">
           <ACustomDataFormElement
             :config="element"
             :model-value="modelValue[element.property]"
@@ -80,10 +69,7 @@ const elements = computed(() => {
             @click.stop="fillEmptyField(element.property, modelValue[element.property])"
           >
             <VIcon icon="mdi-file-arrow-left-right-outline" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
             </VTooltip>
           </VBtn>
@@ -94,10 +80,7 @@ const elements = computed(() => {
             @click.stop="replaceField(element.property, modelValue[element.property])"
           >
             <VIcon icon="mdi-file-replace-outline" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('coreDam.asset.massOperations.replaceOne') }}
             </VTooltip>
           </VBtn>

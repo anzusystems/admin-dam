@@ -1,7 +1,5 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import {
   fetchVideoShow,
   fetchVideoShowListByExtSystem,
@@ -9,10 +7,7 @@ import {
   updateVideoShow,
 } from '@/services/api/coreDam/videoShowApi'
 import type { VideoShow } from '@/types/coreDam/VideoShow'
-import { storeToRefs } from 'pinia'
 import { useVideoShowOneStore } from '@/stores/coreDam/videoShowStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 
 const { currentExtSystemId } = useCurrentExtSystem()
 

@@ -38,14 +38,8 @@ import {
   AFormValueObjectOptionsSelect,
   AssetFileProcessStatus,
   ASystemEntityScope,
-  type DocId,
-  useAlerts,
   usePagination,
-  useValidate,
 } from '@anzusystems/common-admin'
-import useVuelidate from '@vuelidate/core'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -263,10 +257,7 @@ onUnmounted(async () => {
 
 <template>
   <VCardText>
-    <VRow
-      v-if="!redistributeMode && distributionAuthStatus === DistributionAuthStatus.Success"
-      class="mb-6"
-    >
+    <VRow v-if="!redistributeMode && distributionAuthStatus === DistributionAuthStatus.Success" class="mb-6">
       <VCol>
         <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
       </VCol>
@@ -286,23 +277,13 @@ onUnmounted(async () => {
           :asset-type="assetType"
         />
       </div>
-      <div
-        v-else-if="canDisplayForm"
-        class="pa-4"
-      >
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+      <div v-else-if="canDisplayForm" class="pa-4">
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <VRow>
             <VCol cols="6">
               <VRow class="mb-2">
                 <VCol>
-                  <AFormTextarea
-                    v-model="distribution.texts.title"
-                    :v="v$.distribution.texts.title"
-                    required
-                  />
+                  <AFormTextarea v-model="distribution.texts.title" :v="v$.distribution.texts.title" required />
                 </VCol>
               </VRow>
               <VRow class="mb-2">
@@ -335,19 +316,13 @@ onUnmounted(async () => {
                   />
                 </VCol>
               </VRow>
-              <VRow
-                v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic"
-                class="mb-2"
-              >
+              <VRow v-if="distribution.privacy === DistributionYoutubePrivacy.Dynamic" class="mb-2">
                 <VCol>
                   <AFormDatetimePicker v-model="distribution.publishAt" />
                 </VCol>
               </VRow>
             </VCol>
-            <VCol
-              cols="6"
-              class="pl-4"
-            >
+            <VCol cols="6" class="pl-4">
               <VRow class="mb-2">
                 <VCol>
                   <DistributionYoutubeLanguageSelect
@@ -418,13 +393,7 @@ onUnmounted(async () => {
         <div class="w-100 d-flex align-center justify-center pa-6 pb-8">
           <YoutubeLogo />
         </div>
-        <VBtn
-          color="primary"
-          variant="flat"
-          :href="authUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <VBtn color="primary" variant="flat" :href="authUrl" target="_blank" rel="noopener noreferrer">
           {{ t('coreDam.youtubeDistribution.loginButton') }}
         </VBtn>
       </div>
@@ -434,14 +403,8 @@ onUnmounted(async () => {
       >
         {{ t('coreDam.distribution.common.error') }}
       </div>
-      <div
-        v-else
-        class="d-flex w-100 h-100 justify-center align-center pa-2"
-      >
-        <VProgressCircular
-          indeterminate
-          color="primary"
-        />
+      <div v-else class="d-flex w-100 h-100 justify-center align-center pa-2">
+        <VProgressCircular indeterminate color="primary" />
       </div>
     </div>
     <DistributionYoutubeTermOfUse class="pa-4 text-body-small" />
@@ -456,11 +419,7 @@ onUnmounted(async () => {
     <ABtnTertiary @click.stop="closeDialog(false)">
       {{ t('common.button.cancel') }}
     </ABtnTertiary>
-    <ABtnPrimary
-      v-if="canDisplayForm"
-      :loading="saving"
-      @click.stop="submit"
-    >
+    <ABtnPrimary v-if="canDisplayForm" :loading="saving" @click.stop="submit">
       <span v-if="redistributeMode">{{ t('common.button.confirm') }}</span>
       <span v-else>{{ t('common.button.add') }}</span>
     </ABtnPrimary>

@@ -2,9 +2,7 @@
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
 import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
-import { DamAssetStatus, DamAssetType, isUndefined, useRemainingTime } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { DamAssetStatus, DamAssetType, useRemainingTime } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -131,23 +129,13 @@ const { remainingTimeShort } = useRemainingTime()
   >
     <template #placeholder />
     <template #default>
-      <div
-        v-if="showWaiting"
-        class="asset-image__progress"
-      >
-        <VProgressCircular
-          indeterminate
-          :size="iconSize"
-          :width="iconSize / 10"
-        />
+      <div v-if="showWaiting" class="asset-image__progress">
+        <VProgressCircular indeterminate :size="iconSize" :width="iconSize / 10" />
         <div class="text-body-small text-center">
           {{ t('system.upload.waiting') }}
         </div>
       </div>
-      <div
-        v-if="showProcessing"
-        class="asset-image__progress"
-      >
+      <div v-if="showProcessing" class="asset-image__progress">
         <VProgressCircular
           :color="processingColor"
           indeterminate
@@ -155,17 +143,11 @@ const { remainingTimeShort } = useRemainingTime()
           :width="iconSize / 10"
           class="ml-auto mr-auto"
         />
-        <div
-          v-if="!disableProcessingText"
-          class="text-body-small text-center"
-        >
+        <div v-if="!disableProcessingText" class="text-body-small text-center">
           {{ t('system.upload.processing') }}
         </div>
       </div>
-      <div
-        v-else-if="showUploading"
-        class="asset-image__progress"
-      >
+      <div v-else-if="showUploading" class="asset-image__progress">
         <VProgressCircular
           :color="uploadingColor"
           :size="iconSize"
@@ -177,10 +159,7 @@ const { remainingTimeShort } = useRemainingTime()
         </VProgressCircular>
         <div class="text-body-small text-center">
           {{ t('system.upload.uploading') }}
-          <span
-            v-if="remainingTime"
-            class="font-weight-bold"
-          >
+          <span v-if="remainingTime" class="font-weight-bold">
             {{ remainingTimeShort(remainingTime) }}
           </span>
         </div>
@@ -200,31 +179,13 @@ const { remainingTimeShort } = useRemainingTime()
   >
     <template #placeholder />
     <template #default>
-      <div
-        v-if="showIconComputed"
-        class="asset-image__icon-wrapper"
-      >
-        <div
-          class="asset-image__icon-circle"
-          :style="{ padding: iconSize / 4 + 'px' }"
-        >
-          <VIcon
-            v-if="icon.length"
-            :size="iconSize"
-            :icon="icon"
-            :color="iconColor"
-          />
+      <div v-if="showIconComputed" class="asset-image__icon-wrapper">
+        <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
+          <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" />
         </div>
       </div>
-      <div
-        v-if="showDone"
-        class="asset-image__progress asset-image__progress--animate-done"
-      >
-        <VIcon
-          icon="mdi-check-circle"
-          color="success"
-          :size="iconSize"
-        />
+      <div v-if="showDone" class="asset-image__progress asset-image__progress--animate-done">
+        <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
         <div class="text-body-small text-center">
           {{ t('system.upload.done') }}
         </div>
@@ -247,22 +208,10 @@ const { remainingTimeShort } = useRemainingTime()
       alt=""
       :style="'background-color:' + backgroundColorComputed"
       @onerror="onError"
-    >
-    <div
-      v-if="showIconComputed"
-      class="asset-image__icon-wrapper"
-    >
-      <div
-        class="asset-image__icon-circle"
-        :style="{ padding: iconSize / 4 + 'px' }"
-      >
-        <VIcon
-          v-if="icon.length"
-          :size="iconSize"
-          :icon="icon"
-          :color="iconColor"
-          class="asset-image__icon"
-        />
+    />
+    <div v-if="showIconComputed" class="asset-image__icon-wrapper">
+      <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
+        <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" class="asset-image__icon" />
       </div>
     </div>
     <AssetImageMetaIcons
@@ -276,32 +225,13 @@ const { remainingTimeShort } = useRemainingTime()
     :style="{ height: fallbackHeight + 'px', backgroundColor: backgroundColorComputed, width: width + 'px' }"
     class="asset-image asset-image--placeholder d-flex align-center justify-center"
   >
-    <div
-      v-if="showIconComputed"
-      class="asset-image__icon-wrapper"
-    >
-      <div
-        class="asset-image__icon-circle"
-        :style="{ padding: iconSize / 4 + 'px' }"
-      >
-        <VIcon
-          v-if="icon.length"
-          :size="iconSize"
-          :icon="icon"
-          :color="iconColor"
-          class="asset-image__icon"
-        />
+    <div v-if="showIconComputed" class="asset-image__icon-wrapper">
+      <div class="asset-image__icon-circle" :style="{ padding: iconSize / 4 + 'px' }">
+        <VIcon v-if="icon.length" :size="iconSize" :icon="icon" :color="iconColor" class="asset-image__icon" />
       </div>
     </div>
-    <div
-      v-if="showDone"
-      class="asset-image__progress asset-image__progress--animate-done"
-    >
-      <VIcon
-        icon="mdi-check-circle"
-        color="success"
-        :size="iconSize"
-      />
+    <div v-if="showDone" class="asset-image__progress asset-image__progress--animate-done">
+      <VIcon icon="mdi-check-circle" color="success" :size="iconSize" />
       <div class="text-body-small text-center">
         {{ t('system.upload.done') }}
       </div>

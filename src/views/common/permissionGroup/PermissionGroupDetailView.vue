@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import {
-  AActionCloseButton,
-  AActionDeleteButton,
-  AActionEditButton,
-  ACard,
-  defineBreadcrumbs,
-  stringToInt,
-  useI18n,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
 import PermissionGroupDetail from '@/views/common/permissionGroup/components/PermissionGroupDetail.vue'
@@ -50,19 +40,10 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl
-        v-if="!detailLoading"
-        :permission="ACL.DAM_PERMISSION_GROUP_UPDATE"
-      >
-        <AActionEditButton
-          :record-id="id"
-          :route-name="'/(common)/permission-group/[id]/edit'"
-        />
+      <Acl v-if="!detailLoading" :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
+        <AActionEditButton :record-id="id" :route-name="'/(common)/permission-group/[id]/edit'" />
       </Acl>
-      <Acl
-        v-if="!detailLoading"
-        :permission="ACL.DAM_PERMISSION_GROUP_DELETE"
-      >
+      <Acl v-if="!detailLoading" :permission="ACL.DAM_PERMISSION_GROUP_DELETE">
         <AActionDeleteButton @delete-record="deletePermissionGroup(id)" />
       </Acl>
       <AActionCloseButton :route-name="'/(common)/permission-group'" />

@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import {
-  AActionCloseButton,
-  AActionEditButton,
-  ACard,
-  defineBreadcrumbs,
-  useI18n,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useVideoShowEpisodeDetailActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import VideoShowEpisodeDetail from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -60,10 +52,7 @@ const breadcrumbs = defineBreadcrumbs(
           :route-name="'/(coreDam)/video-show/[id]/episode/[episodeId]/edit'"
         />
       </Acl>
-      <AActionCloseButton
-        :route-name="'/(coreDam)/video-show/[id]'"
-        :route-params="{ id: videoShowId }"
-      />
+      <AActionCloseButton :route-name="'/(coreDam)/video-show/[id]'" :route-params="{ id: videoShowId }" />
     </template>
   </ActionbarWrapper>
 

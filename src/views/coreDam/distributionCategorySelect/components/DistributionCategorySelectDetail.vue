@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
 const { distributionCategorySelect } = storeToRefs(useDistributionCategorySelectOneStore())
@@ -13,12 +11,7 @@ const { t } = useI18n()
   <VRow>
     <VCol cols="8">
       <ARow :title="t('coreDam.distributionCategorySelect.model.options')">
-        <VListItem
-          v-for="option in distributionCategorySelect.options"
-          :key="option.id"
-          class="mt-2 pl-0"
-          lines="two"
-        >
+        <VListItem v-for="option in distributionCategorySelect.options" :key="option.id" class="mt-2 pl-0" lines="two">
           <VListItemTitle>{{ option.name }}</VListItemTitle>
           <VListItemSubtitle>{{ option.value }}</VListItemSubtitle>
           <VDivider />

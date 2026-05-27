@@ -1,9 +1,7 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
+import type { DocIdNullable } from '@anzusystems/common-admin'
 import { type AssetDetailItemDto, DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
-import { ref } from 'vue'
 
 export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const asset = ref<AssetDetailItemDto | null>(null)

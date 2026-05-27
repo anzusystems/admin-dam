@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useAuthorCleanPhraseListFilter } from '@/model/coreDam/filter/AuthorCleanPhraseFilter'
 import { AFilterString, AFilterValueObjectOptionsSelect, AFilterWrapper } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 import { useAuthorCleanPhraseTypeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseType'
 import { useAuthorCleanPhraseModeTypes } from '@/model/coreDam/valueObject/AuthorCleanPhraseMode'
 
@@ -32,26 +31,14 @@ const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
+  <VForm name="search" @submit.prevent="submitFilter">
+    <AFilterWrapper :touched="touched" @reset-filter="resetFilter">
       <VRow class="align-start">
         <VCol cols="3">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.id" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="3">
-          <AFilterString
-            v-model="filter.phrase"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.phrase" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="3">
           <AFilterValueObjectOptionsSelect

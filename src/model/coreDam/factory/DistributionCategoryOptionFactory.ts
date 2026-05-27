@@ -1,5 +1,4 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { dateTimeNow } from '@anzusystems/common-admin'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 
 export function useDistributionCategoryOptionFactory() {

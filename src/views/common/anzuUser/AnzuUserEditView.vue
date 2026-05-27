@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserEditForm from '@/views/common/anzuUser/components/AnzuUserEditForm.vue'
@@ -41,10 +39,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionSaveButton
-        :loading="saveButtonLoading"
-        @save-record="updateAnzuUser"
-      />
+      <AActionSaveButton :loading="saveButtonLoading" @save-record="updateAnzuUser" />
       <AActionCloseButton :route-name="'/(common)/anzu-user'" />
     </template>
   </ActionbarWrapper>

@@ -13,21 +13,12 @@ import { fetchDistributionCategorySelectList } from '@/services/api/coreDam/dist
 import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCategoryStore'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import {
-  cloneDeep,
   type DamAssetTypeType,
-  type DocId,
   type FilterBag,
-  isUndefined,
   type Pagination,
-  useAlerts,
   useDamConfigState,
   usePagination,
-  type ValueObjectOption,
 } from '@anzusystems/common-admin'
-import useVuelidate from '@vuelidate/core'
-import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

@@ -1,79 +1,39 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
-
 import { ACL } from '@/composables/auth/auth'
 
 const { t } = useI18n()
 </script>
 
 <template>
-  <VList
-    density="compact"
-    nav
-    color="primary"
-  >
-    <VListItem
-      :to="{ name: '/(coreDam)/asset' }"
-      prepend-icon="mdi-home"
-    >
-      <VTooltip
-        location="right"
-        activator="parent"
-      >
+  <VList density="compact" nav color="primary">
+    <VListItem :to="{ name: '/(coreDam)/asset' }" prepend-icon="mdi-home">
+      <VTooltip location="right" activator="parent">
         {{ t('sidebar.settings.backToAssets') }}
       </VTooltip>
     </VListItem>
     <VDivider />
-    <VListItem
-      to="/settings"
-      prepend-icon="mdi-cog"
-      data-cy="personal-settings"
-    >
-      <VTooltip
-        location="right"
-        activator="parent"
-      >
+    <VListItem to="/settings" prepend-icon="mdi-cog" data-cy="personal-settings">
+      <VTooltip location="right" activator="parent">
         {{ t('sidebar.settings.settings') }}
       </VTooltip>
     </VListItem>
     <Acl :permission="ACL.DAM_PODCAST_UI">
-      <VListItem
-        :to="{ name: '/(coreDam)/podcast' }"
-        prepend-icon="mdi-podcast"
-        data-cy="podcast-settings"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+      <VListItem :to="{ name: '/(coreDam)/podcast' }" prepend-icon="mdi-podcast" data-cy="podcast-settings">
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.podcasts') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_UI">
-      <VListItem
-        :to="{ name: '/(coreDam)/video-show' }"
-        prepend-icon="mdi-video-box"
-        data-cy="video-show-settings"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+      <VListItem :to="{ name: '/(coreDam)/video-show' }" prepend-icon="mdi-video-box" data-cy="video-show-settings">
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.videoShows') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
-      <VListItem
-        :to="{ name: '/(coreDam)/user' }"
-        prepend-icon="mdi-account-multiple"
-        data-cy="user-settings"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+      <VListItem :to="{ name: '/(coreDam)/user' }" prepend-icon="mdi-account-multiple" data-cy="user-settings">
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.users') }}
         </VTooltip>
       </VListItem>
@@ -84,10 +44,7 @@ const { t } = useI18n()
         prepend-icon="mdi-television-stop"
         data-cy="ext-system-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.extSystems') }}
         </VTooltip>
       </VListItem>
@@ -98,10 +55,7 @@ const { t } = useI18n()
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.assetLicences') }}
         </VTooltip>
       </VListItem>
@@ -112,10 +66,7 @@ const { t } = useI18n()
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-group-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.assetLicenceGroups') }}
         </VTooltip>
       </VListItem>
@@ -126,24 +77,14 @@ const { t } = useI18n()
         prepend-icon="mdi-account-circle-outline"
         data-cy="author-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.authors') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
-      <VListItem
-        :to="{ name: '/(coreDam)/keyword' }"
-        prepend-icon="mdi-file-key-outline"
-        data-cy="keyword-settings"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+      <VListItem :to="{ name: '/(coreDam)/keyword' }" prepend-icon="mdi-file-key-outline" data-cy="keyword-settings">
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.keywords') }}
         </VTooltip>
       </VListItem>
@@ -154,10 +95,7 @@ const { t } = useI18n()
         prepend-icon="mdi-folder-edit"
         data-cy="distribution-category-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.distributionCategory') }}
         </VTooltip>
       </VListItem>
@@ -168,10 +106,7 @@ const { t } = useI18n()
         prepend-icon="mdi-form-dropdown"
         data-cy="distribution-category-select-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.distributionCategorySelect') }}
         </VTooltip>
       </VListItem>
@@ -183,10 +118,7 @@ const { t } = useI18n()
         prepend-icon="mdi-folder-account-outline"
         data-cy="permission-group-settings"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.permissionGroups') }}
         </VTooltip>
       </VListItem>
@@ -197,38 +129,21 @@ const { t } = useI18n()
         prepend-icon="mdi-account-edit-outline"
         data-cy="user-permissions"
       >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.anzuUser') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
-      <VListItem
-        :to="{ name: '/(coreDam)/job' }"
-        prepend-icon="mdi-file-cabinet"
-        data-cy="job-settings"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+      <VListItem :to="{ name: '/(coreDam)/job' }" prepend-icon="mdi-file-cabinet" data-cy="job-settings">
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.job') }}
         </VTooltip>
       </VListItem>
     </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
-      <VListItem
-        :to="{ name: '/(common)/log' }"
-        prepend-icon="mdi-math-log"
-        data-cy="log-settings"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
+      <VListItem :to="{ name: '/(common)/log' }" prepend-icon="mdi-math-log" data-cy="log-settings">
+        <VTooltip location="right" activator="parent">
           {{ t('sidebar.settings.log') }}
         </VTooltip>
       </VListItem>

@@ -6,20 +6,15 @@ import { damClient } from '@/services/api/clients/damClient'
 import { fetchAssetFileDistributionList } from '@/services/api/coreDam/distributionApi'
 import type { DistributionCustomItem, DistributionJwItem, DistributionYoutubeItem } from '@/types/coreDam/Distribution'
 import {
-  cloneDeep,
   type DamAssetTypeType,
   type DamDistributionRequirementsConfig,
   DamDistributionRequirementStrategy,
   type DamDistributionServiceName,
   type DocIdNullable,
-  isUndefined,
   useDamConfigState,
   usePagination,
-  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
-import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 // now only supports strategy AtLeastOne, as BE too
 

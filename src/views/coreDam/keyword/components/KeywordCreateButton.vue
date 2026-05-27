@@ -1,15 +1,10 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import type { DamKeyword, ValidationScope } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  isUndefined,
-  useAlerts,
   useDamKeywordFactory,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -114,28 +109,17 @@ const onConfirm = async () => {
     @click.stop="onClick"
   >
     <VIcon icon="mdi-plus" />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.keyword.button.add') }}
     </VTooltip>
   </VBtn>
   <VDialog v-model="dialog">
-    <VCard
-      v-if="dialog"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
-      data-cy="create-panel"
-    >
+    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.keyword.meta.create') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <ARow>
             <AFormTextField
               v-model="keyword.name"
@@ -150,17 +134,10 @@ const onConfirm = async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="buttonLoading"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </ABtnPrimary>
       </VCardActions>

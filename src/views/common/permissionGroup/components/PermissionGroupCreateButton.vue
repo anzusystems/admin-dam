@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ADialogToolbar,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  isUndefined,
   type PermissionGroup,
-  useAlerts,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
-import { useRouter } from 'vue-router'
 import { usePermissionGroupValidation } from '@/views/common/permissionGroup/composables/permissionGroupValidations'
 import type { AxiosInstance } from 'axios'
 
@@ -83,30 +78,16 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <ABtnPrimary
-    :class="buttonClass"
-    :data-cy="dataCy"
-    :disabled="disabled"
-    rounded="pill"
-    @click.stop="onClick"
-  >
+  <ABtnPrimary :class="buttonClass" :data-cy="dataCy" :disabled="disabled" rounded="pill" @click.stop="onClick">
     {{ t(buttonT) }}
   </ABtnPrimary>
   <VDialog v-model="dialog">
-    <VCard
-      v-if="dialog"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
-      data-cy="create-panel"
-    >
+    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('common.permissionGroup.meta.create') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          system="common"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope system="common" :subject="ENTITY">
           <ARow>
             <AFormTextField
               v-model="permissionGroup.title"
@@ -125,17 +106,10 @@ const onConfirm = async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="buttonLoading"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </ABtnPrimary>
       </VCardActions>

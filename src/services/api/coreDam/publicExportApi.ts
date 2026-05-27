@@ -1,6 +1,6 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiCreateOne, apiDeleteOne, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
 

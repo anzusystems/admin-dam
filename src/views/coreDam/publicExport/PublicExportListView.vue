@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 import PublicExportDatatable from '@/views/coreDam/publicExport/components/PublicExportDatatable.vue'
@@ -26,11 +25,7 @@ const breadcrumbs = defineBreadcrumbs(
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
-        <PublicExportCreateButton
-          data-cy="button-create"
-          disable-redirect
-          @on-success="afterCreate"
-        />
+        <PublicExportCreateButton data-cy="button-create" disable-redirect @on-success="afterCreate" />
       </Acl>
     </template>
   </ActionbarWrapper>

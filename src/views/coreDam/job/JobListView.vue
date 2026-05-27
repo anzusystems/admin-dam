@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import { useJobListActions } from '@/views/coreDam/job/composables/jobActions'
 import JobDatatable from '@/views/coreDam/job/components/JobDatatable.vue'
-import { computed, ref } from 'vue'
 import JobCreateButton from '@/views/coreDam/job/components/JobCreateButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
@@ -26,10 +25,7 @@ const breadcrumbs = defineBreadcrumbs(
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_JOB_CREATE">
-        <JobCreateButton
-          data-cy="button-create"
-          @on-success="afterCreate"
-        />
+        <JobCreateButton data-cy="button-create" @on-success="afterCreate" />
       </Acl>
     </template>
   </ActionbarWrapper>

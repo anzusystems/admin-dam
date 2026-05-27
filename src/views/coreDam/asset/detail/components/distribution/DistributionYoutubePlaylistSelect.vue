@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
 import { fetchYoutubePlaylists } from '@/services/api/coreDam/distributionYoutubeApi'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
 import type { YoutubePlaylist } from '@/types/coreDam/Distribution'
 
 const props = withDefaults(
@@ -55,20 +53,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <VSelect
-    v-model="modelValueComputed"
-    :label="label"
-    :loading="loading"
-    :items="itemsComputed"
-  >
+  <VSelect v-model="modelValueComputed" :label="label" :loading="loading" :items="itemsComputed">
     <template #append>
-      <VBtn
-        class="ml-2"
-        icon="mdi-refresh"
-        size="small"
-        variant="text"
-        @click.stop="fetchItems(true)"
-      />
+      <VBtn class="ml-2" icon="mdi-refresh" size="small" variant="text" @click.stop="fetchItems(true)" />
     </template>
   </VSelect>
 </template>

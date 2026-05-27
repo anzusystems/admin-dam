@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { type PodcastModeType, usePodcastMode } from '@/model/coreDam/valueObject/PodcastMode'
 import { AChipNoLink } from '@anzusystems/common-admin'
 

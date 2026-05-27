@@ -13,20 +13,9 @@ import {
   DamAssetLicenceRemoteAutocomplete,
   type DamCurrentUserDto,
   DamExtSystemRemoteAutocomplete,
-  type IntegerId,
-  type IntegerIdNullable,
-  isArray,
-  isInt,
-  isNull,
-  isUndefined,
-  useAlerts,
   useDamConfigStore,
-  useValidate,
 } from '@anzusystems/common-admin'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
-import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import ABtnAdvanced from '@/components/ABtnAdvanced.vue'
 
 const props = withDefaults(
@@ -193,22 +182,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog
-    v-model="dialog"
-    :width="500"
-  >
+  <VDialog v-model="dialog" :width="500">
     <VCard v-if="dialog">
-      <ADialogToolbar
-        data-cy="button-close"
-        @on-cancel="onCancel"
-      >
+      <ADialogToolbar data-cy="button-close" @on-cancel="onCancel">
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
       <VCardText v-if="isSuperAdmin">
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <VRow>
             <VCol class="pt-2">
               <DamExtSystemRemoteAutocomplete
@@ -238,10 +218,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <ABtnAdvanced
-                v-model="showAdvanced"
-                class="mt-2 mb-4"
-              />
+              <ABtnAdvanced v-model="showAdvanced" class="mt-2 mb-4" />
             </VCol>
           </VRow>
           <div v-show="showAdvanced">
@@ -250,10 +227,10 @@ onMounted(async () => {
                 <div class="text-body-small">
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
-                  }})<br>
+                  }})<br />
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
                     licenceName
-                  }})<br>
+                  }})<br />
                 </div>
               </VCol>
             </VRow>
@@ -275,11 +252,7 @@ onMounted(async () => {
               {{ t('system.mainBar.extSystemLicenceSwitch.changeToLicenceId') }}: <span class="text-error">*</span>
             </div>
             <div class="w-100">
-              <VTextField
-                v-model="selectedLicence"
-                data-cy="field-change-on-id-licence"
-                hide-details
-              />
+              <VTextField v-model="selectedLicence" data-cy="field-change-on-id-licence" hide-details />
             </div>
           </div>
         </ASystemEntityScope>
@@ -322,10 +295,7 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

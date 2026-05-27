@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategorySelectApi'
-import { ASystemEntityScope, isUndefined } from '@anzusystems/common-admin'
+import { ASystemEntityScope } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectEditActions } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategoryOptionFactory } from '@/model/coreDam/factory/DistributionCategoryOptionFactory'
 import DistributionCategoryOptionEditForm from '@/views/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
 import { useSortable } from '@vueuse/integrations/useSortable'
-import { nextTick, ref } from 'vue'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
 
 const { distributionCategorySelect } = useDistributionCategorySelectEditActions()
@@ -54,10 +53,7 @@ const removeItem = (index: number) => {
 </script>
 
 <template>
-  <ASystemEntityScope
-    :system="SYSTEM_CORE_DAM"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <div ref="sortableEl">
       <DistributionCategoryOptionEditForm
         v-for="(item, index) in distributionCategorySelect.options"
@@ -66,12 +62,7 @@ const removeItem = (index: number) => {
         @remove="() => removeItem(index)"
       />
     </div>
-    <VBtn
-      class="mx-2"
-      color="indigo"
-      data-cy="button-add-option"
-      @click="addOption"
-    >
+    <VBtn class="mx-2" color="indigo" data-cy="button-add-option" @click="addOption">
       <VIcon icon="mdi-plus" />
     </VBtn>
   </ASystemEntityScope>

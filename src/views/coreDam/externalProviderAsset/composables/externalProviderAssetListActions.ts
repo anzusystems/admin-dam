@@ -1,26 +1,16 @@
-import {
-  isNull,
-  isUndefined,
-  useAlerts,
-  useDamConfigState,
-  useFilterHelpers,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { useDamConfigState, useFilterHelpers, usePagination } from '@anzusystems/common-admin'
 import { useExternalProviderAssetListFilter } from '@/model/coreDam/filter/ExternalProviderAssetFilter'
-import { storeToRefs } from 'pinia'
 import {
   fetchExternalProviderAsset,
   fetchExternalProviderAssetList as apiFetchExternalProviderAssetList,
 } from '@/services/api/coreDam/externalProviderAssetApi'
 import { useExternalProviders } from '@/composables/system/externalProviders'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
-import { readonly, type Ref, ref } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/services/BetaTestFeaturesService'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
-import { useRoute, useRouter } from 'vue-router'
 import { keyboardEventTargetIsAnyFormElement } from '@/utils/event'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'

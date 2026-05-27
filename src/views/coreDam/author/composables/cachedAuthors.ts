@@ -1,5 +1,4 @@
-import type { DamAuthor, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
-import { defineCached } from '@anzusystems/common-admin'
+import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { fetchAuthorListByIds } from '@/services/api/coreDam/authorApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 

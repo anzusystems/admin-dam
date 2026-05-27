@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep, type DocIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, type DocIdNullable } from '@anzusystems/common-admin'
 import { useVideoShowSelectActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowFilter } from '@/model/coreDam/filter/VideoShowFilter'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

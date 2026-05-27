@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import type { DistributionImagePreviewDto } from '@/types/coreDam/DistributionImagePreviewDto'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import { useI18n } from 'vue-i18n'
-import { computed, onMounted } from 'vue'
 import { DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
 
 const props = withDefaults(
   defineProps<{
@@ -56,17 +53,9 @@ onMounted(async () => {
     @click.stop.exact="toggleSelected"
   >
     <div class="dam-image-grid__item-card">
-      <div
-        v-if="item.selected"
-        class="selected-triangle"
-      >
+      <div v-if="item.selected" class="selected-triangle">
         <div class="selected-triangle__bg" />
-        <VIcon
-          class="selected-triangle__icon"
-          icon="mdi-check"
-          color="white"
-          size="x-small"
-        />
+        <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="x-small" />
       </div>
       <AssetImage
         :asset-status="item.url.length > 0 ? DamAssetStatus.WithFile : DamAssetStatus.Draft"
@@ -92,20 +81,9 @@ onMounted(async () => {
               icon
               @click.stop="toggleSelected"
             >
-              <VIcon
-                v-if="item.selected"
-                icon="mdi-checkbox-outline"
-                :size="20"
-              />
-              <VIcon
-                v-else
-                icon="mdi-checkbox-blank-outline"
-                :size="20"
-              />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VIcon v-if="item.selected" icon="mdi-checkbox-outline" :size="20" />
+              <VIcon v-else icon="mdi-checkbox-blank-outline" :size="20" />
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.toggleSelect') }}
               </VTooltip>
             </VBtn>
@@ -121,14 +99,8 @@ onMounted(async () => {
               rel="noopener noreferrer"
               @click.stop=""
             >
-              <VIcon
-                icon="mdi-open-in-new"
-                :size="20"
-              />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VIcon icon="mdi-open-in-new" :size="20" />
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.preview') }}
               </VTooltip>
             </VBtn>

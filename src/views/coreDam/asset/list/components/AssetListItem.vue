@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { AssetListItem } from '@/stores/coreDam/assetListStore'
-import type { DocId } from '@anzusystems/common-admin'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import { useI18n } from 'vue-i18n'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 
 const props = withDefaults(
@@ -57,17 +55,9 @@ const selectMultiple = () => {
     @click.shift.stop="selectMultiple"
   >
     <div class="dam-image-grid__item-card">
-      <div
-        v-if="item.selected"
-        class="selected-triangle"
-      >
+      <div v-if="item.selected" class="selected-triangle">
         <div class="selected-triangle__bg" />
-        <VIcon
-          class="selected-triangle__icon"
-          icon="mdi-check"
-          color="white"
-          size="large"
-        />
+        <VIcon class="selected-triangle__icon" icon="mdi-check" color="white" size="large" />
       </div>
       <AssetImage
         :asset-type="assetType"
@@ -95,20 +85,9 @@ const selectMultiple = () => {
               icon
               @click.stop="toggleSelected"
             >
-              <VIcon
-                v-if="item.selected"
-                icon="mdi-checkbox-outline"
-                :size="20"
-              />
-              <VIcon
-                v-else
-                icon="mdi-checkbox-blank-outline"
-                :size="20"
-              />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VIcon v-if="item.selected" icon="mdi-checkbox-outline" :size="20" />
+              <VIcon v-else icon="mdi-checkbox-blank-outline" :size="20" />
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.toggleSelect') }}
               </VTooltip>
             </VBtn>
@@ -121,14 +100,8 @@ const selectMultiple = () => {
               icon
               @click.stop="showDetail"
             >
-              <VIcon
-                icon="mdi-pencil"
-                :size="20"
-              />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VIcon icon="mdi-pencil" :size="20" />
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.edit') }}
               </VTooltip>
             </VBtn>

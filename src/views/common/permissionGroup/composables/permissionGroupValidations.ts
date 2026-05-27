@@ -1,7 +1,5 @@
 import useVuelidate from '@vuelidate/core'
-import type { Ref } from 'vue'
 import type { PermissionGroup } from '@anzusystems/common-admin'
-import { useValidate } from '@anzusystems/common-admin'
 
 const { required, minLength, maxLength } = useValidate()
 

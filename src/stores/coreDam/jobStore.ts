@@ -1,8 +1,6 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { Job } from '@/types/coreDam/Job'
 import { useCommonJobFactory } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ref } from 'vue'
 
 export const useJobOneStore = defineStore('damJobOneStore', () => {
   const { createUserDataDelete } = useCommonJobFactory()

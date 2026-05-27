@@ -1,4 +1,3 @@
-import { storeToRefs } from 'pinia'
 import { useExternalProviderAssetDetailStore } from '@/stores/coreDam/externalProviderAssetDetailStore'
 
 export function useExternalProviderAssetDetailActions() {

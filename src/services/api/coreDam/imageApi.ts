@@ -5,10 +5,8 @@ import {
   apiFetchOne,
   type AssetFileRoute,
   damFileTypeFix,
-  type DocId,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
-  HTTP_STATUS_OK,
   type UploadQueueItem,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'

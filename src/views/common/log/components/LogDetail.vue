@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { useLogOneStore } from '@/stores/common/logStore'
-import { storeToRefs } from 'pinia'
-import { useI18n } from 'vue-i18n'
-import { ALogLevelChip, dateTimeFriendly } from '@anzusystems/common-admin'
+import { ALogLevelChip } from '@anzusystems/common-admin'
 
 const { log } = storeToRefs(useLogOneStore())
 

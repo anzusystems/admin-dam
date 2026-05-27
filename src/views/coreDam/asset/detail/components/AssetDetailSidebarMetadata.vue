@@ -7,11 +7,8 @@ import AssetMetadata from '@/views/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDownloadButton from '@/views/coreDam/asset/detail/components/AssetDownloadButton.vue'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
-import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
-import useVuelidate from '@vuelidate/core'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
@@ -80,13 +77,7 @@ const onDelete = async () => {
       <AActionDeleteButton @delete-record="onDelete" />
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_UPDATE">
-      <ABtnPrimary
-        type="submit"
-        class="ml-2"
-        data-cy="button-save"
-        :loading="saveButtonLoading"
-        @click.stop="onSave"
-      >
+      <ABtnPrimary type="submit" class="ml-2" data-cy="button-save" :loading="saveButtonLoading" @click.stop="onSave">
         {{ t('common.button.save') }}
       </ABtnPrimary>
     </Acl>

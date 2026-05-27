@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import AssetCreateButton from '@/views/coreDam/asset/components/AssetCreateButton.vue'
-import { computed, onMounted, ref } from 'vue'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/views/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { ACL } from '@/composables/auth/auth'
-import { type DamAssetLicence, type DamExtSystem, useAlerts } from '@anzusystems/common-admin'
+import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 
@@ -67,13 +65,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VBtn
-    variant="text"
-    icon
-    size="small"
-    class="mx-1"
-    data-cy="button-main"
-  >
+  <VBtn variant="text" icon size="small" class="mx-1" data-cy="button-main">
     <VIcon icon="mdi-view-grid-plus-outline" />
     <VMenu activator="parent">
       <VCard min-width="300">
@@ -124,10 +116,7 @@ onMounted(async () => {
         </VList>
       </VCard>
     </VMenu>
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VTooltip activator="parent" location="bottom">
       {{ t('system.mainBar.options') }}
     </VTooltip>
   </VBtn>

@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 import { rotateImage } from '@/services/api/coreDam/imageApi'
-import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -42,29 +38,14 @@ const { t } = useI18n()
     <div class="text-body-small">
       {{ t('coreDam.asset.detail.roi.rotate.rotateMainFileImage') }}
     </div>
-    <div
-      v-if="loading"
-      class="w-100 d-flex align-center justify-center"
-    >
-      <VProgressCircular
-        indeterminate
-        color="primary"
-      />
+    <div v-if="loading" class="w-100 d-flex align-center justify-center">
+      <VProgressCircular indeterminate color="primary" />
     </div>
     <div v-else>
-      <ABtnTertiary
-        prepend-icon="mdi-rotate-right"
-        class="mr-2"
-        data-cy="button-rotate-right"
-        @click.stop="rotate(90)"
-      >
+      <ABtnTertiary prepend-icon="mdi-rotate-right" class="mr-2" data-cy="button-rotate-right" @click.stop="rotate(90)">
         {{ t('coreDam.asset.detail.roi.rotate.rotateClockwise') }}
       </ABtnTertiary>
-      <ABtnTertiary
-        prepend-icon="mdi-rotate-left"
-        data-cy="button-rotate-left"
-        @click.stop="rotate(270)"
-      >
+      <ABtnTertiary prepend-icon="mdi-rotate-left" data-cy="button-rotate-left" @click.stop="rotate(270)">
         {{ t('coreDam.asset.detail.roi.rotate.rotateCounterclockwise') }}
       </ABtnTertiary>
     </div>

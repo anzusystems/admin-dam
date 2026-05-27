@@ -2,7 +2,6 @@
 import AssetTableListItem from '@/views/coreDam/asset/list/components/AssetTableRowItem.vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { useI18n } from 'vue-i18n'
 
 const { sidebarRight } = useMainWrapper()
 
@@ -12,10 +11,7 @@ const { items, showDetail, onItemClick, toggleSelected, selectMultiple } = useAs
 </script>
 
 <template>
-  <VTable
-    class="a-table"
-    fixed-header
-  >
+  <VTable class="a-table" fixed-header>
     <thead>
       <tr>
         <th />

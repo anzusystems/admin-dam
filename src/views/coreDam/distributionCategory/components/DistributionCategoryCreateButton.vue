@@ -12,10 +12,7 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  useAlerts,
 } from '@anzusystems/common-admin'
-import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -86,39 +83,19 @@ const { assetTypeOptions } = useAssetType()
 </script>
 
 <template>
-  <ABtnPrimary
-    :class="buttonClass"
-    :data-cy="dataCy"
-    rounded="pill"
-    @click.stop="onClick"
-  >
+  <ABtnPrimary :class="buttonClass" :data-cy="dataCy" rounded="pill" @click.stop="onClick">
     {{ t(buttonT) }}
   </ABtnPrimary>
-  <VDialog
-    v-model="dialog"
-    :max-width="500"
-  >
-    <VCard
-      v-if="dialog"
-      data-cy="create-panel"
-    >
+  <VDialog v-model="dialog" :max-width="500">
+    <VCard v-if="dialog" data-cy="create-panel">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.distributionCategory.createButton') }}
       </ADialogToolbar>
-      <VCardText
-        v-if="!createFormDataLoaded"
-        class="d-flex w-100 align-center justify-center"
-      >
-        <VProgressCircular
-          indeterminate
-          color="primary"
-        />
+      <VCardText v-if="!createFormDataLoaded" class="d-flex w-100 align-center justify-center">
+        <VProgressCircular indeterminate color="primary" />
       </VCardText>
       <VCardText v-else>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <ARow>
             <AFormValueObjectOptionsSelect
               v-model="distributionCategory.type"
@@ -148,17 +125,10 @@ const { assetTypeOptions } = useAssetType()
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="createButtonLoading"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="createButtonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </ABtnPrimary>
       </VCardActions>

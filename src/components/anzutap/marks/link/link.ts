@@ -8,8 +8,6 @@ import type { LinkVariantType } from '@/components/anzutap/marks/link/composable
 import { isValidLinkVariant } from '@/components/anzutap/marks/link/helpers/linkVariantValidation'
 import { getLinkMarkAttributesFromHref, getVariantFromHref } from '@/components/anzutap/marks/link/helpers/linkAttrs'
 import { MarkName } from '@/components/anzutap/marks/marks'
-import { type Ref, ref } from 'vue'
-import { isUndefined } from '@anzusystems/common-admin'
 import { NodeName } from '@/components/anzutap/nodes/nodes'
 import { useLink } from '@/components/anzutap/marks/link/composables/useLink'
 

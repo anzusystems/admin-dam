@@ -8,9 +8,7 @@ import Underline from '@tiptap/extension-underline'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
 import Link from '@/components/anzutap/marks/link/link'
-import { onMounted, onUnmounted, ref, shallowRef, type Ref, watch, toRaw } from 'vue'
 import AnzutapEditor from '@/components/anzutap/components/AnzutapEditor.vue'
-import { cloneDeep } from '@anzusystems/common-admin'
 import { checkForEmptyDocument } from '@/model/coreDam/factory/DocumentFactory'
 
 const props = withDefaults(

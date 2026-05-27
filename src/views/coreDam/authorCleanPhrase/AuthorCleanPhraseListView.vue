@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 import AuthorCleanPhraseDatatable from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'
@@ -29,17 +28,10 @@ const breadcrumbs = defineBreadcrumbs(
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_CREATE">
-        <AuthorCleanPhraseCreateButton
-          data-cy="button-create"
-          disable-redirect
-          @on-success="afterCreate"
-        />
+        <AuthorCleanPhraseCreateButton data-cy="button-create" disable-redirect @on-success="afterCreate" />
       </Acl>
       <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
-        <AuthorCleanPhrasePlaygroundButton
-          data-cy="button-playground"
-          disable-redirect
-        />
+        <AuthorCleanPhrasePlaygroundButton data-cy="button-playground" disable-redirect />
       </Acl>
     </template>
   </ActionbarWrapper>

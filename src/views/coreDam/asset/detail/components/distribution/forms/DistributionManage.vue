@@ -1,14 +1,6 @@
 <script lang="ts" setup>
 import { useDistributionListStore } from '@/stores/coreDam/distributionListStore'
-import { computed, ref } from 'vue'
-import {
-  ASortable,
-  type DamAssetTypeType,
-  type DocId,
-  isString,
-  type SortableItem,
-  useAlerts,
-} from '@anzusystems/common-admin'
+import { ASortable, type DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   type DistributionItem,
   distributionItemIsCustomItem,
@@ -121,14 +113,8 @@ const onDistributionUpsert = () => {
 </script>
 
 <template>
-  <div
-    v-if="distributionListStore.loader"
-    class="d-flex w-100 h-100 justify-center align-center pa-2"
-  >
-    <VProgressCircular
-      indeterminate
-      color="primary"
-    />
+  <div v-if="distributionListStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
+    <VProgressCircular indeterminate color="primary" />
   </div>
   <ASortable
     v-else
@@ -143,10 +129,7 @@ const onDistributionUpsert = () => {
     @on-delete="onDeleteDistributionItem"
   >
     <template #item="{ item }: { item: SortableItem<DistributionItem> }">
-      <DistributionItemView
-        v-model="item.raw as DistributionItem"
-        :asset-type="assetType"
-      />
+      <DistributionItemView v-model="item.raw as DistributionItem" :asset-type="assetType" />
     </template>
   </ASortable>
   <DistributionManageDialog

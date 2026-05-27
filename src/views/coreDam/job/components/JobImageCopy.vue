@@ -19,10 +19,7 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="6">
-      <AJobDetailCommon
-        :job="job"
-        :loading="loading"
-      >
+      <AJobDetailCommon :job="job" :loading="loading">
         <template #resource-name>
           <JobResourceChip :value="job._resourceName" />
         </template>

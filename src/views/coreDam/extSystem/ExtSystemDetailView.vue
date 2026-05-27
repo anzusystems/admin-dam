@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import ExtSystemDetail from '@/views/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -41,11 +39,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
-        <AActionEditButton
-          v-if="!detailLoading"
-          :record-id="id"
-          :route-name="'/(coreDam)/ext-system/[id]/edit'"
-        />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/ext-system/[id]/edit'" />
       </Acl>
       <AActionCloseButton :route-name="'/(coreDam)/ext-system'" />
     </template>

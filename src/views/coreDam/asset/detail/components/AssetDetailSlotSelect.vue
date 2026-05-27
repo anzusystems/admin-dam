@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { computed, onMounted, ref, watch } from 'vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
 import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
-import type { DocId } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{
   (e: 'activeSlotChange', data: null | AssetSlot): void

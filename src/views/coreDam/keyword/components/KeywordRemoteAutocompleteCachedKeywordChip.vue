@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { CachedItem, DamKeywordMinimal, DocId } from '@anzusystems/common-admin'
-import { isNull, isUndefined } from '@anzusystems/common-admin'
-import { computed, shallowRef, watch } from 'vue'
+import type { CachedItem, DamKeywordMinimal } from '@anzusystems/common-admin'
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 
@@ -66,34 +64,15 @@ watch(
 <template>
   <div :class="containerClass">
     <template v-if="isNull(id) || isUndefined(id)">
-      <slot name="empty">
-        -
-      </slot>
+      <slot name="empty"> - </slot>
     </template>
     <div v-else-if="textOnly">
       {{ displayTitle }}
-      <VProgressCircular
-        v-if="!loaded && title.length === 0"
-        :size="12"
-        :width="2"
-        indeterminate
-        class="mx-1"
-      />
+      <VProgressCircular v-if="!loaded && title.length === 0" :size="12" :width="2" indeterminate class="mx-1" />
     </div>
-    <VChip
-      v-else
-      :size="size"
-      :append-icon="displayNewIcon"
-      :label="forceRounded ? undefined : true"
-    >
+    <VChip v-else :size="size" :append-icon="displayNewIcon" :label="forceRounded ? undefined : true">
       {{ displayTitle }}
-      <VProgressCircular
-        v-if="!loaded && title.length === 0"
-        :size="12"
-        :width="2"
-        indeterminate
-        class="mx-1"
-      />
+      <VProgressCircular v-if="!loaded && title.length === 0" :size="12" :width="2" indeterminate class="mx-1" />
     </VChip>
   </div>
 </template>

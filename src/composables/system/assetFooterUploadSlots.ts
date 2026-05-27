@@ -1,4 +1,3 @@
-import { computed, readonly, ref } from 'vue'
 import { useMainWrapper } from '@/composables/wrappers/useMainWrapper'
 
 export const FooterViewUploadSlots = {

@@ -6,15 +6,12 @@ import {
   ADatetime,
   ATableCopyIdButton,
   ATableEditButton,
-  type DocId,
   prettyBytes,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import CachedDamUserChip from '@/components/CachedDamUserChip.vue'
 import { useAssetItemActions } from '@/views/coreDam/asset/list/composables/assetItemActions'
 import AssetImageMetaIcons from '@/views/coreDam/asset/components/AssetImageMetaIcons.vue'
-import { onMounted } from 'vue'
 import CachedPodcastChip from '@/views/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/views/coreDam/podcast/composables/cachedPodcasts'
 
@@ -83,10 +80,7 @@ onMounted(() => {
   >
     <td>
       <div class="d-flex a-table__row--toggle">
-        <VCheckboxBtn
-          :model-value="item.selected"
-          @click.stop="toggleSelected"
-        />
+        <VCheckboxBtn :model-value="item.selected" @click.stop="toggleSelected" />
       </div>
     </td>
     <td>
@@ -134,22 +128,14 @@ onMounted(() => {
       <CachedDamUserChip :id="asset.createdBy" />
     </td>
     <td>
-      <AChipNoLink
-        v-for="text in asset.assetFileProperties.slotNames"
-        :key="text"
-        class="mr-1"
-      >
+      <AChipNoLink v-for="text in asset.assetFileProperties.slotNames" :key="text" class="mr-1">
         {{ text }}
       </AChipNoLink>
     </td>
     <td>
       <div class="d-flex justify-end">
         <ATableCopyIdButton :id="asset.id" />
-        <ATableEditButton
-          :record-id="asset.id"
-          :route-name="'/(coreDam)/asset/[id]'"
-          @click.stop="showDetail"
-        />
+        <ATableEditButton :record-id="asset.id" :route-name="'/(coreDam)/asset/[id]'" @click.stop="showDetail" />
       </div>
     </td>
   </tr>

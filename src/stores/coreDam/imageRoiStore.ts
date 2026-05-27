@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { RegionOfInterest } from '@/types/coreDam/Roi'
 import type { AssetFileImage } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 
 export const useImageRoiStore = defineStore('damImageRoiStore', () => {
   const imageFile = ref<AssetFileImage | null>(null)

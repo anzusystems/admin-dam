@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
 import { useAuthorCleanPhraseFactory } from '@/model/coreDam/factory/AuthorCleanPhraseFactory'
-import { ref } from 'vue'
 
 export const useAuthorCleanPhraseOneStore = defineStore('authorCleanPhraseOneStore', () => {
   const { createDefault } = useAuthorCleanPhraseFactory()

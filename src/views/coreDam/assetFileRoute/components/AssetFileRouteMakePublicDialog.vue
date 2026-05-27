@@ -91,15 +91,8 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <VDialog
-    :model-value="modelValue"
-    @update:model-value="emit('update:modelValue', $event)"
-  >
-    <VCard
-      v-if="modelValue"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
-    >
+  <VDialog :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)">
+    <VCard v-if="modelValue" width="500" class="mt-0 mr-auto ml-auto">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.asset.assetFilePublicLink.actions.makePublic') }}
       </ADialogToolbar>
@@ -113,17 +106,10 @@ const onConfirm = async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="buttonLoading"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t('common.button.confirm') }}
         </ABtnPrimary>
       </VCardActions>

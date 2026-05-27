@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import type { DamAuthor } from '@anzusystems/common-admin'
 import {
   ABooleanValue,
@@ -16,7 +15,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/authorApi'
-import { useRouter } from 'vue-router'
 import { useAuthorListActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorFilter from '@/views/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/model/coreDam/filter/AuthorFilter'
@@ -77,10 +75,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -94,10 +89,7 @@ defineExpose({
           <AuthorTypeChip :type="item.type" />
         </template>
         <template #item.flags.reviewed="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.reviewed"
-          />
+          <ABooleanValue chip :value="item.flags.reviewed" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
@@ -108,23 +100,14 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <ATableDetailButton
-              :record-id="item.id"
-              :route-name="'/(coreDam)/author/[id]'"
-            />
+            <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/author/[id]'" />
             <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-              <ATableEditButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/author/[id]/edit'"
-              />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/author/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

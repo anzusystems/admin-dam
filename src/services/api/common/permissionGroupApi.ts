@@ -1,4 +1,4 @@
-import type { FilterBag, IntegerId, Pagination, PermissionGroup } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination, PermissionGroup } from '@anzusystems/common-admin'
 import {
   apiCreateOne,
   apiDeleteOne,

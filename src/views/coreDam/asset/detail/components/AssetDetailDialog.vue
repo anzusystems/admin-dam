@@ -5,7 +5,6 @@ import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogLoader from '@/views/coreDam/asset/detail/components/AssetDetailDialogLoader.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
-import type { DocId } from '@anzusystems/common-admin'
 import {
   assetFileIsImageFile,
   browserHistoryReplaceUrlByRouter,
@@ -13,14 +12,8 @@ import {
   DamAssetStatusDefault,
   DamAssetType,
   DamAssetTypeDefault,
-  isNull,
-  useTheme,
 } from '@anzusystems/common-admin'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const emit = defineEmits<{
@@ -146,64 +139,26 @@ const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
-  <VDialog
-    v-model="assetDetailStore.detail"
-    fullscreen
-  >
-    <AssetDetailDialogLoader
-      v-if="assetDetailStore.loader"
-      @close-dialog="closeDialog"
-    />
-    <VCard
-      v-else-if="asset"
-      class="dam-image-detail"
-      :class="{ 'dam-image-detail--sidebar-active': sidebar }"
-    >
+  <VDialog v-model="assetDetailStore.detail" fullscreen>
+    <AssetDetailDialogLoader v-if="assetDetailStore.loader" @close-dialog="closeDialog" />
+    <VCard v-else-if="asset" class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
       <div class="dam-image-detail__wrapper d-flex flex-column">
-        <VToolbar
-          :color="toolbarColor"
-          density="compact"
-          :height="64"
-          class="system-border-b pr-1"
-        >
+        <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b pr-1">
           <div v-if="assetDetailStore.view === 'list'">
-            <VBtn
-              variant="text"
-              icon
-              class="mx-1"
-              :width="36"
-              :height="36"
-              @click.stop="prevItem"
-            >
+            <VBtn variant="text" icon class="mx-1" :width="36" :height="36" @click.stop="prevItem">
               <VIcon icon="mdi-chevron-left" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.prev') }}
               </VTooltip>
             </VBtn>
-            <VBtn
-              variant="text"
-              icon
-              class="mr-2"
-              :width="36"
-              :height="36"
-              @click.stop="nextItem"
-            >
+            <VBtn variant="text" icon class="mr-2" :width="36" :height="36" @click.stop="nextItem">
               <VIcon icon="mdi-chevron-right" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.list.next') }}
               </VTooltip>
             </VBtn>
           </div>
-          <div
-            v-if="assetDetailStore.view === 'list'"
-            class="text-label-large d-flex"
-          >
+          <div v-if="assetDetailStore.view === 'list'" class="text-label-large d-flex">
             <div class="pr-4">
               {{ totalCountText }}
             </div>
@@ -222,26 +177,13 @@ const { currentExtSystemId } = useCurrentExtSystem()
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.detail.toggleInfo') }}
               </VTooltip>
             </VBtn>
-            <VBtn
-              icon
-              variant="text"
-              :width="36"
-              :height="36"
-              class="mr-1"
-              @click.stop="closeDialog"
-            >
+            <VBtn icon variant="text" :width="36" :height="36" class="mr-1" @click.stop="closeDialog">
               <VIcon icon="mdi-close" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('common.button.close') }}
               </VTooltip>
             </VBtn>
@@ -249,16 +191,10 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div
-              v-if="activeTab === AssetDetailTab.ROI"
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
-            <div
-              v-else
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"

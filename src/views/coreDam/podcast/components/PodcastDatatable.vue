@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import {
@@ -16,7 +15,6 @@ import {
   type DatatableOrderingOptions,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
-import { useRouter } from 'vue-router'
 import { usePodcastListActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastFilter from '@/views/coreDam/podcast/components/PodcastFilter.vue'
 import { usePodcastListFilter } from '@/model/coreDam/filter/PodcastFilter'
@@ -96,14 +94,8 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering
-          :custom-options="customSort"
-          @sort-by-change="sortByChange"
-        />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableOrdering :custom-options="customSort" @sort-by-change="sortByChange" />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -117,16 +109,10 @@ defineExpose({
           <PodcastLastImportStatusChip :status="item.attributes.lastImportStatus" />
         </template>
         <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.webPublicExportEnabled"
-          />
+          <ABooleanValue chip :value="item.flags.webPublicExportEnabled" />
         </template>
         <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.mobilePublicExportEnabled"
-          />
+          <ABooleanValue chip :value="item.flags.mobilePublicExportEnabled" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
@@ -137,21 +123,12 @@ defineExpose({
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
-            <ATableDetailButton
-              :record-id="item.id"
-              :route-name="'/(coreDam)/podcast/[id]'"
-            />
-            <ATableEditButton
-              :record-id="item.id"
-              :route-name="'/(coreDam)/podcast/[id]/edit'"
-            />
+            <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/podcast/[id]'" />
+            <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/podcast/[id]/edit'" />
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

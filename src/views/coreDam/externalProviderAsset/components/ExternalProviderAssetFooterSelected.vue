@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import AssetQueueMassEditSimple from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
 import { useExternalProviderAssetListStore } from '@/stores/coreDam/externalProviderAssetListStore'
 import AssetFooterSelectedButtonClear from '@/views/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
-import { useTheme } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import { useExternalProviderAssetFooterSelectedView } from '@/composables/system/externalProviderAssetFooterSelected'
 import { useExternalProviderAssetImport } from '@/views/coreDam/externalProviderAsset/composables/externalProviderAssetImport'
 
@@ -62,18 +59,13 @@ const onImport = () => {
     class="asset-footer__selected pa-0"
     :class="
       'asset-footer--' +
-        externalProviderFooterViewSelected +
-        ' asset-footer__selected--' +
-        externalProviderFooterViewSelected
+      externalProviderFooterViewSelected +
+      ' asset-footer__selected--' +
+      externalProviderFooterViewSelected
     "
   >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar
-        class="w-100"
-        :color="toolbarColor"
-        density="compact"
-        :height="48"
-      >
+      <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="d-flex px-2">
           <div>
             <span class="text-body-small font-weight-bold">
@@ -83,22 +75,10 @@ const onImport = () => {
         </div>
         <VSpacer />
         <div class="d-flex">
-          <VBtn
-            color="primary"
-            variant="flat"
-            :height="26"
-            class="mr-2"
-            @click.stop="onImport"
-          >
+          <VBtn color="primary" variant="flat" :height="26" class="mr-2" @click.stop="onImport">
             {{ t('coreDam.asset.selected.import') }} ({{ queueTotalCount }})
           </VBtn>
-          <VBtn
-            v-show="showFullSelected"
-            variant="text"
-            :height="26"
-            class="mr-2"
-            @click.stop="setFullSelected"
-          >
+          <VBtn v-show="showFullSelected" variant="text" :height="26" class="mr-2" @click.stop="setFullSelected">
             {{ t('coreDam.asset.selected.more') }}
           </VBtn>
           <VBtn
@@ -125,11 +105,7 @@ const onImport = () => {
           >
             <VIcon icon="mdi-chevron-up" />
           </VBtn>
-          <AssetFooterSelectedButtonClear
-            v-show="showFullSelected"
-            variant="small"
-            @confirm="onClearConfirm"
-          />
+          <AssetFooterSelectedButtonClear v-show="showFullSelected" variant="small" @confirm="onClearConfirm" />
         </div>
       </VToolbar>
       <AssetQueueMassEditSimple />

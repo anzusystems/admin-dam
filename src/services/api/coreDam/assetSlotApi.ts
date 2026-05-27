@@ -1,6 +1,6 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiAnyRequest, apiFetchList } from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
 

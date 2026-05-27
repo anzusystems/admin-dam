@@ -7,7 +7,6 @@ import {
   AFilterWrapper,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -35,32 +34,17 @@ const { authorTypeOptions } = useDamAuthorType()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
+  <VForm name="search" @submit.prevent="submitFilter">
+    <AFilterWrapper :touched="touched" @reset-filter="resetFilter">
       <VRow class="align-start">
         <VCol cols="2">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.id" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="2">
-          <AFilterString
-            v-model="filter.text"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.text" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="2">
-          <AFilterString
-            v-model="filter.identifier"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.identifier" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="3">
           <AFilterValueObjectOptionsSelect
@@ -70,10 +54,7 @@ const { authorTypeOptions } = useDamAuthorType()
           />
         </VCol>
         <VCol cols="2">
-          <AFilterBooleanSelect
-            v-model="filter.reviewed"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterBooleanSelect v-model="filter.reviewed" @update:model-value="onAnyFilterUpdate" />
         </VCol>
       </VRow>
     </AFilterWrapper>

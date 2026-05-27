@@ -6,10 +6,8 @@ import { updateAssetCategory } from '@/services/api/coreDam/assetApi'
 import { ENTITY, fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import DistributionCategoryRemoteAutocomplete from '@/views/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
-import type { DamAssetTypeType, DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
-import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import type { DamAssetTypeType, DocIdNullable } from '@anzusystems/common-admin'
+import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -96,22 +94,13 @@ watch(
 </script>
 
 <template>
-  <VDialog
-    v-model="dialogComputed"
-    :width="500"
-  >
-    <VCard
-      v-if="dialogComputed"
-      data-cy="delete-panel"
-    >
+  <VDialog v-model="dialogComputed" :width="500">
+    <VCard v-if="dialogComputed" data-cy="delete-panel">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.distributionCategory.manage') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <ARow>
             <DistributionCategoryRemoteAutocomplete
               v-model="selectedCategoryId"
@@ -121,10 +110,7 @@ watch(
             />
           </ARow>
           <ARow>
-            <div
-              v-for="item in category.selectedOptionsDetail"
-              :key="item.id"
-            >
+            <div v-for="item in category.selectedOptionsDetail" :key="item.id">
               <div>{{ item.serviceSlug }} - {{ item.name }}</div>
             </div>
           </ARow>
@@ -132,17 +118,10 @@ watch(
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="saving"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="saving" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t('common.button.confirm') }}
         </ABtnPrimary>
       </VCardActions>

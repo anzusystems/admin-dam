@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-import { computed, shallowRef, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import {
-  AAnzuUserAvatar,
-  COMMON_CONFIG,
-  type IntegerId,
-  isNull,
-  isUndefined,
-  useDamCachedUsers,
-} from '@anzusystems/common-admin'
+import { AAnzuUserAvatar, COMMON_CONFIG, useDamCachedUsers } from '@anzusystems/common-admin'
 import type { UserMinimal } from '@/types/coreDam/User'
 
 const props = withDefaults(
@@ -55,27 +46,10 @@ watch(
 <template>
   <div class="d-inline-flex">
     <span v-if="isNull(id) || isUndefined(id)">-</span>
-    <VChip
-      v-else
-      class="pl-1"
-      size="small"
-      :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
-      @click.stop="onClick"
-    >
-      <AAnzuUserAvatar
-        v-if="loaded"
-        :user="cached ?? undefined"
-        container-class="mr-1"
-        :size="20"
-      />
+    <VChip v-else class="pl-1" size="small" :append-icon="COMMON_CONFIG.CHIP.ICON.LINK" @click.stop="onClick">
+      <AAnzuUserAvatar v-if="loaded" :user="cached ?? undefined" container-class="mr-1" :size="20" />
       {{ text }}
-      <VProgressCircular
-        v-if="!loaded"
-        :size="12"
-        :width="2"
-        indeterminate
-        class="ml-1"
-      />
+      <VProgressCircular v-if="!loaded" :size="12" :width="2" indeterminate class="ml-1" />
     </VChip>
   </div>
 </template>

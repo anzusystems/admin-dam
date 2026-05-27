@@ -1,7 +1,3 @@
-import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
 export const DistributionFailReason = {
   None: 'none',
   Unknown: 'unknown',

@@ -26,10 +26,8 @@ import {
   DamAssetStatus,
   DamAssetType,
   damFileTypeFix,
-  type DocId,
   type DocIdNullable,
   getAssetTypeByMimeType,
-  isUndefined,
   type UploadQueue,
   type UploadQueueItem,
   UploadQueueItemStatus,
@@ -38,8 +36,6 @@ import {
   useDamConfigState,
   useUploadQueueItemFactory,
 } from '@anzusystems/common-admin'
-import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref } from 'vue'
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
 const CHUNK_SIZE = 10485760

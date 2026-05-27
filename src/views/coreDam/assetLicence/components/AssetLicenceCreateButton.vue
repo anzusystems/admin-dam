@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import type { DamAssetLicence } from '@anzusystems/common-admin'
 import {
   ACreateDialog,
@@ -62,10 +60,7 @@ const create = async () => {
       {{ t('coreDam.assetLicence.meta.create') }}
     </template>
     <template #content>
-      <ASystemEntityScope
-        :system="SYSTEM_CORE_DAM"
-        :subject="ENTITY"
-      >
+      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <ARow>
           <AFormTextField
             v-model="assetLicence.name"

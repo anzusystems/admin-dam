@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { AFilterBooleanSelect, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
 import { usePodcastListFilter } from '@/model/coreDam/filter/PodcastFilter'
-import { ref } from 'vue'
 
 const emit = defineEmits<{
   (e: 'submitFilter'): void
@@ -27,38 +26,20 @@ const onAnyFilterUpdate = () => {
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
+  <VForm name="search" @submit.prevent="submitFilter">
+    <AFilterWrapper :touched="touched" @reset-filter="resetFilter">
       <VRow class="align-start">
         <VCol cols="4">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.id" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="4">
-          <AFilterString
-            v-model="filter.title"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.title" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="2">
-          <AFilterBooleanSelect
-            v-model="filter.webPublicExportEnabled"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterBooleanSelect v-model="filter.webPublicExportEnabled" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="2">
-          <AFilterBooleanSelect
-            v-model="filter.mobilePublicExportEnabled"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterBooleanSelect v-model="filter.mobilePublicExportEnabled" @update:model-value="onAnyFilterUpdate" />
         </VCol>
       </VRow>
     </AFilterWrapper>

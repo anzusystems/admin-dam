@@ -1,24 +1,12 @@
-import { ref } from 'vue'
+import { type DamUser, type FilterBag, type Pagination, useDamCachedUsers } from '@anzusystems/common-admin'
 import {
-  type DamUser,
-  type FilterBag,
-  type Pagination,
-  useDamCachedUsers,
-  type ValueObjectOption,
-} from '@anzusystems/common-admin'
-import {
-  cloneDeep,
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserList,
   fetchDamUserListByIds,
   updateDamUser,
-  useAlerts,
 } from '@anzusystems/common-admin'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
-import { storeToRefs } from 'pinia'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { damClient } from '@/services/api/clients/damClient'

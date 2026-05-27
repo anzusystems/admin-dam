@@ -1,8 +1,4 @@
-import type { Ref } from 'vue'
-import { computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
-import { useValidate } from '@anzusystems/common-admin'
 
 const { required, maxLength, minLength } = useValidate()
 

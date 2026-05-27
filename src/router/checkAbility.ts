@@ -1,10 +1,8 @@
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
-import { type AclValue, isArray, isUndefined } from '@anzusystems/common-admin'
+import { type AclValue } from '@anzusystems/common-admin'
 import { useAuth } from '@/composables/auth/auth'
 
-export const checkAbility = async (
-  to: RouteLocationNormalized
-): Promise<NavigationGuardReturn> => {
+export const checkAbility = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
   const { canForAll } = useAuth()
   if (
     isUndefined(to.meta.requiredPermissions) ||

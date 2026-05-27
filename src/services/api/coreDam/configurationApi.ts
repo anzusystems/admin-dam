@@ -1,5 +1,5 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DamExtSystemConfig, DamPrvConfig, DamPubConfig, IntegerId } from '@anzusystems/common-admin'
+import type { DamExtSystemConfig, DamPrvConfig, DamPubConfig } from '@anzusystems/common-admin'
 import { apiFetchOne } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 

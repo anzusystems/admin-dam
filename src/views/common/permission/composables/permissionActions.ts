@@ -1,6 +1,6 @@
 import type { Permissions } from '@/types/Permission'
-import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
-import { isUndefined, objectGetValueByPath, objectSetValueByPath } from '@anzusystems/common-admin'
+import type { AnzuUser } from '@anzusystems/common-admin'
+import { objectGetValueByPath, objectSetValueByPath } from '@anzusystems/common-admin'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 
 export const usePermissionActions = () => {

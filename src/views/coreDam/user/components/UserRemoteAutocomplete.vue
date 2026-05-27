@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep, type IntegerId } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useUserSelectActions } from '@/views/coreDam/user/composables/userActions'
 import { useUserFilter } from '@/model/coreDam/filter/UserFilter'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

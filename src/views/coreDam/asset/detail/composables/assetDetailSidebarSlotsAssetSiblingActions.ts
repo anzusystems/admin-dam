@@ -1,7 +1,4 @@
-import type { DocId } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
 import { removeSibling, setSibling } from '@/services/api/coreDam/assetApi'
-import { storeToRefs } from 'pinia'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 
 export function useAssetDetailSidebarSlotsAssetSiblingActions() {

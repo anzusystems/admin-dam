@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import {
-  AActionCloseButton,
-  AActionDeleteButton,
-  AActionEditButton,
-  ACard,
-  defineBreadcrumbs,
-  stringToInt,
-  useI18n,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import {
   useAuthorCleanPhraseDetailActions,
   useAuthorCleanPhraseRemoveActions,

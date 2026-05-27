@@ -7,10 +7,8 @@ import DistributionCancelDialog from '@/views/coreDam/asset/detail/components/di
 import DistributionListItem from '@/views/coreDam/asset/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/views/coreDam/asset/detail/components/distribution/DistributionNewDialog.vue'
 import { useAssetDetailDistributionDialog } from '@/views/coreDam/asset/detail/composables/assetDetailDistributionDialog'
-import type { AssetFileProcessStatusType, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import type { AssetFileProcessStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
 import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
-import { onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import DistributionManage from '@/views/coreDam/asset/detail/components/distribution/forms/DistributionManage.vue'
 
 const props = withDefaults(
@@ -63,55 +61,28 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
 <template>
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
-      <ABtnPrimary
-        :disabled="assetMainFileStatus === undefined"
-        data-cy="add-new-distribution"
-        @click.stop="addNew"
-      >
+      <ABtnPrimary :disabled="assetMainFileStatus === undefined" data-cy="add-new-distribution" @click.stop="addNew">
         {{ t('coreDam.distribution.common.addButton') }}
       </ABtnPrimary>
     </AssetDetailSidebarActionsWrapper>
-    <div class="px-4 text-body-small">
-      {{ t('coreDam.distribution.common.list') }}:
+    <div class="px-4 text-body-small">{{ t('coreDam.distribution.common.list') }}:</div>
+    <div v-if="distributionListStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
+      <VProgressCircular indeterminate color="primary" />
     </div>
-    <div
-      v-if="distributionListStore.loader"
-      class="d-flex w-100 h-100 justify-center align-center pa-2"
-    >
-      <VProgressCircular
-        indeterminate
-        color="primary"
-      />
-    </div>
-    <div
-      v-else-if="distributionListStore.list.length === 0"
-      class="pa-4 text-body-small"
-    >
+    <div v-else-if="distributionListStore.list.length === 0" class="pa-4 text-body-small">
       {{ t('coreDam.distribution.common.noEntries') }}
     </div>
-    <div
-      v-else
-      class="mx-4"
-    >
+    <div v-else class="mx-4">
       <DistributionListItem
         v-for="item in distributionListStore.list"
         :key="item.id"
         :item="item"
         :asset-type="assetType"
       />
-      <ADatatablePagination
-        v-if="showPagination"
-        v-model="pagination"
-        hide-records-per-page
-        @change="getList"
-      />
+      <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
     </div>
 
-    <ABtnTertiary
-      density="compact"
-      class="mb-5 pl-0 pr-0 mt-5 mb-5"
-      @click.stop="toggleAdvancedSettings"
-    >
+    <ABtnTertiary density="compact" class="mb-5 pl-0 pr-0 mt-5 mb-5" @click.stop="toggleAdvancedSettings">
       <span v-if="showAdvancedSettings">{{ t('coreDam.distribution.meta.hideAdvanced') }}</span>
       <span v-else>{{ t('coreDam.distribution.meta.showAdvanced') }}</span>
     </ABtnTertiary>

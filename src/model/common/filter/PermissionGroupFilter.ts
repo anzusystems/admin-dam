@@ -1,5 +1,4 @@
 import { makeFilterHelper } from '@anzusystems/common-admin'
-import { reactive } from 'vue'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
 
 const makeFilter = makeFilterHelper('common', ENTITY)

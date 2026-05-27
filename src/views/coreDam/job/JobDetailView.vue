@@ -1,16 +1,11 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
 import {
   AActionCloseButton,
   ACard,
   AJobDetailCommon,
-  defineBreadcrumbs,
-  isUndefined,
   JOB_RESOURCE_USER_DATA_DELETE,
-  stringToInt,
   useI18n,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useJobDetailActions } from '@/views/coreDam/job/composables/jobActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import JobDetailPodcastSynchronizer from '@/views/coreDam/job/components/JobDetailPodcastSynchronizer.vue'
@@ -78,12 +73,7 @@ const breadcrumbs = defineBreadcrumbs(
 
   <ACard :loading="detailLoading">
     <VCardText>
-      <component
-        :is="jobComponent"
-        v-if="job"
-        :job="job"
-        :loading="detailLoading"
-      />
+      <component :is="jobComponent" v-if="job" :job="job" :loading="detailLoading" />
     </VCardText>
   </ACard>
 </template>

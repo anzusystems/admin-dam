@@ -1,6 +1,4 @@
-import type { FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import {
   deletePublicExport,
   fetchPublicExport,
@@ -8,9 +6,6 @@ import {
   updatePublicExport,
 } from '@/services/api/coreDam/publicExportApi'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
-import { storeToRefs } from 'pinia'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 import { usePublicExportOneStore } from '@/stores/coreDam/publicExportStore'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 

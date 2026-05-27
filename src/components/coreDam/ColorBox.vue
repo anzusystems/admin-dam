@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-
 const props = withDefaults(
   defineProps<{
     color?: string | null
@@ -23,10 +21,7 @@ const style = computed(() => {
 
 <template>
   <div :style="style">
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VTooltip activator="parent" location="bottom">
       {{ color }}
     </VTooltip>
   </div>

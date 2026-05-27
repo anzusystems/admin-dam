@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
 import PermissionGroupDatatable from '@/views/common/permissionGroup/components/PermissionGroupDatatable.vue'
 import PermissionGroupCreateButton from '@/views/common/permissionGroup/components/PermissionGroupCreateButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/services/api/clients/damClient'
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import { ACL } from '@/composables/auth/auth'
 
 const datatable = ref<InstanceType<typeof PermissionGroupDatatable> | null>(null)

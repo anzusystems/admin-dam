@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
+import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { usePodcastDetailActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import PodcastDetail from '@/views/coreDam/podcast/components/PodcastDetail.vue'
 import { PodcastDetailTab, usePodcastDetailTab } from '@/views/coreDam/podcast/composables/podcastDetailTab'
@@ -92,22 +89,13 @@ const afterPodcastEpisodeCreate = () => {
     </template>
   </ActionbarWrapper>
 
-  <VTabs
-    v-model="activeTab"
-    class="mb-4"
-  >
+  <VTabs v-model="activeTab" class="mb-4">
     <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
-      <VTab
-        :value="PodcastDetailTab.Episodes"
-        data-cy="episode-list"
-      >
+      <VTab :value="PodcastDetailTab.Episodes" data-cy="episode-list">
         {{ t('coreDam.podcast.tabs.episodes') }}
       </VTab>
     </Acl>
-    <VTab
-      :value="PodcastDetailTab.Detail"
-      data-cy="podcast-list"
-    >
+    <VTab :value="PodcastDetailTab.Detail" data-cy="podcast-list">
       {{ t('coreDam.podcast.tabs.detail') }}
     </VTab>
   </VTabs>
@@ -115,10 +103,7 @@ const afterPodcastEpisodeCreate = () => {
     <div v-show="activeTab === PodcastDetailTab.Episodes">
       <ACard :loading="listLoading">
         <VCardText>
-          <PodcastEpisodeDatatable
-            v-if="loadPodcastEpisodeDatatable"
-            :podcast-id="podcastId"
-          />
+          <PodcastEpisodeDatatable v-if="loadPodcastEpisodeDatatable" :podcast-id="podcastId" />
         </VCardText>
       </ACard>
     </div>

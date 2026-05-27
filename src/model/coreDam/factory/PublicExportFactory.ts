@@ -1,4 +1,3 @@
-import { dateTimeNow } from '@anzusystems/common-admin'
 import type { PublicExport } from '@/types/coreDam/PublicExport'
 import { ExportTypeDefault } from '@/model/coreDam/valueObject/ExportType'
 import { ENTITY } from '@/services/api/coreDam/publicExportApi'

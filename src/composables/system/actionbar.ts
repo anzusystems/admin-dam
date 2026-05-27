@@ -1,5 +1,3 @@
-import { readonly, ref } from 'vue'
-
 const buttonsDiv = ref(false)
 
 export function useActionbar() {

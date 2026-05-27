@@ -13,10 +13,7 @@ const { items, showDetail, onItemClick, toggleSelected, selectMultiple, showMeta
 </script>
 
 <template>
-  <div
-    class="dam-image-grid"
-    :class="'dam-image-grid--' + gridView"
-  >
+  <div class="dam-image-grid" :class="'dam-image-grid--' + gridView">
     <AssetListItem
       v-for="(item, index) in items"
       :key="item.asset.id"

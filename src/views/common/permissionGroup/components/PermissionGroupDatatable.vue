@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
@@ -14,7 +13,6 @@ import {
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/permissionGroupApi'
-import { useRouter } from 'vue-router'
 import { usePermissionGroupListFilter } from '@/model/common/filter/PermissionGroupFilter'
 import { usePermissionGroupActions } from '@/views/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/views/common/permissionGroup/components/PermissionGroupFilter.vue'
@@ -78,10 +76,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -104,24 +99,15 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_READ">
-              <ATableDetailButton
-                :record-id="item.id"
-                :route-name="'/(common)/permission-group/[id]'"
-              />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(common)/permission-group/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_PERMISSION_GROUP_UPDATE">
-              <ATableEditButton
-                :record-id="item.id"
-                :route-name="'/(common)/permission-group/[id]/edit'"
-              />
+              <ATableEditButton :record-id="item.id" :route-name="'/(common)/permission-group/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

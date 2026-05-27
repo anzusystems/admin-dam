@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import AssetLicenceGroupDatatable from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupDatatable.vue'
-import { computed, ref } from 'vue'
 import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import AssetLicenceGroupCreateButton from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
@@ -29,11 +28,7 @@ const breadcrumbs = defineBreadcrumbs(
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_CREATE">
-        <AssetLicenceGroupCreateButton
-          data-cy="button-create"
-          disable-redirect
-          @on-success="afterCreate"
-        />
+        <AssetLicenceGroupCreateButton data-cy="button-create" disable-redirect @on-success="afterCreate" />
       </Acl>
     </template>
   </ActionbarWrapper>

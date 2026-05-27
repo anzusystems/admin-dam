@@ -4,11 +4,8 @@ import {
   ACustomDataFormElement,
   type CustomDataValue,
   type DamDistributionServiceName,
-  isUndefined,
   useDamConfigStore,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -44,12 +41,7 @@ const elements = computed(() => {
 
 <template>
   <div class="w-100">
-    <VRow
-      v-for="element in elements"
-      :key="element.id"
-      density="compact"
-      class="mt-1"
-    >
+    <VRow v-for="element in elements" :key="element.id" density="compact" class="mt-1">
       <VCol>
         <ACustomDataFormElement
           :config="element"

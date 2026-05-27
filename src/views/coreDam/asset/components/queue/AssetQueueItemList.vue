@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -68,25 +66,9 @@ const { remainingTimeShort } = useRemainingTime()
               :width="3"
               :model-value="loadingProgress ? loadingProgress : undefined"
             />
-            <VIcon
-              v-else-if="item.error.hasError"
-              icon="mdi-alert"
-              color="error"
-              :size="16"
-            />
-            <VIcon
-              v-else-if="item.isDuplicate"
-              icon="mdi-alert"
-              color="warning"
-              data-cy="icon-duplicate"
-              :size="16"
-            />
-            <VIcon
-              v-else
-              icon="mdi-check"
-              color="success"
-              :size="16"
-            />
+            <VIcon v-else-if="item.error.hasError" icon="mdi-alert" color="error" :size="16" />
+            <VIcon v-else-if="item.isDuplicate" icon="mdi-alert" color="warning" data-cy="icon-duplicate" :size="16" />
+            <VIcon v-else icon="mdi-check" color="success" :size="16" />
           </div>
           <VBtn
             v-if="showCancel"
@@ -97,25 +79,15 @@ const { remainingTimeShort } = useRemainingTime()
             class="dam-upload-queue__item-remove"
             @click.stop="cancelItem"
           >
-            <VIcon
-              icon="mdi-close-circle-outline"
-              :size="16"
-            />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VIcon icon="mdi-close-circle-outline" :size="16" />
+            <VTooltip activator="parent" location="bottom">
               {{ t('common.button.cancel') }}
             </VTooltip>
           </VBtn>
         </div>
         <div class="text-body-small text-truncate">
           {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
-          <VTooltip
-            v-if="item.displayTitle"
-            activator="parent"
-            location="bottom"
-          >
+          <VTooltip v-if="item.displayTitle" activator="parent" location="bottom">
             {{ item.displayTitle }}
           </VTooltip>
         </div>

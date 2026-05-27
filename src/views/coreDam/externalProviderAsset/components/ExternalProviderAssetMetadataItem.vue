@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ABooleanValue, isArray, isBoolean } from '@anzusystems/common-admin'
+import { ABooleanValue, isBoolean } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -18,18 +17,10 @@ const valueComputed = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="isBoolean(value)"
-    class="d-inline-flex"
-  >
+  <div v-if="isBoolean(value)" class="d-inline-flex">
     <ABooleanValue :value="value" />
   </div>
-  <div
-    v-for="item in valueComputed"
-    v-else
-    :key="item + ''"
-    class="d-inline-flex"
-  >
-    <span>{{ item }}<br></span>
+  <div v-for="item in valueComputed" v-else :key="item + ''" class="d-inline-flex">
+    <span>{{ item }}<br /></span>
   </div>
 </template>

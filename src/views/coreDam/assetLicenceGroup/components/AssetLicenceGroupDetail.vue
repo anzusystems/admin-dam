@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import { useAssetLicenceGroupOneStore } from '@/stores/coreDam/assetLicenceGroupStore'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
@@ -14,10 +12,7 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow
-        :title="t('coreDam.assetLicenceGroup.model.name')"
-        :value="assetLicenceGroup.name"
-      />
+      <ARow :title="t('coreDam.assetLicenceGroup.model.name')" :value="assetLicenceGroup.name" />
       <ARow :title="t('coreDam.assetLicenceGroup.model.extSystem')">
         <CachedExtSystemChip :id="assetLicenceGroup.extSystem" />
       </ARow>

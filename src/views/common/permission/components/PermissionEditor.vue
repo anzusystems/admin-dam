@@ -5,19 +5,15 @@ import PermissionValueChip from '@/views/common/permission/components/Permission
 import { usePermissionConfigActions } from '@/views/common/permission/composables/permissionConfigActions'
 import type { GrantType } from '@anzusystems/common-admin'
 import {
-  cloneDeep,
   Grant,
   GrantOrigin,
   GrantOriginDefault,
-  isUndefined,
   objectDeletePropertyByPath,
   objectGetValueByPath,
   objectSetValueByPath,
   ROLE_SUPER_ADMIN,
 } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   modelValue: Permissions
@@ -95,10 +91,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <VCard
-    :loading="loadingPermissionConfig"
-    variant="flat"
-  >
+  <VCard :loading="loadingPermissionConfig" variant="flat">
     <VCardText>
       <VTable v-if="isPermissionConfigInitialized">
         <thead>
@@ -111,15 +104,9 @@ const { t } = useI18n()
           </tr>
         </thead>
         <tbody>
-          <template
-            v-for="permissionSubject in Object.keys(permissionConfig.config)"
-            :key="permissionSubject"
-          >
+          <template v-for="permissionSubject in Object.keys(permissionConfig.config)" :key="permissionSubject">
             <tr>
-              <td
-                :colspan="isEdit ? 3 : 2"
-                class="text-headline-small"
-              >
+              <td :colspan="isEdit ? 3 : 2" class="text-headline-small">
                 {{ translatePermission('subjects', permissionSubject) }}
               </td>
             </tr>
@@ -129,9 +116,7 @@ const { t } = useI18n()
             >
               <td>
                 {{ translatePermission('actions', permissionAction) }}
-                <div class="text-body-small text-disabled">
-                  {{ permissionSubject }}_{{ permissionAction }}
-                </div>
+                <div class="text-body-small text-disabled">{{ permissionSubject }}_{{ permissionAction }}</div>
               </td>
               <td v-if="isEdit">
                 <PermissionGrantEditor

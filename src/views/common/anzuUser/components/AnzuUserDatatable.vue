@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import {
   ABooleanValue,
   AChipNoLink,
@@ -16,7 +15,6 @@ import {
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
-import { useRouter } from 'vue-router'
 import { useAnzuUserFilter } from '@/model/common/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/views/common/anzuUser/components/AnzuUserFilter.vue'
@@ -88,10 +86,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -102,10 +97,7 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.enabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.enabled"
-          />
+          <ABooleanValue chip :value="item.enabled" />
         </template>
         <template #item.person.firstName="{ item }: { item: DatatableItem }">
           {{ item.person.firstName }}
@@ -114,11 +106,7 @@ defineExpose({
           {{ item.person.lastName }}
         </template>
         <template #item.roles="{ item }: { item: DatatableItem }">
-          <AChipNoLink
-            v-for="role in item.roles"
-            :key="role"
-            class="mr-1 mb-1"
-          >
+          <AChipNoLink v-for="role in item.roles" :key="role" class="mr-1 mb-1">
             {{ translatePermission('roles', role) }}
           </AChipNoLink>
           <span v-if="item.roles.length === 0">-</span>
@@ -143,31 +131,17 @@ defineExpose({
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
-            <ATableCopyIdButton
-              v-if="item.id"
-              :id="item.id"
-            />
+            <ATableCopyIdButton v-if="item.id" :id="item.id" />
             <Acl :permission="ACL.DAM_USER_READ">
-              <ATableDetailButton
-                v-if="item.id"
-                :record-id="item.id"
-                :route-name="'/(common)/anzu-user/[id]'"
-              />
+              <ATableDetailButton v-if="item.id" :record-id="item.id" :route-name="'/(common)/anzu-user/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
-              <ATableEditButton
-                v-if="item.id"
-                :record-id="item.id"
-                :route-name="'/(common)/anzu-user/[id]/edit'"
-              />
+              <ATableEditButton v-if="item.id" :record-id="item.id" :route-name="'/(common)/anzu-user/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

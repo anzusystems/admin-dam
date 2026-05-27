@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ACreateDialog,
   AFormDatetimePicker,
@@ -71,10 +69,7 @@ const { v$ } = usePodcastValidation(podcast)
       {{ t('coreDam.podcast.meta.create') }}
     </template>
     <template #content>
-      <ASystemEntityScope
-        :system="SYSTEM_CORE_DAM"
-        :subject="ENTITY"
-      >
+      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <ARow>
           <AFormTextField
             v-model="podcast.texts.title"

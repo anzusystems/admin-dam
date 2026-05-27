@@ -11,10 +11,7 @@ withDefaults(
 
 <template>
   <template v-if="item.type === 'separator'">
-    <VDivider
-      class="anzutap-toolbar__separator"
-      vertical
-    />
+    <VDivider class="anzutap-toolbar__separator" vertical />
   </template>
   <template v-else-if="item.type === 'button'">
     <VBtn
@@ -28,11 +25,7 @@ withDefaults(
       @click="item.command"
     >
       <VIcon :icon="item.icon" />
-      <VTooltip
-        anchor="bottom"
-        activator="parent"
-        :text="item.titleT"
-      />
+      <VTooltip anchor="bottom" activator="parent" :text="item.titleT" />
     </VBtn>
   </template>
 </template>

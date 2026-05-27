@@ -3,10 +3,8 @@ import { AAvatarColorPicker, ACopyText, AFormTextField, ARow, ASystemEntityScope
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/views/common/permission/components/PermissionEditor.vue'
-import { useI18n } from 'vue-i18n'
 import PermissionGroupRemoteAutocomplete from '@/views/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
-import { computed } from 'vue'
 import { usePermissionActions } from '@/views/common/permission/composables/permissionActions'
 import { useAnzuUserEditValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import { ENTITY } from '@/services/api/common/anzuUserApi'
@@ -38,42 +36,20 @@ const autoFillTexts = () => {
 </script>
 
 <template>
-  <ASystemEntityScope
-    system="common"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope system="common" :subject="ENTITY">
     <VRow>
       <VCol cols="12">
         <VRow>
-          <VCol
-            cols="12"
-            sm="3"
-          >
-            <AFormTextField
-              v-if="!isEdit"
-              v-model.number="anzuUser.id"
-              :v="v$.anzuUser.id"
-            />
-            <ARow
-              v-else
-              :title="t('common.anzuUser.model.id')"
-            >
+          <VCol cols="12" sm="3">
+            <AFormTextField v-if="!isEdit" v-model.number="anzuUser.id" :v="v$.anzuUser.id" />
+            <ARow v-else :title="t('common.anzuUser.model.id')">
               <ACopyText :value="`${anzuUser.id}`" />
             </ARow>
           </VCol>
-          <VCol
-            cols="12"
-            sm="7"
-          >
-            <AFormTextField
-              v-model="anzuUser.email"
-              :v="v$.anzuUser.email"
-            />
+          <VCol cols="12" sm="7">
+            <AFormTextField v-model="anzuUser.email" :v="v$.anzuUser.email" />
           </VCol>
-          <VCol
-            cols="12"
-            sm="2"
-          >
+          <VCol cols="12" sm="2">
             <VSwitch
               v-model="anzuUser.enabled"
               :label="t('common.anzuUser.model.enabled')"
@@ -85,10 +61,7 @@ const autoFillTexts = () => {
           </VCol>
         </VRow>
         <VRow>
-          <VCol
-            cols="12"
-            sm="3"
-          >
+          <VCol cols="12" sm="3">
             <AFormTextField
               v-model="anzuUser.person.firstName"
               :v="v$.anzuUser.person.firstName"
@@ -96,10 +69,7 @@ const autoFillTexts = () => {
               @focusout="autoFillTexts()"
             />
           </VCol>
-          <VCol
-            cols="12"
-            sm="3"
-          >
+          <VCol cols="12" sm="3">
             <AFormTextField
               v-model="anzuUser.person.lastName"
               :v="v$.anzuUser.person.lastName"
@@ -107,21 +77,12 @@ const autoFillTexts = () => {
               @focusout="autoFillTexts()"
             />
           </VCol>
-          <VCol
-            cols="12"
-            sm="6"
-          >
-            <AFormTextField
-              v-model="anzuUser.person.fullName"
-              :v="v$.anzuUser.person.fullName"
-            />
+          <VCol cols="12" sm="6">
+            <AFormTextField v-model="anzuUser.person.fullName" :v="v$.anzuUser.person.fullName" />
           </VCol>
         </VRow>
         <VRow>
-          <VCol
-            cols="12"
-            sm="3"
-          >
+          <VCol cols="12" sm="3">
             <AAvatarColorPicker
               v-model="anzuUser.avatar.color"
               :label="t('common.anzuUser.model.avatar.color')"
@@ -129,31 +90,15 @@ const autoFillTexts = () => {
               random-color
             />
           </VCol>
-          <VCol
-            cols="12"
-            sm="3"
-          >
-            <AFormTextField
-              v-model="anzuUser.avatar.text"
-              :v="v$.anzuUser.avatar.text"
-              :maxlength="3"
-            />
+          <VCol cols="12" sm="3">
+            <AFormTextField v-model="anzuUser.avatar.text" :v="v$.anzuUser.avatar.text" :maxlength="3" />
           </VCol>
         </VRow>
         <VRow>
-          <VCol
-            cols="12"
-            sm="3"
-          >
-            <AnzuUserRoleSelect
-              v-model="anzuUser.roles"
-              :client="client"
-            />
+          <VCol cols="12" sm="3">
+            <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" />
           </VCol>
-          <VCol
-            cols="12"
-            sm="9"
-          >
+          <VCol cols="12" sm="9">
             <PermissionGroupRemoteAutocomplete
               v-model="anzuUser.permissionGroups"
               :client="client"

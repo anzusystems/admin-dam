@@ -2,7 +2,6 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/distributionCategoryApi'
 import type { DamAssetTypeType, Filter } from '@anzusystems/common-admin'
 import { DamAssetType, DamAssetTypeDefault, makeFilterHelper, type MakeFilterOptions } from '@anzusystems/common-admin'
-import { reactive } from 'vue'
 
 const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 

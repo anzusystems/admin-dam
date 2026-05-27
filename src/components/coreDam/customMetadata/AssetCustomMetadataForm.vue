@@ -5,10 +5,8 @@ import {
   ACustomDataForm,
   type CustomDataValue,
   type DamAssetTypeType,
-  isUndefined,
   useDamConfigState,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

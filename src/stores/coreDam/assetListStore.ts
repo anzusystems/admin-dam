@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { AssetSearchListItemDto, DocId, UploadQueueItem } from '@anzusystems/common-admin'
-import { DamAssetStatus, isNull, UploadQueueItemType } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { AssetSearchListItemDto, UploadQueueItem } from '@anzusystems/common-admin'
+import { DamAssetStatus, UploadQueueItemType } from '@anzusystems/common-admin'
 
 export type ListLoader = 'soft' | 'hard'
 

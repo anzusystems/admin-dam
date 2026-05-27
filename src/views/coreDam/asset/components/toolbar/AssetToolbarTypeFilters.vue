@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { DamAssetType } from '@anzusystems/common-admin'
 import { useAssetListActions } from '@/views/coreDam/asset/list/composables/assetListActions'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
@@ -30,22 +28,9 @@ const isPodcastActive = computed(() => {
 </script>
 
 <template>
-  <VBtn
-    variant="text"
-    icon
-    size="x-small"
-    class="mr-1"
-    data-cy="button-all-types"
-    @click.stop="setTypeAndFetch()"
-  >
-    <VIcon
-      icon="mdi-multimedia"
-      :size="16"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+  <VBtn variant="text" icon size="x-small" class="mr-1" data-cy="button-all-types" @click.stop="setTypeAndFetch()">
+    <VIcon icon="mdi-multimedia" :size="16" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.asset.list.allTypes') }}
     </VTooltip>
   </VBtn>
@@ -59,14 +44,8 @@ const isPodcastActive = computed(() => {
     :variant="isImageActive ? 'flat' : 'text'"
     @click.stop="setTypeAndFetch(DamAssetType.Image)"
   >
-    <VIcon
-      icon="mdi-image"
-      :size="16"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VIcon icon="mdi-image" :size="16" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.asset.assetType.image') }}
     </VTooltip>
   </VBtn>
@@ -80,14 +59,8 @@ const isPodcastActive = computed(() => {
     :variant="isVideoActive ? 'flat' : 'text'"
     @click.stop="setTypeAndFetch(DamAssetType.Video)"
   >
-    <VIcon
-      icon="mdi-video"
-      :size="16"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VIcon icon="mdi-video" :size="16" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.asset.assetType.video') }}
     </VTooltip>
   </VBtn>
@@ -101,14 +74,8 @@ const isPodcastActive = computed(() => {
     :variant="isAudioActive ? 'flat' : 'text'"
     @click.stop="setTypeAndFetch(DamAssetType.Audio)"
   >
-    <VIcon
-      icon="mdi-music"
-      :size="16"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VIcon icon="mdi-music" :size="16" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.asset.assetType.audio') }}
     </VTooltip>
   </VBtn>
@@ -121,14 +88,8 @@ const isPodcastActive = computed(() => {
     :variant="isDocumentActive ? 'flat' : 'text'"
     @click.stop="setTypeAndFetch(DamAssetType.Document)"
   >
-    <VIcon
-      icon="mdi-note"
-      :size="16"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VIcon icon="mdi-note" :size="16" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.asset.assetType.document') }}
     </VTooltip>
   </VBtn>
@@ -141,14 +102,8 @@ const isPodcastActive = computed(() => {
     :variant="isPodcastActive ? 'flat' : 'text'"
     @click.stop="togglePodcastAndFetch()"
   >
-    <VIcon
-      icon="mdi-podcast"
-      :size="16"
-    />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VIcon icon="mdi-podcast" :size="16" />
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.asset.filter.inPodcast') }}
     </VTooltip>
   </VBtn>

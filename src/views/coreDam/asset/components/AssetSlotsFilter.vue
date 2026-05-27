@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { AFilterValueObjectOptionsSelect, type Filter, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { AFilterValueObjectOptionsSelect, type Filter, useDamConfigState } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
 
@@ -50,9 +48,5 @@ const label = computed(() => {
 </script>
 
 <template>
-  <AFilterValueObjectOptionsSelect
-    v-model="value"
-    :label="label"
-    :items="items"
-  />
+  <AFilterValueObjectOptionsSelect v-model="value" :label="label" :items="items" />
 </template>

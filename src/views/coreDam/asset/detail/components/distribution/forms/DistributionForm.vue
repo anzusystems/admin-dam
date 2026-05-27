@@ -5,7 +5,6 @@ import {
   type DistributionItemResourceNameType,
   type DistributionUpdateDto,
 } from '@/types/coreDam/Distribution'
-import { computed } from 'vue'
 import JwDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/JwDistributionForm.vue'
 import YoutubeDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/YoutubeDistributionForm.vue'
 import CustomDistributionForm from '@/views/coreDam/asset/detail/components/distribution/forms/CustomDistributionForm.vue'
@@ -41,11 +40,6 @@ const rules = computed(() => DistributionItemFormComponent(distribution.value._r
 
 <template>
   <ACard class="pt-5">
-    <component
-      :is="rules"
-      v-model="distribution"
-      :readonly="readonly"
-      :validation-scope="validationScope"
-    />
+    <component :is="rules" v-model="distribution" :readonly="readonly" :validation-scope="validationScope" />
   </ACard>
 </template>

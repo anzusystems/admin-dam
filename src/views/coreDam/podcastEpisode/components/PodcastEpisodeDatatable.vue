@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import {
   ABooleanValue,
   ADatatableConfigButton,
@@ -12,12 +11,10 @@ import {
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
-  type DocId,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/podcastEpisodeApi'
-import { useRouter } from 'vue-router'
 import { usePodcastEpisodeListActions } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/model/coreDam/filter/PodcastEpisodeFilter'
 import PodcastEpisodeFilter from '@/views/coreDam/podcastEpisode/components/PodcastEpisodeFilter.vue'
@@ -108,14 +105,8 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering
-          :custom-options="customSort"
-          @sort-by-change="sortByChange"
-        />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableOrdering :custom-options="customSort" @sort-by-change="sortByChange" />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -135,24 +126,16 @@ defineExpose({
           <ADatetime :date-time="item.modifiedAt" />
         </template>
         <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.webPublicExportEnabled"
-          />
+          <ABooleanValue chip :value="item.flags.webPublicExportEnabled" />
         </template>
         <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.mobilePublicExportEnabled"
-          />
+          <ABooleanValue chip :value="item.flags.mobilePublicExportEnabled" />
         </template>
         <template #item.attributes.duration="{ item }: { item: DatatableItem }">
           <template v-if="item.attributes.duration">
             {{ prettyDuration(item.attributes.duration) }}
           </template>
-          <template v-else>
-            -
-          </template>
+          <template v-else> - </template>
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
@@ -172,10 +155,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

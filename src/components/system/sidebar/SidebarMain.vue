@@ -1,16 +1,11 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { ACL } from '@/composables/auth/auth'
 
 const { t } = useI18n()
 </script>
 
 <template>
-  <VList
-    density="compact"
-    nav
-    color="primary"
-  >
+  <VList density="compact" nav color="primary">
     <VListItem
       :to="{ name: '/(coreDam)/asset' }"
       prepend-icon="mdi-home"

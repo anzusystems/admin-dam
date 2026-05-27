@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
-
 const props = withDefaults(
   defineProps<{
     modelValue: string | null
@@ -38,10 +35,7 @@ const modelValueComputed = computed({
     clearable
   >
     <template #append-inner>
-      <VIcon
-        icon="mdi-magnify"
-        @click="emit('submit')"
-      />
+      <VIcon icon="mdi-magnify" @click="emit('submit')" />
     </template>
   </VTextField>
 </template>

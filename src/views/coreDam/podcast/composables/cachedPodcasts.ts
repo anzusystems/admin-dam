@@ -1,7 +1,5 @@
 import type { Podcast, PodcastMinimal } from '@/types/coreDam/Podcast'
 import { fetchPodcastListByIds } from '@/services/api/coreDam/podcastApi'
-import type { DocId } from '@anzusystems/common-admin'
-import { defineCached } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const mapFullToMinimal = (podcast: Podcast): PodcastMinimal => ({

@@ -1,11 +1,7 @@
-import type { FilterBag, IntegerId, Pagination, PermissionGroup, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination, PermissionGroup } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupApi } from '@/services/api/common/permissionGroupApi'
-import { storeToRefs } from 'pinia'
 import { usePermissionGroupOneStore } from '@/stores/common/permissionGroupStore'
-import { useRouter } from 'vue-router'
 import useVuelidate from '@vuelidate/core'
 import { useCachedPermissionGroups } from '@/views/common/permissionGroup/composables/cachedPermissionGroups'
 

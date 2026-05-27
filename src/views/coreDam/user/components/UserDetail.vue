@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import { useUserOneStore } from '@/stores/coreDam/userStore'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import ExternalProviderAssetChip from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetChip.vue'
@@ -75,10 +73,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.user.model.id')">
         <ACopyText :value="user.id" />
       </ARow>
-      <ARow
-        :title="t('coreDam.user.model.email')"
-        :value="user.email"
-      />
+      <ARow :title="t('coreDam.user.model.email')" :value="user.email" />
       <ARow :title="t('coreDam.user.model.createdBy')">
         <CachedDamUserChip :id="user.createdBy" />
       </ARow>

@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import {
-  AActionCloseButton,
-  AActionDeleteButton,
-  AActionEditButton,
-  ACard,
-  defineBreadcrumbs,
-  stringToInt,
-  useI18n,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import {
   usePublicExportDetailActions,
   usePublicExportRemoveActions,
@@ -60,11 +50,7 @@ onBeforeUnmount(() => {
         />
       </Acl>
       <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
-        <AActionDeleteButton
-          v-if="!detailLoading"
-          data-cy="button-delete"
-          @delete-record="removePublicExport(id)"
-        />
+        <AActionDeleteButton v-if="!detailLoading" data-cy="button-delete" @delete-record="removePublicExport(id)" />
       </Acl>
       <AActionCloseButton :route-name="'/(coreDam)/public-export'" />
     </template>

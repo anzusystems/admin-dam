@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
-import { useI18n } from 'vue-i18n'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
 import ExternalProviderAssetMetadataItem from '@/views/coreDam/externalProviderAsset/components/ExternalProviderAssetMetadataItem.vue'
 
@@ -34,27 +32,13 @@ const imageSrc = computed(() => {
   <div class="dam-upload-queue__item">
     <div class="dam-upload-queue__item-card">
       <div class="position-relative">
-        <AssetImage
-          :src="imageSrc"
-          background-color="#ccc"
-          use-component
-          cover
-          :aspect-ratio="IMAGE_ASPECT_RATIO"
-        />
+        <AssetImage :src="imageSrc" background-color="#ccc" use-component cover :aspect-ratio="IMAGE_ASPECT_RATIO" />
       </div>
-      <VRow
-        density="compact"
-        class="my-2"
-      >
+      <VRow density="compact" class="my-2">
         <VCol>
           <div class="w-100 d-flex justify-space-between align-center">
             <div />
-            <VBtn
-              icon="mdi-trash-can-outline"
-              variant="text"
-              size="small"
-              @click.stop="remove"
-            />
+            <VBtn icon="mdi-trash-can-outline" variant="text" size="small" @click.stop="remove" />
           </div>
         </VCol>
       </VRow>
@@ -76,11 +60,7 @@ const imageSrc = computed(() => {
           {{ item.displayTitle }}
         </VCol>
       </VRow>
-      <VRow
-        v-for="(value, key) in item.externalProviderMetadata"
-        :key="key"
-        class="text-body-small"
-      >
+      <VRow v-for="(value, key) in item.externalProviderMetadata" :key="key" class="text-body-small">
         <VCol>{{ key }}</VCol>
         <VCol cols="9">
           <ExternalProviderAssetMetadataItem :value="value" />

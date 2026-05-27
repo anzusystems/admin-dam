@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { usePublicExportEditActions } from '@/views/coreDam/publicExport/composables/publicExportActions'
 import PublicExportEditForm from '@/views/coreDam/publicExport/components/PublicExportEditForm.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -46,10 +44,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton
-        :route-name="'/(coreDam)/public-export/[id]'"
-        :route-params="{ id: id }"
-      />
+      <AActionCloseButton :route-name="'/(coreDam)/public-export/[id]'" :route-params="{ id: id }" />
     </template>
   </ActionbarWrapper>
 

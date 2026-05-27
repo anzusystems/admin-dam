@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import UserDatatable from '@/views/coreDam/user/components/UserDatatable.vue'
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import { useUserListActions } from '@/views/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 

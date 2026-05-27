@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DamExtSystem } from '@anzusystems/common-admin'
 import { useExtSystemFactory } from '@/model/coreDam/factory/ExtSystemFactory'
-import { ref } from 'vue'
 
 export const useExtSystemOneStore = defineStore('extSystemOneStore', () => {
   const { createDefault } = useExtSystemFactory()

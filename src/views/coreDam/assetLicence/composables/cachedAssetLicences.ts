@@ -1,5 +1,5 @@
-import type { DamAssetLicence, DamAssetLicenceMinimal, IntegerId } from '@anzusystems/common-admin'
-import { defineCached, fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
+import type { DamAssetLicence, DamAssetLicenceMinimal } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 
 const mapFullToMinimal = (assetLicence: DamAssetLicence): DamAssetLicenceMinimal => ({

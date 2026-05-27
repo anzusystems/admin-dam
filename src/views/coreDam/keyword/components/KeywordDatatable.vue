@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import type { DamKeyword } from '@anzusystems/common-admin'
 import {
   ABooleanValue,
@@ -16,7 +15,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/keywordApi'
-import { useRouter } from 'vue-router'
 import { useKeywordListActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/model/coreDam/filter/KeywordFilter'
 import KeywordFilter from '@/views/coreDam/keyword/components/KeywordFilter.vue'
@@ -72,14 +70,8 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering
-          variant="default"
-          @sort-by-change="sortByChange"
-        />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableOrdering variant="default" @sort-by-change="sortByChange" />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -90,10 +82,7 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.flags.reviewed="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.reviewed"
-          />
+          <ABooleanValue chip :value="item.flags.reviewed" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
@@ -105,25 +94,15 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_KEYWORD_READ">
-              <ATableDetailButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/keyword/[id]'"
-              />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/keyword/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_KEYWORD_UPDATE">
-              <ATableEditButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/keyword/[id]/edit'"
-              />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/keyword/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            var
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" var @change="getList" />
         </template>
       </VDataTableServer>
     </div>

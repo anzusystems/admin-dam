@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import {
-  AActionCloseButton,
-  AActionDeleteButton,
-  AActionEditButton,
-  ACard,
-  defineBreadcrumbs,
-  useI18n,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
@@ -81,10 +72,7 @@ const breadcrumbs = defineBreadcrumbs(
           @delete-record="deletePodcast(id, onSuccessfulCallback)"
         />
       </Acl>
-      <AActionCloseButton
-        :route-name="'/(coreDam)/podcast/[id]'"
-        :route-params="{ id: podcastId }"
-      />
+      <AActionCloseButton :route-name="'/(coreDam)/podcast/[id]'" :route-params="{ id: podcastId }" />
     </template>
   </ActionbarWrapper>
 

@@ -1,16 +1,11 @@
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import {
   fetchVideoShowEpisode,
   fetchVideoShowEpisodeListByVideoShow,
   updateVideoShowEpisode,
 } from '@/services/api/coreDam/videoShowEpisodeApi'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
-import { storeToRefs } from 'pinia'
 import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

@@ -1,4 +1,4 @@
-import type { DamDistributionServiceName, DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiAnyRequest, apiDeleteOne, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

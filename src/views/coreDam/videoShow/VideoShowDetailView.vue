@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
+import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { useVideoShowDetailActions } from '@/views/coreDam/videoShow/composables/videoShowActions'
 import VideoShowDetail from '@/views/coreDam/videoShow/components/VideoShowDetail.vue'
 import { useVideoShowDetailTab, VideoShowDetailTab } from '@/views/coreDam/videoShow/composables/videoShowDetailTab'
@@ -92,22 +89,13 @@ const afterVideoShowEpisodeCreate = () => {
     </template>
   </ActionbarWrapper>
 
-  <VTabs
-    v-model="activeTab"
-    class="mb-4"
-  >
+  <VTabs v-model="activeTab" class="mb-4">
     <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
-      <VTab
-        :value="VideoShowDetailTab.Episodes"
-        data-cy="episode-list"
-      >
+      <VTab :value="VideoShowDetailTab.Episodes" data-cy="episode-list">
         {{ t('coreDam.videoShow.tabs.episodes') }}
       </VTab>
     </Acl>
-    <VTab
-      :value="VideoShowDetailTab.Detail"
-      data-cy="videoShow-list"
-    >
+    <VTab :value="VideoShowDetailTab.Detail" data-cy="videoShow-list">
       {{ t('coreDam.videoShow.tabs.detail') }}
     </VTab>
   </VTabs>
@@ -115,10 +103,7 @@ const afterVideoShowEpisodeCreate = () => {
     <div v-show="activeTab === VideoShowDetailTab.Episodes">
       <ACard :loading="listLoading">
         <VCardText>
-          <VideoShowEpisodeDatatable
-            v-if="loadVideoShowEpisodeDatatable"
-            :video-show-id="videoShowId"
-          />
+          <VideoShowEpisodeDatatable v-if="loadVideoShowEpisodeDatatable" :video-show-id="videoShowId" />
         </VCardText>
       </ACard>
     </div>

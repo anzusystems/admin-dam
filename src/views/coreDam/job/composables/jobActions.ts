@@ -1,9 +1,7 @@
-import { ref } from 'vue'
-import { type FilterBag, type Pagination, useAlerts, useJobApi } from '@anzusystems/common-admin'
+import { type FilterBag, type Pagination, useJobApi } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useJobOneStore } from '@/stores/coreDam/jobStore'
-import { storeToRefs } from 'pinia'
 import type { Job } from '@/types/coreDam/Job'
 
 const { showErrorsDefault } = useAlerts()

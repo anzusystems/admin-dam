@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
 import { damClient } from '@/services/api/clients/damClient'
 import AnzuUserDatatable from '@/views/common/anzuUser/components/AnzuUserDatatable.vue'
 import AnzuUserCreateButton from '@/views/common/anzuUser/components/AnzuUserCreateButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import { ACL } from '@/composables/auth/auth'
 
 const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)

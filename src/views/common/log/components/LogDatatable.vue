@@ -6,13 +6,10 @@ import {
   ADatatablePagination,
   ADatetime,
   createDatatableColumnsConfig,
-  isNull,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { useLogFilter } from '@/model/common/filter/LogFilter'
 import { useLogListActions } from '@/views/common/log/composables/logActions'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import type { LogSystemType } from '@/model/common/valueObject/LogSystem'
 
 type DatatableItem = Log
@@ -102,10 +99,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <!--        <ADatatableOrdering @sort-by-change="sortByChange" />-->
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -134,10 +128,7 @@ defineExpose({
           <ACopyText :value="item.context.contextId" />
         </template>
         <template #item.context.userId="{ item }: { item: DatatableItem }">
-          <ACopyText
-            v-if="!isNull(item.context.userId)"
-            :value="item.context.userId"
-          />
+          <ACopyText v-if="!isNull(item.context.userId)" :value="item.context.userId" />
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
@@ -154,10 +145,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

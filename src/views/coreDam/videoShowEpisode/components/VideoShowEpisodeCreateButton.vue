@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { DocId } from '@anzusystems/common-admin'
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createVideoShowEpisode, ENTITY } from '@/services/api/coreDam/videoShowEpisodeApi'
@@ -63,10 +60,7 @@ const create = async () => {
       {{ t('coreDam.videoShowEpisode.meta.create') }}
     </template>
     <template #content>
-      <ASystemEntityScope
-        :system="SYSTEM_CORE_DAM"
-        :subject="ENTITY"
-      >
+      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <ARow>
           <AFormTextField
             v-model="videoShowEpisode.texts.title"

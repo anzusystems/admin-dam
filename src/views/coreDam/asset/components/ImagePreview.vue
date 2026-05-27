@@ -7,14 +7,10 @@ import {
   AssetFileProcessStatus,
   type AssetSelectReturnData,
   DamAssetType as AssetTypeValue,
-  type DocId,
-  isNull,
   SortOrder,
 } from '@anzusystems/common-admin'
-import { computed, ref, watch } from 'vue'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/services/api/coreDam/imageApi'
-import { useI18n } from 'vue-i18n'
 import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { customSortOptions, SORT_BY_SCORE_DATE } from '@/views/coreDam/asset/list/composables/assetListActions'
 
@@ -123,60 +119,29 @@ watch(
 </script>
 
 <template>
-  <div
-    v-if="isFailed"
-    class="text-body-small"
-  >
+  <div v-if="isFailed" class="text-body-small">
     {{ t('system.imagePreview.status.isFailedInfo') }}
   </div>
-  <div
-    v-if="isDuplicate"
-    class="text-body-small"
-  >
+  <div v-if="isDuplicate" class="text-body-small">
     {{ t('system.imagePreview.status.isDuplicateInfo') }}
   </div>
-  <div
-    v-if="isProcessing"
-    class="text-body-small"
-  >
+  <div v-if="isProcessing" class="text-body-small">
     {{ t('system.imagePreview.status.isProcessingInfo') }}
   </div>
   <div v-if="!isProcessing">
-    <VImg
-      v-if="loading"
-      :width="width"
-      :height="height"
-      :max-height="300"
-      class="asset-image asset-image--loading-bg"
-    >
+    <VImg v-if="loading" :width="width" :height="height" :max-height="300" class="asset-image asset-image--loading-bg">
       <template #placeholder />
       <template #default>
         <div class="d-flex w-100 h-100 align-center justify-center">
-          <VProgressCircular
-            color="primary"
-            indeterminate
-            class="ml-auto mr-auto"
-          />
+          <VProgressCircular color="primary" indeterminate class="ml-auto mr-auto" />
         </div>
       </template>
     </VImg>
-    <VImg
-      v-else
-      :width="width"
-      :height="height"
-      :max-height="300"
-      :src="src"
-    />
+    <VImg v-else :width="width" :height="height" :max-height="300" :src="src" />
     <div v-if="showActions">
       <slot name="actions-start" />
 
-      <VBtn
-        v-if="imagePreviewModel !== null"
-        variant="text"
-        class="my-2 mr-2"
-        size="small"
-        @click.stop="unassignImage"
-      >
+      <VBtn v-if="imagePreviewModel !== null" variant="text" class="my-2 mr-2" size="small" @click.stop="unassignImage">
         {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
       <AAssetSelect
@@ -189,47 +154,27 @@ watch(
         @on-confirm="selectAsset"
       >
         <template #activator="{ props: assetSelectProps }">
-          <VBtn
-            variant="text"
-            class="my-2 mr-2"
-            size="small"
-            v-bind="assetSelectProps"
-          >
+          <VBtn variant="text" class="my-2 mr-2" size="small" v-bind="assetSelectProps">
             {{ t('system.imagePreview.actions.selectImage') }}
           </VBtn>
         </template>
       </AAssetSelect>
       <slot name="actions-end" />
     </div>
-    <VDialog
-      v-model="dialog"
-      :width="500"
-    >
-      <VCard
-        v-if="dialog"
-        data-cy="delete-panel"
-      >
+    <VDialog v-model="dialog" :width="500">
+      <VCard v-if="dialog" data-cy="delete-panel">
         <ADialogToolbar @on-cancel="onCancel">
           {{ t('system.imagePreview.actions.selectImage') }}
         </ADialogToolbar>
         <VCardText>
-          <VTextField
-            v-model="newFileId"
-            :label="t('system.imagePreview.model.fileId')"
-          />
+          <VTextField v-model="newFileId" :label="t('system.imagePreview.model.fileId')" />
         </VCardText>
         <VCardActions>
           <VSpacer />
-          <ABtnTertiary
-            data-cy="button-cancel"
-            @click.stop="onCancel"
-          >
+          <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
             {{ t('common.button.cancel') }}
           </ABtnTertiary>
-          <ABtnPrimary
-            data-cy="button-confirm"
-            @click.stop="onConfirm"
-          >
+          <ABtnPrimary data-cy="button-confirm" @click.stop="onConfirm">
             {{ t('common.button.confirm') }}
           </ABtnPrimary>
         </VCardActions>

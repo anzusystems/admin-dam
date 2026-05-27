@@ -64,12 +64,7 @@ const { t } = useI18n()
 
   <VMenu>
     <template #activator="{ props: activatorProps }">
-      <VBtn
-        variant="text"
-        size="x-small"
-        icon="mdi-dots-vertical"
-        v-bind="activatorProps"
-      />
+      <VBtn variant="text" size="x-small" icon="mdi-dots-vertical" v-bind="activatorProps" />
     </template>
     <VList density="compact">
       <template v-if="assetFile.mainRoute">
@@ -79,10 +74,7 @@ const { t } = useI18n()
           :value="assetFile.mainRoute.publicUrl"
         >
           <template #activator="{ props: copyButtonProps }">
-            <VListItem
-              v-bind="copyButtonProps"
-              :title="t('coreDam.asset.assetFilePublicLink.actions.copyUrl')"
-            />
+            <VListItem v-bind="copyButtonProps" :title="t('coreDam.asset.assetFilePublicLink.actions.copyUrl')" />
           </template>
         </ACopyText>
         <AssetFileRouteChangeBtn
@@ -93,11 +85,7 @@ const { t } = useI18n()
           @click.stop="makePrivate"
         />
       </template>
-      <AssetFileRouteChangeBtn
-        v-else
-        variant="listItem"
-        @click.stop="openMakeFilePrivateDialog"
-      />
+      <AssetFileRouteChangeBtn v-else variant="listItem" @click.stop="openMakeFilePrivateDialog" />
     </VList>
   </VMenu>
   <AssetFileRouteMakePublicDialog

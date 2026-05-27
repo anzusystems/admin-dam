@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useVideoShowFactory } from '@/model/coreDam/factory/VideoShowFactory'
 import type { VideoShow } from '@/types/coreDam/VideoShow'
-import { ref } from 'vue'
 
 export const useVideoShowOneStore = defineStore('videoShowOneStore', () => {
   const { createDefault } = useVideoShowFactory()

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { useAnzuUserActions } from '@/views/common/anzuUser/composables/anzuUserActions'
 import AnzuUserDetail from '@/views/common/anzuUser/components/AnzuUserDetail.vue'
@@ -41,15 +39,8 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl
-        v-if="!detailLoading"
-        :permission="ACL.DAM_USER_UPDATE"
-      >
-        <AActionEditButton
-          :record-id="id"
-          :route-name="'/(common)/anzu-user/[id]/edit'"
-          :loading="detailLoading"
-        />
+      <Acl v-if="!detailLoading" :permission="ACL.DAM_USER_UPDATE">
+        <AActionEditButton :record-id="id" :route-name="'/(common)/anzu-user/[id]/edit'" :loading="detailLoading" />
       </Acl>
       <AActionCloseButton :route-name="'/(common)/anzu-user'" />
     </template>

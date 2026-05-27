@@ -13,12 +13,9 @@ import {
   DamDistributionServiceSelect,
   DamExternalProviderAssetSelect,
   DamExtSystemRemoteAutocomplete,
-  isUndefined,
   useDamConfigStore,
   UserAuthType,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { useI18n } from 'vue-i18n'
 
 const { userUpdate } = useUserEditActions()
 const damConfigStore = useDamConfigStore()
@@ -30,15 +27,9 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <ASystemEntityScope
-    :system="SYSTEM_CORE_DAM"
-    :subject="ENTITY"
-  >
+  <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
     <VRow>
-      <VCol
-        cols="12"
-        md="8"
-      >
+      <VCol cols="12" md="8">
         <ARow
           v-if="damPubConfig.userAuthType === UserAuthType.JsonCredentials && !isUndefined(userUpdate.plainPassword)"
         >

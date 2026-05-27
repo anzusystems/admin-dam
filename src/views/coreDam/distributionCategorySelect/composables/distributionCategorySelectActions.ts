@@ -1,6 +1,5 @@
 import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { isAnzuApiValidationError, useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import { isAnzuApiValidationError } from '@anzusystems/common-admin'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import {
   fetchDistributionCategorySelect,
@@ -8,9 +7,6 @@ import {
   updateDistributionCategorySelect,
 } from '@/services/api/coreDam/distributionCategorySelectApi'
 import type { DistributionCategorySelect } from '@/types/coreDam/DistributionCategorySelect'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
 import { useDistributionCategorySelectOneStore } from '@/stores/coreDam/distributionCategorySelectStore'
 
 const { showValidationError, showRecordWas, showErrorsDefault, showApiValidationError } = useAlerts()

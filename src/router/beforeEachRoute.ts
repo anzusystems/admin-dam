@@ -3,12 +3,9 @@ import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLang
 import { checkAbility } from '@/router/checkAbility'
 import { damClient } from '@/services/api/clients/damClient'
 import { useDamConfigState, useDamConfigStore } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
-export const beforeEachRoute = async (
-  to: RouteLocationNormalized
-): Promise<NavigationGuardReturn> => {
+export const beforeEachRoute = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
   const { loadDamPubConfig } = useDamConfigState(damClient)
   const damConfigStore = useDamConfigStore()
   const { initialized } = storeToRefs(damConfigStore)

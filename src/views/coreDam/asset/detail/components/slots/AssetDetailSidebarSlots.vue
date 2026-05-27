@@ -4,9 +4,7 @@ import { useAssetSlotsStore } from '@/stores/coreDam/assetSlotsStore'
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/views/coreDam/asset/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsActions'
-import { ADatatablePagination, DamAssetType, type DamAssetTypeType, type DocId } from '@anzusystems/common-admin'
-import { onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ADatatablePagination, DamAssetType, type DamAssetTypeType } from '@anzusystems/common-admin'
 import AssetSibling from '@/views/coreDam/asset/detail/components/slots/AssetSibling.vue'
 
 const props = withDefaults(
@@ -43,10 +41,7 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary
-      :loading="assetSlotsStore.loader"
-      @click.stop="getList"
-    >
+    <ABtnPrimary :loading="assetSlotsStore.loader" @click.stop="getList">
       {{ t('coreDam.asset.slots.actions.refreshList') }}
     </ABtnPrimary>
   </AssetDetailSidebarActionsWrapper>
@@ -55,19 +50,10 @@ onMounted(async () => {
     :asset-type="assetType"
     :asset-id="assetId"
   />
-  <div
-    v-if="assetSlotsStore.loader"
-    class="d-flex w-100 h-100 justify-center align-center pa-2"
-  >
-    <VProgressCircular
-      indeterminate
-      color="primary"
-    />
+  <div v-if="assetSlotsStore.loader" class="d-flex w-100 h-100 justify-center align-center pa-2">
+    <VProgressCircular indeterminate color="primary" />
   </div>
-  <div
-    v-else-if="assetSlotsStore.assetSlotNames.length === 0"
-    class="pa-4 text-body-small"
-  >
+  <div v-else-if="assetSlotsStore.assetSlotNames.length === 0" class="pa-4 text-body-small">
     {{ t('coreDam.asset.slots.noEntries') }}
   </div>
   <div v-else-if="assetDetailStore.asset">
@@ -87,11 +73,6 @@ onMounted(async () => {
       @switch-slot="switchSlot"
       @refresh-list="getList"
     />
-    <ADatatablePagination
-      v-if="showPagination"
-      v-model="pagination"
-      hide-records-per-page
-      @change="getList"
-    />
+    <ADatatablePagination v-if="showPagination" v-model="pagination" hide-records-per-page @change="getList" />
   </div>
 </template>

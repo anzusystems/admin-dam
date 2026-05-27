@@ -23,8 +23,6 @@ import {
   dateTimePretty,
   prettyBytes,
 } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -62,9 +60,8 @@ const routableAssetFile = computed(() => {
   return null
 })
 
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
 const onAnyMetadataChange = () => {
@@ -73,17 +70,8 @@ const onAnyMetadataChange = () => {
 </script>
 
 <template>
-  <VExpansionPanels
-    v-if="asset"
-    v-model="panels"
-    multiple
-    class="v-expansion-panels--compact"
-  >
-    <VExpansionPanel
-      elevation="0"
-      :title="t('coreDam.asset.detail.info.metadata')"
-      value="metadata"
-    >
+  <VExpansionPanels v-if="asset" v-model="panels" multiple class="v-expansion-panels--compact">
+    <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.metadata')" value="metadata">
       <VExpansionPanelText>
         <AssetCustomMetadataForm
           v-if="asset"
@@ -92,16 +80,9 @@ const onAnyMetadataChange = () => {
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
-            <VRow
-              v-if="keywordEnabled"
-              density="compact"
-              class="my-2"
-            >
+            <VRow v-if="keywordEnabled" density="compact" class="my-2">
               <VCol>
-                <ASystemEntityScope
-                  subject="keyword"
-                  system="dam"
-                >
+                <ASystemEntityScope subject="keyword" system="dam">
                   <KeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
                     :label="t('coreDam.asset.model.keywords')"
@@ -115,16 +96,9 @@ const onAnyMetadataChange = () => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow
-              v-if="authorEnabled"
-              density="compact"
-              class="my-2"
-            >
+            <VRow v-if="authorEnabled" density="compact" class="my-2">
               <VCol>
-                <ASystemEntityScope
-                  subject="author"
-                  system="dam"
-                >
+                <ASystemEntityScope subject="author" system="dam">
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
                     :label="t('coreDam.asset.model.authors')"
@@ -139,26 +113,16 @@ const onAnyMetadataChange = () => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow
-              density="compact"
-              class="my-2"
-            >
+            <VRow density="compact" class="my-2">
               <VCol>
-                <VSwitch
-                  v-model="mainFileSingleUse"
-                  :label="t('common.damImage.asset.model.mainFileSingleUse')"
-                />
+                <VSwitch v-model="mainFileSingleUse" :label="t('common.damImage.asset.model.mainFileSingleUse')" />
               </VCol>
             </VRow>
           </template>
         </AssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
-    <VExpansionPanel
-      elevation="0"
-      :title="t('coreDam.asset.detail.info.file')"
-      value="file"
-    >
+    <VExpansionPanel elevation="0" :title="t('coreDam.asset.detail.info.file')" value="file">
       <VExpansionPanelText class="text-body-small">
         <!-- all types -->
         <VRow>
@@ -181,16 +145,14 @@ const onAnyMetadataChange = () => {
           <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
-          <VCol cols="9">
-            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
-          </VCol>
+          <VCol cols="9"> {{ dateTimePretty(asset.createdAt) }}<br /><CachedDamUserChip :id="asset.createdBy" /> </VCol>
         </VRow>
         <VRow>
           <VCol cols="3">
             {{ t('common.model.tracking.modified') }}
           </VCol>
           <VCol cols="9">
-            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+            {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">
@@ -203,10 +165,7 @@ const onAnyMetadataChange = () => {
             </VCol>
           </VRow>
           <VRow v-if="routableAssetFile">
-            <VCol
-              cols="3"
-              class="pt-4"
-            >
+            <VCol cols="3" class="pt-4">
               {{ t('coreDam.asset.detail.info.field.mainRoute') }}
             </VCol>
             <VCol cols="9">

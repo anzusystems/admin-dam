@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { usePublicExportListFilter } from '@/model/coreDam/filter/PublicExportFilter'
 import { AFilterString, AFilterValueObjectOptionsSelect, AFilterWrapper } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 import { useExportTypeTypes } from '@/model/coreDam/valueObject/ExportType'
 
 const emit = defineEmits<{
@@ -30,26 +29,14 @@ const { exportTypeOptions } = useExportTypeTypes()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
+  <VForm name="search" @submit.prevent="submitFilter">
+    <AFilterWrapper :touched="touched" @reset-filter="resetFilter">
       <VRow class="align-start">
         <VCol cols="3">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.id" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="3">
-          <AFilterString
-            v-model="filter.slug"
-            @update:model-value="onAnyFilterUpdate"
-          />
+          <AFilterString v-model="filter.slug" @update:model-value="onAnyFilterUpdate" />
         </VCol>
         <VCol cols="3">
           <AFilterValueObjectOptionsSelect

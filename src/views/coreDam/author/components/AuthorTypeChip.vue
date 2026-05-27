@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { AChipNoLink, type DamAuthorTypeType, useDamAuthorType } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

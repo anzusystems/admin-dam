@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import UserDetail from '@/views/coreDam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/views/coreDam/user/composables/userActions'
-import { useRoute } from 'vue-router'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, stringToInt, useI18n } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { ACL } from '@/composables/auth/auth'
 
@@ -41,11 +39,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_USER_UPDATE">
-        <AActionEditButton
-          v-if="!detailLoading"
-          :record-id="id"
-          :route-name="'/(coreDam)/user/[id]/edit'"
-        />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/user/[id]/edit'" />
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"

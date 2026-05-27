@@ -3,21 +3,17 @@ import {
   ALanguageSelect,
   AThemeSelect,
   type DamCurrentUserDto,
-  defineBreadcrumbs,
   useI18n,
   useSentry,
   useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import { useAuth } from '@/composables/auth/auth'
 import { SYSTEM_DAM } from '@/model/systems'
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }])
-)
+const breadcrumbs = defineBreadcrumbs(computed(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }]))
 
 const afterLanguageChange = async () => {
   window.location.reload()
@@ -50,10 +46,7 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
               {{ t('system.settings.locale') }}
             </VCol>
             <VCol>
-              <ALanguageSelect
-                :is-administrator="isSuperAdmin"
-                @after-change="afterLanguageChange"
-              />
+              <ALanguageSelect :is-administrator="isSuperAdmin" @after-change="afterLanguageChange" />
             </VCol>
           </VRow>
           <VRow class="pb-2 align-center">
@@ -66,44 +59,22 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
           </VRow>
         </VCol>
       </VRow>
-      <VRow
-        v-if="isSuperAdmin"
-        class="pb-2 align-center"
-      >
-        <VCol cols="3">
-          DEBUG: Test throw error
-        </VCol>
+      <VRow v-if="isSuperAdmin" class="pb-2 align-center">
+        <VCol cols="3"> DEBUG: Test throw error </VCol>
         <VCol>
-          <VBtn @click.stop="throwTestError">
-            Throw
-          </VBtn>
+          <VBtn @click.stop="throwTestError"> Throw </VBtn>
         </VCol>
       </VRow>
-      <VRow
-        v-if="isSuperAdmin"
-        class="pb-2 align-center"
-      >
-        <VCol cols="3">
-          DEBUG: Test log error
-        </VCol>
+      <VRow v-if="isSuperAdmin" class="pb-2 align-center">
+        <VCol cols="3"> DEBUG: Test log error </VCol>
         <VCol>
-          <VBtn @click.stop="logTestError">
-            Log
-          </VBtn>
+          <VBtn @click.stop="logTestError"> Log </VBtn>
         </VCol>
       </VRow>
-      <VRow
-        v-if="isSuperAdmin"
-        class="pb-2 align-center"
-      >
-        <VCol cols="3">
-          DEBUG: Show unreleased features
-        </VCol>
+      <VRow v-if="isSuperAdmin" class="pb-2 align-center">
+        <VCol cols="3"> DEBUG: Show unreleased features </VCol>
         <VCol>
-          <VSwitch
-            v-model="showUnreleasedFeatures"
-            :label="showUnreleasedFeatures ? 'Show' : 'Hide'"
-          />
+          <VSwitch v-model="showUnreleasedFeatures" :label="showUnreleasedFeatures ? 'Show' : 'Hide'" />
         </VCol>
       </VRow>
     </VCardText>

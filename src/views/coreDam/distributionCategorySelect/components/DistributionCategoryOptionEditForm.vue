@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { AFormTextField, cloneDeep } from '@anzusystems/common-admin'
+import { AFormTextField } from '@anzusystems/common-admin'
 import { useDistributionCategoryOptionValidation } from '@/views/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/types/coreDam/DistributionCategoryOption'
-import { computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -37,10 +35,7 @@ const { t } = useI18n()
 
 <template>
   <VRow class="mt-5">
-    <VCol
-      cols="12"
-      sm="5"
-    >
+    <VCol cols="12" sm="5">
       <AFormTextField
         v-model="modelValueComputed.name"
         prepend-icon="mdi-drag"
@@ -48,20 +43,14 @@ const { t } = useI18n()
         data-cy="option-name"
       />
     </VCol>
-    <VCol
-      cols="12"
-      sm="1"
-    >
+    <VCol cols="12" sm="1">
       <VSwitch
         v-model="modelValueComputed.assignable"
         :label="t('coreDam.distributionCategorySelect.model.assignable')"
         data-cy="option-assignable"
       />
     </VCol>
-    <VCol
-      cols="12"
-      sm="6"
-    >
+    <VCol cols="12" sm="6">
       <AFormTextField
         v-model="modelValueComputed.value"
         append-icon="mdi-trash-can-outline"

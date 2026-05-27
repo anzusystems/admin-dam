@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import { fetchDistributionCategory } from '@/services/api/coreDam/distributionCategoryApi'
-import { computed, ref, watch } from 'vue'
-import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
-import { DamAssetTypeDefault, isNull } from '@anzusystems/common-admin'
+import type { DocIdNullable } from '@anzusystems/common-admin'
+import { DamAssetTypeDefault } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/types/coreDam/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/model/coreDam/factory/DistributionCategoryFactory'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import { useI18n } from 'vue-i18n'
 import DistributionCategoryWidgetDialog from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
 
 const { t } = useI18n()
@@ -63,24 +61,14 @@ watch(
 <template>
   <div class="d-flex flex-column w-100">
     <VRow class="align-center">
-      <VCol class="text-body-small">
-        {{ t('coreDam.distribution.common.select') }}:
-      </VCol>
+      <VCol class="text-body-small"> {{ t('coreDam.distribution.common.select') }}: </VCol>
     </VRow>
     <VRow v-if="!distributionCategoryId">
       <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>
       <VCol cols="auto">
-        <VBtn
-          variant="text"
-          icon
-          size="small"
-          @click.stop="dialog = true"
-        >
+        <VBtn variant="text" icon size="small" @click.stop="dialog = true">
           <VIcon icon="mdi-pencil" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
-          >
+          <VTooltip activator="parent" location="bottom">
             {{ t('common.button.edit') }}
           </VTooltip>
         </VBtn>
@@ -88,39 +76,22 @@ watch(
     </VRow>
     <VRow v-else-if="loading">
       <VCol class="d-flex w-100 h-100 justify-center align-center pa-2">
-        <VProgressCircular
-          indeterminate
-          color="primary"
-        />
+        <VProgressCircular indeterminate color="primary" />
       </VCol>
     </VRow>
-    <VRow
-      v-else
-      class="align-center"
-    >
+    <VRow v-else class="align-center">
       <VCol>
         <div class="font-weight-bold">
           {{ category.name }}
         </div>
-        <div
-          v-for="item in category.selectedOptionsDetail"
-          :key="item.id"
-        >
+        <div v-for="item in category.selectedOptionsDetail" :key="item.id">
           <div>{{ item.serviceSlug }} - {{ item.name }}</div>
         </div>
       </VCol>
       <VCol cols="auto">
-        <VBtn
-          variant="text"
-          icon
-          size="small"
-          @click.stop="dialog = true"
-        >
+        <VBtn variant="text" icon size="small" @click.stop="dialog = true">
           <VIcon icon="mdi-pencil" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
-          >
+          <VTooltip activator="parent" location="bottom">
             {{ t('common.button.edit') }}
           </VTooltip>
         </VBtn>

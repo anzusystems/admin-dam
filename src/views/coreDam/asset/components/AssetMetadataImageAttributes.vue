@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import ColorBox from '@/components/coreDam/ColorBox.vue'
-import { useI18n } from 'vue-i18n'
 import type { AssetFileImage } from '@anzusystems/common-admin'
 import { ABooleanValue } from '@anzusystems/common-admin'
 
@@ -23,21 +22,15 @@ const { t } = useI18n()
   </VRow>
   <VRow>
     <VCol>{{ t('coreDam.asset.detail.info.field.width') }}</VCol>
-    <VCol cols="9">
-      {{ file.imageAttributes.width }} px
-    </VCol>
+    <VCol cols="9"> {{ file.imageAttributes.width }} px </VCol>
   </VRow>
   <VRow>
     <VCol>{{ t('coreDam.asset.detail.info.field.height') }}</VCol>
-    <VCol cols="9">
-      {{ file.imageAttributes.height }} px
-    </VCol>
+    <VCol cols="9"> {{ file.imageAttributes.height }} px </VCol>
   </VRow>
   <VRow>
     <VCol>{{ t('coreDam.asset.detail.info.field.ratio') }}</VCol>
-    <VCol cols="9">
-      {{ file.imageAttributes.ratioWidth }} / {{ file.imageAttributes.ratioHeight }}
-    </VCol>
+    <VCol cols="9"> {{ file.imageAttributes.ratioWidth }} / {{ file.imageAttributes.ratioHeight }} </VCol>
   </VRow>
   <VRow>
     <VCol cols="3">

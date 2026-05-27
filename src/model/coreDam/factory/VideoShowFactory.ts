@@ -1,6 +1,4 @@
 import type { VideoShow } from '@/types/coreDam/VideoShow'
-import type { IntegerIdNullable } from '@anzusystems/common-admin'
-import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/videoShowApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 

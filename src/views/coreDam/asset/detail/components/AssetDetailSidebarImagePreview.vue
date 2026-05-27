@@ -2,14 +2,12 @@
 import AssetDetailSidebarActionsWrapper from '@/views/coreDam/asset/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDetailSlotSelect from '@/views/coreDam/asset/detail/components/AssetDetailSlotSelect.vue'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { onMounted, ref } from 'vue'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import type { AssetFileVideo } from '@anzusystems/common-admin'
-import { assetFileIsVideoFile, useAlerts } from '@anzusystems/common-admin'
+import { assetFileIsVideoFile } from '@anzusystems/common-admin'
 import { fetchVideoFile, updatePreviewImage } from '@/services/api/coreDam/videoApi'
 import ImagePreview from '@/views/coreDam/asset/components/ImagePreview.vue'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/views/coreDam/asset/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
-import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
@@ -73,25 +71,12 @@ onMounted(async () => {
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive" />
   <div class="px-3">
-    <AssetDetailSlotSelect
-      class="mt-4"
-      @active-slot-change="activeSlotChange"
-    />
-    <div
-      v-if="loading"
-      class="d-flex w-100 h-100 justify-center align-center pa-2"
-    >
-      <VProgressCircular
-        indeterminate
-        color="primary"
-      />
+    <AssetDetailSlotSelect class="mt-4" @active-slot-change="activeSlotChange" />
+    <div v-if="loading" class="d-flex w-100 h-100 justify-center align-center pa-2">
+      <VProgressCircular indeterminate color="primary" />
     </div>
     <div v-else-if="videoFile">
-      <ImagePreview
-        v-model="videoFile.imagePreview"
-        show-actions
-        @changed="onSave"
-      >
+      <ImagePreview v-model="videoFile.imagePreview" show-actions @changed="onSave">
         <template #actions-end>
           <VBtn
             variant="text"

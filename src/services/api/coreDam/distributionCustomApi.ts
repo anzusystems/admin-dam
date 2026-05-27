@@ -1,4 +1,4 @@
-import type { DamDistributionServiceName, DocId } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { apiCreateOne, apiDeleteOne, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

@@ -1,6 +1,4 @@
-import { useDamConfigStore, type ValueObjectOption } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { useDamConfigStore } from '@anzusystems/common-admin'
 
 export function useExternalProviderAssetType() {
   const damConfigStore = useDamConfigStore()

@@ -5,8 +5,6 @@ import {
   DamAssetType,
   DamAssetTypeDefault,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed, readonly, ref } from 'vue'
 
 export function useAssetDetailActions() {
   const sidebar = ref(true)

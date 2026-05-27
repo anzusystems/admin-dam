@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { computed, ref } from 'vue'
+import { AFormTextField, ARow, useJobApi } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import useVuelidate from '@vuelidate/core'
 import type { JobAuthorCurrentOptimize } from '@/types/coreDam/Job'
 import { useJobFactory } from '@/model/coreDam/factory/JobFactory'
 
@@ -68,18 +65,10 @@ const onConfirm = async () => {
 <template>
   <VCardText>
     <ARow>
-      <AFormTextField
-        v-model="job.authorId"
-        :label="t('coreDam.job.model.authorId')"
-        data-cy="authorId"
-      />
+      <AFormTextField v-model="job.authorId" :label="t('coreDam.job.model.authorId')" data-cy="authorId" />
     </ARow>
     <ARow>
-      <VSwitch
-        v-model="job.processAll"
-        :label="t('coreDam.job.model.processAll')"
-        data-cy="processAll"
-      />
+      <VSwitch v-model="job.processAll" :label="t('coreDam.job.model.processAll')" data-cy="processAll" />
     </ARow>
   </VCardText>
   <VCardActions>
@@ -87,10 +76,7 @@ const onConfirm = async () => {
     <ABtnTertiary @click.stop="onCancel">
       {{ t('common.button.cancel') }}
     </ABtnTertiary>
-    <ABtnPrimary
-      :loading="buttonLoading"
-      @click.stop="onConfirm"
-    >
+    <ABtnPrimary :loading="buttonLoading" @click.stop="onConfirm">
       {{ t('common.button.create') }}
     </ABtnPrimary>
   </VCardActions>

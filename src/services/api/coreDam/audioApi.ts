@@ -1,17 +1,10 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type {
-  AssetFileAudio,
-  AssetFileDownloadLink,
-  AssetFileRoute,
-  DocId,
-  UploadQueueItem,
-} from '@anzusystems/common-admin'
+import type { AssetFileAudio, AssetFileDownloadLink, AssetFileRoute, UploadQueueItem } from '@anzusystems/common-admin'
 import {
   apiFetchOne,
   damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
-  HTTP_STATUS_OK,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

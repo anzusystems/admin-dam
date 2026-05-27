@@ -7,10 +7,7 @@ import {
   AUserAndTimeTrackingFields,
   COMMON_CONFIG,
 } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import { useVideoShowEpisodeOneStore } from '@/stores/coreDam/videoShowEpisodeStore'
-import { useRouter } from 'vue-router'
 
 const { videoShowEpisode } = storeToRefs(useVideoShowEpisodeOneStore())
 
@@ -26,14 +23,8 @@ const onAssetChipClick = () => {
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow
-        :title="t('coreDam.videoShowEpisode.model.texts.title')"
-        :value="videoShowEpisode.texts.title"
-      />
-      <ARow
-        :title="t('coreDam.videoShowEpisode.model.position')"
-        :value="videoShowEpisode.position"
-      />
+      <ARow :title="t('coreDam.videoShowEpisode.model.texts.title')" :value="videoShowEpisode.texts.title" />
+      <ARow :title="t('coreDam.videoShowEpisode.model.position')" :value="videoShowEpisode.position" />
       <ARow
         :title="t('coreDam.videoShowEpisode.model.attributes.webOrderPosition')"
         :value="videoShowEpisode.attributes.webOrderPosition"
@@ -57,12 +48,7 @@ const onAssetChipClick = () => {
         <ACopyText :value="videoShowEpisode.id" />
       </ARow>
       <ARow :title="t('coreDam.videoShowEpisode.model.asset')">
-        <VChip
-          size="small"
-          :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
-          label
-          @click.stop="onAssetChipClick"
-        >
+        <VChip size="small" :append-icon="COMMON_CONFIG.CHIP.ICON.LINK" label @click.stop="onAssetChipClick">
           {{ videoShowEpisode.asset }}
         </VChip>
       </ARow>

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ACreateDialog,
   AFormTextField,
@@ -73,10 +71,7 @@ const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
       {{ t('coreDam.authorCleanPhrase.meta.create') }}
     </template>
     <template #content>
-      <ASystemEntityScope
-        :system="SYSTEM_CORE_DAM"
-        :subject="ENTITY"
-      >
+      <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
         <ARow>
           <AFormTextField
             v-model="authorCleanPhrase.phrase"

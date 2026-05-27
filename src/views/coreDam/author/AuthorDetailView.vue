@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionEditButton, ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAuthorDetailActions } from '@/views/coreDam/author/composables/authorActions'
 import AuthorDetail from '@/views/coreDam/author/components/AuthorDetail.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
@@ -41,11 +39,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
-        <AActionEditButton
-          v-if="!detailLoading"
-          :record-id="id"
-          :route-name="'/(coreDam)/author/[id]/edit'"
-        />
+        <AActionEditButton v-if="!detailLoading" :record-id="id" :route-name="'/(coreDam)/author/[id]/edit'" />
       </Acl>
       <AActionCloseButton :route-name="'/(coreDam)/author'" />
     </template>

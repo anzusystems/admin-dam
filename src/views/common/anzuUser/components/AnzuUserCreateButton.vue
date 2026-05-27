@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ADialogToolbar,
   AFormTextField,
   type AnzuUser,
   ARow,
   ASystemEntityScope,
-  isUndefined,
-  useAlerts,
   useAnzuUserFactory,
 } from '@anzusystems/common-admin'
 import { ENTITY, useAnzuUserApi } from '@/services/api/common/anzuUserApi'
-import { useRouter } from 'vue-router'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserCreateValidation } from '@/views/common/anzuUser/composables/anzuUserValidations'
 import AnzuUserRoleSelect from '@/views/common/anzuUser/components/AnzuUserRoleSelect.vue'
@@ -85,50 +80,24 @@ const onConfirm = async () => {
 </script>
 
 <template>
-  <ABtnPrimary
-    :class="buttonClass"
-    :data-cy="dataCy"
-    :disabled="disabled"
-    rounded="pill"
-    @click.stop="onClick"
-  >
+  <ABtnPrimary :class="buttonClass" :data-cy="dataCy" :disabled="disabled" rounded="pill" @click.stop="onClick">
     {{ t(buttonT) }}
   </ABtnPrimary>
   <VDialog v-model="dialog">
-    <VCard
-      v-if="dialog"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
-      data-cy="create-panel"
-    >
+    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('common.anzuUser.meta.create') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          system="common"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope system="common" :subject="ENTITY">
           <ARow>
-            <AFormTextField
-              v-model.number="anzuUser.id"
-              :v="v$.anzuUser.id"
-              data-cy="user-id"
-            />
+            <AFormTextField v-model.number="anzuUser.id" :v="v$.anzuUser.id" data-cy="user-id" />
           </ARow>
           <ARow>
-            <AFormTextField
-              v-model="anzuUser.email"
-              :v="v$.anzuUser.email"
-              data-cy="user-email"
-            />
+            <AFormTextField v-model="anzuUser.email" :v="v$.anzuUser.email" data-cy="user-email" />
           </ARow>
           <ARow>
-            <AnzuUserRoleSelect
-              v-model="anzuUser.roles"
-              :client="client"
-              data-cy="user-roles"
-            />
+            <AnzuUserRoleSelect v-model="anzuUser.roles" :client="client" data-cy="user-roles" />
           </ARow>
           <ARow>
             <PermissionGroupRemoteAutocomplete
@@ -144,17 +113,10 @@ const onConfirm = async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="buttonLoading"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </ABtnPrimary>
       </VCardActions>

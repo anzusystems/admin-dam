@@ -1,15 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import {
-  ADialogToolbar,
-  AFormDatetimePicker,
-  AFormTextarea,
-  ARow,
-  ASystemEntityScope,
-  type DocId,
-  isNull,
-  useAlerts,
-} from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormDatetimePicker, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import type { VideoShowEpisode } from '@/types/coreDam/VideoShowEpisode'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/model/coreDam/factory/VideoShowEpisodeFactory'
@@ -20,7 +10,6 @@ import {
 } from '@/services/api/coreDam/videoShowEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useVideoShowEpisodeValidation } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
-import { useI18n } from 'vue-i18n'
 import VideoShowRemoteAutocomplete from '@/views/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
 
 const props = withDefaults(
@@ -106,19 +95,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog
-    v-model="value"
-    :width="500"
-  >
+  <VDialog v-model="value" :width="500">
     <VCard v-if="value">
       <ADialogToolbar @on-cancel="closeDialog(false)">
         {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <ARow>
             <VideoShowRemoteAutocomplete
               v-model="videoShowEpisode.videoShow"
@@ -127,14 +110,8 @@ onMounted(async () => {
               :label="t('coreDam.videoShowEpisode.model.videoShow')"
             />
           </ARow>
-          <div
-            v-if="loadingFormData"
-            class="d-flex w-100 justify-center align-center pa-2"
-          >
-            <VProgressCircular
-              indeterminate
-              color="primary"
-            />
+          <div v-if="loadingFormData" class="d-flex w-100 justify-center align-center pa-2">
+            <VProgressCircular indeterminate color="primary" />
           </div>
           <template v-if="videoShowEpisode.videoShow && !loadingFormData">
             <ARow>
@@ -156,17 +133,10 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="closeDialog(false)"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="closeDialog(false)">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          data-cy="button-add"
-          :loading="saving"
-          @click.stop="submit"
-        >
+        <ABtnPrimary data-cy="button-add" :loading="saving" @click.stop="submit">
           {{ t('common.button.add') }}
         </ABtnPrimary>
       </VCardActions>

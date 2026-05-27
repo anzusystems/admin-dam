@@ -6,15 +6,9 @@ import {
   ACard,
   ADatatablePagination,
   ADialogToolbar,
-  type DocId,
-  isNull,
-  useAlerts,
   useDamConfigStore,
   usePagination,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -86,30 +80,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VDialog
-    :model-value="modelValue"
-    scrollable
-    :max-width="800"
-  >
+  <VDialog :model-value="modelValue" scrollable :max-width="800">
     <VCard>
       <ADialogToolbar @on-cancel="closeDialog">
         {{ t('system.imagePreview.actions.chooseFromDistribution') }}
       </ADialogToolbar>
       <VCardText>
-        <ACard
-          :loading="listLoading"
-          inner-div-class=""
-        >
-          <div
-            v-if="listItems.length === 0"
-            class="text-center text-body-small w-100 pa-2"
-          >
+        <ACard :loading="listLoading" inner-div-class="">
+          <div v-if="listItems.length === 0" class="text-center text-body-small w-100 pa-2">
             {{ t('coreDam.distribution.common.noEntries') }}
           </div>
-          <div
-            v-else
-            class="dam-image-grid dam-image-grid--special"
-          >
+          <div v-else class="dam-image-grid dam-image-grid--special">
             <DistributionImagePreviewItem
               v-for="(item, index) in listItems"
               :key="item.id"
@@ -119,29 +100,18 @@ onMounted(async () => {
               @invalid-image="invalidImage"
             />
           </div>
-          <ADatatablePagination
-            v-model="pagination"
-            hide-records-per-page
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" hide-records-per-page @change="getList" />
         </ACard>
       </VCardText>
       <VCardActions>
-        <div
-          v-if="lastSelectedItem"
-          class="text-body-small pl-2"
-        >
+        <div v-if="lastSelectedItem" class="text-body-small pl-2">
           {{ t('system.imagePreview.selected') }}: {{ selectedTitle }}
         </div>
         <VSpacer />
         <ABtnTertiary @click.stop="closeDialog">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="saving"
-          :disabled="!lastSelectedItem"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="saving" :disabled="!lastSelectedItem" @click.stop="onConfirm">
           {{ t('common.button.confirm') }}
         </ABtnPrimary>
       </VCardActions>

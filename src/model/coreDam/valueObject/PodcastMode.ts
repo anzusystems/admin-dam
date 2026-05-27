@@ -1,7 +1,3 @@
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-
 export const PodcastMode = {
   Import: 'import',
   NotImport: 'not_import',

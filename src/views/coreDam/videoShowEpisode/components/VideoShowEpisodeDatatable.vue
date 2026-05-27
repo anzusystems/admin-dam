@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import {
   ABooleanValue,
   ADatatableConfigButton,
@@ -12,12 +11,10 @@ import {
   createDatatableColumnsConfig,
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
-  type DocId,
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/videoShowEpisodeApi'
-import { useRouter } from 'vue-router'
 import { useVideoShowEpisodeListActions } from '@/views/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeListFilter } from '@/model/coreDam/filter/VideoShowEpisodeFilter'
 import VideoShowEpisodeFilter from '@/views/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
@@ -110,14 +107,8 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering
-          :custom-options="customSort"
-          @sort-by-change="sortByChange"
-        />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableOrdering :custom-options="customSort" @sort-by-change="sortByChange" />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -128,16 +119,10 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.webPublicExportEnabled"
-          />
+          <ABooleanValue chip :value="item.flags.webPublicExportEnabled" />
         </template>
         <template #item.flags.mobilePublicExportEnabled="{ item }: { item: DatatableItem }">
-          <ABooleanValue
-            chip
-            :value="item.flags.mobilePublicExportEnabled"
-          />
+          <ABooleanValue chip :value="item.flags.mobilePublicExportEnabled" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
@@ -162,10 +147,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

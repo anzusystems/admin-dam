@@ -9,8 +9,7 @@ import {
   useDistributionCategoryManageActions,
 } from '@/views/coreDam/distributionCategory/composables/distributionCategoryActions'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 
 const filter = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep, type DocIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, type DocIdNullable } from '@anzusystems/common-admin'
 import { usePodcastSelectActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/model/coreDam/filter/PodcastFilter'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{

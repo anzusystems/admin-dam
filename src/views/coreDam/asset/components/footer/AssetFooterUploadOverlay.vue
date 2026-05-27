@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { useAssetFooterUploadView } from '@/composables/system/assetFooterUpload'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import { computed, watch } from 'vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/services/upload/uploadQueueIds'
 import AssetQueueUploadList from '@/views/coreDam/asset/components/queue/AssetQueueUploadList.vue'
-import { useTheme } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
@@ -42,47 +39,23 @@ const isUploading = computed(() => {
 </script>
 
 <template>
-  <div
-    class="asset-upload-overlay"
-    :class="'asset-upload-overlay--' + footerViewUpload"
-  >
+  <div class="asset-upload-overlay" :class="'asset-upload-overlay--' + footerViewUpload">
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar
-        class="w-100"
-        data-cy="upload-overlay-title"
-        :color="toolbarColor"
-        density="compact"
-        :height="48"
-      >
+      <VToolbar class="w-100" data-cy="upload-overlay-title" :color="toolbarColor" density="compact" :height="48">
         <div class="d-flex px-2">
           <div class="d-flex align-center">
-            <div
-              v-if="isUploading"
-              class="text-body-small d-flex align-center font-weight-bold"
-            >
+            <div v-if="isUploading" class="text-body-small d-flex align-center font-weight-bold">
               {{ t('coreDam.asset.upload.title') }}
             </div>
-            <div
-              v-else
-              class="text-body-small d-flex align-center text-green-darken-3 font-weight-bold"
-            >
+            <div v-else class="text-body-small d-flex align-center text-green-darken-3 font-weight-bold">
               {{ t('coreDam.asset.upload.titleDone') }}
             </div>
           </div>
         </div>
         <VSpacer />
         <div class="d-flex align-center pr-1">
-          <div
-            v-if="isUploading"
-            class="text-body-small mr-2 d-flex align-center"
-          >
-            <VProgressCircular
-              indeterminate
-              color="primary"
-              size="16"
-              width="2"
-              class="mr-1"
-            />
+          <div v-if="isUploading" class="text-body-small mr-2 d-flex align-center">
+            <VProgressCircular indeterminate color="primary" size="16" width="2" class="mr-1" />
             <div>{{ queueProcessedCount + 1 }}/{{ queueTotalCount }}</div>
           </div>
           <VBtn
@@ -96,10 +69,7 @@ const isUploading = computed(() => {
             @click.stop="setMinimalUpload"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('common.system.modal.hide') }}
             </VTooltip>
           </VBtn>
@@ -114,21 +84,13 @@ const isUploading = computed(() => {
             @click.stop="setCompactUpload"
           >
             <VIcon icon="mdi-chevron-up" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('common.system.modal.show') }}
             </VTooltip>
           </VBtn>
         </div>
       </VToolbar>
-      <VToolbar
-        class="w-100"
-        :color="toolbarColor"
-        density="compact"
-        :height="48"
-      >
+      <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="ml-2 text-body-small">
           {{ t('coreDam.asset.upload.newAssetsUploadOverlayTitle') }}
         </div>

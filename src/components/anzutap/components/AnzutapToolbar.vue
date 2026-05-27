@@ -6,7 +6,6 @@ import {
   type ToolbarItemSeparator,
 } from '@/components/anzutap/components/anzutapToolbar'
 import AnzutapToolbarItem from '@/components/anzutap/components/AnzutapToolbarItem.vue'
-import { computed, onMounted, ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -43,19 +42,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VToolbar
-    v-if="editable && editor"
-    :elevation="0"
-    class="anzutap-toolbar"
-    density="compact"
-    height="auto"
-  >
+  <VToolbar v-if="editable && editor" :elevation="0" class="anzutap-toolbar" density="compact" height="auto">
     <div class="anzutap-toolbar__container">
-      <AnzutapToolbarItem
-        v-for="item in items.row1Visible"
-        :key="item.id"
-        :item="item"
-      />
+      <AnzutapToolbarItem v-for="item in items.row1Visible" :key="item.id" :item="item" />
     </div>
   </VToolbar>
 </template>

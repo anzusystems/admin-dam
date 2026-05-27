@@ -1,9 +1,6 @@
 import type { FilterBag, Log, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
 import { fetchLog, fetchLogList } from '@/services/api/common/logApi'
 import { useLogOneStore } from '@/stores/common/logStore'
-import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
 
 const { showErrorsDefault } = useAlerts()
 

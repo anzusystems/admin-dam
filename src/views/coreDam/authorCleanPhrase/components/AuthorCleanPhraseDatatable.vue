@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import {
   ADatatableConfigButton,
   ADatatablePagination,
@@ -12,7 +11,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/AuthorCleanPhraseApi'
-import { useRouter } from 'vue-router'
 import AuthorCleanPhraseFilter from '@/views/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue'
 import type { AuthorCleanPhrase } from '@/types/coreDam/AuthorCleanPhrase'
 import { ACL } from '@/composables/auth/auth'
@@ -62,10 +60,7 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -94,10 +89,7 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
-              <ATableDetailButton
-                :route-params="{ id: item.id }"
-                :route-name="'/(coreDam)/author-clean-phrase/[id]'"
-              />
+              <ATableDetailButton :route-params="{ id: item.id }" :route-name="'/(coreDam)/author-clean-phrase/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
               <ATableEditButton
@@ -108,10 +100,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import {
   ADatatableConfigButton,
   ADatatableOrdering,
@@ -15,7 +14,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceGroupApi'
-import { useRouter } from 'vue-router'
 import { useAssetLicenceGroupListActions } from '@/views/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupFilter from '@/views/coreDam/assetLicenceGroup/components/AssetLicenceGroupFilter.vue'
 import { useAssetLicenceGroupListFilter } from '@/model/coreDam/filter/AssetLicenceGroupFilter'
@@ -79,10 +77,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -93,10 +88,7 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.extSystem="{ item }: { item: DatatableItem }">
-          <CachedExtSystemChip
-            :id="item.extSystem"
-            variant="text"
-          />
+          <CachedExtSystemChip :id="item.extSystem" variant="text" />
         </template>
         <template #item.licences="{ item }: { item: DatatableItem }">
           <CachedAssetLicenceChip
@@ -116,24 +108,15 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_READ">
-              <ATableDetailButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/asset-licence-group/[id]'"
-              />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/asset-licence-group/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UPDATE">
-              <ATableEditButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/asset-licence-group/[id]/edit'"
-              />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/asset-licence-group/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

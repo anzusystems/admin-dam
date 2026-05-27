@@ -1,16 +1,6 @@
 <script lang="ts" setup>
 import { pickTextColorBasedOnBgColor } from '@/utils/colors'
-import {
-  arrayItemToggle,
-  cloneDeep,
-  type Filter,
-  isArray,
-  useDamConfigStore,
-  useFilterHelpers,
-} from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { arrayItemToggle, type Filter, useDamConfigStore, useFilterHelpers } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -96,27 +86,12 @@ const label = computed(() => {
         :title="item.name"
         @click.stop="toggleSelected(item.color)"
       >
-        <VIcon
-          v-show="item.selected"
-          icon="mdi-check position-absolute"
-          :color="item.iconColor"
-          :size="20"
-        />
-        <VTooltip
-          activator="parent"
-          location="bottom"
-        >
+        <VIcon v-show="item.selected" icon="mdi-check position-absolute" :color="item.iconColor" :size="20" />
+        <VTooltip activator="parent" location="bottom">
           {{ item.color }}
         </VTooltip>
       </div>
-      <VBtn
-        v-show="showClear"
-        icon="mdi-close-circle"
-        variant="text"
-        :width="24"
-        :height="24"
-        @click.stop="clear"
-      />
+      <VBtn v-show="showClear" icon="mdi-close-circle" variant="text" :width="24" :height="24" @click.stop="clear" />
     </div>
   </div>
 </template>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { type JobResource, useJobResource } from '@/model/coreDam/valueObject/JobResource'
 import { AChipNoLink } from '@anzusystems/common-admin'
 

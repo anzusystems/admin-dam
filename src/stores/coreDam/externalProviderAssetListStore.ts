@@ -1,9 +1,7 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
-import { isNull, UploadQueueItemType } from '@anzusystems/common-admin'
+import { UploadQueueItemType } from '@anzusystems/common-admin'
 import type { AssetExternalProviderId, AssetExternalProviderListDto } from '@/types/coreDam/AssetExternalProvider'
 import type { ListLoader } from '@/stores/coreDam/assetListStore'
-import { ref } from 'vue'
 
 export interface ExternalProviderAssetListItem {
   asset: AssetExternalProviderListDto

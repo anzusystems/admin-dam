@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { DamAuthor } from '@anzusystems/common-admin'
 import { useDamAuthorFactory } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 
 export const useAuthorOneStore = defineStore('authorOneStore', () => {
   const { createDefault } = useDamAuthorFactory()

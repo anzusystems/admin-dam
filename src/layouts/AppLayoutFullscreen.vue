@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
+import { AAlerts, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/services/EnvConfigService'
 
 const { theme } = useTheme()

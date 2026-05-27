@@ -3,7 +3,6 @@ import type {
   AssetFileDocument,
   AssetFileDownloadLink,
   AssetFileRoute,
-  DocId,
   UploadQueueItem,
 } from '@anzusystems/common-admin'
 import {
@@ -11,7 +10,6 @@ import {
   damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
-  HTTP_STATUS_OK,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'

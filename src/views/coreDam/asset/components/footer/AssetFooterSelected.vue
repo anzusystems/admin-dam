@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/services/upload/uploadQueueIds'
 import AssetQueueMassEditSimple from '@/views/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import AssetFooterSelectedButtonClear from '@/views/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
-import { useTheme } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import { useAssetFooterSelectedView } from '@/composables/system/assetFooterSelected'
 
 const { t } = useI18n()
@@ -56,12 +53,7 @@ const onClearConfirm = async () => {
     :class="'asset-footer--' + footerViewSelected + ' asset-footer__selected--' + footerViewSelected"
   >
     <div class="d-flex w-100 h-100 flex-column">
-      <VToolbar
-        class="w-100"
-        :color="toolbarColor"
-        density="compact"
-        :height="48"
-      >
+      <VToolbar class="w-100" :color="toolbarColor" density="compact" :height="48">
         <div class="d-flex px-2">
           <div>
             <span class="text-body-small font-weight-bold">
@@ -81,11 +73,7 @@ const onClearConfirm = async () => {
           >
             {{ t('coreDam.asset.selected.edit') }}
           </VBtn>
-          <AssetFooterSelectedButtonClear
-            v-show="showFullSelected"
-            variant="small"
-            @confirm="onClearConfirm"
-          />
+          <AssetFooterSelectedButtonClear v-show="showFullSelected" variant="small" @confirm="onClearConfirm" />
           <VBtn
             v-show="showMinimalSelected"
             icon
@@ -97,10 +85,7 @@ const onClearConfirm = async () => {
             @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('common.system.modal.hide') }}
             </VTooltip>
           </VBtn>
@@ -115,10 +100,7 @@ const onClearConfirm = async () => {
             @click.stop="setCompactSelected"
           >
             <VIcon icon="mdi-chevron-up" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
-            >
+            <VTooltip activator="parent" location="bottom">
               {{ t('common.system.modal.show') }}
             </VTooltip>
           </VBtn>

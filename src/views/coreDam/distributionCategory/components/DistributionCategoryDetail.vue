@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import { useDistributionCategoryOneStore } from '@/stores/coreDam/distributionCategoryStore'
 
 const { distributionCategory, distributionCategorySelectedOptions } = storeToRefs(useDistributionCategoryOneStore())
@@ -11,10 +9,7 @@ const { t } = useI18n()
 <template>
   <VRow>
     <VCol cols="8">
-      <ARow
-        :title="t('coreDam.distributionCategory.model.name')"
-        :value="distributionCategory.name"
-      />
+      <ARow :title="t('coreDam.distributionCategory.model.name')" :value="distributionCategory.name" />
       <ARow
         v-for="(option, serviceName) in distributionCategorySelectedOptions"
         :key="serviceName"

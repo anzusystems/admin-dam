@@ -3,17 +3,7 @@ import { SYSTEM_DAM } from '@/model/systems'
 import { fetchAsset, fetchAssetByFileId } from '@/services/api/coreDam/assetApi'
 import { fetchAssetLicence } from '@/services/api/coreDam/assetLicenceApi'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import {
-  type DamCurrentUserDto,
-  type DocId,
-  isDocId,
-  isNull,
-  isString,
-  isUndefined,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { readonly, ref } from 'vue'
+import { type DamCurrentUserDto, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
 
 const currentExtSystemId = ref(0)
 

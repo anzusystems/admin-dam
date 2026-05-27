@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
@@ -61,18 +59,10 @@ const onSuccess = () => {
 </script>
 
 <template>
-  <ABtnPrimary
-    :class="buttonClass"
-    :data-cy="dataCy"
-    rounded="pill"
-    @click.stop="openDialog"
-  >
+  <ABtnPrimary :class="buttonClass" :data-cy="dataCy" rounded="pill" @click.stop="openDialog">
     {{ t(buttonT) }}
   </ABtnPrimary>
-  <VDialog
-    v-model="dialog"
-    :max-width="500"
-  >
+  <VDialog v-model="dialog" :max-width="500">
     <VCard>
       <ADialogToolbar @on-cancel="closeDialog">
         {{ t('common.job.button.create') }}
@@ -85,11 +75,7 @@ const onSuccess = () => {
           data-cy="job-select"
         />
       </div>
-      <component
-        :is="jobComponent"
-        @close-dialog="closeDialog"
-        @on-success="onSuccess"
-      />
+      <component :is="jobComponent" @close-dialog="closeDialog" @on-success="onSuccess" />
     </VCard>
   </VDialog>
 </template>

@@ -1,5 +1,4 @@
-import type { DamKeyword, DamKeywordMinimal, DocId } from '@anzusystems/common-admin'
-import { defineCached } from '@anzusystems/common-admin'
+import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
 import { fetchKeywordListByIds } from '@/services/api/coreDam/keywordApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 

@@ -1,6 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useAssetLicenceGroupFactory } from '@/model/coreDam/factory/AssetLicenceGroupFactory'
-import { ref } from 'vue'
 import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
 
 export const useAssetLicenceGroupOneStore = defineStore('assetLicenceGroupOneStore', () => {

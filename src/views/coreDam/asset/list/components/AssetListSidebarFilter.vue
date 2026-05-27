@@ -18,7 +18,6 @@ import {
   DamKeywordFilterRemoteAutocompleteLegacy,
   DamUserFilterRemoteAutocompleteLegacy,
 } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -48,19 +47,12 @@ const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
-  <VNavigationDrawer
-    v-model="sidebarLeft"
-    permanent
-    :width="300"
-  >
+  <VNavigationDrawer v-model="sidebarLeft" permanent :width="300">
     <div class="v-expansion-panel-title px-2">
       {{ t('coreDam.asset.filterTitle') }}
     </div>
     <div class="pa-2">
-      <VForm
-        name="search2"
-        @submit.prevent="submitFilter"
-      >
+      <VForm name="search2" @submit.prevent="submitFilter">
         <VRow>
           <VCol>
             <AFilterString
@@ -118,18 +110,12 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.inPodcast"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterBooleanSelect v-model="filter.inPodcast" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.fromRss"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterBooleanSelect v-model="filter.fromRss" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
@@ -145,43 +131,27 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.mainFileSingleUse"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterBooleanSelect v-model="filter.mainFileSingleUse" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.described"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterBooleanSelect v-model="filter.described" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.visible"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterBooleanSelect v-model="filter.visible" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.generatedBySystem"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterBooleanSelect v-model="filter.generatedBySystem" @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
           <VCol>
-            <AssetSlotsFilter
-              v-model="filter.slotNames"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AssetSlotsFilter v-model="filter.slotNames" multiple @update:model-value="onAnyFilterUpdate" />
           </VCol>
         </VRow>
         <VRow>
@@ -403,19 +373,9 @@ const { currentExtSystemId } = useCurrentExtSystem()
         >
           {{ t('common.button.submitFilter') }}
         </VBtn>
-        <VBtn
-          class="px-2"
-          color="light"
-          min-width="36px"
-          variant="flat"
-          size="small"
-          @click.stop="resetFilter"
-        >
+        <VBtn class="px-2" color="light" min-width="36px" variant="flat" size="small" @click.stop="resetFilter">
           <VIcon icon="mdi-filter-remove-outline" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
-          >
+          <VTooltip activator="parent" location="bottom">
             {{ t('common.button.resetFilter') }}
           </VTooltip>
         </VBtn>

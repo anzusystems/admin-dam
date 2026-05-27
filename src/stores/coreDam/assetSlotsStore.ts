@@ -1,9 +1,7 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { damClient } from '@/services/api/clients/damClient'
 import type { AssetSlot } from '@/types/coreDam/AssetSlot'
-import { cloneDeep, type DamAssetTypeType, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
-import { acceptHMRUpdate, defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
 
 export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
   const assetSlotNames = ref<string[]>([])

@@ -1,7 +1,5 @@
 import type { DamAssetLicenceGroup, DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
 import { useUserFactory } from '@/model/coreDam/factory/UserFactory'
-import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref } from 'vue'
 
 export const useUserOneStore = defineStore('damUserOneStore', () => {
   const { createDefault, createDefaultForUpdate } = useUserFactory()

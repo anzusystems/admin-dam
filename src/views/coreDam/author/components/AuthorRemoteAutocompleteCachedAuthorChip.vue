@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import type { CachedItem, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
-import { isNull, isUndefined } from '@anzusystems/common-admin'
+import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/views/coreDam/author/composables/cachedAuthors'
-import { computed, shallowRef, watch } from 'vue'
 import { useUploadQueuesStore } from '@/stores/coreDam/uploadQueuesStore'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -77,19 +74,11 @@ const { t } = useI18n()
 <template>
   <div :class="containerClass">
     <template v-if="isNull(id) || isUndefined(id)">
-      <slot name="empty">
-        -
-      </slot>
+      <slot name="empty"> - </slot>
     </template>
     <div v-else-if="textOnly">
       {{ displayTitle }}
-      <VProgressCircular
-        v-if="!loaded && title.length === 0"
-        :size="12"
-        :width="2"
-        indeterminate
-        class="mx-1"
-      />
+      <VProgressCircular v-if="!loaded && title.length === 0" :size="12" :width="2" indeterminate class="mx-1" />
       <VIcon
         v-if="displayReviewed"
         icon="mdi-shield-check"
@@ -106,13 +95,7 @@ const { t } = useI18n()
       :title="displayReviewed ? t('common.damImage.author.model.flags.reviewed') : undefined"
     >
       {{ displayTitle }}
-      <VProgressCircular
-        v-if="!loaded && title.length === 0"
-        :size="12"
-        :width="2"
-        indeterminate
-        class="mx-1"
-      />
+      <VProgressCircular v-if="!loaded && title.length === 0" :size="12" :width="2" indeterminate class="mx-1" />
       <VIcon
         v-if="displayReviewed"
         icon="mdi-shield-check"

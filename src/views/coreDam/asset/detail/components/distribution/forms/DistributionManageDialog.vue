@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-import {
-  ADialogToolbar,
-  AFormTextField,
-  AFormValueObjectOptionsSelect,
-  ARow,
-  type DocId,
-  useAlerts,
-} from '@anzusystems/common-admin'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ADialogToolbar, AFormTextField, AFormValueObjectOptionsSelect, ARow } from '@anzusystems/common-admin'
 import {
   DistributionItemResourceName,
   type DistributionItemResourceNameType,
@@ -96,10 +87,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
 </script>
 
 <template>
-  <VDialog
-    v-model="distributionManageDialog"
-    :width="900"
-  >
+  <VDialog v-model="distributionManageDialog" :width="900">
     <VCard v-if="distributionManageDialog">
       <ADialogToolbar @on-cancel="onCancel">
         <span v-if="isEdit">{{ t('coreDam.distribution.meta.edit') }}</span>
@@ -134,10 +122,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
             :v="v$.distribution.status"
           />
         </ARow>
-        <DistributionForm
-          v-model="distribution"
-          :validation-scope="DistributionUpdateDtoValidationScopeSymbol"
-        />
+        <DistributionForm v-model="distribution" :validation-scope="DistributionUpdateDtoValidationScopeSymbol" />
       </VCardText>
       <VCardActions>
         <VSpacer />

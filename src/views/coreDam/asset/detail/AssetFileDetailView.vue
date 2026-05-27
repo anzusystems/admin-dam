@@ -1,22 +1,10 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { nextTick, onMounted, ref } from 'vue'
-import {
-  DamAssetImageRoiSelect,
-  type DocId,
-  isDocId,
-  isString,
-  useAlerts,
-  useDamCachedUsers,
-  useTheme,
-} from '@anzusystems/common-admin'
+import { DamAssetImageRoiSelect, isDocId, useDamCachedUsers } from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { storeToRefs } from 'pinia'
 import { AssetDetailTab, AssetDetailTabDefault, useAssetDetailTab } from '@/composables/system/assetDetailTab'
 import AssetImage from '@/views/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/views/coreDam/asset/detail/components/AssetDetailDialogSidebar.vue'
 import { fetchAssetByFileId } from '@/services/api/coreDam/assetApi'
-import { useI18n } from 'vue-i18n'
 import { useAssetListStore } from '@/stores/coreDam/assetListStore'
 import { useAssetDetailActions } from '@/views/coreDam/asset/detail/composables/assetDetailActions'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -111,27 +99,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    v-if="assetDetailStore.loader"
-    class="d-flex w-100 h-100 justify-center align-center"
-  >
-    <VProgressCircular
-      indeterminate
-      color="primary"
-    />
+  <div v-if="assetDetailStore.loader" class="d-flex w-100 h-100 justify-center align-center">
+    <VProgressCircular indeterminate color="primary" />
   </div>
   <div v-else-if="asset">
-    <VCard
-      class="dam-image-detail"
-      :class="{ 'dam-image-detail--sidebar-active': sidebar }"
-    >
+    <VCard class="dam-image-detail" :class="{ 'dam-image-detail--sidebar-active': sidebar }">
       <div class="dam-image-detail__wrapper d-flex flex-column">
-        <VToolbar
-          :color="toolbarColor"
-          density="compact"
-          :height="64"
-          class="system-border-b pr-1"
-        >
+        <VToolbar :color="toolbarColor" density="compact" :height="64" class="system-border-b pr-1">
           <div class="text-label-large d-flex pl-2">
             <div>{{ toolbarTitle }}</div>
           </div>
@@ -148,10 +122,7 @@ onMounted(() => {
               @click.stop="toggleSidebar"
             >
               <VIcon icon="mdi-information-outline" />
-              <VTooltip
-                activator="parent"
-                location="bottom"
-              >
+              <VTooltip activator="parent" location="bottom">
                 {{ t('coreDam.asset.detail.toggleInfo') }}
               </VTooltip>
             </VBtn>
@@ -159,16 +130,10 @@ onMounted(() => {
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div
-              v-if="activeTab === AssetDetailTab.ROI"
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div v-if="activeTab === AssetDetailTab.ROI" class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
-            <div
-              v-else
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div v-else class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <AssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"

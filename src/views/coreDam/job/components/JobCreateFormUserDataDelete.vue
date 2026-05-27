@@ -1,18 +1,7 @@
 <script lang="ts" setup>
-import {
-  AFormTextField,
-  ARow,
-  type JobUserDataDelete,
-  useAlerts,
-  useCommonJobFactory,
-  useJobApi,
-  useValidate,
-} from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
+import { AFormTextField, ARow, type JobUserDataDelete, useCommonJobFactory, useJobApi } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import useVuelidate from '@vuelidate/core'
 
 const emit = defineEmits<{
   (e: 'onSuccess'): void
@@ -77,11 +66,7 @@ const onConfirm = async () => {
       />
     </ARow>
     <ARow v-if="'jobUserDataDelete' === job._resourceName">
-      <VSwitch
-        v-model="job.anonymizeUser"
-        :label="t('common.job.model.anonymizeUser')"
-        data-cy="anonymizeUser"
-      />
+      <VSwitch v-model="job.anonymizeUser" :label="t('common.job.model.anonymizeUser')" data-cy="anonymizeUser" />
     </ARow>
   </VCardText>
   <VCardActions>
@@ -89,10 +74,7 @@ const onConfirm = async () => {
     <ABtnTertiary @click.stop="onCancel">
       {{ t('common.button.cancel') }}
     </ABtnTertiary>
-    <ABtnPrimary
-      :loading="buttonLoading"
-      @click.stop="onConfirm"
-    >
+    <ABtnPrimary :loading="buttonLoading" @click.stop="onConfirm">
       {{ t('common.button.create') }}
     </ABtnPrimary>
   </VCardActions>

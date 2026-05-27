@@ -8,7 +8,6 @@ import {
   apiFetchOne,
   apiUpdateOne,
   type FilterBag,
-  type IntegerId,
   type Pagination,
 } from '@anzusystems/common-admin'
 import type { AuthorCleanPhrase, AuthorCleanResultDto, AuthorNameDto } from '@/types/coreDam/AuthorCleanPhrase'

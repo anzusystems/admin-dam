@@ -11,11 +11,8 @@ import {
   type DamAssetTypeType,
   type DamDistributionServiceTypeType,
   DamDistributionStatus,
-  isUndefined,
   useDamConfigState,
 } from '@anzusystems/common-admin'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -46,10 +43,7 @@ const serviceRequirements = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="serviceRequirements"
-    class="text-body-medium"
-  >
+  <div v-if="serviceRequirements" class="text-body-medium">
     <VRow>
       <VCol>
         <div class="font-weight-bold">
@@ -61,12 +55,7 @@ const serviceRequirements = computed(() => {
       <VCol>
         {{ t('coreDam.distribution.common.status') }}:
         <DistributionStatusChip :status="item.status" />
-        <ABtnTertiary
-          v-if="showRedistribute"
-          class="ml-2"
-          size="small"
-          @click.stop="emit('openRedistribute')"
-        >
+        <ABtnTertiary v-if="showRedistribute" class="ml-2" size="small" @click.stop="emit('openRedistribute')">
           {{ t('coreDam.distribution.common.redistributeButton') }}
         </ABtnTertiary>
         <ABtnTertiary
@@ -92,15 +81,9 @@ const serviceRequirements = computed(() => {
           <ACopyText :value="item.extId" />
         </VCol>
       </VRow>
-      <VRow
-        v-for="(value, key) in item.distributionData"
-        :key="key"
-      >
+      <VRow v-for="(value, key) in item.distributionData" :key="key">
         <VCol>
-          <DistributionListItemCustomDistributionDataItem
-            :item="value"
-            :title="key"
-          />
+          <DistributionListItemCustomDistributionDataItem :item="value" :title="key" />
         </VCol>
       </VRow>
     </template>

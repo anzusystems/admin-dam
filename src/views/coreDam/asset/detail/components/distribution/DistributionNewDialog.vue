@@ -10,15 +10,9 @@ import {
   ADialogToolbar,
   type DamAssetTypeType,
   DamDistributionServiceType,
-  type DocId,
-  isNull,
-  isUndefined,
   useDamConfigState,
   useDamConfigStore,
 } from '@anzusystems/common-admin'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -91,28 +85,15 @@ const componentComputed = computed(() => {
 </script>
 
 <template>
-  <VDialog
-    v-model="value"
-    scrollable
-    :max-width="1400"
-    class="dialog-distribution"
-  >
+  <VDialog v-model="value" scrollable :max-width="1400" class="dialog-distribution">
     <VCard v-if="value">
       <ADialogToolbar @on-cancel="closeDialog">
         <span v-if="redistributeMode">{{ t('coreDam.distribution.common.redistributeTitle') }}</span>
         <span v-else>{{ t('coreDam.distribution.common.addTitle') }}</span>
       </ADialogToolbar>
       <div v-if="showTabs">
-        <VTabs
-          v-model="activeDistributionName"
-          density="compact"
-          class="sidebar-info__tabs"
-        >
-          <VTab
-            v-for="(requirement, key) in serviceRequirements"
-            :key="key"
-            :value="key"
-          >
+        <VTabs v-model="activeDistributionName" density="compact" class="sidebar-info__tabs">
+          <VTab v-for="(requirement, key) in serviceRequirements" :key="key" :value="key">
             {{ requirement.title }}
           </VTab>
         </VTabs>

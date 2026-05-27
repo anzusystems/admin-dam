@@ -1,12 +1,6 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import {
-  apiCreateOne,
-  apiFetchOne,
-  apiUpdateOne,
-  type DamAssetLicenceGroup,
-  type IntegerId,
-} from '@anzusystems/common-admin'
+import { apiCreateOne, apiFetchOne, apiUpdateOne, type DamAssetLicenceGroup } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/asset-licence-group'
 export const ENTITY = 'assetLicenceGroup'

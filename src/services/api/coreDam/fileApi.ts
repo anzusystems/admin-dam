@@ -57,7 +57,6 @@ import {
   type AssetFileRoute,
   DamAssetType,
   type DamUploadStartResponse,
-  type DocId,
   type UploadQueueItem,
   UploadQueueItemStatus,
 } from '@anzusystems/common-admin'

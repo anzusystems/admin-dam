@@ -1,5 +1,4 @@
 import type { Editor } from '@tiptap/core'
-import { isDefined } from '@anzusystems/common-admin'
 import { useLink } from '@/components/anzutap/marks/link/composables/useLink'
 
 export interface ToolbarItemButton {

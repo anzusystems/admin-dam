@@ -1,6 +1,4 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { AssetExternalProviderDetailDto } from '@/types/coreDam/AssetExternalProvider'
-import { ref } from 'vue'
 
 export const useExternalProviderAssetDetailStore = defineStore('damExternalProviderAssetDetailStore', () => {
   const asset = ref<AssetExternalProviderDetailDto | null>(null)

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useUserListActions } from '@/views/coreDam/user/composables/userActions'
-import { onMounted } from 'vue'
 import type { DamUser } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
@@ -16,7 +15,6 @@ import {
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/userApi'
-import { useRouter } from 'vue-router'
 import UserFilter from '@/views/coreDam/user/components/UserFilter.vue'
 import { useUserListFilter } from '@/model/coreDam/filter/UserFilter'
 import { ACL, useAuth } from '@/composables/auth/auth'
@@ -72,10 +70,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -95,24 +90,15 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_USER_READ">
-              <ATableDetailButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/user/[id]'"
-              />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/user/[id]'" />
             </Acl>
             <Acl :permission="ACL.DAM_USER_UPDATE">
-              <ATableEditButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/user/[id]/edit'"
-              />
+              <ATableEditButton :record-id="item.id" :route-name="'/(coreDam)/user/[id]/edit'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

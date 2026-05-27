@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import type { DamAuthor, ValidationScope } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
@@ -9,8 +6,6 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  isUndefined,
-  useAlerts,
   useDamAuthorFactory,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
@@ -122,28 +117,17 @@ defineExpose({
     @click.stop="onClick(undefined)"
   >
     <VIcon icon="mdi-plus" />
-    <VTooltip
-      activator="parent"
-      location="bottom"
-    >
+    <VTooltip activator="parent" location="bottom">
       {{ t('coreDam.author.button.add') }}
     </VTooltip>
   </VBtn>
   <VDialog v-model="dialog">
-    <VCard
-      v-if="dialog"
-      width="500"
-      class="mt-0 mr-auto ml-auto"
-      data-cy="create-panel"
-    >
+    <VCard v-if="dialog" width="500" class="mt-0 mr-auto ml-auto" data-cy="create-panel">
       <ADialogToolbar @on-cancel="onCancel">
         {{ t('coreDam.author.meta.create') }}
       </ADialogToolbar>
       <VCardText>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
+        <ASystemEntityScope :system="SYSTEM_CORE_DAM" :subject="ENTITY">
           <ARow>
             <AFormTextField
               v-model="author.name"
@@ -176,17 +160,10 @@ defineExpose({
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary
-          data-cy="button-cancel"
-          @click.stop="onCancel"
-        >
+        <ABtnTertiary data-cy="button-cancel" @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary
-          :loading="buttonLoading"
-          data-cy="button-confirm"
-          @click.stop="onConfirm"
-        >
+        <ABtnPrimary :loading="buttonLoading" data-cy="button-confirm" @click.stop="onConfirm">
           {{ t(buttonT) }}
         </ABtnPrimary>
       </VCardActions>

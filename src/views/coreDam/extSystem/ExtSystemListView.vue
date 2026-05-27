@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
-import { computed } from 'vue'
+import { ACard, useI18n } from '@anzusystems/common-admin'
 import ExtSystemDatatable from '@/views/coreDam/extSystem/components/ExtSystemDatatable.vue'
 import { useExtSystemListActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'

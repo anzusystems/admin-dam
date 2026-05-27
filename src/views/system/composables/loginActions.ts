@@ -1,9 +1,5 @@
 import { useSimpleLoginFactory } from '@/model/coreDam/factory/SimpleLoginFactory'
-import type { Ref } from 'vue'
-import { ref } from 'vue'
 import { login } from '@/services/api/coreDam/authApi'
-import { useAlerts } from '@anzusystems/common-admin'
-import { useRouter } from 'vue-router'
 import type { SimpleLoginForm } from '@/types/coreDam/Auth'
 
 const loginButtonLoading = ref(false)

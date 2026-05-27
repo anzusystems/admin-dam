@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
 import { useJobListFilter } from '@/model/coreDam/filter/JobFilter'
 import { useJobListActions } from '@/views/coreDam/job/composables/jobActions'
-import { onMounted } from 'vue'
 import JobFilter from '@/views/coreDam/job/components/JobFilter.vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
@@ -18,7 +16,6 @@ import {
   useFilterHelpers,
 } from '@anzusystems/common-admin'
 import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
-import { useI18n } from 'vue-i18n'
 import { ENTITY } from '@/services/api/coreDam/podcastApi'
 import type { Job } from '@/types/coreDam/Job'
 import { ACL, useAuth } from '@/composables/auth/auth'
@@ -84,10 +81,7 @@ defineExpose({
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering @sort-by-change="sortByChange" />
-        <ADatatableConfigButton
-          v-model:columns-hidden="columnsHidden"
-          :columns-all="columnsAll"
-        />
+        <ADatatableConfigButton v-model:columns-hidden="columnsHidden" :columns-all="columnsAll" />
       </div>
       <VDataTableServer
         class="a-datatable"
@@ -119,18 +113,12 @@ defineExpose({
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
             <Acl :permission="ACL.DAM_JOB_READ">
-              <ATableDetailButton
-                :record-id="item.id"
-                :route-name="'/(coreDam)/job/[id]'"
-              />
+              <ATableDetailButton :record-id="item.id" :route-name="'/(coreDam)/job/[id]'" />
             </Acl>
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination v-model="pagination" @change="getList" />
         </template>
       </VDataTableServer>
     </div>

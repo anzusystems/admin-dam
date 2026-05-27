@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
 import { type DeviceTypeType, useDeviceTypeTypes } from '@/model/coreDam/valueObject/DeviceType'
 

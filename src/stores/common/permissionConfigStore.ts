@@ -1,7 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { PermissionConfig } from '@anzusystems/common-admin'
 import { usePermissionConfigFactory } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 
 export const usePermissionConfigStore = defineStore('usePermissionConfigStore', () => {
   const { createPermissionConfig } = usePermissionConfigFactory()
