@@ -154,8 +154,7 @@
       "failureReason": "Dôvod zlyhania",
       "generatedAt": "Vygenerované",
       "lastRegeneratedAt": "Posledne regenerované",
-      "sourceRequest": "Zdrojový request",
-      "podcasts": "Podcasty"
+      "sourceRequest": "Zdrojový request"
     },
     "info": {
       "status": {

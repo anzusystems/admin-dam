@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import {
   ADialogToolbar,
   AFormTextarea,
+  AFormTextField,
   ARow,
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
@@ -11,6 +12,7 @@ import {
   type IntegerIdNullable,
   useAlerts,
 } from '@anzusystems/common-admin'
+import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 import { damClient } from '@/services/api/clients/damClient'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -45,7 +47,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 const { synthesizeButtonLoading, synthesize } = useTtsNarrationRequestSynthesizeActions()
 
 const dialog = ref(false)
-const form = ref<TtsSynthesizeForm>({ text: '' })
+const form = ref<TtsSynthesizeForm>({ text: '', title: '', podcasts: [] })
 const extSystemId = ref<IntegerIdNullable>(null)
 const voiceFamilySlug = ref<string | null>(null)
 const assetLicenceId = ref<IntegerIdNullable>(null)
@@ -93,7 +95,7 @@ watch(extSystemId, async (newId) => {
 })
 
 const open = () => {
-  form.value = { text: '' }
+  form.value = { text: '', title: '', podcasts: [] }
   extSystemId.value = currentExtSystemId.value > 0 ? currentExtSystemId.value : null
   voiceFamilySlug.value = null
   assetLicenceId.value = null
@@ -112,10 +114,12 @@ const onConfirm = async () => {
     showValidationError()
     return
   }
+  const trimmedTitle = form.value.title.trim()
   const res = await synthesize({
     text: form.value.text,
+    title: trimmedTitle === '' ? null : trimmedTitle,
     voiceFamilySlug: voiceFamilySlug.value,
-    podcasts: [],
+    podcasts: form.value.podcasts,
     extSystem: extSystemId.value,
     assetLicence: assetLicenceId.value,
   })
@@ -197,6 +201,24 @@ const onConfirm = async () => {
               :disabled="extSystemId === null"
               clearable
               data-cy="synthesize-asset-licence"
+            />
+          </ARow>
+          <ARow>
+            <AFormTextField
+              v-model="form.title"
+              :label="t('coreDam.ttsNarrationRequest.synthesize.assetTitle')"
+              :placeholder="t('coreDam.ttsNarrationRequest.synthesize.assetTitlePlaceholder')"
+              :v="v$.form.title"
+              data-cy="synthesize-asset-title"
+            />
+          </ARow>
+          <ARow>
+            <PodcastRemoteAutocomplete
+              v-model="form.podcasts"
+              :label="t('coreDam.ttsNarrationRequest.synthesize.podcasts')"
+              multiple
+              clearable
+              data-cy="synthesize-podcasts"
             />
           </ARow>
         </ASystemEntityScope>

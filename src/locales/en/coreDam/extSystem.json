@@ -15,7 +15,11 @@
     "title": "TTS Settings",
     "activeProviderMode": "Active TTS Provider",
     "defaultVoiceFamily": "Default Voice Family",
+    "autoKeyword": "Auto keyword (every TTS audio)",
     "ttsDefaultAssetLicence": "Default Asset Licence (TTS fallback)",
+    "ttsAdvertAsset": "Advert Asset",
+    "ttsAdvertAssetEmpty": "Not set",
+    "ttsAdvertAssetSelect": "Select audio asset",
     "modes": {
       "elevenlabs": "ElevenLabs",
       "google_tts": "Google TTS",

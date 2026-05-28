@@ -19,6 +19,7 @@ export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameS
   preferredProvider: VoiceDiscriminatorType | null
   active: boolean
   keyword: DocIdNullable
+  keywords: DocId[]
   createdAt: DatetimeUTC
   modifiedAt: DatetimeUTC
 }
@@ -31,6 +32,7 @@ export interface VoiceFamilyCreate {
   preferredProvider: VoiceDiscriminatorType | null
   active: boolean
   keyword: DocIdNullable
+  keywords: DocId[]
 }
 
 export interface VoiceFamilyUpdate {
@@ -39,4 +41,5 @@ export interface VoiceFamilyUpdate {
   preferredProvider: VoiceDiscriminatorType | null
   active: boolean
   keyword: DocIdNullable
+  keywords: DocId[]
 }

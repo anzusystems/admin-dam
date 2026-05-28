@@ -1,28 +1,55 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import { useI18n } from 'vue-i18n'
 import { ACL } from '@/composables/auth/auth'
 import { useExtSystemEditActions } from '@/views/coreDam/extSystem/composables/extSystemActions'
 import { useTtsActiveProviderMode } from '@/model/coreDam/valueObject/TtsActiveProviderMode'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import {
-  AActionSaveButton,
+  AAssetSelect,
+  AFormRemoteAutocomplete,
   ARow,
   ASystemEntityScope,
+  type AssetSelectReturnData,
   DamAssetLicenceRemoteAutocomplete,
+  DamAssetType,
+  type IntegerId,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import VoiceFamilyRemoteAutocomplete from '@/views/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
+import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
+import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
+import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 
-const { extSystem, ttsSettingsSaveButtonLoading, onUpdateTtsSettings } = useExtSystemEditActions()
-
+const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
-
+const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
+const keywordInnerFilter = useKeywordFilter()
 const { t } = useI18n()
+
+const advertLicenceIds = computed<IntegerId[]>(() => {
+  if (extSystem.value.ttsDefaultAssetLicence) {
+    return [extSystem.value.ttsDefaultAssetLicence]
+  }
+  return [currentAssetLicenceId.value]
+})
+
+const onAdvertSelect = (data: AssetSelectReturnData) => {
+  if (data.type === 'assetId') {
+    extSystem.value.ttsAdvertAsset = data.value[0] ?? null
+  }
+}
+
+const clearAdvert = () => {
+  extSystem.value.ttsAdvertAsset = null
+}
 </script>
 
 <template>
-  <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE_TTS_SETTINGS">
+  <Acl :permission="ACL.DAM_EXT_SYSTEM_UPDATE">
     <ASystemEntityScope
       :system="SYSTEM_CORE_DAM"
       :subject="ENTITY"
@@ -52,6 +79,18 @@ const { t } = useI18n()
             />
           </ARow>
           <ARow>
+            <AFormRemoteAutocomplete
+              v-model="extSystem.ttsSettings.autoKeywordId"
+              :label="t('coreDam.extSystem.ttsSettings.autoKeyword')"
+              :fetch-items="fetchKeywordItems"
+              :fetch-items-by-ids="fetchKeywordItemsByIds"
+              :inner-filter="keywordInnerFilter"
+              clearable
+              filter-by-field="text"
+              data-cy="ext-system-tts-auto-keyword"
+            />
+          </ARow>
+          <ARow>
             <DamAssetLicenceRemoteAutocomplete
               v-model="extSystem.ttsDefaultAssetLicence"
               :client="damClient"
@@ -62,10 +101,48 @@ const { t } = useI18n()
             />
           </ARow>
           <ARow>
-            <AActionSaveButton
-              :loading="ttsSettingsSaveButtonLoading"
-              @save-record="onUpdateTtsSettings"
-            />
+            <div class="d-flex align-center ga-2">
+              <div class="text-body-2 font-weight-medium mr-2">
+                {{ t('coreDam.extSystem.ttsSettings.ttsAdvertAsset') }}:
+              </div>
+              <AssetChip
+                v-if="extSystem.ttsAdvertAsset"
+                :id="extSystem.ttsAdvertAsset"
+              />
+              <div
+                v-else
+                class="text-medium-emphasis text-body-2"
+              >
+                {{ t('coreDam.extSystem.ttsSettings.ttsAdvertAssetEmpty') }}
+              </div>
+              <VBtn
+                v-if="extSystem.ttsAdvertAsset"
+                icon="mdi-trash-can-outline"
+                variant="text"
+                size="small"
+                data-cy="ext-system-tts-advert-asset-clear"
+                @click.stop="clearAdvert"
+              />
+              <AAssetSelect
+                :select-licences="advertLicenceIds"
+                :min-count="1"
+                :max-count="1"
+                return-type="assetId"
+                :asset-type="DamAssetType.Audio"
+                @on-confirm="onAdvertSelect"
+              >
+                <template #activator="{ props: assetSelectProps }">
+                  <VBtn
+                    v-bind="assetSelectProps"
+                    variant="text"
+                    size="small"
+                    data-cy="ext-system-tts-advert-asset-select"
+                  >
+                    {{ t('coreDam.extSystem.ttsSettings.ttsAdvertAssetSelect') }}
+                  </VBtn>
+                </template>
+              </AAssetSelect>
+            </div>
           </ARow>
         </VCol>
       </VRow>

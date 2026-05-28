@@ -44,6 +44,9 @@
     "assetLicence": "Asset licence",
     "assetLicencePlaceholder": "Leave empty to use ext-system default",
     "assetLicenceDefaultPlaceholder": "Default: {name}",
+    "assetTitle": "Asset title",
+    "assetTitlePlaceholder": "Optional — auto-generated when left empty",
+    "podcasts": "Bind to podcasts",
     "estimatedDurationUnit": "min",
     "alreadyPending": "An identical request is already pending — no new request was created.",
     "alreadyExists": "Asset already generated — no new request was created."
@@ -97,7 +100,7 @@
       "createdBy": "Created by",
       "modifiedBy": "Modified by",
       "modifiedAt": "Modified",
-      "voiceFamilyKeywordId": "Voice family keyword",
+      "voiceFamilyKeywordId": "Voice family keywords",
       "assetAutoPodcastId": "Auto podcast",
       "assetRecommendedPodcastId": "Recommended podcast",
       "assetExtResourceName": "Ext resource name",

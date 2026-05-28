@@ -81,7 +81,7 @@ onMounted(async () => {
     if (data) {
       const { request, ttsAsset } = data
 
-      if (ttsAsset?.voiceFamilyKeywordId) addToCachedKeywords([ttsAsset.voiceFamilyKeywordId])
+      if (ttsAsset?.voiceFamilyKeywordIds.length) addToCachedKeywords(ttsAsset.voiceFamilyKeywordIds)
       if (request.assetLicenceId !== null) addToCachedAssetLicences([request.assetLicenceId])
       addToCachedExtSystems([request.extSystemId])
       if (ttsAsset?.voiceFamilyId) addToCachedVoiceFamilies([ttsAsset.voiceFamilyId])
@@ -237,8 +237,12 @@ onMounted(async () => {
             />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.voiceFamilyKeywordId')">
-            <template v-if="detail.ttsAsset.voiceFamilyKeywordId">
-              <CachedKeywordChip :id="detail.ttsAsset.voiceFamilyKeywordId" />
+            <template v-if="detail.ttsAsset.voiceFamilyKeywordIds.length">
+              <CachedKeywordChip
+                v-for="keywordId in detail.ttsAsset.voiceFamilyKeywordIds"
+                :id="keywordId"
+                :key="keywordId"
+              />
             </template>
             <template v-else>
               —

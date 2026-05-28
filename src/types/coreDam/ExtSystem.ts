@@ -4,9 +4,11 @@ import type { TtsActiveProviderMode } from '@/types/coreDam/TtsActiveProviderMod
 export interface ExtSystemTtsSettings {
   activeProviderMode: TtsActiveProviderMode
   defaultVoiceFamilyId: DocIdNullable
+  autoKeywordId: DocIdNullable
 }
 
 export interface ExtSystem extends DamExtSystem {
   ttsSettings: ExtSystemTtsSettings
   ttsDefaultAssetLicence: IntegerIdNullable
+  ttsAdvertAsset: DocIdNullable
 }

@@ -5,5 +5,4 @@ export interface TtsAssetDetail {
   assetId: DocId
   tts: TtsAsset | null
   lastRequestId: DocIdNullable
-  podcastIds: DocId[]
 }

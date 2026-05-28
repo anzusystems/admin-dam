@@ -153,8 +153,7 @@
       "failureReason": "Failure reason",
       "generatedAt": "Generated at",
       "lastRegeneratedAt": "Last regenerated at",
-      "sourceRequest": "Source request",
-      "podcasts": "Podcasts"
+      "sourceRequest": "Source request"
     },
     "info": {
       "status": {

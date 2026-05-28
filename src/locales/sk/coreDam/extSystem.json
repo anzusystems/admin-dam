@@ -15,7 +15,11 @@
     "title": "TTS nastavenia",
     "activeProviderMode": "Aktívny TTS poskytovateľ",
     "defaultVoiceFamily": "Predvolená hlasová rodina",
+    "autoKeyword": "Automatické kľúčové slovo (každé TTS audio)",
     "ttsDefaultAssetLicence": "Predvolená Asset licencia (TTS fallback)",
+    "ttsAdvertAsset": "Reklamný Asset",
+    "ttsAdvertAssetEmpty": "Nenastavené",
+    "ttsAdvertAssetSelect": "Vybrať audio asset",
     "modes": {
       "elevenlabs": "ElevenLabs",
       "google_tts": "Google TTS",

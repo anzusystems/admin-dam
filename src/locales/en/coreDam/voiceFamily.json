@@ -6,7 +6,8 @@
     "language": "Language",
     "preferredProvider": "Preferred Provider",
     "active": "Active",
-    "keyword": "Keyword"
+    "keyword": "Keyword",
+    "keywords": "Keywords (auto-tag)"
   },
   "filter": {
     "id": "ID",

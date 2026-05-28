@@ -53,6 +53,7 @@ const create = async () => {
     preferredProvider: voiceFamily.value.preferredProvider,
     active: voiceFamily.value.active,
     keyword: voiceFamily.value.keyword,
+    keywords: voiceFamily.value.keywords,
   }
   return await createVoiceFamily(payload)
 }

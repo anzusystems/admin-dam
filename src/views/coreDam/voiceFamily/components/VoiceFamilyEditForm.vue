@@ -73,6 +73,19 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <AFormRemoteAutocomplete
+            v-model="voiceFamily.keywords"
+            :label="t('coreDam.voiceFamily.model.keywords')"
+            :fetch-items="fetchKeywordItems"
+            :fetch-items-by-ids="fetchKeywordItemsByIds"
+            :inner-filter="keywordInnerFilter"
+            multiple
+            clearable
+            filter-by-field="text"
+            data-cy="voice-family-keywords"
+          />
+        </ARow>
+        <ARow>
           <VSwitch
             v-model="voiceFamily.active"
             class="pl-2"

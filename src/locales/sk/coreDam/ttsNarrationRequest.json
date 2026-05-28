@@ -44,6 +44,9 @@
     "assetLicence": "Asset licencia",
     "assetLicencePlaceholder": "Nechaj prázdne pre default ext-systému",
     "assetLicenceDefaultPlaceholder": "Default: {name}",
+    "assetTitle": "Nadpis assetu",
+    "assetTitlePlaceholder": "Voliteľné — bez vyplnenia sa vygeneruje automaticky",
+    "podcasts": "Naviazať na podcasty",
     "estimatedDurationUnit": "min",
     "alreadyPending": "Rovnaký request už čaká — nový sa nevytvoril.",
     "alreadyExists": "Asset už bol vygenerovaný — nový request sa nevytvoril."
@@ -97,7 +100,7 @@
       "createdBy": "Vytvoril",
       "modifiedBy": "Upravil",
       "modifiedAt": "Upravené",
-      "voiceFamilyKeywordId": "Kľúčové slovo hlasovej rodiny",
+      "voiceFamilyKeywordId": "Kľúčové slová hlasovej rodiny",
       "assetAutoPodcastId": "Auto podcast",
       "assetRecommendedPodcastId": "Odporúčaný podcast",
       "assetExtResourceName": "Ext názov zdroja",

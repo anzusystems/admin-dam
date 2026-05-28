@@ -127,8 +127,6 @@ export const ACL = {
   DAM_TTS_NARRATION_REQUEST_READ: 'dam_ttsNarrationRequest_read',
   DAM_TTS_NARRATION_REQUEST_SYNTHESIZE: 'dam_ttsNarrationRequest_synthesize',
   DAM_TTS_NARRATION_REQUEST_CANCEL: 'dam_ttsNarrationRequest_cancel',
-  // TTS — ExtSystem settings
-  DAM_EXT_SYSTEM_UPDATE_TTS_SETTINGS: 'dam_extSystem_updateTtsSettings',
 } as const
 export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]

@@ -20,8 +20,10 @@ export function useExtSystemFactory() {
       ttsSettings: {
         activeProviderMode: TtsActiveProviderMode.Auto,
         defaultVoiceFamilyId: null,
+        autoKeywordId: null,
       },
       ttsDefaultAssetLicence: null,
+      ttsAdvertAsset: null,
     }
   }
 

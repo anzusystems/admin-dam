@@ -6,7 +6,8 @@
     "language": "Jazyk",
     "preferredProvider": "Preferovaný poskytovateľ",
     "active": "Aktívny",
-    "keyword": "Kľúčové slovo"
+    "keyword": "Kľúčové slovo",
+    "keywords": "Kľúčové slová (auto-tag)"
   },
   "filter": {
     "id": "ID",

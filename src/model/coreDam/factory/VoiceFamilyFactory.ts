@@ -14,6 +14,7 @@ export function useVoiceFamilyFactory() {
       preferredProvider: null,
       active: true,
       keyword: null,
+      keywords: [],
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 1,

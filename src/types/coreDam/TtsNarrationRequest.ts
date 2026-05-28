@@ -27,7 +27,7 @@ export interface TtsAsset {
   status: TtsAudioStatus
   failureReason: string | null
   staging: boolean
-  voiceFamilyKeywordId: DocIdNullable
+  voiceFamilyKeywordIds: DocId[]
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
 }
@@ -113,6 +113,7 @@ export type TtsCancelRequestStatus = (typeof TtsCancelRequestStatus)[keyof typeo
 
 export interface TtsSynthesizeRequest {
   text: string
+  title: string | null
   voiceFamilySlug: string | null
   podcasts: DocId[]
   extSystem: IntegerId

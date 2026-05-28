@@ -122,6 +122,7 @@ export const useVoiceFamilyEditActions = () => {
         preferredProvider: voiceFamily.value.preferredProvider,
         active: voiceFamily.value.active,
         keyword: voiceFamily.value.keyword,
+        keywords: voiceFamily.value.keywords,
       }
       await updateVoiceFamily(voiceFamilyOneStore.voiceFamily.id, payload)
       showRecordWas('updated')
