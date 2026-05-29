@@ -47,5 +47,9 @@ lerna-debug.log*
 # Docker
 docker-compose.override.yml*
 
+# Local tooling artifacts
+.common-admin-updated
+.playwright-cli/
+
 # Exclusions
 !.gitkeep
