@@ -5,8 +5,15 @@ import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusys
 
 const filterFields = [
   { name: 'id' as const, default: null, type: 'integer' },
-  { name: 'serviceSlug' as const, apiName: 'name', default: [], type: 'string', variant: 'in' },
-  { name: 'type' as const, default: DamAssetType.Video, type: 'string', mandatory: true, render: { skip: true } },
+  {
+    name: 'serviceSlug' as const,
+    apiName: 'name',
+    titleT: 'coreDam.distributionCategorySelect.filter.name',
+    default: [],
+    type: 'string',
+    variant: 'in',
+  },
+  { name: 'type' as const, default: DamAssetType.Video, type: 'string', mandatory: true },
 ] satisfies readonly MakeFilterOption[]
 
 export function useDistributionCategorySelectListFilter() {

@@ -36,7 +36,14 @@ const filterFieldsList = [
   { name: 'appVersion' as const, apiName: 'context.appVersion', variant: 'startsWith', default: null, type: 'string' },
   { name: 'userId' as const, apiName: 'context.userId', default: null, type: 'integer' },
   { name: 'resourceName' as const, apiName: 'context.resourceName', default: null, type: 'string' },
-  { name: 'resourceId' as const, apiName: 'context.resourceIds', variant: 'in', default: [], type: 'string' },
+  {
+    name: 'resourceId' as const,
+    apiName: 'context.resourceIds',
+    titleT: 'common.log.filter.resourceIds',
+    variant: 'in',
+    default: [],
+    type: 'string',
+  },
   {
     name: 'datetimeFrom' as const,
     apiName: 'datetime',

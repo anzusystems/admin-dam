@@ -6,6 +6,7 @@ const fields = [
   {
     name: 'term' as const,
     apiName: 'text',
+    titleT: 'coreDam.asset.filter.text',
     default: null,
     type: 'string',
   },
