@@ -1,51 +1,68 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiDeleteOne, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 
 const END_POINT = '/adm/v1/podcast-episode'
 export const ENTITY = 'podcastEpisode'
 
-export const fetchPodcastEpisodeListByPodcast = (podcastId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<PodcastEpisode[]>(
-    damClient,
-    END_POINT + '/podcast/:podcastId',
-    { podcastId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchPodcastEpisodeListByPodcast = () =>
+  useApiFetchList<PodcastEpisode[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/podcast/:podcastId',
+  })
 
-export const fetchPodcastEpisodeListByAsset = (assetId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<PodcastEpisode[]>(
-    damClient,
-    END_POINT + '/asset/:assetId',
-    { assetId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchPodcastEpisodeListByAsset = () =>
+  useApiFetchList<PodcastEpisode[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset/:assetId',
+  })
 
-export const prepareFormDataPodcastEpisode = (assetId: DocId, podcastId: DocId) =>
-  apiFetchOne<PodcastEpisode>(
-    damClient,
-    END_POINT + '/asset/:assetId/podcast/:podcastId/prepare-payload',
-    { assetId, podcastId },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const usePrepareFormDataPodcastEpisode = () =>
+  useApiRequest<PodcastEpisode, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset/:assetId/podcast/:podcastId/prepare-payload',
+  })
 
-export const createPodcastEpisode = (data: PodcastEpisode) =>
-  apiCreateOne<PodcastEpisode>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreatePodcastEpisode = () =>
+  useApiRequest<PodcastEpisode, PodcastEpisode>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updatePodcastEpisode = (id: DocId, data: PodcastEpisode) =>
-  apiUpdateOne<PodcastEpisode>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdatePodcastEpisode = () =>
+  useApiRequest<PodcastEpisode, PodcastEpisode>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchPodcastEpisode = (id: DocId) =>
-  apiFetchOne<PodcastEpisode>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchPodcastEpisode = () =>
+  useApiRequest<PodcastEpisode, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const deletePodcastEpisode = (id: DocId) =>
-  apiDeleteOne<PodcastEpisode>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useDeletePodcastEpisode = () =>
+  useApiRequest<void, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

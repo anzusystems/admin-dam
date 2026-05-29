@@ -4,7 +4,8 @@ import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStor
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSlotListItem from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsActions'
-import { ADatatablePagination, DamAssetType, type DamAssetTypeType } from '@anzusystems/common-admin'
+import { DamAssetType, type DamAssetTypeType } from '@anzusystems/common-admin'
+import { ADatatablePagination, DatatablePaginationKey } from '@anzusystems/common-admin/labs'
 import AssetSibling from '@/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue'
 
 const props = withDefaults(
@@ -32,6 +33,8 @@ const {
   switchSlot,
   // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 } = useAssetDetailSidebarSlotsActions(props.assetId, props.assetType)
+
+provide(DatatablePaginationKey, pagination)
 
 onMounted(async () => {
   assetSlotsStore.setAssetSlotsNamesFromConfig(props.assetType)

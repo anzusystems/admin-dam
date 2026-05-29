@@ -37,9 +37,10 @@ export default defineConfigWithVueTs(
     },
   },
   anzuRecommended({
-    // Disabled during the domain-driven restructure to keep CI signal clean.
-    // Re-enable in the dedicated deprecated-imports cleanup PR.
-    deprecatedImports: 'off',
+    // Fully migrated off the deprecated @anzusystems/common-admin barrel onto /labs,
+    // including the author/keyword cached-tagging components (now on the labs
+    // AFormRemoteAutocompleteWithCached). Rule fully enforced — no skips.
+    deprecatedImports: 'error',
   }),
   {
     plugins: {

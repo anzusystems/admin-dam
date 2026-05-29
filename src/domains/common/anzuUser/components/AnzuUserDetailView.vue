@@ -9,7 +9,7 @@ import { ACL } from '@/domains/system/auth/auth'
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const { fetchAnzuUser, resetAnzuUserStore, detailLoading } = useAnzuUserActions(damClient)
+const { fetchAnzuUser, resetAnzuUserStore, detailLoading } = useAnzuUserActions()
 
 const { t } = useI18n()
 

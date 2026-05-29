@@ -1,59 +1,69 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import {
-  apiCreateOne,
-  apiDeleteOne,
-  apiFetchByIds,
-  apiFetchList,
-  apiFetchOne,
-  apiUpdateOne,
-} from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 
 const END_POINT = '/adm/v1/podcast'
+const END_POINT_LIST_EXT_SYSTEM = END_POINT + '/ext-system/:extSystemId'
+const END_POINT_LIST_LICENCE = END_POINT + '/licence/:licenceId'
 export const ENTITY = 'podcast'
 
-export const fetchPodcastListByExtSystem = (extSystemId: IntegerId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<Podcast[]>(
-    damClient,
-    END_POINT + '/ext-system/:extSystemId',
-    { extSystemId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchPodcastListByExtSystem = () =>
+  useApiFetchList<Podcast[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST_EXT_SYSTEM,
+  })
 
-export const fetchPodcastListByLicence = (licenceId: IntegerId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<Podcast[]>(
-    damClient,
-    END_POINT + '/licence/:licenceId',
-    { licenceId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchPodcastListByLicence = () =>
+  useApiFetchList<Podcast[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST_LICENCE,
+  })
 
-export const fetchPodcastListByIds = (extSystemId: IntegerId, ids: string[]) =>
-  apiFetchByIds<Podcast[]>(
-    damClient,
-    ids,
-    END_POINT + '/ext-system/:extSystemId',
-    { extSystemId },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchPodcastListByIds = () =>
+  useApiFetchByIds<Podcast[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST_EXT_SYSTEM,
+  })
 
-export const createPodcast = (data: Podcast) =>
-  apiCreateOne<Podcast>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreatePodcast = () =>
+  useApiRequest<Podcast, Podcast>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updatePodcast = (id: DocId, data: Podcast) =>
-  apiUpdateOne<Podcast>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdatePodcast = () =>
+  useApiRequest<Podcast, Podcast>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchPodcast = (id: DocId) =>
-  apiFetchOne<Podcast>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchPodcast = () =>
+  useApiRequest<Podcast, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const deletePodcast = (id: DocId) =>
-  apiDeleteOne<Podcast>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useDeletePodcast = () =>
+  useApiRequest<void, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

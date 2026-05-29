@@ -18,6 +18,7 @@ import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,
 } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
+import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
 import { onKeyUp } from '@vueuse/core'
 
 const { t } = useI18n()
@@ -32,6 +33,8 @@ const {
   loader,
   items,
   pagination,
+  filterData,
+  filterConfig,
   fetchAssetList,
   fetchNextPage,
   listMounted,
@@ -46,8 +49,11 @@ const {
   onArrowLeft,
 } = useExternalProviderAssetListActions(sidebarRight)
 
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
+
 const autoloadOnIntersect = (isIntersecting: boolean) => {
-  if (isIntersecting && pagination.hasNextPage === true) {
+  if (isIntersecting && pagination.value.hasNextPage === true) {
     fetchNextPage()
   }
 }

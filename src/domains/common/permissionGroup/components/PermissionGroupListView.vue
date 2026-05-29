@@ -13,7 +13,7 @@ const afterCreate = () => {
   datatable.value?.refresh()
 }
 
-const { listLoading } = usePermissionGroupActions(damClient)
+const { listLoading } = usePermissionGroupActions()
 
 const { t } = useI18n()
 

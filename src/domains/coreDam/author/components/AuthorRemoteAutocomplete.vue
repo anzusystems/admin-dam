@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { useAuthorSelectActions } from '@/domains/coreDam/author/composables/authorActions'
-import { useAuthorFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
+import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 
 const props = withDefaults(
   defineProps<{
@@ -24,7 +24,9 @@ const modelValue = defineModel<DocIdNullable | DocId[]>({ required: true })
 
 const { fetchItems, fetchItemsByIds } = useAuthorSelectActions()
 
-const innerFilter = useAuthorFilter()
+const { filterData, filterConfig } = useAuthorInnerFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 
 const canBeCurrentAuthorComputed = computed(() => {
   return props.canBeCurrentAuthor
@@ -36,10 +38,10 @@ watch(
     if (newValue === oldValue) return
     modelValue.value = null
     if (newValue) {
-      innerFilter.canBeCurrentAuthor.model = newValue
+      filterData.canBeCurrentAuthor = newValue
       return
     }
-    innerFilter.canBeCurrentAuthor.model = null
+    filterData.canBeCurrentAuthor = null
   },
   { immediate: true }
 )
@@ -52,8 +54,6 @@ watch(
     :label="label"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
-    :filter-sort-by="null"
     filter-by-field="text"
     :multiple="multiple"
     :disabled="props.disabled"

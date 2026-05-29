@@ -1,53 +1,29 @@
 <script lang="ts" setup>
-import { useUserListFilter } from '@/domains/coreDam/user/filter/UserFilter'
-import { AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const userFilter = useUserListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useUserListActions()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="1">
-          <AFilterInteger
-            v-model="userFilter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterString
-            v-model="userFilter.email"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #search>
+      <AFilterString name="email" />
+    </template>
+  </AFilterWrapper>
 </template>

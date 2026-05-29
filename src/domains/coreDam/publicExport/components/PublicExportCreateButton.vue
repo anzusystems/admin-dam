@@ -8,7 +8,7 @@ import {
   DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createPublicExport, ENTITY } from '@/domains/coreDam/publicExport/api/publicExportApi'
+import { ENTITY, useCreatePublicExport } from '@/domains/coreDam/publicExport/api/publicExportApi'
 import { usePublicExportFactory } from '@/domains/coreDam/publicExport/factory/PublicExportFactory'
 import type { PublicExport } from '@/domains/coreDam/publicExport/types/PublicExport'
 import { usePublicExportValidation } from '@/domains/coreDam/publicExport/composables/publicExportValidation'
@@ -41,7 +41,8 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  return await createPublicExport(publicExport.value)
+  const { executeRequest: createPublicExport } = useCreatePublicExport()
+  return await createPublicExport({ object: publicExport.value })
 }
 
 const { exportTypeOptions } = useExportTypeTypes()

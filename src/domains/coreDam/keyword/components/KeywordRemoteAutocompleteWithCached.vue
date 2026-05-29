@@ -1,12 +1,13 @@
 <script lang="ts" setup generic="I extends DamKeywordMinimal">
 import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
+import { useDamKeywordFactory, type ValidationScope } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocompleteWithCached,
-  useDamKeywordFactory,
-  type ValidationScope,
-} from '@anzusystems/common-admin'
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+} from '@anzusystems/common-admin/labs'
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
-import { useKeywordFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
@@ -71,7 +72,9 @@ const v$ = useVuelidate(rules, { modelValueComputed }, { $scope: props.validatio
 
 const { fetchItemsMinimal } = useKeywordSelectActions()
 
-const innerFilter = useKeywordFilter()
+const { filterConfig, filterData } = useKeywordInnerFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 
 const addNewKeywordText = ref('')
 
@@ -151,7 +154,6 @@ const showAdd = computed(() => {
       :required="requiredComputed"
       :label="label"
       :fetch-items-minimal="fetchItemsMinimal"
-      :inner-filter="innerFilter"
       :multiple="multiple"
       :clearable="clearable"
       filter-by-field="text"

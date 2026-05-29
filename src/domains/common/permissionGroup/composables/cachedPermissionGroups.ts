@@ -1,6 +1,5 @@
 import type { PermissionGroup, PermissionGroupMinimal } from '@anzusystems/common-admin'
-import { usePermissionGroupApi } from '@/domains/common/permissionGroup/api/permissionGroupApi'
-import { damClient } from '@/shared/apiClients/damClient'
+import { useFetchPermissionGroupListByIds } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 
 const mapFullToMinimal = (permissionGroup: PermissionGroup): PermissionGroupMinimal => ({
   id: permissionGroup.id,
@@ -12,13 +11,16 @@ const mapIdToMinimal = (id: IntegerId): PermissionGroupMinimal => {
   return { id: id, title: '', permissions: {} }
 }
 
-const { apiFetchPermissionGroupListByIds } = usePermissionGroupApi(damClient)
+const fetchPermissionGroupListByIds = (ids: IntegerId[]) => {
+  const { executeFetch } = useFetchPermissionGroupListByIds()
+  return executeFetch(ids)
+}
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   IntegerId,
   PermissionGroup,
   PermissionGroupMinimal
->(mapFullToMinimal, mapIdToMinimal, apiFetchPermissionGroupListByIds)
+>(mapFullToMinimal, mapIdToMinimal, fetchPermissionGroupListByIds)
 
 export const useCachedPermissionGroups = () => {
   return {

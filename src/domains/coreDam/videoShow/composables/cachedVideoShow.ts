@@ -1,5 +1,5 @@
 import type { VideoShow, VideoShowMinimal } from '@/domains/coreDam/videoShow/types/VideoShow'
-import { fetchVideoShowListByIds } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import { useFetchVideoShowListByIds } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const mapFullToMinimal = (videoShow: VideoShow): VideoShowMinimal => ({
@@ -16,7 +16,8 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId,
   mapIdToMinimal,
   (ids) => {
     const { currentExtSystemId } = useCurrentExtSystem()
-    return fetchVideoShowListByIds(currentExtSystemId.value, ids)
+    const { executeFetch } = useFetchVideoShowListByIds()
+    return executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
   }
 )
 

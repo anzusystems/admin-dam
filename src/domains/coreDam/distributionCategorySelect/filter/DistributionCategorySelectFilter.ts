@@ -1,22 +1,22 @@
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import type { DamAssetTypeType, Filter } from '@anzusystems/common-admin'
-import { DamAssetType, makeFilterHelper, type MakeFilterOptions } from '@anzusystems/common-admin'
+import { DamAssetType } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 
-const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
-
-const filter = reactive({
-  id: {
-    ...makeFilter({ name: 'id' }),
-  },
-  serviceSlug: {
-    ...makeFilter<string[]>({ name: 'name', variant: 'in' }),
-  },
-  type: {
-    ...makeFilter<DamAssetTypeType>({ name: 'type', mandatory: true, default: DamAssetType.Video }),
-  },
-})
+const filterFields = [
+  { name: 'id' as const, default: null, type: 'integer' },
+  { name: 'serviceSlug' as const, apiName: 'name', default: [], type: 'string', variant: 'in' },
+  { name: 'type' as const, default: DamAssetType.Video, type: 'string', mandatory: true, render: { skip: true } },
+] satisfies readonly MakeFilterOption[]
 
 export function useDistributionCategorySelectListFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }

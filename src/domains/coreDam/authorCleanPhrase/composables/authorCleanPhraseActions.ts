@@ -1,9 +1,10 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import {
-  deleteAuthorCleanPhrase,
-  fetchAuthorCleanPhrase,
-  fetchAuthorCleanPhraseList,
-  updateAuthorCleanPhrase,
+  useDeleteAuthorCleanPhrase,
+  useFetchAuthorCleanPhrase,
+  useFetchAuthorCleanPhraseList,
+  useUpdateAuthorCleanPhrase,
 } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
@@ -21,11 +22,14 @@ const saveAndCloseButtonLoading = ref(false)
 export const useAuthorCleanPhraseListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<AuthorCleanPhrase[]>([])
+  const { executeFetch } = useFetchAuthorCleanPhraseList()
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchAuthorCleanPhraseList(currentExtSystemId.value, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -43,10 +47,11 @@ export const useAuthorCleanPhraseListActions = () => {
 
 export const useAuthorCleanPhraseRemoveActions = () => {
   const router = useRouter()
+  const { executeRequest: deleteAuthorCleanPhrase } = useDeleteAuthorCleanPhrase()
   const removeAuthorCleanPhrase = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      await deleteAuthorCleanPhrase(id)
+      await deleteAuthorCleanPhrase({ urlParams: { id } })
       showRecordWas('updated')
       router.push({ name: '/(coreDam)/author-clean-phrases' })
     } catch (error) {
@@ -69,7 +74,8 @@ export const useAuthorCleanPhraseDetailActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const authorCleanPhrase = await fetchAuthorCleanPhrase(id)
+      const { executeRequest: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
       if (authorCleanPhrase.authorReplacement) {
         addToCachedAuthors(authorCleanPhrase.authorReplacement)
@@ -99,7 +105,8 @@ export const useAuthorCleanPhraseEditActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const authorCleanPhrase = await fetchAuthorCleanPhrase(id)
+      const { executeRequest: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
     } catch (error) {
       showErrorsDefault(error)
@@ -118,7 +125,11 @@ export const useAuthorCleanPhraseEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAuthorCleanPhrase(authorCleanPhraseOneStore.authorCleanPhrase.id, authorCleanPhrase.value)
+      const { executeRequest: updateAuthorCleanPhrase } = useUpdateAuthorCleanPhrase()
+      await updateAuthorCleanPhrase({
+        urlParams: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
+        object: authorCleanPhrase.value,
+      })
       showRecordWas('updated')
 
       router.push({

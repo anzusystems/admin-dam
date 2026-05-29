@@ -1,47 +1,25 @@
 <script lang="ts" setup>
-import { useAssetLicenceGroupListFilter } from '@/domains/coreDam/assetLicenceGroup/filter/AssetLicenceGroupFilter'
-import { AFilterInteger, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { useAssetLicenceGroupListActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filterAssetLicenceGroup = useAssetLicenceGroupListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useAssetLicenceGroupListActions()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
-  >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="1">
-          <AFilterInteger
-            v-model="filterAssetLicenceGroup.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
+  />
 </template>

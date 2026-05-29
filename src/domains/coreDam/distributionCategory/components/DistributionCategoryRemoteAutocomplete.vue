@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { useDistributionCategorySelectActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
 
@@ -30,26 +30,31 @@ const emit = defineEmits<{
 
 const { fetchItems, fetchItemsByIds } = useDistributionCategorySelectActions()
 
-const innerFilter = useDistributionCategoryFilter()
+const { filterData, filterConfig } = useDistributionCategoryFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 
-onMounted(() => {
-  innerFilter.type.model = props.assetType
-})
+watch(
+  () => props.assetType,
+  (newValue) => {
+    filterData.type = newValue
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
   <AFormRemoteAutocomplete
-    :model-value="modelValue"
+    :model-value="(modelValue as string | string[] | null)"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
     filter-by-field="name"
     :data-cy="dataCy"
-    :disable-init-fetch="disableInitFetch"
-    @update:model-value="emit('update:modelValue', $event)"
+    :prefetch="disableInitFetch ? false : 'hover'"
+    @update:model-value="emit('update:modelValue', $event ?? null)"
   />
 </template>

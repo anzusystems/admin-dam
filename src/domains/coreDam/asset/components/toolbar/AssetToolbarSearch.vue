@@ -2,7 +2,14 @@
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetSearchInput from '@/domains/coreDam/asset/components/toolbar/AssetSearchInput.vue'
 
-const { filter, fetchAssetList } = useAssetListActions()
+const { filterData, fetchAssetList } = useAssetListActions()
+
+const term = computed<string | null>({
+  get: () => (filterData.text as string | null) ?? null,
+  set: (value) => {
+    filterData.text = value
+  },
+})
 
 const submitFilter = () => {
   fetchAssetList()
@@ -15,7 +22,7 @@ const submitFilter = () => {
     @submit.prevent="submitFilter"
   >
     <AssetSearchInput
-      v-model="filter.text.model"
+      v-model="term"
       @submit="submitFilter"
     />
   </VForm>

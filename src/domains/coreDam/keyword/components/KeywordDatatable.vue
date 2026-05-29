@@ -3,16 +3,22 @@ import type { DamKeyword } from '@anzusystems/common-admin'
 import {
   ABooleanValue,
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
-  type DatatableOrderingOption,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 import { useKeywordListActions } from '@/domains/coreDam/keyword/composables/keywordActions'
@@ -23,13 +29,16 @@ import { ACL, useAuth } from '@/domains/system/auth/auth'
 type DatatableItem = DamKeyword
 
 const router = useRouter()
-const filter = useKeywordListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = useKeywordListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useKeywordListActions()
-const getList = () => {
-  fetchList(pagination, filter)
-}
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination('createdAt')
+provide(DatatablePaginationKey, pagination)
 
 const { can } = useAuth()
 
@@ -39,21 +48,32 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [{ key: 'id' }, { key: 'name' }, { key: 'flags.reviewed' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
 )
-pagination.sortBy = 'createdAt'
 
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+const getList = useDebounceFn(() => {
+  fetchList(pagination, filterData, filterConfig)
+})
+
+const sortByChange = () => {
+  filterConfig.touched = false
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
 }
 
 onMounted(() => {
-  getList()
+  loadStoredFilters(pagination, getList)
 })
 
 defineExpose({
@@ -64,14 +84,14 @@ defineExpose({
 <template>
   <div>
     <KeywordFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering
-          variant="default"
+          variant="createdAt"
           @sort-by-change="sortByChange"
         />
         <ADatatableConfigButton
@@ -119,7 +139,6 @@ defineExpose({
         <template #bottom>
           <ADatatablePagination
             v-model="pagination"
-            var
             @change="getList"
           />
         </template>

@@ -21,7 +21,8 @@ import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/as
 import { onKeyUp } from '@vueuse/core'
 import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
 import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
-import { ADatatableOrdering, type DatatableOrderingOption } from '@anzusystems/common-admin'
+import type { DatatableOrderingOption } from '@anzusystems/common-admin'
+import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin/labs'
 
 const { t } = useI18n()
 
@@ -45,11 +46,13 @@ const {
   refreshActiveItem,
 } = useAssetListActions(sidebarRight)
 
+provide(DatatablePaginationKey, pagination)
+
 const { footerViewSelected } = useAssetFooterSelectedView()
 const { footerViewUpload } = useAssetFooterUploadView()
 
 const autoloadOnIntersect = (isIntersecting: boolean) => {
-  if (isIntersecting && pagination.hasNextPage === true) {
+  if (isIntersecting && pagination.value.hasNextPage === true) {
     fetchNextPage()
   }
 }
@@ -79,8 +82,7 @@ const componentComputed = computed(() => {
 
 const sortByChange = (data: DatatableOrderingOption) => {
   if (data.sortBy) {
-    pagination.sortBy = data.sortBy.key
-    pagination.descending = data.sortBy.order === 'desc'
+    pagination.value.sortBy = data.sortBy
     fetchAssetList()
   }
 }

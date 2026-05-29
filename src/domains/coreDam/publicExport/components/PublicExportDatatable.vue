@@ -1,14 +1,22 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/publicExport/api/publicExportApi'
 import PublicExportFilter from '@/domains/coreDam/publicExport/components/PublicExportFilter.vue'
@@ -22,20 +30,22 @@ import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/Ca
 type DatatableItem = PublicExport
 
 const router = useRouter()
-const filter = usePublicExportListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = usePublicExportListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = usePublicExportListActions()
+const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination('id')
+provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({ name: '/(coreDam)/public-exports/[id]', params: { id: item.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
-}
-
-const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'slug' },
@@ -49,8 +59,24 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
   ENTITY
 )
 
+const getList = useDebounceFn(() => {
+  fetchList(pagination, filterData, filterConfig)
+})
+
+const sortByChange = () => {
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
+}
+
 onMounted(() => {
-  fetchList(pagination, filter)
+  getList()
 })
 
 defineExpose({
@@ -61,12 +87,13 @@ defineExpose({
 <template>
   <div>
     <PublicExportFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">
         <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"

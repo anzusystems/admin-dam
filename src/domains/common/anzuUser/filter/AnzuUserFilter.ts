@@ -1,25 +1,21 @@
-import { makeFilterHelper } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 
-const makeFilter = makeFilterHelper('common', 'anzuUser')
-
-const filter = reactive({
-  id: {
-    ...makeFilter({ name: 'id', default: null }),
-  },
-  email: {
-    ...makeFilter({ name: 'email', variant: 'startsWith' }),
-  },
-  enabled: {
-    ...makeFilter({ name: 'enabled' }),
-  },
-  lastName: {
-    ...makeFilter({ name: 'lastName', variant: 'startsWith', field: 'person.lastName' }),
-  },
-  permissionGroups: {
-    ...makeFilter({ name: 'permissionGroups', variant: 'custom', multiple: true, default: [] }),
-  },
-})
+const filterFields = [
+  { name: 'id' as const, default: null },
+  { name: 'email' as const, default: null, variant: 'startsWith' },
+  { name: 'enabled' as const, default: null },
+  { name: 'lastName' as const, default: null, variant: 'startsWith', apiName: 'person.lastName' },
+  { name: 'permissionGroups' as const, default: [], type: 'string', variant: 'custom' },
+] satisfies readonly MakeFilterOption[]
 
 export function useAnzuUserFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+    system: 'common',
+    subject: 'anzuUser',
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }

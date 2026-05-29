@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createVideoShow, ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import { ENTITY, useCreateVideoShow } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { useVideoShowFactory } from '@/domains/coreDam/videoShow/factory/VideoShowFactory'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
@@ -36,12 +36,14 @@ const dialog = ref(false)
 const { v$ } = useVideoShowValidation(videoShow)
 const { t } = useI18n()
 
+const { executeRequest: createVideoShow } = useCreateVideoShow()
+
 const onOpen = () => {
   videoShow.value = createDefault(currentAssetLicenceId.value)
 }
 
 const create = async () => {
-  return await createVideoShow(videoShow.value)
+  return await createVideoShow({ object: videoShow.value })
 }
 </script>
 

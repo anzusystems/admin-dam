@@ -1,13 +1,41 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { DamExtSystem } from '@anzusystems/common-admin'
-import { apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 
 const END_POINT = '/adm/v1/ext-system'
 export const ENTITY = 'extSystem'
 
-export const updateExtSystem = (id: number, data: DamExtSystem) =>
-  apiUpdateOne<DamExtSystem>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchExtSystemList = () =>
+  useApiFetchList<DamExtSystem[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const fetchExtSystem = (id: number) =>
-  apiFetchOne<DamExtSystem>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchExtSystemListByIds = () =>
+  useApiFetchByIds<DamExtSystem[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
+
+export const useFetchExtSystem = () =>
+  useApiRequest<DamExtSystem, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const useUpdateExtSystem = () =>
+  useApiRequest<DamExtSystem, DamExtSystem>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

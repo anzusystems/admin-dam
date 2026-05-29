@@ -1,8 +1,9 @@
-import { useDamConfigState, useFilterHelpers, usePagination } from '@anzusystems/common-admin'
+import { useDamConfigState } from '@anzusystems/common-admin'
+import { useFilterHelpers, usePagination } from '@anzusystems/common-admin/labs'
 import { useExternalProviderAssetListFilter } from '@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter'
 import {
-  fetchExternalProviderAsset,
-  fetchExternalProviderAssetList as apiFetchExternalProviderAssetList,
+  useFetchExternalProviderAsset,
+  useFetchExternalProviderAssetList,
 } from '@/domains/coreDam/externalProvider/api/externalProviderAssetApi'
 import { useExternalProviders } from '@/domains/coreDam/asset/composables/externalProviders'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
@@ -20,11 +21,9 @@ import { damClient } from '@/shared/apiClients/damClient'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
-const filter = useExternalProviderAssetListFilter()
-const pagination = usePagination()
+const { filterData, filterConfig } = useExternalProviderAssetListFilter()
+const { pagination } = usePagination(null)
 const { activeExternalProvider } = useExternalProviders()
-
-const filterIsTouched = ref(false)
 
 export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { getDamConfigExtSystem } = useDamConfigState(damClient)
@@ -36,18 +35,23 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const assetDetailStore = useExternalProviderAssetDetailStore()
   const externalProviderAssetListStore = useExternalProviderAssetListStore()
   const uploadQueuesStore = useUploadQueuesStore()
-  const { resetFilter } = useFilterHelpers()
+  const { resetFilter } = useFilterHelpers(filterData, filterConfig)
+  const { executeFetch } = useFetchExternalProviderAssetList()
+  const { executeRequest: fetchExternalProviderAsset } = useFetchExternalProviderAsset()
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
 
   const fetchAssetList = async () => {
     if (!activeExternalProvider.value) return
-    pagination.page = 1
-    pagination.rowsPerPage = configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 10
+    pagination.value.page = 1
+    pagination.value.rowsPerPage =
+      configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 10
     try {
       externalProviderAssetListStore.showLoader('hard')
       externalProviderAssetListStore.setList(
-        await apiFetchExternalProviderAssetList(activeExternalProvider.value, pagination, filter),
+        await executeFetch(pagination, filterData, filterConfig, {
+          urlParams: { externalProvider: activeExternalProvider.value },
+        }),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
@@ -59,7 +63,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
   const resetAssetList = async () => {
     externalProviderAssetListStore.resetList()
-    resetFilter(filter, pagination, fetchAssetList)
+    resetFilter(pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {
@@ -69,12 +73,15 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       return
     }
     if (!activeExternalProvider.value) return
-    pagination.page = pagination.page + 1
-    pagination.rowsPerPage = configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 10
+    pagination.value.page = pagination.value.page + 1
+    pagination.value.rowsPerPage =
+      configExtSystem.assetExternalProviders?.[activeExternalProvider.value]?.listingLimit ?? 10
     try {
       externalProviderAssetListStore.showLoader('soft')
       externalProviderAssetListStore.appendList(
-        await apiFetchExternalProviderAssetList(activeExternalProvider.value, pagination, filter),
+        await executeFetch(pagination, filterData, filterConfig, {
+          urlParams: { externalProvider: activeExternalProvider.value },
+        }),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
@@ -84,20 +91,15 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
   }
 
-  const filterTouch = () => {
-    filterIsTouched.value = true
-  }
-  const filterUnTouch = () => {
-    filterIsTouched.value = false
-  }
-
   const showDetail = async (data: { assetId: AssetExternalProviderId; index: number }) => {
     if (!activeExternalProvider.value) return
     externalProviderAssetListStore.keyboardNavigationEnable()
     externalProviderAssetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
-    const res = await fetchExternalProviderAsset(activeExternalProvider.value, data.assetId)
+    const res = await fetchExternalProviderAsset({
+      urlParams: { externalProvider: activeExternalProvider.value, id: data.assetId },
+    })
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
   }
@@ -107,7 +109,9 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     externalProviderAssetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     if (sidebarRight) sidebarRight.value = true
-    const res = await fetchExternalProviderAsset(activeExternalProvider.value, data.assetId)
+    const res = await fetchExternalProviderAsset({
+      urlParams: { externalProvider: activeExternalProvider.value, id: data.assetId },
+    })
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
   }
@@ -168,10 +172,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     externalProviderAssetListStore.setActiveNext()
     if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
     assetDetailStore.showLoader()
-    const res = await fetchExternalProviderAsset(
-      activeExternalProvider.value,
-      externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex].asset.id
-    )
+    const res = await fetchExternalProviderAsset({
+      urlParams: {
+        externalProvider: activeExternalProvider.value,
+        id: externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex].asset.id,
+      },
+    })
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
   }
@@ -180,10 +186,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     externalProviderAssetListStore.setActivePrev()
     if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
     assetDetailStore.showLoader()
-    const res = await fetchExternalProviderAsset(
-      activeExternalProvider.value,
-      externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex].asset.id
-    )
+    const res = await fetchExternalProviderAsset({
+      urlParams: {
+        externalProvider: activeExternalProvider.value,
+        id: externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex].asset.id,
+      },
+    })
     assetDetailStore.setAsset(res)
     assetDetailStore.hideLoader()
   }
@@ -227,13 +235,11 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     loader,
     items: list,
     pagination,
-    filter,
+    filterData,
+    filterConfig,
     fetchAssetList,
     resetAssetList,
     fetchNextPage,
-    filterIsTouched: readonly(filterIsTouched),
-    filterTouch,
-    filterUnTouch,
     listMounted,
     listUnmounted,
     showDetail,

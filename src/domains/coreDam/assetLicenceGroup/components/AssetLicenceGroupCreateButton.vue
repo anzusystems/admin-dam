@@ -11,7 +11,7 @@ import {
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
 import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
-import { createAssetLicenceGroup, ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
+import { ENTITY, useCreateAssetLicenceGroup } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import { damClient } from '@/shared/apiClients/damClient'
 
 withDefaults(
@@ -39,8 +39,10 @@ const onOpen = () => {
   assetLicenceGroup.value = createDefault()
 }
 
+const { executeRequest: createAssetLicenceGroup } = useCreateAssetLicenceGroup()
+
 const create = async () => {
-  return await createAssetLicenceGroup(assetLicenceGroup.value)
+  return await createAssetLicenceGroup({ object: assetLicenceGroup.value })
 }
 </script>
 

@@ -3,29 +3,43 @@ import type {
   AssetFileDownloadLink,
   AssetFileImagePreviewNullable,
   AssetFileVideo,
-  FilterBag,
-  Pagination,
   UploadQueueItem,
 } from '@anzusystems/common-admin'
 import {
-  apiAnyRequest,
-  apiFetchList,
-  apiFetchOne,
   damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
+import {
+  type FilterConfig,
+  type FilterData,
+  type Pagination,
+  useApiFetchList,
+  useApiRequest,
+} from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
 import type { AxiosProgressEvent } from 'axios'
+import type { Ref } from 'vue'
 
 const END_POINT = '/adm/v1/video'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
-export const fetchVideoFile = (id: DocId) =>
-  apiFetchOne<AssetFileVideo>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchVideoFile = () =>
+  useApiRequest<AssetFileVideo, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const fetchVideoFile = (id: DocId) => {
+  const { executeRequest } = useFetchVideoFile()
+  return executeRequest({ urlParams: { id } })
+}
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
@@ -275,24 +289,34 @@ export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePr
   })
 }
 
-export const fetchVideoFileDistributionPreviewList = (fileId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<DistributionImagePreviewDto[]>(
-    damClient,
-    END_POINT + '/:fileId/distribution-preview',
-    { fileId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchVideoFileDistributionPreviewList = () =>
+  useApiFetchList<DistributionImagePreviewDto[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:fileId/distribution-preview',
+  })
 
-export const setVideoFileDistributionPreview = (fileId: DocId, distributionId: DocId) =>
-  apiAnyRequest<null>(
-    damClient,
-    'PATCH',
-    END_POINT + '/:fileId/distribution-preview/:distributionId',
-    { fileId, distributionId },
-    null,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const fetchVideoFileDistributionPreviewList = (
+  fileId: DocId,
+  pagination: Ref<Pagination>,
+  filterData: FilterData,
+  filterConfig: FilterConfig
+) => {
+  const { executeFetch } = useFetchVideoFileDistributionPreviewList()
+  return executeFetch(pagination, filterData, filterConfig, { urlParams: { fileId } })
+}
+
+export const useSetVideoFileDistributionPreview = () =>
+  useApiRequest<null, null>({
+    client: damClient,
+    method: 'PATCH',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:fileId/distribution-preview/:distributionId',
+  })
+
+export const setVideoFileDistributionPreview = (fileId: DocId, distributionId: DocId) => {
+  const { executeRequest } = useSetVideoFileDistributionPreview()
+  return executeRequest({ urlParams: { fileId, distributionId } })
+}

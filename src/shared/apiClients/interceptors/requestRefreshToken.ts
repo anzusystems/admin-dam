@@ -1,5 +1,5 @@
 import type { InternalAxiosRequestConfig } from 'axios'
-import { refreshToken } from '@/domains/system/auth/authApi'
+import { useRefreshToken } from '@/domains/system/auth/authApi'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { logoutUser } from '@/domains/system/composables/currentUser'
 import { envConfig } from '@/shared/EnvConfigService'
@@ -28,7 +28,8 @@ const userRefreshRequestInterceptor = (
   if (cookies.get(envConfig.cookies.refreshTokenExistsName) && !cookies.get(envConfig.cookies.jwtPayloadName)) {
     if (!isRefreshingToken) {
       isRefreshingToken = true
-      refreshToken()
+      const { executeRequest: refreshToken } = useRefreshToken()
+      refreshToken({ object: {} })
         .then(() => onRefreshedUser())
         .catch(() => {
           onRefreshedUser(false)

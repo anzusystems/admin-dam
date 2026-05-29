@@ -1,86 +1,49 @@
 <script lang="ts" setup>
-import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
 import {
-  AFilterDatetimePicker,
-  AFilterInteger,
+  AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
-  useJobStatus,
-} from '@anzusystems/common-admin'
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
+import { useJobStatus } from '@anzusystems/common-admin'
+import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
+import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = useJobListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useJobListActions()
 
 const { jobStatusOptions } = useJobStatus()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol
-          cols="12"
-          sm="3"
-        >
-          <AFilterInteger
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="3"
-        >
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.status"
-            :items="jobStatusOptions"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="3"
-        >
-          <AFilterDatetimePicker
-            v-model="filter.startedAtFrom"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="3"
-        >
-          <AFilterDatetimePicker
-            v-model="filter.startedAtUntil"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #item.status>
+      <AFilterValueObjectOptionsSelect
+        name="status"
+        :items="jobStatusOptions"
+      />
+    </template>
+    <template #item.startedAtFrom>
+      <AFilterTimeInterval
+        name-from="startedAtFrom"
+        name-until="startedAtUntil"
+        :allowed="allowedTimeIntervalValuesSubject"
+      />
+    </template>
+  </AFilterWrapper>
 </template>

@@ -1,44 +1,52 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { DamAuthor, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import type { DamAuthor } from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 
 const END_POINT = '/adm/v1/author'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'author'
 
-export const fetchAuthorListByIds = (extSystemId: number, ids: string[]) =>
-  apiFetchByIds<DamAuthor[]>(
-    damClient,
-    ids,
-    END_POINT_LIST + '/search',
-    {
-      extSystemId,
-    },
-    SYSTEM_CORE_DAM,
-    ENTITY,
-    {},
-    true
-  )
+export const useFetchAuthorListByIds = () =>
+  useApiFetchByIds<DamAuthor[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST + '/search',
+    isSearchApi: true,
+  })
 
-export const fetchAuthorList = (extSystemId: number, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<DamAuthor[]>(
-    damClient,
-    END_POINT_LIST,
-    {
-      extSystemId,
-    },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchAuthorList = () =>
+  useApiFetchList<DamAuthor[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST,
+  })
 
-export const createAuthor = (data: DamAuthor) =>
-  apiCreateOne<DamAuthor>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreateAuthor = () =>
+  useApiRequest<DamAuthor, DamAuthor>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updateAuthor = (id: string, data: DamAuthor) =>
-  apiUpdateOne<DamAuthor>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdateAuthor = () =>
+  useApiRequest<DamAuthor, DamAuthor>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchAuthor = (id: string) =>
-  apiFetchOne<DamAuthor>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAuthor = () =>
+  useApiRequest<DamAuthor, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

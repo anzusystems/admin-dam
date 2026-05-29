@@ -1,14 +1,22 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import AuthorCleanPhraseFilter from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue'
@@ -22,28 +30,47 @@ import AuthorCleanPhraseModeStatusChip from '@/domains/coreDam/authorCleanPhrase
 type DatatableItem = AuthorCleanPhrase
 
 const router = useRouter()
-const filter = useAuthorCleanPhraseListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = useAuthorCleanPhraseListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useAuthorCleanPhraseListActions()
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination(SORT_BY_ID)
+provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({ name: '/(coreDam)/author-clean-phrases/[id]', params: { id: item.id } })
 }
 
-const getList = () => {
-  fetchList(pagination, filter)
-}
-
-const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [{ key: 'id' }, { key: 'phrase' }, { key: 'mode' }, { key: 'type' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
 )
 
+const getList = useDebounceFn(() => {
+  fetchList(pagination, filterData, filterConfig)
+})
+
+const sortByChange = () => {
+  filterConfig.touched = false
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
+}
+
 onMounted(() => {
-  fetchList(pagination, filter)
+  loadStoredFilters(pagination, getList)
 })
 
 defineExpose({
@@ -54,12 +81,13 @@ defineExpose({
 <template>
   <div>
     <AuthorCleanPhraseFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">
         <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"

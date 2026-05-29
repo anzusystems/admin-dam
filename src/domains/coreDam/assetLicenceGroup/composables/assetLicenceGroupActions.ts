@@ -1,13 +1,13 @@
-import type { DamAssetLicenceGroup, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { fetchDamAssetLicenceGroupList } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
 import {
-  fetchAssetLicenceGroup,
-  updateAssetLicenceGroup,
+  useFetchAssetLicenceGroup,
+  useFetchAssetLicenceGroupList,
+  useUpdateAssetLicenceGroup,
 } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
-import { damClient } from '@/shared/apiClients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -21,11 +21,12 @@ export const useAssetLicenceGroupListActions = () => {
   const listItems = ref<DamAssetLicenceGroup[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
+  const { executeFetch } = useFetchAssetLicenceGroupList()
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      const res = await fetchDamAssetLicenceGroupList(damClient, pagination, filterBag)
+      const res = await executeFetch(pagination, filterData, filterConfig)
       res.forEach((item) => {
         addToCachedAssetLicences(item.licences)
         addToCachedExtSystems(item.extSystem)
@@ -53,11 +54,12 @@ export const useAssetLicenceGroupDetailActions = () => {
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
+  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const res = await fetchAssetLicenceGroup(id)
+      const res = await fetchAssetLicenceGroup({ urlParams: { id } })
       addToCachedAssetLicences(res.licences)
       addToCachedExtSystems(res.extSystem)
       assetLicenceGroup.value = res
@@ -83,11 +85,13 @@ export const useAssetLicenceGroupEditActions = () => {
   const router = useRouter()
   const assetLicenceGroupOneStore = useAssetLicenceGroupOneStore()
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
+  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
+  const { executeRequest: updateAssetLicenceGroup } = useUpdateAssetLicenceGroup()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      assetLicenceGroup.value = await fetchAssetLicenceGroup(id)
+      assetLicenceGroup.value = await fetchAssetLicenceGroup({ urlParams: { id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -105,7 +109,10 @@ export const useAssetLicenceGroupEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAssetLicenceGroup(assetLicenceGroupOneStore.assetLicenceGroup.id, assetLicenceGroup.value)
+      await updateAssetLicenceGroup({
+        urlParams: { id: assetLicenceGroupOneStore.assetLicenceGroup.id },
+        object: assetLicenceGroup.value,
+      })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/asset-licence-groups' })

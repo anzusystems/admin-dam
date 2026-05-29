@@ -9,7 +9,7 @@ import {
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createPodcast, ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
+import { ENTITY, useCreatePodcast } from '@/domains/coreDam/podcast/api/podcastApi'
 import { usePodcastFactory } from '@/domains/coreDam/podcast/factory/PodcastFactory'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
@@ -43,8 +43,10 @@ const onOpen = () => {
   podcast.value = createDefault(currentAssetLicenceId.value)
 }
 
+const { executeRequest: createPodcast } = useCreatePodcast()
+
 const create = async () => {
-  return await createPodcast(podcast.value)
+  return await createPodcast({ object: podcast.value })
 }
 
 const { podcastModeOptions } = usePodcastMode()

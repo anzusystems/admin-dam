@@ -1,59 +1,67 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import {
-  apiCreateOne,
-  apiDeleteOne,
-  apiFetchByIds,
-  apiFetchList,
-  apiFetchOne,
-  apiUpdateOne,
-} from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 
 const END_POINT = '/adm/v1/video-show'
 export const ENTITY = 'videoShow'
 
-export const fetchVideoShowListByExtSystem = (extSystemId: IntegerId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<VideoShow[]>(
-    damClient,
-    END_POINT + '/ext-system/:extSystemId',
-    { extSystemId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchVideoShowListByExtSystem = () =>
+  useApiFetchList<VideoShow[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/ext-system/:extSystemId',
+  })
 
-export const fetchVideoShowListByLicence = (licenceId: IntegerId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<VideoShow[]>(
-    damClient,
-    END_POINT + '/licence/:licenceId',
-    { licenceId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchVideoShowListByLicence = () =>
+  useApiFetchList<VideoShow[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/licence/:licenceId',
+  })
 
-export const fetchVideoShowListByIds = (extSystemId: IntegerId, ids: string[]) =>
-  apiFetchByIds<VideoShow[]>(
-    damClient,
-    ids,
-    END_POINT + '/ext-system/:extSystemId',
-    { extSystemId },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchVideoShowListByIds = () =>
+  useApiFetchByIds<VideoShow[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/ext-system/:extSystemId',
+  })
 
-export const createVideoShow = (data: VideoShow) =>
-  apiCreateOne<VideoShow>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreateVideoShow = () =>
+  useApiRequest<VideoShow, VideoShow>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updateVideoShow = (id: DocId, data: VideoShow) =>
-  apiUpdateOne<VideoShow>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdateVideoShow = () =>
+  useApiRequest<VideoShow, VideoShow>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchVideoShow = (id: DocId) =>
-  apiFetchOne<VideoShow>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchVideoShow = () =>
+  useApiRequest<VideoShow, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const deleteVideoShow = (id: DocId) =>
-  apiDeleteOne<VideoShow>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useDeleteVideoShow = () =>
+  useApiRequest<void, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

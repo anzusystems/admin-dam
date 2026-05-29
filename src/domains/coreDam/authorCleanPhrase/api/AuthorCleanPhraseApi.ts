@@ -1,15 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import {
-  apiAnyRequest,
-  apiCreateOne,
-  apiDeleteOne,
-  apiFetchList,
-  apiFetchOne,
-  apiUpdateOne,
-  type FilterBag,
-  type Pagination,
-} from '@anzusystems/common-admin'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type {
   AuthorCleanPhrase,
   AuthorCleanResultDto,
@@ -21,40 +12,55 @@ const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 
 export const ENTITY = 'authorCleanPhrase'
 
-export const fetchAuthorCleanPhraseList = (extSystemId: IntegerId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<AuthorCleanPhrase[]>(
-    damClient,
-    END_POINT_LIST,
-    {
-      extSystemId,
-    },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchAuthorCleanPhraseList = () =>
+  useApiFetchList<AuthorCleanPhrase[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST,
+  })
 
-export const createAuthorCleanPhrase = (data: AuthorCleanPhrase) =>
-  apiCreateOne<AuthorCleanPhrase>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreateAuthorCleanPhrase = () =>
+  useApiRequest<AuthorCleanPhrase, AuthorCleanPhrase>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updateAuthorCleanPhrase = (id: IntegerId, data: AuthorCleanPhrase) =>
-  apiUpdateOne<AuthorCleanPhrase>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdateAuthorCleanPhrase = () =>
+  useApiRequest<AuthorCleanPhrase, AuthorCleanPhrase>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchAuthorCleanPhrase = (id: IntegerId) =>
-  apiFetchOne<AuthorCleanPhrase>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAuthorCleanPhrase = () =>
+  useApiRequest<AuthorCleanPhrase, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const deleteAuthorCleanPhrase = (id: IntegerId) =>
-  apiDeleteOne<AuthorCleanPhrase>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useDeleteAuthorCleanPhrase = () =>
+  useApiRequest<void, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const playground = (extSystemId: IntegerId, data: AuthorNameDto) =>
-  apiAnyRequest<AuthorNameDto, AuthorCleanResultDto>(
-    damClient,
-    'PATCH',
-    END_POINT_LIST + '/playground',
-    {
-      extSystemId,
-    },
-    data,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const usePlaygroundAuthorCleanPhrase = () =>
+  useApiRequest<AuthorCleanResultDto, AuthorNameDto>({
+    client: damClient,
+    method: 'PATCH',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST + '/playground',
+  })

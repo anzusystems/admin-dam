@@ -1,28 +1,30 @@
 <script lang="ts" setup>
 import { pickTextColorBasedOnBgColor } from '@/shared/utils/colors'
-import { arrayItemToggle, type Filter, useDamConfigStore, useFilterHelpers } from '@anzusystems/common-admin'
+import { arrayItemToggle, useDamConfigStore } from '@anzusystems/common-admin'
+import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: Filter
-    multiple?: boolean
+    name: string
     dataCy?: string
   }>(),
   {
-    multiple: false, // todo multiple false
     dataCy: 'filter-color',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: Filter): void
-}>()
 
-const value = computed({
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
+}
+
+const value = computed<string | string[]>({
   get() {
-    return props.modelValue.model
+    return (filterData[props.name] ?? '') as string | string[]
   },
   set(newValue) {
-    emit('update:modelValue', { ...props.modelValue, ...{ model: newValue } })
+    filterData[props.name] = newValue
   },
 })
 
@@ -57,17 +59,15 @@ const toggleSelected = (color: string) => {
   value.value = color
 }
 
-const { clearOne } = useFilterHelpers()
-
 const clear = () => {
-  clearOne(props.modelValue)
-  value.value = props.modelValue.model
+  value.value = cloneDeep(filterConfig.fields[props.name].default) as string | string[]
 }
 
 const { t } = useI18n()
 
 const label = computed(() => {
-  return props.modelValue.titleT ? t(props.modelValue.titleT) : undefined
+  const titleT = filterConfig.fields[props.name].titleT
+  return titleT ? t(titleT) : undefined
 })
 </script>
 

@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import {
-  AFormRemoteAutocomplete,
-  type FilterBag,
-  type Pagination,
-  useDamAssetLicenceFilter,
-} from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { useDamAssetLicenceInnerFilter } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
 import { useAssetLicenceByExtIdSelectActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 
 const props = withDefaults(
@@ -45,17 +43,23 @@ const modelValueComputed = computed({
 
 const { fetchItems, fetchItemsByIds } = useAssetLicenceByExtIdSelectActions()
 
+const { filterData, filterConfig } = useDamAssetLicenceInnerFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
+
 /**
  * Limit to fetch only when extId is set.
  */
-const fetchItemsCustomized = async (pagination: Pagination, filterBag: FilterBag) => {
-  if (isString(filterBag.extId.model) && filterBag.extId.model.length > 0) {
-    return await fetchItems(pagination, filterBag)
+const fetchItemsCustomized = async (
+  pagination: Ref<Pagination>,
+  filterData: FilterData,
+  filterConfig: FilterConfig
+) => {
+  if (isString(filterData.extId) && filterData.extId.length > 0) {
+    return await fetchItems(pagination, filterData, filterConfig)
   }
   return []
 }
-
-const innerFilter = useDamAssetLicenceFilter()
 
 const selectedExtSystemId = computed(() => {
   return props.extSystemId
@@ -67,10 +71,10 @@ watch(
     if (newValue === oldValue) return
     modelValueComputed.value = null
     if (newValue) {
-      innerFilter.extSystem.model = newValue
+      filterData.extSystem = newValue
       return
     }
-    innerFilter.extSystem.model = null
+    filterData.extSystem = null
   },
   { immediate: true }
 )
@@ -84,12 +88,11 @@ watch(
     :label="label"
     :fetch-items="fetchItemsCustomized"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
     filter-by-field="extId"
     :data-cy="dataCy"
     :hide-details="hideDetails"
-    :disable-init-fetch="disableInitFetch"
+    :prefetch="disableInitFetch ? false : 'hover'"
   />
 </template>

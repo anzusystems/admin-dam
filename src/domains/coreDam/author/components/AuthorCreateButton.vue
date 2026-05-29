@@ -10,7 +10,7 @@ import {
   useDamAuthorType,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createAuthor, ENTITY } from '@/domains/coreDam/author/api/authorApi'
+import { ENTITY, useCreateAuthor } from '@/domains/coreDam/author/api/authorApi'
 import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { AuthorCreateValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
@@ -74,7 +74,7 @@ const onConfirm = async () => {
       buttonLoading.value = false
       return
     }
-    const res = await createAuthor(author.value)
+    const res = await createAuthor({ object: author.value })
     emit('onSuccess', res)
     showRecordWas('created')
     dialog.value = false
@@ -89,6 +89,7 @@ const onConfirm = async () => {
 }
 
 const { authorTypeOptions } = useDamAuthorType()
+const { executeRequest: createAuthor } = useCreateAuthor()
 
 defineExpose({
   open: onClick,

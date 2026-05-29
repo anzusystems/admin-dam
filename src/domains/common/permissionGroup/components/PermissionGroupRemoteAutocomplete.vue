@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import type { AxiosInstance } from 'axios'
 import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 
@@ -28,19 +28,22 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: string | number | string[] | number[] | null): void
 }>()
 
-const modelValueComputed = computed({
+const modelValueComputed = computed<number | number[] | null>({
   get() {
-    return props.modelValue
+    return props.modelValue as number | number[] | null
   },
-  set(newValue: string | number | string[] | number[] | null) {
-    emit('update:modelValue', cloneDeep<string | number | string[] | number[] | null>(newValue))
+  set(newValue) {
+    emit('update:modelValue', cloneDeep<number | number[] | null>(newValue))
   },
 })
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { fetchPermissionGroupOptions, fetchPermissionGroupOptionsByIds } = usePermissionGroupActions(props.client)
+const prefetch = computed<'mounted' | false>(() => (props.disableInitFetch ? false : 'mounted'))
 
-const innerFilter = usePermissionGroupFilter()
+const { fetchPermissionGroupOptions, fetchPermissionGroupOptionsByIds } = usePermissionGroupActions()
+
+const { filterData, filterConfig } = usePermissionGroupFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 </script>
 
 <template>
@@ -50,13 +53,12 @@ const innerFilter = usePermissionGroupFilter()
     :label="label"
     :fetch-items="fetchPermissionGroupOptions"
     :fetch-items-by-ids="fetchPermissionGroupOptionsByIds"
-    :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
     filter-by-field="title"
     :data-cy="dataCy"
     chips
     hide-details
-    :disable-init-fetch="disableInitFetch"
+    :prefetch="prefetch"
   />
 </template>

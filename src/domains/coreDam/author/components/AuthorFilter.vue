@@ -1,80 +1,44 @@
 <script lang="ts" setup>
-import { useAuthorListFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 import {
   AFilterBooleanSelect,
-  AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
-  useDamAuthorType,
-} from '@anzusystems/common-admin'
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
+import { useDamAuthorType } from '@anzusystems/common-admin'
+import { useAuthorListActions } from '@/domains/coreDam/author/composables/authorActions'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = useAuthorListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useAuthorListActions()
 
 const { authorTypeOptions } = useDamAuthorType()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="2">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterString
-            v-model="filter.text"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterString
-            v-model="filter.identifier"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="3">
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.type"
-            :items="authorTypeOptions"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterBooleanSelect
-            v-model="filter.reviewed"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #item.type>
+      <AFilterValueObjectOptionsSelect
+        name="type"
+        :items="authorTypeOptions"
+      />
+    </template>
+    <template #item.reviewed>
+      <AFilterBooleanSelect name="reviewed" />
+    </template>
+  </AFilterWrapper>
 </template>

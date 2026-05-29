@@ -1,11 +1,13 @@
-import { type DamUser, type FilterBag, type Pagination, useDamCachedUsers } from '@anzusystems/common-admin'
+import { type DamUser, useDamCachedUsers } from '@anzusystems/common-admin'
 import {
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
-  fetchDamUserList,
   fetchDamUserListByIds,
   updateDamUser,
+  useFetchDamUserList,
 } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
@@ -24,11 +26,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useUserListActions = () => {
   const listItems = ref<DamUser[]>([])
+  const { executeFetch } = useFetchDamUserList(damClient)
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchDamUserList(damClient, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -130,8 +133,10 @@ export const useUserEditActions = () => {
 }
 
 export const useUserSelectActions = () => {
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const users = await fetchDamUserList(damClient, pagination, filterBag)
+  const { executeFetch } = useFetchDamUserList(damClient)
+
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    const users = await executeFetch(pagination, filterData, filterConfig)
 
     return <ValueObjectOption<number>[]>users.map((user: DamUser) => ({
       title: user.email,

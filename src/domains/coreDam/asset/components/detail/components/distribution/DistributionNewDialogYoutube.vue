@@ -41,8 +41,8 @@ import {
   AFormValueObjectOptionsSelect,
   AssetFileProcessStatus,
   ASystemEntityScope,
-  usePagination,
 } from '@anzusystems/common-admin'
+import { usePagination } from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{
@@ -70,19 +70,20 @@ const saving = ref(false)
 
 const authUrl = ref('')
 
-const pagination = usePagination()
-const filter = useDistributionFilter()
+const { pagination } = usePagination(null)
+const { filterConfig, filterData } = useDistributionFilter()
 const distributionListStore = useDistributionListStore()
 
 const loadFormData = async () => {
   canDisplayForm.value = false
   if (!assetFileId.value || assetFileStatus.value !== AssetFileProcessStatus.Processed) return
-  filter.distributionService.model = props.distributionServiceName
-  filter.id.model = redistributeId.value
+  filterData.distributionService = props.distributionServiceName
+  filterData.id = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionYoutubeItem>(
     assetFileId.value,
     pagination,
-    filter
+    filterData,
+    filterConfig
   )
   if (!redistributeMode.value && existingDistributions.value.length > 0) return
   if (redistributeMode.value && existingDistributions.value[0]) {

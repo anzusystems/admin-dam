@@ -1,5 +1,5 @@
 import type { Podcast, PodcastMinimal } from '@/domains/coreDam/podcast/types/Podcast'
-import { fetchPodcastListByIds } from '@/domains/coreDam/podcast/api/podcastApi'
+import { useFetchPodcastListByIds } from '@/domains/coreDam/podcast/api/podcastApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const mapFullToMinimal = (podcast: Podcast): PodcastMinimal => ({
@@ -16,7 +16,8 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId,
   mapIdToMinimal,
   (ids) => {
     const { currentExtSystemId } = useCurrentExtSystem()
-    return fetchPodcastListByIds(currentExtSystemId.value, ids)
+    const { executeFetch } = useFetchPodcastListByIds()
+    return executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
   }
 )
 

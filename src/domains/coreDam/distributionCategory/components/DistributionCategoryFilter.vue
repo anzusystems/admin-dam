@@ -1,76 +1,35 @@
 <script lang="ts" setup>
-import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
 import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import {
-  AFilterInteger,
-  AFilterString,
-  AFilterValueObjectOptionsSelect,
-  AFilterWrapper,
-} from '@anzusystems/common-admin'
+import { AFilterValueObjectOptionsSelect, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = useDistributionCategoryListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useDistributionCategoryListActions()
 
 const { assetTypeOptions } = useAssetType()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      enable-top
-      @reset-filter="resetFilter"
-    >
-      <template #top>
-        <VRow class="align-start">
-          <VCol
-            cols="12"
-            md="6"
-          >
-            <AFilterValueObjectOptionsSelect
-              v-model="filter.type"
-              :items="assetTypeOptions"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-      </template>
-      <VRow class="align-start">
-        <VCol cols="1">
-          <AFilterInteger
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterString
-            v-model="filter.name"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #item.type>
+      <AFilterValueObjectOptionsSelect
+        name="type"
+        :items="assetTypeOptions"
+      />
+    </template>
+  </AFilterWrapper>
 </template>

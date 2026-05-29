@@ -9,11 +9,6 @@ import {
   AnzuApiValidationError,
   type AnzuApiValidationResponseData,
   AnzuFatalError,
-  apiAnyRequest,
-  apiCreateOne,
-  apiDeleteOne,
-  apiFetchList,
-  apiFetchOne,
   type AssetCustomData,
   type AssetDetailItemDto,
   type AssetMetadataDto,
@@ -22,13 +17,19 @@ import {
   axiosErrorResponseHasValidationData,
   axiosErrorResponseIsForbidden,
   type DocIdNullable,
-  type FilterBag,
-  type Pagination,
   type UploadQueueItem,
   useDamConfigState,
   type ValidationError,
 } from '@anzusystems/common-admin'
+import {
+  type FilterConfig,
+  type FilterData,
+  type Pagination,
+  useApiFetchList,
+  useApiRequest,
+} from '@anzusystems/common-admin/labs'
 import { isAxiosError } from 'axios'
+import type { Ref } from 'vue'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -44,16 +45,23 @@ const END_POINT = '/adm/v1/asset'
 export const ENTITY = 'asset'
 const FETCH_BY_IDS_MAX_LIMIT = 25
 
-export const fetchAssetList = (licenceId: number, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<AssetSearchListItemDto[]>(
-    damClient,
-    END_POINT + '/licence/:licenceId',
-    { licenceId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchAssetList = () =>
+  useApiFetchList<AssetSearchListItemDto[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/licence/:licenceId',
+  })
+
+export const fetchAssetList = (
+  licenceId: number,
+  pagination: Ref<Pagination>,
+  filterData: FilterData,
+  filterConfig: FilterConfig
+) => {
+  const { executeFetch } = useFetchAssetList()
+  return executeFetch(pagination, filterData, filterConfig, { urlParams: { licenceId } })
+}
 
 async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {
   if (ids.length === 0) return Promise.resolve([])
@@ -99,14 +107,47 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
   })
 }
 
-export const fetchAsset = (id: DocId) =>
-  apiFetchOne<AssetDetailItemDto>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAsset = () =>
+  useApiRequest<AssetDetailItemDto, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchAssetByFileId = (fileId: DocId) =>
-  apiFetchOne<AssetDetailItemDto>(damClient, END_POINT + '/asset-file/:fileId', { fileId }, SYSTEM_CORE_DAM, ENTITY)
+export const fetchAsset = (id: DocId) => {
+  const { executeRequest } = useFetchAsset()
+  return executeRequest({ urlParams: { id } })
+}
 
-export const fetchAssetMetadata = (id: DocId) =>
-  apiFetchOne<AssetMetadataDto>(damClient, END_POINT + '/:id/metadata', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAssetByFileId = () =>
+  useApiRequest<AssetDetailItemDto, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset-file/:fileId',
+  })
+
+export const fetchAssetByFileId = (fileId: DocId) => {
+  const { executeRequest } = useFetchAssetByFileId()
+  return executeRequest({ urlParams: { fileId } })
+}
+
+export const useFetchAssetMetadata = () =>
+  useApiRequest<AssetMetadataDto, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id/metadata',
+  })
+
+export const fetchAssetMetadata = (id: DocId) => {
+  const { executeRequest } = useFetchAssetMetadata()
+  return executeRequest({ urlParams: { id } })
+}
 
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   const dtoItems: AssetMetadataBulkItem[] = []
@@ -229,48 +270,75 @@ export const updateAssetMetadata = (asset: AssetDetailItemDto, mainFileSingleUse
   })
 }
 
-export const deleteAsset = (id: DocId) =>
-  apiDeleteOne<AssetDetailItemDto>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useDeleteAsset = () =>
+  useApiRequest<AssetDetailItemDto, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocIdNullable) =>
-  apiAnyRequest(
-    damClient,
-    'PUT',
-    END_POINT + '/:assetId',
-    { assetId },
-    { id: assetId, distributionCategory: distributionCategoryId },
-    SYSTEM_CORE_DAM,
-    ''
-  )
+export const deleteAsset = (id: DocId) => {
+  const { executeRequest } = useDeleteAsset()
+  return executeRequest({ urlParams: { id } })
+}
 
-export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) =>
-  apiCreateOne<AssetCreateDto, AssetDetailItemDto>(
-    damClient,
-    data,
-    END_POINT + '/licence/' + licenceId,
-    {},
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useUpdateAssetCategory = () =>
+  useApiRequest<unknown, { id: DocId; distributionCategory: DocIdNullable }>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: '',
+    urlTemplate: END_POINT + '/:assetId',
+  })
 
-export const setSibling = (assetId: DocId, targetAssetId: DocId) =>
-  apiAnyRequest<object, AssetDetailItemDto>(
-    damClient,
-    'PATCH',
-    END_POINT + '/:assetId/sibling/:targetAssetId',
-    { assetId, targetAssetId },
-    {},
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocIdNullable) => {
+  const { executeRequest } = useUpdateAssetCategory()
+  return executeRequest({
+    urlParams: { assetId },
+    object: { id: assetId, distributionCategory: distributionCategoryId },
+  })
+}
 
-export const removeSibling = (assetId: DocId) =>
-  apiAnyRequest<object, AssetDetailItemDto>(
-    damClient,
-    'PATCH',
-    END_POINT + '/:assetId/sibling',
-    { assetId },
-    {},
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useCreateAsset = () =>
+  useApiRequest<AssetDetailItemDto, AssetCreateDto>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/licence/:licenceId',
+  })
+
+export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) => {
+  const { executeRequest } = useCreateAsset()
+  return executeRequest({ urlParams: { licenceId }, object: data })
+}
+
+export const useSetSibling = () =>
+  useApiRequest<AssetDetailItemDto, object>({
+    client: damClient,
+    method: 'PATCH',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:assetId/sibling/:targetAssetId',
+  })
+
+export const setSibling = (assetId: DocId, targetAssetId: DocId) => {
+  const { executeRequest } = useSetSibling()
+  return executeRequest({ urlParams: { assetId, targetAssetId }, object: {} })
+}
+
+export const useRemoveSibling = () =>
+  useApiRequest<AssetDetailItemDto, object>({
+    client: damClient,
+    method: 'PATCH',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:assetId/sibling',
+  })
+
+export const removeSibling = (assetId: DocId) => {
+  const { executeRequest } = useRemoveSibling()
+  return executeRequest({ urlParams: { assetId }, object: {} })
+}

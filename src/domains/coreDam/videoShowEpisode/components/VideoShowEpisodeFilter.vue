@@ -1,65 +1,41 @@
 <script lang="ts" setup>
-import { AFilterBooleanSelect, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
-import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
+import {
+  AFilterBooleanSelect,
+  AFilterString,
+  AFilterWrapper,
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
+import { useVideoShowEpisodeListActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = useVideoShowEpisodeListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useVideoShowEpisodeListActions()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="4">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="4">
-          <AFilterString
-            v-model="filter.title"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterBooleanSelect
-            v-model="filter.webPublicExportEnabled"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterBooleanSelect
-            v-model="filter.mobilePublicExportEnabled"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #search>
+      <AFilterString name="title" />
+    </template>
+    <template #item.webPublicExportEnabled>
+      <AFilterBooleanSelect name="webPublicExportEnabled" />
+    </template>
+    <template #item.mobilePublicExportEnabled>
+      <AFilterBooleanSelect name="mobilePublicExportEnabled" />
+    </template>
+  </AFilterWrapper>
 </template>

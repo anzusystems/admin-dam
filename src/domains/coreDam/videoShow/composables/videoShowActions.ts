@@ -1,15 +1,14 @@
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import {
-  fetchVideoShow,
-  fetchVideoShowListByExtSystem,
-  fetchVideoShowListByIds,
-  updateVideoShow,
+  useFetchVideoShow,
+  useFetchVideoShowListByExtSystem,
+  useFetchVideoShowListByIds,
+  useUpdateVideoShow,
 } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { useVideoShowOneStore } from '@/domains/coreDam/videoShow/store/videoShowStore'
-
-const { currentExtSystemId } = useCurrentExtSystem()
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -20,12 +19,17 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useVideoShowListActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const { executeFetch } = useFetchVideoShowListByExtSystem()
+
   const listItems = ref<VideoShow[]>([])
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchVideoShowListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -44,11 +48,12 @@ export const useVideoShowListActions = () => {
 export const useVideoShowDetailActions = () => {
   const videoShowOneStore = useVideoShowOneStore()
   const { videoShow } = storeToRefs(videoShowOneStore)
+  const { executeRequest: fetchVideoShow } = useFetchVideoShow()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const videoShow = await fetchVideoShow(id)
+      const videoShow = await fetchVideoShow({ urlParams: { id } })
       videoShowOneStore.setVideoShow(videoShow)
     } catch (error) {
       showErrorsDefault(error)
@@ -70,11 +75,13 @@ export const useVideoShowEditActions = () => {
   const router = useRouter()
   const videoShowOneStore = useVideoShowOneStore()
   const { videoShow } = storeToRefs(videoShowOneStore)
+  const { executeRequest: fetchVideoShow } = useFetchVideoShow()
+  const { executeRequest: updateVideoShow } = useUpdateVideoShow()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const videoShow = await fetchVideoShow(id)
+      const videoShow = await fetchVideoShow({ urlParams: { id } })
       videoShowOneStore.setVideoShow(videoShow)
     } catch (error) {
       showErrorsDefault(error)
@@ -93,7 +100,7 @@ export const useVideoShowEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateVideoShow(videoShowOneStore.videoShow.id, videoShow.value)
+      await updateVideoShow({ urlParams: { id: videoShowOneStore.videoShow.id }, object: videoShow.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/video-shows' })
@@ -118,9 +125,12 @@ export const useVideoShowEditActions = () => {
 
 export const useVideoShowSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
+  const { executeFetch } = useFetchVideoShowListByExtSystem()
 
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const videoShows = await fetchVideoShowListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    const videoShows = await executeFetch(pagination, filterData, filterConfig, {
+      urlParams: { extSystemId: currentExtSystemId.value },
+    })
 
     return <ValueObjectOption<string>[]>videoShows.map((videoShow: VideoShow) => ({
       title: videoShow.texts.title,
@@ -129,7 +139,8 @@ export const useVideoShowSelectActions = () => {
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
-    const videoShows = await fetchVideoShowListByIds(currentExtSystemId.value, ids)
+    const { executeFetch: executeFetchByIds } = useFetchVideoShowListByIds()
+    const videoShows = await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
 
     return <ValueObjectOption<string>[]>videoShows.map((videoShow: VideoShow) => ({
       title: videoShow.texts.title,

@@ -1,32 +1,31 @@
 <script lang="ts" setup>
-import { useVModels } from '@vueuse/core'
-import type { Filter } from '@anzusystems/common-admin'
-import { AFilterRemoteAutocomplete } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
+import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { usePermissionGroupSelectAction } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: Filter
+    name: string
   }>(),
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: Filter): void
+  (e: 'change'): void
 }>()
-const { modelValue } = useVModels(props, emit)
-const { fetchItems, fetchItemsByIds } = usePermissionGroupSelectAction(damClient)
 
-const innerFilter = usePermissionGroupFilter()
+const { fetchItems, fetchItemsByIds } = usePermissionGroupSelectAction()
+
+const { filterData, filterConfig } = usePermissionGroupFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 </script>
 
 <template>
   <AFilterRemoteAutocomplete
-    v-model="modelValue"
+    :name="name"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     filter-by-field="title"
+    @change="emit('change')"
   />
 </template>

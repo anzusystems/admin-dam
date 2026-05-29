@@ -1,12 +1,12 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import type { AssetFileAudio, AssetFileDownloadLink, AssetFileRoute, UploadQueueItem } from '@anzusystems/common-admin'
 import {
-  apiFetchOne,
   damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
+import { useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { AxiosProgressEvent } from 'axios'
@@ -14,8 +14,19 @@ import type { AxiosProgressEvent } from 'axios'
 const END_POINT = '/adm/v1/audio'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
-export const fetchAudioFile = (id: DocId) =>
-  apiFetchOne<AssetFileAudio>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAudioFile = () =>
+  useApiRequest<AssetFileAudio, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const fetchAudioFile = (id: DocId) => {
+  const { executeRequest } = useFetchAudioFile()
+  return executeRequest({ urlParams: { id } })
+}
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {

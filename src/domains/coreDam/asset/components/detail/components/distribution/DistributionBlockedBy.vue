@@ -16,8 +16,8 @@ import {
   type DamDistributionServiceName,
   type DocIdNullable,
   useDamConfigState,
-  usePagination,
 } from '@anzusystems/common-admin'
+import { usePagination } from '@anzusystems/common-admin/labs'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 
 // now only supports strategy AtLeastOne, as BE too
@@ -48,15 +48,20 @@ const modelValueComputed = computed({
 const { t } = useI18n()
 
 const { getDistributionStatusOption } = useDistributionStatus()
-const pagination = usePagination()
-const filter = useDistributionFilter()
+const { pagination } = usePagination(null)
+const { filterConfig, filterData } = useDistributionFilter()
 const distributions = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
 
 const loadDistributions = async (fileId: DocIdNullable) => {
   if (!fileId) return
-  filter.distributionServicesIn.model = props.config.blockedBy
-  filter.distributionServicesNotIn.model = [props.distributionServiceName]
-  distributions.value = await fetchAssetFileDistributionList<DistributionJwItem>(fileId, pagination, filter)
+  filterData.distributionServicesIn = props.config.blockedBy
+  filterData.distributionServicesNotIn = [props.distributionServiceName]
+  distributions.value = await fetchAssetFileDistributionList<DistributionJwItem>(
+    fileId,
+    pagination,
+    filterData,
+    filterConfig
+  )
 }
 
 const assetFileIdComputed = computed(() => {

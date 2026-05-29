@@ -3,17 +3,23 @@ import {
   ABooleanValue,
   AChipNoLink,
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   type AnzuUser,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
-  type DatatableOrderingOption,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
 import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'
 import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
@@ -27,9 +33,16 @@ type DatatableItem = AnzuUser
 
 const router = useRouter()
 
-const filter = useAnzuUserFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
-const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions(damClient)
+const { filterData, filterConfig } = useAnzuUserFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
+
+const { fetchAnzuUserList, anzuUserList, datatableHiddenColumns } = useAnzuUserActions()
+const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination(SORT_BY_ID)
+provide(DatatablePaginationKey, pagination)
+
 const { can } = useAuth()
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
@@ -38,7 +51,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'person.firstName' },
@@ -56,15 +69,23 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   ENTITY
 )
 
-const getList = () => {
-  fetchAnzuUserList(pagination, filter)
-}
+const getList = useDebounceFn(() => {
+  fetchAnzuUserList(pagination, filterData, filterConfig)
+})
 
 const { translatePermission } = usePermissionConfigActions(damClient)
 
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+const sortByChange = () => {
+  filterConfig.touched = false
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
 }
 
 onMounted(() => {
@@ -79,8 +100,8 @@ defineExpose({
 <template>
   <div>
     <AnzuUserFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">

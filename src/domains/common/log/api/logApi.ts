@@ -1,6 +1,6 @@
 import { SYSTEM_ADMIN_DAM, SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { FilterBag, Log, Pagination } from '@anzusystems/common-admin'
-import { apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import type { Log } from '@anzusystems/common-admin'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { AxiosInstance } from 'axios'
 import { damClient } from '@/shared/apiClients/damClient'
 
@@ -21,22 +21,25 @@ const setupBySystem = (system: string) => {
   return { client, endpoint }
 }
 
-export const fetchLogList = (system: string, pagination: Pagination, filterBag: FilterBag) => {
+export const useFetchLogList = (system: string) => {
   const { client, endpoint } = setupBySystem(system)
 
-  return apiFetchList<Log[]>(
+  return useApiFetchList<Log[]>({
     client,
-    endpoint + '/:type',
-    { type: filterBag.type.model },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: endpoint + '/:type',
+  })
 }
 
-export const fetchLog = (id: string, system: string, type: string) => {
+export const useFetchLog = (system: string) => {
   const { client, endpoint } = setupBySystem(system)
 
-  return apiFetchOne<Log>(client, endpoint + '/:type/:id', { id, type }, SYSTEM_CORE_DAM, ENTITY)
+  return useApiRequest<Log, null>({
+    client,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: endpoint + '/:type/:id',
+  })
 }

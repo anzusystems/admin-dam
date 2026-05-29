@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createPodcastEpisode, ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
+import { ENTITY, useCreatePodcastEpisode } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
@@ -35,8 +35,10 @@ const onOpen = () => {
   podcastEpisode.value = createDefault(currentExtSystemId.value, props.podcastId)
 }
 
+const { executeRequest: createPodcastEpisode } = useCreatePodcastEpisode()
+
 const create = async () => {
-  return await createPodcastEpisode(podcastEpisode.value)
+  return await createPodcastEpisode({ object: podcastEpisode.value })
 }
 </script>
 

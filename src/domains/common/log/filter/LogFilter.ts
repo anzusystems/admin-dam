@@ -1,70 +1,71 @@
-import type { Filter } from '@anzusystems/common-admin'
-import {
-  dateTimeEndOfDay,
-  dateTimeStartOfDay,
-  makeFilterHelper,
-  type MakeFilterOptions,
-} from '@anzusystems/common-admin'
+import { dateTimeEndOfDay, dateTimeStartOfDay } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 import { ENTITY } from '@/domains/common/log/api/logApi'
-import type { LogSystemType } from '@/domains/common/log/valueObject/LogSystem'
 import { LogTypeDefault } from '@/domains/common/log/valueObject/LogType'
 
-const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper('common', ENTITY)
+const filterFieldsList = [
+  {
+    name: 'system' as const,
+    variant: 'in',
+    default: [],
+    type: 'string',
+    mandatory: true,
+    exclude: true,
+    render: { skip: true },
+  },
+  {
+    name: 'contextAppSystem' as const,
+    apiName: 'context.appSystem',
+    default: null,
+    type: 'string',
+    mandatory: true,
+    render: { skip: true },
+  },
+  {
+    name: 'type' as const,
+    variant: 'in',
+    default: LogTypeDefault,
+    type: 'string',
+    exclude: true,
+    render: { skip: true },
+  },
+  { name: 'levelName' as const, variant: 'in', default: [], type: 'string' },
+  { name: 'id' as const, default: null, type: 'string' },
+  { name: 'contextId' as const, apiName: 'context.contextId', default: null, type: 'string' },
+  { name: 'message' as const, variant: 'startsWith', default: null, type: 'string' },
+  { name: 'appVersion' as const, apiName: 'context.appVersion', variant: 'startsWith', default: null, type: 'string' },
+  { name: 'userId' as const, apiName: 'context.userId', default: null, type: 'integer' },
+  { name: 'resourceName' as const, apiName: 'context.resourceName', default: null, type: 'string' },
+  { name: 'resourceId' as const, apiName: 'context.resourceIds', variant: 'in', default: [], type: 'string' },
+  {
+    name: 'datetimeFrom' as const,
+    apiName: 'datetime',
+    default: dateTimeStartOfDay(-1),
+    type: 'timeInterval',
+    related: 'datetimeTo',
+    mandatory: true,
+  },
+  {
+    name: 'datetimeTo' as const,
+    apiName: 'datetime',
+    default: dateTimeEndOfDay(),
+    type: 'timeInterval',
+    mandatory: true,
+    exclude: true,
+    render: { skip: true },
+  },
+] satisfies readonly MakeFilterOption[]
 
-const filter = reactive({
-  system: {
-    ...makeFilter<LogSystemType[]>({ name: 'system', variant: 'in', mandatory: true, exclude: true }),
-  },
-  contextAppSystem: {
-    ...makeFilter<LogSystemType>({ name: 'system', mandatory: true, field: 'context.appSystem' }),
-  },
-  type: {
-    ...makeFilter({ name: 'type', variant: 'in', default: LogTypeDefault, exclude: true }),
-  },
-  levelName: {
-    ...makeFilter({ name: 'levelName', variant: 'in' }),
-  },
-  id: {
-    ...makeFilter({ name: 'id' }),
-  },
-  contextId: {
-    ...makeFilter({ name: 'contextId', field: 'context.contextId' }),
-  },
-  message: {
-    ...makeFilter({ name: 'message', variant: 'startsWith' }),
-  },
-  appVersion: {
-    ...makeFilter({ name: 'appVersion', variant: 'startsWith', field: 'context.appVersion' }),
-  },
-  userId: {
-    ...makeFilter({ name: 'userId', field: 'context.userId' }),
-  },
-  resourceName: {
-    ...makeFilter({ name: 'resourceName', field: 'context.resourceName' }),
-  },
-  resourceId: {
-    ...makeFilter({ name: 'resourceIds', field: 'context.resourceIds', variant: 'in' }),
-  },
-  datetimeFrom: {
-    ...makeFilter({
-      name: 'datetimeFrom',
-      field: 'datetime',
-      variant: 'gte',
-      default: dateTimeStartOfDay(-1),
-      mandatory: true,
-    }),
-  },
-  datetimeTo: {
-    ...makeFilter({
-      name: 'datetimeTo',
-      field: 'datetime',
-      variant: 'lte',
-      default: dateTimeEndOfDay(),
-      mandatory: true,
-    }),
-  },
-})
+const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useLogFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+    system: 'common',
+    subject: ENTITY,
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }

@@ -1,8 +1,9 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import {
-  fetchVideoShowEpisode,
-  fetchVideoShowEpisodeListByVideoShow,
-  updateVideoShowEpisode,
+  useFetchVideoShowEpisode,
+  useFetchVideoShowEpisodeListByVideoShow,
+  useUpdateVideoShowEpisode,
 } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 import { useVideoShowEpisodeOneStore } from '@/domains/coreDam/videoShowEpisode/store/videoShowEpisodeStore'
@@ -17,11 +18,17 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useVideoShowEpisodeListActions = () => {
   const listItems = ref<VideoShowEpisode[]>([])
+  const { executeFetch } = useFetchVideoShowEpisodeListByVideoShow()
 
-  const fetchList = async (videoShowId: DocId, pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (
+    videoShowId: DocId,
+    pagination: Ref<Pagination>,
+    filterData: FilterData,
+    filterConfig: FilterConfig
+  ) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchVideoShowEpisodeListByVideoShow(videoShowId, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, { urlParams: { videoShowId } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -44,7 +51,8 @@ export const useVideoShowEpisodeDetailActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const videoShowEpisode = await fetchVideoShowEpisode(id)
+      const { executeRequest: fetchVideoShowEpisode } = useFetchVideoShowEpisode()
+      const videoShowEpisode = await fetchVideoShowEpisode({ urlParams: { id } })
       videoShowEpisodeOneStore.setVideoShowEpisode(videoShowEpisode)
     } catch (error) {
       showErrorsDefault(error)
@@ -70,7 +78,8 @@ export const useVideoShowEpisodeEditActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const videoShowEpisode = await fetchVideoShowEpisode(id)
+      const { executeRequest: fetchVideoShowEpisode } = useFetchVideoShowEpisode()
+      const videoShowEpisode = await fetchVideoShowEpisode({ urlParams: { id } })
       videoShowEpisodeOneStore.setVideoShowEpisode(videoShowEpisode)
     } catch (error) {
       showErrorsDefault(error)
@@ -89,7 +98,11 @@ export const useVideoShowEpisodeEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateVideoShowEpisode(videoShowEpisodeOneStore.videoShowEpisode.id, videoShowEpisode.value)
+      const { executeRequest: updateVideoShowEpisode } = useUpdateVideoShowEpisode()
+      await updateVideoShowEpisode({
+        urlParams: { id: videoShowEpisodeOneStore.videoShowEpisode.id },
+        object: videoShowEpisode.value,
+      })
       showRecordWas('updated')
       if (!close || !videoShowEpisodeOneStore.videoShowEpisode.videoShow) return
       router.push({

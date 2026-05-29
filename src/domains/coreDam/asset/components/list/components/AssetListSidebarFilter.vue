@@ -1,49 +1,31 @@
 <script lang="ts" setup>
-import FilterClosestColor from '@/domains/coreDam/shared/components/FilterClosestColor.vue'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import { useAssetStatus } from '@/domains/coreDam/asset/valueObject/DamAssetStatus'
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import { useImageOrientation } from '@/domains/coreDam/asset/valueObject/ImageOrientation'
-import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
-import DistributionServiceNameFilter from '@/domains/coreDam/shared/distribution/components/DistributionServiceNameFilter.vue'
+import AssetListFilterForm from '@/domains/coreDam/asset/components/list/components/AssetListFilterForm.vue'
 import {
-  AFilterBooleanSelect,
-  AFilterDatetimePicker,
-  AFilterInteger,
-  AFilterString,
-  AFilterValueObjectOptionsSelect,
-  DamAuthorFilterRemoteAutocompleteLegacy,
-  DamKeywordFilterRemoteAutocompleteLegacy,
-  DamUserFilterRemoteAutocompleteLegacy,
-} from '@anzusystems/common-admin'
+  AFilterWrapperSidebar,
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
 
 const { sidebarLeft } = useMainWrapper()
 
 const { t } = useI18n()
 
-const { filter, fetchAssetList, resetAssetList, filterTouch, filterUnTouch, filterIsTouched } = useAssetListActions()
+const { filterData, filterConfig, fetchAssetList, resetAssetList } = useAssetListActions()
 
-const { assetTypeOptions } = useAssetType()
-const { assetStatusOptions } = useAssetStatus()
-const { imageOrientationOptions } = useImageOrientation()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const submitFilter = () => {
-  filterUnTouch()
+  filterConfig.touched = false
   fetchAssetList()
 }
 
 const resetFilter = () => {
   resetAssetList()
-  filterUnTouch()
+  filterConfig.touched = false
 }
-
-const onAnyFilterUpdate = () => {
-  filterTouch()
-}
-
-const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
@@ -56,347 +38,16 @@ const { currentExtSystemId } = useCurrentExtSystem()
       {{ t('coreDam.asset.filterTitle') }}
     </div>
     <div class="pa-2">
-      <VForm
-        name="search2"
-        @submit.prevent="submitFilter"
-      >
-        <VRow>
-          <VCol>
-            <AFilterString
-              v-model="filter.text"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterString
-              v-model="filter.assetAndMainFileIds"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <DamKeywordFilterRemoteAutocompleteLegacy
-              v-model="filter.keywordIds"
-              :ext-system="currentExtSystemId"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <DamAuthorFilterRemoteAutocompleteLegacy
-              v-model="filter.authorIds"
-              :ext-system="currentExtSystemId"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <DamUserFilterRemoteAutocompleteLegacy
-              v-model="filter.createdByIds"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterValueObjectOptionsSelect
-              v-model="filter.type"
-              :items="assetTypeOptions"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.inPodcast"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.fromRss"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterValueObjectOptionsSelect
-              v-model="filter.status"
-              :items="assetStatusOptions"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.mainFileSingleUse"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.described"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.visible"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterBooleanSelect
-              v-model="filter.generatedBySystem"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AssetSlotsFilter
-              v-model="filter.slotNames"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <DistributionServiceNameFilter
-              v-model="filter.distributedInServices"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <FilterClosestColor
-              v-model="filter.closestMostDominantColor"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterValueObjectOptionsSelect
-              v-model="filter.orientation"
-              :items="imageOrientationOptions"
-              multiple
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.pixelSizeFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.pixelSizeUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.widthFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.widthUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.heightFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.heightUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.shortestDimensionFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.shortestDimensionUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.ratioWidthFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.ratioWidthUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.ratioHeightFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.ratioHeightUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.rotationFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.rotationUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.durationFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.durationUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.bitrateFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.bitrateUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.slotsCountFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterInteger
-              v-model="filter.slotsCountUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-        <VRow>
-          <VCol>
-            <AFilterDatetimePicker
-              v-model="filter.createdAtFrom"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-          <VCol>
-            <AFilterDatetimePicker
-              v-model="filter.createdAtUntil"
-              @update:model-value="onAnyFilterUpdate"
-              @keydown.enter="submitFilter"
-            />
-          </VCol>
-        </VRow>
-      </VForm>
+      <AFilterWrapperSidebar @submit="submitFilter">
+        <AssetListFilterForm />
+      </AFilterWrapperSidebar>
     </div>
     <template #append>
       <div class="pa-2 d-flex align-center justify-center">
         <VBtn
           color="primary"
           class="mr-2"
-          :variant="filterIsTouched ? 'flat' : 'text'"
+          :variant="filterConfig.touched ? 'flat' : 'text'"
           size="small"
           @click.stop="submitFilter"
         >

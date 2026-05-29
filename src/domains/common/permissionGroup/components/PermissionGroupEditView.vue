@@ -9,7 +9,7 @@ const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
 const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, detailLoading, saveButtonLoading } =
-  usePermissionGroupActions(damClient)
+  usePermissionGroupActions()
 
 const { t } = useI18n()
 

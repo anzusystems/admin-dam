@@ -1,17 +1,23 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
   type DamAssetLicenceGroup,
-  type DatatableOrderingOption,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import { useAssetLicenceGroupListActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
@@ -24,13 +30,16 @@ import { ACL, useAuth } from '@/domains/system/auth/auth'
 type DatatableItem = DamAssetLicenceGroup
 
 const router = useRouter()
-const filter = useAssetLicenceGroupListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = useAssetLicenceGroupListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useAssetLicenceGroupListActions()
-const getList = () => {
-  fetchList(pagination, filter)
-}
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination('id')
+provide(DatatablePaginationKey, pagination)
 
 const { can } = useAuth()
 
@@ -39,7 +48,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
     router.push({ name: '/(coreDam)/asset-licence-groups/[id]', params: { id: item.id } })
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'name' },
@@ -53,13 +62,24 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   ENTITY
 )
 
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+const getList = useDebounceFn(() => {
+  fetchList(pagination, filterData, filterConfig)
+})
+
+const sortByChange = () => {
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
 }
 
 onMounted(() => {
-  getList()
+  loadStoredFilters(pagination, getList)
 })
 
 defineExpose({
@@ -70,8 +90,8 @@ defineExpose({
 <template>
   <div>
     <AssetLicenceGroupFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">

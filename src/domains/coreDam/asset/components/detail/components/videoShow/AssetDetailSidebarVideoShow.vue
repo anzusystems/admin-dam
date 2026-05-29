@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
-import { fetchVideoShowEpisodeListByAsset } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import { useFetchVideoShowEpisodeListByAsset } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import VideoShowEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeListItem.vue'
 import VideoShowEpisodeNewDialog from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeNewDialog.vue'
 import { useCachedVideoShows } from '@/domains/coreDam/videoShow/composables/cachedVideoShow'
@@ -20,11 +20,15 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
-const pagination = usePagination()
-pagination.sortBy = 'position'
-const filter = useVideoShowEpisodeListFilter()
+const { pagination } = usePagination('position')
+provide(DatatablePaginationKey, pagination)
+const { filterConfig, filterData } = useVideoShowEpisodeListFilter()
 
-const { showPagination } = usePaginationAutoHide(pagination)
+const showPagination = computed(
+  () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
+)
+
+const { executeFetch } = useFetchVideoShowEpisodeListByAsset()
 
 const listItems = ref<VideoShowEpisode[]>([])
 const loading = ref(false)
@@ -43,7 +47,7 @@ const { addToCachedVideoShows, fetchCachedVideoShows } = useCachedVideoShows()
 
 const getList = async () => {
   loading.value = true
-  const items = await fetchVideoShowEpisodeListByAsset(props.assetId, pagination, filter)
+  const items = await executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
   addToCachedVideoShows(items.map((item) => item.videoShow))
   fetchCachedVideoShows()
   listItems.value = items

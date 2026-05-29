@@ -1,7 +1,9 @@
-import type { DamAssetLicence, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { fetchDamAssetLicenceList, fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
+import type { DamAssetLicence } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceListByIds, useFetchDamAssetLicenceList } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'
-import { fetchAssetLicence, updateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { useFetchAssetLicence, useUpdateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 import { damClient } from '@/shared/apiClients/damClient'
 
@@ -17,11 +19,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceListActions = () => {
   const listItems = ref<DamAssetLicence[]>([])
+  const { executeFetch } = useFetchDamAssetLicenceList(damClient)
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchDamAssetLicenceList(damClient, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig)
       addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
       fetchCachedExtSystems()
     } catch (error) {
@@ -46,7 +49,8 @@ export const useAssetLicenceDetailActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const assetLicence = await fetchAssetLicence(id)
+      const { executeRequest: fetchAssetLicence } = useFetchAssetLicence()
+      const assetLicence = await fetchAssetLicence({ urlParams: { id } })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
@@ -74,7 +78,8 @@ export const useAssetLicenceEditActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const assetLicence = await fetchAssetLicence(id)
+      const { executeRequest: fetchAssetLicence } = useFetchAssetLicence()
+      const assetLicence = await fetchAssetLicence({ urlParams: { id } })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
       assetLicenceOneStore.setAssetLicence(assetLicence)
@@ -95,7 +100,11 @@ export const useAssetLicenceEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAssetLicence(assetLicenceOneStore.assetLicence.id, assetLicence.value)
+      const { executeRequest: updateAssetLicence } = useUpdateAssetLicence()
+      await updateAssetLicence({
+        urlParams: { id: assetLicenceOneStore.assetLicence.id },
+        object: assetLicence.value,
+      })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/asset-licences' })
@@ -119,6 +128,8 @@ export const useAssetLicenceEditActions = () => {
 }
 
 export const useAssetLicenceByExtIdSelectActions = () => {
+  const { executeFetch } = useFetchDamAssetLicenceList(damClient)
+
   const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
     return assetLicences.map((assetLicence: DamAssetLicence) => ({
       title: assetLicence.extId,
@@ -126,8 +137,8 @@ export const useAssetLicenceByExtIdSelectActions = () => {
     }))
   }
 
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    return mapToValueObjectOption(await fetchDamAssetLicenceList(damClient, pagination, filterBag))
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    return mapToValueObjectOption(await executeFetch(pagination, filterData, filterConfig))
   }
 
   const fetchItemsByIds = async (ids: number[]) => {

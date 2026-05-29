@@ -1,22 +1,46 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiAnyRequest, apiFetchList } from '@anzusystems/common-admin'
+import {
+  type FilterConfig,
+  type FilterData,
+  type Pagination,
+  useApiFetchList,
+  useApiRequest,
+} from '@anzusystems/common-admin/labs'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import type { Ref } from 'vue'
 
 const END_POINT = '/adm/v1/asset-slot'
 export const ENTITY = 'assetSlot'
 
-export const fetchAssetSlotList = (assetId: DocId, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<AssetSlot[]>(
-    damClient,
-    END_POINT + '/asset/:assetId',
-    { assetId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchAssetSlotList = () =>
+  useApiFetchList<AssetSlot[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset/:assetId',
+  })
 
-export const updateAssetSlots = (assetId: DocId, data: Array<{ assetFile: DocId | null; slotName: string }>) =>
-  apiAnyRequest(damClient, 'PATCH', END_POINT + '/asset/:assetId', { assetId }, data, SYSTEM_CORE_DAM, ENTITY)
+export const fetchAssetSlotList = (
+  assetId: DocId,
+  pagination: Ref<Pagination>,
+  filterData: FilterData,
+  filterConfig: FilterConfig
+) => {
+  const { executeFetch } = useFetchAssetSlotList()
+  return executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId } })
+}
+
+export const useUpdateAssetSlots = () =>
+  useApiRequest<unknown, Array<{ assetFile: DocId | null; slotName: string }>>({
+    client: damClient,
+    method: 'PATCH',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset/:assetId',
+  })
+
+export const updateAssetSlots = (assetId: DocId, data: Array<{ assetFile: DocId | null; slotName: string }>) => {
+  const { executeRequest } = useUpdateAssetSlots()
+  return executeRequest({ urlParams: { assetId }, object: data })
+}

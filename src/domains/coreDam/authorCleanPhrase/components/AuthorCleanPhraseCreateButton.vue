@@ -7,7 +7,7 @@ import {
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createAuthorCleanPhrase, ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+import { ENTITY, useCreateAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
@@ -43,8 +43,9 @@ const onOpen = () => {
   authorCleanPhrase.value = createDefault(currentExtSystemId.value)
 }
 
+const { executeRequest: createAuthorCleanPhrase } = useCreateAuthorCleanPhrase()
 const create = async () => {
-  return await createAuthorCleanPhrase(authorCleanPhrase.value)
+  return await createAuthorCleanPhrase({ object: authorCleanPhrase.value })
 }
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()

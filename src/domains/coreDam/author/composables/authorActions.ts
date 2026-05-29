@@ -1,10 +1,12 @@
-import type { DamAuthor, DamAuthorMinimal, FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { useDamCachedUsers } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import {
-  fetchAuthor,
-  fetchAuthorList,
-  fetchAuthorListByIds,
-  updateAuthor,
+  useFetchAuthor,
+  useFetchAuthorList,
+  useFetchAuthorListByIds,
+  useUpdateAuthor,
 } from '@/domains/coreDam/author/api/authorApi'
 import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
@@ -20,14 +22,16 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useAuthorListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
+  const { executeFetch } = useFetchAuthorList()
 
   const listItems = ref<DamAuthor[]>([])
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
-    pagination.sortBy = filterBag.text.model ? null : 'id'
     try {
-      listItems.value = await fetchAuthorList(currentExtSystemId.value, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -48,11 +52,12 @@ export const useAuthorDetailActions = () => {
   const { author } = storeToRefs(authorOneStore)
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
+  const { executeRequest: fetchAuthor } = useFetchAuthor()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const author = await fetchAuthor(id)
+      const author = await fetchAuthor({ urlParams: { id } })
 
       author.currentAuthors.forEach((item) => {
         addToCachedAuthors(item)
@@ -86,11 +91,13 @@ export const useAuthorEditActions = () => {
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+  const { executeRequest: fetchAuthor } = useFetchAuthor()
+  const { executeRequest: updateAuthor } = useUpdateAuthor()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const author = await fetchAuthor(id)
+      const author = await fetchAuthor({ urlParams: { id } })
       author.currentAuthors.forEach((item) => {
         addToCachedAuthors(item)
       })
@@ -116,7 +123,7 @@ export const useAuthorEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAuthor(authorOneStore.author.id, author.value)
+      await updateAuthor({ urlParams: { id: authorOneStore.author.id }, object: author.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/authors' })
@@ -141,6 +148,7 @@ export const useAuthorEditActions = () => {
 
 export const useAuthorSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
+  const { executeFetch } = useFetchAuthorList()
 
   const mapToMinimal = (author: DamAuthor): DamAuthorMinimal => ({
     id: author.id,
@@ -162,18 +170,31 @@ export const useAuthorSelectActions = () => {
     return authors.map((author: DamAuthor) => mapToMinimal(author))
   }
 
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    pagination.sortBy = filterBag.text.model ? null : 'id'
-
-    return mapToValueObjects(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    return mapToValueObjects(
+      await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
+    )
   }
 
-  const fetchItemsMinimal = async (pagination: Pagination, filterBag: FilterBag) => {
-    return mapToMinimals(await fetchAuthorList(currentExtSystemId.value, pagination, filterBag))
+  const fetchItemsMinimal = async (
+    pagination: Ref<Pagination>,
+    filterData: FilterData,
+    filterConfig: FilterConfig
+  ) => {
+    return mapToMinimals(
+      await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
+    )
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
-    return mapToValueObjects(await fetchAuthorListByIds(currentExtSystemId.value, ids))
+    const { executeFetch: executeFetchByIds } = useFetchAuthorListByIds()
+    return mapToValueObjects(
+      await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
+    )
   }
 
   return {

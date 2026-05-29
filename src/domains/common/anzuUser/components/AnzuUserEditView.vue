@@ -8,8 +8,7 @@ import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const { resetAnzuUserStore, fetchAnzuUser, updateAnzuUser, detailLoading, saveButtonLoading } =
-  useAnzuUserActions(damClient)
+const { resetAnzuUserStore, fetchAnzuUser, updateAnzuUser, detailLoading, saveButtonLoading } = useAnzuUserActions()
 
 const { t } = useI18n()
 

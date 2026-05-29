@@ -9,13 +9,12 @@ import { usePermissionActions } from '@/domains/common/permission/composables/pe
 import { useAnzuUserEditValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
 
-const props = defineProps<{
+defineProps<{
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { anzuUser } = useAnzuUserActions(props.client)
+const { anzuUser } = useAnzuUserActions()
 const { resolvePermissions } = usePermissionActions()
 const resolvedPermissions = computed(() => {
   return resolvePermissions(anzuUser.value)

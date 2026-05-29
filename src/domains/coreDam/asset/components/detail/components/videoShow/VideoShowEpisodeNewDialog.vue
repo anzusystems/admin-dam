@@ -4,9 +4,9 @@ import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
 import {
-  createVideoShowEpisode,
   ENTITY,
-  prepareFormDataVideoShowEpisode,
+  useCreateVideoShowEpisode,
+  usePrepareFormDataVideoShowEpisode,
 } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
@@ -42,6 +42,9 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const { createDefault } = useVideoShowEpisodeFactory()
 const videoShowEpisode = ref<VideoShowEpisode>(createDefault(currentExtSystemId.value))
 
+const { executeRequest: createVideoShowEpisode } = useCreateVideoShowEpisode()
+const { executeRequest: prepareFormDataVideoShowEpisode } = usePrepareFormDataVideoShowEpisode()
+
 const saving = ref(false)
 const loadingFormData = ref(false)
 
@@ -61,7 +64,7 @@ const submit = async () => {
       saving.value = false
       return
     }
-    await createVideoShowEpisode(videoShowEpisode.value)
+    await createVideoShowEpisode({ object: videoShowEpisode.value })
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
@@ -74,7 +77,9 @@ const submit = async () => {
 const loadFormData = async () => {
   if (!videoShowEpisode.value.videoShow) return
   loadingFormData.value = true
-  const res = await prepareFormDataVideoShowEpisode(props.assetId, videoShowEpisode.value.videoShow)
+  const res = await prepareFormDataVideoShowEpisode({
+    urlParams: { assetId: props.assetId, videoShowId: videoShowEpisode.value.videoShow },
+  })
   videoShowEpisode.value.texts.title = res.texts.title
   loadingFormData.value = false
 }

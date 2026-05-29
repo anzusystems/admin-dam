@@ -129,7 +129,9 @@ const toolbarTitle = computed(() => {
 })
 const totalCountText = computed(() => {
   if (isNull(assetListStore.activeItemIndex)) return ''
-  return assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.hasNextPage ? '+' : '')
+  return (
+    assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.value.hasNextPage ? '+' : '')
+  )
 })
 const assetMainFile = computed(() => {
   return asset.value?.mainFile || undefined

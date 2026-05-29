@@ -5,16 +5,22 @@ import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import {
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   AJobStatusChip,
   ATableCopyIdButton,
   ATableDetailButton,
-  createDatatableColumnsConfig,
-  type DatatableOrderingOption,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
 import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import type { Job } from '@/domains/coreDam/job/types/Job'
@@ -23,10 +29,16 @@ import { ACL, useAuth } from '@/domains/system/auth/auth'
 type DatatableItem = Job
 
 const router = useRouter()
-const filter = useJobListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = useJobListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useJobListActions()
+const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination(SORT_BY_ID)
+provide(DatatablePaginationKey, pagination)
 
 const { t } = useI18n()
 
@@ -38,7 +50,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id', title: t('common.job.model.id') },
     { key: '_resourceName', title: t('common.job.model._resourceName') },
@@ -53,17 +65,25 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   ENTITY
 )
 
-const getList = () => {
-  fetchList(pagination, filter)
+const getList = useDebounceFn(() => {
+  fetchList(pagination, filterData, filterConfig)
+})
+
+const sortByChange = () => {
+  filterConfig.touched = false
+  submitFilter(pagination, getList)
 }
 
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
 }
 
 onMounted(() => {
-  fetchList(pagination, filter)
+  getList()
 })
 
 defineExpose({
@@ -74,8 +94,8 @@ defineExpose({
 <template>
   <div>
     <JobFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">

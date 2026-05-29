@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow, useJobApi } from '@anzusystems/common-admin'
+import { AFormTextField, ARow } from '@anzusystems/common-admin'
+import { useJobApi } from '@anzusystems/common-admin/labs'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { JobAuthorCurrentOptimize } from '@/domains/coreDam/job/types/Job'

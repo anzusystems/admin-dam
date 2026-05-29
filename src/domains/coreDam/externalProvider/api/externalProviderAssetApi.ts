@@ -1,36 +1,27 @@
 import { damClient } from '@/shared/apiClients/damClient'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {
   AssetExternalProviderDetailDto,
-  AssetExternalProviderId,
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
 
 const END_POINT = '/adm/v1/asset-external-provider'
 export const ENTITY = 'asset'
 
-export const fetchExternalProviderAssetList = (
-  externalProvider: string,
-  pagination: Pagination,
-  filterBag: FilterBag
-) =>
-  apiFetchList<AssetExternalProviderListDto[]>(
-    damClient,
-    END_POINT + '/:externalProvider',
-    { externalProvider },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchExternalProviderAssetList = () =>
+  useApiFetchList<AssetExternalProviderListDto[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:externalProvider',
+  })
 
-export const fetchExternalProviderAsset = (externalProvider: string, id: AssetExternalProviderId) =>
-  apiFetchOne<AssetExternalProviderDetailDto>(
-    damClient,
-    END_POINT + '/:externalProvider/:id',
-    { externalProvider, id },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchExternalProviderAsset = () =>
+  useApiRequest<AssetExternalProviderDetailDto, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:externalProvider/:id',
+  })

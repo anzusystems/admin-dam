@@ -3,7 +3,8 @@ import { useImageRoiStore } from '@/domains/coreDam/asset/store/imageRoiStore'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetFileRotate from '@/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { assetFileIsImageFile, usePagination } from '@anzusystems/common-admin'
+import { assetFileIsImageFile } from '@anzusystems/common-admin'
+import { usePagination } from '@anzusystems/common-admin/labs'
 import { fetchImageRoiList, fetchRoi } from '@/domains/coreDam/asset/api/imageRoiApi'
 import { useImageRoiFilter } from '@/domains/coreDam/asset/filter/ImageRoiFilter'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
@@ -22,13 +23,13 @@ const { t } = useI18n()
 const imageRoiStore = useImageRoiStore()
 const assetDetailStore = useAssetDetailStore()
 
-const filter = useImageRoiFilter()
-const pagination = usePagination()
+const { filterConfig, filterData } = useImageRoiFilter()
+const { pagination } = usePagination(null)
 
 const loadRois = async () => {
   if (imageRoiStore.imageFile) {
     imageRoiStore.showLoader()
-    const res = await fetchImageRoiList(imageRoiStore.imageFile.id, pagination, filter)
+    const res = await fetchImageRoiList(imageRoiStore.imageFile.id, pagination, filterData, filterConfig)
     if (res.length > 0 && res[0].id) {
       const roi = await fetchRoi(res[0].id)
       imageRoiStore.setRoi(roi)

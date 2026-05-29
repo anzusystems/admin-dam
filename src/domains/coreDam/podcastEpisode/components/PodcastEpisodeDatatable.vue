@@ -2,17 +2,27 @@
 import {
   ABooleanValue,
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
-  useFilterHelpers,
+  SortOrder,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  type Pagination,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { usePodcastEpisodeListActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
@@ -33,10 +43,16 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-const filter = usePodcastEpisodeListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = usePodcastEpisodeListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = usePodcastEpisodeListActions()
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination('id')
+provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({
@@ -45,11 +61,11 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   })
 }
 
-const getList = () => {
-  fetchList(props.podcastId, pagination, filter)
-}
+const getList = useDebounceFn(() => {
+  fetchList(props.podcastId, pagination, filterData, filterConfig)
+})
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'texts.title' },
@@ -68,27 +84,35 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
 )
 
 const customSort: DatatableOrderingOptions = [
-  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: 'desc' } },
-  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: 'asc' } },
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: SortOrder.Desc } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: SortOrder.Asc } },
   {
     id: 3,
     titleT: 'system.datatable.ordering.webOrderPosition',
-    sortBy: { key: 'attributes.webOrderPosition', order: 'desc' },
+    sortBy: { key: 'attributes.webOrderPosition', order: SortOrder.Desc },
   },
   {
     id: 4,
     titleT: 'system.datatable.ordering.mobileOrderPosition',
-    sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' },
+    sortBy: { key: 'attributes.mobileOrderPosition', order: SortOrder.Desc },
   },
 ]
 
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+const paginationUpdateCustomCb = (option: DatatableOrderingOption, paginationRef: Ref<Pagination>) => {
+  paginationRef.value.sortBy = option.sortBy ?? null
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
 }
 
 onMounted(() => {
-  fetchList(props.podcastId, pagination, filter)
+  loadStoredFilters(pagination, getList)
 })
 
 defineExpose({
@@ -99,15 +123,15 @@ defineExpose({
 <template>
   <div>
     <PodcastEpisodeFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">
         <VSpacer />
         <ADatatableOrdering
           :custom-options="customSort"
-          @sort-by-change="sortByChange"
+          :pagination-update-custom-cb="paginationUpdateCustomCb"
         />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"

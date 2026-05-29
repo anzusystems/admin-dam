@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow } from '@anzusystems/common-admin'
-import { playground } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+import { usePlaygroundAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanResultDto, AuthorNameDto } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
@@ -41,10 +41,15 @@ const onCancel = () => {
 
 const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
+const { executeRequest: playground } = usePlaygroundAuthorCleanPhrase()
+
 const onConfirm = async () => {
   try {
     buttonLoading.value = true
-    authorCleanPhraseRes.value = await playground(currentExtSystemId.value, authorNameDto.value)
+    authorCleanPhraseRes.value = await playground({
+      urlParams: { extSystemId: currentExtSystemId.value },
+      object: authorNameDto.value,
+    })
 
     authorCleanPhraseRes.value.authors.forEach((authorId) => {
       addToCachedAuthors(authorId)

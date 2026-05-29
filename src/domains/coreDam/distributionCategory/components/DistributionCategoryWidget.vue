@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { fetchDistributionCategory } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
+import { useFetchDistributionCategory } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
 import { DamAssetTypeDefault } from '@anzusystems/common-admin'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
@@ -35,7 +35,8 @@ const assetType = computed(() => {
 
 const loadCategory = async (id: DocId) => {
   loading.value = true
-  category.value = await fetchDistributionCategory(id)
+  const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
+  category.value = await fetchDistributionCategory({ urlParams: { id } })
   loading.value = false
 }
 

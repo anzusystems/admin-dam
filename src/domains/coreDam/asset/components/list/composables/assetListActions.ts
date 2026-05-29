@@ -15,9 +15,8 @@ import {
   type DamAssetTypeType,
   SortOrder,
   useDamCachedUsers,
-  useFilterHelpers,
-  usePagination,
 } from '@anzusystems/common-admin'
+import { useFilterHelpers, usePagination } from '@anzusystems/common-admin/labs'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'
@@ -25,11 +24,8 @@ export const SORT_BY_SCORE_BEST = 'score_best'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
-const filter = useAssetListFilter()
-const pagination = usePagination()
-pagination.sortBy = SORT_BY_SCORE_DATE
-pagination.descending = true
-pagination.rowsPerPage = 25
+const { filterData, filterConfig } = useAssetListFilter()
+const { pagination } = usePagination(SORT_BY_SCORE_DATE, SortOrder.Desc, { rowsPerPage: 25 })
 
 export const customSortOptions = [
   {
@@ -58,7 +54,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const uploadQueuesStore = useUploadQueuesStore()
 
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
-  const { resetFilter } = useFilterHelpers()
+  const { resetFilter } = useFilterHelpers(filterData, filterConfig)
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()
@@ -81,11 +77,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const fetchAssetList = async () => {
-    pagination.page = 1
+    pagination.value.page = 1
     try {
       assetListStore.showLoader('hard')
       assetListStore.setList(
-        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filter),
+        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
@@ -97,7 +93,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const resetAssetList = async () => {
     assetListStore.resetList()
-    resetFilter(filter, pagination, fetchAssetList)
+    resetFilter(pagination, fetchAssetList)
   }
 
   const fetchNextPage = async () => {
@@ -106,11 +102,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       showWarning('Maximum listing limit reached, please update your filter for better result.')
       return
     }
-    pagination.page = pagination.page + 1
+    pagination.value.page = pagination.value.page + 1
     try {
       assetListStore.showLoader('soft')
       assetListStore.appendList(
-        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filter),
+        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
@@ -122,26 +118,26 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const setTypeAndFetch = async (type: null | DamAssetTypeType = null) => {
     if (isNull(type)) {
-      filter.type.model = []
-      filter.inPodcast.model = null
+      filterData.type = []
+      filterData.inPodcast = null
       await fetchAssetList()
       return
     }
-    arrayItemToggle(filter.type.model, type)
-    if (!filter.type.model.includes(DamAssetType.Audio) && filter.inPodcast.model) {
-      filter.inPodcast.model = null
+    arrayItemToggle(filterData.type as DamAssetTypeType[], type)
+    if (!(filterData.type as DamAssetTypeType[]).includes(DamAssetType.Audio) && filterData.inPodcast) {
+      filterData.inPodcast = null
     }
     await fetchAssetList()
   }
 
   const togglePodcastAndFetch = async () => {
-    if (filter.inPodcast.model) {
-      filter.inPodcast.model = null
+    if (filterData.inPodcast) {
+      filterData.inPodcast = null
       await fetchAssetList()
       return
     }
-    filter.inPodcast.model = true
-    filter.type.model = [DamAssetType.Audio]
+    filterData.inPodcast = true
+    filterData.type = [DamAssetType.Audio]
     await fetchAssetList()
   }
 
@@ -306,7 +302,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     loader,
     items: list,
     pagination,
-    filter,
+    filterData,
+    filterConfig,
     fetchAssetList,
     resetAssetList,
     fetchNextPage,

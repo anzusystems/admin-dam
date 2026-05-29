@@ -1,4 +1,5 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import { fetchVideoFileDistributionPreviewList } from '@/domains/coreDam/asset/api/videoApi'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
 
@@ -10,10 +11,15 @@ export const useVideoDistributionPreviewListActions = () => {
   const listItems = ref<DistributionImagePreviewDto[]>([])
   const lastSelectedItem = ref<DistributionImagePreviewDto | null>(null)
 
-  const fetchList = async (fileId: DocId, pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (
+    fileId: DocId,
+    pagination: Ref<Pagination>,
+    filterData: FilterData,
+    filterConfig: FilterConfig
+  ) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchVideoFileDistributionPreviewList(fileId, pagination, filterBag)
+      listItems.value = await fetchVideoFileDistributionPreviewList(fileId, pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {

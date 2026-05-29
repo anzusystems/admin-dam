@@ -11,16 +11,16 @@ import {
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { ACard, useI18n } from '@anzusystems/common-admin'
 
-const filter = useDistributionCategoryListFilter()
+const { filterData } = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()
 const { listLoading } = useDistributionCategoryListActions()
 
-const assetType = computed(() => filter.type.model as DamAssetTypeType)
+const assetType = computed(() => filterData.type as DamAssetTypeType)
 
 const datatable = ref<InstanceType<typeof DistributionCategoryDatatable> | null>(null)
 
 const onCreateSuccess = (type: DamAssetTypeType) => {
-  filter.type.model = type
+  filterData.type = type
   datatable.value?.refresh()
 }
 

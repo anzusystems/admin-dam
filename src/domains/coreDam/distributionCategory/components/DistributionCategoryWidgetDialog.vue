@@ -3,7 +3,7 @@ import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/current
 import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { updateAssetCategory } from '@/domains/coreDam/asset/api/assetApi'
-import { ENTITY, fetchDistributionCategory } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
+import { ENTITY, useFetchDistributionCategory } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 import DistributionCategoryRemoteAutocomplete from '@/domains/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
@@ -62,7 +62,8 @@ const onConfirm = async () => {
 
 const loadCategory = async (id: DocId) => {
   category.value = createDefault(currentExtSystemId.value)
-  category.value = await fetchDistributionCategory(id)
+  const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
+  category.value = await fetchDistributionCategory({ urlParams: { id } })
 }
 
 const onCancel = () => {

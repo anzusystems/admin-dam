@@ -9,20 +9,22 @@ import {
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
+import { usePagination } from '@anzusystems/common-admin/labs'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetTypeType) {
   const assetSlotsStore = useAssetSlotsStore()
   const { showErrorsDefault } = useAlerts()
 
-  const pagination = usePagination()
-  const filter = useAssetSlotFilter()
+  const { pagination } = usePagination(null)
+  const { filterConfig, filterData } = useAssetSlotFilter()
 
-  const { showPagination } = usePaginationAutoHide(pagination)
+  const showPagination = computed(
+    () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
+  )
 
   const getList = async () => {
     assetSlotsStore.showLoader()
-    const items = await fetchAssetSlotList(assetId, pagination, filter)
+    const items = await fetchAssetSlotList(assetId, pagination, filterData, filterConfig)
     assetSlotsStore.setList(items)
     assetSlotsStore.hideLoader()
   }

@@ -1,33 +1,41 @@
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import type { DamAssetTypeType, Filter } from '@anzusystems/common-admin'
-import { DamAssetType, DamAssetTypeDefault, makeFilterHelper, type MakeFilterOptions } from '@anzusystems/common-admin'
+import { DamAssetType, DamAssetTypeDefault } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 
-const makeFilter: <T>(options: Partial<MakeFilterOptions<T>>) => Filter<T> = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
+const listFields = [
+  { name: 'id' as const, default: null, type: 'integer' },
+  { name: 'name' as const, variant: 'startsWith', default: null, type: 'string' },
+  { name: 'type' as const, mandatory: true, default: DamAssetType.Video, type: 'string' },
+] satisfies readonly MakeFilterOption[]
 
-const filter = reactive({
-  id: {
-    ...makeFilter({ name: 'id' }),
-  },
-  name: {
-    ...makeFilter({ name: 'name', variant: 'startsWith' }),
-  },
-  type: {
-    ...makeFilter<DamAssetTypeType>({ name: 'type', mandatory: true, default: DamAssetType.Video }),
-  },
-})
+const listFilterStore = createFilterStore(listFields)
 
 export function useDistributionCategoryListFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(listFields, listFilterStore, {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }
 
 export function useDistributionCategoryFilter() {
-  return reactive({
-    name: {
-      ...makeFilter({ name: 'name', variant: 'startsWith' }),
-    },
-    type: {
-      ...makeFilter<DamAssetTypeType>({ name: 'type', default: DamAssetTypeDefault }),
-    },
+  const fields = [
+    { name: 'name' as const, variant: 'startsWith', default: null, type: 'string' },
+    { name: 'type' as const, default: DamAssetTypeDefault, type: 'string' },
+  ] satisfies readonly MakeFilterOption[]
+
+  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
   })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }

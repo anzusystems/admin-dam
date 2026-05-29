@@ -1,29 +1,29 @@
 <script lang="ts" setup>
-import { DamAssetType } from '@anzusystems/common-admin'
+import { type DamAssetTypeType, DamAssetType } from '@anzusystems/common-admin'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 
 const { t } = useI18n()
 
-const { setTypeAndFetch, togglePodcastAndFetch, filter } = useAssetListActions()
+const { setTypeAndFetch, togglePodcastAndFetch, filterData } = useAssetListActions()
 
 const isImageActive = computed(() => {
-  return filter.type.model.includes(DamAssetType.Image)
+  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Image)
 })
 
 const isAudioActive = computed(() => {
-  return filter.type.model.includes(DamAssetType.Audio)
+  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Audio)
 })
 
 const isVideoActive = computed(() => {
-  return filter.type.model.includes(DamAssetType.Video)
+  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Video)
 })
 
 const isDocumentActive = computed(() => {
-  return filter.type.model.includes(DamAssetType.Document)
+  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Document)
 })
 
 const isPodcastActive = computed(() => {
-  return filter.inPodcast.model === true
+  return filterData.inPodcast === true
 })
 </script>
 

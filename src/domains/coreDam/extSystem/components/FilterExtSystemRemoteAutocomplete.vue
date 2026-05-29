@@ -1,22 +1,24 @@
 <script lang="ts" setup>
-import { AFilterRemoteAutocomplete, type Filter } from '@anzusystems/common-admin'
+import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { useExtSystemFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
 import { useExtSystemSelectActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
-import { damClient } from '@/shared/apiClients/damClient'
 
-const modelValue = defineModel<Filter>({ required: true })
+defineProps<{
+  name: string
+}>()
 
-const { fetchItems, fetchItemsByIds } = useExtSystemSelectActions(damClient)
+const { fetchItems, fetchItemsByIds } = useExtSystemSelectActions()
 
-const innerFilter = useExtSystemFilter()
+const { filterData, filterConfig } = useExtSystemFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 </script>
 
 <template>
   <AFilterRemoteAutocomplete
-    v-model="modelValue"
+    :name="name"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     filter-by-field="name"
   />
 </template>

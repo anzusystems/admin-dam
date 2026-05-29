@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { useVideoShowSelectActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowFilter } from '@/domains/coreDam/videoShow/filter/VideoShowFilter'
 
@@ -37,7 +37,9 @@ const modelValueComputed = computed({
 
 const { fetchItems, fetchItemsByIds } = useVideoShowSelectActions()
 
-const innerFilter = useVideoShowFilter()
+const { filterData, filterConfig } = useVideoShowFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 </script>
 
 <template>
@@ -47,11 +49,10 @@ const innerFilter = useVideoShowFilter()
     :label="label"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
     filter-by-field="title"
     :data-cy="dataCy"
-    :disable-init-fetch="disableInitFetch"
+    :prefetch="disableInitFetch ? false : 'hover'"
   />
 </template>

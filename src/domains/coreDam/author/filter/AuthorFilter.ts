@@ -1,44 +1,38 @@
-import { makeFilterHelper } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
+const fields = [
+  { name: 'id' as const, default: null, type: 'string' },
+  { name: 'text' as const, default: null, type: 'string' },
+  { name: 'identifier' as const, default: null, type: 'string' },
+  { name: 'reviewed' as const, default: null, type: 'boolean' },
+  { name: 'type' as const, default: null, type: 'string' },
+] satisfies readonly MakeFilterOption[]
 
-const filter = reactive({
-  _elastic: {
-    ...makeFilter({ exclude: true }),
-  },
-  id: {
-    ...makeFilter({ name: 'id' }),
-  },
-  text: {
-    ...makeFilter({ name: 'text' }),
-  },
-  identifier: {
-    ...makeFilter({ name: 'identifier' }),
-  },
-  reviewed: {
-    ...makeFilter({ name: 'reviewed' }),
-  },
-  type: {
-    ...makeFilter({ name: 'type' }),
-  },
-})
+const store = createFilterStore(fields)
 
 export function useAuthorListFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(fields, store, {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+    elastic: true,
+  })
+
+  return { filterConfig, filterData }
 }
 
-export function useAuthorFilter() {
-  return reactive({
-    _elastic: {
-      ...makeFilter({ exclude: true }),
-    },
-    text: {
-      ...makeFilter({ name: 'text' }),
-    },
-    canBeCurrentAuthor: {
-      ...makeFilter({ name: 'canBeCurrentAuthor' }),
-    },
+export function useAuthorInnerFilter() {
+  const fields = [
+    { name: 'text' as const, variant: 'search', default: null, type: 'string' },
+    { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
+  ] satisfies readonly MakeFilterOption[]
+
+  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+    elastic: true,
   })
+
+  return { filterConfig, filterData }
 }

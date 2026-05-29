@@ -1,24 +1,11 @@
 <script lang="ts" setup>
-import { AFilterValueObjectOptionsSelect, type Filter, useDamConfigStore } from '@anzusystems/common-admin'
+import { useDamConfigStore } from '@anzusystems/common-admin'
+import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin/labs'
 
-const props = withDefaults(
-  defineProps<{
-    modelValue: Filter
-  }>(),
-  {}
-)
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: Filter): void
+defineProps<{
+  name: string
 }>()
 
-const value = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue) {
-    emit('update:modelValue', newValue)
-  },
-})
 const damConfigStore = useDamConfigStore()
 
 const items = computed(() => {
@@ -29,18 +16,11 @@ const items = computed(() => {
     }
   })
 })
-
-const { t } = useI18n()
-
-const label = computed(() => {
-  return props.modelValue.titleT ? t(props.modelValue.titleT) : undefined
-})
 </script>
 
 <template>
   <AFilterValueObjectOptionsSelect
-    v-model="value"
-    :label="label"
+    :name="name"
     :items="items"
   />
 </template>

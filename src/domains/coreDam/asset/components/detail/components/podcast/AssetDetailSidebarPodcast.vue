@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 import { usePodcastEpisodeListFilter } from '@/domains/coreDam/podcastEpisode/filter/PodcastEpisodeFilter'
-import { fetchPodcastEpisodeListByAsset } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
+import { useFetchPodcastEpisodeListByAsset } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import PodcastEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeListItem.vue'
 import PodcastEpisodeNewDialog from '@/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeNewDialog.vue'
 import { usePodcastEpisodeRemoveActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
@@ -21,11 +21,15 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
-const pagination = usePagination()
-pagination.sortBy = 'position'
-const filter = usePodcastEpisodeListFilter()
+const { pagination } = usePagination('position')
+provide(DatatablePaginationKey, pagination)
+const { filterConfig, filterData } = usePodcastEpisodeListFilter()
 
-const { showPagination } = usePaginationAutoHide(pagination)
+const showPagination = computed(
+  () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
+)
+
+const { executeFetch } = useFetchPodcastEpisodeListByAsset()
 
 const listItems = ref<PodcastEpisode[]>([])
 const loading = ref(false)
@@ -49,7 +53,7 @@ const deletePodcastEpisode = (id: DocId) => {
 
 const getList = async () => {
   loading.value = true
-  const items = await fetchPodcastEpisodeListByAsset(props.assetId, pagination, filter)
+  const items = await executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
   addToCachedPodcasts(items.map((item) => item.podcast))
   fetchCachedPodcasts()
   listItems.value = items

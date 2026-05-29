@@ -83,7 +83,7 @@ const totalCountText = computed(() => {
     1 +
     ' / ' +
     externalProviderAssetListStore.list.length +
-    (pagination.hasNextPage ? '+' : '')
+    (pagination.value.hasNextPage ? '+' : '')
   )
 })
 

@@ -21,7 +21,9 @@ const { pagination } = useAssetListActions() // todo
 
 const totalCountText = computed(() => {
   if (!assetListStore.activeItemIndex) return ''
-  return assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.hasNextPage ? '+' : '')
+  return (
+    assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.value.hasNextPage ? '+' : '')
+  )
 })
 </script>
 

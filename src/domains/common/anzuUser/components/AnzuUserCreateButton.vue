@@ -7,7 +7,7 @@ import {
   ASystemEntityScope,
   useAnzuUserFactory,
 } from '@anzusystems/common-admin'
-import { ENTITY, useAnzuUserApi } from '@/domains/common/anzuUser/api/anzuUserApi'
+import { ENTITY, useCreateAnzuUser } from '@/domains/common/anzuUser/api/anzuUserApi'
 import type { AxiosInstance } from 'axios'
 import { useAnzuUserCreateValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
 import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'
@@ -35,8 +35,7 @@ const emit = defineEmits<{
 }>()
 
 const { createAnzuUser } = useAnzuUserFactory()
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { apiCreateAnzuUser } = useAnzuUserApi(props.client)
+const { executeRequest: createAnzuUserRequest } = useCreateAnzuUser()
 const anzuUser = ref<AnzuUser>(createAnzuUser())
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -64,7 +63,7 @@ const onConfirm = async () => {
       buttonLoading.value = false
       return
     }
-    const res = await apiCreateAnzuUser(anzuUser.value)
+    const res = await createAnzuUserRequest({ object: anzuUser.value })
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false

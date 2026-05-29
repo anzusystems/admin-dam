@@ -12,7 +12,7 @@ const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)
 const afterCreate = () => {
   datatable.value?.refresh()
 }
-const { listLoading } = useAnzuUserActions(damClient)
+const { listLoading } = useAnzuUserActions()
 
 const { t } = useI18n()
 

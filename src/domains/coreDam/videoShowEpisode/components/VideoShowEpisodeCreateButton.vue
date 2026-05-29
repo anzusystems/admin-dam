@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createVideoShowEpisode, ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import { ENTITY, useCreateVideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
@@ -36,7 +36,8 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  return await createVideoShowEpisode(videoShowEpisode.value)
+  const { executeRequest } = useCreateVideoShowEpisode()
+  return await executeRequest({ object: videoShowEpisode.value })
 }
 </script>
 

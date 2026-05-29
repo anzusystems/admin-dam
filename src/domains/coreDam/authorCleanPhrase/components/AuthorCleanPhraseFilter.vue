@@ -1,72 +1,48 @@
 <script lang="ts" setup>
-import { useAuthorCleanPhraseListFilter } from '@/domains/coreDam/authorCleanPhrase/filter/AuthorCleanPhraseFilter'
-import { AFilterString, AFilterValueObjectOptionsSelect, AFilterWrapper } from '@anzusystems/common-admin'
+import {
+  AFilterValueObjectOptionsSelect,
+  AFilterWrapper,
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
 import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 import { useAuthorCleanPhraseModeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
+import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = useAuthorCleanPhraseListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useAuthorCleanPhraseListActions()
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()
 const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="3">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="3">
-          <AFilterString
-            v-model="filter.phrase"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="3">
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.type"
-            :items="authorCleanPhraseTypeOptions"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="3">
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.mode"
-            :items="authorCleanPhraseModeOptions"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #item.type>
+      <AFilterValueObjectOptionsSelect
+        name="type"
+        :items="authorCleanPhraseTypeOptions"
+      />
+    </template>
+    <template #item.mode>
+      <AFilterValueObjectOptionsSelect
+        name="mode"
+        :items="authorCleanPhraseModeOptions"
+      />
+    </template>
+  </AFilterWrapper>
 </template>

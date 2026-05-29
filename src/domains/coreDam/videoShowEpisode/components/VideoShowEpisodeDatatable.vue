@@ -2,17 +2,25 @@
 import {
   ABooleanValue,
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
-  useFilterHelpers,
+  SortOrder,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { useVideoShowEpisodeListActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
@@ -31,10 +39,16 @@ const props = withDefaults(
 )
 
 const router = useRouter()
-const filter = useVideoShowEpisodeListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = useVideoShowEpisodeListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useVideoShowEpisodeListActions()
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination, setSortBy } = usePagination('position')
+provide(DatatablePaginationKey, pagination)
 
 const { can } = useAuth()
 
@@ -47,7 +61,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'texts.title' },
@@ -63,34 +77,42 @@ const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = 
   SYSTEM_CORE_DAM,
   ENTITY
 )
-pagination.sortBy = 'position'
+
+const getList = useDebounceFn(() => {
+  fetchList(props.videoShowId, pagination, filterData, filterConfig)
+})
 
 const customSort: DatatableOrderingOptions = [
-  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: 'desc' } },
-  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: 'asc' } },
+  { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: SortOrder.Desc } },
+  { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: SortOrder.Asc } },
   {
     id: 3,
     titleT: 'system.datatable.ordering.webOrderPosition',
-    sortBy: { key: 'attributes.webOrderPosition', order: 'desc' },
+    sortBy: { key: 'attributes.webOrderPosition', order: SortOrder.Desc },
   },
   {
     id: 4,
     titleT: 'system.datatable.ordering.mobileOrderPosition',
-    sortBy: { key: 'attributes.mobileOrderPosition', order: 'desc' },
+    sortBy: { key: 'attributes.mobileOrderPosition', order: SortOrder.Desc },
   },
 ]
 
 const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+  setSortBy(option.sortBy)
+  filterConfig.touched = false
+  submitFilter(pagination, getList)
 }
 
-const getList = () => {
-  fetchList(props.videoShowId, pagination, filter)
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
 }
 
 onMounted(() => {
-  fetchList(props.videoShowId, pagination, filter)
+  loadStoredFilters(pagination, getList)
 })
 
 defineExpose({
@@ -101,8 +123,8 @@ defineExpose({
 <template>
   <div>
     <VideoShowEpisodeFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">

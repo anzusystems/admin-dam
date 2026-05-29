@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { useUserSelectActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUserFilter } from '@/domains/coreDam/user/filter/UserFilter'
 
@@ -37,7 +37,11 @@ const modelValueComputed = computed({
 
 const { fetchItems, fetchItemsByIds } = useUserSelectActions()
 
-const innerFilter = useUserFilter()
+const { filterData, filterConfig } = useUserFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
+
+const prefetch = computed(() => (props.disableInitFetch ? false : 'mounted'))
 </script>
 
 <template>
@@ -47,11 +51,9 @@ const innerFilter = useUserFilter()
     :label="label"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
     filter-by-field="email"
-    :data-cy="dataCy"
-    :disable-init-fetch="disableInitFetch"
+    :prefetch="prefetch"
   />
 </template>

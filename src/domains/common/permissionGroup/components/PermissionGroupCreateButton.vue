@@ -7,7 +7,7 @@ import {
   type PermissionGroup,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
-import { ENTITY, usePermissionGroupApi } from '@/domains/common/permissionGroup/api/permissionGroupApi'
+import { ENTITY, useCreatePermissionGroup } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 import { usePermissionGroupValidation } from '@/domains/common/permissionGroup/composables/permissionGroupValidations'
 import type { AxiosInstance } from 'axios'
 
@@ -33,8 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const { createPermissionGroup } = usePermissionGroupFactory()
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { apiCreatePermissionGroup } = usePermissionGroupApi(props.client)
+const { executeRequest: apiCreatePermissionGroup } = useCreatePermissionGroup()
 const permissionGroup = ref<PermissionGroup>(createPermissionGroup())
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -62,7 +61,7 @@ const onConfirm = async () => {
       buttonLoading.value = false
       return
     }
-    const res = await apiCreatePermissionGroup(permissionGroup.value)
+    const res = await apiCreatePermissionGroup({ object: permissionGroup.value })
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false

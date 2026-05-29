@@ -1,61 +1,33 @@
 <script lang="ts" setup>
-import { useAssetLicenceListFilter } from '@/domains/coreDam/assetLicence/filter/AssetLicenceFilter'
-import { AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { useAssetLicenceListActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import FilterExtSystemRemoteAutocomplete from '@/domains/coreDam/extSystem/components/FilterExtSystemRemoteAutocomplete.vue'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filterAssetLicence = useAssetLicenceListFilter()
-const touched = ref(false)
-const { t } = useI18n()
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useAssetLicenceListActions()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="1">
-          <AFilterInteger
-            v-model="filterAssetLicence.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <AFilterString
-            v-model="filterAssetLicence.extId"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="2">
-          <FilterExtSystemRemoteAutocomplete
-            v-model="filterAssetLicence.extSystem"
-            :label="t('coreDam.extSystem.filter.extSystem')"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #search>
+      <AFilterString name="extId" />
+    </template>
+    <template #item.extSystem>
+      <FilterExtSystemRemoteAutocomplete name="extSystem" />
+    </template>
+  </AFilterWrapper>
 </template>

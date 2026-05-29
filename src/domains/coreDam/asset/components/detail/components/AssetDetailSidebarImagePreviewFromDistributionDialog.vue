@@ -1,14 +1,18 @@
 <script lang="ts" setup>
 import { setVideoFileDistributionPreview } from '@/domains/coreDam/asset/api/videoApi'
+import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
 import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
+import { ACard, ADialogToolbar, useDamConfigStore } from '@anzusystems/common-admin'
 import {
-  ACard,
   ADatatablePagination,
-  ADialogToolbar,
-  useDamConfigStore,
+  createFilter,
+  createFilterStore,
+  DatatablePaginationKey,
+  type MakeFilterOption,
   usePagination,
-} from '@anzusystems/common-admin'
+} from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{
@@ -26,13 +30,19 @@ const { t } = useI18n()
 
 const saving = ref(false)
 
-const pagination = usePagination()
-pagination.rowsPerPage = 12
-const filter = {}
+const { pagination } = usePagination(null, undefined, { rowsPerPage: 12 })
+provide(DatatablePaginationKey, pagination)
+
+const filterFields = [] satisfies readonly MakeFilterOption[]
+const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+  system: SYSTEM_CORE_DAM,
+  subject: ENTITY,
+})
+
 const { listItems, fetchList, listLoading, toggleSelectedItem, itemImageIsInvalid, lastSelectedItem } =
   useVideoDistributionPreviewListActions()
 const getList = () => {
-  fetchList(props.fileId, pagination, filter)
+  fetchList(props.fileId, pagination, filterData, filterConfig)
 }
 
 const toggleSelected = (index: number) => {

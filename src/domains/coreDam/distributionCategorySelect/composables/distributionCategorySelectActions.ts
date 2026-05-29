@@ -1,10 +1,11 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
 import { isAnzuApiValidationError } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
-  fetchDistributionCategorySelect,
-  fetchDistributionCategorySelectList,
-  updateDistributionCategorySelect,
+  useFetchDistributionCategorySelect,
+  useFetchDistributionCategorySelectList,
+  useUpdateDistributionCategorySelect,
 } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
 import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 import { useDistributionCategorySelectOneStore } from '@/domains/coreDam/distributionCategorySelect/store/distributionCategorySelectStore'
@@ -21,11 +22,14 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useDistributionCategorySelectListActions = () => {
   const listItems = ref<DistributionCategorySelect[]>([])
+  const { executeFetch } = useFetchDistributionCategorySelectList()
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchDistributionCategorySelectList(currentExtSystemId.value, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -48,7 +52,8 @@ export const useDistributionCategorySelectDetailActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const distributionCategorySelect = await fetchDistributionCategorySelect(id)
+      const { executeRequest: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+      const distributionCategorySelect = await fetchDistributionCategorySelect({ urlParams: { id } })
       distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
     } catch (error) {
       showErrorsDefault(error)
@@ -74,7 +79,8 @@ export const useDistributionCategorySelectEditActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const distributionCategorySelect = await fetchDistributionCategorySelect(id)
+      const { executeRequest: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+      const distributionCategorySelect = await fetchDistributionCategorySelect({ urlParams: { id } })
       distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
     } catch (error) {
       showErrorsDefault(error)
@@ -93,10 +99,11 @@ export const useDistributionCategorySelectEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateDistributionCategorySelect(
-        distributionCategorySelectOneStore.distributionCategorySelect.id,
-        distributionCategorySelect.value
-      )
+      const { executeRequest: updateDistributionCategorySelect } = useUpdateDistributionCategorySelect()
+      await updateDistributionCategorySelect({
+        urlParams: { id: distributionCategorySelectOneStore.distributionCategorySelect.id },
+        object: distributionCategorySelect.value,
+      })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/distribution-category-selects' })

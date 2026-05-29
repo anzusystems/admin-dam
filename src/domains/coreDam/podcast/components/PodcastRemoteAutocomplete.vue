@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { usePodcastSelectActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter'
 
@@ -37,7 +37,9 @@ const modelValueComputed = computed({
 
 const { fetchItems, fetchItemsByIds } = usePodcastSelectActions()
 
-const innerFilter = usePodcastFilter()
+const { filterData, filterConfig } = usePodcastFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 </script>
 
 <template>
@@ -47,11 +49,10 @@ const innerFilter = usePodcastFilter()
     :label="label"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
-    :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
-    :disable-init-fetch="disableInitFetch"
     filter-by-field="title"
     :data-cy="dataCy"
+    :prefetch="disableInitFetch ? false : 'hover'"
   />
 </template>

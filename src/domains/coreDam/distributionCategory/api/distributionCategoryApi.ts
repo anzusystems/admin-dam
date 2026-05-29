@@ -1,32 +1,51 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 
 const END_POINT = '/adm/v1/distribution/category'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'distributionCategory'
 
-export const fetchDistributionCategoryListByIds = (extSystemId: number, ids: string[]) =>
-  apiFetchByIds<DistributionCategory[]>(damClient, ids, END_POINT_LIST, { extSystemId }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchDistributionCategoryListByIds = () =>
+  useApiFetchByIds<DistributionCategory[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST,
+  })
 
-export const fetchDistributionCategoryList = (extSystemId: number, pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<DistributionCategory[]>(
-    damClient,
-    END_POINT_LIST,
-    { extSystemId },
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useFetchDistributionCategoryList = () =>
+  useApiFetchList<DistributionCategory[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT_LIST,
+  })
 
-export const createDistributionCategory = (data: DistributionCategory) =>
-  apiCreateOne<DistributionCategory>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreateDistributionCategory = () =>
+  useApiRequest<DistributionCategory, DistributionCategory>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updateDistributionCategory = (id: string, data: DistributionCategory) =>
-  apiUpdateOne<DistributionCategory>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdateDistributionCategory = () =>
+  useApiRequest<DistributionCategory, DistributionCategory>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchDistributionCategory = (id: string) =>
-  apiFetchOne<DistributionCategory>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchDistributionCategory = () =>
+  useApiRequest<DistributionCategory, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

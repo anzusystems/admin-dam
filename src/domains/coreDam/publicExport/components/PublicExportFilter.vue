@@ -1,63 +1,44 @@
 <script lang="ts" setup>
-import { usePublicExportListFilter } from '@/domains/coreDam/publicExport/filter/PublicExportFilter'
-import { AFilterString, AFilterValueObjectOptionsSelect, AFilterWrapper } from '@anzusystems/common-admin'
+import {
+  AFilterString,
+  AFilterValueObjectOptionsSelect,
+  AFilterWrapper,
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
+import { usePublicExportListActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = usePublicExportListFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = usePublicExportListActions()
 
 const { exportTypeOptions } = useExportTypeTypes()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol cols="3">
-          <AFilterString
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="3">
-          <AFilterString
-            v-model="filter.slug"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol cols="3">
-          <AFilterValueObjectOptionsSelect
-            v-model="filter.type"
-            :items="exportTypeOptions"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-    </AFilterWrapper>
-  </VForm>
+    <template #search>
+      <AFilterString name="slug" />
+    </template>
+    <template #item.type>
+      <AFilterValueObjectOptionsSelect
+        name="type"
+        :items="exportTypeOptions"
+      />
+    </template>
+  </AFilterWrapper>
 </template>

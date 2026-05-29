@@ -1,42 +1,60 @@
-import type { FilterBag, Pagination, PermissionGroup } from '@anzusystems/common-admin'
-import {
-  apiCreateOne,
-  apiDeleteOne,
-  apiFetchByIds,
-  apiFetchList,
-  apiFetchOne,
-  apiUpdateOne,
-} from '@anzusystems/common-admin'
-import type { AxiosInstance } from 'axios'
+import type { PermissionGroup } from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const SYSTEM = 'common'
 export const ENTITY = 'permissionGroup'
 
-export const usePermissionGroupApi = (client: () => AxiosInstance, endPoint = '/adm/v1/permission-group') => {
-  const apiFetchPermissionGroupListByIds = (ids: IntegerId[]) =>
-    apiFetchByIds<PermissionGroup[]>(client, ids, endPoint, {}, SYSTEM, ENTITY)
+const END_POINT = '/adm/v1/permission-group'
 
-  const apiFetchPermissionGroupList = (pagination: Pagination, filterBag: FilterBag) =>
-    apiFetchList<PermissionGroup[]>(client, endPoint, {}, pagination, filterBag, SYSTEM, ENTITY)
+export const useFetchPermissionGroupList = () =>
+  useApiFetchList<PermissionGroup[]>({
+    client: damClient,
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-  const apiFetchPermissionGroup = (id: IntegerId) =>
-    apiFetchOne<PermissionGroup>(client, endPoint + '/:id', { id }, SYSTEM, ENTITY)
+export const useFetchPermissionGroupListByIds = () =>
+  useApiFetchByIds<PermissionGroup[]>({
+    client: damClient,
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-  const apiCreatePermissionGroup = (data: PermissionGroup) =>
-    apiCreateOne<PermissionGroup>(client, data, endPoint, {}, SYSTEM, ENTITY)
+export const useFetchPermissionGroup = () =>
+  useApiRequest<PermissionGroup, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-  const apiUpdatePermissionGroup = (id: IntegerId, data: PermissionGroup) =>
-    apiUpdateOne<PermissionGroup>(client, data, endPoint + '/:id', { id }, SYSTEM, ENTITY)
+export const useCreatePermissionGroup = () =>
+  useApiRequest<PermissionGroup, PermissionGroup>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-  const apiDeletePermissionGroup = (id: IntegerId) =>
-    apiDeleteOne<PermissionGroup>(client, endPoint + '/:id', { id }, SYSTEM, ENTITY)
+export const useUpdatePermissionGroup = () =>
+  useApiRequest<PermissionGroup, PermissionGroup>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-  return {
-    apiFetchPermissionGroupListByIds,
-    apiFetchPermissionGroupList,
-    apiFetchPermissionGroup,
-    apiCreatePermissionGroup,
-    apiUpdatePermissionGroup,
-    apiDeletePermissionGroup,
-  }
-}
+export const useDeletePermissionGroup = () =>
+  useApiRequest<void, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

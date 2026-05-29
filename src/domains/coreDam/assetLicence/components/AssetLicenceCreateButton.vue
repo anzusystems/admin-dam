@@ -10,7 +10,7 @@ import {
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useAssetLicenceFactory } from '@/domains/coreDam/assetLicence/factory/AssetLicenceFactory'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
-import { createAssetLicence, ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { ENTITY, useCreateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { damClient } from '@/shared/apiClients/damClient'
 
 withDefaults(
@@ -38,8 +38,10 @@ const onOpen = () => {
   assetLicence.value = createDefault()
 }
 
+const { executeRequest: createAssetLicence } = useCreateAssetLicence()
+
 const create = async () => {
-  return await createAssetLicence(assetLicence.value)
+  return await createAssetLicence({ object: assetLicence.value })
 }
 </script>
 

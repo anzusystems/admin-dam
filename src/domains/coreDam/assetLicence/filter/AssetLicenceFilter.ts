@@ -1,21 +1,23 @@
-import { makeFilterHelper } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 
-const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
+const filterFieldsList = [
+  { name: 'id' as const, default: null, type: 'integer' },
+  { name: 'extId' as const, default: null, type: 'string' },
+  { name: 'extSystem' as const, default: null },
+] satisfies readonly MakeFilterOption[]
 
-const filter = reactive({
-  id: {
-    ...makeFilter({ name: 'id' }),
-  },
-  extId: {
-    ...makeFilter({ name: 'extId' }),
-  },
-  extSystem: {
-    ...makeFilter({ name: 'extSystem' }),
-  },
-})
+const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useAssetLicenceListFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }

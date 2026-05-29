@@ -1,46 +1,53 @@
 <script lang="ts" setup>
 import type { Log } from '@anzusystems/common-admin'
+import { ACopyText, ADatatableConfigButton, ADatetime } from '@anzusystems/common-admin'
 import {
-  ACopyText,
-  ADatatableConfigButton,
   ADatatablePagination,
-  ADatetime,
   createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
   useFilterHelpers,
-} from '@anzusystems/common-admin'
-import { useLogFilter } from '@/domains/common/log/filter/LogFilter'
+  usePagination,
+} from '@anzusystems/common-admin/labs'
 import { useLogListActions } from '@/domains/common/log/composables/logActions'
 import type { LogSystemType } from '@/domains/common/log/valueObject/LogSystem'
 
 type DatatableItem = Log
 
-const props = withDefaults(
-  defineProps<{
-    system: string
-  }>(),
-  {}
-)
+const props = defineProps<{
+  system: string
+}>()
+
 const emit = defineEmits<{
   (e: 'countChange', data: string): void
 }>()
 
 const router = useRouter()
 
-const filter = useLogFilter()
-const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers()
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
+}
+
+const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers(filterData, filterConfig)
 const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
+
+const { pagination } = usePagination('id')
+provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
-    if (!filter.type.model) return
+    if (!filterData.type) return
     router.push({
       name: '/(common)/logs/[system]/[type]/[id]',
-      params: { id: String(item.id), system: item.context.appSystem, type: filter.type.model },
+      params: { id: String(item.id), system: item.context.appSystem, type: filterData.type as string },
     })
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
     { key: 'datetime' },
@@ -60,29 +67,31 @@ const { columnsVisible, columnsAll, columnsHidden, pagination } = createDatatabl
 )
 
 const getList = async () => {
-  filter.contextAppSystem.model = props.system as LogSystemType
-  await fetchList(props.system, pagination, filter)
+  filterData.contextAppSystem = props.system as LogSystemType
+  await fetchList(props.system, pagination, filterData, filterConfig)
   emit('countChange', calculateCount())
 }
 
 const resetFilter = () => {
-  resetFilterHelper(filter, pagination, getList)
+  resetFilterHelper(pagination, getList)
 }
 
 const submitFilter = () => {
-  submitFilterHelper(filter, pagination, getList)
+  submitFilterHelper(pagination, getList)
 }
 
 const calculateCount = () => {
-  if (!isNull(pagination.hasNextPage)) {
-    const max = pagination.page * pagination.rowsPerPage - pagination.rowsPerPage + pagination.currentViewCount
-    return pagination.hasNextPage ? max + 1 + '+' : max + ''
+  if (!isNull(pagination.value.hasNextPage)) {
+    const max =
+      pagination.value.page * pagination.value.rowsPerPage -
+      pagination.value.rowsPerPage +
+      pagination.value.currentViewCount
+    return pagination.value.hasNextPage ? max + 1 + '+' : max + ''
   }
-  return pagination.totalCount + ''
+  return pagination.value.totalCount + ''
 }
 
 onMounted(() => {
-  pagination.sortBy = 'id'
   getList()
 })
 
@@ -98,7 +107,6 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <!--        <ADatatableOrdering @sort-by-change="sortByChange" />-->
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"
@@ -141,7 +149,7 @@ defineExpose({
             <VBtn
               :to="{
                 name: '/(common)/logs/[system]/[type]/[id]',
-                params: { id: item.id, system: system, type: filter.type.model },
+                params: { id: item.id, system: system, type: filterData.type as string },
               }"
               class="ml-1"
               icon="mdi-information-outline"

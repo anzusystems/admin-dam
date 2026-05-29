@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
-  ADatatableOrdering,
-  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  createDatatableColumnsConfig,
-  type DatatableOrderingOption,
-  useFilterHelpers,
 } from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
 import { useDistributionCategorySelectListActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
@@ -22,14 +28,16 @@ import { ACL, useAuth } from '@/domains/system/auth/auth'
 type DatatableItem = DistributionCategorySelect
 
 const router = useRouter()
-const filter = useDistributionCategorySelectListFilter()
-const { resetFilter, submitFilter } = useFilterHelpers()
+
+const { filterData, filterConfig } = useDistributionCategorySelectListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useDistributionCategorySelectListActions()
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
 
-const getList = () => {
-  fetchList(pagination, filter)
-}
+const { pagination } = usePagination('id')
+provide(DatatablePaginationKey, pagination)
 
 const { can } = useAuth()
 
@@ -39,19 +47,23 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   }
 }
 
-const { columnsVisible, columnsAll, columnsHidden, updateSortBy, pagination } = createDatatableColumnsConfig(
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [{ key: 'id' }, { key: 'serviceSlug' }, { key: 'createdAt' }, { key: 'modifiedAt' }],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
 )
 
-const sortByChange = (option: DatatableOrderingOption) => {
-  updateSortBy(option.sortBy)
-  getList()
+const getList = useDebounceFn(() => fetchList(pagination, filterData, filterConfig))
+
+const sortByChange = () => {
+  submitFilter(pagination, getList)
 }
 
-onMounted(() => getList())
+const submitFilterAction = () => submitFilter(pagination, getList)
+const resetFilterAction = () => resetFilter(pagination, getList)
+
+onMounted(() => loadStoredFilters(pagination, getList))
 
 defineExpose({
   refresh: getList,
@@ -61,8 +73,8 @@ defineExpose({
 <template>
   <div>
     <DistributionCategorySelectFilter
-      @submit-filter="submitFilter(filter, pagination, getList)"
-      @reset-filter="resetFilter(filter, pagination, getList)"
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
     />
     <div>
       <div class="d-flex align-center">

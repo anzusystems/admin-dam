@@ -29,8 +29,8 @@ import {
   AFormTextField,
   AssetFileProcessStatus,
   ASystemEntityScope,
-  usePagination,
 } from '@anzusystems/common-admin'
+import { usePagination } from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{
@@ -56,18 +56,19 @@ const { redistributeMode, assetFileId, assetFileStatus, redistributeId } = useAs
 const canDisplayForm = ref(false)
 const saving = ref(false)
 
-const pagination = usePagination()
-const filter = useDistributionFilter()
+const { pagination } = usePagination(null)
+const { filterConfig, filterData } = useDistributionFilter()
 
 const loadFormData = async () => {
   canDisplayForm.value = false
   if (!assetFileId.value || assetFileStatus.value !== AssetFileProcessStatus.Processed) return
-  filter.distributionService.model = props.distributionServiceName
-  filter.id.model = redistributeId.value
+  filterData.distributionService = props.distributionServiceName
+  filterData.id = redistributeId.value
   existingDistributions.value = await fetchAssetFileDistributionList<DistributionJwItem>(
     assetFileId.value,
     pagination,
-    filter
+    filterData,
+    filterConfig
   )
   if (!redistributeMode.value && existingDistributions.value.length > 0) return
   if (redistributeMode.value && existingDistributions.value[0]) {

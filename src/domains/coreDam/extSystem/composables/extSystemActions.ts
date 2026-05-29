@@ -1,15 +1,13 @@
+import { type DamExtSystem, useDamCachedUsers } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import {
-  type DamExtSystem,
-  fetchDamExtSystemList,
-  fetchDamExtSystemListByIds,
-  type FilterBag,
-  type Pagination,
-  useDamCachedUsers,
-} from '@anzusystems/common-admin'
-import { fetchExtSystem, updateExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
+  useFetchExtSystem,
+  useFetchExtSystemList,
+  useFetchExtSystemListByIds,
+  useUpdateExtSystem,
+} from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
-import { damClient } from '@/shared/apiClients/damClient'
-import type { AxiosInstance } from 'axios'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -21,9 +19,11 @@ const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
-export const useExtSystemSelectActions = (client: () => AxiosInstance) => {
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const extSystems = await fetchDamExtSystemList(client, pagination, filterBag)
+export const useExtSystemSelectActions = () => {
+  const { executeFetch } = useFetchExtSystemList()
+
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    const extSystems = await executeFetch(pagination, filterData, filterConfig)
 
     return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
       title: extSystem.slug,
@@ -32,7 +32,8 @@ export const useExtSystemSelectActions = (client: () => AxiosInstance) => {
   }
 
   const fetchItemsByIds = async (ids: IntegerId[]) => {
-    const extSystems = await fetchDamExtSystemListByIds(client, ids)
+    const { executeFetch: executeFetchByIds } = useFetchExtSystemListByIds()
+    const extSystems = await executeFetchByIds(ids)
 
     return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
       title: extSystem.slug,
@@ -48,11 +49,12 @@ export const useExtSystemSelectActions = (client: () => AxiosInstance) => {
 
 export const useExtSystemListActions = () => {
   const listItems = ref<DamExtSystem[]>([])
+  const { executeFetch } = useFetchExtSystemList()
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchDamExtSystemList(damClient, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -71,11 +73,12 @@ export const useExtSystemListActions = () => {
 export const useExtSystemDetailActions = () => {
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
+  const { executeRequest: fetchExtSystem } = useFetchExtSystem()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const extSystem = await fetchExtSystem(id)
+      const extSystem = await fetchExtSystem({ urlParams: { id } })
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
@@ -99,11 +102,13 @@ export const useExtSystemEditActions = () => {
   const router = useRouter()
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
+  const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+  const { executeRequest: updateExtSystem } = useUpdateExtSystem()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const extSystem = await fetchExtSystem(id)
+      const extSystem = await fetchExtSystem({ urlParams: { id } })
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
       extSystemOneStore.setExtSystem(extSystem)
@@ -124,7 +129,7 @@ export const useExtSystemEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateExtSystem(extSystemOneStore.extSystem.id, extSystem.value)
+      await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, object: extSystem.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/ext-systems' })

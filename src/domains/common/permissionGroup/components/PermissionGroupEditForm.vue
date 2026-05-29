@@ -6,11 +6,10 @@ import type { AxiosInstance } from 'axios'
 import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
 import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 
-const props = defineProps<{
+defineProps<{
   client: () => AxiosInstance
 }>()
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { permissionGroup } = usePermissionGroupActions(props.client)
+const { permissionGroup } = usePermissionGroupActions()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 </script>
 

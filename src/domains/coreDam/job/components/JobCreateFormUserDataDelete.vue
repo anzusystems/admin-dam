@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow, type JobUserDataDelete, useCommonJobFactory, useJobApi } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, type JobUserDataDelete, useCommonJobFactory } from '@anzusystems/common-admin'
+import { useJobApi } from '@anzusystems/common-admin/labs'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 

@@ -1,9 +1,9 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import {
-  deletePublicExport,
-  fetchPublicExport,
-  fetchPublicExportList,
-  updatePublicExport,
+  useDeletePublicExport,
+  useFetchPublicExport,
+  useFetchPublicExportList,
+  useUpdatePublicExport,
 } from '@/domains/coreDam/publicExport/api/publicExportApi'
 import type { PublicExport } from '@/domains/coreDam/publicExport/types/PublicExport'
 import { usePublicExportOneStore } from '@/domains/coreDam/publicExport/store/publicExportStore'
@@ -20,11 +20,12 @@ const saveAndCloseButtonLoading = ref(false)
 export const usePublicExportListActions = () => {
   const listItems = ref<PublicExport[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+  const { executeFetch } = useFetchPublicExportList()
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      const res = await fetchPublicExportList(pagination, filterBag)
+      const res = await executeFetch(pagination, filterData, filterConfig)
       res.forEach((item) => {
         addToCachedAssetLicences(item.assetLicence)
         fetchCachedAssetLicences()
@@ -50,7 +51,8 @@ export const usePublicExportRemoveActions = () => {
   const removePublicExport = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      await deletePublicExport(id)
+      const { executeRequest: deletePublicExport } = useDeletePublicExport()
+      await deletePublicExport({ urlParams: { id } })
       showRecordWas('updated')
       router.push({ name: '/(coreDam)/public-exports' })
     } catch (error) {
@@ -73,7 +75,8 @@ export const usePublicExportDetailActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const res = await fetchPublicExport(id)
+      const { executeRequest: fetchPublicExport } = useFetchPublicExport()
+      const res = await fetchPublicExport({ urlParams: { id } })
       addToCachedAssetLicences(res.assetLicence)
       fetchCachedAssetLicences()
       publicExport.value = res
@@ -102,7 +105,8 @@ export const usePublicExportEditActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const res = await fetchPublicExport(id)
+      const { executeRequest: fetchPublicExport } = useFetchPublicExport()
+      const res = await fetchPublicExport({ urlParams: { id } })
       addToCachedAssetLicences(res.assetLicence)
       fetchCachedAssetLicences()
       publicExport.value = res
@@ -123,7 +127,11 @@ export const usePublicExportEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updatePublicExport(publicExportOneStore.publicExport.id, publicExport.value)
+      const { executeRequest: updatePublicExport } = useUpdatePublicExport()
+      await updatePublicExport({
+        urlParams: { id: publicExportOneStore.publicExport.id },
+        object: publicExport.value,
+      })
       showRecordWas('updated')
 
       router.push({

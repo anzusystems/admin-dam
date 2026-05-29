@@ -5,7 +5,7 @@ import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/componen
 import { ACL } from '@/domains/system/auth/auth'
 import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { fetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
+import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 
 withDefaults(
   defineProps<{
@@ -48,12 +48,14 @@ const openDialog = () => {
 
 const { showErrorsDefault } = useAlerts()
 
+const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+
 onMounted(async () => {
   if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
     try {
       const [assetLicence, extSystem] = await Promise.all([
         fetchAssetLicence(currentAssetLicenceId.value),
-        fetchExtSystem(currentExtSystemId.value),
+        fetchExtSystem({ urlParams: { id: currentExtSystemId.value } }),
       ])
       currentAssetLicence.value = assetLicence
       currentExtSystem.value = extSystem

@@ -1,18 +1,27 @@
-import { makeFilterHelper } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 
-const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
+const fields = [
+  {
+    name: 'term' as const,
+    apiName: 'text',
+    default: null,
+    type: 'string',
+  },
+] satisfies readonly MakeFilterOption[]
 
-const filter = reactive({
-  _elastic: {
-    ...makeFilter({ exclude: true }),
-  },
-  term: {
-    ...makeFilter({ name: 'text' }),
-  },
-})
+const listFilterStore = createFilterStore(fields)
 
 export function useExternalProviderAssetListFilter() {
-  return filter
+  const { filterConfig, filterData } = createFilter(fields, listFilterStore, {
+    elastic: true,
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
 }

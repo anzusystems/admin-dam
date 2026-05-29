@@ -1,16 +1,44 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { DamAssetLicence } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import { useApiRequest } from '@anzusystems/common-admin/labs'
 
 const END_POINT = '/adm/v1/asset-licence'
 export const ENTITY = 'assetLicence'
 
-export const createAssetLicence = (data: DamAssetLicence) =>
-  apiCreateOne<DamAssetLicence>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useCreateAssetLicence = () =>
+  useApiRequest<DamAssetLicence, DamAssetLicence>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updateAssetLicence = (id: number, data: DamAssetLicence) =>
-  apiUpdateOne<DamAssetLicence>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdateAssetLicence = () =>
+  useApiRequest<DamAssetLicence, DamAssetLicence>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-export const fetchAssetLicence = (id: number) =>
-  apiFetchOne<DamAssetLicence>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAssetLicence = () =>
+  useApiRequest<DamAssetLicence, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+/**
+ * Back-compat standalone fetch used by the not-yet-migrated `asset` slice
+ * (AssetToolbarExtSystemLicenceDialog.vue, AssetToolbarOptions.vue, currentExtSystem.ts).
+ * Remove once those callers move to `useFetchAssetLicence().executeRequest({ urlParams: { id } })`.
+ */
+export const fetchAssetLicence = (id: number) => {
+  const { executeRequest } = useFetchAssetLicence()
+  return executeRequest({ urlParams: { id } })
+}

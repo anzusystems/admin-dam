@@ -1,7 +1,11 @@
-import type { AnzuUser, DamUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { fetchDamUserList, fetchDamUserListByIds } from '@anzusystems/common-admin'
-import type { AxiosInstance } from 'axios'
-import { useAnzuUserApi } from '@/domains/common/anzuUser/api/anzuUserApi'
+import type { AnzuUser } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import {
+  useCreateAnzuUser,
+  useFetchAnzuUser,
+  useFetchAnzuUserList,
+  useUpdateAnzuUser,
+} from '@/domains/common/anzuUser/api/anzuUserApi'
 import { useAnzuUserOneStore } from '@/domains/common/anzuUser/store/anzuUserStore'
 import { useCachedPermissionGroups } from '@/domains/common/permissionGroup/composables/cachedPermissionGroups'
 
@@ -12,15 +16,15 @@ const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
 
-export const useAnzuUserActions = (client: () => AxiosInstance) => {
-  const { apiFetchAnzuUserList, apiFetchAnzuUser, apiUpdateAnzuUser, apiCreateAnzuUser } = useAnzuUserApi(client)
+export const useAnzuUserActions = () => {
   const { addToCachedPermissionGroups, fetchCachedPermissionGroups } = useCachedPermissionGroups()
 
   const anzuUserList = ref<AnzuUser[]>([])
-  const fetchAnzuUserList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const { executeFetch } = useFetchAnzuUserList()
+  const fetchAnzuUserList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      anzuUserList.value = await apiFetchAnzuUserList(pagination, filterBag)
+      anzuUserList.value = await executeFetch(pagination, filterData, filterConfig)
       anzuUserList.value.forEach((anzuUser) => addToCachedPermissionGroups(anzuUser.permissionGroups))
       fetchCachedPermissionGroups()
     } catch (error) {
@@ -36,7 +40,8 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
   const fetchAnzuUser = async (id: number) => {
     detailLoading.value = true
     try {
-      const anzuUserRes = await apiFetchAnzuUser(id)
+      const { executeRequest: fetchAnzuUserRequest } = useFetchAnzuUser()
+      const anzuUserRes = await fetchAnzuUserRequest({ urlParams: { id } })
       anzuUserOneStore.setAnzuUser(anzuUserRes)
       addToCachedPermissionGroups(anzuUserRes.permissionGroups)
       fetchCachedPermissionGroups()
@@ -59,7 +64,11 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
         saveButtonLoading.value = false
         return
       }
-      await apiUpdateAnzuUser(anzuUserOneStore.anzuUser.id, anzuUserOneStore.anzuUser)
+      const { executeRequest: updateAnzuUserRequest } = useUpdateAnzuUser()
+      await updateAnzuUserRequest({
+        urlParams: { id: anzuUserOneStore.anzuUser.id },
+        object: anzuUserOneStore.anzuUser,
+      })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(common)/anzu-users' })
@@ -79,7 +88,8 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
         saveButtonLoading.value = false
         return
       }
-      const anzuUserRes = await apiCreateAnzuUser(anzuUserOneStore.anzuUser)
+      const { executeRequest: createAnzuUserRequest } = useCreateAnzuUser()
+      const anzuUserRes = await createAnzuUserRequest({ object: anzuUserOneStore.anzuUser })
       showRecordWas('created')
       if (close) {
         router.push({ name: '/(common)/anzu-users' })
@@ -105,30 +115,5 @@ export const useAnzuUserActions = (client: () => AxiosInstance) => {
     detailLoading,
     saveButtonLoading,
     resetAnzuUserStore: anzuUserOneStore.reset,
-  }
-}
-
-export const useAnzuUserSelectAction = (client: () => AxiosInstance) => {
-  const mapToValueObject = (user: DamUser): ValueObjectOption<IntegerId> => ({
-    title: '' === user.person.fullName ? user.email : user.person.fullName,
-    value: user.id,
-  })
-
-  const mapToValueObjects = (users: DamUser[]): ValueObjectOption<IntegerId>[] => {
-    return users.map((user: DamUser) => mapToValueObject(user))
-  }
-
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    return mapToValueObjects(await fetchDamUserList(client, pagination, filterBag))
-  }
-
-  const fetchItemsByIds = async (ids: IntegerId[]) => {
-    return mapToValueObjects(await fetchDamUserListByIds(client, ids))
-  }
-
-  return {
-    mapToValueObject,
-    fetchItems,
-    fetchItemsByIds,
   }
 }

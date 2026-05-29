@@ -1,4 +1,5 @@
-import { type FilterBag, type Pagination, useJobApi } from '@anzusystems/common-admin'
+import { type FilterConfig, type FilterData, type Pagination, useJobApi } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useJobOneStore } from '@/domains/coreDam/job/store/jobStore'
@@ -10,15 +11,16 @@ const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 
-const { fetchJobList, fetchJob } = useJobApi<Job>(damClient, SYSTEM_CORE_DAM)
+const { useFetchJobList, fetchJob } = useJobApi<Job>(damClient, SYSTEM_CORE_DAM)
 
 export const useJobListActions = () => {
   const listItems = ref<Array<Job>>([])
+  const { executeFetch } = useFetchJobList()
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchJobList(pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {

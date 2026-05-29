@@ -7,7 +7,7 @@ import { usePermissionConfigStore } from '@/domains/common/permissionConfig/stor
 const { showErrorsDefault } = useAlerts()
 
 export const usePermissionConfigActions = (client: () => AxiosInstance) => {
-  const { apiFetchPermissionConfig } = usePermissionConfigApi(client)
+  const { useFetchPermissionConfig } = usePermissionConfigApi(client)
 
   const permissionConfigStore = usePermissionConfigStore()
   const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized } =
@@ -18,7 +18,8 @@ export const usePermissionConfigActions = (client: () => AxiosInstance) => {
     }
     permissionConfigStore.setLoadingPermissionConfig(true)
     try {
-      const permissionConfigRes = await apiFetchPermissionConfig()
+      const { executeRequest: apiFetchPermissionConfig } = useFetchPermissionConfig()
+      const permissionConfigRes = await apiFetchPermissionConfig({})
       permissionConfigStore.setPermissionConfig(permissionConfigRes)
       permissionConfigStore.setPermissionConfigInitialized(true)
     } catch (error) {

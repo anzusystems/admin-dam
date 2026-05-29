@@ -6,12 +6,12 @@ import type {
   UploadQueueItem,
 } from '@anzusystems/common-admin'
 import {
-  apiFetchOne,
   damFileTypeFix,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
+import { useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { AxiosProgressEvent } from 'axios'
@@ -19,8 +19,19 @@ import type { AxiosProgressEvent } from 'axios'
 const END_POINT = '/adm/v1/document'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
-export const fetchDocumentFile = (id: DocId) =>
-  apiFetchOne<AssetFileDocument>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchDocumentFile = () =>
+  useApiRequest<AssetFileDocument, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const fetchDocumentFile = (id: DocId) => {
+  const { executeRequest } = useFetchDocumentFile()
+  return executeRequest({ urlParams: { id } })
+}
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {

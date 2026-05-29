@@ -1,9 +1,10 @@
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import {
-  deletePodcastEpisode,
-  fetchPodcastEpisode,
-  fetchPodcastEpisodeListByPodcast,
-  updatePodcastEpisode,
+  useDeletePodcastEpisode,
+  useFetchPodcastEpisode,
+  useFetchPodcastEpisodeListByPodcast,
+  useUpdatePodcastEpisode,
 } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 import { usePodcastEpisodeOneStore } from '@/domains/coreDam/podcastEpisode/store/podcastEpisodeStore'
@@ -18,11 +19,17 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const usePodcastEpisodeListActions = () => {
   const listItems = ref<PodcastEpisode[]>([])
+  const { executeFetch } = useFetchPodcastEpisodeListByPodcast()
 
-  const fetchList = async (podcastId: DocId, pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (
+    podcastId: DocId,
+    pagination: Ref<Pagination>,
+    filterData: FilterData,
+    filterConfig: FilterConfig
+  ) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchPodcastEpisodeListByPodcast(podcastId, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, { urlParams: { podcastId } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -39,10 +46,12 @@ export const usePodcastEpisodeListActions = () => {
 }
 
 export const usePodcastEpisodeRemoveActions = () => {
+  const { executeRequest: deletePodcastEpisode } = useDeletePodcastEpisode()
+
   const deletePodcast = async (id: DocId, onSuccessfulCallback: () => void) => {
     detailLoading.value = true
     try {
-      await deletePodcastEpisode(id)
+      await deletePodcastEpisode({ urlParams: { id } })
       onSuccessfulCallback()
     } catch (error) {
       showErrorsDefault(error)
@@ -59,11 +68,12 @@ export const usePodcastEpisodeRemoveActions = () => {
 export const usePodcastEpisodeDetailActions = () => {
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
+  const { executeRequest: fetchPodcastEpisode } = useFetchPodcastEpisode()
 
   const fetchData = async (id: DocId) => {
     detailLoading.value = true
     try {
-      const podcastEpisode = await fetchPodcastEpisode(id)
+      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id } })
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
     } catch (error) {
       showErrorsDefault(error)
@@ -85,11 +95,13 @@ export const usePodcastEpisodeEditActions = () => {
   const router = useRouter()
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
+  const { executeRequest: fetchPodcastEpisode } = useFetchPodcastEpisode()
+  const { executeRequest: updatePodcastEpisode } = useUpdatePodcastEpisode()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const podcastEpisode = await fetchPodcastEpisode(id)
+      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id } })
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
     } catch (error) {
       showErrorsDefault(error)
@@ -108,7 +120,10 @@ export const usePodcastEpisodeEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updatePodcastEpisode(podcastEpisodeOneStore.podcastEpisode.id, podcastEpisode.value)
+      await updatePodcastEpisode({
+        urlParams: { id: podcastEpisodeOneStore.podcastEpisode.id },
+        object: podcastEpisode.value,
+      })
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
       router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })

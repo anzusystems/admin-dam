@@ -1,8 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import type { AssetFileDownloadLink, AssetFileImage } from '@anzusystems/common-admin'
 import {
-  apiDeleteOne,
-  apiFetchOne,
   type AssetFileRoute,
   damFileTypeFix,
   HTTP_STATUS_CREATED,
@@ -10,6 +8,7 @@ import {
   type UploadQueueItem,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
+import { useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { AxiosProgressEvent } from 'axios'
@@ -17,8 +16,19 @@ import type { AxiosProgressEvent } from 'axios'
 const END_POINT = '/adm/v1/image'
 const CHUNK_UPLOAD_TIMEOUT = 420
 
-export const fetchImageFile = (id: DocId) =>
-  apiFetchOne<AssetFileImage>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchImageFile = () =>
+  useApiRequest<AssetFileImage, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const fetchImageFile = (id: DocId) => {
+  const { executeRequest } = useFetchImageFile()
+  return executeRequest({ urlParams: { id } })
+}
 
 export const uploadStart = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
@@ -183,8 +193,19 @@ export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
   })
 }
 
-export const deleteImage = (imageId: DocId) =>
-  apiDeleteOne(damClient, END_POINT + '/:id', { id: imageId }, SYSTEM_CORE_DAM, ENTITY)
+export const useDeleteImage = () =>
+  useApiRequest<void, null>({
+    client: damClient,
+    method: 'DELETE',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const deleteImage = (imageId: DocId) => {
+  const { executeRequest } = useDeleteImage()
+  return executeRequest({ urlParams: { id: imageId } })
+}
 
 export const makeMainFile = (imageId: DocId, assetId: DocId) => {
   return new Promise((resolve, reject) => {

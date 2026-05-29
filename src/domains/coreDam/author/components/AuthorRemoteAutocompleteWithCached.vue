@@ -1,12 +1,12 @@
 <script lang="ts" setup generic="I extends DamAuthorMinimal">
+import type { DamAuthor, DamAuthorMinimal, ValidationScope } from '@anzusystems/common-admin'
 import {
   AFormRemoteAutocompleteWithCached,
-  type DamAuthor,
-  type DamAuthorMinimal,
-  type ValidationScope,
-} from '@anzusystems/common-admin'
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+} from '@anzusystems/common-admin/labs'
 import { useAuthorSelectActions } from '@/domains/coreDam/author/composables/authorActions'
-import { useAuthorFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
+import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 import AuthorCreateButton from '@/domains/coreDam/author/components/AuthorCreateButton.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
@@ -74,7 +74,9 @@ const v$ = useVuelidate(rules, { modelValueComputed }, { $scope: props.validatio
 
 const { fetchItemsMinimal } = useAuthorSelectActions()
 
-const innerFilter = useAuthorFilter()
+const { filterConfig, filterData } = useAuthorInnerFilter()
+provide(FilterInnerConfigKey, filterConfig)
+provide(FilterInnerDataKey, filterData)
 
 const addAuthor = async (id: null | DocId | undefined) => {
   if (!id) return
@@ -147,7 +149,6 @@ const showAdd = computed(() => {
       :required="requiredComputed"
       :label="label"
       :fetch-items-minimal="fetchItemsMinimal"
-      :inner-filter="innerFilter"
       :multiple="multiple"
       :clearable="clearable"
       filter-by-field="text"

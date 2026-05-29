@@ -1,5 +1,7 @@
-import type { FilterBag, Log, Pagination } from '@anzusystems/common-admin'
-import { fetchLog, fetchLogList } from '@/domains/common/log/api/logApi'
+import type { Log } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
+import { useFetchLog, useFetchLogList } from '@/domains/common/log/api/logApi'
 import { useLogOneStore } from '@/domains/common/log/store/logStore'
 
 const { showErrorsDefault } = useAlerts()
@@ -11,10 +13,18 @@ const detailLoading = ref(false)
 export const useLogListActions = () => {
   const listItems = ref<Log[]>([])
 
-  const fetchList = async (system: string, pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (
+    system: string,
+    pagination: Ref<Pagination>,
+    filterData: FilterData,
+    filterConfig: FilterConfig
+  ) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchLogList(system, pagination, filterBag)
+      const { executeFetch } = useFetchLogList(system)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { type: filterData.type as string },
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -37,7 +47,8 @@ export const useLogDetailActions = () => {
   const fetchData = async (id: string, system: string, type: string) => {
     detailLoading.value = true
     try {
-      const logRes = await fetchLog(id, system, type)
+      const { executeRequest: fetchLog } = useFetchLog(system)
+      const logRes = await fetchLog({ urlParams: { id, type } })
       logOneStore.setLog(logRes)
     } catch (error) {
       showErrorsDefault(error)

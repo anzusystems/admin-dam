@@ -1,12 +1,12 @@
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { booleanToInteger, type DamDistributionServiceName } from '@anzusystems/common-admin'
 import {
-  apiCreateOne,
-  apiFetchList,
-  apiFetchOne,
-  apiUpdateOne,
-  booleanToInteger,
+  createFilter,
+  createFilterStore,
+  type MakeFilterOption,
+  useApiFetchList,
+  useApiRequest,
   usePagination,
-} from '@anzusystems/common-admin'
+} from '@anzusystems/common-admin/labs'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {
@@ -20,81 +20,119 @@ import type {
 const END_POINT = '/adm/v1/youtube-distribution'
 export const ENTITY = 'youtubeDistribution'
 
-export const createYoutubeDistribution = (assetFileId: DocId, data: DistributionYoutubeCreateRedistributeDto) =>
-  apiCreateOne<DistributionYoutubeCreateRedistributeDto>(
-    damClient,
-    data,
-    END_POINT + '/asset-file/:assetFileId/distribute',
-    { assetFileId },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+const emptyFilterFields = [] satisfies readonly MakeFilterOption[]
+const emptyFilterStore = createFilterStore(emptyFilterFields)
+
+export const useCreateYoutubeDistribution = () =>
+  useApiRequest<DistributionYoutubeCreateRedistributeDto, DistributionYoutubeCreateRedistributeDto>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset-file/:assetFileId/distribute',
+  })
+
+export const createYoutubeDistribution = (assetFileId: DocId, data: DistributionYoutubeCreateRedistributeDto) => {
+  const { executeRequest } = useCreateYoutubeDistribution()
+  return executeRequest({ urlParams: { assetFileId }, object: data })
+}
+
+export const useRedistributeYoutubeDistribution = () =>
+  useApiRequest<DistributionYoutubeCreateRedistributeDto, DistributionYoutubeCreateRedistributeDto>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:distributionId/redistribute',
+  })
 
 export const redistributeYoutubeDistribution = (
   distributionId: DocId,
   data: DistributionYoutubeCreateRedistributeDto
-) =>
-  apiUpdateOne<DistributionYoutubeCreateRedistributeDto>(
-    damClient,
-    data,
-    END_POINT + '/:distributionId/redistribute',
-    { distributionId },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+) => {
+  const { executeRequest } = useRedistributeYoutubeDistribution()
+  return executeRequest({ urlParams: { distributionId }, object: data })
+}
+
+export const usePrepareFormDataYoutubeDistribution = () =>
+  useApiRequest<DistributionYoutubeItem, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
+  })
 
 export const prepareFormDataYoutubeDistribution = (
   assetFileId: DocId,
   distributionServiceName: DamDistributionServiceName
-) =>
-  apiFetchOne<DistributionYoutubeItem>(
-    damClient,
-    END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
-    { assetFileId, distributionServiceName },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+) => {
+  const { executeRequest } = usePrepareFormDataYoutubeDistribution()
+  return executeRequest({ urlParams: { assetFileId, distributionServiceName } })
+}
 
-export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName) =>
-  apiFetchOne<DistributionAuthUrl>(
-    damClient,
-    END_POINT + '/:distributionServiceName/auth-url',
-    { distributionServiceName },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useGetYoutubeAuthUrl = () =>
+  useApiRequest<DistributionAuthUrl, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:distributionServiceName/auth-url',
+  })
+
+export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName) => {
+  const { executeRequest } = useGetYoutubeAuthUrl()
+  return executeRequest({ urlParams: { distributionServiceName } })
+}
+
+export const useFetchYoutubeLanguages = () =>
+  useApiFetchList<YoutubeLanguage[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:distributionServiceName/language',
+  })
 
 export const fetchYoutubeLanguages = (distributionServiceName: DamDistributionServiceName) => {
-  const pagination = usePagination()
-  return apiFetchList<YoutubeLanguage[]>(
-    damClient,
-    END_POINT + '/:distributionServiceName/language',
-    { distributionServiceName },
-    pagination,
-    {},
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+  const { pagination } = usePagination(null)
+  const { filterConfig, filterData } = createFilter(emptyFilterFields, emptyFilterStore, {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+  const { executeFetch } = useFetchYoutubeLanguages()
+  return executeFetch(pagination, filterData, filterConfig, { urlParams: { distributionServiceName } })
 }
+
+export const useFetchYoutubePlaylists = () =>
+  useApiFetchList<YoutubePlaylist[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:distributionServiceName/playlist/:forceReload',
+  })
 
 export const fetchYoutubePlaylists = (distributionServiceName: DamDistributionServiceName, forceReload = false) => {
-  const pagination = usePagination()
-  return apiFetchList<YoutubePlaylist[]>(
-    damClient,
-    END_POINT + '/:distributionServiceName/playlist/:forceReload',
-    { distributionServiceName, forceReload: booleanToInteger(forceReload) },
-    pagination,
-    {},
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+  const { pagination } = usePagination(null)
+  const { filterConfig, filterData } = createFilter(emptyFilterFields, emptyFilterStore, {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+  const { executeFetch } = useFetchYoutubePlaylists()
+  return executeFetch(pagination, filterData, filterConfig, {
+    urlParams: { distributionServiceName, forceReload: booleanToInteger(forceReload) },
+  })
 }
 
-export const logoutYoutube = (distributionServiceName: DamDistributionServiceName) =>
-  apiFetchOne(
-    damClient,
-    END_POINT + '/:distributionServiceName/logout',
-    { distributionServiceName },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+export const useLogoutYoutube = () =>
+  useApiRequest<unknown, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:distributionServiceName/logout',
+  })
+
+export const logoutYoutube = (distributionServiceName: DamDistributionServiceName) => {
+  const { executeRequest } = useLogoutYoutube()
+  return executeRequest({ urlParams: { distributionServiceName } })
+}

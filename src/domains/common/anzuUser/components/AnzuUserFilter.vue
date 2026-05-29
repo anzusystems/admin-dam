@@ -1,84 +1,36 @@
 <script lang="ts" setup>
-import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'
-import { AFilterInteger, AFilterString, AFilterWrapper } from '@anzusystems/common-admin'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import PermissionGroupRemoteSelect from '@/domains/common/permissionGroup/components/PermissionGroupRemoteSelect.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const emit = defineEmits<{
-  (e: 'submitFilter'): void
-  (e: 'resetFilter'): void
+  (e: 'submit'): void
+  (e: 'reset'): void
 }>()
 
-const filter = useAnzuUserFilter()
-const touched = ref(false)
-
-const submitFilter = () => {
-  touched.value = false
-  emit('submitFilter')
+const filterConfig = inject(FilterConfigKey)
+const filterData = inject(FilterDataKey)
+if (isUndefined(filterConfig) || isUndefined(filterData)) {
+  throw new Error('Incorrect provide/inject config.')
 }
 
-const resetFilter = () => {
-  touched.value = false
-  emit('resetFilter')
-}
-
-const onAnyFilterUpdate = () => {
-  touched.value = true
-}
+const { datatableHiddenColumns } = useAnzuUserActions()
 </script>
 
 <template>
-  <VForm
-    name="search"
-    @submit.prevent="submitFilter"
+  <AFilterWrapper
+    v-model:datatable-hidden-columns="datatableHiddenColumns"
+    :client="damClient"
+    @submit="emit('submit')"
+    @reset="emit('reset')"
+    @bookmark-load-after="emit('submit')"
   >
-    <AFilterWrapper
-      :touched="touched"
-      enable-advanced
-      @reset-filter="resetFilter"
-    >
-      <VRow class="align-start">
-        <VCol
-          cols="12"
-          sm="2"
-        >
-          <AFilterInteger
-            v-model="filter.id"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="5"
-        >
-          <AFilterString
-            v-model="filter.email"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-        <VCol
-          cols="12"
-          sm="5"
-        >
-          <AFilterString
-            v-model="filter.lastName"
-            @update:model-value="onAnyFilterUpdate"
-          />
-        </VCol>
-      </VRow>
-
-      <template #advanced>
-        <VRow>
-          <VCol
-            cols="12"
-            sm="5"
-          >
-            <PermissionGroupRemoteSelect
-              v-model="filter.permissionGroups"
-              @update:model-value="onAnyFilterUpdate"
-            />
-          </VCol>
-        </VRow>
-      </template>
-    </AFilterWrapper>
-  </VForm>
+    <template #search>
+      <AFilterString name="email" />
+    </template>
+    <template #item.permissionGroups>
+      <PermissionGroupRemoteSelect name="permissionGroups" />
+    </template>
+  </AFilterWrapper>
 </template>

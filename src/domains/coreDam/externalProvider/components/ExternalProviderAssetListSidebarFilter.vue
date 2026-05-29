@@ -1,27 +1,22 @@
 <script lang="ts" setup>
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-import { AFilterString } from '@anzusystems/common-admin'
+import { AFilterString, AFilterWrapperSidebar } from '@anzusystems/common-admin/labs'
 
 const { sidebarLeft } = useMainWrapper()
 
 const { t } = useI18n()
 
-const { filter, fetchAssetList, resetAssetList, filterTouch, filterUnTouch, filterIsTouched } =
-  useExternalProviderAssetListActions()
+const { filterConfig, fetchAssetList, resetAssetList } = useExternalProviderAssetListActions()
 
 const submitFilter = () => {
-  filterUnTouch()
+  filterConfig.touched = false
   fetchAssetList()
 }
 
 const resetFilter = () => {
   resetAssetList()
-  filterUnTouch()
-}
-
-const onAnyFilterUpdate = () => {
-  filterTouch()
+  filterConfig.touched = false
 }
 </script>
 
@@ -35,24 +30,18 @@ const onAnyFilterUpdate = () => {
       {{ t('coreDam.asset.filterTitle') }}
     </div>
     <div class="pa-2">
-      <VForm
-        name="search2"
-        @submit.prevent="submitFilter"
-      >
+      <AFilterWrapperSidebar @submit="submitFilter">
         <VRow>
           <VCol>
-            <AFilterString
-              v-model="filter.term"
-              @update:model-value="onAnyFilterUpdate"
-            />
+            <AFilterString name="term" />
           </VCol>
         </VRow>
-      </VForm>
+      </AFilterWrapperSidebar>
     </div>
     <template #append>
       <div class="pa-2 d-flex align-center justify-center">
         <VBtn
-          :color="filterIsTouched ? 'success' : 'secondary'"
+          :color="filterConfig.touched ? 'success' : 'secondary'"
           class="mr-2"
           variant="flat"
           size="small"

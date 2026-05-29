@@ -3,11 +3,15 @@ import type LogDatatableType from '@/domains/common/log/components/LogDatatable.
 import LogDatatable from '@/domains/common/log/components/LogDatatable.vue'
 import { useLogFilter } from '@/domains/common/log/filter/LogFilter'
 import { ACard, useI18n } from '@anzusystems/common-admin'
+import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
 import LogFilter from '@/domains/common/log/components/LogFilter.vue'
 import { useLogListActions } from '@/domains/common/log/composables/logActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
-const logFilter = useLogFilter()
+const { filterData, filterConfig } = useLogFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
+
 const activeTab = ref<null | string>(null)
 const datatables = ref<{ [key: string]: InstanceType<typeof LogDatatableType> | null }>({})
 const counts = ref<Record<string, string>>({})
@@ -32,7 +36,7 @@ const updateCount = (count: string, system: string) => {
 }
 
 const systems = computed<string[]>(() => {
-  return logFilter.system.model?.map((item) => item.toString()) ?? []
+  return (filterData.system as string[] | null)?.map((item) => item.toString()) ?? []
 })
 
 watch(
@@ -66,8 +70,8 @@ const breadcrumbs = defineBreadcrumbs(
   <ACard :loading="listLoading">
     <VCardText>
       <LogFilter
-        @submit-filter="submitFilter"
-        @reset-filter="resetFilter"
+        @submit="submitFilter"
+        @reset="resetFilter"
       />
       <VTabs
         v-if="systems.length > 1"
@@ -75,7 +79,7 @@ const breadcrumbs = defineBreadcrumbs(
         color="primary"
       >
         <VTab
-          v-for="system in logFilter.system.model"
+          v-for="system in systems"
           :key="system"
           :value="system"
         >
@@ -90,7 +94,7 @@ const breadcrumbs = defineBreadcrumbs(
         </VTab>
       </VTabs>
       <div
-        v-for="system in logFilter.system.model"
+        v-for="system in systems"
         v-show="system === activeTab"
         :key="system"
       >

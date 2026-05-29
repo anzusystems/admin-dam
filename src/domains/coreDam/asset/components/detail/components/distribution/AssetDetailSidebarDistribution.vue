@@ -8,7 +8,7 @@ import DistributionListItem from '@/domains/coreDam/asset/components/detail/comp
 import DistributionNewDialog from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialog.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import type { AssetFileProcessStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADatatablePagination, usePagination, usePaginationAutoHide } from '@anzusystems/common-admin'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
 import DistributionManage from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManage.vue'
 
 const props = withDefaults(
@@ -28,16 +28,19 @@ const props = withDefaults(
 const { t } = useI18n()
 
 const distributionListStore = useDistributionListStore()
-const pagination = usePagination()
-const filter = useDistributionFilter()
+const { pagination } = usePagination(null)
+provide(DatatablePaginationKey, pagination)
+const { filterConfig, filterData } = useDistributionFilter()
 
-const { showPagination } = usePaginationAutoHide(pagination)
+const showPagination = computed(
+  () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
+)
 
 const { dialogNew, openNew, dialogKey } = useAssetDetailDistributionDialog()
 
 const getList = async () => {
   distributionListStore.showLoader()
-  const items = await fetchAssetDistributionList(props.assetId, pagination, filter)
+  const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig)
   distributionListStore.setList(items)
   distributionListStore.hideLoader()
 }

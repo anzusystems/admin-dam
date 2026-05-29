@@ -1,29 +1,51 @@
-import type { AnzuUser, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
-import type { AxiosInstance } from 'axios'
+import type { AnzuUser } from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const SYSTEM = 'common'
 export const ENTITY = 'anzuUser'
 
-export const useAnzuUserApi = (client: () => AxiosInstance, endPoint = '/adm/v1/anzu-user') => {
-  const apiFetchAnzuUserListByIds = (ids: IntegerId[]) =>
-    apiFetchByIds<AnzuUser[]>(client, ids, endPoint, {}, SYSTEM, ENTITY)
+const END_POINT = '/adm/v1/anzu-user'
 
-  const apiFetchAnzuUserList = (pagination: Pagination, filterBag: FilterBag) =>
-    apiFetchList<AnzuUser[]>(client, endPoint, {}, pagination, filterBag, SYSTEM, ENTITY)
+export const useFetchAnzuUserListByIds = () =>
+  useApiFetchByIds<AnzuUser[]>({
+    client: damClient,
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-  const apiFetchAnzuUser = (id: IntegerId) => apiFetchOne<AnzuUser>(client, endPoint + '/:id', { id }, SYSTEM, ENTITY)
+export const useFetchAnzuUserList = () =>
+  useApiFetchList<AnzuUser[]>({
+    client: damClient,
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-  const apiCreateAnzuUser = (data: AnzuUser) => apiCreateOne<AnzuUser>(client, data, endPoint, {}, SYSTEM, ENTITY)
+export const useFetchAnzuUser = () =>
+  useApiRequest<AnzuUser, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
 
-  const apiUpdateAnzuUser = (id: IntegerId, data: AnzuUser) =>
-    apiUpdateOne<AnzuUser>(client, data, endPoint + '/:id', { id }, SYSTEM, ENTITY)
+export const useCreateAnzuUser = () =>
+  useApiRequest<AnzuUser, AnzuUser>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-  return {
-    apiFetchAnzuUserListByIds,
-    apiFetchAnzuUserList,
-    apiFetchAnzuUser,
-    apiCreateAnzuUser,
-    apiUpdateAnzuUser,
-  }
-}
+export const useUpdateAnzuUser = () =>
+  useApiRequest<AnzuUser, AnzuUser>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

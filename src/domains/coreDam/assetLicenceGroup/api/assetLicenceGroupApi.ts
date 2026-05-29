@@ -1,15 +1,42 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { apiCreateOne, apiFetchOne, apiUpdateOne, type DamAssetLicenceGroup } from '@anzusystems/common-admin'
+import { type DamAssetLicenceGroup } from '@anzusystems/common-admin'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 
 const END_POINT = '/adm/v1/asset-licence-group'
 export const ENTITY = 'assetLicenceGroup'
 
-export const createAssetLicenceGroup = (data: DamAssetLicenceGroup) =>
-  apiCreateOne<DamAssetLicenceGroup>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+export const useFetchAssetLicenceGroupList = () =>
+  useApiFetchList<DamAssetLicenceGroup[]>({
+    client: damClient,
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const updateAssetLicenceGroup = (id: IntegerId, data: DamAssetLicenceGroup) =>
-  apiUpdateOne<DamAssetLicenceGroup>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useCreateAssetLicenceGroup = () =>
+  useApiRequest<DamAssetLicenceGroup, DamAssetLicenceGroup>({
+    client: damClient,
+    method: 'POST',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT,
+  })
 
-export const fetchAssetLicenceGroup = (id: IntegerId) =>
-  apiFetchOne<DamAssetLicenceGroup>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
+export const useUpdateAssetLicenceGroup = () =>
+  useApiRequest<DamAssetLicenceGroup, DamAssetLicenceGroup>({
+    client: damClient,
+    method: 'PUT',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })
+
+export const useFetchAssetLicenceGroup = () =>
+  useApiRequest<DamAssetLicenceGroup, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/:id',
+  })

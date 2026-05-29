@@ -4,9 +4,9 @@ import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/Podc
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
 import {
-  createPodcastEpisode,
   ENTITY,
-  prepareFormDataPodcastEpisode,
+  useCreatePodcastEpisode,
+  usePrepareFormDataPodcastEpisode,
 } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
@@ -42,6 +42,9 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
 
+const { executeRequest: createPodcastEpisode } = useCreatePodcastEpisode()
+const { executeRequest: prepareFormDataPodcastEpisode } = usePrepareFormDataPodcastEpisode()
+
 const saving = ref(false)
 const loadingFormData = ref(false)
 
@@ -61,7 +64,7 @@ const submit = async () => {
       saving.value = false
       return
     }
-    await createPodcastEpisode(podcastEpisode.value)
+    await createPodcastEpisode({ object: podcastEpisode.value })
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {
@@ -74,7 +77,9 @@ const submit = async () => {
 const loadFormData = async () => {
   if (!podcastEpisode.value.podcast) return
   loadingFormData.value = true
-  const res = await prepareFormDataPodcastEpisode(props.assetId, podcastEpisode.value.podcast)
+  const res = await prepareFormDataPodcastEpisode({
+    urlParams: { assetId: props.assetId, podcastId: podcastEpisode.value.podcast },
+  })
   podcastEpisode.value.texts.title = res.texts.title
   podcastEpisode.value.texts.description = res.texts.description
   podcastEpisode.value.texts.rawDescription = res.texts.rawDescription

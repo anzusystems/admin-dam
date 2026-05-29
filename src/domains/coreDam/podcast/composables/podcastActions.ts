@@ -1,15 +1,14 @@
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import type { FilterBag, Pagination } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { Ref } from 'vue'
 import {
-  fetchPodcast,
-  fetchPodcastListByExtSystem,
-  fetchPodcastListByIds,
-  updatePodcast,
+  useFetchPodcast,
+  useFetchPodcastListByExtSystem,
+  useFetchPodcastListByIds,
+  useUpdatePodcast,
 } from '@/domains/coreDam/podcast/api/podcastApi'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
-
-const { currentExtSystemId } = useCurrentExtSystem()
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -20,12 +19,17 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const usePodcastListActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const { executeFetch } = useFetchPodcastListByExtSystem()
+
   const listItems = ref<Podcast[]>([])
 
-  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+  const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchPodcastListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+        urlParams: { extSystemId: currentExtSystemId.value },
+      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -44,11 +48,12 @@ export const usePodcastListActions = () => {
 export const usePodcastDetailActions = () => {
   const podcastOneStore = usePodcastOneStore()
   const { podcast } = storeToRefs(podcastOneStore)
+  const { executeRequest: fetchPodcast } = useFetchPodcast()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const podcast = await fetchPodcast(id)
+      const podcast = await fetchPodcast({ urlParams: { id } })
       podcastOneStore.setPodcast(podcast)
     } catch (error) {
       showErrorsDefault(error)
@@ -70,11 +75,13 @@ export const usePodcastEditActions = () => {
   const router = useRouter()
   const podcastOneStore = usePodcastOneStore()
   const { podcast } = storeToRefs(podcastOneStore)
+  const { executeRequest: fetchPodcast } = useFetchPodcast()
+  const { executeRequest: updatePodcast } = useUpdatePodcast()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const podcast = await fetchPodcast(id)
+      const podcast = await fetchPodcast({ urlParams: { id } })
       podcastOneStore.setPodcast(podcast)
     } catch (error) {
       showErrorsDefault(error)
@@ -93,7 +100,7 @@ export const usePodcastEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updatePodcast(podcastOneStore.podcast.id, podcast.value)
+      await updatePodcast({ urlParams: { id: podcastOneStore.podcast.id }, object: podcast.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/podcasts' })
@@ -118,9 +125,12 @@ export const usePodcastEditActions = () => {
 
 export const usePodcastSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
+  const { executeFetch } = useFetchPodcastListByExtSystem()
 
-  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const podcasts = await fetchPodcastListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    const podcasts = await executeFetch(pagination, filterData, filterConfig, {
+      urlParams: { extSystemId: currentExtSystemId.value },
+    })
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
       title: podcast.texts.title,
@@ -129,7 +139,8 @@ export const usePodcastSelectActions = () => {
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
-    const podcasts = await fetchPodcastListByIds(currentExtSystemId.value, ids)
+    const { executeFetch: executeFetchByIds } = useFetchPodcastListByIds()
+    const podcasts = await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
       title: podcast.texts.title,

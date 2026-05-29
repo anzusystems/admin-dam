@@ -20,9 +20,9 @@ import type {
 
 declare module 'vue-router' {
   interface TypesConfig {
-    ParamParsers:
-      | never
+    _ParamParsers: {}
     RouteNamedMap: import('vue-router/auto-routes').RouteNamedMap
+    _RouteFileInfoMap: import('vue-router/auto-routes')._RouteFileInfoMap
   }
 }
 
@@ -476,11 +476,15 @@ declare module 'vue-router/auto-routes' {
         | '/(common)/anzu-users'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(common)/anzu-users/[id]/index.vue': {
       routes:
         | '/(common)/anzu-users/[id]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(common)/anzu-users/[id]/edit.vue': {
@@ -488,11 +492,15 @@ declare module 'vue-router/auto-routes' {
         | '/(common)/anzu-users/[id]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(common)/logs/index.vue': {
       routes:
         | '/(common)/logs'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(common)/logs/[system]/[type]/[id].vue': {
@@ -500,11 +508,15 @@ declare module 'vue-router/auto-routes' {
         | '/(common)/logs/[system]/[type]/[id]'
       views:
         | never
+      pathParamNames:
+        | 'id'
     }
     'src/pages/(common)/permission-groups/index.vue': {
       routes:
         | '/(common)/permission-groups'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(common)/permission-groups/[id]/index.vue': {
@@ -512,11 +524,15 @@ declare module 'vue-router/auto-routes' {
         | '/(common)/permission-groups/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(common)/permission-groups/[id]/edit.vue': {
       routes:
         | '/(common)/permission-groups/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/asset-licence-groups/index.vue': {
@@ -524,11 +540,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/asset-licence-groups'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/asset-licence-groups/[id]/index.vue': {
       routes:
         | '/(coreDam)/asset-licence-groups/[id]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/asset-licence-groups/[id]/edit.vue': {
@@ -536,11 +556,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/asset-licence-groups/[id]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/asset-licences/index.vue': {
       routes:
         | '/(coreDam)/asset-licences'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/asset-licences/[id]/index.vue': {
@@ -548,11 +572,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/asset-licences/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/asset-licences/[id]/edit.vue': {
       routes:
         | '/(coreDam)/asset-licences/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/assets/index.vue': {
@@ -560,23 +588,31 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/assets'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/assets/[id].vue': {
       routes:
         | '/(coreDam)/assets/[id]'
       views:
         | never
+      pathParamNames:
+        | 'id'
     }
     'src/pages/(coreDam)/assets/file/[id].vue': {
       routes:
         | '/(coreDam)/assets/file/[id]'
       views:
         | never
+      pathParamNames:
+        | 'id'
     }
     'src/pages/(coreDam)/author-clean-phrases/index.vue': {
       routes:
         | '/(coreDam)/author-clean-phrases'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/author-clean-phrases/[id]/index.vue': {
@@ -584,11 +620,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/author-clean-phrases/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/author-clean-phrases/[id]/edit.vue': {
       routes:
         | '/(coreDam)/author-clean-phrases/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/authors/index.vue': {
@@ -596,11 +636,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/authors'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/authors/[id]/index.vue': {
       routes:
         | '/(coreDam)/authors/[id]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/authors/[id]/edit.vue': {
@@ -608,11 +652,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/authors/[id]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/distribution-categories/index.vue': {
       routes:
         | '/(coreDam)/distribution-categories'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/distribution-categories/[id]/index.vue': {
@@ -620,11 +668,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/distribution-categories/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/distribution-categories/[id]/edit.vue': {
       routes:
         | '/(coreDam)/distribution-categories/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/distribution-category-selects/index.vue': {
@@ -632,11 +684,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/distribution-category-selects'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/distribution-category-selects/[id]/index.vue': {
       routes:
         | '/(coreDam)/distribution-category-selects/[id]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/distribution-category-selects/[id]/edit.vue': {
@@ -644,11 +700,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/distribution-category-selects/[id]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/ext-systems/index.vue': {
       routes:
         | '/(coreDam)/ext-systems'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/ext-systems/[id]/index.vue': {
@@ -656,11 +716,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/ext-systems/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/ext-systems/[id]/edit.vue': {
       routes:
         | '/(coreDam)/ext-systems/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/external-providers/[provider]/index.vue': {
@@ -668,11 +732,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/external-providers/[provider]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/jobs/index.vue': {
       routes:
         | '/(coreDam)/jobs'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/jobs/[id].vue': {
@@ -680,11 +748,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/jobs/[id]'
       views:
         | never
+      pathParamNames:
+        | 'id'
     }
     'src/pages/(coreDam)/keywords/index.vue': {
       routes:
         | '/(coreDam)/keywords'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/keywords/[id]/index.vue': {
@@ -692,11 +764,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/keywords/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/keywords/[id]/edit.vue': {
       routes:
         | '/(coreDam)/keywords/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/podcasts/index.vue': {
@@ -704,11 +780,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/podcasts'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/podcasts/[id]/index.vue': {
       routes:
         | '/(coreDam)/podcasts/[id]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/podcasts/[id]/edit.vue': {
@@ -716,11 +796,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/podcasts/[id]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/podcasts/[id]/episodes/[episodeId]/index.vue': {
       routes:
         | '/(coreDam)/podcasts/[id]/episodes/[episodeId]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit.vue': {
@@ -728,11 +812,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/public-exports/index.vue': {
       routes:
         | '/(coreDam)/public-exports'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/public-exports/[id]/index.vue': {
@@ -740,11 +828,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/public-exports/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/public-exports/[id]/edit.vue': {
       routes:
         | '/(coreDam)/public-exports/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/users/index.vue': {
@@ -752,11 +844,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/users'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/users/[id]/index.vue': {
       routes:
         | '/(coreDam)/users/[id]'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/users/[id]/edit.vue': {
@@ -764,11 +860,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/users/[id]/edit'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/video-shows/index.vue': {
       routes:
         | '/(coreDam)/video-shows'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/video-shows/[id]/index.vue': {
@@ -776,11 +876,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/video-shows/[id]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/video-shows/[id]/edit.vue': {
       routes:
         | '/(coreDam)/video-shows/[id]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/(coreDam)/video-shows/[id]/episodes/[episodeId]/index.vue': {
@@ -788,11 +892,15 @@ declare module 'vue-router/auto-routes' {
         | '/(coreDam)/video-shows/[id]/episodes/[episodeId]'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit.vue': {
       routes:
         | '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/index.vue': {
@@ -800,17 +908,23 @@ declare module 'vue-router/auto-routes' {
         | '/'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/[...pathMatch].vue': {
       routes:
         | '/[...pathMatch]'
       views:
         | never
+      pathParamNames:
+        | 'pathMatch'
     }
     'src/pages/close-page.vue': {
       routes:
         | '/close-page'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/login.vue': {
@@ -818,11 +932,15 @@ declare module 'vue-router/auto-routes' {
         | '/login'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/logout.vue': {
       routes:
         | '/logout'
       views:
+        | never
+      pathParamNames:
         | never
     }
     'src/pages/settings/index.vue': {
@@ -830,11 +948,15 @@ declare module 'vue-router/auto-routes' {
         | '/settings'
       views:
         | never
+      pathParamNames:
+        | never
     }
     'src/pages/unauthorized.vue': {
       routes:
         | '/unauthorized'
       views:
+        | never
+      pathParamNames:
         | never
     }
   }
