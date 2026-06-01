@@ -100,6 +100,8 @@ onMounted(async () => {
 
       if (isInProgress()) resumePolling()
     }
+  } catch (error) {
+    showErrorsDefault(error)
   } finally {
     loading.value = false
   }
