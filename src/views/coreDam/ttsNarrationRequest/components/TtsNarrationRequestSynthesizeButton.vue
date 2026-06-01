@@ -52,6 +52,7 @@ const extSystemId = ref<IntegerIdNullable>(null)
 const voiceFamilySlug = ref<string | null>(null)
 const assetLicenceId = ref<IntegerIdNullable>(null)
 const defaultAssetLicenceId = ref<IntegerIdNullable>(null)
+let extSystemSeq = 0
 
 const { v$ } = useTtsNarrationRequestSynthesizeValidation(form)
 const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
@@ -82,14 +83,17 @@ watch(extSystemId, async (newId) => {
   assetLicenceId.value = null
   defaultAssetLicenceId.value = null
   if (newId === null) return
+  const seq = ++extSystemSeq
   try {
     const ext = await fetchExtSystem(newId)
+    if (seq !== extSystemSeq) return
     defaultAssetLicenceId.value = ext.ttsDefaultAssetLicence
     if (ext.ttsDefaultAssetLicence !== null) {
       addToCachedAssetLicences([ext.ttsDefaultAssetLicence])
       await fetchCachedAssetLicences()
     }
   } catch (error) {
+    if (seq !== extSystemSeq) return
     showErrorsDefault(error)
   }
 })

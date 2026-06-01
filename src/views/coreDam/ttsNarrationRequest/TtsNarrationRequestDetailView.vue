@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useIntervalFn } from '@vueuse/core'
@@ -53,8 +53,12 @@ const isInProgress = (): boolean =>
   detail.value !== null && IN_PROGRESS_TTS_REQUEST_STATUSES.includes(detail.value.request.status)
 
 const refresh = async () => {
+  // Capture the route id at call time; if navigation happens while the request
+  // is in-flight the resolved data belongs to a different route — discard it.
+  const expectedId = route.params.id as string
   try {
-    const data = await fetchTtsNarrationRequest(route.params.id as string)
+    const data = await fetchTtsNarrationRequest(expectedId)
+    if ((route.params.id as string) !== expectedId) return
     detail.value = data
     if (data?.ttsAsset?.voiceFamilyId) {
       addToCachedVoiceFamilies([data.ttsAsset.voiceFamilyId])
@@ -62,6 +66,7 @@ const refresh = async () => {
     }
     if (!isInProgress()) pausePolling()
   } catch (error) {
+    if ((route.params.id as string) !== expectedId) return
     // Stop polling on error to avoid infinite retry on a persistent failure; show toast once.
     pausePolling()
     showErrorsDefault(error)
@@ -98,6 +103,10 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+})
+
+onUnmounted(() => {
+  pausePolling()
 })
 </script>
 

@@ -36,29 +36,39 @@ const { showErrorsDefault } = useAlerts()
 const loading = ref(false)
 const voiceFamilies = ref<VoiceFamily[]>([])
 let loadedForExtSystemId: IntegerId | null = null
+let voiceFamilySeq = 0
 
 const loadForExtSystem = async (extSystemId: IntegerId) => {
   if (loadedForExtSystemId === extSystemId) return
+  const seq = ++voiceFamilySeq
   loading.value = true
   try {
     const pagination = usePagination('slug')
     pagination.rowsPerPage = 200
-    voiceFamilies.value = await fetchVoiceFamilyListByExtSystem(extSystemId, pagination, {})
+    const result = await fetchVoiceFamilyListByExtSystem(extSystemId, pagination, {})
+    if (seq !== voiceFamilySeq) return
+    voiceFamilies.value = result
     loadedForExtSystemId = extSystemId
   } catch (error) {
+    if (seq !== voiceFamilySeq) return
     showErrorsDefault(error)
   } finally {
-    loading.value = false
+    if (seq === voiceFamilySeq) loading.value = false
   }
 }
 
 watch(
   () => props.extSystemId,
-  (newValue) => {
+  (newValue, oldValue) => {
     if (newValue === null) {
       voiceFamilies.value = []
       loadedForExtSystemId = null
+      modelValue.value = null
       return
+    }
+    // Ext-system changed to a different system — the current selection is stale.
+    if (oldValue !== undefined && oldValue !== newValue) {
+      modelValue.value = null
     }
     loadForExtSystem(newValue)
   },
