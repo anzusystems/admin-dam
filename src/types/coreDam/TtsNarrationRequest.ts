@@ -46,7 +46,6 @@ export type TtsRequestMode = (typeof TtsRequestMode)[keyof typeof TtsRequestMode
 export const TtsRequestStatus = {
   Waiting: 'waiting',
   Processing: 'processing',
-  Assembling: 'assembling',
   Done: 'done',
   Failed: 'failed',
   Cancelled: 'cancelled',
@@ -56,7 +55,6 @@ export type TtsRequestStatus = (typeof TtsRequestStatus)[keyof typeof TtsRequest
 export const IN_PROGRESS_TTS_REQUEST_STATUSES: readonly TtsRequestStatus[] = [
   TtsRequestStatus.Waiting,
   TtsRequestStatus.Processing,
-  TtsRequestStatus.Assembling,
 ]
 
 export interface TtsNarrationRequestExtRef {

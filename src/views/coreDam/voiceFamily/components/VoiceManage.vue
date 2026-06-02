@@ -35,6 +35,8 @@ const { valueObjectOptions: discriminatorOptions } = useVoiceDiscriminator()
 const { createVoiceKind } = useVoiceKindFactory()
 
 const isEdit = computed(() => props.voice.id !== '')
+// discriminator is a local UI mirror of the prop (the provider toggle the user edits); it is kept
+// in sync with prop changes via the watch below, so the one-time read of props.voice here is intentional.
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const discriminator = ref<VoiceDiscriminatorType>(props.voice.discriminator)
 

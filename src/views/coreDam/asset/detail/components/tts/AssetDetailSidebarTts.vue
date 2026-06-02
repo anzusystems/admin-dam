@@ -6,6 +6,7 @@ import {
   ADatetime,
   ARow,
   type DocId,
+  useAlerts,
 } from '@anzusystems/common-admin'
 import { fetchTtsAsset } from '@/services/api/coreDam/ttsAssetApi'
 import type { TtsAssetDetail } from '@/types/coreDam/TtsAsset'
@@ -18,11 +19,15 @@ import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composab
 import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedTtsNarrationRequests } from '@/views/coreDam/ttsNarrationRequest/composables/cachedTtsNarrationRequests'
 
-const props = defineProps<{
-  assetId: DocId
-}>()
+const props = withDefaults(
+  defineProps<{
+    assetId: DocId
+  }>(),
+  {}
+)
 
 const { t } = useI18n()
+const { showErrorsDefault } = useAlerts()
 
 const loading = ref(false)
 const detail = ref<TtsAssetDetail | null>(null)
@@ -51,6 +56,8 @@ const load = async () => {
       fetchCachedKeywords(),
       fetchCachedTtsNarrationRequests(),
     ])
+  } catch (error) {
+    showErrorsDefault(error)
   } finally {
     loading.value = false
   }

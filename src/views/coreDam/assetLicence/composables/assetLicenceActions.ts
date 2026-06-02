@@ -63,7 +63,7 @@ export const useAssetLicenceDetailActions = () => {
       addToCachedUsers(...assetLicence.internalRuleUsers)
       fetchCachedAuthors()
       fetchCachedUsers()
-      assetLicenceOneStore.setAssetLicence(assetLicence)
+      assetLicenceOneStore.assetLicence = assetLicence
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -95,7 +95,7 @@ export const useAssetLicenceEditActions = () => {
       addToCachedUsers(...assetLicence.internalRuleUsers)
       fetchCachedAuthors()
       fetchCachedUsers()
-      assetLicenceOneStore.setAssetLicence(assetLicence)
+      assetLicenceOneStore.assetLicence = assetLicence
     } catch (error) {
       showErrorsDefault(error)
     } finally {

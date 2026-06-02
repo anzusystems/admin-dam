@@ -16,7 +16,6 @@
   "status": {
     "waiting": "Waiting",
     "processing": "Processing",
-    "assembling": "Assembling",
     "done": "Done",
     "failed": "Failed",
     "cancelled": "Cancelled"

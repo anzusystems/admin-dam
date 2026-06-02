@@ -8,17 +8,12 @@ export const useExtSystemOneStore = defineStore('extSystemOneStore', () => {
 
   const extSystem = ref<ExtSystem>(createDefault())
 
-  function setExtSystem(newExtSystem: ExtSystem) {
-    extSystem.value = newExtSystem
-  }
-
   function reset() {
     extSystem.value = createDefault()
   }
 
   return {
     extSystem,
-    setExtSystem,
     reset,
   }
 })

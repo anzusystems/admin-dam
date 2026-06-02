@@ -16,7 +16,6 @@
   "status": {
     "waiting": "Čaká",
     "processing": "Spracováva sa",
-    "assembling": "Spája chunky",
     "done": "Hotové",
     "failed": "Zlyhalo",
     "cancelled": "Zrušené"

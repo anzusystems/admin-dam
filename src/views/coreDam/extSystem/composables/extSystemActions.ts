@@ -86,7 +86,7 @@ export const useExtSystemDetailActions = () => {
       const extSystem = await fetchExtSystem(id)
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
-      extSystemOneStore.setExtSystem(extSystem)
+      extSystemOneStore.extSystem = extSystem
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -114,7 +114,7 @@ export const useExtSystemEditActions = () => {
       const extSystem = await fetchExtSystem(id)
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
-      extSystemOneStore.setExtSystem(extSystem)
+      extSystemOneStore.extSystem = extSystem
     } catch (error) {
       showErrorsDefault(error)
     } finally {

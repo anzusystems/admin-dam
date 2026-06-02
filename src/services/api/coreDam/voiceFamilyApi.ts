@@ -47,17 +47,10 @@ export const fetchVoiceFamily = (id: DocId) =>
   apiFetchOne<VoiceFamily>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const createVoiceFamily = (data: VoiceFamilyCreate) =>
-  apiCreateOne<VoiceFamily>(damClient, data as unknown as VoiceFamily, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
+  apiCreateOne<VoiceFamilyCreate, VoiceFamily>(damClient, data, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
 
 export const updateVoiceFamily = (id: DocId, data: VoiceFamilyUpdate) =>
-  apiUpdateOne<VoiceFamily>(
-    damClient,
-    data as unknown as VoiceFamily,
-    END_POINT + '/:id',
-    { id },
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
+  apiUpdateOne<VoiceFamilyUpdate, VoiceFamily>(damClient, data, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const deleteVoiceFamily = (id: DocId) =>
   apiDeleteOne<VoiceFamily>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)

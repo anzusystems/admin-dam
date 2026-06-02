@@ -6,7 +6,6 @@ import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
 export const ttsRequestStatusColors: Record<TtsRequestStatus, string | undefined> = {
   [TtsRequestStatus.Waiting]: 'warning',
   [TtsRequestStatus.Processing]: 'info',
-  [TtsRequestStatus.Assembling]: 'info',
   [TtsRequestStatus.Done]: 'success',
   [TtsRequestStatus.Failed]: 'error',
   [TtsRequestStatus.Cancelled]: 'grey',
@@ -18,7 +17,6 @@ export function useTtsRequestStatus() {
   const ttsRequestStatusOptions = ref<ValueObjectOption<TtsRequestStatus>[]>([
     { value: TtsRequestStatus.Waiting, title: t('coreDam.ttsNarrationRequest.status.waiting') },
     { value: TtsRequestStatus.Processing, title: t('coreDam.ttsNarrationRequest.status.processing') },
-    { value: TtsRequestStatus.Assembling, title: t('coreDam.ttsNarrationRequest.status.assembling') },
     { value: TtsRequestStatus.Done, title: t('coreDam.ttsNarrationRequest.status.done') },
     { value: TtsRequestStatus.Failed, title: t('coreDam.ttsNarrationRequest.status.failed') },
     { value: TtsRequestStatus.Cancelled, title: t('coreDam.ttsNarrationRequest.status.cancelled') },
