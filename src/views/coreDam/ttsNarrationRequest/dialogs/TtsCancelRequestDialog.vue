@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { ADialogToolbar } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { ENTITY } from '@/services/api/coreDam/ttsNarrationRequestApi'
 import { useTtsNarrationRequestCancelRequestActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 
 const props = withDefaults(
@@ -23,22 +20,13 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const { cancelRequestButtonLoading, cancelRequest } = useTtsNarrationRequestCancelRequestActions()
 
-const reason = ref('')
-
-watch(
-  () => props.modelValue,
-  (open) => {
-    if (open) reason.value = ''
-  }
-)
-
 const close = () => {
   emit('update:modelValue', false)
 }
 
 const onConfirm = async () => {
   if (!props.requestId) return
-  const res = await cancelRequest(props.requestId, { reason: reason.value || null })
+  const res = await cancelRequest(props.requestId)
   if (res !== null) {
     emit('onSuccess')
     close()
@@ -60,19 +48,6 @@ const onConfirm = async () => {
         <p class="mb-3">
           {{ t('coreDam.ttsNarrationRequest.cancelRequest.description') }}
         </p>
-        <ASystemEntityScope
-          :system="SYSTEM_CORE_DAM"
-          :subject="ENTITY"
-        >
-          <ARow>
-            <AFormTextarea
-              v-model="reason"
-              :label="t('coreDam.ttsNarrationRequest.cancelRequest.reason')"
-              :rows="3"
-              data-cy="cancel-request-reason"
-            />
-          </ARow>
-        </ASystemEntityScope>
       </VCardText>
       <VCardActions>
         <VSpacer />

@@ -3,12 +3,9 @@ import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
 import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
-  TtsCancelRequestPayload,
-  TtsCancelRequestResponse,
   TtsNarrationRequest,
   TtsNarrationRequestDetail,
   TtsSynthesizeRequest,
-  TtsSynthesizeResponse,
 } from '@/types/coreDam/TtsNarrationRequest'
 
 const END_POINT = '/adm/v1/tts-narration-request'
@@ -32,7 +29,7 @@ export const fetchTtsNarrationRequestList = (pagination: Pagination, filterBag: 
   )
 
 export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequest) =>
-  apiCreateOne<TtsSynthesizeRequest, TtsSynthesizeResponse>(
+  apiCreateOne<TtsSynthesizeRequest, TtsNarrationRequest>(
     damClient,
     payload,
     END_POINT + '/synthesize',
@@ -41,10 +38,10 @@ export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequest) =>
     ENTITY
   )
 
-export const cancelTtsNarrationRequest = (requestId: DocId, payload: TtsCancelRequestPayload) =>
-  apiCreateOne<TtsCancelRequestPayload, TtsCancelRequestResponse>(
+export const cancelTtsNarrationRequest = (requestId: DocId) =>
+  apiCreateOne<Record<string, never>, TtsNarrationRequest>(
     damClient,
-    payload,
+    {},
     END_POINT + '/:requestId/cancel',
     { requestId },
     SYSTEM_CORE_DAM,

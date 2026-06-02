@@ -32,11 +32,6 @@ export interface TtsAsset {
   modifiedAt: DatetimeUTCNullable
 }
 
-export interface TtsNarrationRequestDetail {
-  request: TtsNarrationRequest
-  ttsAsset: TtsAsset | null
-}
-
 export const TtsRequestMode = {
   Initial: 'initial',
   Regenerate: 'regenerate',
@@ -95,19 +90,9 @@ export interface TtsNarrationRequest {
   source: TtsNarrationRequestSource
 }
 
-export const TtsSynthesizeStatus = {
-  Pending: 'pending',
-  AlreadyExists: 'already_exists',
-  AlreadyPending: 'already_pending',
-} as const
-export type TtsSynthesizeStatus = (typeof TtsSynthesizeStatus)[keyof typeof TtsSynthesizeStatus]
-
-export const TtsCancelRequestStatus = {
-  Cancelled: 'cancelled',
-  SwapCompleted: 'swap_completed',
-  AlreadyFailed: 'already_failed',
-} as const
-export type TtsCancelRequestStatus = (typeof TtsCancelRequestStatus)[keyof typeof TtsCancelRequestStatus]
+export interface TtsNarrationRequestDetail extends TtsNarrationRequest {
+  ttsAsset: TtsAsset | null
+}
 
 export interface TtsSynthesizeRequest {
   text: string
@@ -116,18 +101,4 @@ export interface TtsSynthesizeRequest {
   podcasts: DocId[]
   extSystem: IntegerId
   assetLicence: IntegerId | null
-}
-
-export interface TtsSynthesizeResponse {
-  requestId: DocId
-  status: TtsSynthesizeStatus
-}
-
-export interface TtsCancelRequestPayload {
-  reason: string | null
-}
-
-export interface TtsCancelRequestResponse {
-  status: TtsCancelRequestStatus
-  tooLate: boolean
 }

@@ -47,15 +47,10 @@
     "assetTitlePlaceholder": "Optional — auto-generated when left empty",
     "podcasts": "Bind to podcasts",
     "estimatedDurationUnit": "min",
-    "alreadyPending": "An identical request is already pending — no new request was created.",
-    "alreadyExists": "Asset already generated — no new request was created."
   },
   "cancelRequest": {
     "title": "Cancel pending TTS request",
-    "description": "Request cancellation of a pending audio narration request. If the worker has already swapped the result, the cancel may not take effect.",
-    "reason": "Reason (optional, audit)",
-    "swapCompleted": "Cancel requested but the worker already swapped the result.",
-    "alreadyFailed": "Request already failed — nothing to cancel."
+    "description": "Request cancellation of a pending audio narration request. If the worker has already swapped the result, the cancel may not take effect."
   },
   "voiceFamilySelect": {
     "systemDefault": "System default voice"

@@ -47,15 +47,10 @@
     "assetTitlePlaceholder": "Voliteľné — bez vyplnenia sa vygeneruje automaticky",
     "podcasts": "Naviazať na podcasty",
     "estimatedDurationUnit": "min",
-    "alreadyPending": "Rovnaký request už čaká — nový sa nevytvoril.",
-    "alreadyExists": "Asset už bol vygenerovaný — nový request sa nevytvoril."
   },
   "cancelRequest": {
     "title": "Zrušiť čakajúci TTS request",
-    "description": "Požiadať o zrušenie čakajúceho audio-narration requestu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné.",
-    "reason": "Dôvod (voliteľné, audit)",
-    "swapCompleted": "Zrušenie požiadané, ale worker už stihol výsledok prehodiť.",
-    "alreadyFailed": "Request už zlyhal — niet čo zrušiť."
+    "description": "Požiadať o zrušenie čakajúceho audio-narration requestu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné."
   },
   "voiceFamilySelect": {
     "systemDefault": "Systémový predvolený hlas"

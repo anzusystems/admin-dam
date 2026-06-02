@@ -50,7 +50,7 @@ const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFam
 const POLL_INTERVAL_MS = 5000
 
 const isInProgress = (): boolean =>
-  detail.value !== null && IN_PROGRESS_TTS_REQUEST_STATUSES.includes(detail.value.request.status)
+  detail.value !== null && IN_PROGRESS_TTS_REQUEST_STATUSES.includes(detail.value.status)
 
 const refresh = async () => {
   // Capture the route id at call time; if navigation happens while the request
@@ -84,12 +84,10 @@ onMounted(async () => {
     detail.value = data
 
     if (data) {
-      const { request, ttsAsset } = data
-
-      if (ttsAsset?.voiceFamilyKeywordIds.length) addToCachedKeywords(ttsAsset.voiceFamilyKeywordIds)
-      if (request.assetLicenceId !== null) addToCachedAssetLicences([request.assetLicenceId])
-      addToCachedExtSystems([request.extSystemId])
-      if (ttsAsset?.voiceFamilyId) addToCachedVoiceFamilies([ttsAsset.voiceFamilyId])
+      if (data.ttsAsset?.voiceFamilyKeywordIds.length) addToCachedKeywords(data.ttsAsset.voiceFamilyKeywordIds)
+      if (data.assetLicenceId !== null) addToCachedAssetLicences([data.assetLicenceId])
+      addToCachedExtSystems([data.extSystemId])
+      if (data.ttsAsset?.voiceFamilyId) addToCachedVoiceFamilies([data.ttsAsset.voiceFamilyId])
 
       await Promise.all([
         fetchCachedKeywords(),
@@ -113,7 +111,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ActionbarWrapper :last-breadcrumb-title="detail?.request.id ?? ''">
+  <ActionbarWrapper :last-breadcrumb-title="detail?.id ?? ''">
     <template #buttons>
       <AActionCloseButton :route-name="ROUTE.DAM.TTS_NARRATION_REQUEST.LIST" />
     </template>
@@ -127,20 +125,20 @@ onUnmounted(() => {
       <VRow>
         <VCol cols="8">
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.id')">
-            <ACopyText :value="detail.request.id" />
+            <ACopyText :value="detail.id" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.status')">
-            <TtsRequestStatusChip :status="detail.request.status" />
+            <TtsRequestStatusChip :status="detail.status" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.mode')">
-            <TtsRequestModeChip :mode="detail.request.mode" />
+            <TtsRequestModeChip :mode="detail.mode" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extSystemId')">
-            <CachedExtSystemChip :id="detail.request.extSystemId" />
+            <CachedExtSystemChip :id="detail.extSystemId" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLicenceId')">
-            <template v-if="detail.request.assetLicenceId !== null">
-              <CachedAssetLicenceChip :id="detail.request.assetLicenceId" />
+            <template v-if="detail.assetLicenceId !== null">
+              <CachedAssetLicenceChip :id="detail.assetLicenceId" />
             </template>
             <template v-else>
               —
@@ -148,31 +146,31 @@ onUnmounted(() => {
           </ARow>
           <ARow
             :title="t('coreDam.ttsNarrationRequest.detail.fields.voiceFamilySlug')"
-            :value="detail.request.voiceFamilySlug"
+            :value="detail.voiceFamilySlug"
           />
           <ARow
             :title="t('coreDam.ttsNarrationRequest.detail.fields.title')"
-            :value="detail.request.title"
+            :value="detail.title"
           />
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.openInitialKey')">
-            <template v-if="detail.request.openInitialKey">
-              <ACopyText :value="detail.request.openInitialKey" />
+            <template v-if="detail.openInitialKey">
+              <ACopyText :value="detail.openInitialKey" />
             </template>
             <template v-else>
               —
             </template>
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.stableAssetId')">
-            <template v-if="detail.request.stableAssetId">
-              <AssetChip :id="detail.request.stableAssetId" />
+            <template v-if="detail.stableAssetId">
+              <AssetChip :id="detail.stableAssetId" />
             </template>
             <template v-else>
               —
             </template>
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.resultAssetId')">
-            <template v-if="detail.request.resultAssetId">
-              <AssetChip :id="detail.request.resultAssetId" />
+            <template v-if="detail.resultAssetId">
+              <AssetChip :id="detail.resultAssetId" />
             </template>
             <template v-else>
               —
@@ -181,34 +179,34 @@ onUnmounted(() => {
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.cancelRequested')">
             <ABooleanValue
               chip
-              :value="detail.request.cancelRequested"
+              :value="detail.cancelRequested"
             />
           </ARow>
           <ARow
             :title="t('coreDam.ttsNarrationRequest.detail.fields.failureReason')"
-            :value="detail.request.failureReason"
+            :value="detail.failureReason"
           />
         </VCol>
         <VCol cols="4">
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.startedAt')">
-            <ADatetime :date-time="detail.request.startedAt" />
+            <ADatetime :date-time="detail.startedAt" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extResourceName')">
-            {{ detail.request.extRef.extResourceName }}
+            {{ detail.extRef.extResourceName }}
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extId')">
-            {{ detail.request.extRef.extId }}
+            {{ detail.extRef.extId }}
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extVersion')">
-            {{ detail.request.extRef.extVersion }}
+            {{ detail.extRef.extVersion }}
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.includeInRecommended')">
             <ABooleanValue
               chip
-              :value="detail.request.includeInRecommended"
+              :value="detail.includeInRecommended"
             />
           </ARow>
-          <AUserAndTimeTrackingFields :data="detail.request" />
+          <AUserAndTimeTrackingFields :data="detail" />
         </VCol>
       </VRow>
     </VCardText>
