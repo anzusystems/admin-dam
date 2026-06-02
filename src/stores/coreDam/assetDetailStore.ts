@@ -19,6 +19,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const mainFileSingleUse = ref(false)
   const mainFileOverrideInternal = ref(false)
   const mainFileInternal = ref(false)
+  const ttsAudio = ref(false)
 
   function updateLastFetched(id: DocId) {
     lastFetchedId.value = id
@@ -46,6 +47,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileSingleUse.value = newAsset?.mainFileSingleUse || false
     mainFileOverrideInternal.value = newAsset?.mainFile?.flags.overrideInternal || false
     mainFileInternal.value = newAsset?.mainFile?.flags.internal || false
+    ttsAudio.value = newAsset?.assetFileProperties?.ttsAudio || false
     metadataAreTouched.value = false // todo check
     authorConflicts.value = getAuthorConflicts(newAsset.metadata.authorSuggestions)
     prefetchLazyData(newAsset) // todo check
@@ -88,6 +90,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileSingleUse.value = false
     mainFileOverrideInternal.value = false
     mainFileInternal.value = false
+    ttsAudio.value = false
   }
 
   return {
@@ -104,6 +107,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileSingleUse,
     mainFileOverrideInternal,
     mainFileInternal,
+    ttsAudio,
     updateLastFetched,
     showDetail,
     hideDetail,

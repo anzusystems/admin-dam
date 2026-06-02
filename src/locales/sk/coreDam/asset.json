@@ -3,7 +3,8 @@
     "id": "ID",
     "distributionCategory": "Kategória distribúcie",
     "authors": "Autori",
-    "keywords": "Kľúčové slová"
+    "keywords": "Kľúčové slová",
+    "ttsAudio": "TTS audio"
   },
   "filter": {
     "text": "Text",
@@ -14,7 +15,7 @@
     "authorIds": "Autori",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
-    "fromTts": "Syntetické (TTS)",
+    "ttsAudio": "Syntetické (TTS)",
     "distributedInServices": "Distribuované v službách",
     "slotNames": "Mená slotov",
     "visible": "Viditeľný",

@@ -135,7 +135,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
         <VRow>
           <VCol>
             <AFilterBooleanSelect
-              v-model="filter.fromTts"
+              v-model="filter.ttsAudio"
               @update:model-value="onAnyFilterUpdate"
             />
           </VCol>

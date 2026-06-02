@@ -78,7 +78,7 @@ const data = computed(() => {
     icons.push(ICON_RSS)
     titles.push(t('coreDam.asset.metaIcons.rss'))
   }
-  if (props.assetFileProperties.fromTts) {
+  if (props.assetFileProperties.ttsAudio) {
     icons.push(ICON_TTS)
     titles.push(t('coreDam.asset.metaIcons.tts'))
   }

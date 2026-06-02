@@ -72,7 +72,7 @@ const typeHasDistributions = computed(() => {
 })
 
 const { asset } = storeToRefs(useAssetDetailStore())
-const isFromTts = computed(() => asset.value?.assetFileProperties?.fromTts === true)
+const isTtsAudio = computed(() => asset.value?.assetFileProperties?.ttsAudio === true)
 </script>
 
 <template>
@@ -113,7 +113,7 @@ const isFromTts = computed(() => asset.value?.assetFileProperties?.fromTts === t
           {{ t('coreDam.asset.detail.tabs.podcast') }}
         </VTab>
         <VTab
-          v-if="isAudio && isFromTts"
+          v-if="isAudio && isTtsAudio"
           :value="AssetDetailTab.Tts"
           data-cy="button-tts"
         >
@@ -188,7 +188,7 @@ const isFromTts = computed(() => asset.value?.assetFileProperties?.fromTts === t
           />
         </div>
         <div
-          v-if="isAudio && isFromTts && activeTab === AssetDetailTab.Tts"
+          v-if="isAudio && isTtsAudio && activeTab === AssetDetailTab.Tts"
           class="py-2"
         >
           <AssetDetailSidebarTts :asset-id="assetId" />

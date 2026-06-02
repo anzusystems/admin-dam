@@ -37,7 +37,7 @@ declare module '@anzusystems/common-admin' {
   export interface DefineLocaleMessage extends MessageSchema {}
 
   interface AssetFileProperties {
-    fromTts: boolean
+    ttsAudio: boolean
   }
 }
 
