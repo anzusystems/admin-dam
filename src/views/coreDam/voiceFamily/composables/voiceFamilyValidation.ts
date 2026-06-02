@@ -7,7 +7,7 @@ import type { ValidationScope } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
 import type { VoiceFamily } from '@/types/coreDam/VoiceFamily'
 
-const { required, minLength, maxLength } = useValidate()
+const { required, minLength, maxLength, minValue } = useValidate()
 
 export function useVoiceFamilyValidation(voiceFamily: Ref<VoiceFamily>, validationScope: ValidationScope = undefined) {
   const { t } = useI18n()
@@ -21,6 +21,10 @@ export function useVoiceFamilyValidation(voiceFamily: Ref<VoiceFamily>, validati
 
   const rules = computed(() => ({
     voiceFamily: {
+      extSystem: {
+        required,
+        minValue: minValue(1),
+      },
       slug: {
         required,
         minLength: minLength(1),

@@ -1,12 +1,17 @@
 {
   "model": {
     "id": "ID",
+    "extSystem": "Externý systém",
     "slug": "Slug",
     "displayName": "Zobrazovaný názov",
     "language": "Jazyk",
     "preferredProvider": "Preferovaný poskytovateľ",
     "active": "Aktívny",
     "keywords": "Kľúčové slová (auto-tag)"
+  },
+  "language": {
+    "sk": "Slovenčina",
+    "en": "Angličtina"
   },
   "filter": {
     "id": "ID",

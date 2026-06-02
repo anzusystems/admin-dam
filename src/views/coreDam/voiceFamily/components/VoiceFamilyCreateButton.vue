@@ -7,7 +7,9 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
+  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
+import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { createVoiceFamily, ENTITY } from '@/services/api/coreDam/voiceFamilyApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
@@ -15,6 +17,7 @@ import { useVoiceFamilyFactory } from '@/model/coreDam/factory/VoiceFamilyFactor
 import type { VoiceFamily, VoiceFamilyCreate } from '@/types/coreDam/VoiceFamily'
 import { useVoiceFamilyValidation } from '@/views/coreDam/voiceFamily/composables/voiceFamilyValidation'
 import { useVoiceDiscriminator } from '@/model/coreDam/valueObject/VoiceDiscriminator'
+import { useLanguage } from '@/model/coreDam/valueObject/Language'
 
 withDefaults(
   defineProps<{
@@ -39,6 +42,7 @@ const dialog = ref(false)
 const { v$ } = useVoiceFamilyValidation(voiceFamily)
 const { t } = useI18n()
 const { valueObjectOptionsNullable: ttsProviderOptionsNullable } = useVoiceDiscriminator()
+const { valueObjectOptions: languageOptions } = useLanguage()
 
 const onOpen = () => {
   voiceFamily.value = createDefault(currentExtSystemId.value)
@@ -80,6 +84,16 @@ const create = async () => {
         :subject="ENTITY"
       >
         <ARow>
+          <DamExtSystemRemoteAutocomplete
+            v-model="voiceFamily.extSystem"
+            :client="damClient"
+            :label="t('coreDam.voiceFamily.model.extSystem')"
+            :v="v$.voiceFamily.extSystem"
+            required
+            data-cy="voice-family-ext-system"
+          />
+        </ARow>
+        <ARow>
           <AFormTextField
             v-model="voiceFamily.slug"
             :label="t('coreDam.voiceFamily.model.slug')"
@@ -98,9 +112,10 @@ const create = async () => {
           />
         </ARow>
         <ARow>
-          <AFormTextField
+          <AFormValueObjectOptionsSelect
             v-model="voiceFamily.language"
             :label="t('coreDam.voiceFamily.model.language')"
+            :items="languageOptions"
             :v="v$.voiceFamily.language"
             required
             data-cy="voice-family-language"

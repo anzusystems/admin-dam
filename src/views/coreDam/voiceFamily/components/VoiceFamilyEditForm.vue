@@ -12,6 +12,7 @@ import {
 import { useVoiceFamilyEditActions } from '@/views/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyValidation } from '@/views/coreDam/voiceFamily/composables/voiceFamilyValidation'
 import { useVoiceDiscriminator } from '@/model/coreDam/valueObject/VoiceDiscriminator'
+import { useLanguage } from '@/model/coreDam/valueObject/Language'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
 import { useKeywordFilter } from '@/model/coreDam/filter/KeywordFilter'
 
@@ -19,6 +20,7 @@ const { voiceFamily } = useVoiceFamilyEditActions()
 
 const { v$ } = useVoiceFamilyValidation(voiceFamily)
 const { valueObjectOptionsNullable: ttsProviderOptionsNullable } = useVoiceDiscriminator()
+const { valueObjectOptions: languageOptions } = useLanguage()
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 const keywordInnerFilter = useKeywordFilter()
 const { t } = useI18n()
@@ -53,9 +55,10 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AFormTextField
+          <AFormValueObjectOptionsSelect
             v-model="voiceFamily.language"
             :label="t('coreDam.voiceFamily.model.language')"
+            :items="languageOptions"
             :v="v$.voiceFamily.language"
             required
             data-cy="voice-family-language"
