@@ -46,7 +46,7 @@
     "assetTitle": "Asset title",
     "assetTitlePlaceholder": "Optional — auto-generated when left empty",
     "podcasts": "Bind to podcasts",
-    "estimatedDurationUnit": "min",
+    "estimatedDurationUnit": "min"
   },
   "cancelRequest": {
     "title": "Cancel pending TTS request",
@@ -76,7 +76,6 @@
       "extVersion": "Ext version",
       "podcastAutoPodcastId": "Auto podcast ID",
       "podcastRecommendedId": "Recommended podcast ID",
-      "includeInRecommended": "Include in recommended",
       "assetId": "Asset ID",
       "assetDiscriminator": "Discriminator",
       "assetVoiceFamilySlug": "Voice family",

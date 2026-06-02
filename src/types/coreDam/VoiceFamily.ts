@@ -11,7 +11,7 @@ export const RESOURCE_VOICE_FAMILY = 'voiceFamily'
 
 export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
-  extSystemId: IntegerId
+  extSystem: IntegerId
   slug: string
   displayName: string
   language: string
@@ -23,7 +23,7 @@ export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameS
 }
 
 export interface VoiceFamilyCreate {
-  extSystemId: IntegerId
+  extSystem: IntegerId
   slug: string
   displayName: string
   language: string
@@ -33,6 +33,8 @@ export interface VoiceFamilyCreate {
 }
 
 export interface VoiceFamilyUpdate {
+  // slug is sent but immutable — the BE manager must not apply it on update
+  slug: string
   displayName: string
   language: string
   preferredProvider: VoiceDiscriminatorType | null

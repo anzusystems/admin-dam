@@ -19,7 +19,7 @@ export interface TtsAsset {
   assetId: DocId
   extResourceName: string | null
   extId: string | null
-  voiceFamilyId: DocId
+  voiceFamily: DocId
   discriminator: VoiceDiscriminatorType
   externalVoiceId: string
   sourceTextHash: string
@@ -80,8 +80,11 @@ export interface TtsNarrationRequest {
   assetLicenceId: IntegerIdNullable
   voiceFamilySlug: string | null
   title: string | null
+  description: string | null
+  keywords: string[]
+  authors: string[]
   cancelRequested: boolean
-  includeInRecommended: boolean
+  podcastIds: DocId[]
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
   createdBy: IntegerIdNullable

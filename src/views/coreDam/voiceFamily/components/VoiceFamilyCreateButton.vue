@@ -46,7 +46,7 @@ const onOpen = () => {
 
 const create = async () => {
   const payload: VoiceFamilyCreate = {
-    extSystemId: voiceFamily.value.extSystemId,
+    extSystem: voiceFamily.value.extSystem,
     slug: voiceFamily.value.slug,
     displayName: voiceFamily.value.displayName,
     language: voiceFamily.value.language,

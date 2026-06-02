@@ -4,10 +4,10 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@anzusystems/common-admin'
 
 export function useVoiceFamilyFactory() {
-  const createDefault = (extSystemId = 0): VoiceFamily => {
+  const createDefault = (extSystem = 0): VoiceFamily => {
     return {
       id: '',
-      extSystemId,
+      extSystem,
       slug: '',
       displayName: '',
       language: '',

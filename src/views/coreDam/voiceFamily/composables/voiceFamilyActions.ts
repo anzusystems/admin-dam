@@ -117,6 +117,7 @@ export const useVoiceFamilyEditActions = () => {
         return
       }
       const payload: VoiceFamilyUpdate = {
+        slug: voiceFamily.value.slug,
         displayName: voiceFamily.value.displayName,
         language: voiceFamily.value.language,
         preferredProvider: voiceFamily.value.preferredProvider,

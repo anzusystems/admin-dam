@@ -36,6 +36,15 @@ const { t } = useI18n()
       >
         <ARow>
           <AFormTextField
+            v-model="voiceFamily.slug"
+            :label="t('coreDam.voiceFamily.model.slug')"
+            :v="v$.voiceFamily.slug"
+            disabled
+            data-cy="voice-family-slug"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
             v-model="voiceFamily.displayName"
             :label="t('coreDam.voiceFamily.model.displayName')"
             :v="v$.voiceFamily.displayName"

@@ -46,7 +46,7 @@
     "assetTitle": "Nadpis assetu",
     "assetTitlePlaceholder": "Voliteľné — bez vyplnenia sa vygeneruje automaticky",
     "podcasts": "Naviazať na podcasty",
-    "estimatedDurationUnit": "min",
+    "estimatedDurationUnit": "min"
   },
   "cancelRequest": {
     "title": "Zrušiť čakajúci TTS request",
@@ -76,7 +76,6 @@
       "extVersion": "Ext verzia",
       "podcastAutoPodcastId": "ID auto-podcastu",
       "podcastRecommendedId": "ID odporúčaného podcastu",
-      "includeInRecommended": "Zaradiť do odporúčaných",
       "assetId": "ID assetu",
       "assetDiscriminator": "Diskriminátor",
       "assetVoiceFamilySlug": "Hlasová rodina",

@@ -47,7 +47,7 @@ const load = async () => {
 
     const tts = data.tts
     if (tts) {
-      if (tts.voiceFamilyId) addToCachedVoiceFamilies([tts.voiceFamilyId])
+      if (tts.voiceFamily) addToCachedVoiceFamilies([tts.voiceFamily])
       if (tts.voiceFamilyKeywordIds.length) addToCachedKeywords(tts.voiceFamilyKeywordIds)
     }
 
@@ -90,7 +90,7 @@ watch(() => props.assetId, load, { immediate: true })
       <TtsAudioStatusChip :status="detail.tts.status" />
     </ARow>
     <ARow :title="t('coreDam.asset.detail.tts.voiceFamily')">
-      <CachedVoiceFamilyChip :id="detail.tts.voiceFamilyId" />
+      <CachedVoiceFamilyChip :id="detail.tts.voiceFamily" />
     </ARow>
     <ARow :title="t('coreDam.asset.detail.tts.voice')">
       <VoiceDiscriminatorChip :discriminator="detail.tts.discriminator" />

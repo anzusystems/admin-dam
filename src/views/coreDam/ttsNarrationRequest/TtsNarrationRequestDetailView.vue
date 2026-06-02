@@ -60,8 +60,8 @@ const refresh = async () => {
     const data = await fetchTtsNarrationRequest(expectedId)
     if ((route.params.id as string) !== expectedId) return
     detail.value = data
-    if (data?.ttsAsset?.voiceFamilyId) {
-      addToCachedVoiceFamilies([data.ttsAsset.voiceFamilyId])
+    if (data?.ttsAsset?.voiceFamily) {
+      addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
       await fetchCachedVoiceFamilies()
     }
     if (!isInProgress()) pausePolling()
@@ -87,7 +87,7 @@ onMounted(async () => {
       if (data.ttsAsset?.voiceFamilyKeywordIds.length) addToCachedKeywords(data.ttsAsset.voiceFamilyKeywordIds)
       if (data.assetLicenceId !== null) addToCachedAssetLicences([data.assetLicenceId])
       addToCachedExtSystems([data.extSystemId])
-      if (data.ttsAsset?.voiceFamilyId) addToCachedVoiceFamilies([data.ttsAsset.voiceFamilyId])
+      if (data.ttsAsset?.voiceFamily) addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
 
       await Promise.all([
         fetchCachedKeywords(),
@@ -200,12 +200,6 @@ onUnmounted(() => {
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extVersion')">
             {{ detail.extRef.extVersion }}
           </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.includeInRecommended')">
-            <ABooleanValue
-              chip
-              :value="detail.includeInRecommended"
-            />
-          </ARow>
           <AUserAndTimeTrackingFields :data="detail" />
         </VCol>
       </VRow>
@@ -227,7 +221,7 @@ onUnmounted(() => {
             <VoiceDiscriminatorChip :discriminator="(detail.ttsAsset.discriminator as VoiceDiscriminatorType)" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetVoiceFamilyId')">
-            <CachedVoiceFamilyChip :id="detail.ttsAsset.voiceFamilyId" />
+            <CachedVoiceFamilyChip :id="detail.ttsAsset.voiceFamily" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.externalVoiceId')">
             <ACopyText :value="detail.ttsAsset.externalVoiceId" />
