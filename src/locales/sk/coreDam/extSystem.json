@@ -17,9 +17,9 @@
     "defaultVoiceFamily": "Predvolená hlasová rodina",
     "autoKeyword": "Automatické kľúčové slovo (každé TTS audio)",
     "ttsDefaultAssetLicence": "Predvolená Asset licencia (TTS fallback)",
-    "ttsAdvertAsset": "Reklamný Asset",
-    "ttsAdvertAssetEmpty": "Nenastavené",
-    "ttsAdvertAssetSelect": "Vybrať audio asset",
+    "ttsFreeAudioEpilogAsset": "TTS free audio Epilóg",
+    "ttsFreeAudioEpilogAssetEmpty": "Nenastavené",
+    "ttsFreeAudioEpilogAssetSelect": "Vybrať audio asset",
     "modes": {
       "elevenlabs": "ElevenLabs",
       "google_tts": "Google TTS",

@@ -17,9 +17,9 @@
     "defaultVoiceFamily": "Default Voice Family",
     "autoKeyword": "Auto keyword (every TTS audio)",
     "ttsDefaultAssetLicence": "Default Asset Licence (TTS fallback)",
-    "ttsAdvertAsset": "Advert Asset",
-    "ttsAdvertAssetEmpty": "Not set",
-    "ttsAdvertAssetSelect": "Select audio asset",
+    "ttsFreeAudioEpilogAsset": "TTS free audio Epilogue",
+    "ttsFreeAudioEpilogAssetEmpty": "Not set",
+    "ttsFreeAudioEpilogAssetSelect": "Select audio asset",
     "modes": {
       "elevenlabs": "ElevenLabs",
       "google_tts": "Google TTS",

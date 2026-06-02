@@ -30,21 +30,21 @@ const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds }
 const keywordInnerFilter = useKeywordFilter()
 const { t } = useI18n()
 
-const advertLicenceIds = computed<IntegerId[]>(() => {
+const epilogLicenceIds = computed<IntegerId[]>(() => {
   if (extSystem.value.ttsDefaultAssetLicence) {
     return [extSystem.value.ttsDefaultAssetLicence]
   }
   return [currentAssetLicenceId.value]
 })
 
-const onAdvertSelect = (data: AssetSelectReturnData) => {
+const onEpilogSelect = (data: AssetSelectReturnData) => {
   if (data.type === 'assetId') {
-    extSystem.value.ttsAdvertAsset = data.value[0] ?? null
+    extSystem.value.ttsFreeAudioEpilogAsset = data.value[0] ?? null
   }
 }
 
-const clearAdvert = () => {
-  extSystem.value.ttsAdvertAsset = null
+const clearEpilog = () => {
+  extSystem.value.ttsFreeAudioEpilogAsset = null
 }
 </script>
 
@@ -103,42 +103,42 @@ const clearAdvert = () => {
           <ARow>
             <div class="d-flex align-center ga-2">
               <div class="text-body-2 font-weight-medium mr-2">
-                {{ t('coreDam.extSystem.ttsSettings.ttsAdvertAsset') }}:
+                {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAsset') }}:
               </div>
               <AssetChip
-                v-if="extSystem.ttsAdvertAsset"
-                :id="extSystem.ttsAdvertAsset"
+                v-if="extSystem.ttsFreeAudioEpilogAsset"
+                :id="extSystem.ttsFreeAudioEpilogAsset"
               />
               <div
                 v-else
                 class="text-medium-emphasis text-body-2"
               >
-                {{ t('coreDam.extSystem.ttsSettings.ttsAdvertAssetEmpty') }}
+                {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAssetEmpty') }}
               </div>
               <VBtn
-                v-if="extSystem.ttsAdvertAsset"
+                v-if="extSystem.ttsFreeAudioEpilogAsset"
                 icon="mdi-trash-can-outline"
                 variant="text"
                 size="small"
-                data-cy="ext-system-tts-advert-asset-clear"
-                @click.stop="clearAdvert"
+                data-cy="ext-system-tts-free-audio-epilog-asset-clear"
+                @click.stop="clearEpilog"
               />
               <AAssetSelect
-                :select-licences="advertLicenceIds"
+                :select-licences="epilogLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"
                 :asset-type="DamAssetType.Audio"
-                @on-confirm="onAdvertSelect"
+                @on-confirm="onEpilogSelect"
               >
                 <template #activator="{ props: assetSelectProps }">
                   <VBtn
                     v-bind="assetSelectProps"
                     variant="text"
                     size="small"
-                    data-cy="ext-system-tts-advert-asset-select"
+                    data-cy="ext-system-tts-free-audio-epilog-asset-select"
                   >
-                    {{ t('coreDam.extSystem.ttsSettings.ttsAdvertAssetSelect') }}
+                    {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAssetSelect') }}
                   </VBtn>
                 </template>
               </AAssetSelect>

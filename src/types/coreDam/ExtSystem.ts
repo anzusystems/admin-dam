@@ -10,5 +10,5 @@ export interface ExtSystemTtsSettings {
 export interface ExtSystem extends DamExtSystem {
   ttsSettings: ExtSystemTtsSettings
   ttsDefaultAssetLicence: IntegerIdNullable
-  ttsAdvertAsset: DocIdNullable
+  ttsFreeAudioEpilogAsset: DocIdNullable
 }

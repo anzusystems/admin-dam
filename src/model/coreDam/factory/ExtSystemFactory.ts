@@ -23,7 +23,7 @@ export function useExtSystemFactory() {
         autoKeywordId: null,
       },
       ttsDefaultAssetLicence: null,
-      ttsAdvertAsset: null,
+      ttsFreeAudioEpilogAsset: null,
     }
   }
 
