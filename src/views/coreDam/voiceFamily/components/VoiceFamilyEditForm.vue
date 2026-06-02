@@ -62,18 +62,6 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormRemoteAutocomplete
-            v-model="voiceFamily.keyword"
-            :label="t('coreDam.voiceFamily.model.keyword')"
-            :fetch-items="fetchKeywordItems"
-            :fetch-items-by-ids="fetchKeywordItemsByIds"
-            :inner-filter="keywordInnerFilter"
-            clearable
-            filter-by-field="text"
-            data-cy="voice-family-keyword"
-          />
-        </ARow>
-        <ARow>
-          <AFormRemoteAutocomplete
             v-model="voiceFamily.keywords"
             :label="t('coreDam.voiceFamily.model.keywords')"
             :fetch-items="fetchKeywordItems"

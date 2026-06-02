@@ -13,7 +13,6 @@ export function useVoiceFamilyFactory() {
       language: '',
       preferredProvider: null,
       active: true,
-      keyword: null,
       keywords: [],
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),

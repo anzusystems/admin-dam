@@ -2,7 +2,6 @@ import type {
   AnzuUserAndTimeTrackingAware,
   DatetimeUTC,
   DocId,
-  DocIdNullable,
   IntegerId,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
@@ -18,7 +17,6 @@ export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameS
   language: string
   preferredProvider: VoiceDiscriminatorType | null
   active: boolean
-  keyword: DocIdNullable
   keywords: DocId[]
   createdAt: DatetimeUTC
   modifiedAt: DatetimeUTC
@@ -31,7 +29,6 @@ export interface VoiceFamilyCreate {
   language: string
   preferredProvider: VoiceDiscriminatorType | null
   active: boolean
-  keyword: DocIdNullable
   keywords: DocId[]
 }
 
@@ -40,6 +37,5 @@ export interface VoiceFamilyUpdate {
   language: string
   preferredProvider: VoiceDiscriminatorType | null
   active: boolean
-  keyword: DocIdNullable
   keywords: DocId[]
 }
