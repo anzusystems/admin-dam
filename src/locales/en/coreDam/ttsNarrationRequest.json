@@ -77,8 +77,7 @@
       "assetCreatedAt": "Created",
       "assetModifiedAt": "Modified",
       "sourceTextHash": "Source text hash",
-      "stableAssetId": "Stable asset",
-      "resultAssetId": "Result asset",
+      "assetId": "Asset",
       "extSystemId": "Ext system",
       "assetLicenceId": "Asset licence"
     }

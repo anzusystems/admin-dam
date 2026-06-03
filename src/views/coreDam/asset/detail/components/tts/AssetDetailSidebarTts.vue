@@ -87,7 +87,7 @@ watch(() => props.assetId, load, { immediate: true })
       <CachedVoiceFamilyChip :id="detail.tts.voiceFamily" />
     </ARow>
     <ARow :title="t('coreDam.asset.detail.tts.voice')">
-      <VoiceDiscriminatorChip :discriminator="detail.tts.discriminator" />
+      <VoiceDiscriminatorChip :discriminator="detail.tts.provider" />
     </ARow>
     <ARow
       v-if="detail.tts.failureReason"

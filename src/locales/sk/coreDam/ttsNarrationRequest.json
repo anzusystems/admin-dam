@@ -77,8 +77,7 @@
       "assetCreatedAt": "Vytvorené",
       "assetModifiedAt": "Upravené",
       "sourceTextHash": "Hash zdrojového textu",
-      "stableAssetId": "Stabilný asset",
-      "resultAssetId": "Výsledný asset",
+      "assetId": "Asset",
       "extSystemId": "Externý systém",
       "assetLicenceId": "Asset licencia"
     }

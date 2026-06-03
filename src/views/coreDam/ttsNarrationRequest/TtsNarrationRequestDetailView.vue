@@ -147,17 +147,9 @@ onUnmounted(() => {
             :title="t('coreDam.ttsNarrationRequest.detail.fields.title')"
             :value="detail.title"
           />
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.stableAssetId')">
-            <template v-if="detail.stableAssetId">
-              <AssetChip :id="detail.stableAssetId" />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.resultAssetId')">
-            <template v-if="detail.resultAssetId">
-              <AssetChip :id="detail.resultAssetId" />
+          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetId')">
+            <template v-if="detail.assetId">
+              <AssetChip :id="detail.assetId" />
             </template>
             <template v-else>
               —
@@ -196,7 +188,7 @@ onUnmounted(() => {
             <AssetChip :id="detail.ttsAsset.assetId" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetDiscriminator')">
-            <VoiceDiscriminatorChip :discriminator="(detail.ttsAsset.discriminator as VoiceDiscriminatorType)" />
+            <VoiceDiscriminatorChip :discriminator="(detail.ttsAsset.provider as VoiceDiscriminatorType)" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetVoiceFamilyId')">
             <CachedVoiceFamilyChip :id="detail.ttsAsset.voiceFamily" />
