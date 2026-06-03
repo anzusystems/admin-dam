@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AJobDetailCommon, ARow, useI18n } from '@anzusystems/common-admin'
+import { AJobDetailCommon, ARow, dateTimePretty, useI18n } from '@anzusystems/common-admin'
 import type { JobSynchronizeImageChanged } from '@/types/coreDam/Job'
 import JobResourceChip from '@/views/coreDam/job/components/JobResourceChip.vue'
 
@@ -34,10 +34,10 @@ const { t } = useI18n()
           {{ job.targetLicenceId }}
         </ARow>
         <ARow :title="t('coreDam.job.model.processFrom')">
-          {{ job.processFrom }}
+          {{ dateTimePretty(job.processFrom) }}
         </ARow>
         <ARow :title="t('coreDam.job.model.processUntil')">
-          {{ job.processUntil }}
+          {{ dateTimePretty(job.processUntil) }}
         </ARow>
         <ARow :title="t('coreDam.job.model.bulkSize')">
           {{ job.bulkSize }}

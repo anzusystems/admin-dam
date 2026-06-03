@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
 import type { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
-import { ttsRequestStatusColors, useTtsRequestStatus } from '@/model/coreDam/valueObject/TtsRequestStatus'
+import { useTtsRequestStatus } from '@/model/coreDam/valueObject/TtsRequestStatus'
 
 const props = withDefaults(
   defineProps<{
@@ -14,13 +14,12 @@ const props = withDefaults(
 const { getTtsRequestStatusOption } = useTtsRequestStatus()
 
 const statusOption = computed(() => getTtsRequestStatusOption(props.status))
-const color = computed(() => ttsRequestStatusColors[props.status])
 </script>
 
 <template>
   <AChipNoLink
     v-if="statusOption"
-    :color="color"
+    :color="statusOption.color"
   >
     {{ statusOption.title }}
   </AChipNoLink>

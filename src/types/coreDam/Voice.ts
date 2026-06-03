@@ -1,4 +1,4 @@
-import type { AnzuUserAndTimeTrackingAware, DatetimeUTC, DocId, ResourceNameSystemAware } from '@anzusystems/common-admin'
+import type { AnzuUserAndTimeTrackingAware, DocId, ResourceNameSystemAware } from '@anzusystems/common-admin'
 
 export const RESOURCE_VOICE = 'voice'
 
@@ -21,8 +21,6 @@ interface VoiceBase extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAwar
   externalVoiceId: string
   main: boolean
   active: boolean
-  createdAt: DatetimeUTC
-  modifiedAt: DatetimeUTC
   readonly discriminator: VoiceDiscriminatorType
 }
 

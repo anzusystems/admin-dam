@@ -120,9 +120,10 @@ export const ACL = {
   DAM_TTS_VOICE_CREATE: 'dam_ttsVoice_create',
   DAM_TTS_VOICE_UPDATE: 'dam_ttsVoice_update',
   DAM_TTS_VOICE_DELETE: 'dam_ttsVoice_delete',
+  // TTS — TtsAsset
+  DAM_TTS_ASSET_READ: 'dam_ttsAsset_read',
   // TTS — NarrationRequest
   DAM_TTS_NARRATION_REQUEST_UI: 'dam_ttsNarrationRequest_ui',
-  DAM_TTS_ASSET_READ: 'dam_ttsAsset_read',
   DAM_TTS_NARRATION_REQUEST_LIST: 'dam_ttsNarrationRequest_list',
   DAM_TTS_NARRATION_REQUEST_READ: 'dam_ttsNarrationRequest_read',
   DAM_TTS_NARRATION_REQUEST_SYNTHESIZE: 'dam_ttsNarrationRequest_synthesize',

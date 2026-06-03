@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
 import type { TtsRequestMode } from '@/types/coreDam/TtsNarrationRequest'
-import { ttsRequestModeColors, useTtsRequestMode } from '@/model/coreDam/valueObject/TtsRequestMode'
+import { useTtsRequestMode } from '@/model/coreDam/valueObject/TtsRequestMode'
 
 const props = withDefaults(
   defineProps<{
@@ -14,13 +14,12 @@ const props = withDefaults(
 const { getTtsRequestModeOption } = useTtsRequestMode()
 
 const modeOption = computed(() => getTtsRequestModeOption(props.mode))
-const color = computed(() => ttsRequestModeColors[props.mode])
 </script>
 
 <template>
   <AChipNoLink
     v-if="modeOption"
-    :color="color"
+    :color="modeOption.color"
   >
     {{ modeOption.title }}
   </AChipNoLink>

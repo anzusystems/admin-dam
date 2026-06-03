@@ -154,21 +154,31 @@ export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => Inte
   const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const items = await fetchVoiceFamilyListByExtSystem(resolveExtSystemId(), pagination, filterBag)
+    try {
+      const items = await fetchVoiceFamilyListByExtSystem(resolveExtSystemId(), pagination, filterBag)
 
-    return <ValueObjectOption<DocId>[]>items.map((voiceFamily: VoiceFamily) => ({
-      title: voiceFamily.displayName,
-      value: voiceFamily.id,
-    }))
+      return <ValueObjectOption<DocId>[]>items.map((voiceFamily: VoiceFamily) => ({
+        title: voiceFamily.displayName,
+        value: voiceFamily.id,
+      }))
+    } catch (error) {
+      showErrorsDefault(error)
+      return []
+    }
   }
 
   const fetchItemsByIds = async (ids: DocId[]) => {
-    const items = await fetchVoiceFamilyListByIds(resolveExtSystemId(), ids)
+    try {
+      const items = await fetchVoiceFamilyListByIds(resolveExtSystemId(), ids)
 
-    return <ValueObjectOption<DocId>[]>items.map((voiceFamily: VoiceFamily) => ({
-      title: voiceFamily.displayName,
-      value: voiceFamily.id,
-    }))
+      return <ValueObjectOption<DocId>[]>items.map((voiceFamily: VoiceFamily) => ({
+        title: voiceFamily.displayName,
+        value: voiceFamily.id,
+      }))
+    } catch (error) {
+      showErrorsDefault(error)
+      return []
+    }
   }
 
   return {

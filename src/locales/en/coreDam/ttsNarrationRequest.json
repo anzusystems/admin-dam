@@ -68,7 +68,7 @@
       "cancelRequested": "Cancel requested",
       "failureReason": "Failure reason",
       "startedAt": "Started at",
-      "assetId": "Asset ID",
+      "assetAssetId": "Asset ID",
       "assetDiscriminator": "Discriminator",
       "assetVoiceFamilyId": "Voice family",
       "externalVoiceId": "External voice ID",

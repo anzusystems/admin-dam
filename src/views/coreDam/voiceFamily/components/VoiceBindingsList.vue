@@ -61,14 +61,6 @@ const onDeleteVoice = async (voice: Voice) => {
   }
 }
 
-const onCreateSuccess = async () => {
-  await fetchVoices()
-}
-
-const onEditSuccess = async () => {
-  await fetchVoices()
-}
-
 onMounted(() => {
   fetchVoices()
 })
@@ -81,7 +73,7 @@ onMounted(() => {
       <Acl :permission="ACL.DAM_TTS_VOICE_CREATE">
         <VoiceBindingCreateDialog
           :voice-family-id="voiceFamilyId"
-          @on-success="onCreateSuccess"
+          @on-success="fetchVoices"
         />
       </Acl>
     </div>
@@ -169,7 +161,7 @@ onMounted(() => {
     <VoiceBindingEditDialog
       v-model="editDialog"
       :voice="selectedVoice"
-      @on-success="onEditSuccess"
+      @on-success="fetchVoices"
     />
   </div>
 </template>

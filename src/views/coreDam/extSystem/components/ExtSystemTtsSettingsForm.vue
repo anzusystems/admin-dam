@@ -10,6 +10,7 @@ import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import {
   AAssetSelect,
   AFormRemoteAutocomplete,
+  AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
   type AssetSelectReturnData,
@@ -60,12 +61,10 @@ const clearEpilog = () => {
           md="8"
         >
           <ARow>
-            <VSelect
+            <AFormValueObjectOptionsSelect
               v-model="extSystem.ttsSettings.activeProviderMode"
               :label="t('coreDam.extSystem.ttsSettings.activeProviderMode')"
               :items="valueObjectOptions"
-              item-title="title"
-              item-value="value"
               data-cy="ext-system-tts-active-provider-mode"
             />
           </ARow>

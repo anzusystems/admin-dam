@@ -42,7 +42,7 @@ const detail = ref<TtsNarrationRequestDetail | null>(null)
 
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
-const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
+const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies, isLoadedCachedVoiceFamily } = useCachedVoiceFamiliesById()
 
 const POLL_INTERVAL_MS = 5000
 
@@ -57,8 +57,11 @@ const refresh = async () => {
     const data = await fetchTtsNarrationRequest(expectedId)
     if ((route.params.id as string) !== expectedId) return
     detail.value = data
-    if (data?.ttsAsset?.voiceFamily) {
-      addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
+    const voiceFamilyId = data?.ttsAsset?.voiceFamily
+    // Skip the debounced cache fetch once the family is already cached — otherwise every poll
+    // tick stalls for the full debounce window resolving an empty (nothing-to-fetch) batch.
+    if (voiceFamilyId && !isLoadedCachedVoiceFamily(voiceFamilyId)) {
+      addToCachedVoiceFamilies([voiceFamilyId])
       await fetchCachedVoiceFamilies()
     }
     if (!isInProgress()) pausePolling()
@@ -184,7 +187,7 @@ onUnmounted(() => {
     <VCardText>
       <VRow>
         <VCol cols="8">
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetId')">
+          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetAssetId')">
             <AssetChip :id="detail.ttsAsset.assetId" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetDiscriminator')">

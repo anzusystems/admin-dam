@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AFormTextField, AFormValueObjectOptionsSelect, ARow } from '@anzusystems/common-admin'
 import type { GoogleSsmlGenderType, GoogleTtsVoice } from '@/types/coreDam/Voice'
@@ -23,7 +23,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const { valueObjectOptions: ssmlGenderOptions } = useGoogleSsmlGender()
 
-const localVoice = computed(() => props.voice)
+const localVoice = toRef(props, 'voice')
 const { v$ } = useVoiceGoogleTtsValidation(localVoice)
 
 const updateString = (key: 'externalVoiceId', value: string | number | null | undefined) => {

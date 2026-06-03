@@ -159,6 +159,7 @@ const onAnyMetadataChange = () => {
               </VCol>
             </VRow>
             <VRow
+              v-if="isTypeAudio"
               dense
               class="my-2"
             >

@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep, type DocIdNullable, type IntegerId } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, type DocIdNullable, type IntegerId } from '@anzusystems/common-admin'
 import { useVoiceFamilySelectActions } from '@/views/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyFilter } from '@/model/coreDam/filter/VoiceFamilyFilter'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocIdNullable
     extSystemId: IntegerId
     label?: string | undefined
     required?: boolean | undefined
@@ -20,18 +18,8 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocIdNullable): void
-}>()
 
-const modelValueComputed = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue: DocIdNullable) {
-    emit('update:modelValue', cloneDeep(newValue))
-  },
-})
+const modelValue = defineModel<DocIdNullable>({ required: true })
 
 const { fetchItems, fetchItemsByIds } = useVoiceFamilySelectActions(() => props.extSystemId)
 
@@ -40,7 +28,7 @@ const innerFilter = useVoiceFamilyFilter()
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValueComputed"
+    v-model="modelValue"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"

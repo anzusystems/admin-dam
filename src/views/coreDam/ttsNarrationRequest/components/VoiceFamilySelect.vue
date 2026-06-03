@@ -61,6 +61,8 @@ watch(
   () => props.extSystemId,
   (newValue, oldValue) => {
     if (newValue === null) {
+      // Invalidate any in-flight fetch so its late response can't write stale data back.
+      voiceFamilySeq++
       voiceFamilies.value = []
       loadedForExtSystemId = null
       modelValue.value = null

@@ -68,7 +68,7 @@
       "cancelRequested": "Zrušenie požiadané",
       "failureReason": "Dôvod zlyhania",
       "startedAt": "Začaté",
-      "assetId": "ID assetu",
+      "assetAssetId": "ID assetu",
       "assetDiscriminator": "Diskriminátor",
       "assetVoiceFamilyId": "Hlasová rodina",
       "externalVoiceId": "Externé ID hlasu",

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AFormTextField, ARow } from '@anzusystems/common-admin'
 import type { ElevenlabsVoice } from '@/types/coreDam/Voice'
@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const localVoice = computed(() => props.voice)
+const localVoice = toRef(props, 'voice')
 const { v$ } = useVoiceElevenlabsValidation(localVoice)
 
 const updateString = (key: 'externalVoiceId' | 'modelId', value: string | number | null | undefined) => {

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, useAlerts } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import { ADialogToolbar, cloneDeep, useAlerts } from '@anzusystems/common-admin'
 import { updateVoice } from '@/services/api/coreDam/voiceApi'
 import type { Voice } from '@/types/coreDam/Voice'
 import VoiceManage from '@/views/coreDam/voiceFamily/components/VoiceManage.vue'
@@ -20,7 +21,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault, showValidationError } = useAlerts()
+const v$ = useVuelidate()
 
 const saveButtonLoading = ref(false)
 const localVoice = ref<Voice | null>(null)
@@ -29,7 +31,7 @@ watch(
   () => props.voice,
   (newVoice) => {
     if (newVoice) {
-      localVoice.value = { ...newVoice }
+      localVoice.value = cloneDeep(newVoice)
     }
   },
   { immediate: true },
@@ -44,6 +46,12 @@ const onConfirm = async () => {
 
   saveButtonLoading.value = true
   try {
+    v$.value.$touch()
+    if (v$.value.$invalid) {
+      showValidationError()
+      saveButtonLoading.value = false
+      return
+    }
     await updateVoice(localVoice.value.id, localVoice.value)
     showRecordWas('updated')
     emit('update:modelValue', false)

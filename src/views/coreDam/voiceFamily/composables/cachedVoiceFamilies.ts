@@ -19,6 +19,8 @@ const mapIdToMinimal = (id: DocId): VoiceFamilyMinimal => ({
   name: '',
 })
 
+const { currentExtSystemId } = useCurrentExtSystem()
+
 const {
   cache: voiceFamilyCache,
   fetch: fetchCached,
@@ -26,10 +28,9 @@ const {
   has: hasCached,
   get: getCached,
   isLoaded: isLoadedCached,
-} = defineCached<DocId, VoiceFamily, VoiceFamilyMinimal>(mapFullToMinimal, mapIdToMinimal, (ids: DocId[]) => {
-  const { currentExtSystemId } = useCurrentExtSystem()
-  return fetchVoiceFamilyListByIds(currentExtSystemId.value, ids)
-})
+} = defineCached<DocId, VoiceFamily, VoiceFamilyMinimal>(mapFullToMinimal, mapIdToMinimal, (ids: DocId[]) =>
+  fetchVoiceFamilyListByIds(currentExtSystemId.value, ids)
+)
 
 export const useCachedVoiceFamiliesById = () => {
   return {

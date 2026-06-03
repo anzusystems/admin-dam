@@ -21,6 +21,7 @@ import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useTtsNarrationRequestSynthesizeActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
+  TTS_SYNTHESIZE_TEXT_MAX,
   type TtsSynthesizeForm,
   useTtsNarrationRequestSynthesizeValidation,
 } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestValidation'
@@ -59,7 +60,6 @@ const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicenc
 
 // Rough heuristic: ~14 chars/sec average speech rate across Slavic languages.
 const CHARS_PER_SECOND = 14
-const TEXT_MAX_LENGTH = 50_000
 
 const textLength = computed(() => form.value.text.length)
 const estimatedSeconds = computed(() => Math.ceil(textLength.value / CHARS_PER_SECOND))
@@ -169,7 +169,7 @@ const onConfirm = async () => {
               data-cy="synthesize-text"
             />
             <div class="text-caption text-medium-emphasis d-flex justify-end mt-n4 mb-2 px-2">
-              <span>{{ textLength.toLocaleString() }} / {{ TEXT_MAX_LENGTH.toLocaleString() }}</span>
+              <span>{{ textLength.toLocaleString() }} / {{ TTS_SYNTHESIZE_TEXT_MAX.toLocaleString() }}</span>
               <span
                 v-if="estimatedDurationLabel"
                 class="ml-3"

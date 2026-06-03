@@ -86,5 +86,5 @@ export interface TtsSynthesizeRequest {
   voiceFamilySlug: string | null
   podcasts: DocId[]
   extSystem: IntegerId
-  assetLicence: IntegerId | null
+  assetLicence: IntegerIdNullable
 }

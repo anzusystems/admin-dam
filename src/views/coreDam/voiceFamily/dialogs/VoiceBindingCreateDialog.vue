@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import useVuelidate from '@vuelidate/core'
 import { ACreateDialog } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { createVoice } from '@/services/api/coreDam/voiceApi'
@@ -27,6 +28,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { createVoiceKind } = useVoiceKindFactory()
+const v$ = useVuelidate()
 
 const voice = ref<Voice | null>(null)
 const dialog = ref(false)
@@ -44,6 +46,7 @@ const create = async () => {
 <template>
   <ACreateDialog
     v-model="dialog"
+    :v="v$"
     :call-create="create"
     disable-redirect
     :button-class="buttonClass"
