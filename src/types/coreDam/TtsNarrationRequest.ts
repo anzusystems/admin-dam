@@ -17,8 +17,6 @@ export type TtsAudioStatus = (typeof TtsAudioStatus)[keyof typeof TtsAudioStatus
  */
 export interface TtsAsset {
   assetId: DocId
-  extResourceName: string | null
-  extId: string | null
   voiceFamily: DocId
   discriminator: VoiceDiscriminatorType
   externalVoiceId: string
@@ -26,7 +24,6 @@ export interface TtsAsset {
   sourceTextSnapshot: string
   status: TtsAudioStatus
   failureReason: string | null
-  staging: boolean
   voiceFamilyKeywordIds: DocId[]
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
@@ -52,12 +49,6 @@ export const IN_PROGRESS_TTS_REQUEST_STATUSES: readonly TtsRequestStatus[] = [
   TtsRequestStatus.Processing,
 ]
 
-export interface TtsNarrationRequestExtRef {
-  extResourceName: string | null
-  extId: string | null
-  extVersion: string | null
-}
-
 export interface TtsNarrationRequestSource {
   text: string | null
 }
@@ -73,7 +64,6 @@ export interface TtsNarrationRequest {
   mode: TtsRequestMode
   startedAt: DatetimeUTCNullable
   failureReason: string | null
-  openInitialKey: string | null
   stableAssetId: DocIdNullable
   resultAssetId: DocIdNullable
   extSystemId: IntegerId
@@ -89,7 +79,6 @@ export interface TtsNarrationRequest {
   modifiedAt: DatetimeUTCNullable
   createdBy: IntegerIdNullable
   modifiedBy: IntegerIdNullable
-  extRef: TtsNarrationRequestExtRef
   source: TtsNarrationRequestSource
 }
 

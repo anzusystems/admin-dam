@@ -152,14 +152,6 @@ onUnmounted(() => {
             :title="t('coreDam.ttsNarrationRequest.detail.fields.title')"
             :value="detail.title"
           />
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.openInitialKey')">
-            <template v-if="detail.openInitialKey">
-              <ACopyText :value="detail.openInitialKey" />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.stableAssetId')">
             <template v-if="detail.stableAssetId">
               <AssetChip :id="detail.stableAssetId" />
@@ -190,15 +182,6 @@ onUnmounted(() => {
         <VCol cols="4">
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.startedAt')">
             <ADatetime :date-time="detail.startedAt" />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extResourceName')">
-            {{ detail.extRef.extResourceName }}
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extId')">
-            {{ detail.extRef.extId }}
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extVersion')">
-            {{ detail.extRef.extVersion }}
           </ARow>
           <AUserAndTimeTrackingFields :data="detail" />
         </VCol>
@@ -233,12 +216,6 @@ onUnmounted(() => {
             :title="t('coreDam.ttsNarrationRequest.detail.fields.assetFailureReason')"
             :value="detail.ttsAsset.failureReason"
           />
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetStaging')">
-            <ABooleanValue
-              chip
-              :value="detail.ttsAsset.staging"
-            />
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.voiceFamilyKeywordId')">
             <template v-if="detail.ttsAsset.voiceFamilyKeywordIds.length">
               <CachedKeywordChip
@@ -261,12 +238,6 @@ onUnmounted(() => {
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.sourceTextHash')">
             <ACopyText :value="detail.ttsAsset.sourceTextHash" />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetExtResourceName')">
-            {{ detail.ttsAsset.extResourceName }}
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetExtId')">
-            {{ detail.ttsAsset.extId }}
           </ARow>
         </VCol>
       </VRow>

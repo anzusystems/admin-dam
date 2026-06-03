@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
-  ACopyText,
   ADatetime,
   ARow,
   type DocId,
@@ -104,12 +103,6 @@ watch(() => props.assetId, load, { immediate: true })
         :id="keywordId"
         :key="keywordId"
       />
-    </ARow>
-    <ARow
-      v-if="detail.tts.extResourceName"
-      :title="t('coreDam.asset.detail.tts.extRef')"
-    >
-      <ACopyText :value="`${detail.tts.extResourceName}/${detail.tts.extId ?? ''}`" />
     </ARow>
     <ARow
       v-if="detail.tts.failureReason"

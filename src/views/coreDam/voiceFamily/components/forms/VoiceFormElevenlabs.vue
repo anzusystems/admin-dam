@@ -65,7 +65,7 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
       />
     </ARow>
     <ARow>
-      <VTextField
+      <AFormTextField
         :model-value="voice.stability"
         :label="t('coreDam.voice.model.stability')"
         type="number"
@@ -73,12 +73,13 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
         :max="1"
         :step="0.05"
         :readonly="readonly"
+        :v="v$.voice.stability"
         data-cy="voice-stability"
         @update:model-value="updateNumber('stability', $event)"
       />
     </ARow>
     <ARow>
-      <VTextField
+      <AFormTextField
         :model-value="voice.similarityBoost"
         :label="t('coreDam.voice.model.similarityBoost')"
         type="number"
@@ -86,6 +87,7 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
         :max="1"
         :step="0.05"
         :readonly="readonly"
+        :v="v$.voice.similarityBoost"
         data-cy="voice-similarity-boost"
         @update:model-value="updateNumber('similarityBoost', $event)"
       />

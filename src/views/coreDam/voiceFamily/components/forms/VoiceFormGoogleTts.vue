@@ -67,7 +67,7 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
       />
     </ARow>
     <ARow>
-      <VTextField
+      <AFormTextField
         :model-value="voice.speakingRate"
         :label="t('coreDam.voice.model.speakingRate')"
         type="number"
@@ -75,12 +75,13 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
         :max="4.0"
         :step="0.05"
         :readonly="readonly"
+        :v="v$.voice.speakingRate"
         data-cy="voice-speaking-rate"
         @update:model-value="updateNumber('speakingRate', $event)"
       />
     </ARow>
     <ARow>
-      <VTextField
+      <AFormTextField
         :model-value="voice.pitch"
         :label="t('coreDam.voice.model.pitch')"
         type="number"
@@ -88,6 +89,7 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
         :max="20"
         :step="0.5"
         :readonly="readonly"
+        :v="v$.voice.pitch"
         data-cy="voice-pitch"
         @update:model-value="updateNumber('pitch', $event)"
       />
