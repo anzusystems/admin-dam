@@ -16,8 +16,8 @@ export function useVoiceFamilyFactory() {
       keywords: [],
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
-      createdBy: 1,
-      modifiedBy: 1,
+      createdBy: 0,
+      modifiedBy: 0,
       _resourceName: RESOURCE_VOICE_FAMILY,
       _system: SYSTEM_CORE_DAM,
     }

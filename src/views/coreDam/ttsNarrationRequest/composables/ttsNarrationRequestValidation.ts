@@ -1,10 +1,10 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import type { DocId, ValidationScope } from '@anzusystems/common-admin'
+import type { DocId, IntegerIdNullable, ValidationScope } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
 
-const { required, minLength, maxLength } = useValidate()
+const { required, minLength, maxLength, minValue } = useValidate()
 
 export const TTS_SYNTHESIZE_TEXT_MIN = 10
 export const TTS_SYNTHESIZE_TEXT_MAX = 50_000
@@ -18,6 +18,7 @@ export interface TtsSynthesizeForm {
 
 export function useTtsNarrationRequestSynthesizeValidation(
   form: Ref<TtsSynthesizeForm>,
+  extSystemId: Ref<IntegerIdNullable>,
   validationScope: ValidationScope = undefined
 ) {
   const rules = computed(() => ({
@@ -31,9 +32,13 @@ export function useTtsNarrationRequestSynthesizeValidation(
         maxLength: maxLength(TTS_SYNTHESIZE_TITLE_MAX),
       },
     },
+    extSystemId: {
+      required,
+      minValue: minValue(1),
+    },
   }))
 
-  const v$ = useVuelidate(rules, { form }, { $scope: validationScope })
+  const v$ = useVuelidate(rules, { form, extSystemId }, { $scope: validationScope })
 
   return {
     v$,

@@ -22,7 +22,6 @@ const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
 const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
-const saveAndCloseButtonLoading = ref(false)
 
 export const useVoiceFamilyListActions = () => {
   const listItems = ref<VoiceFamily[]>([])
@@ -91,7 +90,6 @@ export const useVoiceFamilyDetailActions = () => {
 
 export const useVoiceFamilyEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
   const voiceFamilyOneStore = useVoiceFamilyOneStore()
   const { voiceFamily } = storeToRefs(voiceFamilyOneStore)
 
@@ -106,14 +104,13 @@ export const useVoiceFamilyEditActions = () => {
     }
   }
 
-  const onUpdate = async (close = false) => {
+  const onUpdate = async () => {
     try {
-      close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
+      saveButtonLoading.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()
         saveButtonLoading.value = false
-        saveAndCloseButtonLoading.value = false
         return
       }
       const payload: VoiceFamilyUpdate = {
@@ -126,23 +123,16 @@ export const useVoiceFamilyEditActions = () => {
       }
       await updateVoiceFamily(voiceFamilyOneStore.voiceFamily.id, payload)
       showRecordWas('updated')
-      if (!close) return
-      router.push({
-        name: ROUTE.DAM.VOICE_FAMILY.DETAIL,
-        params: { id: voiceFamilyOneStore.voiceFamily.id },
-      })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false
-      saveAndCloseButtonLoading.value = false
     }
   }
 
   return {
     detailLoading,
     saveButtonLoading,
-    saveAndCloseButtonLoading,
     voiceFamily,
     fetchData,
     onUpdate,

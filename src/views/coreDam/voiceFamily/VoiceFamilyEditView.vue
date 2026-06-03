@@ -10,15 +10,8 @@ import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 const route = useRoute()
 const id = route.params.id.toString()
 
-const {
-  detailLoading,
-  saveButtonLoading,
-  saveAndCloseButtonLoading,
-  fetchData,
-  resetStore,
-  onUpdate,
-  voiceFamily,
-} = useVoiceFamilyEditActions()
+const { detailLoading, saveButtonLoading, fetchData, resetStore, onUpdate, voiceFamily } =
+  useVoiceFamilyEditActions()
 
 const getData = () => {
   fetchData(id)
@@ -39,7 +32,6 @@ onBeforeUnmount(() => {
       <AActionSaveButton
         v-if="!detailLoading"
         :loading="saveButtonLoading"
-        :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
       <AActionCloseButton :route-name="ROUTE.DAM.VOICE_FAMILY.LIST" />

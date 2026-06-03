@@ -4,4 +4,4 @@ export const TtsActiveProviderMode = {
   Auto: 'auto',
 } as const
 
-export type TtsActiveProviderMode = (typeof TtsActiveProviderMode)[keyof typeof TtsActiveProviderMode]
+export type TtsActiveProviderModeType = (typeof TtsActiveProviderMode)[keyof typeof TtsActiveProviderMode]

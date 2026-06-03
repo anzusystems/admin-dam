@@ -55,7 +55,7 @@ const assetLicenceId = ref<IntegerIdNullable>(null)
 const defaultAssetLicenceId = ref<IntegerIdNullable>(null)
 let extSystemSeq = 0
 
-const { v$ } = useTtsNarrationRequestSynthesizeValidation(form)
+const { v$ } = useTtsNarrationRequestSynthesizeValidation(form, extSystemId)
 const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
 
 // Rough heuristic: ~14 chars/sec average speech rate across Slavic languages.
@@ -114,6 +114,8 @@ const close = () => {
 
 const onConfirm = async () => {
   v$.value.$touch()
+  // $invalid already covers a missing ext system (required + minValue); the explicit null check
+  // additionally narrows extSystemId from IntegerIdNullable to IntegerId for the typed payload below.
   if (v$.value.$invalid || extSystemId.value === null) {
     showValidationError()
     return
@@ -183,6 +185,7 @@ const onConfirm = async () => {
               v-model="extSystemId"
               :client="damClient"
               :label="t('coreDam.ttsNarrationRequest.synthesize.extSystem')"
+              :v="v$.extSystemId"
               required
               data-cy="synthesize-ext-system"
             />

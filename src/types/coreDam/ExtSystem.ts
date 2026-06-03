@@ -1,8 +1,8 @@
 import type { DamExtSystem, DocIdNullable, IntegerIdNullable } from '@anzusystems/common-admin'
-import type { TtsActiveProviderMode } from '@/types/coreDam/TtsActiveProviderMode'
+import type { TtsActiveProviderModeType } from '@/types/coreDam/TtsActiveProviderMode'
 
 export interface ExtSystemTtsSettings {
-  activeProviderMode: TtsActiveProviderMode
+  activeProviderMode: TtsActiveProviderModeType
   defaultVoiceFamilyId: DocIdNullable
   autoKeywordId: DocIdNullable
 }

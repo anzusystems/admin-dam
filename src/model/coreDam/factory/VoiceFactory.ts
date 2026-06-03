@@ -2,6 +2,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
+  GoogleSsmlGender,
   RESOURCE_VOICE,
   VoiceDiscriminator,
   type ElevenlabsVoice,
@@ -18,8 +19,8 @@ const createBaseVoice = (voiceFamily: DocId) => ({
   active: true,
   createdAt: dateTimeNow(),
   modifiedAt: dateTimeNow(),
-  createdBy: 1,
-  modifiedBy: 1,
+  createdBy: 0,
+  modifiedBy: 0,
   _resourceName: RESOURCE_VOICE,
   _system: SYSTEM_CORE_DAM,
 })
@@ -44,7 +45,7 @@ export function useVoiceKindFactory() {
         const voice: GoogleTtsVoice = {
           ...createBaseVoice(voiceFamily),
           discriminator: VoiceDiscriminator.GoogleTts,
-          ssmlGender: 'NEUTRAL',
+          ssmlGender: GoogleSsmlGender.Neutral,
           speakingRate: 1.0,
           pitch: 0.0,
         }
