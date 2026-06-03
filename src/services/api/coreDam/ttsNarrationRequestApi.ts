@@ -1,6 +1,6 @@
 import { damClient } from '@/services/api/clients/damClient'
-import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchByIds, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { apiCreateOne, apiFetchOne } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
   TtsNarrationRequest,
@@ -13,20 +13,6 @@ export const ENTITY = 'ttsNarrationRequest'
 
 export const fetchTtsNarrationRequest = (id: DocId) =>
   apiFetchOne<TtsNarrationRequestDetail>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
-
-export const fetchTtsNarrationRequestListByIds = (ids: DocId[]) =>
-  apiFetchByIds<TtsNarrationRequest[]>(damClient, ids, END_POINT, {}, SYSTEM_CORE_DAM, ENTITY)
-
-export const fetchTtsNarrationRequestList = (pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<TtsNarrationRequest[]>(
-    damClient,
-    END_POINT,
-    {},
-    pagination,
-    filterBag,
-    SYSTEM_CORE_DAM,
-    ENTITY
-  )
 
 export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequest) =>
   apiCreateOne<TtsSynthesizeRequest, TtsNarrationRequest>(

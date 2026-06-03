@@ -61,7 +61,7 @@ export interface TtsNarrationRequest {
   failureReason: string | null
   assetId: DocIdNullable
   extSystemId: IntegerId
-  assetLicenceId: IntegerIdNullable
+  assetLicence: IntegerId
   voiceFamilySlug: string | null
   title: string | null
   description: string | null

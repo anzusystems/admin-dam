@@ -4,11 +4,11 @@ import { ref } from 'vue'
 import {
   deleteVoiceFamily,
   fetchVoiceFamily,
-  fetchVoiceFamilyList,
   fetchVoiceFamilyListByExtSystem,
   fetchVoiceFamilyListByIds,
   updateVoiceFamily,
 } from '@/services/api/coreDam/voiceFamilyApi'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import type { VoiceFamily, VoiceFamilyUpdate } from '@/types/coreDam/VoiceFamily'
 import { storeToRefs } from 'pinia'
 import { useVoiceFamilyOneStore } from '@/stores/coreDam/voiceFamilyStore'
@@ -24,12 +24,13 @@ const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
 
 export const useVoiceFamilyListActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<VoiceFamily[]>([])
 
   const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
     listLoading.value = true
     try {
-      listItems.value = await fetchVoiceFamilyList(pagination, filterBag)
+      listItems.value = await fetchVoiceFamilyListByExtSystem(currentExtSystemId.value, pagination, filterBag)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -52,11 +53,13 @@ export const useVoiceFamilyRemoveActions = () => {
     try {
       await deleteVoiceFamily(id)
       showRecordWas('deleted')
+      // Keep detailLoading=true on success: it hides VoiceBindingsList (v-if="!detailLoading")
+      // so it cannot remount and refetch voices for the just-deleted family (404) before the
+      // redirect completes. The next detail mount resets the flag via fetchData.
       router.push({ name: ROUTE.DAM.VOICE_FAMILY.LIST })
     } catch (error) {
-      showErrorsDefault(error)
-    } finally {
       detailLoading.value = false
+      showErrorsDefault(error)
     }
   }
 

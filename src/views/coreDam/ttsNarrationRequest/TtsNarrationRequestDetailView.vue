@@ -19,6 +19,9 @@ import {
   IN_PROGRESS_TTS_REQUEST_STATUSES,
   type TtsNarrationRequestDetail,
 } from '@/types/coreDam/TtsNarrationRequest'
+import { isCancellableRequest } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
+import TtsCancelRequestDialog from '@/views/coreDam/ttsNarrationRequest/dialogs/TtsCancelRequestDialog.vue'
+import { ACL } from '@/composables/auth/auth'
 import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import TtsRequestStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
@@ -39,6 +42,7 @@ const { showErrorsDefault } = useAlerts()
 
 const loading = ref(true)
 const detail = ref<TtsNarrationRequestDetail | null>(null)
+const cancelDialog = ref(false)
 
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
@@ -84,7 +88,7 @@ onMounted(async () => {
     detail.value = data
 
     if (data) {
-      if (data.assetLicenceId !== null) addToCachedAssetLicences([data.assetLicenceId])
+      addToCachedAssetLicences([data.assetLicence])
       addToCachedExtSystems([data.extSystemId])
       if (data.ttsAsset?.voiceFamily) addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
 
@@ -103,6 +107,11 @@ onMounted(async () => {
   }
 })
 
+const onCancelSuccess = async () => {
+  await refresh()
+  if (isInProgress()) resumePolling()
+}
+
 onUnmounted(() => {
   pausePolling()
 })
@@ -111,6 +120,19 @@ onUnmounted(() => {
 <template>
   <ActionbarWrapper :last-breadcrumb-title="detail?.id ?? ''">
     <template #buttons>
+      <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_CANCEL">
+        <VBtn
+          v-if="detail && isCancellableRequest(detail)"
+          color="error"
+          variant="text"
+          prepend-icon="mdi-cancel"
+          class="mr-2"
+          data-cy="button-cancel-request"
+          @click.stop="cancelDialog = true"
+        >
+          {{ t('coreDam.ttsNarrationRequest.button.cancelRequest') }}
+        </VBtn>
+      </Acl>
       <AActionCloseButton :route-name="ROUTE.DAM.TTS_NARRATION_REQUEST.LIST" />
     </template>
   </ActionbarWrapper>
@@ -134,13 +156,8 @@ onUnmounted(() => {
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.extSystemId')">
             <CachedExtSystemChip :id="detail.extSystemId" />
           </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLicenceId')">
-            <template v-if="detail.assetLicenceId !== null">
-              <CachedAssetLicenceChip :id="detail.assetLicenceId" />
-            </template>
-            <template v-else>
-              —
-            </template>
+          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetLicence')">
+            <CachedAssetLicenceChip :id="detail.assetLicence" />
           </ARow>
           <ARow
             :title="t('coreDam.ttsNarrationRequest.detail.fields.voiceFamilySlug')"
@@ -231,4 +248,10 @@ onUnmounted(() => {
       <p>{{ t('coreDam.ttsNarrationRequest.detail.noTtsAsset') }}</p>
     </VCardText>
   </ACard>
+
+  <TtsCancelRequestDialog
+    v-model="cancelDialog"
+    :request-id="detail?.id ?? null"
+    @on-success="onCancelSuccess"
+  />
 </template>

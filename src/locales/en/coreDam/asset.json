@@ -153,6 +153,7 @@
       "failureReason": "Failure reason",
       "generatedAt": "Generated at",
       "lastRegeneratedAt": "Last regenerated at",
+      "createdAt": "Created at",
       "sourceRequest": "Source request"
     },
     "info": {

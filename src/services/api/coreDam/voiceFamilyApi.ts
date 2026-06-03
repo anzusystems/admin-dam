@@ -15,9 +15,6 @@ import { RESOURCE_VOICE_FAMILY } from '@/types/coreDam/VoiceFamily'
 const END_POINT = '/adm/v1/voice-family'
 export const ENTITY = RESOURCE_VOICE_FAMILY
 
-export const fetchVoiceFamilyList = (pagination: Pagination, filterBag: FilterBag) =>
-  apiFetchList<VoiceFamily[]>(damClient, END_POINT, {}, pagination, filterBag, SYSTEM_CORE_DAM, ENTITY)
-
 export const fetchVoiceFamilyListByExtSystem = (
   extSystemId: IntegerId,
   pagination: Pagination,
