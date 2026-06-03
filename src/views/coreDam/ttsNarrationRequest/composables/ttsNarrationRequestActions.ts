@@ -1,8 +1,13 @@
 import { ref } from 'vue'
-import { type DocId, useAlerts } from '@anzusystems/common-admin'
+import { type DocId, type FilterBag, type Pagination, useAlerts } from '@anzusystems/common-admin'
 import type { TtsNarrationRequest, TtsSynthesizeRequest } from '@/types/coreDam/TtsNarrationRequest'
 import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
-import { cancelTtsNarrationRequest, synthesizeTtsNarrationRequest } from '@/services/api/coreDam/ttsNarrationRequestApi'
+import {
+  cancelTtsNarrationRequest,
+  fetchTtsNarrationRequestListByExtSystem,
+  synthesizeTtsNarrationRequest,
+} from '@/services/api/coreDam/ttsNarrationRequestApi'
+import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -14,8 +19,33 @@ const CANCELLABLE_STATUSES: ReadonlyArray<TtsRequestStatus> = [
 export const isCancellableRequest = (request: TtsNarrationRequest): boolean =>
   !request.cancelRequested && CANCELLABLE_STATUSES.includes(request.status)
 
+const datatableHiddenColumns = ref<Array<string>>([])
+const listLoading = ref(false)
 const synthesizeButtonLoading = ref(false)
 const cancelRequestButtonLoading = ref(false)
+
+export const useTtsNarrationRequestListActions = () => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const listItems = ref<Array<TtsNarrationRequest>>([])
+
+  const fetchList = async (pagination: Pagination, filterBag: FilterBag) => {
+    listLoading.value = true
+    try {
+      listItems.value = await fetchTtsNarrationRequestListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      listLoading.value = false
+    }
+  }
+
+  return {
+    datatableHiddenColumns,
+    listLoading,
+    listItems,
+    fetchList,
+  }
+}
 
 export const useTtsNarrationRequestSynthesizeActions = () => {
   const synthesize = async (payload: TtsSynthesizeRequest): Promise<TtsNarrationRequest | null> => {

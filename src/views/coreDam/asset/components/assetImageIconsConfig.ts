@@ -6,6 +6,7 @@ import svgfhd from '@/assets/meta-icons/fhd.svg'
 import svgslot from '@/assets/meta-icons/slot.svg'
 import svglow from '@/assets/meta-icons/low.svg'
 import svgrss from '@/assets/meta-icons/rss.svg'
+import svgtts from '@/assets/meta-icons/tts.svg'
 
 export const DIMENSIONS_CONFIG = [
   {
@@ -41,6 +42,6 @@ export const DIMENSIONS_CONFIG = [
 ]
 export const ICON_SLOTS = svgslot
 export const ICON_RSS = svgrss
-export const ICON_TTS = 'mdi-text-to-speech'
+export const ICON_TTS = svgtts
 export const ICON_LOW = svglow
 export const LOW_DIMENSION = 600

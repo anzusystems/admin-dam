@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { ref } from 'vue'
 import { ACard } from '@anzusystems/common-admin'
+import TtsNarrationRequestDatatable from '@/views/coreDam/ttsNarrationRequest/components/TtsNarrationRequestDatatable.vue'
 import TtsNarrationRequestSynthesizeButton from '@/views/coreDam/ttsNarrationRequest/components/TtsNarrationRequestSynthesizeButton.vue'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-import { ROUTE } from '@/router/routes'
+import { useTtsNarrationRequestListActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { ACL } from '@/composables/auth/auth'
-import type { TtsNarrationRequest } from '@/types/coreDam/TtsNarrationRequest'
 
-const router = useRouter()
-const { t } = useI18n()
+const { listLoading } = useTtsNarrationRequestListActions()
 
-const afterSynthesize = (request: TtsNarrationRequest) => {
-  router.push({ name: ROUTE.DAM.TTS_NARRATION_REQUEST.DETAIL, params: { id: request.id } })
+const datatable = ref<InstanceType<typeof TtsNarrationRequestDatatable> | null>(null)
+
+const afterSynthesize = () => {
+  datatable.value?.refresh()
 }
 </script>
 
@@ -28,9 +28,9 @@ const afterSynthesize = (request: TtsNarrationRequest) => {
     </template>
   </ActionbarWrapper>
 
-  <ACard>
-    <VCardText class="text-medium-emphasis">
-      {{ t('coreDam.ttsNarrationRequest.synthesize.landingHint') }}
+  <ACard :loading="listLoading">
+    <VCardText>
+      <TtsNarrationRequestDatatable ref="datatable" />
     </VCardText>
   </ACard>
 </template>

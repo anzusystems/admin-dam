@@ -95,24 +95,14 @@ const data = computed(() => {
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
-    <template
+    <img
       v-for="(item, index) in data.icons"
       :key="item"
+      class="img-svg"
+      :src="item"
+      alt=""
+      :title="data.titles[index] || ''"
     >
-      <VIcon
-        v-if="item.startsWith('mdi-')"
-        class="meta-mdi-icon"
-        :icon="item"
-        :title="data.titles[index] || ''"
-      />
-      <img
-        v-else
-        class="img-svg"
-        :src="item"
-        alt=""
-        :title="data.titles[index] || ''"
-      >
-    </template>
   </div>
 </template>
 
@@ -129,17 +119,6 @@ const data = computed(() => {
   img.img-svg {
     height: 30px;
     padding: 2px;
-  }
-
-  // Match the SVG badge family: semi-transparent circle + white glyph, 30px.
-  .meta-mdi-icon {
-    height: 30px;
-    width: 30px;
-    margin: 2px;
-    border-radius: 50%;
-    background: rgb(0 0 0 / 50%);
-    color: #fff;
-    font-size: 18px;
   }
 }
 </style>

@@ -1,5 +1,6 @@
 {
   "model": {
+    "id": "ID",
     "voiceFamilySlug": "Hlasová rodina",
     "mode": "Mód",
     "title": "Nadpis",
