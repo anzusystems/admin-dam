@@ -24,7 +24,6 @@ export interface TtsAsset {
   sourceTextSnapshot: string
   status: TtsAudioStatus
   failureReason: string | null
-  voiceFamilyKeywordIds: DocId[]
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
 }

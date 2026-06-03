@@ -79,7 +79,6 @@
       "sourceTextHash": "Hash zdrojového textu",
       "stableAssetId": "Stabilný asset",
       "resultAssetId": "Výsledný asset",
-      "voiceFamilyKeywordId": "Kľúčové slová hlasovej rodiny",
       "extSystemId": "Externý systém",
       "assetLicenceId": "Asset licencia"
     }

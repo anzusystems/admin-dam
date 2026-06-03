@@ -12,10 +12,8 @@ import type { TtsAssetDetail } from '@/types/coreDam/TtsAsset'
 import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
 import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
-import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
 import CachedTtsNarrationRequestChip from '@/views/coreDam/ttsNarrationRequest/components/CachedTtsNarrationRequestChip.vue'
 import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
-import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedTtsNarrationRequests } from '@/views/coreDam/ttsNarrationRequest/composables/cachedTtsNarrationRequests'
 
 const props = withDefaults(
@@ -32,7 +30,6 @@ const loading = ref(false)
 const detail = ref<TtsAssetDetail | null>(null)
 
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
-const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedTtsNarrationRequests, fetchCachedTtsNarrationRequests } = useCachedTtsNarrationRequests()
 
 const load = async () => {
@@ -47,12 +44,10 @@ const load = async () => {
     const tts = data.tts
     if (tts) {
       if (tts.voiceFamily) addToCachedVoiceFamilies([tts.voiceFamily])
-      if (tts.voiceFamilyKeywordIds.length) addToCachedKeywords(tts.voiceFamilyKeywordIds)
     }
 
     await Promise.all([
       fetchCachedVoiceFamilies(),
-      fetchCachedKeywords(),
       fetchCachedTtsNarrationRequests(),
     ])
   } catch (error) {
@@ -93,16 +88,6 @@ watch(() => props.assetId, load, { immediate: true })
     </ARow>
     <ARow :title="t('coreDam.asset.detail.tts.voice')">
       <VoiceDiscriminatorChip :discriminator="detail.tts.discriminator" />
-    </ARow>
-    <ARow
-      v-if="detail.tts.voiceFamilyKeywordIds.length"
-      :title="t('coreDam.asset.detail.tts.voiceFamilyKeyword')"
-    >
-      <CachedKeywordChip
-        v-for="keywordId in detail.tts.voiceFamilyKeywordIds"
-        :id="keywordId"
-        :key="keywordId"
-      />
     </ARow>
     <ARow
       v-if="detail.tts.failureReason"

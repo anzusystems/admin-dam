@@ -79,7 +79,6 @@
       "sourceTextHash": "Source text hash",
       "stableAssetId": "Stable asset",
       "resultAssetId": "Result asset",
-      "voiceFamilyKeywordId": "Voice family keywords",
       "extSystemId": "Ext system",
       "assetLicenceId": "Asset licence"
     }

@@ -21,7 +21,6 @@ import {
 } from '@/types/coreDam/TtsNarrationRequest'
 import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
-import CachedKeywordChip from '@/views/coreDam/keyword/components/CachedKeywordChip.vue'
 import TtsRequestStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import TtsRequestModeChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
 import TtsAudioStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
@@ -30,7 +29,6 @@ import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/Cached
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
-import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
 import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
@@ -42,7 +40,6 @@ const { showErrorsDefault } = useAlerts()
 const loading = ref(true)
 const detail = ref<TtsNarrationRequestDetail | null>(null)
 
-const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
 const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
@@ -84,13 +81,11 @@ onMounted(async () => {
     detail.value = data
 
     if (data) {
-      if (data.ttsAsset?.voiceFamilyKeywordIds.length) addToCachedKeywords(data.ttsAsset.voiceFamilyKeywordIds)
       if (data.assetLicenceId !== null) addToCachedAssetLicences([data.assetLicenceId])
       addToCachedExtSystems([data.extSystemId])
       if (data.ttsAsset?.voiceFamily) addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
 
       await Promise.all([
-        fetchCachedKeywords(),
         fetchCachedAssetLicences(),
         fetchCachedExtSystems(),
         fetchCachedVoiceFamilies(),
@@ -216,18 +211,6 @@ onUnmounted(() => {
             :title="t('coreDam.ttsNarrationRequest.detail.fields.assetFailureReason')"
             :value="detail.ttsAsset.failureReason"
           />
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.voiceFamilyKeywordId')">
-            <template v-if="detail.ttsAsset.voiceFamilyKeywordIds.length">
-              <CachedKeywordChip
-                v-for="keywordId in detail.ttsAsset.voiceFamilyKeywordIds"
-                :id="keywordId"
-                :key="keywordId"
-              />
-            </template>
-            <template v-else>
-              —
-            </template>
-          </ARow>
         </VCol>
         <VCol cols="4">
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetCreatedAt')">
