@@ -31,6 +31,9 @@ export interface ElevenlabsVoice extends VoiceBase {
   similarityBoost: number
 }
 
+// Default ElevenLabs model seeded for a new voice; the field stays user-editable in the form.
+export const ELEVENLABS_DEFAULT_MODEL_ID = 'eleven_multilingual_v2'
+
 export interface GoogleTtsVoice extends VoiceBase {
   discriminator: typeof VoiceDiscriminator.GoogleTts
   ssmlGender: GoogleSsmlGenderType

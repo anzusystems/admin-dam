@@ -2,6 +2,7 @@ import type { DocId } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
+  ELEVENLABS_DEFAULT_MODEL_ID,
   GoogleSsmlGender,
   RESOURCE_VOICE,
   VoiceDiscriminator,
@@ -35,7 +36,7 @@ export function useVoiceKindFactory() {
         const voice: ElevenlabsVoice = {
           ...createBaseVoice(voiceFamily),
           discriminator: VoiceDiscriminator.Elevenlabs,
-          modelId: 'eleven_multilingual_v2',
+          modelId: ELEVENLABS_DEFAULT_MODEL_ID,
           stability: 0.5,
           similarityBoost: 0.75,
         }
