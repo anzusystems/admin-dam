@@ -26,7 +26,6 @@ import {
   useTtsNarrationRequestSynthesizeValidation,
 } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestValidation'
 import VoiceFamilySelect from '@/views/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue'
-import type { TtsNarrationRequest } from '@/types/coreDam/TtsNarrationRequest'
 
 withDefaults(
   defineProps<{
@@ -40,7 +39,7 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'onSuccess', request: TtsNarrationRequest): void
+  (e: 'onSuccess'): void
 }>()
 
 const { t } = useI18n()
@@ -131,7 +130,7 @@ const onConfirm = async () => {
     assetLicence: assetLicenceId.value,
   })
   if (res !== null) {
-    emit('onSuccess', res)
+    emit('onSuccess')
     close()
   }
 }

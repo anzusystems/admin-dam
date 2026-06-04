@@ -88,3 +88,10 @@ export interface TtsSynthesizeRequest {
   extSystem: IntegerId
   assetLicence: IntegerIdNullable
 }
+
+// /synthesize outcome: pending | duplicate (existingAssetId) | alreadyPending.
+export interface TtsSynthesizeResponse {
+  status: string
+  assetId: DocIdNullable
+  existingAssetId: DocIdNullable
+}

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { type DocId, type FilterBag, type Pagination, useAlerts } from '@anzusystems/common-admin'
-import type { TtsNarrationRequest, TtsSynthesizeRequest } from '@/types/coreDam/TtsNarrationRequest'
+import type { TtsNarrationRequest, TtsSynthesizeRequest, TtsSynthesizeResponse } from '@/types/coreDam/TtsNarrationRequest'
 import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
 import {
   cancelTtsNarrationRequest,
@@ -48,7 +48,7 @@ export const useTtsNarrationRequestListActions = () => {
 }
 
 export const useTtsNarrationRequestSynthesizeActions = () => {
-  const synthesize = async (payload: TtsSynthesizeRequest): Promise<TtsNarrationRequest | null> => {
+  const synthesize = async (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse | null> => {
     synthesizeButtonLoading.value = true
     try {
       const res = await synthesizeTtsNarrationRequest(payload)

@@ -6,6 +6,7 @@ import type {
   TtsNarrationRequest,
   TtsNarrationRequestDetail,
   TtsSynthesizeRequest,
+  TtsSynthesizeResponse,
 } from '@/types/coreDam/TtsNarrationRequest'
 
 const END_POINT = '/adm/v1/tts-narration-request'
@@ -30,7 +31,7 @@ export const fetchTtsNarrationRequest = (id: DocId) =>
   apiFetchOne<TtsNarrationRequestDetail>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequest) =>
-  apiCreateOne<TtsSynthesizeRequest, TtsNarrationRequest>(
+  apiCreateOne<TtsSynthesizeRequest, TtsSynthesizeResponse>(
     damClient,
     payload,
     END_POINT + '/synthesize',
