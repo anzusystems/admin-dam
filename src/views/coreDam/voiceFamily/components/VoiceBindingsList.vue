@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ABooleanValue, ADatatablePagination, ADatetime, useAlerts, usePagination } from '@anzusystems/common-admin'
+import { ABooleanValue, ADatatablePagination, ADatetime, usePagination } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { fetchVoiceListByFamily, deleteVoice } from '@/services/api/coreDam/voiceApi'
 import type { Voice } from '@/types/coreDam/Voice'
+import { useVoiceListActions } from '@/views/coreDam/voiceFamily/composables/voiceActions'
 import VoiceBindingCreateDialog from '@/views/coreDam/voiceFamily/dialogs/VoiceBindingCreateDialog.vue'
 import VoiceBindingEditDialog from '@/views/coreDam/voiceFamily/dialogs/VoiceBindingEditDialog.vue'
 import VoiceDiscriminatorChip from '@/views/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
@@ -18,29 +18,18 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
-const { showRecordWas, showErrorsDefault } = useAlerts()
 const { can } = useAuth()
+const { listLoading, listItems, fetchList, removeVoice } = useVoiceListActions()
 
 const canEdit = computed(() => can(ACL.DAM_TTS_VOICE_UPDATE))
 const canDelete = computed(() => can(ACL.DAM_TTS_VOICE_DELETE))
 
-const voices = ref<Voice[]>([])
-const loading = ref(false)
 const editDialog = ref(false)
 const selectedVoice = ref<Voice | null>(null)
 const pagination = usePagination()
 const filterBag = {}
 
-const fetchVoices = async () => {
-  loading.value = true
-  try {
-    voices.value = await fetchVoiceListByFamily(props.voiceFamilyId, pagination, filterBag)
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    loading.value = false
-  }
-}
+const fetchVoices = () => fetchList(props.voiceFamilyId, pagination, filterBag)
 
 const onEditVoice = (voice: Voice) => {
   selectedVoice.value = voice
@@ -52,12 +41,8 @@ const onRowClick = (event: unknown, { item }: { item: Voice }) => {
 }
 
 const onDeleteVoice = async (voice: Voice) => {
-  try {
-    await deleteVoice(voice.id)
-    showRecordWas('deleted')
+  if (await removeVoice(voice.id)) {
     await fetchVoices()
-  } catch (error) {
-    showErrorsDefault(error)
   }
 }
 
@@ -79,7 +64,7 @@ onMounted(() => {
     </div>
     <VDataTableServer
       class="a-datatable"
-      :loading="loading"
+      :loading="listLoading"
       :headers="[
         { title: t('coreDam.voice.model.discriminator'), key: 'discriminator', sortable: false },
         { title: t('coreDam.voice.model.externalVoiceId'), key: 'externalVoiceId', sortable: false },
@@ -88,7 +73,7 @@ onMounted(() => {
         { title: t('coreDam.voice.model.modifiedAt'), key: 'modifiedAt', sortable: false },
         { title: '', key: 'actions', sortable: false, align: 'end' },
       ]"
-      :items="voices"
+      :items="listItems"
       :items-length="pagination.totalCount"
       item-value="id"
       @click:row="onRowClick"

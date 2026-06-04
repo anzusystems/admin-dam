@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import useVuelidate from '@vuelidate/core'
-import { ADialogToolbar, cloneDeep, useAlerts } from '@anzusystems/common-admin'
-import { updateVoice } from '@/services/api/coreDam/voiceApi'
+import { ADialogToolbar, cloneDeep } from '@anzusystems/common-admin'
 import type { Voice } from '@/types/coreDam/Voice'
+import { useVoiceEditActions } from '@/views/coreDam/voiceFamily/composables/voiceActions'
 import VoiceManage from '@/views/coreDam/voiceFamily/components/VoiceManage.vue'
 
 const props = withDefaults(
@@ -21,10 +20,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { showRecordWas, showErrorsDefault, showValidationError } = useAlerts()
-const v$ = useVuelidate()
+const { saveButtonLoading, onUpdate } = useVoiceEditActions()
 
-const saveButtonLoading = ref(false)
 const localVoice = ref<Voice | null>(null)
 
 watch(
@@ -41,26 +38,12 @@ const onCancel = () => {
   emit('update:modelValue', false)
 }
 
-const onConfirm = async () => {
+const onConfirm = () => {
   if (!localVoice.value) return
-
-  saveButtonLoading.value = true
-  try {
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      saveButtonLoading.value = false
-      return
-    }
-    await updateVoice(localVoice.value.id, localVoice.value)
-    showRecordWas('updated')
+  onUpdate(localVoice.value, () => {
     emit('update:modelValue', false)
     emit('onSuccess')
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    saveButtonLoading.value = false
-  }
+  })
 }
 </script>
 

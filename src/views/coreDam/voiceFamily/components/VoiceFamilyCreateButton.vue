@@ -11,10 +11,11 @@ import {
 } from '@anzusystems/common-admin'
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import { createVoiceFamily, ENTITY } from '@/services/api/coreDam/voiceFamilyApi'
+import { ENTITY } from '@/services/api/coreDam/voiceFamilyApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { useVoiceFamilyFactory } from '@/model/coreDam/factory/VoiceFamilyFactory'
-import type { VoiceFamily, VoiceFamilyCreate } from '@/types/coreDam/VoiceFamily'
+import type { VoiceFamily } from '@/types/coreDam/VoiceFamily'
+import { useVoiceFamilyCreateActions } from '@/views/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyValidation } from '@/views/coreDam/voiceFamily/composables/voiceFamilyValidation'
 import { useVoiceDiscriminator } from '@/model/coreDam/valueObject/VoiceDiscriminator'
 import { useLanguage } from '@/model/coreDam/valueObject/Language'
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const { createDefault } = useVoiceFamilyFactory()
+const { createVoiceFamily } = useVoiceFamilyCreateActions()
 const voiceFamily = ref<VoiceFamily>(createDefault(currentExtSystemId.value))
 const dialog = ref(false)
 
@@ -48,18 +50,7 @@ const onOpen = () => {
   voiceFamily.value = createDefault(currentExtSystemId.value)
 }
 
-const create = async () => {
-  const payload: VoiceFamilyCreate = {
-    extSystem: voiceFamily.value.extSystem,
-    slug: voiceFamily.value.slug,
-    displayName: voiceFamily.value.displayName,
-    language: voiceFamily.value.language,
-    preferredProvider: voiceFamily.value.preferredProvider,
-    active: voiceFamily.value.active,
-    keywords: voiceFamily.value.keywords,
-  }
-  return await createVoiceFamily(payload)
-}
+const create = (): Promise<VoiceFamily> => createVoiceFamily(voiceFamily.value)
 </script>
 
 <template>

@@ -2,6 +2,7 @@ import type { DocId, FilterBag, IntegerId, Pagination, ValueObjectOption } from 
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
+  createVoiceFamily as apiCreateVoiceFamily,
   deleteVoiceFamily,
   fetchVoiceFamily,
   fetchVoiceFamilyListByExtSystem,
@@ -9,7 +10,7 @@ import {
   updateVoiceFamily,
 } from '@/services/api/coreDam/voiceFamilyApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { VoiceFamily, VoiceFamilyUpdate } from '@/types/coreDam/VoiceFamily'
+import type { VoiceFamily, VoiceFamilyCreate, VoiceFamilyUpdate } from '@/types/coreDam/VoiceFamily'
 import { storeToRefs } from 'pinia'
 import { useVoiceFamilyOneStore } from '@/stores/coreDam/voiceFamilyStore'
 import useVuelidate from '@vuelidate/core'
@@ -43,6 +44,26 @@ export const useVoiceFamilyListActions = () => {
     listLoading,
     listItems,
     fetchList,
+  }
+}
+
+export const useVoiceFamilyCreateActions = () => {
+  // Passed to ACreateDialog's call-create; the dialog owns loading + error handling.
+  const createVoiceFamily = (voiceFamily: VoiceFamily): Promise<VoiceFamily> => {
+    const payload: VoiceFamilyCreate = {
+      extSystem: voiceFamily.extSystem,
+      slug: voiceFamily.slug,
+      displayName: voiceFamily.displayName,
+      language: voiceFamily.language,
+      preferredProvider: voiceFamily.preferredProvider,
+      active: voiceFamily.active,
+      keywords: voiceFamily.keywords,
+    }
+    return apiCreateVoiceFamily(payload)
+  }
+
+  return {
+    createVoiceFamily,
   }
 }
 

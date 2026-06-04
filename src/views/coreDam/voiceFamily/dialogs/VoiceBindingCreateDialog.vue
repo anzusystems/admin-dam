@@ -4,10 +4,10 @@ import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { ACreateDialog } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { createVoice } from '@/services/api/coreDam/voiceApi'
 import { useVoiceKindFactory } from '@/model/coreDam/factory/VoiceFactory'
 import type { Voice } from '@/types/coreDam/Voice'
 import { VoiceDiscriminator } from '@/types/coreDam/Voice'
+import { useVoiceCreateActions } from '@/views/coreDam/voiceFamily/composables/voiceActions'
 import VoiceManage from '@/views/coreDam/voiceFamily/components/VoiceManage.vue'
 
 const props = withDefaults(
@@ -28,6 +28,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { createVoiceKind } = useVoiceKindFactory()
+const { createVoice } = useVoiceCreateActions()
 const v$ = useVuelidate()
 
 const voice = ref<Voice | null>(null)

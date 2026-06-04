@@ -62,11 +62,10 @@ const refresh = async () => {
     if ((route.params.id as string) !== expectedId) return
     detail.value = data
     const voiceFamilyId = data?.ttsAsset?.voiceFamily
-    // Skip the debounced cache fetch once the family is already cached — otherwise every poll
-    // tick stalls for the full debounce window resolving an empty (nothing-to-fetch) batch.
+    // Skip re-priming the cache once the family is already loaded — avoids a redundant fetch each poll tick.
     if (voiceFamilyId && !isLoadedCachedVoiceFamily(voiceFamilyId)) {
       addToCachedVoiceFamilies([voiceFamilyId])
-      await fetchCachedVoiceFamilies()
+      fetchCachedVoiceFamilies()
     }
     if (!isInProgress()) pausePolling()
   } catch (error) {
@@ -89,14 +88,13 @@ onMounted(async () => {
 
     if (data) {
       addToCachedAssetLicences([data.assetLicence])
+      fetchCachedAssetLicences()
       addToCachedExtSystems([data.extSystemId])
-      if (data.ttsAsset?.voiceFamily) addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
-
-      await Promise.all([
-        fetchCachedAssetLicences(),
-        fetchCachedExtSystems(),
-        fetchCachedVoiceFamilies(),
-      ])
+      fetchCachedExtSystems()
+      if (data.ttsAsset?.voiceFamily) {
+        addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
+        fetchCachedVoiceFamilies()
+      }
 
       if (isInProgress()) resumePolling()
     }
