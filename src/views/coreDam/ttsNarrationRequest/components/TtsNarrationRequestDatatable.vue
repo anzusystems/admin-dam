@@ -132,10 +132,12 @@ defineExpose({
           <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_CANCEL">
             <VBtn
               v-if="isCancellableRequest(item)"
-              variant="text"
+              class="ml-1"
               icon
-              size="small"
-              class="mx-1"
+              :active="false"
+              size="x-small"
+              variant="text"
+              data-cy="table-cancel-request"
               @click.stop="openCancel(item.id)"
             >
               <VIcon icon="mdi-cancel" />

@@ -10,9 +10,7 @@
   },
   "filter": {
     "voiceFamilySlug": "Voice family slug",
-    "status": "Status",
-    "startedAtFrom": "Started from",
-    "startedAtUntil": "Started until"
+    "status": "Status"
   },
   "status": {
     "waiting": "Waiting",

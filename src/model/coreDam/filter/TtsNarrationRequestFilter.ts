@@ -12,22 +12,6 @@ const filter = reactive({
   voiceFamilySlug: {
     ...makeFilter({ name: 'voiceFamilySlug', titleT: 'coreDam.ttsNarrationRequest.filter.voiceFamilySlug' }),
   },
-  startedAtFrom: {
-    ...makeFilter({
-      name: 'startedAtFrom',
-      field: 'startedAt',
-      variant: 'gte',
-      titleT: 'coreDam.ttsNarrationRequest.filter.startedAtFrom',
-    }),
-  },
-  startedAtUntil: {
-    ...makeFilter({
-      name: 'startedAtUntil',
-      field: 'startedAt',
-      variant: 'lte',
-      titleT: 'coreDam.ttsNarrationRequest.filter.startedAtUntil',
-    }),
-  },
 })
 
 export function useTtsNarrationRequestListFilter() {

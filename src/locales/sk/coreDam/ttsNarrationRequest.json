@@ -10,9 +10,7 @@
   },
   "filter": {
     "voiceFamilySlug": "Slug hlasovej rodiny",
-    "status": "Stav",
-    "startedAtFrom": "Začaté od",
-    "startedAtUntil": "Začaté do"
+    "status": "Stav"
   },
   "status": {
     "waiting": "Čaká",

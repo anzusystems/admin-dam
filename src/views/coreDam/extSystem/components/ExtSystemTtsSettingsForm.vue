@@ -83,25 +83,21 @@ const clearEpilog = () => {
             />
           </ARow>
           <ARow>
-            <div class="d-flex align-center ga-2">
-              <div class="text-body-2 font-weight-medium mr-2">
-                {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAsset') }}:
-              </div>
+            <div class="font-weight-bold mb-1">
+              {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAsset') }}
+            </div>
+            <div class="d-flex align-center">
               <AssetChip
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
                 :id="extSystem.ttsFreeAudioEpilogAsset"
               />
-              <div
-                v-else
-                class="text-medium-emphasis text-body-2"
-              >
-                {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAssetEmpty') }}
-              </div>
+              <span v-else>-</span>
               <VBtn
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
                 icon="mdi-trash-can-outline"
                 variant="text"
                 size="small"
+                class="ml-2"
                 data-cy="ext-system-tts-free-audio-epilog-asset-clear"
                 @click.stop="clearEpilog"
               />
@@ -118,6 +114,7 @@ const clearEpilog = () => {
                     v-bind="assetSelectProps"
                     variant="text"
                     size="small"
+                    class="ml-2"
                     data-cy="ext-system-tts-free-audio-epilog-asset-select"
                   >
                     {{ t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAssetSelect') }}
