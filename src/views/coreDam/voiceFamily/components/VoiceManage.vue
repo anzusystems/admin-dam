@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
@@ -33,19 +33,13 @@ const { createVoiceKind } = useVoiceKindFactory()
 
 const isEdit = computed(() => voice.value.id !== '')
 
-// Local UI mirror of the (readonly) discriminator field — the provider toggle the user edits.
-// One-time read of the model is intentional; the watch below keeps it in sync afterwards.
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
-const discriminator = ref<VoiceDiscriminatorType>(voice.value.discriminator)
-watch(
-  () => voice.value.discriminator,
-  (newVal) => {
-    discriminator.value = newVal
-  }
-)
-watch(discriminator, (newKind, oldKind) => {
-  if (newKind === oldKind || isEdit.value) return
-  voice.value = createVoiceKind(newKind, voice.value.voiceFamily)
+// Provider toggle: switching kind replaces the voice with a fresh one of that kind (create only).
+const discriminator = computed<VoiceDiscriminatorType>({
+  get: () => voice.value.discriminator,
+  set: (newKind) => {
+    if (isEdit.value || newKind === voice.value.discriminator) return
+    voice.value = createVoiceKind(newKind, voice.value.voiceFamily)
+  },
 })
 
 // Cast the discriminated union to the concrete kind for each provider form's v-model.

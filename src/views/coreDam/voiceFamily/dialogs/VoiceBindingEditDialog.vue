@@ -59,10 +59,7 @@ const onConfirm = () => {
         {{ t('coreDam.voice.meta.edit') }}
       </ADialogToolbar>
       <VCardText>
-        <VoiceManage
-          :voice="localVoice"
-          @update:voice="localVoice = $event"
-        />
+        <VoiceManage v-model:voice="localVoice" />
       </VCardText>
       <VCardActions>
         <VSpacer />
