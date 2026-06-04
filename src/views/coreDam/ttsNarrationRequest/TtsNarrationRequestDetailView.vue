@@ -80,7 +80,13 @@ onMounted(fetchDetail)
               v-if="detail.chunkProgress.failed > 0"
               class="text-error ml-1"
             >
-              {{ t('coreDam.ttsNarrationRequest.detail.fields.chunksFailed', { count: detail.chunkProgress.failed }) }}
+              {{
+                t(
+                  'coreDam.ttsNarrationRequest.detail.fields.chunksFailed',
+                  { count: detail.chunkProgress.failed },
+                  detail.chunkProgress.failed
+                )
+              }}
             </span>
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.mode')">
