@@ -19,9 +19,14 @@ export function useAssetDetailSidebarTtsActions() {
       const data = await fetchTtsAsset(assetId)
       detail.value = data
       if (!data) return
-      if (data.lastRequestId) addToCachedTtsNarrationRequests([data.lastRequestId])
-      if (data.tts?.voiceFamily) addToCachedVoiceFamilies([data.tts.voiceFamily])
-      await Promise.all([fetchCachedVoiceFamilies(), fetchCachedTtsNarrationRequests()])
+      if (data.lastRequestId) {
+        addToCachedTtsNarrationRequests([data.lastRequestId])
+        fetchCachedTtsNarrationRequests()
+      }
+      if (data.tts?.voiceFamily) {
+        addToCachedVoiceFamilies([data.tts.voiceFamily])
+        fetchCachedVoiceFamilies()
+      }
     } catch (error) {
       showErrorsDefault(error)
     } finally {
