@@ -66,8 +66,16 @@ export interface TtsNarrationRequest {
   modifiedBy: IntegerIdNullable
 }
 
+// Derived per-chunk synthesis progress; null for single-run (non-chunked) requests.
+export interface TtsChunkProgress {
+  total: number
+  done: number
+  failed: number
+}
+
 export interface TtsNarrationRequestDetail extends TtsNarrationRequest {
   ttsAsset: TtsAsset | null
+  chunkProgress: TtsChunkProgress | null
 }
 
 // Mirrors the BE TtsSynthesizeRequestDto. `assetLicence` is nullable for the form (the user picks

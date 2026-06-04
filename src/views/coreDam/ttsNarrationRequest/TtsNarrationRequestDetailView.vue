@@ -71,6 +71,18 @@ onMounted(fetchDetail)
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.status')">
             <TtsRequestStatusChip :status="detail.status" />
           </ARow>
+          <ARow
+            v-if="detail.chunkProgress"
+            :title="t('coreDam.ttsNarrationRequest.detail.fields.chunkProgress')"
+          >
+            {{ detail.chunkProgress.done }} / {{ detail.chunkProgress.total }}
+            <span
+              v-if="detail.chunkProgress.failed > 0"
+              class="text-error ml-1"
+            >
+              {{ t('coreDam.ttsNarrationRequest.detail.fields.chunksFailed', { count: detail.chunkProgress.failed }) }}
+            </span>
+          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.mode')">
             <TtsRequestModeChip :mode="detail.mode" />
           </ARow>

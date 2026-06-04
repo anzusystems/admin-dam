@@ -54,6 +54,8 @@
     "fields": {
       "id": "ID",
       "status": "Status",
+      "chunkProgress": "Chunks (done / total)",
+      "chunksFailed": "{count} failed",
       "mode": "Mode",
       "voiceFamilySlug": "Voice family",
       "title": "Title",

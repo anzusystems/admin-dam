@@ -54,6 +54,8 @@
     "fields": {
       "id": "ID",
       "status": "Stav",
+      "chunkProgress": "Chunky (dokončené / spolu)",
+      "chunksFailed": "{count} zlyhalo",
       "mode": "Mód",
       "voiceFamilySlug": "Hlasová rodina",
       "title": "Nadpis",
