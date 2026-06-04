@@ -1,7 +1,8 @@
 import type { DocId, FilterBag, IntegerId, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { makeFilterHelper, useAlerts, usePagination } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
+  ENTITY,
   createVoiceFamily as apiCreateVoiceFamily,
   deleteVoiceFamily,
   fetchVoiceFamily,
@@ -9,6 +10,7 @@ import {
   fetchVoiceFamilyListByIds,
   updateVoiceFamily,
 } from '@/services/api/coreDam/voiceFamilyApi'
+import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import type { VoiceFamily, VoiceFamilyCreate, VoiceFamilyUpdate } from '@/types/coreDam/VoiceFamily'
 import { storeToRefs } from 'pinia'
@@ -18,6 +20,8 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+const makeFilter = makeFilterHelper(SYSTEM_CORE_DAM, ENTITY)
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
@@ -198,5 +202,47 @@ export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => Inte
   return {
     fetchItems,
     fetchItemsByIds,
+  }
+}
+
+// Slug-valued voice-family options for a RemoteAutocomplete (the synthesize request carries the slug).
+export const useVoiceFamilySlugSelectActions = (extSystemId: IntegerId | (() => IntegerId)) => {
+  const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
+
+  const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
+    try {
+      const items = await fetchVoiceFamilyListByExtSystem(resolveExtSystemId(), pagination, filterBag)
+
+      return <ValueObjectOption<string>[]>items.map((voiceFamily: VoiceFamily) => ({
+        title: voiceFamily.displayName,
+        value: voiceFamily.slug,
+      }))
+    } catch (error) {
+      showErrorsDefault(error)
+      return []
+    }
+  }
+
+  // Resolves the currently-selected slug(s) — filter server-side by slug instead of loading all.
+  const fetchItemsBySlugs = async (slugs: string[]) => {
+    if (slugs.length === 0) return []
+    try {
+      const slugFilter = makeFilter({ name: 'slug', variant: 'in' })
+      slugFilter.model = slugs
+      const items = await fetchVoiceFamilyListByExtSystem(resolveExtSystemId(), usePagination(), { slug: slugFilter })
+
+      return <ValueObjectOption<string>[]>items.map((voiceFamily: VoiceFamily) => ({
+        title: voiceFamily.displayName,
+        value: voiceFamily.slug,
+      }))
+    } catch (error) {
+      showErrorsDefault(error)
+      return []
+    }
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds: fetchItemsBySlugs,
   }
 }

@@ -49,9 +49,6 @@
     "title": "Zrušiť čakajúci TTS request",
     "description": "Požiadať o zrušenie čakajúceho audio-narration requestu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné."
   },
-  "voiceFamilySelect": {
-    "systemDefault": "Systémový predvolený hlas"
-  },
   "detail": {
     "requestSection": "Request",
     "ttsAssetSection": "TTS Asset",

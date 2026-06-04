@@ -1,16 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  AFormValueObjectOptionsSelect,
-  type IntegerId,
-  type IntegerIdNullable,
-  usePagination,
-  useAlerts,
-  type ValueObjectOption,
-} from '@anzusystems/common-admin'
-import { fetchVoiceFamilyListByExtSystem } from '@/services/api/coreDam/voiceFamilyApi'
-import type { VoiceFamily } from '@/types/coreDam/VoiceFamily'
+import { AFormRemoteAutocomplete, type IntegerIdNullable } from '@anzusystems/common-admin'
+import { useVoiceFamilySlugSelectActions } from '@/views/coreDam/voiceFamily/composables/voiceFamilyActions'
+import { useVoiceFamilyFilter } from '@/model/coreDam/filter/VoiceFamilyFilter'
 
 const props = withDefaults(
   defineProps<{
@@ -31,73 +24,31 @@ const props = withDefaults(
 const modelValue = defineModel<string | null>({ required: true })
 
 const { t } = useI18n()
-const { showErrorsDefault } = useAlerts()
+const { fetchItems, fetchItemsByIds } = useVoiceFamilySlugSelectActions(() => props.extSystemId ?? 0)
+const innerFilter = useVoiceFamilyFilter()
 
-const loading = ref(false)
-const voiceFamilies = ref<VoiceFamily[]>([])
-let loadedForExtSystemId: IntegerId | null = null
-let voiceFamilySeq = 0
-
-const loadForExtSystem = async (extSystemId: IntegerId) => {
-  if (loadedForExtSystemId === extSystemId) return
-  const seq = ++voiceFamilySeq
-  loading.value = true
-  try {
-    const pagination = usePagination('slug')
-    pagination.rowsPerPage = 200
-    const result = await fetchVoiceFamilyListByExtSystem(extSystemId, pagination, {})
-    if (seq !== voiceFamilySeq) return
-    voiceFamilies.value = result
-    loadedForExtSystemId = extSystemId
-  } catch (error) {
-    if (seq !== voiceFamilySeq) return
-    showErrorsDefault(error)
-  } finally {
-    if (seq === voiceFamilySeq) loading.value = false
-  }
-}
-
+// Ext-system changed to a different system — the current selection (a slug of the old system) is stale.
 watch(
   () => props.extSystemId,
   (newValue, oldValue) => {
-    if (newValue === null) {
-      // Invalidate any in-flight fetch so its late response can't write stale data back.
-      voiceFamilySeq++
-      voiceFamilies.value = []
-      loadedForExtSystemId = null
-      modelValue.value = null
-      return
-    }
-    // Ext-system changed to a different system — the current selection is stale.
-    if (oldValue !== undefined && oldValue !== newValue) {
-      modelValue.value = null
-    }
-    loadForExtSystem(newValue)
-  },
-  { immediate: true }
-)
-
-const items = computed<ValueObjectOption<string | null>[]>(() => {
-  const result: ValueObjectOption<string | null>[] = []
-  if (props.allowNull) {
-    result.push({ title: t('coreDam.ttsNarrationRequest.voiceFamilySelect.systemDefault'), value: null })
+    if (oldValue !== undefined && oldValue !== newValue) modelValue.value = null
   }
-  voiceFamilies.value.forEach((family) => {
-    result.push({ title: `${family.slug} — ${family.displayName}`, value: family.slug })
-  })
-  return result
-})
+)
 
 const disabledComputed = computed(() => props.disabled || props.extSystemId === null)
 </script>
 
 <template>
-  <AFormValueObjectOptionsSelect
+  <AFormRemoteAutocomplete
     v-model="modelValue"
-    :items="items"
     :label="label ?? t('coreDam.ttsNarrationRequest.model.voiceFamilySlug')"
-    :loading="loading"
+    :fetch-items="fetchItems"
+    :fetch-items-by-ids="fetchItemsByIds"
+    :inner-filter="innerFilter"
+    :clearable="allowNull"
     :disabled="disabledComputed"
+    :disable-init-fetch="extSystemId === null"
+    filter-by-field="displayName"
     :data-cy="dataCy"
   />
 </template>

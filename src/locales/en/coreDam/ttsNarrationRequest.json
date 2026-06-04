@@ -49,9 +49,6 @@
     "title": "Cancel pending TTS request",
     "description": "Request cancellation of a pending audio narration request. If the worker has already swapped the result, the cancel may not take effect."
   },
-  "voiceFamilySelect": {
-    "systemDefault": "System default voice"
-  },
   "detail": {
     "requestSection": "Request",
     "ttsAssetSection": "TTS Asset",
