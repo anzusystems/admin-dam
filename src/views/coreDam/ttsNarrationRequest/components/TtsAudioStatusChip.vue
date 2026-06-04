@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
-import type { TtsAudioStatus } from '@/types/coreDam/TtsNarrationRequest'
+import type { TtsAudioStatusType } from '@/types/coreDam/TtsNarrationRequest'
 import { useTtsAudioStatus } from '@/model/coreDam/valueObject/TtsAudioStatus'
 
 const props = withDefaults(
   defineProps<{
-    status: TtsAudioStatus
+    status: TtsAudioStatusType
   }>(),
   {}
 )

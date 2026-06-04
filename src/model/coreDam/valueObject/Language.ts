@@ -11,12 +11,7 @@ export function useLanguage() {
     { value: Language.English, title: t('coreDam.voiceFamily.language.en') },
   ])
 
-  const getLanguageOption = (value: LanguageType) => {
-    return valueObjectOptions.value.find((item) => item.value === value)
-  }
-
   return {
     valueObjectOptions,
-    getLanguageOption,
   }
 }

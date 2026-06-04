@@ -148,12 +148,8 @@
       "noEntry": "Pre tento asset nie sú TTS údaje.",
       "status": "Stav",
       "voiceFamily": "Rodina hlasov",
-      "voice": "Hlas",
-      "assetLicence": "Licencia",
-      "extRef": "Externý odkaz",
+      "provider": "Poskytovateľ",
       "failureReason": "Dôvod zlyhania",
-      "generatedAt": "Vygenerované",
-      "lastRegeneratedAt": "Posledne regenerované",
       "createdAt": "Vytvorené",
       "sourceRequest": "Zdrojový request"
     },

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
-import type { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
+import type { TtsRequestStatusType } from '@/types/coreDam/TtsNarrationRequest'
 import { useTtsRequestStatus } from '@/model/coreDam/valueObject/TtsRequestStatus'
 
 const props = withDefaults(
   defineProps<{
-    status: TtsRequestStatus
+    status: TtsRequestStatusType
   }>(),
   {}
 )

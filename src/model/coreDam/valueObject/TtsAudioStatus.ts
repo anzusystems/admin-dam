@@ -1,12 +1,12 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
-import { TtsAudioStatus } from '@/types/coreDam/TtsNarrationRequest'
+import { TtsAudioStatus, type TtsAudioStatusType } from '@/types/coreDam/TtsNarrationRequest'
 
 export function useTtsAudioStatus() {
   const { t } = useI18n()
 
-  const ttsAudioStatusOptions = ref<ValueObjectOption<TtsAudioStatus>[]>([
+  const ttsAudioStatusOptions = ref<ValueObjectOption<TtsAudioStatusType>[]>([
     { value: TtsAudioStatus.Active, title: t('coreDam.ttsNarrationRequest.assetStatus.active'), color: 'success' },
     {
       value: TtsAudioStatus.Superseding,
@@ -26,7 +26,7 @@ export function useTtsAudioStatus() {
     },
   ])
 
-  const getTtsAudioStatusOption = (value: TtsAudioStatus) => {
+  const getTtsAudioStatusOption = (value: TtsAudioStatusType) => {
     return ttsAudioStatusOptions.value.find((item) => item.value === value)
   }
 

@@ -13,7 +13,7 @@ import {
 } from '@/types/coreDam/Voice'
 
 const createBaseVoice = (voiceFamily: DocId) => ({
-  id: '' as DocId,
+  id: '',
   voiceFamily,
   externalVoiceId: '',
   main: false,

@@ -8,7 +8,7 @@ export const TtsAudioStatus = {
   Failed: 'failed',
   Unpublished: 'unpublished',
 } as const
-export type TtsAudioStatus = (typeof TtsAudioStatus)[keyof typeof TtsAudioStatus]
+export type TtsAudioStatusType = (typeof TtsAudioStatus)[keyof typeof TtsAudioStatus]
 
 /**
  * Snapshot of the generation moment for a TTS-produced Asset. Mirrors the bundle entity shape
@@ -22,7 +22,7 @@ export interface TtsAsset {
   externalVoiceId: string
   sourceTextHash: string
   sourceTextSnapshot: string
-  status: TtsAudioStatus
+  status: TtsAudioStatusType
   failureReason: string | null
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
@@ -32,7 +32,7 @@ export const TtsRequestMode = {
   Initial: 'initial',
   Regenerate: 'regenerate',
 } as const
-export type TtsRequestMode = (typeof TtsRequestMode)[keyof typeof TtsRequestMode]
+export type TtsRequestModeType = (typeof TtsRequestMode)[keyof typeof TtsRequestMode]
 
 export const TtsRequestStatus = {
   Waiting: 'waiting',
@@ -41,7 +41,7 @@ export const TtsRequestStatus = {
   Failed: 'failed',
   Cancelled: 'cancelled',
 } as const
-export type TtsRequestStatus = (typeof TtsRequestStatus)[keyof typeof TtsRequestStatus]
+export type TtsRequestStatusType = (typeof TtsRequestStatus)[keyof typeof TtsRequestStatus]
 
 export interface TtsNarrationRequestMinimal {
   id: DocId
@@ -50,8 +50,8 @@ export interface TtsNarrationRequestMinimal {
 
 export interface TtsNarrationRequest {
   id: DocId
-  status: TtsRequestStatus
-  mode: TtsRequestMode
+  status: TtsRequestStatusType
+  mode: TtsRequestModeType
   startedAt: DatetimeUTCNullable
   failureReason: string | null
   assetId: DocIdNullable
@@ -59,16 +59,11 @@ export interface TtsNarrationRequest {
   assetLicence: IntegerId
   voiceFamilySlug: string | null
   title: string | null
-  description: string | null
-  keywords: string[]
-  authors: string[]
   cancelRequested: boolean
-  podcastIds: DocId[]
   createdAt: DatetimeUTCNullable
   modifiedAt: DatetimeUTCNullable
   createdBy: IntegerIdNullable
   modifiedBy: IntegerIdNullable
-  sourceText: string | null
 }
 
 export interface TtsNarrationRequestDetail extends TtsNarrationRequest {

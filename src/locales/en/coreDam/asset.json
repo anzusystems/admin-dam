@@ -147,12 +147,8 @@
       "noEntry": "No TTS metadata for this asset.",
       "status": "Status",
       "voiceFamily": "Voice family",
-      "voice": "Voice",
-      "assetLicence": "Asset licence",
-      "extRef": "External ref",
+      "provider": "Provider",
       "failureReason": "Failure reason",
-      "generatedAt": "Generated at",
-      "lastRegeneratedAt": "Last regenerated at",
       "createdAt": "Created at",
       "sourceRequest": "Source request"
     },

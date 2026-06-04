@@ -112,13 +112,15 @@ const isTtsAudio = computed(() => asset.value?.assetFileProperties?.ttsAudio ===
         >
           {{ t('coreDam.asset.detail.tabs.podcast') }}
         </VTab>
-        <VTab
-          v-if="isAudio && isTtsAudio"
-          :value="AssetDetailTab.Tts"
-          data-cy="button-tts"
-        >
-          {{ t('coreDam.asset.detail.tabs.tts') }}
-        </VTab>
+        <Acl :permission="ACL.DAM_TTS_ASSET_READ">
+          <VTab
+            v-if="isAudio && isTtsAudio"
+            :value="AssetDetailTab.Tts"
+            data-cy="button-tts"
+          >
+            {{ t('coreDam.asset.detail.tabs.tts') }}
+          </VTab>
+        </Acl>
         <VTab
           v-if="isVideo"
           :value="AssetDetailTab.VideoShow"
@@ -187,12 +189,14 @@ const isTtsAudio = computed(() => asset.value?.assetFileProperties?.ttsAudio ===
             :is-active="activeTab === AssetDetailTab.Podcast"
           />
         </div>
-        <div
-          v-if="isAudio && isTtsAudio && activeTab === AssetDetailTab.Tts"
-          class="py-2"
-        >
-          <AssetDetailSidebarTts :asset-id="assetId" />
-        </div>
+        <Acl :permission="ACL.DAM_TTS_ASSET_READ">
+          <div
+            v-if="isAudio && isTtsAudio && activeTab === AssetDetailTab.Tts"
+            class="py-2"
+          >
+            <AssetDetailSidebarTts :asset-id="assetId" />
+          </div>
+        </Acl>
         <div
           v-if="isVideo && activeTab === AssetDetailTab.VideoShow"
           class="py-2"

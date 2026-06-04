@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
-import type { TtsRequestMode } from '@/types/coreDam/TtsNarrationRequest'
+import type { TtsRequestModeType } from '@/types/coreDam/TtsNarrationRequest'
 import { useTtsRequestMode } from '@/model/coreDam/valueObject/TtsRequestMode'
 
 const props = withDefaults(
   defineProps<{
-    mode: TtsRequestMode
+    mode: TtsRequestModeType
   }>(),
   {}
 )

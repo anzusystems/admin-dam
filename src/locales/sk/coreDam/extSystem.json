@@ -17,7 +17,6 @@
     "defaultVoiceFamily": "Predvolená hlasová rodina",
     "autoKeyword": "Automatické kľúčové slovo (každé TTS audio)",
     "ttsFreeAudioEpilogAsset": "TTS free audio Epilóg",
-    "ttsFreeAudioEpilogAssetEmpty": "Nenastavené",
     "ttsFreeAudioEpilogAssetSelect": "Vybrať audio asset",
     "modes": {
       "elevenlabs": "ElevenLabs",

@@ -6,7 +6,7 @@ import type {
   TtsSynthesizeRequestDto,
   TtsSynthesizeResponse,
 } from '@/types/coreDam/TtsNarrationRequest'
-import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
+import { TtsRequestStatus, type TtsRequestStatusType } from '@/types/coreDam/TtsNarrationRequest'
 import {
   cancelTtsNarrationRequest,
   fetchTtsNarrationRequest,
@@ -20,7 +20,7 @@ import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composab
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
-const CANCELLABLE_STATUSES: ReadonlyArray<TtsRequestStatus> = [
+const CANCELLABLE_STATUSES: ReadonlyArray<TtsRequestStatusType> = [
   TtsRequestStatus.Waiting,
   TtsRequestStatus.Processing,
 ]

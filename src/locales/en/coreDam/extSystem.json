@@ -17,7 +17,6 @@
     "defaultVoiceFamily": "Default Voice Family",
     "autoKeyword": "Auto keyword (every TTS audio)",
     "ttsFreeAudioEpilogAsset": "TTS free audio Epilogue",
-    "ttsFreeAudioEpilogAssetEmpty": "Not set",
     "ttsFreeAudioEpilogAssetSelect": "Select audio asset",
     "modes": {
       "elevenlabs": "ElevenLabs",

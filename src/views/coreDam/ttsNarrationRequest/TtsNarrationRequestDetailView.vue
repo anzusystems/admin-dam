@@ -19,7 +19,6 @@ import {
 } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import TtsCancelRequestDialog from '@/views/coreDam/ttsNarrationRequest/dialogs/TtsCancelRequestDialog.vue'
 import { ACL } from '@/composables/auth/auth'
-import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 import ActionbarWrapper from '@/components/wrappers/ActionbarWrapper.vue'
 import TtsRequestStatusChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import TtsRequestModeChip from '@/views/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
@@ -130,7 +129,7 @@ onMounted(fetchDetail)
             <AssetChip :id="detail.ttsAsset.assetId" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetDiscriminator')">
-            <VoiceDiscriminatorChip :discriminator="(detail.ttsAsset.provider as VoiceDiscriminatorType)" />
+            <VoiceDiscriminatorChip :discriminator="detail.ttsAsset.provider" />
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetVoiceFamilyId')">
             <CachedVoiceFamilyChip :id="detail.ttsAsset.voiceFamily" />

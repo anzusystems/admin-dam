@@ -1,7 +1,7 @@
 import { damClient } from '@/services/api/clients/damClient'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type { DocId, FilterBag, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiDeleteOne, apiFetchList, apiFetchOne, apiUpdateOne } from '@anzusystems/common-admin'
+import { apiCreateOne, apiDeleteOne, apiFetchList, apiUpdateOne } from '@anzusystems/common-admin'
 import type { Voice, VoiceDiscriminatorType } from '@/types/coreDam/Voice'
 import { RESOURCE_VOICE, VoiceDiscriminator } from '@/types/coreDam/Voice'
 
@@ -30,9 +30,6 @@ export const fetchVoiceListByFamily = (voiceFamilyId: DocId, pagination: Paginat
     SYSTEM_CORE_DAM,
     ENTITY,
   )
-
-export const fetchVoice = (id: DocId) =>
-  apiFetchOne<Voice>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
 export const createVoice = (data: Voice) =>
   apiCreateOne<Voice>(damClient, data, writeEndpoint(data.discriminator), {}, SYSTEM_CORE_DAM, ENTITY)

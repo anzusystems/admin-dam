@@ -12,12 +12,7 @@ export function useGoogleSsmlGender() {
     { value: GoogleSsmlGender.Neutral, title: t('coreDam.voice.ssmlGender.NEUTRAL') },
   ])
 
-  const getGoogleSsmlGenderOption = (value: GoogleSsmlGenderType) => {
-    return valueObjectOptions.value.find((item) => item.value === value)
-  }
-
   return {
     valueObjectOptions,
-    getGoogleSsmlGenderOption,
   }
 }

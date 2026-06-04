@@ -47,7 +47,7 @@ watch(() => props.assetId, (assetId) => fetchData(assetId), { immediate: true })
     <ARow :title="t('coreDam.asset.detail.tts.voiceFamily')">
       <CachedVoiceFamilyChip :id="detail.tts.voiceFamily" />
     </ARow>
-    <ARow :title="t('coreDam.asset.detail.tts.voice')">
+    <ARow :title="t('coreDam.asset.detail.tts.provider')">
       <VoiceDiscriminatorChip :discriminator="detail.tts.provider" />
     </ARow>
     <ARow

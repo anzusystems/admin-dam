@@ -91,7 +91,7 @@ const clearEpilog = () => {
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
                 :id="extSystem.ttsFreeAudioEpilogAsset"
               />
-              <span v-else>-</span>
+              <span v-else>—</span>
               <VBtn
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
                 icon="mdi-trash-can-outline"
