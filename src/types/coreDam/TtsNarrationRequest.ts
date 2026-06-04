@@ -80,12 +80,15 @@ export interface TtsNarrationRequestDetail extends TtsNarrationRequest {
   ttsAsset: TtsAsset | null
 }
 
-export interface TtsSynthesizeRequest {
+// Mirrors the BE TtsSynthesizeRequestDto. `assetLicence` is nullable for the form (the user picks
+// it); validation enforces it before send. extSystem is derived from the licence on the BE, so it
+// is not part of the payload — the dialog keeps it as a separate UI-only ref to scope the pickers.
+export interface TtsSynthesizeRequestDto {
   text: string
   title: string | null
   voiceFamilySlug: string | null
   podcasts: DocId[]
-  assetLicence: IntegerId
+  assetLicence: IntegerIdNullable
 }
 
 // /synthesize outcome: pending | duplicate (existingAssetId) | alreadyPending.

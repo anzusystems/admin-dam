@@ -19,11 +19,11 @@ import { ENTITY } from '@/services/api/coreDam/ttsNarrationRequestApi'
 import { useTtsNarrationRequestSynthesizeActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
   TTS_SYNTHESIZE_TEXT_MAX,
-  type TtsSynthesizeForm,
   useTtsNarrationRequestSynthesizeValidation,
 } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestValidation'
 import VoiceFamilySelect from '@/views/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue'
-import type { TtsSynthesizeResponse } from '@/types/coreDam/TtsNarrationRequest'
+import type { TtsSynthesizeRequestDto, TtsSynthesizeResponse } from '@/types/coreDam/TtsNarrationRequest'
+import { useTtsSynthesizeRequestDtoFactory } from '@/model/coreDam/factory/TtsSynthesizeRequestDtoFactory'
 
 withDefaults(
   defineProps<{
@@ -43,39 +43,29 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { synthesize } = useTtsNarrationRequestSynthesizeActions()
+const { createDefault } = useTtsSynthesizeRequestDtoFactory()
 
 const dialog = ref(false)
-const form = ref<TtsSynthesizeForm>({ text: '', title: '', podcasts: [] })
+const dto = ref<TtsSynthesizeRequestDto>(createDefault())
+// UI-only: scopes the licence/voice pickers, derived from the licence on the BE so it is not sent.
 const extSystemId = ref<IntegerIdNullable>(null)
-const voiceFamilySlug = ref<string | null>(null)
-const assetLicenceId = ref<IntegerIdNullable>(null)
 
-const { v$ } = useTtsNarrationRequestSynthesizeValidation(form, extSystemId, assetLicenceId)
+const { v$ } = useTtsNarrationRequestSynthesizeValidation(dto, extSystemId)
 
-// Ext system only scopes the licence/voice pickers — reset both when it changes.
+// Ext system change invalidates the scoped picks.
 watch(extSystemId, () => {
-  voiceFamilySlug.value = null
-  assetLicenceId.value = null
+  dto.value.voiceFamilySlug = null
+  dto.value.assetLicence = null
 })
 
 const onOpen = () => {
-  form.value = { text: '', title: '', podcasts: [] }
+  dto.value = createDefault()
   extSystemId.value = currentExtSystemId.value > 0 ? currentExtSystemId.value : null
-  voiceFamilySlug.value = null
-  assetLicenceId.value = null
 }
 
 const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
-  // assetLicence is guaranteed by validation (required + minValue); narrow for the typed payload.
-  if (assetLicenceId.value === null) throw new Error('Asset licence is required')
-  const trimmedTitle = form.value.title.trim()
-  return synthesize({
-    text: form.value.text,
-    title: trimmedTitle === '' ? null : trimmedTitle,
-    voiceFamilySlug: voiceFamilySlug.value,
-    podcasts: form.value.podcasts,
-    assetLicence: assetLicenceId.value,
-  })
+  const trimmedTitle = dto.value.title?.trim()
+  return synthesize({ ...dto.value, title: trimmedTitle ? trimmedTitle : null })
 }
 </script>
 
@@ -105,10 +95,10 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
       >
         <ARow>
           <AFormTextarea
-            v-model="form.text"
+            v-model="dto.text"
             :label="t('coreDam.ttsNarrationRequest.synthesize.text')"
             :placeholder="t('coreDam.ttsNarrationRequest.synthesize.textPlaceholder')"
-            :v="v$.form.text"
+            :v="v$.dto.text"
             :rows="10"
             :suggested-length="TTS_SYNTHESIZE_TEXT_MAX"
             required
@@ -127,7 +117,7 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
         </ARow>
         <ARow>
           <VoiceFamilySelect
-            v-model="voiceFamilySlug"
+            v-model="dto.voiceFamilySlug"
             :ext-system-id="extSystemId"
             allow-null
             data-cy="synthesize-voice-family"
@@ -135,11 +125,11 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
         </ARow>
         <ARow>
           <DamAssetLicenceRemoteAutocomplete
-            v-model="assetLicenceId"
+            v-model="dto.assetLicence"
             :client="damClient"
             :ext-system-id="extSystemId"
             :label="t('coreDam.ttsNarrationRequest.synthesize.assetLicence')"
-            :v="v$.assetLicenceId"
+            :v="v$.dto.assetLicence"
             :disabled="extSystemId === null"
             required
             data-cy="synthesize-asset-licence"
@@ -147,16 +137,16 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="form.title"
+            v-model="dto.title"
             :label="t('coreDam.ttsNarrationRequest.synthesize.assetTitle')"
             :placeholder="t('coreDam.ttsNarrationRequest.synthesize.assetTitlePlaceholder')"
-            :v="v$.form.title"
+            :v="v$.dto.title"
             data-cy="synthesize-asset-title"
           />
         </ARow>
         <ARow>
           <PodcastRemoteAutocomplete
-            v-model="form.podcasts"
+            v-model="dto.podcasts"
             :label="t('coreDam.ttsNarrationRequest.synthesize.podcasts')"
             multiple
             clearable

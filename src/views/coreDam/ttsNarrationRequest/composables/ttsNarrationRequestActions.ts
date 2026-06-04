@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { type DocId, type FilterBag, type Pagination, useAlerts } from '@anzusystems/common-admin'
-import type { TtsNarrationRequest, TtsSynthesizeRequest, TtsSynthesizeResponse } from '@/types/coreDam/TtsNarrationRequest'
+import type { TtsNarrationRequest, TtsSynthesizeRequestDto, TtsSynthesizeResponse } from '@/types/coreDam/TtsNarrationRequest'
 import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
 import {
   cancelTtsNarrationRequest,
@@ -48,7 +48,7 @@ export const useTtsNarrationRequestListActions = () => {
 
 export const useTtsNarrationRequestSynthesizeActions = () => {
   // Passed to ACreateDialog's call-create; the dialog owns loading + error/success handling.
-  const synthesize = (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse> =>
+  const synthesize = (payload: TtsSynthesizeRequestDto): Promise<TtsSynthesizeResponse> =>
     synthesizeTtsNarrationRequest(payload)
 
   return {

@@ -5,7 +5,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
   TtsNarrationRequest,
   TtsNarrationRequestDetail,
-  TtsSynthesizeRequest,
+  TtsSynthesizeRequestDto,
   TtsSynthesizeResponse,
 } from '@/types/coreDam/TtsNarrationRequest'
 
@@ -30,8 +30,8 @@ export const fetchTtsNarrationRequestListByExtSystem = (
 export const fetchTtsNarrationRequest = (id: DocId) =>
   apiFetchOne<TtsNarrationRequestDetail>(damClient, END_POINT + '/:id', { id }, SYSTEM_CORE_DAM, ENTITY)
 
-export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequest) =>
-  apiCreateOne<TtsSynthesizeRequest, TtsSynthesizeResponse>(
+export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequestDto) =>
+  apiCreateOne<TtsSynthesizeRequestDto, TtsSynthesizeResponse>(
     damClient,
     payload,
     END_POINT + '/synthesize',
