@@ -16,7 +16,6 @@
     "activeProviderMode": "Aktívny TTS poskytovateľ",
     "defaultVoiceFamily": "Predvolená hlasová rodina",
     "autoKeyword": "Automatické kľúčové slovo (každé TTS audio)",
-    "ttsDefaultAssetLicence": "Predvolená Asset licencia (TTS fallback)",
     "ttsFreeAudioEpilogAsset": "TTS free audio Epilóg",
     "ttsFreeAudioEpilogAssetEmpty": "Nenastavené",
     "ttsFreeAudioEpilogAssetSelect": "Vybrať audio asset",

@@ -14,11 +14,9 @@ import {
   ARow,
   ASystemEntityScope,
   type AssetSelectReturnData,
-  DamAssetLicenceRemoteAutocomplete,
   DamAssetType,
   type IntegerId,
 } from '@anzusystems/common-admin'
-import { damClient } from '@/services/api/clients/damClient'
 import VoiceFamilyRemoteAutocomplete from '@/views/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import { useKeywordSelectActions } from '@/views/coreDam/keyword/composables/keywordActions'
@@ -31,12 +29,7 @@ const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds }
 const keywordInnerFilter = useKeywordFilter()
 const { t } = useI18n()
 
-const epilogLicenceIds = computed<IntegerId[]>(() => {
-  if (extSystem.value.ttsDefaultAssetLicence) {
-    return [extSystem.value.ttsDefaultAssetLicence]
-  }
-  return [currentAssetLicenceId.value]
-})
+const epilogLicenceIds = computed<IntegerId[]>(() => [currentAssetLicenceId.value])
 
 const onEpilogSelect = (data: AssetSelectReturnData) => {
   if (data.type === 'assetId') {
@@ -87,16 +80,6 @@ const clearEpilog = () => {
               clearable
               filter-by-field="text"
               data-cy="ext-system-tts-auto-keyword"
-            />
-          </ARow>
-          <ARow>
-            <DamAssetLicenceRemoteAutocomplete
-              v-model="extSystem.ttsDefaultAssetLicence"
-              :client="damClient"
-              :ext-system-id="extSystem.id"
-              :label="t('coreDam.extSystem.ttsSettings.ttsDefaultAssetLicence')"
-              clearable
-              data-cy="ext-system-tts-default-asset-licence"
             />
           </ARow>
           <ARow>

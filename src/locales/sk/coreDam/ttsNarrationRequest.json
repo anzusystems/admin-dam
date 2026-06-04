@@ -42,8 +42,6 @@
     "textPlaceholder": "Vložte text článku tu…",
     "extSystem": "Externý systém",
     "assetLicence": "Asset licencia",
-    "assetLicencePlaceholder": "Nechaj prázdne pre default ext-systému",
-    "assetLicenceDefaultPlaceholder": "Default: {name}",
     "assetTitle": "Nadpis assetu",
     "assetTitlePlaceholder": "Voliteľné — bez vyplnenia sa vygeneruje automaticky",
     "podcasts": "Naviazať na podcasty",

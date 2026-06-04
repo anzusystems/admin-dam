@@ -16,7 +16,6 @@
     "activeProviderMode": "Active TTS Provider",
     "defaultVoiceFamily": "Default Voice Family",
     "autoKeyword": "Auto keyword (every TTS audio)",
-    "ttsDefaultAssetLicence": "Default Asset Licence (TTS fallback)",
     "ttsFreeAudioEpilogAsset": "TTS free audio Epilogue",
     "ttsFreeAudioEpilogAssetEmpty": "Not set",
     "ttsFreeAudioEpilogAssetSelect": "Select audio asset",

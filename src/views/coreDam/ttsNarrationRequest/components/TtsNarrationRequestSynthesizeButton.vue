@@ -17,8 +17,6 @@ import { damClient } from '@/services/api/clients/damClient'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/ttsNarrationRequestApi'
-import { fetchExtSystem } from '@/services/api/coreDam/extSystemApi'
-import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useTtsNarrationRequestSynthesizeActions } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
   TTS_SYNTHESIZE_TEXT_MAX,
@@ -43,7 +41,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { showValidationError, showErrorsDefault } = useAlerts()
+const { showValidationError } = useAlerts()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { synthesizeButtonLoading, synthesize } = useTtsNarrationRequestSynthesizeActions()
 
@@ -52,11 +50,8 @@ const form = ref<TtsSynthesizeForm>({ text: '', title: '', podcasts: [] })
 const extSystemId = ref<IntegerIdNullable>(null)
 const voiceFamilySlug = ref<string | null>(null)
 const assetLicenceId = ref<IntegerIdNullable>(null)
-const defaultAssetLicenceId = ref<IntegerIdNullable>(null)
-let extSystemSeq = 0
 
-const { v$ } = useTtsNarrationRequestSynthesizeValidation(form, extSystemId)
-const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
+const { v$ } = useTtsNarrationRequestSynthesizeValidation(form, extSystemId, assetLicenceId)
 
 // Rough heuristic: ~14 chars/sec average speech rate across Slavic languages.
 const CHARS_PER_SECOND = 14
@@ -70,32 +65,10 @@ const estimatedDurationLabel = computed(() => {
   return `${min}:${sec.toString().padStart(2, '0')}`
 })
 
-const assetLicencePlaceholder = computed(() => {
-  if (defaultAssetLicenceId.value === null) return undefined
-  const cached = getCachedAssetLicence(defaultAssetLicenceId.value)
-  return cached?.name
-    ? t('coreDam.ttsNarrationRequest.synthesize.assetLicenceDefaultPlaceholder', { name: cached.name })
-    : undefined
-})
-
-watch(extSystemId, async (newId) => {
+// Ext system only scopes the licence/voice pickers — reset both when it changes.
+watch(extSystemId, () => {
   voiceFamilySlug.value = null
   assetLicenceId.value = null
-  defaultAssetLicenceId.value = null
-  if (newId === null) return
-  const seq = ++extSystemSeq
-  try {
-    const ext = await fetchExtSystem(newId)
-    if (seq !== extSystemSeq) return
-    defaultAssetLicenceId.value = ext.ttsDefaultAssetLicence
-    if (ext.ttsDefaultAssetLicence !== null) {
-      addToCachedAssetLicences([ext.ttsDefaultAssetLicence])
-      await fetchCachedAssetLicences()
-    }
-  } catch (error) {
-    if (seq !== extSystemSeq) return
-    showErrorsDefault(error)
-  }
 })
 
 const open = () => {
@@ -103,7 +76,6 @@ const open = () => {
   extSystemId.value = currentExtSystemId.value > 0 ? currentExtSystemId.value : null
   voiceFamilySlug.value = null
   assetLicenceId.value = null
-  defaultAssetLicenceId.value = null
   v$.value.$reset()
   dialog.value = true
 }
@@ -114,9 +86,9 @@ const close = () => {
 
 const onConfirm = async () => {
   v$.value.$touch()
-  // $invalid already covers a missing ext system (required + minValue); the explicit null check
-  // additionally narrows extSystemId from IntegerIdNullable to IntegerId for the typed payload below.
-  if (v$.value.$invalid || extSystemId.value === null) {
+  // $invalid already covers a missing licence; the explicit null check narrows
+  // assetLicenceId from IntegerIdNullable to IntegerId for the typed payload below.
+  if (v$.value.$invalid || assetLicenceId.value === null) {
     showValidationError()
     return
   }
@@ -126,7 +98,6 @@ const onConfirm = async () => {
     title: trimmedTitle === '' ? null : trimmedTitle,
     voiceFamilySlug: voiceFamilySlug.value,
     podcasts: form.value.podcasts,
-    extSystem: extSystemId.value,
     assetLicence: assetLicenceId.value,
   })
   if (res !== null) {
@@ -204,9 +175,9 @@ const onConfirm = async () => {
               :client="damClient"
               :ext-system-id="extSystemId"
               :label="t('coreDam.ttsNarrationRequest.synthesize.assetLicence')"
-              :placeholder="assetLicencePlaceholder"
+              :v="v$.assetLicenceId"
               :disabled="extSystemId === null"
-              clearable
+              required
               data-cy="synthesize-asset-licence"
             />
           </ARow>

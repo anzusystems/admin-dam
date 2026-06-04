@@ -42,8 +42,6 @@
     "textPlaceholder": "Paste the article text here…",
     "extSystem": "Ext system",
     "assetLicence": "Asset licence",
-    "assetLicencePlaceholder": "Leave empty to use ext-system default",
-    "assetLicenceDefaultPlaceholder": "Default: {name}",
     "assetTitle": "Asset title",
     "assetTitlePlaceholder": "Optional — auto-generated when left empty",
     "podcasts": "Bind to podcasts",

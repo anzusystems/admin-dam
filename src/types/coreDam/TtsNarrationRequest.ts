@@ -85,8 +85,7 @@ export interface TtsSynthesizeRequest {
   title: string | null
   voiceFamilySlug: string | null
   podcasts: DocId[]
-  extSystem: IntegerId
-  assetLicence: IntegerIdNullable
+  assetLicence: IntegerId
 }
 
 // /synthesize outcome: pending | duplicate (existingAssetId) | alreadyPending.

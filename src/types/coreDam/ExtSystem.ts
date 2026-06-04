@@ -1,4 +1,4 @@
-import type { DamExtSystem, DocIdNullable, IntegerIdNullable } from '@anzusystems/common-admin'
+import type { DamExtSystem, DocIdNullable } from '@anzusystems/common-admin'
 import type { TtsActiveProviderModeType } from '@/types/coreDam/TtsActiveProviderMode'
 
 export interface ExtSystemTtsSettings {
@@ -9,6 +9,5 @@ export interface ExtSystemTtsSettings {
 
 export interface ExtSystem extends DamExtSystem {
   ttsSettings: ExtSystemTtsSettings
-  ttsDefaultAssetLicence: IntegerIdNullable
   ttsFreeAudioEpilogAsset: DocIdNullable
 }

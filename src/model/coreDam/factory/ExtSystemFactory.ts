@@ -22,7 +22,6 @@ export function useExtSystemFactory() {
         defaultVoiceFamilyId: null,
         autoKeywordId: null,
       },
-      ttsDefaultAssetLicence: null,
       ttsFreeAudioEpilogAsset: null,
     }
   }
