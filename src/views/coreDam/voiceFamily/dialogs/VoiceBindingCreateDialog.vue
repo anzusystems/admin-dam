@@ -31,17 +31,15 @@ const { createVoiceKind } = useVoiceKindFactory()
 const { createVoice } = useVoiceCreateActions()
 const v$ = useVuelidate()
 
-const voice = ref<Voice | null>(null)
+// Seeded with an empty family; @on-open sets the real voiceFamilyId before the form is shown.
+const voice = ref<Voice>(createVoiceKind(VoiceDiscriminator.Elevenlabs, ''))
 const dialog = ref(false)
 
 const onOpen = () => {
   voice.value = createVoiceKind(VoiceDiscriminator.Elevenlabs, props.voiceFamilyId)
 }
 
-const create = async () => {
-  if (!voice.value) throw new Error('Voice is not initialized')
-  return await createVoice(voice.value)
-}
+const create = (): Promise<Voice> => createVoice(voice.value)
 </script>
 
 <template>
@@ -61,11 +59,7 @@ const create = async () => {
       {{ t('coreDam.voice.meta.create') }}
     </template>
     <template #content>
-      <VoiceManage
-        v-if="voice"
-        :voice="voice"
-        @update:voice="voice = $event"
-      />
+      <VoiceManage v-model:voice="voice" />
     </template>
   </ACreateDialog>
 </template>

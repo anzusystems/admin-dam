@@ -43,11 +43,6 @@ export const TtsRequestStatus = {
 } as const
 export type TtsRequestStatus = (typeof TtsRequestStatus)[keyof typeof TtsRequestStatus]
 
-export const IN_PROGRESS_TTS_REQUEST_STATUSES: readonly TtsRequestStatus[] = [
-  TtsRequestStatus.Waiting,
-  TtsRequestStatus.Processing,
-]
-
 export interface TtsNarrationRequestMinimal {
   id: DocId
   displayText: string

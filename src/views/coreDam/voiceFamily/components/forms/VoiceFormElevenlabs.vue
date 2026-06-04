@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AFormTextField, ARow } from '@anzusystems/common-admin'
 import type { ElevenlabsVoice } from '@/types/coreDam/Voice'
 import { useVoiceElevenlabsValidation } from '@/views/coreDam/voiceFamily/composables/voiceValidation'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    voice: ElevenlabsVoice
     readonly?: boolean
   }>(),
   {
@@ -15,58 +13,37 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'update:voice', value: ElevenlabsVoice): void
-}>()
+const voice = defineModel<ElevenlabsVoice>({ required: true })
 
 const { t } = useI18n()
-
-const localVoice = toRef(props, 'voice')
-const { v$ } = useVoiceElevenlabsValidation(localVoice)
-
-const updateString = (key: 'externalVoiceId' | 'modelId', value: string | number | null | undefined) => {
-  emit('update:voice', { ...props.voice, [key]: value ?? '' })
-}
-
-const updateNumber = (
-  key: 'stability' | 'similarityBoost',
-  value: string | number | null | undefined,
-) => {
-  emit('update:voice', { ...props.voice, [key]: Number(value ?? 0) })
-}
-
-const updateBoolean = (key: 'main' | 'active', value: unknown) => {
-  emit('update:voice', { ...props.voice, [key]: Boolean(value) })
-}
+const { v$ } = useVoiceElevenlabsValidation(voice)
 </script>
 
 <template>
   <div>
     <ARow>
       <AFormTextField
-        :model-value="voice.externalVoiceId"
+        v-model="voice.externalVoiceId"
         :label="t('coreDam.voice.model.externalVoiceId')"
         :v="v$.voice.externalVoiceId"
         :readonly="readonly"
         required
         data-cy="voice-external-voice-id"
-        @update:model-value="updateString('externalVoiceId', $event)"
       />
     </ARow>
     <ARow>
       <AFormTextField
-        :model-value="voice.modelId"
+        v-model="voice.modelId"
         :label="t('coreDam.voice.model.modelId')"
         :v="v$.voice.modelId"
         :readonly="readonly"
         required
         data-cy="voice-model-id"
-        @update:model-value="updateString('modelId', $event)"
       />
     </ARow>
     <ARow>
       <AFormTextField
-        :model-value="voice.stability"
+        v-model.number="voice.stability"
         :label="t('coreDam.voice.model.stability')"
         type="number"
         :min="0"
@@ -75,12 +52,11 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
         :readonly="readonly"
         :v="v$.voice.stability"
         data-cy="voice-stability"
-        @update:model-value="updateNumber('stability', $event)"
       />
     </ARow>
     <ARow>
       <AFormTextField
-        :model-value="voice.similarityBoost"
+        v-model.number="voice.similarityBoost"
         :label="t('coreDam.voice.model.similarityBoost')"
         type="number"
         :min="0"
@@ -89,29 +65,26 @@ const updateBoolean = (key: 'main' | 'active', value: unknown) => {
         :readonly="readonly"
         :v="v$.voice.similarityBoost"
         data-cy="voice-similarity-boost"
-        @update:model-value="updateNumber('similarityBoost', $event)"
       />
     </ARow>
     <ARow>
       <VSwitch
-        :model-value="voice.main"
+        v-model="voice.main"
         class="pl-2"
         :label="t('coreDam.voice.model.main')"
         :readonly="readonly"
         hide-details
         data-cy="voice-main"
-        @update:model-value="updateBoolean('main', $event)"
       />
     </ARow>
     <ARow>
       <VSwitch
-        :model-value="voice.active"
+        v-model="voice.active"
         class="pl-2"
         :label="t('coreDam.voice.model.active')"
         :readonly="readonly"
         hide-details
         data-cy="voice-active"
-        @update:model-value="updateBoolean('active', $event)"
       />
     </ARow>
   </div>

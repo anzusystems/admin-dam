@@ -16,9 +16,8 @@ import { useVoiceKindFactory } from '@/model/coreDam/factory/VoiceFactory'
 import VoiceFormElevenlabs from '@/views/coreDam/voiceFamily/components/forms/VoiceFormElevenlabs.vue'
 import VoiceFormGoogleTts from '@/views/coreDam/voiceFamily/components/forms/VoiceFormGoogleTts.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    voice: Voice
     readonly?: boolean
   }>(),
   {
@@ -26,31 +25,41 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'update:voice', value: Voice): void
-}>()
+const voice = defineModel<Voice>('voice', { required: true })
 
 const { t } = useI18n()
 const { valueObjectOptions: discriminatorOptions } = useVoiceDiscriminator()
 const { createVoiceKind } = useVoiceKindFactory()
 
-const isEdit = computed(() => props.voice.id !== '')
-// discriminator is a local UI mirror of the prop (the provider toggle the user edits); it is kept
-// in sync with prop changes via the watch below, so the one-time read of props.voice here is intentional.
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const discriminator = ref<VoiceDiscriminatorType>(props.voice.discriminator)
+const isEdit = computed(() => voice.value.id !== '')
 
+// Local UI mirror of the (readonly) discriminator field — the provider toggle the user edits.
+// One-time read of the model is intentional; the watch below keeps it in sync afterwards.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const discriminator = ref<VoiceDiscriminatorType>(voice.value.discriminator)
 watch(
-  () => props.voice.discriminator,
+  () => voice.value.discriminator,
   (newVal) => {
     discriminator.value = newVal
-  },
+  }
 )
-
 watch(discriminator, (newKind, oldKind) => {
-  if (newKind === oldKind) return
-  if (isEdit.value) return
-  emit('update:voice', createVoiceKind(newKind, props.voice.voiceFamily))
+  if (newKind === oldKind || isEdit.value) return
+  voice.value = createVoiceKind(newKind, voice.value.voiceFamily)
+})
+
+// Cast the discriminated union to the concrete kind for each provider form's v-model.
+const elevenlabsVoice = computed<ElevenlabsVoice>({
+  get: () => voice.value as ElevenlabsVoice,
+  set: (value) => {
+    voice.value = value
+  },
+})
+const googleTtsVoice = computed<GoogleTtsVoice>({
+  get: () => voice.value as GoogleTtsVoice,
+  set: (value) => {
+    voice.value = value
+  },
 })
 </script>
 
@@ -68,19 +77,15 @@ watch(discriminator, (newKind, oldKind) => {
         data-cy="voice-discriminator"
       />
     </ARow>
-    <template v-if="voice.discriminator === VoiceDiscriminator.Elevenlabs">
-      <VoiceFormElevenlabs
-        :voice="(voice as ElevenlabsVoice)"
-        :readonly="readonly"
-        @update:voice="emit('update:voice', $event)"
-      />
-    </template>
-    <template v-else-if="voice.discriminator === VoiceDiscriminator.GoogleTts">
-      <VoiceFormGoogleTts
-        :voice="(voice as GoogleTtsVoice)"
-        :readonly="readonly"
-        @update:voice="emit('update:voice', $event)"
-      />
-    </template>
+    <VoiceFormElevenlabs
+      v-if="voice.discriminator === VoiceDiscriminator.Elevenlabs"
+      v-model="elevenlabsVoice"
+      :readonly="readonly"
+    />
+    <VoiceFormGoogleTts
+      v-else-if="voice.discriminator === VoiceDiscriminator.GoogleTts"
+      v-model="googleTtsVoice"
+      :readonly="readonly"
+    />
   </ASystemEntityScope>
 </template>

@@ -1,13 +1,22 @@
 import { ref } from 'vue'
 import { type DocId, type FilterBag, type Pagination, useAlerts } from '@anzusystems/common-admin'
-import type { TtsNarrationRequest, TtsSynthesizeRequestDto, TtsSynthesizeResponse } from '@/types/coreDam/TtsNarrationRequest'
+import type {
+  TtsNarrationRequest,
+  TtsNarrationRequestDetail,
+  TtsSynthesizeRequestDto,
+  TtsSynthesizeResponse,
+} from '@/types/coreDam/TtsNarrationRequest'
 import { TtsRequestStatus } from '@/types/coreDam/TtsNarrationRequest'
 import {
   cancelTtsNarrationRequest,
+  fetchTtsNarrationRequest,
   fetchTtsNarrationRequestListByExtSystem,
   synthesizeTtsNarrationRequest,
 } from '@/services/api/coreDam/ttsNarrationRequestApi'
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
+import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
+import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -74,5 +83,44 @@ export const useTtsNarrationRequestCancelRequestActions = () => {
   return {
     cancelRequestButtonLoading,
     cancelRequest,
+  }
+}
+
+export const useTtsNarrationRequestDetailActions = (getId: () => DocId) => {
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+  const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
+  const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies, isLoadedCachedVoiceFamily } = useCachedVoiceFamiliesById()
+
+  const detail = ref<TtsNarrationRequestDetail | null>(null)
+  const detailLoading = ref(true)
+
+  // Snapshot fetch — admin does not poll; the user reloads to see progress.
+  const fetchDetail = async () => {
+    detailLoading.value = true
+    try {
+      const data = await fetchTtsNarrationRequest(getId())
+      detail.value = data
+      if (data) {
+        addToCachedAssetLicences([data.assetLicence])
+        fetchCachedAssetLicences()
+        addToCachedExtSystems([data.extSystemId])
+        fetchCachedExtSystems()
+        const voiceFamilyId = data.ttsAsset?.voiceFamily
+        if (voiceFamilyId && !isLoadedCachedVoiceFamily(voiceFamilyId)) {
+          addToCachedVoiceFamilies([voiceFamilyId])
+          fetchCachedVoiceFamilies()
+        }
+      }
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  return {
+    detail,
+    detailLoading,
+    fetchDetail,
   }
 }

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useIntervalFn } from '@vueuse/core'
 import {
   AActionCloseButton,
   ABooleanValue,
@@ -11,15 +10,13 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
-  useAlerts,
+  type DocId,
 } from '@anzusystems/common-admin'
 import { ROUTE } from '@/router/routes'
-import { fetchTtsNarrationRequest } from '@/services/api/coreDam/ttsNarrationRequestApi'
 import {
-  IN_PROGRESS_TTS_REQUEST_STATUSES,
-  type TtsNarrationRequestDetail,
-} from '@/types/coreDam/TtsNarrationRequest'
-import { isCancellableRequest } from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
+  isCancellableRequest,
+  useTtsNarrationRequestDetailActions,
+} from '@/views/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import TtsCancelRequestDialog from '@/views/coreDam/ttsNarrationRequest/dialogs/TtsCancelRequestDialog.vue'
 import { ACL } from '@/composables/auth/auth'
 import type { VoiceDiscriminatorType } from '@/types/coreDam/Voice'
@@ -32,87 +29,14 @@ import CachedVoiceFamilyChip from '@/views/coreDam/voiceFamily/components/Cached
 import CachedAssetLicenceChip from '@/views/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import CachedExtSystemChip from '@/views/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
-import { useCachedAssetLicences } from '@/views/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useCachedExtSystems } from '@/views/coreDam/extSystem/composables/cachedExtSystems'
-import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const route = useRoute()
 const { t } = useI18n()
-const { showErrorsDefault } = useAlerts()
 
-const loading = ref(true)
-const detail = ref<TtsNarrationRequestDetail | null>(null)
+const { detail, detailLoading, fetchDetail } = useTtsNarrationRequestDetailActions(() => route.params.id as DocId)
 const cancelDialog = ref(false)
 
-const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
-const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
-const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies, isLoadedCachedVoiceFamily } = useCachedVoiceFamiliesById()
-
-const POLL_INTERVAL_MS = 5000
-
-const isInProgress = (): boolean =>
-  detail.value !== null && IN_PROGRESS_TTS_REQUEST_STATUSES.includes(detail.value.status)
-
-const refresh = async () => {
-  // Capture the route id at call time; if navigation happens while the request
-  // is in-flight the resolved data belongs to a different route — discard it.
-  const expectedId = route.params.id as string
-  try {
-    const data = await fetchTtsNarrationRequest(expectedId)
-    if ((route.params.id as string) !== expectedId) return
-    detail.value = data
-    const voiceFamilyId = data?.ttsAsset?.voiceFamily
-    // Skip re-priming the cache once the family is already loaded — avoids a redundant fetch each poll tick.
-    if (voiceFamilyId && !isLoadedCachedVoiceFamily(voiceFamilyId)) {
-      addToCachedVoiceFamilies([voiceFamilyId])
-      fetchCachedVoiceFamilies()
-    }
-    if (!isInProgress()) pausePolling()
-  } catch (error) {
-    if ((route.params.id as string) !== expectedId) return
-    // Stop polling on error to avoid infinite retry on a persistent failure; show toast once.
-    pausePolling()
-    showErrorsDefault(error)
-  }
-}
-
-const { pause: pausePolling, resume: resumePolling } = useIntervalFn(refresh, POLL_INTERVAL_MS, {
-  immediate: false,
-})
-
-onMounted(async () => {
-  loading.value = true
-  try {
-    const data = await fetchTtsNarrationRequest(route.params.id as string)
-    detail.value = data
-
-    if (data) {
-      addToCachedAssetLicences([data.assetLicence])
-      fetchCachedAssetLicences()
-      addToCachedExtSystems([data.extSystemId])
-      fetchCachedExtSystems()
-      if (data.ttsAsset?.voiceFamily) {
-        addToCachedVoiceFamilies([data.ttsAsset.voiceFamily])
-        fetchCachedVoiceFamilies()
-      }
-
-      if (isInProgress()) resumePolling()
-    }
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    loading.value = false
-  }
-})
-
-const onCancelSuccess = async () => {
-  await refresh()
-  if (isInProgress()) resumePolling()
-}
-
-onUnmounted(() => {
-  pausePolling()
-})
+onMounted(fetchDetail)
 </script>
 
 <template>
@@ -136,7 +60,7 @@ onUnmounted(() => {
   </ActionbarWrapper>
 
   <ACard
-    :loading="loading"
+    :loading="detailLoading"
     :title="t('coreDam.ttsNarrationRequest.detail.requestSection')"
   >
     <VCardText v-if="detail">
@@ -238,7 +162,7 @@ onUnmounted(() => {
   </ACard>
 
   <ACard
-    v-else-if="!loading"
+    v-else-if="!detailLoading"
     :title="t('coreDam.ttsNarrationRequest.detail.ttsAssetSection')"
     class="mt-4"
   >
@@ -250,6 +174,6 @@ onUnmounted(() => {
   <TtsCancelRequestDialog
     v-model="cancelDialog"
     :request-id="detail?.id ?? null"
-    @on-success="onCancelSuccess"
+    @on-success="fetchDetail"
   />
 </template>
