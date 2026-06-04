@@ -49,6 +49,7 @@ const disabledComputed = computed(() => props.disabled || props.extSystemId === 
     :disabled="disabledComputed"
     :disable-init-fetch="extSystemId === null"
     filter-by-field="displayName"
+    min-search-text="coreDam.voiceFamily.filterMinChars"
     :data-cy="dataCy"
   />
 </template>

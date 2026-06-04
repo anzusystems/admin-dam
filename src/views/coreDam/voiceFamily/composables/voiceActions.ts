@@ -60,8 +60,8 @@ export const useVoiceEditActions = () => {
   const v$ = useVuelidate()
 
   const onUpdate = async (voice: Voice, onSuccess?: () => void) => {
-    saveButtonLoading.value = true
     try {
+      saveButtonLoading.value = true
       v$.value.$touch()
       if (v$.value.$invalid) {
         showValidationError()

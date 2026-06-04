@@ -1,5 +1,5 @@
 import type { VoiceFamily } from '@/types/coreDam/VoiceFamily'
-import { Language, RESOURCE_VOICE_FAMILY } from '@/types/coreDam/VoiceFamily'
+import { LanguageDefault, RESOURCE_VOICE_FAMILY } from '@/types/coreDam/VoiceFamily'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@anzusystems/common-admin'
 
@@ -10,7 +10,7 @@ export function useVoiceFamilyFactory() {
       extSystem,
       slug: '',
       displayName: '',
-      language: Language.Slovak,
+      language: LanguageDefault,
       preferredProvider: null,
       active: true,
       keywords: [],

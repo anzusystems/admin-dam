@@ -28,5 +28,6 @@
   "button": {
     "create": "Create voice family"
   },
-  "voices": "Voice Bindings"
+  "voices": "Voice Bindings",
+  "filterMinChars": "Enter at least 2 characters"
 }

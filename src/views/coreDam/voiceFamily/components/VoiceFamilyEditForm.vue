@@ -82,6 +82,7 @@ const { t } = useI18n()
             multiple
             clearable
             filter-by-field="text"
+            min-search-text="common.damImage.keyword.filterMinChars"
             data-cy="voice-family-keywords"
           />
         </ARow>

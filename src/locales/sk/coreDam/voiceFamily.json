@@ -28,5 +28,6 @@
   "button": {
     "create": "Vytvoriť hlasovú rodinu"
   },
-  "voices": "Hlasové väzby"
+  "voices": "Hlasové väzby",
+  "filterMinChars": "Zadajte minimálne 2 znaky"
 }

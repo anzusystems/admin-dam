@@ -41,6 +41,7 @@ const innerFilter = usePodcastFilter()
     :clearable="clearable"
     :disable-init-fetch="disableInitFetch"
     filter-by-field="title"
+    min-search-text="coreDam.podcast.filterMinChars"
     :data-cy="dataCy"
   />
 </template>

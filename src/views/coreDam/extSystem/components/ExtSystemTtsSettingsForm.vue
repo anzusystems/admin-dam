@@ -79,6 +79,7 @@ const clearEpilog = () => {
               :inner-filter="keywordInnerFilter"
               clearable
               filter-by-field="text"
+              min-search-text="common.damImage.keyword.filterMinChars"
               data-cy="ext-system-tts-auto-keyword"
             />
           </ARow>

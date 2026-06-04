@@ -8,6 +8,7 @@ export const Language = {
   English: 'en',
 } as const
 export type LanguageType = (typeof Language)[keyof typeof Language]
+export const LanguageDefault = Language.Slovak
 
 export interface VoiceFamily extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId

@@ -1,6 +1,6 @@
 import { damClient } from '@/services/api/clients/damClient'
 import type { DocId, FilterBag, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { apiCreateOne, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
+import { apiAnyRequest, apiCreateOne, apiFetchList, apiFetchOne } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import type {
   TtsNarrationRequest,
@@ -41,11 +41,12 @@ export const synthesizeTtsNarrationRequest = (payload: TtsSynthesizeRequestDto) 
   )
 
 export const cancelTtsNarrationRequest = (requestId: DocId) =>
-  apiCreateOne<Record<string, never>, TtsNarrationRequest>(
+  apiAnyRequest<Record<string, never>, TtsNarrationRequest>(
     damClient,
-    {},
+    'POST',
     END_POINT + '/:requestId/cancel',
     { requestId },
+    {},
     SYSTEM_CORE_DAM,
     ENTITY
   )

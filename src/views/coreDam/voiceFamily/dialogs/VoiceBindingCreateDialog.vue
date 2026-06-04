@@ -6,7 +6,7 @@ import { ACreateDialog } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { useVoiceKindFactory } from '@/model/coreDam/factory/VoiceFactory'
 import type { Voice } from '@/types/coreDam/Voice'
-import { VoiceDiscriminator } from '@/types/coreDam/Voice'
+import { VoiceDiscriminatorDefault } from '@/types/coreDam/Voice'
 import { useVoiceCreateActions } from '@/views/coreDam/voiceFamily/composables/voiceActions'
 import VoiceManage from '@/views/coreDam/voiceFamily/components/VoiceManage.vue'
 
@@ -32,11 +32,11 @@ const { createVoice } = useVoiceCreateActions()
 const v$ = useVuelidate()
 
 // Seeded with an empty family; @on-open sets the real voiceFamilyId before the form is shown.
-const voice = ref<Voice>(createVoiceKind(VoiceDiscriminator.Elevenlabs, ''))
+const voice = ref<Voice>(createVoiceKind(VoiceDiscriminatorDefault, ''))
 const dialog = ref(false)
 
 const onOpen = () => {
-  voice.value = createVoiceKind(VoiceDiscriminator.Elevenlabs, props.voiceFamilyId)
+  voice.value = createVoiceKind(VoiceDiscriminatorDefault, props.voiceFamilyId)
 }
 
 const create = (): Promise<Voice> => createVoice(voice.value)

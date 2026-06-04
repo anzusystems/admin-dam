@@ -2,7 +2,7 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/extSystemApi'
 import type { ExtSystem } from '@/types/coreDam/ExtSystem'
-import { TtsActiveProviderMode } from '@/types/coreDam/TtsActiveProviderMode'
+import { TtsActiveProviderModeDefault } from '@/types/coreDam/TtsActiveProviderMode'
 
 export function useExtSystemFactory() {
   const createDefault = (): ExtSystem => {
@@ -18,7 +18,7 @@ export function useExtSystemFactory() {
       _resourceName: ENTITY,
       _system: SYSTEM_CORE_DAM,
       ttsSettings: {
-        activeProviderMode: TtsActiveProviderMode.Auto,
+        activeProviderMode: TtsActiveProviderModeDefault,
         defaultVoiceFamilyId: null,
         autoKeywordId: null,
       },

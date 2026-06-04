@@ -5,3 +5,4 @@ export const TtsActiveProviderMode = {
 } as const
 
 export type TtsActiveProviderModeType = (typeof TtsActiveProviderMode)[keyof typeof TtsActiveProviderMode]
+export const TtsActiveProviderModeDefault = TtsActiveProviderMode.Auto

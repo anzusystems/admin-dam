@@ -36,6 +36,7 @@ const innerFilter = useVoiceFamilyFilter()
     :inner-filter="innerFilter"
     :clearable="clearable"
     filter-by-field="displayName"
+    min-search-text="coreDam.voiceFamily.filterMinChars"
     :data-cy="dataCy"
   />
 </template>

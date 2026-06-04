@@ -7,6 +7,7 @@ export const VoiceDiscriminator = {
   GoogleTts: 'google_tts',
 } as const
 export type VoiceDiscriminatorType = (typeof VoiceDiscriminator)[keyof typeof VoiceDiscriminator]
+export const VoiceDiscriminatorDefault = VoiceDiscriminator.Elevenlabs
 
 export const GoogleSsmlGender = {
   Male: 'MALE',
@@ -14,6 +15,7 @@ export const GoogleSsmlGender = {
   Neutral: 'NEUTRAL',
 } as const
 export type GoogleSsmlGenderType = (typeof GoogleSsmlGender)[keyof typeof GoogleSsmlGender]
+export const GoogleSsmlGenderDefault = GoogleSsmlGender.Neutral
 
 interface VoiceBase extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId

@@ -3,7 +3,7 @@ import { dateTimeNow } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import {
   ELEVENLABS_DEFAULT_MODEL_ID,
-  GoogleSsmlGender,
+  GoogleSsmlGenderDefault,
   RESOURCE_VOICE,
   VoiceDiscriminator,
   type ElevenlabsVoice,
@@ -46,7 +46,7 @@ export function useVoiceKindFactory() {
         const voice: GoogleTtsVoice = {
           ...createBaseVoice(voiceFamily),
           discriminator: VoiceDiscriminator.GoogleTts,
-          ssmlGender: GoogleSsmlGender.Neutral,
+          ssmlGender: GoogleSsmlGenderDefault,
           speakingRate: 1.0,
           pitch: 0.0,
         }
