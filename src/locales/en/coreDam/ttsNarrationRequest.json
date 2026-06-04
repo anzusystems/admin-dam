@@ -43,7 +43,6 @@
     "assetTitle": "Asset title",
     "assetTitlePlaceholder": "Optional — auto-generated when left empty",
     "podcasts": "Bind to podcasts",
-    "estimatedDurationUnit": "min",
     "landingHint": "Use the Synthesize button to generate TTS audio from text. You will be redirected to the request detail to follow its progress."
   },
   "cancelRequest": {

@@ -21,7 +21,6 @@ export const isCancellableRequest = (request: TtsNarrationRequest): boolean =>
 
 const datatableHiddenColumns = ref<Array<string>>([])
 const listLoading = ref(false)
-const synthesizeButtonLoading = ref(false)
 const cancelRequestButtonLoading = ref(false)
 
 export const useTtsNarrationRequestListActions = () => {
@@ -48,22 +47,11 @@ export const useTtsNarrationRequestListActions = () => {
 }
 
 export const useTtsNarrationRequestSynthesizeActions = () => {
-  const synthesize = async (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse | null> => {
-    synthesizeButtonLoading.value = true
-    try {
-      const res = await synthesizeTtsNarrationRequest(payload)
-      showRecordWas('created')
-      return res
-    } catch (error) {
-      showErrorsDefault(error)
-      return null
-    } finally {
-      synthesizeButtonLoading.value = false
-    }
-  }
+  // Passed to ACreateDialog's call-create; the dialog owns loading + error/success handling.
+  const synthesize = (payload: TtsSynthesizeRequest): Promise<TtsSynthesizeResponse> =>
+    synthesizeTtsNarrationRequest(payload)
 
   return {
-    synthesizeButtonLoading,
     synthesize,
   }
 }

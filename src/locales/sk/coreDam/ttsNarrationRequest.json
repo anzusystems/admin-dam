@@ -43,7 +43,6 @@
     "assetTitle": "Nadpis assetu",
     "assetTitlePlaceholder": "Voliteľné — bez vyplnenia sa vygeneruje automaticky",
     "podcasts": "Naviazať na podcasty",
-    "estimatedDurationUnit": "min",
     "landingHint": "Pomocou tlačidla Syntetizovať vygenerujete TTS audio z textu. Následne budete presmerovaní na detail požiadavky, kde môžete sledovať jej priebeh."
   },
   "cancelRequest": {
