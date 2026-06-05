@@ -9,6 +9,7 @@ export function usePublicExportFactory() {
     return {
       id: 0,
       assetLicence: null,
+      licences: [],
       slug: '',
       type: ExportTypeDefault,
       createdAt: dateTimeNow(),
