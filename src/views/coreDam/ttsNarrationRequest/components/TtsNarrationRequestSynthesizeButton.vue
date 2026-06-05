@@ -56,6 +56,7 @@ const { v$ } = useTtsNarrationRequestSynthesizeValidation(dto, extSystemId)
 watch(extSystemId, () => {
   dto.value.voiceFamilySlug = null
   dto.value.assetLicence = null
+  dto.value.podcasts = []
 })
 
 const onOpen = () => {
@@ -147,7 +148,9 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
         <ARow>
           <PodcastRemoteAutocomplete
             v-model="dto.podcasts"
+            :ext-system-id="extSystemId"
             :label="t('coreDam.ttsNarrationRequest.synthesize.podcasts')"
+            :disabled="extSystemId === null"
             multiple
             clearable
             data-cy="synthesize-podcasts"

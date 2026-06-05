@@ -24,10 +24,13 @@ const { saveButtonLoading, onUpdate } = useVoiceEditActions()
 
 const localVoice = ref<Voice | null>(null)
 
+// Re-clone whenever the dialog opens (and when the bound voice changes) — reopening the SAME row
+// keeps the same props.voice reference, so a watch on props.voice alone would not fire and stale
+// (cancelled) edits would linger in localVoice.
 watch(
-  () => props.voice,
-  (newVoice) => {
-    if (newVoice) {
+  [() => props.modelValue, () => props.voice],
+  ([open, newVoice]) => {
+    if (open && newVoice) {
       localVoice.value = cloneDeep(newVoice)
     }
   },

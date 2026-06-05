@@ -1,5 +1,5 @@
 import { useCurrentExtSystem } from '@/composables/system/currentExtSystem'
-import type { FilterBag, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import type { FilterBag, IntegerId, IntegerIdNullable, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import {
@@ -122,11 +122,13 @@ export const usePodcastEditActions = () => {
   }
 }
 
-export const usePodcastSelectActions = () => {
-  const { currentExtSystemId } = useCurrentExtSystem()
+// `extSystemId` getter lets callers scope to a specific ext-system (e.g. the synthesize dialog where
+// the user picks one); omitted or empty → falls back to the global current ext-system.
+export const usePodcastSelectActions = (extSystemId?: () => IntegerIdNullable | undefined) => {
+  const resolveExtSystemId = (): IntegerId => extSystemId?.() || currentExtSystemId.value
 
   const fetchItems = async (pagination: Pagination, filterBag: FilterBag) => {
-    const podcasts = await fetchPodcastListByExtSystem(currentExtSystemId.value, pagination, filterBag)
+    const podcasts = await fetchPodcastListByExtSystem(resolveExtSystemId(), pagination, filterBag)
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
       title: podcast.texts.title,
@@ -135,7 +137,7 @@ export const usePodcastSelectActions = () => {
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
-    const podcasts = await fetchPodcastListByIds(currentExtSystemId.value, ids)
+    const podcasts = await fetchPodcastListByIds(resolveExtSystemId(), ids)
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
       title: podcast.texts.title,
