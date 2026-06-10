@@ -18,10 +18,14 @@ import { useRouter } from 'vue-router'
 import { ROUTE } from '@/router/routes'
 import { damClient } from '@/services/api/clients/damClient'
 import type { AxiosInstance } from 'axios'
+import { useCachedVoiceFamiliesById } from '@/views/coreDam/voiceFamily/composables/cachedVoiceFamilies'
+import { useCachedKeywords } from '@/views/coreDam/keyword/composables/cachedKeywords'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
+const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies } = useCachedVoiceFamiliesById()
+const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
@@ -86,7 +90,15 @@ export const useExtSystemDetailActions = () => {
       const extSystem = await fetchExtSystem(id)
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
-      extSystemOneStore.setExtSystem(extSystem)
+      if (extSystem.ttsSettings.defaultVoiceFamilyId) {
+        addToCachedVoiceFamilies([extSystem.ttsSettings.defaultVoiceFamilyId])
+        fetchCachedVoiceFamilies()
+      }
+      if (extSystem.ttsSettings.autoKeywordId) {
+        addToCachedKeywords([extSystem.ttsSettings.autoKeywordId])
+        fetchCachedKeywords()
+      }
+      extSystemOneStore.extSystem = extSystem
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -114,7 +126,7 @@ export const useExtSystemEditActions = () => {
       const extSystem = await fetchExtSystem(id)
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
-      extSystemOneStore.setExtSystem(extSystem)
+      extSystemOneStore.extSystem = extSystem
     } catch (error) {
       showErrorsDefault(error)
     } finally {

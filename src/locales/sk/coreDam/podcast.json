@@ -46,5 +46,6 @@
   "podcastMode": {
     "import": "Importovaný",
     "notImport": "Neimportovaný"
-  }
+  },
+  "filterMinChars": "Zadajte minimálne 2 znaky"
 }

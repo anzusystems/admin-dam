@@ -51,9 +51,10 @@ const { exportTypeOptions } = useExportTypeTypes()
         </ARow>
         <ARow>
           <DamAssetLicenceRemoteAutocomplete
-            v-model="publicExport.assetLicence"
+            v-model="publicExport.licences"
             :client="damClient"
             :label="t('coreDam.publicExport.model.assetLicence')"
+            multiple
             data-cy="publicExport-licence"
           />
         </ARow>

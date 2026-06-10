@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, cloneDeep, type DocIdNullable } from '@anzusystems/common-admin'
+import { AFormRemoteAutocomplete, type DocId, type DocIdNullable, type IntegerIdNullable } from '@anzusystems/common-admin'
 import { usePodcastSelectActions } from '@/views/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/model/coreDam/filter/PodcastFilter'
-import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocIdNullable
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
+    disabled?: boolean
     disableInitFetch?: boolean
+    extSystemId?: IntegerIdNullable
     dataCy?: string
   }>(),
   {
@@ -19,31 +19,24 @@ const props = withDefaults(
     required: undefined,
     multiple: false,
     clearable: false,
+    disabled: false,
     disableInitFetch: false,
+    extSystemId: undefined,
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocIdNullable): void
-}>()
 
-const modelValueComputed = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue: DocIdNullable) {
-    emit('update:modelValue', cloneDeep(newValue))
-  },
-})
+const modelValue = defineModel<DocIdNullable | DocId[]>({ required: true })
 
-const { fetchItems, fetchItemsByIds } = usePodcastSelectActions()
+// Scope to an explicitly passed ext-system (synthesize); otherwise the composable falls back to current.
+const { fetchItems, fetchItemsByIds } = usePodcastSelectActions(() => props.extSystemId)
 
 const innerFilter = usePodcastFilter()
 </script>
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValueComputed"
+    v-model="modelValue"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
@@ -51,8 +44,10 @@ const innerFilter = usePodcastFilter()
     :inner-filter="innerFilter"
     :multiple="multiple"
     :clearable="clearable"
+    :disabled="disabled"
     :disable-init-fetch="disableInitFetch"
     filter-by-field="title"
+    min-search-text="coreDam.podcast.filterMinChars"
     :data-cy="dataCy"
   />
 </template>

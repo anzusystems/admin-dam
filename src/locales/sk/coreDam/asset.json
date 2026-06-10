@@ -3,7 +3,8 @@
     "id": "ID",
     "distributionCategory": "Kategória distribúcie",
     "authors": "Autori",
-    "keywords": "Kľúčové slová"
+    "keywords": "Kľúčové slová",
+    "ttsAudio": "TTS audio"
   },
   "filter": {
     "text": "Text",
@@ -14,6 +15,7 @@
     "authorIds": "Autori",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
+    "ttsAudio": "Syntetické (TTS)",
     "distributedInServices": "Distribuované v službách",
     "slotNames": "Mená slotov",
     "visible": "Viditeľný",
@@ -54,6 +56,7 @@
     "low": "Nízka kvalita",
     "slots": "Sloty",
     "rss": "RSS",
+    "tts": "Syntetické (TTS)",
     "fullHd": "FullHD",
     "2k": "2K",
     "qhd": "QHD",
@@ -137,8 +140,18 @@
       "distribution": "Distribúcia",
       "slots": "Sloty",
       "podcast": "Podcasty",
+      "tts": "TTS",
       "videoShow": "Video relácie",
       "imagePreview": "Miniatúra"
+    },
+    "tts": {
+      "noEntry": "Pre tento asset nie sú TTS údaje.",
+      "status": "Stav",
+      "voiceFamily": "Rodina hlasov",
+      "provider": "Poskytovateľ",
+      "failureReason": "Dôvod zlyhania",
+      "createdAt": "Vytvorené",
+      "sourceRequest": "Zdrojový request"
     },
     "info": {
       "status": {

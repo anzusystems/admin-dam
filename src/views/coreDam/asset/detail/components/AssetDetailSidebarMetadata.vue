@@ -34,7 +34,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset, view, mainFileSingleUse, mainFileOverrideInternal, mainFileInternal } = useAssetDetailActions()
+const { asset, view, mainFileSingleUse, mainFileOverrideInternal, mainFileInternal, ttsAudio } = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
@@ -54,7 +54,7 @@ const onSave = async () => {
   }
   try {
     await updateAssetMetadata(
-      asset.value, mainFileSingleUse.value, mainFileOverrideInternal.value, mainFileInternal.value
+      asset.value, mainFileSingleUse.value, mainFileOverrideInternal.value, mainFileInternal.value, ttsAudio.value
     )
     if (view.value === 'queue') {
       uploadQueueStore.updateAssetMetadata(asset.value)

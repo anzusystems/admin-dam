@@ -100,6 +100,15 @@ const routes = {
       EDIT: 'publicExport_edit',
       LIST: 'publicExport_list',
     },
+    VOICE_FAMILY: {
+      LIST: 'voiceFamily_list',
+      DETAIL: 'voiceFamily_detail',
+      EDIT: 'voiceFamily_edit',
+    },
+    TTS_NARRATION_REQUEST: {
+      DETAIL: 'ttsNarrationRequest_detail',
+      LIST: 'ttsNarrationRequest_list',
+    },
   },
   SYSTEM: {
     HOMEPAGE: 'homepage',

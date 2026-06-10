@@ -23,7 +23,9 @@ const { t } = useI18n()
       </ARow>
       <ARow :title="t('coreDam.publicExport.model.assetLicence')">
         <CachedAssetLicenceChip
-          :id="publicExport.assetLicence"
+          v-for="licence in publicExport.licences"
+          :id="licence"
+          :key="licence"
           class="mr-1"
         />
       </ARow>

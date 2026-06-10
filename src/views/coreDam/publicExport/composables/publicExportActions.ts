@@ -31,10 +31,8 @@ export const usePublicExportListActions = () => {
     listLoading.value = true
     try {
       const res = await fetchPublicExportList(pagination, filterBag)
-      res.forEach((item) => {
-        addToCachedAssetLicences(item.assetLicence)
-        fetchCachedAssetLicences()
-      })
+      res.forEach((item) => addToCachedAssetLicences(item.licences))
+      fetchCachedAssetLicences()
       listItems.value = res
     } catch (error) {
       showErrorsDefault(error)
@@ -80,7 +78,7 @@ export const usePublicExportDetailActions = () => {
     detailLoading.value = true
     try {
       const res = await fetchPublicExport(id)
-      addToCachedAssetLicences(res.assetLicence)
+      addToCachedAssetLicences(res.licences)
       fetchCachedAssetLicences()
       publicExport.value = res
     } catch (error) {
@@ -109,7 +107,7 @@ export const usePublicExportEditActions = () => {
     detailLoading.value = true
     try {
       const res = await fetchPublicExport(id)
-      addToCachedAssetLicences(res.assetLicence)
+      addToCachedAssetLicences(res.licences)
       fetchCachedAssetLicences()
       publicExport.value = res
     } catch (error) {

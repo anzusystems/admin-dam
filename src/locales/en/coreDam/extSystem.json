@@ -10,5 +10,18 @@
     "name": "Name",
     "extSystem": "Ext system",
     "slug": "Slug"
+  },
+  "ttsSettings": {
+    "title": "TTS Settings",
+    "activeProviderMode": "Active TTS Provider",
+    "defaultVoiceFamily": "Default Voice Family",
+    "autoKeyword": "Auto keyword (every TTS audio)",
+    "ttsFreeAudioEpilogAsset": "TTS free audio Epilogue",
+    "ttsFreeAudioEpilogAssetSelect": "Select audio asset",
+    "modes": {
+      "elevenlabs": "ElevenLabs",
+      "google_tts": "Google TTS",
+      "auto": "Auto"
+    }
   }
 }

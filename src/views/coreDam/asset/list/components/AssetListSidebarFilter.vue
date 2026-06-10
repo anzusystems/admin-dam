@@ -134,6 +134,14 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VRow>
         <VRow>
           <VCol>
+            <AFilterBooleanSelect
+              v-model="filter.ttsAudio"
+              @update:model-value="onAnyFilterUpdate"
+            />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol>
             <AFilterValueObjectOptionsSelect
               v-model="filter.status"
               :items="assetStatusOptions"

@@ -8,17 +8,12 @@ export const useAssetLicenceOneStore = defineStore('assetLicenceOneStore', () =>
 
   const assetLicence = ref<DamAssetLicenceExtended>(createDefault())
 
-  function setAssetLicence(newAssetLicence: DamAssetLicenceExtended) {
-    assetLicence.value = newAssetLicence
-  }
-
   function reset() {
     assetLicence.value = createDefault()
   }
 
   return {
     assetLicence,
-    setAssetLicence,
     reset,
   }
 })

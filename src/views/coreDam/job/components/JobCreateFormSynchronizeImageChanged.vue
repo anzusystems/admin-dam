@@ -32,6 +32,7 @@ const rules = {
   job: {
     targetLicenceId: {
       required,
+      minValue: minValue(1),
     },
     bulkSize: {
       required,

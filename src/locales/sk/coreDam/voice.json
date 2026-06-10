@@ -1,0 +1,34 @@
+{
+  "discriminator": {
+    "none": "Žiadny",
+    "elevenlabs": "ElevenLabs",
+    "google_tts": "Google TTS"
+  },
+  "ssmlGender": {
+    "MALE": "Mužský",
+    "FEMALE": "Ženský",
+    "NEUTRAL": "Neutrálny"
+  },
+  "model": {
+    "id": "ID",
+    "discriminator": "Poskytovateľ",
+    "externalVoiceId": "ID externého hlasu",
+    "main": "Hlavný",
+    "active": "Aktívny",
+    "modifiedAt": "Upravené",
+    "modelId": "Model",
+    "stability": "Stabilita",
+    "similarityBoost": "Similarity boost",
+    "ssmlGender": "Pohlavie (SSML)",
+    "speakingRate": "Rýchlosť reči",
+    "pitch": "Výška hlasu"
+  },
+  "meta": {
+    "create": "Pridať hlasovú väzbu",
+    "edit": "Upraviť hlasovú väzbu"
+  },
+  "button": {
+    "edit": "Upraviť",
+    "delete": "Zmazať"
+  }
+}

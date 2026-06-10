@@ -42,6 +42,7 @@ const {
   mainFileSingleUse,
   mainFileOverrideInternal,
   mainFileInternal,
+  ttsAudio,
 } = useAssetDetailActions()
 
 const assetType = computed(() => {
@@ -154,6 +155,18 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileSingleUse"
                   :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                />
+              </VCol>
+            </VRow>
+            <VRow
+              v-if="isTypeAudio"
+              dense
+              class="my-2"
+            >
+              <VCol>
+                <VSwitch
+                  v-model="ttsAudio"
+                  :label="t('coreDam.asset.model.ttsAudio')"
                 />
               </VCol>
             </VRow>

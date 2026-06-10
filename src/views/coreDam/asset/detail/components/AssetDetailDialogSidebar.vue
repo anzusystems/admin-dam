@@ -10,6 +10,9 @@ import AssetDetailSidebarMetadata from '@/views/coreDam/asset/detail/components/
 import AssetDetailSidebarROI from '@/views/coreDam/asset/detail/components/AssetDetailSidebarROI.vue'
 import AssetDetailSidebarDistribution from '@/views/coreDam/asset/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import AssetDetailSidebarPodcast from '@/views/coreDam/asset/detail/components/podcast/AssetDetailSidebarPodcast.vue'
+import AssetDetailSidebarTts from '@/views/coreDam/asset/detail/components/tts/AssetDetailSidebarTts.vue'
+import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
+import { storeToRefs } from 'pinia'
 import AssetDetailSidebarSlots from '@/views/coreDam/asset/detail/components/slots/AssetDetailSidebarSlots.vue'
 import AssetDetailSidebarVideoShow from '@/views/coreDam/asset/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import DistributionCategoryWidget from '@/views/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
@@ -67,6 +70,11 @@ if (isUndefined(configExtSystem)) {
 const typeHasDistributions = computed(() => {
   return configExtSystem[props.assetType].distribution.distributionServices.length > 0
 })
+
+// Use the live store ref (kept in sync with the metadata switch) — assetFileProperties.ttsAudio
+// is the stale server snapshot and is not updated after a metadata save without a refetch.
+const { ttsAudio } = storeToRefs(useAssetDetailStore())
+const isTtsAudio = computed(() => ttsAudio.value)
 </script>
 
 <template>
@@ -106,6 +114,15 @@ const typeHasDistributions = computed(() => {
         >
           {{ t('coreDam.asset.detail.tabs.podcast') }}
         </VTab>
+        <Acl :permission="ACL.DAM_TTS_ASSET_READ">
+          <VTab
+            v-if="isAudio && isTtsAudio"
+            :value="AssetDetailTab.Tts"
+            data-cy="button-tts"
+          >
+            {{ t('coreDam.asset.detail.tabs.tts') }}
+          </VTab>
+        </Acl>
         <VTab
           v-if="isVideo"
           :value="AssetDetailTab.VideoShow"
@@ -174,6 +191,14 @@ const typeHasDistributions = computed(() => {
             :is-active="activeTab === AssetDetailTab.Podcast"
           />
         </div>
+        <Acl :permission="ACL.DAM_TTS_ASSET_READ">
+          <div
+            v-if="isAudio && isTtsAudio && activeTab === AssetDetailTab.Tts"
+            class="py-2"
+          >
+            <AssetDetailSidebarTts :asset-id="assetId" />
+          </div>
+        </Acl>
         <div
           v-if="isVideo && activeTab === AssetDetailTab.VideoShow"
           class="py-2"

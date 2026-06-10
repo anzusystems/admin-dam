@@ -3,7 +3,8 @@
     "id": "ID",
     "distributionCategory": "Distribution Category",
     "authors": "Authors",
-    "keywords": "Keywords"
+    "keywords": "Keywords",
+    "ttsAudio": "TTS audio"
   },
   "filter": {
     "text": "Text",
@@ -14,6 +15,7 @@
     "authorIds": "Authors",
     "createdByIds": "CreatedBy",
     "fromRss": "From RSS",
+    "ttsAudio": "Synthesized (TTS)",
     "distributedInServices": "Distributed in services",
     "slotNames": "Slot names",
     "visible": "Visible",
@@ -54,6 +56,7 @@
     "low": "Low quality",
     "slots": "Slots",
     "rss": "RSS",
+    "tts": "Synthesized (TTS)",
     "fullHd": "FullHD",
     "2k": "2K",
     "qhd": "QHD",
@@ -136,8 +139,18 @@
       "distribution": "Distribution",
       "slots": "Slots",
       "podcast": "Podcast",
+      "tts": "TTS",
       "videoShow": "Video show",
       "imagePreview": "Image preview"
+    },
+    "tts": {
+      "noEntry": "No TTS metadata for this asset.",
+      "status": "Status",
+      "voiceFamily": "Voice family",
+      "provider": "Provider",
+      "failureReason": "Failure reason",
+      "createdAt": "Created at",
+      "sourceRequest": "Source request"
     },
     "info": {
       "status": {
