@@ -144,6 +144,22 @@ const { t } = useI18n()
         data-cy="public-export"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_TTS_VOICE_FAMILY_UI">
+      <VListItem
+        :to="{ name: '/(coreDam)/voice-families' }"
+        prepend-icon="mdi-microphone-variant"
+        :title="t('sidebar.settings.voiceFamilies')"
+        data-cy="voice-family-settings"
+      />
+    </Acl>
+    <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_UI">
+      <VListItem
+        :to="{ name: '/(coreDam)/tts-narration-requests' }"
+        prepend-icon="mdi-account-voice"
+        :title="t('sidebar.settings.ttsNarrationRequest')"
+        data-cy="tts-narration-request-settings"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_LOG_UI">
       <VListItem
         :to="{ name: '/(common)/logs' }"

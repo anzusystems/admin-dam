@@ -33,7 +33,15 @@ const { t } = useI18n()
 
 const panels = ref(['metadata', 'file'])
 
-const { asset, authorConflicts, metadataTouch, mainFileSingleUse } = useAssetDetailActions()
+const {
+  asset,
+  authorConflicts,
+  metadataTouch,
+  mainFileSingleUse,
+  mainFileOverrideInternal,
+  mainFileInternal,
+  ttsAudio,
+} = useAssetDetailActions()
 
 const assetType = computed(() => {
   return asset.value?.attributes.assetType || DamAssetTypeDefault
@@ -144,6 +152,43 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileSingleUse"
                   :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                />
+              </VCol>
+            </VRow>
+            <VRow
+              v-if="isTypeAudio"
+              density="compact"
+              class="my-2"
+            >
+              <VCol>
+                <VSwitch
+                  v-model="ttsAudio"
+                  :label="t('coreDam.asset.model.ttsAudio')"
+                />
+              </VCol>
+            </VRow>
+            <VRow
+              v-if="isTypeImage && asset.mainFile"
+              density="compact"
+              class="my-2"
+            >
+              <VCol>
+                <VSwitch
+                  v-model="mainFileOverrideInternal"
+                  :label="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                />
+              </VCol>
+            </VRow>
+            <VRow
+              v-if="isTypeImage && asset.mainFile"
+              density="compact"
+              class="my-2"
+            >
+              <VCol>
+                <VSwitch
+                  v-model="mainFileInternal"
+                  :disabled="!mainFileOverrideInternal"
+                  :label="t('coreDam.asset.detail.info.field.flags.internal')"
                 />
               </VCol>
             </VRow>

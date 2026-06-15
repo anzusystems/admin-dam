@@ -73,6 +73,15 @@
       "list": "Verejné exporty",
       "detail": "Verejný export",
       "edit": "Verejný export"
+    },
+    "voiceFamily": {
+      "list": "Hlasové rodiny",
+      "detail": "Hlasová rodina",
+      "edit": "Hlasová rodina"
+    },
+    "ttsNarrationRequest": {
+      "detail": "Detail",
+      "list": "TTS Audio"
     }
   },
   "anzuUser": {

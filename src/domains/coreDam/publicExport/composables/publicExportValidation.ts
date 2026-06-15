@@ -13,8 +13,9 @@ export function usePublicExportValidation(
         required,
         minLength: minLength(2),
       },
-      assetLicence: {
+      licences: {
         required,
+        minLength: minLength(1),
       },
       type: {
         required,

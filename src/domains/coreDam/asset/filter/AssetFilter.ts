@@ -20,6 +20,7 @@ export const filterFieldsList = [
   { name: 'generatedBySystem' as const, default: false, type: 'boolean' },
   { name: 'inPodcast' as const, default: null, type: 'boolean' },
   { name: 'fromRss' as const, default: null, type: 'boolean' },
+  { name: 'ttsAudio' as const, default: null, type: 'boolean' },
   { name: 'slotNames' as const, default: [] },
   { name: 'distributedInServices' as const, default: [] },
   { name: 'licences' as const, default: [] },
@@ -46,6 +47,7 @@ export const filterFieldsList = [
   { name: 'createdAtFrom' as const, default: null, type: 'timeInterval', related: 'createdAtUntil' },
   { name: 'createdAtUntil' as const, default: null, type: 'timeInterval', exclude: true, render: { skip: true } },
   { name: 'mainFileSingleUse' as const, default: null, type: 'boolean' },
+  { name: 'mainFileInternal' as const, default: null, type: 'boolean' },
 ] satisfies readonly MakeFilterOption[]
 
 const listFiltersStore = createFilterStore(filterFieldsList)

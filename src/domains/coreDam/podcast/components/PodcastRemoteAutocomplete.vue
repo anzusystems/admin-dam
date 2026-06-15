@@ -5,12 +5,13 @@ import { usePodcastFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocIdNullable
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
     clearable?: boolean
+    disabled?: boolean
     disableInitFetch?: boolean
+    extSystemId?: IntegerIdNullable
     dataCy?: string
   }>(),
   {
@@ -18,24 +19,17 @@ const props = withDefaults(
     required: undefined,
     multiple: false,
     clearable: false,
+    disabled: false,
     disableInitFetch: false,
+    extSystemId: undefined,
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocIdNullable): void
-}>()
 
-const modelValueComputed = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue: DocIdNullable) {
-    emit('update:modelValue', cloneDeep(newValue))
-  },
-})
+const modelValue = defineModel<DocIdNullable | DocId[]>({ required: true })
 
-const { fetchItems, fetchItemsByIds } = usePodcastSelectActions()
+// Scope to an explicitly passed ext-system (synthesize); otherwise the composable falls back to current.
+const { fetchItems, fetchItemsByIds } = usePodcastSelectActions(() => props.extSystemId)
 
 const { filterData, filterConfig } = usePodcastFilter()
 provide(FilterInnerConfigKey, filterConfig)
@@ -44,14 +38,16 @@ provide(FilterInnerDataKey, filterData)
 
 <template>
   <AFormRemoteAutocomplete
-    v-model="modelValueComputed"
+    v-model="modelValue"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
     :multiple="multiple"
     :clearable="clearable"
+    :disabled="disabled"
     filter-by-field="title"
+    min-search-text="coreDam.podcast.filterMinChars"
     :data-cy="dataCy"
     :prefetch="disableInitFetch ? false : 'hover'"
   />

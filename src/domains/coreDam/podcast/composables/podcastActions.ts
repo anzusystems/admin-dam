@@ -123,13 +123,16 @@ export const usePodcastEditActions = () => {
   }
 }
 
-export const usePodcastSelectActions = () => {
+// `extSystemId` getter lets callers scope to a specific ext-system (e.g. the synthesize dialog where
+// the user picks one); omitted or empty → falls back to the global current ext-system.
+export const usePodcastSelectActions = (extSystemId?: () => IntegerIdNullable | undefined) => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const { executeFetch } = useFetchPodcastListByExtSystem()
+  const resolveExtSystemId = (): IntegerId => extSystemId?.() || currentExtSystemId.value
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     const podcasts = await executeFetch(pagination, filterData, filterConfig, {
-      urlParams: { extSystemId: currentExtSystemId.value },
+      urlParams: { extSystemId: resolveExtSystemId() },
     })
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
@@ -140,7 +143,7 @@ export const usePodcastSelectActions = () => {
 
   const fetchItemsByIds = async (ids: string[]) => {
     const { executeFetch: executeFetchByIds } = useFetchPodcastListByIds()
-    const podcasts = await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
+    const podcasts = await executeFetchByIds(ids, { urlParams: { extSystemId: resolveExtSystemId() } })
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({
       title: podcast.texts.title,

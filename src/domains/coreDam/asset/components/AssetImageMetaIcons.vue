@@ -4,6 +4,7 @@ import {
   ICON_LOW,
   ICON_RSS,
   ICON_SLOTS,
+  ICON_TTS,
   LOW_DIMENSION,
 } from '@/domains/coreDam/asset/components/assetImageIconsConfig'
 import {
@@ -72,6 +73,10 @@ const data = computed(() => {
   if (props.assetFileProperties.fromRss) {
     icons.push(ICON_RSS)
     titles.push(t('coreDam.asset.metaIcons.rss'))
+  }
+  if (props.assetFileProperties.ttsAudio) {
+    icons.push(ICON_TTS)
+    titles.push(t('coreDam.asset.metaIcons.tts'))
   }
   checkDimensions(icons, titles)
   checkDistributions(icons, titles)

@@ -3,7 +3,13 @@
     "id": "ID",
     "name": "Meno",
     "extSystem": "Externý systém",
-    "extId": "Externé ID"
+    "extId": "Externé ID",
+    "internalRule": {
+      "active": "Aktívny processing interné",
+      "markAsInternalSince": "Procesuj príznak interné od"
+    },
+    "internalRuleAuthors": "Interný autori",
+    "internalRuleUsers": "Používatelia uploadujúci interné obrázky"
   },
   "filter": {
     "id": "ID",

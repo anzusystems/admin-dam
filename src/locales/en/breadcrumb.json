@@ -73,6 +73,15 @@
       "list": "Public exports",
       "detail": "Public export",
       "edit": "Public export"
+    },
+    "voiceFamily": {
+      "list": "Voice Families",
+      "detail": "Voice Family",
+      "edit": "Voice Family"
+    },
+    "ttsNarrationRequest": {
+      "detail": "Detail",
+      "list": "TTS Audio"
     }
   },
   "anzuUser": {

@@ -1,8 +1,8 @@
-import type { DamExtSystem } from '@anzusystems/common-admin'
+import type { ExtSystem } from '@/domains/coreDam/extSystem/types/ExtSystem'
 
 const { required, minLength, slug } = useValidate()
 
-export function useExtSystemValidation(extSystem: Ref<DamExtSystem>) {
+export function useExtSystemValidation(extSystem: Ref<ExtSystem>) {
   const rules = computed(() => ({
     extSystem: {
       name: {

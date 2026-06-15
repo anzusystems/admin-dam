@@ -1,13 +1,17 @@
-import type { DamAssetLicence } from '@anzusystems/common-admin'
-import { fetchDamAssetLicenceListByIds, useFetchDamAssetLicenceList } from '@anzusystems/common-admin'
+import type { DamAssetLicence, ValueObjectOption } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceListByIds, useDamCachedUsers, useFetchDamAssetLicenceList } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import type { Ref } from 'vue'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'
 import { useFetchAssetLicence, useUpdateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
+const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+const { addToCachedUsers, fetchCachedUsers } = useDamCachedUsers()
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -18,13 +22,13 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceListActions = () => {
-  const listItems = ref<DamAssetLicence[]>([])
+  const listItems = ref<DamAssetLicenceExtended[]>([])
   const { executeFetch } = useFetchDamAssetLicenceList(damClient)
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = (await executeFetch(pagination, filterData, filterConfig)) as DamAssetLicenceExtended[]
       addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
       fetchCachedExtSystems()
     } catch (error) {
@@ -53,7 +57,11 @@ export const useAssetLicenceDetailActions = () => {
       const assetLicence = await fetchAssetLicence({ urlParams: { id } })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
-      assetLicenceOneStore.setAssetLicence(assetLicence)
+      addToCachedAuthors(...assetLicence.internalRuleAuthors)
+      addToCachedUsers(...assetLicence.internalRuleUsers)
+      fetchCachedAuthors()
+      fetchCachedUsers()
+      assetLicenceOneStore.assetLicence = assetLicence
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -82,7 +90,11 @@ export const useAssetLicenceEditActions = () => {
       const assetLicence = await fetchAssetLicence({ urlParams: { id } })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
-      assetLicenceOneStore.setAssetLicence(assetLicence)
+      addToCachedAuthors(...assetLicence.internalRuleAuthors)
+      addToCachedUsers(...assetLicence.internalRuleUsers)
+      fetchCachedAuthors()
+      fetchCachedUsers()
+      assetLicenceOneStore.assetLicence = assetLicence
     } catch (error) {
       showErrorsDefault(error)
     } finally {

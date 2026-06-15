@@ -3,6 +3,7 @@ export const AssetDetailTab = {
   ROI: 'roi',
   Distribution: 'distribution',
   Podcast: 'podcast',
+  Tts: 'tts',
   VideoShow: 'videoShow',
   Slots: 'slots',
   ImagePreview: 'imagePreview',

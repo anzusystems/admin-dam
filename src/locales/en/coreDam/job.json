@@ -4,11 +4,17 @@
     "fullSync": "Full synchronization",
     "authorId": "Author Id",
     "processAll": "Process all",
-    "licence": "Licence"
+    "licence": "Licence",
+    "targetLicenceId": "Target Licence Id",
+    "processFrom": "Process from",
+    "processUntil": "Process until",
+    "bulkSize": "Bulk size"
   },
   "jobResource": {
     "jobPodcastSynchronizer": "Podcast synchronizer",
     "jobAuthorCurrentOptimize": "Author current optimize",
-    "jobImageCopy": "Image copy"
+    "jobImageCopy": "Image copy",
+    "jobAssetFileReprocessInternalFlag": "Asset file reprocess internal flag",
+    "jobSynchronizeImageChanged": "Synchronize image changed"
   }
 }

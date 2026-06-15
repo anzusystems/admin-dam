@@ -2,7 +2,9 @@
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
+  JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
+  JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
   type JobResource,
   useJobResource,
 } from '@/domains/coreDam/job/valueObject/JobResource'
@@ -10,6 +12,8 @@ import JobCreateFormPodcastSynchronizer from '@/domains/coreDam/job/components/J
 import JobCreateFormUserDataDelete from '@/domains/coreDam/job/components/JobCreateFormUserDataDelete.vue'
 import JobCreateFormDefault from '@/domains/coreDam/job/components/JobCreateFormDefault.vue'
 import JobCreateFormAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
+import JobCreateFormAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
+import JobCreateFormSynchronizeImageChanged from '@/domains/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue'
 
 withDefaults(
   defineProps<{
@@ -41,6 +45,10 @@ const jobComponent = computed(() => {
       return JobCreateFormPodcastSynchronizer
     case JOB_AUTHOR_CURRENT_OPTIMIZE:
       return JobCreateFormAuthorCurrentOptimize
+    case JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG:
+      return JobCreateFormAssetFileReprocessInternalFlag
+    case JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED:
+      return JobCreateFormSynchronizeImageChanged
     default:
       console.error('Unsupported type.')
       return JobCreateFormDefault

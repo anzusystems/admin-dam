@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { DamAssetLicence } from '@anzusystems/common-admin'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import {
   ADatatableConfigButton,
   ADatetime,
@@ -26,7 +26,7 @@ import { useAssetLicenceListFilter } from '@/domains/coreDam/assetLicence/filter
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
-type DatatableItem = DamAssetLicence
+type DatatableItem = DamAssetLicenceExtended
 
 const router = useRouter()
 

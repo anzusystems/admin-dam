@@ -1,14 +1,10 @@
 import { useAssetLicenceFactory } from '@/domains/coreDam/assetLicence/factory/AssetLicenceFactory'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 export const useAssetLicenceOneStore = defineStore('assetLicenceOneStore', () => {
   const { createDefault } = useAssetLicenceFactory()
 
-  const assetLicence = ref<DamAssetLicence>(createDefault())
-
-  function setAssetLicence(newAssetLicence: DamAssetLicence) {
-    assetLicence.value = newAssetLicence
-  }
+  const assetLicence = ref<DamAssetLicenceExtended>(createDefault())
 
   function reset() {
     assetLicence.value = createDefault()
@@ -16,7 +12,6 @@ export const useAssetLicenceOneStore = defineStore('assetLicenceOneStore', () =>
 
   return {
     assetLicence,
-    setAssetLicence,
     reset,
   }
 })

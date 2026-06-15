@@ -1,14 +1,10 @@
-import type { DamExtSystem } from '@anzusystems/common-admin'
+import type { ExtSystem } from '@/domains/coreDam/extSystem/types/ExtSystem'
 import { useExtSystemFactory } from '@/domains/coreDam/extSystem/factory/ExtSystemFactory'
 
 export const useExtSystemOneStore = defineStore('extSystemOneStore', () => {
   const { createDefault } = useExtSystemFactory()
 
-  const extSystem = ref<DamExtSystem>(createDefault())
-
-  function setExtSystem(newExtSystem: DamExtSystem) {
-    extSystem.value = newExtSystem
-  }
+  const extSystem = ref<ExtSystem>(createDefault())
 
   function reset() {
     extSystem.value = createDefault()
@@ -16,7 +12,6 @@ export const useExtSystemOneStore = defineStore('extSystemOneStore', () => {
 
   return {
     extSystem,
-    setExtSystem,
     reset,
   }
 })

@@ -1,0 +1,79 @@
+{
+  "model": {
+    "id": "ID",
+    "voiceFamilySlug": "Voice family",
+    "mode": "Mode",
+    "title": "Title",
+    "status": "Status",
+    "startedAt": "Started at"
+  },
+  "filter": {
+    "voiceFamilySlug": "Voice family slug",
+    "status": "Status"
+  },
+  "status": {
+    "waiting": "Waiting",
+    "processing": "Processing",
+    "done": "Done",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "mode": {
+    "initial": "Initial",
+    "regenerate": "Regenerate"
+  },
+  "assetStatus": {
+    "active": "Active",
+    "superseding": "Regenerating",
+    "cancelling": "Cancelling",
+    "failed": "Failed",
+    "unpublished": "Unpublished"
+  },
+  "button": {
+    "synthesize": "Synthesize",
+    "cancelRequest": "Cancel request"
+  },
+  "synthesize": {
+    "title": "Synthesize TTS audio",
+    "text": "Text",
+    "textPlaceholder": "Paste the article text here…",
+    "extSystem": "Ext system",
+    "assetLicence": "Asset licence",
+    "assetTitle": "Asset title",
+    "assetTitlePlaceholder": "Optional — auto-generated when left empty",
+    "podcasts": "Bind to podcasts"
+  },
+  "cancelRequest": {
+    "title": "Cancel pending TTS request",
+    "description": "Request cancellation of a pending audio narration request. If the worker has already swapped the result, the cancel may not take effect."
+  },
+  "detail": {
+    "requestSection": "Request",
+    "ttsAssetSection": "TTS Asset",
+    "noTtsAsset": "No TTS asset (request not finished or not retained)",
+    "fields": {
+      "id": "ID",
+      "status": "Status",
+      "chunkProgress": "Chunks (done / total)",
+      "chunksFailed": "{count} failed",
+      "mode": "Mode",
+      "voiceFamilySlug": "Voice family",
+      "title": "Title",
+      "cancelRequested": "Cancel requested",
+      "failureReason": "Failure reason",
+      "startedAt": "Started at",
+      "assetAssetId": "Asset ID",
+      "assetDiscriminator": "Discriminator",
+      "assetVoiceFamilyId": "Voice family",
+      "externalVoiceId": "External voice ID",
+      "assetStatus": "Status",
+      "assetFailureReason": "Failure reason",
+      "assetCreatedAt": "Created",
+      "assetModifiedAt": "Modified",
+      "sourceTextHash": "Source text hash",
+      "assetId": "Asset",
+      "extSystemId": "Ext system",
+      "assetLicence": "Asset licence"
+    }
+  }
+}

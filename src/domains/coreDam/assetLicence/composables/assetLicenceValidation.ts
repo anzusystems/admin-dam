@@ -1,8 +1,9 @@
-import type { DamAssetLicence } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 const { required, minLength } = useValidate()
 
-export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicence>) {
+export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExtended>) {
   const rules = computed(() => ({
     assetLicence: {
       name: {

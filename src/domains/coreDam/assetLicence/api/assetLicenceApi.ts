@@ -1,13 +1,13 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { useApiRequest } from '@anzusystems/common-admin/labs'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 const END_POINT = '/adm/v1/asset-licence'
 export const ENTITY = 'assetLicence'
 
 export const useCreateAssetLicence = () =>
-  useApiRequest<DamAssetLicence, DamAssetLicence>({
+  useApiRequest<DamAssetLicenceExtended, DamAssetLicenceExtended>({
     client: damClient,
     method: 'POST',
     system: SYSTEM_CORE_DAM,
@@ -16,7 +16,7 @@ export const useCreateAssetLicence = () =>
   })
 
 export const useUpdateAssetLicence = () =>
-  useApiRequest<DamAssetLicence, DamAssetLicence>({
+  useApiRequest<DamAssetLicenceExtended, DamAssetLicenceExtended>({
     client: damClient,
     method: 'PUT',
     system: SYSTEM_CORE_DAM,
@@ -25,7 +25,7 @@ export const useUpdateAssetLicence = () =>
   })
 
 export const useFetchAssetLicence = () =>
-  useApiRequest<DamAssetLicence, null>({
+  useApiRequest<DamAssetLicenceExtended, null>({
     client: damClient,
     method: 'GET',
     system: SYSTEM_CORE_DAM,

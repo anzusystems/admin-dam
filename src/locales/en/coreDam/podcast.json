@@ -46,5 +46,6 @@
   "podcastMode": {
     "import": "Import",
     "notImport": "Not import"
-  }
+  },
+  "filterMinChars": "Enter at least 2 characters"
 }

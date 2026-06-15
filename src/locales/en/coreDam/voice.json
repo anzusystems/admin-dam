@@ -1,0 +1,34 @@
+{
+  "discriminator": {
+    "none": "None",
+    "elevenlabs": "ElevenLabs",
+    "google_tts": "Google TTS"
+  },
+  "ssmlGender": {
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "NEUTRAL": "Neutral"
+  },
+  "model": {
+    "id": "ID",
+    "discriminator": "Provider",
+    "externalVoiceId": "External Voice ID",
+    "main": "Main",
+    "active": "Active",
+    "modifiedAt": "Modified at",
+    "modelId": "Model",
+    "stability": "Stability",
+    "similarityBoost": "Similarity Boost",
+    "ssmlGender": "SSML Gender",
+    "speakingRate": "Speaking Rate",
+    "pitch": "Pitch"
+  },
+  "meta": {
+    "create": "Add Voice Binding",
+    "edit": "Edit Voice Binding"
+  },
+  "button": {
+    "edit": "Edit",
+    "delete": "Delete"
+  }
+}

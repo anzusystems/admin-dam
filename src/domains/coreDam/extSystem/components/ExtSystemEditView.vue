@@ -2,6 +2,7 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemEditForm from '@/domains/coreDam/extSystem/components/ExtSystemEditForm.vue'
+import ExtSystemTtsSettingsForm from '@/domains/coreDam/extSystem/components/ExtSystemTtsSettingsForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -51,6 +52,16 @@ onBeforeUnmount(() => {
   <ACard :loading="detailLoading">
     <VCardText>
       <ExtSystemEditForm />
+    </VCardText>
+  </ACard>
+
+  <ACard
+    class="mt-4"
+    :loading="detailLoading"
+    :title="t('coreDam.extSystem.ttsSettings.title')"
+  >
+    <VCardText>
+      <ExtSystemTtsSettingsForm />
     </VCardText>
   </ACard>
 </template>

@@ -78,6 +78,11 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
+      <AFilterBooleanSelect name="ttsAudio" />
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>
       <AFilterValueObjectOptionsSelect
         name="status"
         :items="assetStatusOptions"
@@ -87,6 +92,11 @@ const { currentExtSystemId } = useCurrentExtSystem()
   <VRow>
     <VCol>
       <AFilterBooleanSelect name="mainFileSingleUse" />
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>
+      <AFilterBooleanSelect name="mainFileInternal" />
     </VCol>
   </VRow>
   <VRow>

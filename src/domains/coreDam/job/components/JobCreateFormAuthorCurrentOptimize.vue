@@ -24,7 +24,7 @@ const onCancel = () => {
 const { createJob } = useJobApi<JobAuthorCurrentOptimize>(damClient, SYSTEM_CORE_DAM)
 const { showRecordWas, showErrorsDefault, showValidationError } = useAlerts()
 
-const { required, minValue } = useValidate()
+const { required } = useValidate()
 
 const rules = computed(() => {
   if (!job.value.processAll) {
@@ -32,7 +32,6 @@ const rules = computed(() => {
       job: {
         authorId: {
           required,
-          minValue: minValue(1),
         },
       },
     }

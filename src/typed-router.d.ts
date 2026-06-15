@@ -353,6 +353,20 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
+    '/(coreDam)/tts-narration-requests': RouteRecordInfo<
+      '/(coreDam)/tts-narration-requests',
+      '/tts-narration-requests',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(coreDam)/tts-narration-requests/[id]': RouteRecordInfo<
+      '/(coreDam)/tts-narration-requests/[id]',
+      '/tts-narration-requests/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     '/(coreDam)/users': RouteRecordInfo<
       '/(coreDam)/users',
       '/users',
@@ -407,6 +421,27 @@ declare module 'vue-router/auto-routes' {
       '/video-shows/:id/episodes/:episodeId/edit',
       { id: ParamValue<true>, episodeId: ParamValue<true> },
       { id: ParamValue<false>, episodeId: ParamValue<false> },
+      | never
+    >,
+    '/(coreDam)/voice-families': RouteRecordInfo<
+      '/(coreDam)/voice-families',
+      '/voice-families',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/(coreDam)/voice-families/[id]': RouteRecordInfo<
+      '/(coreDam)/voice-families/[id]',
+      '/voice-families/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    '/(coreDam)/voice-families/[id]/edit': RouteRecordInfo<
+      '/(coreDam)/voice-families/[id]/edit',
+      '/voice-families/:id/edit',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
       | never
     >,
     '/': RouteRecordInfo<
@@ -839,6 +874,22 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
+    'src/pages/(coreDam)/tts-narration-requests/index.vue': {
+      routes:
+        | '/(coreDam)/tts-narration-requests'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/(coreDam)/tts-narration-requests/[id].vue': {
+      routes:
+        | '/(coreDam)/tts-narration-requests/[id]'
+      views:
+        | never
+      pathParamNames:
+        | 'id'
+    }
     'src/pages/(coreDam)/users/index.vue': {
       routes:
         | '/(coreDam)/users'
@@ -898,6 +949,30 @@ declare module 'vue-router/auto-routes' {
     'src/pages/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit.vue': {
       routes:
         | '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/(coreDam)/voice-families/index.vue': {
+      routes:
+        | '/(coreDam)/voice-families'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/(coreDam)/voice-families/[id]/index.vue': {
+      routes:
+        | '/(coreDam)/voice-families/[id]'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/(coreDam)/voice-families/[id]/edit.vue': {
+      routes:
+        | '/(coreDam)/voice-families/[id]/edit'
       views:
         | never
       pathParamNames:

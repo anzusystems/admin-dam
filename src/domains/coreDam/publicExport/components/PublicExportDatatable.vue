@@ -114,7 +114,12 @@ defineExpose({
           <ExportTypeChip :type="item.type" />
         </template>
         <template #item.assetLicence="{ item }: { item: DatatableItem }">
-          <CachedAssetLicenceChip :id="item.assetLicence" />
+          <CachedAssetLicenceChip
+            v-for="licence in item.licences"
+            :id="licence"
+            :key="licence"
+            class="mr-1"
+          />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
