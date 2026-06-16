@@ -7,7 +7,13 @@ import type { DistributionCategory } from '@/domains/coreDam/distributionCategor
 import DistributionCategoryFilter from '@/domains/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
 import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategorySelectedOptionChip from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
-import { ADatatableConfigButton, ADatetime, ATableCopyIdButton, ATableDetailButton, ATableEditButton } from '@anzusystems/common-admin'
+import {
+  ADatatableConfigButton,
+  ADatetime,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+} from '@anzusystems/common-admin'
 import {
   ADatatableOrdering,
   ADatatablePagination,

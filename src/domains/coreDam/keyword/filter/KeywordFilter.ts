@@ -9,15 +9,11 @@ const listFilterFields = [
 ] satisfies readonly MakeFilterOption[]
 
 export function useKeywordListFilter() {
-  const { filterConfig, filterData } = createFilter(
-    listFilterFields,
-    createFilterStore(listFilterFields),
-    {
-      elastic: true,
-      system: SYSTEM_CORE_DAM,
-      subject: ENTITY,
-    }
-  )
+  const { filterConfig, filterData } = createFilter(listFilterFields, createFilterStore(listFilterFields), {
+    elastic: true,
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
 
   return {
     filterConfig,
@@ -30,15 +26,11 @@ export function useKeywordInnerFilter() {
     { name: 'text' as const, variant: 'search', default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(
-    filterFieldsInner,
-    createFilterStore(filterFieldsInner),
-    {
-      elastic: true,
-      system: SYSTEM_CORE_DAM,
-      subject: ENTITY,
-    }
-  )
+  const { filterConfig, filterData } = createFilter(filterFieldsInner, createFilterStore(filterFieldsInner), {
+    elastic: true,
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
 
   return {
     filterConfig,

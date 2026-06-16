@@ -29,7 +29,7 @@ const createBaseVoice = (voiceFamily: DocId) => ({
 export function useVoiceKindFactory() {
   const createVoiceKind = <K extends VoiceDiscriminatorType>(
     kind: K,
-    voiceFamily: DocId,
+    voiceFamily: DocId
   ): VoiceDiscriminatorTypeMap[K] => {
     switch (kind) {
       case VoiceDiscriminator.Elevenlabs: {

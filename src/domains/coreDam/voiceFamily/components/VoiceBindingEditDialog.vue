@@ -34,7 +34,7 @@ watch(
       localVoice.value = cloneDeep(newVoice)
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 const onCancel = () => {

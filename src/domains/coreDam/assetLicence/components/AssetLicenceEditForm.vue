@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope, DamExtSystemRemoteAutocomplete } from '@anzusystems/common-admin'
+import {
+  AFormDatetimePicker,
+  AFormTextField,
+  ARow,
+  ASystemEntityScope,
+  DamExtSystemRemoteAutocomplete,
+} from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import { damClient } from '@/shared/apiClients/damClient'

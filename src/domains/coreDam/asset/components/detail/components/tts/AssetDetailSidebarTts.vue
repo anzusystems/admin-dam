@@ -18,7 +18,11 @@ const props = withDefaults(
 const { t } = useI18n()
 const { loading, detail, fetchData } = useAssetDetailSidebarTtsActions()
 
-watch(() => props.assetId, (assetId) => fetchData(assetId), { immediate: true })
+watch(
+  () => props.assetId,
+  (assetId) => fetchData(assetId),
+  { immediate: true }
+)
 </script>
 
 <template>

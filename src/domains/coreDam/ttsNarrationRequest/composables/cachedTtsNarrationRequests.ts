@@ -1,4 +1,7 @@
-import type { TtsNarrationRequest, TtsNarrationRequestMinimal } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import type {
+  TtsNarrationRequest,
+  TtsNarrationRequestMinimal,
+} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { useFetchTtsNarrationRequest } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
 import type { DocId } from '@anzusystems/common-admin'
 import { defineCached } from '@anzusystems/common-admin'

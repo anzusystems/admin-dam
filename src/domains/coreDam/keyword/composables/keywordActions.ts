@@ -149,11 +149,7 @@ export const useKeywordSelectActions = () => {
     return keywords.map((keyword: DamKeyword) => mapToMinimal(keyword))
   }
 
-  const fetchItems = async (
-    pagination: Ref<Pagination>,
-    filterData: FilterData,
-    filterConfig: FilterConfig
-  ) => {
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToValueObjects(
       await executeFetch(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
@@ -161,11 +157,7 @@ export const useKeywordSelectActions = () => {
     )
   }
 
-  const fetchItemsMinimal = async (
-    pagination: Ref<Pagination>,
-    filterData: FilterData,
-    filterConfig: FilterConfig
-  ) => {
+  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToMinimals(
       await executeFetch(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },

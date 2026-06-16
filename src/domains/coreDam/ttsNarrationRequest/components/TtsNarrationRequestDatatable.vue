@@ -22,7 +22,10 @@ import {
 import { useDebounceFn } from '@vueuse/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
-import { isCancellableRequest, useTtsNarrationRequestListActions } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
+import {
+  isCancellableRequest,
+  useTtsNarrationRequestListActions,
+} from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { useTtsNarrationRequestListFilter } from '@/domains/coreDam/ttsNarrationRequest/filter/TtsNarrationRequestFilter'
 import TtsNarrationRequestFilter from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue'
 import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'

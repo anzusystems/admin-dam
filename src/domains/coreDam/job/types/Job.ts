@@ -1,4 +1,11 @@
-import type { DatetimeUTCNullable, DocIdNullable, IntegerId, IntegerIdNullable, JobBase, JobUserDataDelete } from '@anzusystems/common-admin'
+import type {
+  DatetimeUTCNullable,
+  DocIdNullable,
+  IntegerId,
+  IntegerIdNullable,
+  JobBase,
+  JobUserDataDelete,
+} from '@anzusystems/common-admin'
 import type { JobResource } from '@/domains/coreDam/job/valueObject/JobResource'
 
 export interface JobAssetFileReprocessInternalFlag extends JobBase<JobResource> {

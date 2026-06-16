@@ -245,7 +245,7 @@ export const updateAssetMetadata = (
   mainFileSingleUse: boolean | null,
   mainFileOverrideInternal: boolean,
   mainFileInternal: boolean,
-  ttsAudio: boolean,
+  ttsAudio: boolean
 ) => {
   return new Promise((resolve, reject) => {
     const data: AssetMetadataBulkItem = {

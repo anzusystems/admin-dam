@@ -178,11 +178,7 @@ export const useAuthorSelectActions = () => {
     )
   }
 
-  const fetchItemsMinimal = async (
-    pagination: Ref<Pagination>,
-    filterData: FilterData,
-    filterConfig: FilterConfig
-  ) => {
+  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToMinimals(
       await executeFetch(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
@@ -192,9 +188,7 @@ export const useAuthorSelectActions = () => {
 
   const fetchItemsByIds = async (ids: string[]) => {
     const { executeFetch: executeFetchByIds } = useFetchAuthorListByIds()
-    return mapToValueObjects(
-      await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
-    )
+    return mapToValueObjects(await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } }))
   }
 
   return {

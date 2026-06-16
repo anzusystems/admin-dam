@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
-import { ADatatableConfigButton, ADatetime, ATableCopyIdButton, ATableDetailButton, ATableEditButton } from '@anzusystems/common-admin'
+import {
+  ADatatableConfigButton,
+  ADatetime,
+  ATableCopyIdButton,
+  ATableDetailButton,
+  ATableEditButton,
+} from '@anzusystems/common-admin'
 import type { DamUser } from '@anzusystems/common-admin'
 import {
   ADatatableOrdering,

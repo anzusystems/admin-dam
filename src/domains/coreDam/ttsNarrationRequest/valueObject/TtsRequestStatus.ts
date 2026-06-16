@@ -1,7 +1,10 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ValueObjectOption } from '@anzusystems/common-admin'
-import { TtsRequestStatus, type TtsRequestStatusType } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import {
+  TtsRequestStatus,
+  type TtsRequestStatusType,
+} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 
 export function useTtsRequestStatus() {
   const { t } = useI18n()

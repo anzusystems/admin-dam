@@ -32,9 +32,7 @@ const { t } = useI18n()
         :title="t('coreDam.assetLicence.model.internalRule.markAsInternalSince')"
         :value="dateTimePretty(assetLicence.internalRule.markAsInternalSince)"
       />
-      <ARow
-        :title="t('coreDam.assetLicence.model.internalRuleAuthors')"
-      >
+      <ARow :title="t('coreDam.assetLicence.model.internalRuleAuthors')">
         <AuthorRemoteAutocompleteCachedAuthorChip
           v-for="authorId in assetLicence.internalRuleAuthors"
           :id="authorId"
@@ -42,9 +40,7 @@ const { t } = useI18n()
           class="mr-2 mt-2"
         />
       </ARow>
-      <ARow
-        :title="t('coreDam.assetLicence.model.internalRuleUsers')"
-      >
+      <ARow :title="t('coreDam.assetLicence.model.internalRuleUsers')">
         <CachedDamUserChip
           v-for="userId in assetLicence.internalRuleUsers"
           :id="userId"

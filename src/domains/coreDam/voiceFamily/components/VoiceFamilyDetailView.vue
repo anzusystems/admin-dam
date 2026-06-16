@@ -1,12 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
-import {
-  AActionCloseButton,
-  AActionDeleteButton,
-  AActionEditButton,
-  ACard,
-} from '@anzusystems/common-admin'
+import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import {
   useVoiceFamilyDetailActions,

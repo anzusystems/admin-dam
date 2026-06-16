@@ -8,7 +8,10 @@ import type {
   TtsSynthesizeRequestDto,
   TtsSynthesizeResponse,
 } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
-import { TtsRequestStatus, type TtsRequestStatusType } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import {
+  TtsRequestStatus,
+  type TtsRequestStatusType,
+} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import {
   useCancelTtsNarrationRequest,
   useFetchTtsNarrationRequest,

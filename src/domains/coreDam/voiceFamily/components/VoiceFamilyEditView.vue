@@ -10,8 +10,7 @@ import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 
-const { detailLoading, saveButtonLoading, fetchData, resetStore, onUpdate, voiceFamily } =
-  useVoiceFamilyEditActions()
+const { detailLoading, saveButtonLoading, fetchData, resetStore, onUpdate, voiceFamily } = useVoiceFamilyEditActions()
 
 const { t } = useI18n()
 

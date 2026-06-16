@@ -1,12 +1,7 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { type DocId, useAlerts } from '@anzusystems/common-admin'
-import {
-  createFilter,
-  createFilterStore,
-  type MakeFilterOption,
-  type Pagination,
-} from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore, type MakeFilterOption, type Pagination } from '@anzusystems/common-admin/labs'
 import useVuelidate from '@vuelidate/core'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import {

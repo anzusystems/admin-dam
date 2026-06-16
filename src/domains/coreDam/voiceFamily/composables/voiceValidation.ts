@@ -9,7 +9,7 @@ const { required, minLength, maxLength, minValue, maxValue } = useValidate()
 
 export function useVoiceElevenlabsValidation(
   voice: Ref<ElevenlabsVoice>,
-  validationScope: ValidationScope = undefined,
+  validationScope: ValidationScope = undefined
 ) {
   const rules = computed(() => ({
     voice: {
@@ -41,10 +41,7 @@ export function useVoiceElevenlabsValidation(
   return { v$ }
 }
 
-export function useVoiceGoogleTtsValidation(
-  voice: Ref<GoogleTtsVoice>,
-  validationScope: ValidationScope = undefined,
-) {
+export function useVoiceGoogleTtsValidation(voice: Ref<GoogleTtsVoice>, validationScope: ValidationScope = undefined) {
   const rules = computed(() => ({
     voice: {
       externalVoiceId: {

@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import { AFilterValueObjectOptionsSelect, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import {
+  AFilterValueObjectOptionsSelect,
+  AFilterWrapper,
+  FilterConfigKey,
+  FilterDataKey,
+} from '@anzusystems/common-admin/labs'
 import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 
 const emit = defineEmits<{

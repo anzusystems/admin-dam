@@ -2,11 +2,7 @@
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetListFilterForm from '@/domains/coreDam/asset/components/list/components/AssetListFilterForm.vue'
-import {
-  AFilterWrapperSidebar,
-  FilterConfigKey,
-  FilterDataKey,
-} from '@anzusystems/common-admin/labs'
+import { AFilterWrapperSidebar, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
 
 const { sidebarLeft } = useMainWrapper()
 

@@ -22,7 +22,10 @@ import {
   useTtsNarrationRequestSynthesizeValidation,
 } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestValidation'
 import VoiceFamilySelect from '@/domains/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue'
-import type { TtsSynthesizeRequestDto, TtsSynthesizeResponse } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import type {
+  TtsSynthesizeRequestDto,
+  TtsSynthesizeResponse,
+} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { useTtsSynthesizeRequestDtoFactory } from '@/domains/coreDam/ttsNarrationRequest/factory/TtsSynthesizeRequestDtoFactory'
 
 withDefaults(
