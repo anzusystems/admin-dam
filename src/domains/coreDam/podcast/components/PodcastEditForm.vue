@@ -7,9 +7,9 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  ASortable,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
+import { ASortableListEditor, type ListViewItem } from '@anzusystems/common-admin/labs'
 import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
@@ -33,20 +33,15 @@ const { createDefaultWithPodcast: createPodcastExportData } = usePodcastExportDa
 const podcastExportDataManageDialog = ref(false)
 const managedPodcastExportData = ref<PodcastExportData | null>(null)
 
-const onAddLastPodcastExportData = (beforeSortableItem: SortableItem<PodcastExportData> | null) => {
-  const newItem = createPodcastExportData(podcast.value.id)
-  newItem.position = (beforeSortableItem?.raw?.position ?? 0) + 1
-  podcast.value.exportData.push(newItem)
-  managedPodcastExportData.value = newItem
+const createExportDataItem = (): PodcastExportData => createPodcastExportData(podcast.value.id)
+
+const onExportDataAdded = ({ item }: { item: PodcastExportData; index: number }) => {
+  managedPodcastExportData.value = item
   podcastExportDataManageDialog.value = true
 }
 
-const onDeletePodcastExportData = (item: SortableItem<PodcastExportData>) => {
-  podcast.value.exportData.splice(item.index, 1)
-}
-
-const onEditPodcastExportData = (item: SortableItem<PodcastExportData>) => {
-  managedPodcastExportData.value = item.raw
+const onEditPodcastExportData = (vi: ListViewItem<PodcastExportData>) => {
+  managedPodcastExportData.value = vi.raw
   podcastExportDataManageDialog.value = true
 }
 
@@ -146,22 +141,22 @@ const onCancel = () => {
           />
         </ARow>
         <ARow :title="t('coreDam.podcast.model.exportData')">
-          <ASortable
+          <ASortableListEditor
             v-model="podcast.exportData"
-            show-add-last-button
-            show-delete-button
-            show-edit-button
-            @on-add-last="onAddLastPodcastExportData"
-            @on-delete="onDeletePodcastExportData"
-            @on-edit="onEditPodcastExportData"
+            update-position
+            manage-delete
+            :item-factory="createExportDataItem"
+            add-label="coreDam.podcastExportData.meta.create"
+            @added="onExportDataAdded"
+            @edit="onEditPodcastExportData"
           >
-            <template #item="{ item }: { item: SortableItem<PodcastExportData> }">
+            <template #item-compact="{ raw }: { raw: PodcastExportData }">
               {{ t('coreDam.podcastExportData.model.exportType') }}:
-              <ExportTypeChip :type="item.raw.exportType" />
+              <ExportTypeChip :type="raw.exportType" />
               {{ t('coreDam.podcastExportData.model.deviceType') }}:
-              <DeviceTypeChip :type="item.raw.deviceType" />
+              <DeviceTypeChip :type="raw.deviceType" />
             </template>
-          </ASortable>
+          </ASortableListEditor>
         </ARow>
       </VCol>
       <VCol

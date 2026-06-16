@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
-import { ASortable, type DamAssetTypeType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { AListEditor, type ListViewItem } from '@anzusystems/common-admin/labs'
 import {
   type DistributionItem,
   distributionItemIsCustomItem,
@@ -69,8 +70,8 @@ const onAddDistributionItem = () => {
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
-const onDeleteDistributionItem = async (item: SortableItem) => {
-  const distributionId = distributionListStore.list[item.index]?.id ?? null
+const onDeleteDistributionItem = async (item: DistributionItem) => {
+  const distributionId = item.id ?? null
   if (!isString(distributionId)) return
 
   distributionListStore.showLoader()
@@ -85,8 +86,8 @@ const onDeleteDistributionItem = async (item: SortableItem) => {
   }
 }
 
-const onEdit = (data: SortableItem<DistributionItem>) => {
-  distributionContent.value = createUpdateDto(data.raw)
+const onEdit = (vi: ListViewItem<DistributionItem>) => {
+  distributionContent.value = createUpdateDto(vi.raw)
   distributionDialogEdit.value = true
   distributionManageDialog.value = true
 }
@@ -122,25 +123,21 @@ const onDistributionUpsert = () => {
       color="primary"
     />
   </div>
-  <ASortable
+  <AListEditor
     v-else
     v-model="distributionListStore.list"
-    show-add-last-button
-    show-delete-button
-    disable-dragable
-    show-edit-button
-    add-last-button-t="coreDam.distribution.meta.create"
-    @on-edit="onEdit"
-    @on-add-last="onAddDistributionItem"
-    @on-delete="onDeleteDistributionItem"
+    add-label="coreDam.distribution.meta.create"
+    :on-delete="onDeleteDistributionItem"
+    @add="onAddDistributionItem"
+    @edit="onEdit"
   >
-    <template #item="{ item }: { item: SortableItem<DistributionItem> }">
+    <template #item-compact="{ raw }: { raw: DistributionItem }">
       <DistributionItemView
-        v-model="item.raw as DistributionItem"
+        :model-value="raw"
         :asset-type="assetType"
       />
     </template>
-  </ASortable>
+  </AListEditor>
   <DistributionManageDialog
     v-if="distributionContent"
     v-model="distributionContent"
