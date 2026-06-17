@@ -28,9 +28,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', data: string | number | null | string[] | number[]): void
 }>()
 
-// Script-side alias so the union `|` never appears in the template binding: oxfmt strips the
-// wrapping parens and vue-eslint-parser then reads `a | b` as a (deprecated) filter pipe.
-type AutocompleteModelValue = string | string[] | null
+// AFormRemoteAutocomplete's model-value accepts only string ids — narrow the wider prop here.
+const innerModelValue = computed(() => props.modelValue as string | string[] | null)
 
 const { fetchItems, fetchItemsByIds } = useDistributionCategorySelectActions()
 
@@ -49,7 +48,7 @@ watch(
 
 <template>
   <AFormRemoteAutocomplete
-    :model-value="modelValue as AutocompleteModelValue"
+    :model-value="innerModelValue"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
