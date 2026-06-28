@@ -1,5 +1,6 @@
 import { isAnzuApiValidationError } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import { renumberPositions } from '@anzusystems/common-admin/labs'
 import type { Ref } from 'vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
@@ -89,22 +90,39 @@ export const useDistributionCategorySelectEditActions = () => {
     }
   }
 
-  const onUpdate = async (close = false) => {
+  const onUpdate = async (
+    close = false,
+    validateLists: () => boolean = () => true,
+    onSuccess: ((distributionCategorySelect: DistributionCategorySelect) => void) | undefined = undefined
+  ) => {
     try {
       close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
-      if (v$.value.$invalid) {
+      // Evaluate before the `||` — validateLists() reveals invalid option rows as a side effect.
+      const listsValid = validateLists()
+      if (v$.value.$invalid || !listsValid) {
         showValidationError()
         saveButtonLoading.value = false
         saveAndCloseButtonLoading.value = false
         return
       }
       const { executeRequest: updateDistributionCategorySelect } = useUpdateDistributionCategorySelect()
-      await updateDistributionCategorySelect({
+      // New rows carry a negative temp id for the editor key; the API expects '' for new options.
+      const object: DistributionCategorySelect = {
+        ...distributionCategorySelect.value,
+        options: renumberPositions(distributionCategorySelect.value.options).map((option) =>
+          Number(option.id) < 0 ? { ...option, id: '' } : option
+        ),
+      }
+      const updated = await updateDistributionCategorySelect({
         urlParams: { id: distributionCategorySelectOneStore.distributionCategorySelect.id },
-        object: distributionCategorySelect.value,
+        object,
       })
+      // Adopt the response (real ids for new rows, sorted by `setDistributionCategorySelect`) so the
+      // editor can re-baseline via commit() and saved rows lose their unsaved markers.
+      distributionCategorySelectOneStore.setDistributionCategorySelect(updated)
       showRecordWas('updated')
+      if (!isUndefined(onSuccess)) onSuccess(updated)
       if (!close) return
       router.push({ name: '/(coreDam)/distribution-category-selects' })
     } catch (error) {

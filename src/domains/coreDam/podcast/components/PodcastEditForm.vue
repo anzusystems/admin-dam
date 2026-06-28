@@ -9,7 +9,7 @@ import {
   ARow,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
-import { ASortableListEditor, type ListViewItem } from '@anzusystems/common-admin/labs'
+import { ASortableListEditor, type ListEditorHandle, type ListViewItem } from '@anzusystems/common-admin/labs'
 import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
@@ -32,20 +32,37 @@ const { createDefaultWithPodcast: createPodcastExportData } = usePodcastExportDa
 
 const podcastExportDataManageDialog = ref(false)
 const managedPodcastExportData = ref<PodcastExportData | null>(null)
+const addingNewExportData = ref(false)
 
-const createExportDataItem = (): PodcastExportData => createPodcastExportData(podcast.value.id)
+// Export-data rows are edited in PodcastExportDataManageDialog (rich-text body), so the editor's
+// built-in inline add is hidden and add is driven from here: create -> push -> open the dialog.
+const exportDataEditor = ref<ListEditorHandle<PodcastExportData> | null>(null)
+defineExpose({
+  commit: (saved?: PodcastExportData[]) => exportDataEditor.value?.commit(saved),
+})
 
-const onExportDataAdded = ({ item }: { item: PodcastExportData; index: number }) => {
+const onAddExportData = () => {
+  const item = createPodcastExportData(podcast.value.id)
+  item.position = podcast.value.exportData.length + 1
+  podcast.value.exportData.push(item)
   managedPodcastExportData.value = item
+  addingNewExportData.value = true
   podcastExportDataManageDialog.value = true
 }
 
 const onEditPodcastExportData = (vi: ListViewItem<PodcastExportData>) => {
   managedPodcastExportData.value = vi.raw
+  addingNewExportData.value = false
   podcastExportDataManageDialog.value = true
 }
 
 const onCancel = () => {
+  // A brand-new row was only pushed to open the dialog — drop it again if the user cancels.
+  if (addingNewExportData.value && managedPodcastExportData.value) {
+    const index = podcast.value.exportData.indexOf(managedPodcastExportData.value)
+    if (index !== -1) podcast.value.exportData.splice(index, 1)
+  }
+  addingNewExportData.value = false
   managedPodcastExportData.value = null
 }
 </script>
@@ -142,12 +159,9 @@ const onCancel = () => {
         </ARow>
         <ARow :title="t('coreDam.podcast.model.exportData')">
           <ASortableListEditor
+            ref="exportDataEditor"
             v-model="podcast.exportData"
-            update-position
-            manage-delete
-            :item-factory="createExportDataItem"
-            add-label="coreDam.podcastExportData.meta.create"
-            @added="onExportDataAdded"
+            :show-add-button="false"
             @edit="onEditPodcastExportData"
           >
             <template #item-compact="{ raw }: { raw: PodcastExportData }">
@@ -157,6 +171,16 @@ const onCancel = () => {
               <DeviceTypeChip :type="raw.deviceType" />
             </template>
           </ASortableListEditor>
+          <VBtn
+            class="mt-2"
+            color="primary"
+            variant="text"
+            prepend-icon="mdi-plus"
+            data-cy="button-add-export-data"
+            @click="onAddExportData"
+          >
+            {{ t('coreDam.podcastExportData.meta.create') }}
+          </VBtn>
         </ARow>
       </VCol>
       <VCol

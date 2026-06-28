@@ -69,6 +69,7 @@ const onAddDistributionItem = () => {
 }
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
+const { t } = useI18n()
 
 const onDeleteDistributionItem = async (item: DistributionItem) => {
   const distributionId = item.id ?? null
@@ -123,21 +124,30 @@ const onDistributionUpsert = () => {
       color="primary"
     />
   </div>
-  <AListEditor
-    v-else
-    v-model="distributionListStore.list"
-    add-label="coreDam.distribution.meta.create"
-    :on-delete="onDeleteDistributionItem"
-    @add="onAddDistributionItem"
-    @edit="onEdit"
-  >
-    <template #item-compact="{ raw }: { raw: DistributionItem }">
-      <DistributionItemView
-        :model-value="raw"
-        :asset-type="assetType"
-      />
-    </template>
-  </AListEditor>
+  <template v-else>
+    <AListEditor
+      v-model="distributionListStore.list"
+      :show-add-button="false"
+      :on-delete="onDeleteDistributionItem"
+      @edit="onEdit"
+    >
+      <template #item-compact="{ raw }: { raw: DistributionItem }">
+        <DistributionItemView
+          :model-value="raw"
+          :asset-type="assetType"
+        />
+      </template>
+    </AListEditor>
+    <VBtn
+      color="primary"
+      variant="text"
+      prepend-icon="mdi-plus"
+      data-cy="button-add-distribution"
+      @click="onAddDistributionItem"
+    >
+      {{ t('coreDam.distribution.meta.create') }}
+    </VBtn>
+  </template>
   <DistributionManageDialog
     v-if="distributionContent"
     v-model="distributionContent"

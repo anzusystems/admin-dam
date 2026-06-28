@@ -17,6 +17,20 @@ const {
   distributionCategorySelect,
 } = useDistributionCategorySelectEditActions()
 
+const editForm = ref<InstanceType<typeof DistributionCategorySelectEditForm> | null>(null)
+
+const onSave = () => {
+  onUpdate(
+    false,
+    () => editForm.value?.validateAll() ?? true,
+    async () => {
+      // Re-baseline the options editor against the saved response so its rows lose the unsaved markers.
+      await nextTick()
+      editForm.value?.commit()
+    }
+  )
+}
+
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
@@ -52,7 +66,7 @@ onBeforeUnmount(() => {
         v-if="!detailLoading"
         :loading="saveButtonLoading"
         :disabled="saveAndCloseButtonLoading"
-        @save-record="onUpdate"
+        @save-record="onSave"
       />
       <AActionCloseButton :route-name="'/(coreDam)/distribution-category-selects'" />
     </template>
@@ -60,7 +74,10 @@ onBeforeUnmount(() => {
 
   <ACard :loading="detailLoading">
     <VCardText>
-      <DistributionCategorySelectEditForm />
+      <DistributionCategorySelectEditForm
+        v-if="!detailLoading"
+        ref="editForm"
+      />
     </VCardText>
   </ACard>
 </template>

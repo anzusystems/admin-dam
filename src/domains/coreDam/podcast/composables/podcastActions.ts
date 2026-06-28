@@ -1,5 +1,6 @@
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import { renumberPositions } from '@anzusystems/common-admin/labs'
 import type { Ref } from 'vue'
 import {
   useFetchPodcast,
@@ -90,7 +91,7 @@ export const usePodcastEditActions = () => {
     }
   }
 
-  const onUpdate = async (close = false) => {
+  const onUpdate = async (close = false, onSuccess: ((podcast: Podcast) => void) | undefined = undefined) => {
     try {
       close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
@@ -100,8 +101,17 @@ export const usePodcastEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updatePodcast({ urlParams: { id: podcastOneStore.podcast.id }, object: podcast.value })
+      // Persist sequential positions matching the editor's visual order before saving.
+      podcast.value.exportData = renumberPositions(podcast.value.exportData)
+      const updatedPodcast = await updatePodcast({
+        urlParams: { id: podcastOneStore.podcast.id },
+        object: podcast.value,
+      })
+      // Adopt the server response (real ids for new rows, sorted by `setPodcast`) so the
+      // editor can re-baseline via `commit()` and saved rows lose their unsaved markers.
+      podcastOneStore.setPodcast(updatedPodcast)
       showRecordWas('updated')
+      if (!isUndefined(onSuccess)) onSuccess(updatedPodcast)
       if (!close) return
       router.push({ name: '/(coreDam)/podcasts' })
     } catch (error) {

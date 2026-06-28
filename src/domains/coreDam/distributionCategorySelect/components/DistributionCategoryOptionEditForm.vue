@@ -3,57 +3,40 @@ import { AFormTextField } from '@anzusystems/common-admin'
 import { useDistributionCategoryOptionValidation } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: DistributionCategoryOption
+    readonly?: boolean
   }>(),
-  {}
+  {
+    readonly: false,
+  }
 )
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DistributionCategoryOption): void
-  (e: 'remove'): void
-}>()
+// Edited inline inside the ASortableListEditor #item slot; the editor owns drag + delete chrome.
+const distributionCategoryOption = defineModel<DistributionCategoryOption>({ required: true })
 
-const modelValueComputed = computed({
-  get() {
-    return props.modelValue
-  },
-  set(newValue: DistributionCategoryOption) {
-    emit('update:modelValue', cloneDeep<DistributionCategoryOption>(newValue))
-  },
-})
+const { v$ } = useDistributionCategoryOptionValidation(distributionCategoryOption)
 
-const { v$ } = useDistributionCategoryOptionValidation(modelValueComputed)
-
-onMounted(() => {
+const onBlur = () => {
   v$.value.$touch()
-})
+}
 
 const { t } = useI18n()
 </script>
 
 <template>
-  <VRow class="mt-5">
+  <VRow class="mt-2">
     <VCol
       cols="12"
-      sm="5"
+      sm="6"
     >
       <AFormTextField
-        v-model="modelValueComputed.name"
-        prepend-icon="mdi-drag"
+        v-model="distributionCategoryOption.name"
+        :label="t('coreDam.distributionCategorySelect.model.name')"
         :v="v$.distributionCategoryOption.name"
+        :readonly="readonly"
         data-cy="option-name"
-      />
-    </VCol>
-    <VCol
-      cols="12"
-      sm="1"
-    >
-      <VSwitch
-        v-model="modelValueComputed.assignable"
-        :label="t('coreDam.distributionCategorySelect.model.assignable')"
-        data-cy="option-assignable"
+        @blur="onBlur"
       />
     </VCol>
     <VCol
@@ -61,19 +44,24 @@ const { t } = useI18n()
       sm="6"
     >
       <AFormTextField
-        v-model="modelValueComputed.value"
-        append-icon="mdi-trash-can-outline"
+        v-model="distributionCategoryOption.value"
+        :label="t('coreDam.distributionCategorySelect.model.value')"
         :v="v$.distributionCategoryOption.value"
+        :readonly="readonly"
         data-cy="option-id"
-        @click:append="emit('remove')"
+        @blur="onBlur"
+      />
+    </VCol>
+    <VCol
+      cols="12"
+      sm="6"
+    >
+      <VSwitch
+        v-model="distributionCategoryOption.assignable"
+        :label="t('coreDam.distributionCategorySelect.model.assignable')"
+        :readonly="readonly"
+        data-cy="option-assignable"
       />
     </VCol>
   </VRow>
 </template>
-
-<style lang="scss">
-.v-input__prepend,
-.v-input__prepend .v-icon.v-icon.v-icon--link {
-  cursor: move;
-}
-</style>

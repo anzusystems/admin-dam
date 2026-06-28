@@ -10,6 +10,16 @@ const id = (route.params as { id: string }).id.toString()
 const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, podcast } =
   usePodcastEditActions()
 
+const editForm = ref<InstanceType<typeof PodcastEditForm> | null>(null)
+
+const onSave = () => {
+  onUpdate(false, async () => {
+    // Re-baseline the export-data editor against the saved response so its rows lose the unsaved markers.
+    await nextTick()
+    editForm.value?.commit()
+  })
+}
+
 const getData = () => {
   fetchData(id)
 }
@@ -43,7 +53,7 @@ const breadcrumbs = defineBreadcrumbs(
         v-if="!detailLoading"
         :loading="saveButtonLoading"
         :disabled="saveAndCloseButtonLoading"
-        @save-record="onUpdate"
+        @save-record="onSave"
       />
       <AActionCloseButton :route-name="'/(coreDam)/podcasts'" />
     </template>
@@ -51,7 +61,10 @@ const breadcrumbs = defineBreadcrumbs(
 
   <ACard :loading="detailLoading">
     <VCardText>
-      <PodcastEditForm />
+      <PodcastEditForm
+        v-if="!detailLoading"
+        ref="editForm"
+      />
     </VCardText>
   </ACard>
 </template>
