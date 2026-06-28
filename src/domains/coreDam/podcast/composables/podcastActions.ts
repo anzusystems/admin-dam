@@ -101,11 +101,17 @@ export const usePodcastEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      // Persist sequential positions matching the editor's visual order before saving.
-      podcast.value.exportData = renumberPositions(podcast.value.exportData)
+      // Renumber positions to match the editor's visual order; new rows carry a negative temp id
+      // for the editor key, but the API expects id 0 to create a new export-data entity.
+      const object: Podcast = {
+        ...podcast.value,
+        exportData: renumberPositions(podcast.value.exportData).map((item) =>
+          item.id < 0 ? { ...item, id: 0 } : item
+        ),
+      }
       const updatedPodcast = await updatePodcast({
         urlParams: { id: podcastOneStore.podcast.id },
-        object: podcast.value,
+        object,
       })
       // Adopt the server response (real ids for new rows, sorted by `setPodcast`) so the
       // editor can re-baseline via `commit()` and saved rows lose their unsaved markers.
