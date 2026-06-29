@@ -6,6 +6,7 @@ import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import {
   type DamCurrentUserDto,
   type DocId,
+  type IntegerId,
   isDocId,
   isNull,
   isString,
@@ -13,7 +14,7 @@ import {
   useDamConfigStore,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import { readonly, ref } from 'vue'
+import { computed, readonly, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
 const currentExtSystemId = ref(0)
 
@@ -88,4 +89,28 @@ export function useCurrentAssetLicence() {
   return {
     currentAssetLicenceId: readonly(currentAssetLicenceId),
   }
+}
+
+/**
+ * Returns the IDs of all asset licences the current user may read for a given ext system.
+ * Used to build the `selectLicences` list for AAssetSelect in cross-licence contexts
+ * (e.g. sibling pairing, episode asset selection) so that assets from TTS or other
+ * licences within the same ext system are visible without triggering a 403 from
+ * CollectionListAwareVoter (which rejects any licence the user cannot read).
+ */
+export function useReadableLicencesByExtSystem(extSystemId: MaybeRefOrGetter<IntegerId>) {
+  const { useCurrentUser } = useAuth()
+  const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+  const licenceIds = computed<IntegerId[]>(() => {
+    if (!currentUser.value) return []
+    const id = toValue(extSystemId)
+    // resolvedAssetLicences = direct + licence-group grants, matching the backend LicenceVoterTrait;
+    // assetLicencesDto would miss group-granted licences and under-offer assets the user may actually read.
+    return currentUser.value.resolvedAssetLicences
+      .filter((licence) => licence.extSystem === id)
+      .map((licence) => licence.id)
+  })
+
+  return { licenceIds }
 }
