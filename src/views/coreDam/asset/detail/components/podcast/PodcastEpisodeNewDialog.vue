@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import type { DocId, IntegerIdNullable } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
   AFormTextarea,
@@ -18,10 +18,6 @@ import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { usePodcastEpisodeValidation } from '@/views/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
 import { useI18n } from 'vue-i18n'
 import PodcastRemoteAutocomplete from '@/views/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
-import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
-import { useAuth } from '@/composables/auth/auth'
-import { SYSTEM_DAM } from '@/model/systems'
-import type { DamCurrentUserDto } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -49,19 +45,6 @@ const value = computed({
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
-
-const assetDetailStore = useAssetDetailStore()
-const { useCurrentUser } = useAuth()
-const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
-
-// Derive the asset's ext system from its licence via the user's readable licence list.
-// Falls back to the global current ext system when the asset or its licence is not found.
-const assetExtSystemId = computed<IntegerIdNullable>(() => {
-  const licenceId = assetDetailStore.asset?.licence
-  if (!licenceId) return currentExtSystemId.value
-  const match = currentUser.value?.assetLicencesDto.find((l) => l.id === licenceId)
-  return match ? match.extSystem : currentExtSystemId.value
-})
 
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
@@ -144,7 +127,6 @@ onMounted(async () => {
               required
               data-cy="field-choose-podcast"
               :label="t('coreDam.podcastEpisode.model.podcast')"
-              :ext-system-id="assetExtSystemId"
             />
           </ARow>
           <div

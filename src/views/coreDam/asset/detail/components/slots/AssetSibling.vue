@@ -10,7 +10,7 @@ import {
 import { useAssetDetailStore } from '@/stores/coreDam/assetDetailStore'
 import AssetChip from '@/views/coreDam/asset/detail/components/AssetChip.vue'
 import { useI18n } from 'vue-i18n'
-import { useCurrentExtSystem, useReadableLicencesByExtSystem } from '@/composables/system/currentExtSystem'
+import { useCurrentAssetLicence } from '@/composables/system/currentExtSystem'
 import { computed, ref } from 'vue'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/views/coreDam/asset/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
 import { storeToRefs } from 'pinia'
@@ -26,8 +26,7 @@ const props = withDefaults(
 
 const assetDetailStore = useAssetDetailStore()
 const { siblingLoader } = storeToRefs(assetDetailStore)
-const { currentExtSystemId } = useCurrentExtSystem()
-const { licenceIds: siblingSelectLicences } = useReadableLicencesByExtSystem(currentExtSystemId)
+const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { t } = useI18n()
 const sort = ref(1)
 
@@ -87,7 +86,7 @@ const pickAssetType = computed(() => {
         <AAssetSelect
           v-if="pickAssetType"
           v-model:sort="sort"
-          :select-licences="siblingSelectLicences"
+          :select-licences="[currentAssetLicenceId]"
           :min-count="1"
           :max-count="1"
           return-type="assetId"
