@@ -1,22 +1,18 @@
-import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { type AclValue, isArray, isUndefined } from '@anzusystems/common-admin'
-import { useAuth } from '@/composables/auth/auth'
+import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
+import { type AclValue } from '@anzusystems/common-admin'
+import { useAuth } from '@/domains/system/auth/auth'
 
-export const checkAbility = async (
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext
-) => {
+export const checkAbility = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
   const { canForAll } = useAuth()
   if (
     isUndefined(to.meta.requiredPermissions) ||
     (isArray<AclValue>(to.meta.requiredPermissions) && to.meta.requiredPermissions.length === 0)
   ) {
-    next()
+    return
   } else if (canForAll(to.meta.requiredPermissions)) {
-    next()
+    return
   } else {
     // todo show error?
-    next({ name: 'unauthorized' })
+    return '/unauthorized'
   }
 }

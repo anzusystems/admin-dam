@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import '@/styles/main.scss'
-import { useRoute } from 'vue-router'
 import AppLayout from '@/layouts/AppLayout.vue'
-import { onMounted } from 'vue'
-import { useWindowFilesDragWatcher } from '@/composables/system/windowFilesDragWatcher'
+import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
 
 const route = useRoute()
 

@@ -18,7 +18,7 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
       cy.prepareData('image/sample.webp', 0)
     })
     it('CMS', () => {
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
 
       let idx = 0
@@ -29,7 +29,7 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
       })
     })
     it('Blog-system 1',()=>{
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.CMS_MAIN)
       cy.changeLicence(TESTED_LICENCE_IDS.BLOG1)
 
@@ -41,7 +41,7 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
       })
     })
     it('Blog-system 2',()=>{
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.BLOG1)
       cy.changeLicence(TESTED_LICENCE_IDS.BLOG2)
 
@@ -56,7 +56,7 @@ describe(`Test asset image licence duplicate function, Env: ${CY.cfg}`,
       cy.deleteFile(fileIDs)
     })
     it('Back to main licence', ()=>{
-      cy.visit('/asset')
+      cy.visit('/assets')
       cy.api_waitPageLoad('main', TESTED_LICENCE_IDS.BLOG2)
       cy.changeLicence(TESTED_LICENCE_IDS.CMS_MAIN)
     })

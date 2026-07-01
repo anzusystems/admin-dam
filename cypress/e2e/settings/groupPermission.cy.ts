@@ -25,12 +25,12 @@ describe(
           cy.urlContains(text)
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(`/${text}`)
-          cy.urlContains('/permission-group')
+          cy.urlContains('/permission-groups')
           GROUP_ID = text
         })
     })
     it('Edit permission group', () => {
-      cy.visit('/permission-group')
+      cy.visit('/permission-groups')
       cy.getCy('filter-integer', 10000).type(`${GROUP_ID}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')

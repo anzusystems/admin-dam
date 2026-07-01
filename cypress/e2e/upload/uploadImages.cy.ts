@@ -23,7 +23,7 @@ describe(`Test upload of various images, Env: ${CY.cfg}`, { tags: ['@imageUpload
       cy.uploadFile('image/animation.gif', uploadType, 20000)
       cy.api_getFileID().then((responseID) => {
         cy.waitForUpload(ALERT_UPLOAD, 20000)
-        cy.visit(`/asset/${responseID}`)
+        cy.visit(`/assets/${responseID}`)
         cy.api_waitPageLoad('asset-edit')
         cy.get(':nth-child(9) > .v-col-9').contains('áno')
         cy.deleteFile([responseID])

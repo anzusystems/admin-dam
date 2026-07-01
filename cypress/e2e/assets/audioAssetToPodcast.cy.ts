@@ -15,7 +15,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.prepareData('audio/sample.mp3', true, assetIDs)
     })
     it('Add audio asset to podcast episode', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
@@ -36,7 +36,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.alertMessage(ALERT_CREATE)
     })
     it('Delete podcast', ()=>{
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-podcast').should('be.visible').click()
       cy.get('.text-body-2').contains(`${ASSET_TITLE}-edit`).should('exist')

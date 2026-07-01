@@ -1,5 +1,5 @@
-@use "vars/name";
-@use "vars/colors";
+@use 'vars/name';
+@use 'vars/colors';
 
 .#{name.$editor} {
   .#{name.$prosemirror} {
@@ -63,7 +63,7 @@
     p.is-editor-empty:first-child::before {
       content: attr(data-placeholder);
       float: left;
-      color: rgb(var(--v-theme-on-surface), 0.38);
+      color: rgb(var(--v-theme-on-surface) / 38%);
       pointer-events: none;
       height: 0;
     }

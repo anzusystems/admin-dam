@@ -1,0 +1,33 @@
+{
+  "model": {
+    "id": "ID",
+    "extSystem": "Ext system",
+    "slug": "Slug",
+    "displayName": "Display Name",
+    "language": "Language",
+    "preferredProvider": "Preferred Provider",
+    "active": "Active",
+    "keywords": "Keywords (auto-tag)"
+  },
+  "language": {
+    "sk": "Slovak",
+    "en": "English"
+  },
+  "filter": {
+    "id": "ID",
+    "displayName": "Display Name",
+    "language": "Language",
+    "active": "Active"
+  },
+  "validation": {
+    "slug": "Allowed characters for slug: a-z, 0-9, _ and -"
+  },
+  "meta": {
+    "create": "Create voice family"
+  },
+  "button": {
+    "create": "Create voice family"
+  },
+  "voices": "Voice Bindings",
+  "filterMinChars": "Enter at least 2 characters"
+}

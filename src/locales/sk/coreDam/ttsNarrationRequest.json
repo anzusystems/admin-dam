@@ -1,0 +1,79 @@
+{
+  "model": {
+    "id": "ID",
+    "voiceFamilySlug": "Hlasová rodina",
+    "mode": "Mód",
+    "title": "Nadpis",
+    "status": "Stav",
+    "startedAt": "Začaté"
+  },
+  "filter": {
+    "voiceFamilySlug": "Slug hlasovej rodiny",
+    "status": "Stav"
+  },
+  "status": {
+    "waiting": "Čaká",
+    "processing": "Spracováva sa",
+    "done": "Hotové",
+    "failed": "Zlyhalo",
+    "cancelled": "Zrušené"
+  },
+  "mode": {
+    "initial": "Prvotné",
+    "regenerate": "Regenerácia"
+  },
+  "assetStatus": {
+    "active": "Aktívne",
+    "superseding": "Regeneruje sa",
+    "cancelling": "Ruší sa",
+    "failed": "Zlyhalo",
+    "unpublished": "Nepublikované"
+  },
+  "button": {
+    "synthesize": "Syntetizovať",
+    "cancelRequest": "Zrušiť request"
+  },
+  "synthesize": {
+    "title": "Syntetizovať TTS audio",
+    "text": "Text",
+    "textPlaceholder": "Vložte text článku tu…",
+    "extSystem": "Externý systém",
+    "assetLicence": "Asset licencia",
+    "assetTitle": "Nadpis assetu",
+    "assetTitlePlaceholder": "Voliteľné — bez vyplnenia sa vygeneruje automaticky",
+    "podcasts": "Naviazať na podcasty"
+  },
+  "cancelRequest": {
+    "title": "Zrušiť čakajúci TTS request",
+    "description": "Požiadať o zrušenie čakajúceho audio-narration requestu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné."
+  },
+  "detail": {
+    "requestSection": "Request",
+    "ttsAssetSection": "TTS Asset",
+    "noTtsAsset": "Žiadny TTS asset (request neskončil alebo výsledok nebol zachovaný)",
+    "fields": {
+      "id": "ID",
+      "status": "Stav",
+      "chunkProgress": "Chunky (dokončené / spolu)",
+      "chunksFailed": "{count} zlyhalo | {count} zlyhali | {count} zlyhalo",
+      "mode": "Mód",
+      "voiceFamilySlug": "Hlasová rodina",
+      "title": "Nadpis",
+      "cancelRequested": "Zrušenie požiadané",
+      "failureReason": "Dôvod zlyhania",
+      "startedAt": "Začaté",
+      "assetAssetId": "ID assetu",
+      "assetDiscriminator": "Diskriminátor",
+      "assetVoiceFamilyId": "Hlasová rodina",
+      "externalVoiceId": "Externé ID hlasu",
+      "assetStatus": "Stav",
+      "assetFailureReason": "Dôvod zlyhania",
+      "assetCreatedAt": "Vytvorené",
+      "assetModifiedAt": "Upravené",
+      "sourceTextHash": "Hash zdrojového textu",
+      "assetId": "Asset",
+      "extSystemId": "Externý systém",
+      "assetLicence": "Asset licencia"
+    }
+  }
+}

@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { shallowRef, watch } from 'vue'
-import { useRoute } from 'vue-router'
-
 const defaultLayout = 'AppLayoutLoader'
 
 const layout = shallowRef(defaultLayout)

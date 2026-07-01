@@ -18,6 +18,8 @@
     "beta": "Beta",
     "job": "Systémové úlohy",
     "authorCleanPhrase": "Čistenie autorov",
-    "publicExport": "Verejné exporty"
+    "publicExport": "Verejné exporty",
+    "voiceFamilies": "Hlasové rodiny",
+    "ttsNarrationRequest": "TTS Audio"
   }
 }

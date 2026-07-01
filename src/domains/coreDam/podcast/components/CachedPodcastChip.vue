@@ -1,0 +1,22 @@
+<script lang="ts" setup>
+import { ACachedChip } from '@anzusystems/common-admin'
+import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
+
+withDefaults(
+  defineProps<{
+    id: null | DocId | undefined
+  }>(),
+  {}
+)
+
+const { getCachedPodcast } = useCachedPodcasts()
+</script>
+
+<template>
+  <ACachedChip
+    :id="id"
+    :get-cached-fn="getCachedPodcast"
+    :route="'/(coreDam)/podcasts/[id]'"
+    display-text-path="title"
+  />
+</template>

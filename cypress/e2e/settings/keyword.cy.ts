@@ -22,12 +22,12 @@ describe(`Test keyword function, Env: ${CY.cfg}`,
         cy.urlContains(text)
         cy.getCyVisibleClick('button-close')
         cy.urlNotContains(text)
-        cy.urlContains('/keyword')
+        cy.urlContains('/keywords')
         KEYWORD_ID = text
       })
   })
   it('Edit keyword', () => {
-    cy.visit('keyword')
+    cy.visit('/keywords')
     cy.getCy('filter-string').first().type(`${KEYWORD_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')

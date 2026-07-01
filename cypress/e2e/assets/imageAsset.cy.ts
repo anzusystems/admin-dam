@@ -11,7 +11,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       cy.prepareData('image/sample.png', true, assetIDs)
     })
     it('Create Metadata', ()=> {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('.v-btn').contains('Zobraziť viac').click()
       cy.get('[data-cy="custom-field-title"] textarea')
@@ -39,7 +39,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       cy.alertMessage(ALERT_UPDATE)
     })
     it('Edit Metadata', ()=> {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('.sidebar-info .v-btn').contains('Zobraziť viac').should('be.visible').click()
       cy.get('[data-cy="custom-field-title"] textarea')
@@ -50,7 +50,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       cy.alertMessage(ALERT_UPDATE)
     })
     it('Clear Metadata', ()=> {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true })
@@ -65,7 +65,7 @@ describe(`Test asset image function, Env: ${CY.cfg}`,
       cy.getCy('button-slots').should('be.visible')
     })
     it('Test Focus', ()=> {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-focus').click()
       cy.waitSec(1)

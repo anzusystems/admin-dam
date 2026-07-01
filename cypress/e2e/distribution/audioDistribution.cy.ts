@@ -23,7 +23,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.prepareData('audio/sample.mp3', 1, assetIDs)
     })
     it('Distribute audio', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
 
       // Add to podcast
@@ -77,7 +77,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
         .should('include.text', 'Distribuovaný')  // JW distribution
 
       // Logs core-dam check
-      cy.visit('/log')
+      cy.visit('/logs')
       cy.getCy('filter-value').first().click()
       cy.contains('.v-list-item', 'coreDam').click()
       cy.getCy('filter-submit').click()

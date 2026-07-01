@@ -1,0 +1,155 @@
+<script lang="ts" setup>
+import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
+import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
+import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import {
+  ADatatableConfigButton,
+  ADatetime,
+  AJobStatusChip,
+  ATableCopyIdButton,
+  ATableDetailButton,
+} from '@anzusystems/common-admin'
+import {
+  ADatatableOrdering,
+  ADatatablePagination,
+  createDatatableColumnsConfig,
+  DatatablePaginationKey,
+  FilterConfigKey,
+  FilterDataKey,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin/labs'
+import { useDebounceFn } from '@vueuse/core'
+import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
+import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
+import type { Job } from '@/domains/coreDam/job/types/Job'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+
+type DatatableItem = Job
+
+const router = useRouter()
+
+const { filterData, filterConfig } = useJobListFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
+
+const { fetchList, listItems, datatableHiddenColumns } = useJobListActions()
+const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig)
+
+const { pagination } = usePagination(SORT_BY_ID)
+provide(DatatablePaginationKey, pagination)
+
+const { t } = useI18n()
+
+const { can } = useAuth()
+
+const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
+  if (item.id && can(ACL.DAM_JOB_READ)) {
+    router.push({ name: '/(coreDam)/jobs/[id]', params: { id: item.id } })
+  }
+}
+
+const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
+  [
+    { key: 'id', title: t('common.job.model.id') },
+    { key: '_resourceName', title: t('common.job.model._resourceName') },
+    { key: 'status', title: t('common.job.model.status') },
+    { key: 'startedAt', title: t('common.job.model.startedAt') },
+    { key: 'finishedAt', title: t('common.job.model.finishedAt') },
+    { key: 'result', title: t('common.job.model.result') },
+    { key: 'createdAt', title: t('common.model.tracking.created') },
+  ],
+  datatableHiddenColumns,
+  SYSTEM_CORE_DAM,
+  ENTITY
+)
+
+const getList = useDebounceFn(() => {
+  fetchList(pagination, filterData, filterConfig)
+})
+
+const sortByChange = () => {
+  filterConfig.touched = false
+  submitFilter(pagination, getList)
+}
+
+const submitFilterAction = () => {
+  submitFilter(pagination, getList)
+}
+
+const resetFilterAction = () => {
+  resetFilter(pagination, getList)
+}
+
+onMounted(() => {
+  getList()
+})
+
+defineExpose({
+  refresh: getList,
+})
+</script>
+
+<template>
+  <div>
+    <JobFilter
+      @submit="submitFilterAction"
+      @reset="resetFilterAction"
+    />
+    <div>
+      <div class="d-flex align-center">
+        <VSpacer />
+        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableConfigButton
+          v-model:columns-hidden="columnsHidden"
+          :columns-all="columnsAll"
+        />
+      </div>
+      <VDataTableServer
+        class="a-datatable"
+        :headers="columnsVisible"
+        :items="listItems"
+        :items-length="listItems.length"
+        item-value="id"
+        @click:row="onRowClick"
+      >
+        <template #item._resourceName="{ item }: { item: DatatableItem }">
+          <JobResourceChip :value="item._resourceName" />
+        </template>
+        <template #item.status="{ item }: { item: DatatableItem }">
+          <AJobStatusChip :value="item.status" />
+        </template>
+        <template #item.startedAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.startedAt" />
+        </template>
+        <template #item.finishedAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.finishedAt" />
+        </template>
+        <template #item.createdAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.createdAt" />
+        </template>
+        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
+          <ADatetime :date-time="item.modifiedAt" />
+        </template>
+        <template #item.actions="{ item }: { item: DatatableItem }">
+          <div class="d-flex justify-end">
+            <ATableCopyIdButton :id="item.id" />
+            <Acl :permission="ACL.DAM_JOB_READ">
+              <ATableDetailButton
+                :record-id="item.id"
+                :route-name="'/(coreDam)/jobs/[id]'"
+              />
+            </Acl>
+          </div>
+        </template>
+        <template #bottom>
+          <ADatatablePagination
+            v-model="pagination"
+            @change="getList"
+          />
+        </template>
+      </VDataTableServer>
+    </div>
+  </div>
+</template>

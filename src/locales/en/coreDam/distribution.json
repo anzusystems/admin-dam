@@ -37,6 +37,5 @@
     "extId": "Ext ID",
     "failReason": "Fail reason",
     "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
-
   }
 }

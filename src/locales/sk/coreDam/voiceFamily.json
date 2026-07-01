@@ -1,0 +1,33 @@
+{
+  "model": {
+    "id": "ID",
+    "extSystem": "Externý systém",
+    "slug": "Slug",
+    "displayName": "Zobrazovaný názov",
+    "language": "Jazyk",
+    "preferredProvider": "Preferovaný poskytovateľ",
+    "active": "Aktívny",
+    "keywords": "Kľúčové slová (auto-tag)"
+  },
+  "language": {
+    "sk": "Slovenčina",
+    "en": "Angličtina"
+  },
+  "filter": {
+    "id": "ID",
+    "displayName": "Zobrazovaný názov",
+    "language": "Jazyk",
+    "active": "Aktívny"
+  },
+  "validation": {
+    "slug": "Povolené znaky pre slug: a-z, 0-9, _ a -"
+  },
+  "meta": {
+    "create": "Vytvoriť hlasovú rodinu"
+  },
+  "button": {
+    "create": "Vytvoriť hlasovú rodinu"
+  },
+  "voices": "Hlasové väzby",
+  "filterMinChars": "Zadajte minimálne 2 znaky"
+}

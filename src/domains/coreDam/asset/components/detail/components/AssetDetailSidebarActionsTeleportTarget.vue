@@ -1,0 +1,18 @@
+<script lang="ts" setup>
+import { useAssetDetailSidebarActionbar } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarActionbar'
+
+const { mounted, unMounted } = useAssetDetailSidebarActionbar()
+
+onMounted(async () => {
+  await nextTick()
+  mounted()
+})
+
+onBeforeUnmount(() => {
+  unMounted()
+})
+</script>
+
+<template>
+  <div id="anzu-asset-detail-sidebar-actions" />
+</template>
