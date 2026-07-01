@@ -33,7 +33,7 @@ describe(
         })
     })
     it('Edit asset licence', () => {
-      cy.visit('asset-licence')
+      cy.visit('/asset-licences')
       cy.getCy('filter-integer', 10000).first().type(`${LICENCE_ID}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')

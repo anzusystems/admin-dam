@@ -43,7 +43,7 @@ describe(`Test document empty asset, Env: ${CY.cfg}`,
       cy.api_getFileID().then((assetID) => {
         cy.circleLoad()
 
-        cy.visit(`/asset/${assetID}`)
+        cy.visit(`/assets/${assetID}`)
         cy.circleLoad()
         cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea').eq(0)
           .invoke('val').then((assetTitle)=>{

@@ -27,7 +27,7 @@ describe(`Test keyword function, Env: ${CY.cfg}`,
       })
   })
   it('Edit keyword', () => {
-    cy.visit('keyword')
+    cy.visit('/keywords')
     cy.getCy('filter-string').first().type(`${KEYWORD_ID}{ENTER}`)
     cy.cardLoad()
     cy.getCyVisibleClick('table-edit')

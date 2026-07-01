@@ -82,7 +82,7 @@ describe(`Test user function, Env: ${CY.cfg}`,
     cy.urlNotContains('edit')
   })
   it('Reset User', () => {
-    cy.visit(`/user/${USER_ID}/edit`)
+    cy.visit(`/users/${USER_ID}/edit`)
     cy.cardLoad()
     cy.getCy('user-admin-to-ext-systems').click()
     EXTERNAL_SYS.forEach((admin) => {

@@ -29,7 +29,7 @@ describe(`Test public export function, Env: ${CY.cfg}`,
     })
 
     it('Edit public export', () => {
-      cy.visit(`/public-export/${PUBLIC_EXPORT_ID}`)
+      cy.visit(`/public-exports/${PUBLIC_EXPORT_ID}`)
       cy.cardLoad()
       cy.get('.v-col').contains('cms-cypress')
       cy.get('.v-col').contains('Web')
@@ -51,7 +51,7 @@ describe(`Test public export function, Env: ${CY.cfg}`,
     })
 
     it('Delete public export', () => {
-      cy.visit(`/public-export/${PUBLIC_EXPORT_ID}`)
+      cy.visit(`/public-exports/${PUBLIC_EXPORT_ID}`)
       cy.cardLoad()
       cy.getCy('button-delete').click()
       cy.getCy('button-confirm-delete').click()

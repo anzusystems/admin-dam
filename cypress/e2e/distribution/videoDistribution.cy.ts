@@ -23,7 +23,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       cy.prepareData('video/sample.mp4', 1, assetIDs)
     })
     it('Distribute video', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
 
       // Change distribution category

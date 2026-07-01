@@ -26,7 +26,7 @@ describe(
 
     it('Create distribution category', () => {
       cy.visit('/settings')
-      cy.visitSubpage('distribution-category-settings', 'distribution-category', 'Kategórie distribúcie')
+      cy.visitSubpage('distribution-category-settings', 'distribution-categories', 'Kategórie distribúcie')
       cy.getCyVisibleClick('button-create')
       cy.getCy('create-panel').should('be.visible')
       cy.getCy('category-type').should('be.visible').click()
@@ -50,7 +50,7 @@ describe(
         })
     })
     it('Edit distribution category', () => {
-      cy.visit('distribution-category')
+      cy.visit('/distribution-categories')
       cy.getCy('filter-value').click()
       cy.get('.v-list-item').contains('Audio').click()
       cy.cardLoad()

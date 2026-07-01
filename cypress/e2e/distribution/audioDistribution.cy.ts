@@ -23,7 +23,7 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`,
       cy.prepareData('audio/sample.mp3', 1, assetIDs)
     })
     it('Distribute audio', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
 
       // Add to podcast
