@@ -38,7 +38,7 @@ provide(FilterDataKey, filterData)
 const { fetchList, listItems, datatableHiddenColumns } = useAuthorListActions()
 const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
 
-const { pagination } = usePagination(SORT_BY_ID)
+const { pagination } = usePagination('createdAt')
 provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
