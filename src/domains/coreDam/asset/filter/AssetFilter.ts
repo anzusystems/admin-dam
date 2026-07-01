@@ -24,8 +24,6 @@ export const filterFieldsList = [
   { name: 'slotNames' as const, default: [] },
   { name: 'distributedInServices' as const, default: [] },
   { name: 'licences' as const, default: [] },
-  { name: 'shortestDimensionFrom' as const, default: null, type: 'integer' },
-  { name: 'shortestDimensionUntil' as const, default: null, type: 'integer' },
   { name: 'pixelSizeFrom' as const, default: null, type: 'integer' },
   { name: 'pixelSizeUntil' as const, default: null, type: 'integer' },
   { name: 'widthFrom' as const, default: null, type: 'integer' },

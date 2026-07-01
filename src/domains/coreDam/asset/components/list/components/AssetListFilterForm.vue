@@ -163,14 +163,6 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <AFilterInteger name="shortestDimensionFrom" />
-    </VCol>
-    <VCol>
-      <AFilterInteger name="shortestDimensionUntil" />
-    </VCol>
-  </VRow>
-  <VRow>
-    <VCol>
       <AFilterInteger name="ratioWidthFrom" />
     </VCol>
     <VCol>
