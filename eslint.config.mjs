@@ -91,6 +91,34 @@ export default defineConfigWithVueTs(
       ],
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
+      'no-restricted-syntax': [
+        'error',
+        {
+          // A bare `x.validateAll()` statement throws away its boolean — it reveals row errors but does
+          // NOT block the save, so a collapsed invalid row slips through (QA 85050). Either gate on it
+          // (`if (x.validateAll() === false) return`) or pass `:validation-scope` to the list editor.
+          selector: 'ExpressionStatement > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+        {
+          selector: 'ExpressionStatement > ChainExpression > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+        {
+          // Same, awaited: `await x.validateAll()` as a statement still discards the boolean.
+          selector: 'ExpressionStatement > AwaitExpression > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+        {
+          selector:
+            'ExpressionStatement > AwaitExpression > ChainExpression > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+      ],
     },
   },
   ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json')
