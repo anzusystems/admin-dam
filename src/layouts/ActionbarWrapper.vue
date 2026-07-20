@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useActionbar } from '@/domains/system/composables/actionbar'
 import { type BreadcrumbItem, type Breadcrumbs } from '@anzusystems/common-admin'
+import type { RouteLocationRaw } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +15,7 @@ const props = withDefaults(
 const { canTeleport } = useActionbar()
 const route = useRoute()
 
-const breadcrumbTo = (item: BreadcrumbItem, index: number) => {
+const breadcrumbTo = (item: BreadcrumbItem, index: number): RouteLocationRaw | undefined => {
   if (
     isUndefined(props.breadcrumbs) ||
     (!props.breadcrumbs.options.linkLastItem && index === props.breadcrumbs.items.value.length - 1)
@@ -22,12 +23,12 @@ const breadcrumbTo = (item: BreadcrumbItem, index: number) => {
     return undefined
   }
   if (!isUndefined(item.routeParams)) {
-    return { name: item.routeName, params: { ...item.routeParams } }
+    return { name: item.routeName, params: { ...item.routeParams } } as RouteLocationRaw
   }
   if (!isUndefined(item.id)) {
-    return { name: item.routeName, params: { id: item.id } }
+    return { name: item.routeName, params: { id: item.id } } as RouteLocationRaw
   }
-  return { name: item.routeName }
+  return { name: item.routeName } as RouteLocationRaw
 }
 </script>
 
