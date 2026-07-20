@@ -82,6 +82,7 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
     showRecordWas('deleted')
   } catch (error) {
     showErrorsDefault(error)
+    throw error // :on-delete — re-throw so the editor keeps the row instead of dropping it while it still exists on the server
   } finally {
     distributionListStore.hideLoader()
   }
@@ -129,6 +130,7 @@ const onDistributionUpsert = () => {
       v-model="distributionListStore.list"
       :show-add-button="false"
       :on-delete="onDeleteDistributionItem"
+      delete-mode="immediate"
       @edit="onEdit"
     >
       <template #item-compact="{ raw }: { raw: DistributionItem }">
