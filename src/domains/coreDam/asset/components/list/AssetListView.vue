@@ -96,6 +96,10 @@ onUnmounted(() => {
   <MainWrapper>
     <template #default>
       <div
+        id="asset-active-filters"
+        class="asset-active-filters"
+      />
+      <div
         v-if="loader.hard"
         class="d-flex w-100 h-100 align-center justify-center"
       >
@@ -202,3 +206,21 @@ onUnmounted(() => {
     </template>
   </MainWrapper>
 </template>
+
+<style lang="scss">
+// Active-filter chips for the asset grid. FiltersSelected is rendered inside the filter sidebar
+// (where the selected-filters map + provides live) and teleported here, under the toolbar.
+.asset-active-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgb(var(--v-border-color), var(--v-border-opacity));
+
+  &:empty {
+    display: none;
+  }
+}
+</style>

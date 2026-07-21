@@ -31,7 +31,7 @@
     "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.47.0-beta.dev-1784059862",
+    "@anzusystems/common-admin": "1.47.0-beta.dev-1784059866",
     "@floating-ui/dom": "^1.8.0",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^10.67.0",
@@ -88,9 +88,9 @@
     "npm-run-all2": "^9.0.2",
     "oxfmt": "^0.59.0",
     "oxlint": "1.73.0",
-    "postcss": "^8.5.20",
+    "postcss": "^8.5.21",
     "postcss-html": "^1.8.1",
-    "sass": "^1.101.0",
+    "sass": "^1.101.3",
     "stylelint": "^17.14.1",
     "stylelint-config-recommended-vue": "^1.6.1",
     "stylelint-config-standard-scss": "^17.0.0",

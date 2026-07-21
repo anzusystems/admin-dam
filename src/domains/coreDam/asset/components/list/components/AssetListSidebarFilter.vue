@@ -2,7 +2,7 @@
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetListFilterForm from '@/domains/coreDam/asset/components/list/components/AssetListFilterForm.vue'
-import { AFilterWrapperSidebar, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterWrapperSidebar, FilterConfigKey, FilterDataKey, FiltersSelected } from '@anzusystems/common-admin/labs'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -13,12 +13,16 @@ const { filterData, filterConfig, fetchAssetList, resetAssetList } = useAssetLis
 provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
 
+const filterWrapper = ref<InstanceType<typeof AFilterWrapperSidebar> | null>(null)
+
 const submitFilter = () => {
   filterConfig.touched = false
   fetchAssetList()
 }
 
 const resetFilter = () => {
+  // clear filter values + selected-filter chips, then reset the list + refetch
+  filterWrapper.value?.resetFilter()
   resetAssetList()
   filterConfig.touched = false
 }
@@ -34,8 +38,19 @@ const resetFilter = () => {
       {{ t('coreDam.asset.filterTitle') }}
     </div>
     <div class="pa-2">
-      <AFilterWrapperSidebar @submit="submitFilter">
+      <AFilterWrapperSidebar
+        ref="filterWrapper"
+        @submit="submitFilter"
+      >
         <AssetListFilterForm />
+        <!-- Active-filter chips: rendered here (in the sidebar's provide scope where the selected map lives)
+             and teleported under the toolbar into #asset-active-filters. -->
+        <Teleport
+          defer
+          to="#asset-active-filters"
+        >
+          <FiltersSelected />
+        </Teleport>
       </AFilterWrapperSidebar>
     </div>
     <template #append>

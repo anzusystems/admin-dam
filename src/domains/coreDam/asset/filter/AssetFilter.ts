@@ -5,7 +5,7 @@ import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 
 export const filterFieldsList = [
   { name: 'text' as const, default: null, type: 'string', variant: 'search' },
-  { name: 'type' as const, default: [] },
+  { name: 'type' as const, default: [], render: { selected: false } },
   { name: 'status' as const, default: [DamAssetStatus.WithFile] },
   { name: 'keywordIds' as const, default: [] },
   { name: 'assetAndMainFileIds' as const, default: null, type: 'string' },
