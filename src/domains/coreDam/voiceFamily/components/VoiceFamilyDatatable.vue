@@ -41,7 +41,10 @@ provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useVoiceFamilyListActions()
-const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig)
+const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig, {
+  populateUrlParams: false,
+  storeFiltersLocalStorage: false,
+})
 const { can } = useAuth()
 
 const { pagination } = usePagination('createdAt')

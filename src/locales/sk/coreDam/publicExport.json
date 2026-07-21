@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "create": "Vytvoriť verejný export"
+  },
   "model": {
     "id": "ID",
     "slug": "Slug",

@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ABooleanValue, ADatetime } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination, usePagination } from '@anzusystems/common-admin/labs'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
 import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { useVoiceListActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
 import VoiceBindingCreateDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingCreateDialog.vue'
@@ -28,6 +28,9 @@ const canDelete = computed(() => can(ACL.DAM_TTS_VOICE_DELETE))
 const editDialog = ref(false)
 const selectedVoice = ref<Voice | null>(null)
 const { pagination } = usePagination(null)
+// ADatatablePagination injects DatatablePaginationKey; provide it here (same as every *Datatable.vue) so the
+// sub-list doesn't throw "Incorrect provide/inject config." on the voice-family detail.
+provide(DatatablePaginationKey, pagination)
 
 const fetchVoices = () => fetchList(props.voiceFamilyId, pagination)
 

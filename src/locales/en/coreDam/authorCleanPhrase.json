@@ -21,6 +21,7 @@
     "playground": "Playground"
   },
   "meta": {
+    "create": "Create phrase",
     "playground": "Phrase testing",
     "test": "Test"
   },

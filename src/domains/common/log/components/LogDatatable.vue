@@ -31,7 +31,11 @@ if (isUndefined(filterConfig) || isUndefined(filterData)) {
   throw new Error('Incorrect provide/inject config.')
 }
 
-const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers(filterData, filterConfig)
+const { resetFilter: resetFilterHelper, submitFilter: submitFilterHelper } = useFilterHelpers(
+  filterData,
+  filterConfig,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 const { fetchList, listItems, datatableHiddenColumns } = useLogListActions()
 
 const { pagination } = usePagination('id')

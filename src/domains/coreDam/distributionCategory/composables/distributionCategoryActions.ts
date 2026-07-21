@@ -129,15 +129,18 @@ export const useDistributionCategoryCreateActions = () => {
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
   const prepareData = async (assetType: DamAssetTypeType) => {
+    createFormDataLoaded.value = false
     try {
-      createFormDataLoaded.value = false
       const { createDefault } = useDistributionCategoryFactory()
       const distributionCategory = createDefault(currentExtSystemId.value, assetType)
       const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
-      createFormDataLoaded.value = true
     } catch (error) {
       showErrorsDefault(error)
+    } finally {
+      // Even if the select-options fetch fails (e.g. backend 500), stop the loader and let the standard
+      // error alert show — same pattern as the detail fetch (fetchData) — instead of a stuck spinner.
+      createFormDataLoaded.value = true
     }
   }
 

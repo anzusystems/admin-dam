@@ -35,7 +35,10 @@ provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useJobListActions()
-const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig)
+const { resetFilter, submitFilter } = useFilterHelpers(filterData, filterConfig, {
+  populateUrlParams: false,
+  storeFiltersLocalStorage: false,
+})
 
 const { pagination } = usePagination(SORT_BY_ID)
 provide(DatatablePaginationKey, pagination)

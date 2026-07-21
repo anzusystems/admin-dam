@@ -37,7 +37,10 @@ provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useVideoShowListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
+  populateUrlParams: false,
+  storeFiltersLocalStorage: false,
+})
 
 const { pagination, setSortBy } = usePagination('createdAt')
 provide(DatatablePaginationKey, pagination)

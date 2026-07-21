@@ -35,7 +35,10 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const assetDetailStore = useExternalProviderAssetDetailStore()
   const externalProviderAssetListStore = useExternalProviderAssetListStore()
   const uploadQueuesStore = useUploadQueuesStore()
-  const { resetFilter } = useFilterHelpers(filterData, filterConfig)
+  const { resetFilter } = useFilterHelpers(filterData, filterConfig, {
+    populateUrlParams: false,
+    storeFiltersLocalStorage: false,
+  })
   const { executeFetch } = useFetchExternalProviderAssetList()
   const { executeRequest: fetchExternalProviderAsset } = useFetchExternalProviderAsset()
   const { maxSelectedItems } = useBetaTestFeatures()

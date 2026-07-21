@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "create": "Pridať epizódu"
+  },
   "model": {
     "id": "ID",
     "podcast": "Podcast",

@@ -54,7 +54,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const uploadQueuesStore = useUploadQueuesStore()
 
   const { list, loader, activeItemIndex } = storeToRefs(assetListStore)
-  const { resetFilter } = useFilterHelpers(filterData, filterConfig)
+  const { resetFilter } = useFilterHelpers(filterData, filterConfig, {
+    populateUrlParams: false,
+    storeFiltersLocalStorage: false,
+  })
   const { currentAssetLicenceId } = useCurrentAssetLicence()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()

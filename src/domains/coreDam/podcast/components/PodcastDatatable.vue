@@ -40,7 +40,10 @@ provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = usePodcastListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig)
+const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
+  populateUrlParams: false,
+  storeFiltersLocalStorage: false,
+})
 
 const { pagination } = usePagination('createdAt')
 provide(DatatablePaginationKey, pagination)
