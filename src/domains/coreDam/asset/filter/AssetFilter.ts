@@ -23,7 +23,6 @@ export const filterFieldsList = [
   { name: 'ttsAudio' as const, default: null, type: 'boolean' },
   { name: 'slotNames' as const, default: [] },
   { name: 'distributedInServices' as const, default: [] },
-  { name: 'licences' as const, default: [] },
   { name: 'pixelSizeFrom' as const, default: null, type: 'integer' },
   { name: 'pixelSizeUntil' as const, default: null, type: 'integer' },
   { name: 'widthFrom' as const, default: null, type: 'integer' },

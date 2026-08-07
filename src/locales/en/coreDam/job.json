@@ -16,5 +16,8 @@
     "jobImageCopy": "Image copy",
     "jobAssetFileReprocessInternalFlag": "Asset file reprocess internal flag",
     "jobSynchronizeImageChanged": "Synchronize image changed"
+  },
+  "filter": {
+    "startedAtFrom": "Started at from - to"
   }
 }

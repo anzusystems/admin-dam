@@ -42,7 +42,7 @@
     "bitrateUntil": "Bitrate until",
     "slotsCountFrom": "Slots count from",
     "slotsCountUntil": "Slots count until",
-    "createdAtFrom": "CreatedAt from",
+    "createdAtFrom": "Created from - to",
     "createdAtUntil": "CreatedAt until",
     "mainFileSingleUse": "Single-use license",
     "mainFileInternal": "Internal"

@@ -22,7 +22,7 @@ const filterFields = [
     default: null,
     type: 'timeInterval',
     related: 'startedAtUntil',
-    titleT: 'common.job.filter.startedAtFrom',
+    titleT: 'coreDam.job.filter.startedAtFrom',
   },
   {
     name: 'startedAtUntil' as const,

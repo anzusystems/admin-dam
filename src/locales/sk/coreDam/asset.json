@@ -42,7 +42,7 @@
     "bitrateUntil": "Bitrate do",
     "slotsCountFrom": "Počet slotov od",
     "slotsCountUntil": "Počet slotov do",
-    "createdAtFrom": "Vytvorené od",
+    "createdAtFrom": "Vytvorené od - do",
     "createdAtUntil": "Vytvorené do",
     "mainFileSingleUse": "Jednorazová licencia",
     "mainFileInternal": "Interný"
@@ -122,7 +122,6 @@
     "next": "Nasledujúci asset",
     "refresh": "Znovu načítať zoznam"
   },
-
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
     "licenceMismatch": "Aktívna licencia a licencia assetu sa nezhoduje",

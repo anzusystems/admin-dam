@@ -16,5 +16,8 @@
     "jobImageCopy": "Kopírovanie obrázkov",
     "jobAssetFileReprocessInternalFlag": "Prepočet interného príznaku súborov",
     "jobSynchronizeImageChanged": "Synchronizácia zmien obrázkov"
+  },
+  "filter": {
+    "startedAtFrom": "Začiatok od - do"
   }
 }
