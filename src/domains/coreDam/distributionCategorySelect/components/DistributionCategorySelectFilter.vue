@@ -46,7 +46,7 @@ const { assetTypeOptions } = useAssetType()
       </VRow>
     </template>
     <template #search>
-      <AFilterString name="id" />
+      <AFilterString name="serviceSlug" />
     </template>
   </AFilterWrapper>
 </template>

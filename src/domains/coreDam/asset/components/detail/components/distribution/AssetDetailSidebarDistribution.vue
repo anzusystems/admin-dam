@@ -26,6 +26,7 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+const { showErrorsDefault } = useAlerts()
 
 const distributionListStore = useDistributionListStore()
 const { pagination } = usePagination(null)
@@ -40,9 +41,14 @@ const { dialogNew, openNew, dialogKey } = useAssetDetailDistributionDialog()
 
 const getList = async () => {
   distributionListStore.showLoader()
-  const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig)
-  distributionListStore.setList(items)
-  distributionListStore.hideLoader()
+  try {
+    const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig)
+    distributionListStore.setList(items)
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    distributionListStore.hideLoader()
+  }
 }
 
 const reloadList = () => {
