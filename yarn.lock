@@ -5,9 +5,9 @@ __metadata:
   version: 10
   cacheKey: 10
 
-"@anzusystems/common-admin@npm:1.47.0-beta.dev-1784059873":
-  version: 1.47.0-beta.dev-1784059873
-  resolution: "@anzusystems/common-admin@npm:1.47.0-beta.dev-1784059873"
+"@anzusystems/common-admin@npm:1.47.0-beta.dev-1784059874":
+  version: 1.47.0-beta.dev-1784059874
+  resolution: "@anzusystems/common-admin@npm:1.47.0-beta.dev-1784059874"
   peerDependencies:
     "@sentry/vue": ^10.0.0
     "@vuelidate/core": ^2.0.3
@@ -38,7 +38,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/8ecc05b3f91213bf8a51f3985e4a5936c4871fdeea795e56f7e26c5fdc99ae6229d90941f1aa8e2c2d9283fc179d4a8e7f558199f62d317d61dd2f540319efae
+  checksum: 10/14fcc2c9f6addfdf90f1211c86d91a44488ccb7495c0e3af572d3a9d57a31cd1644f9e9825d8e854b500aa1e19ff16349d97a5f83fd32ec802e080e1116a2af5
   languageName: node
   linkType: hard
 
@@ -3043,25 +3043,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:14.3.0":
-  version: 14.3.0
-  resolution: "@vueuse/core@npm:14.3.0"
+"@vueuse/core@npm:14.4.0":
+  version: 14.4.0
+  resolution: "@vueuse/core@npm:14.4.0"
   dependencies:
     "@types/web-bluetooth": "npm:^0.0.21"
-    "@vueuse/metadata": "npm:14.3.0"
-    "@vueuse/shared": "npm:14.3.0"
+    "@vueuse/metadata": "npm:14.4.0"
+    "@vueuse/shared": "npm:14.4.0"
   peerDependencies:
     vue: ^3.5.0
-  checksum: 10/5a152edbfd8d45f1c012cbd8c046bee940a6abd012625954146ce453b3cfed29387b1a3895bf5f50d80bebff1711f16726dbeeb5f2942a51d6fb7e5f97054e0f
+  checksum: 10/51f5fb8a27800e6a16eea55edf5b3600acc6438ad6fe05b7f56650f1d382561be86691c2d59a10f20f5731d7313f8208b98aee0e9b59947972bdc4bd40dcccd2
   languageName: node
   linkType: hard
 
-"@vueuse/integrations@npm:14.3.0":
-  version: 14.3.0
-  resolution: "@vueuse/integrations@npm:14.3.0"
+"@vueuse/integrations@npm:14.4.0":
+  version: 14.4.0
+  resolution: "@vueuse/integrations@npm:14.4.0"
   dependencies:
-    "@vueuse/core": "npm:14.3.0"
-    "@vueuse/shared": "npm:14.3.0"
+    "@vueuse/core": "npm:14.4.0"
+    "@vueuse/shared": "npm:14.4.0"
   peerDependencies:
     async-validator: ^4
     axios: ^1
@@ -3101,23 +3101,23 @@ __metadata:
       optional: true
     universal-cookie:
       optional: true
-  checksum: 10/3d02e76021477584167f91af3333c90de27bef69db0e28536eea1c6ac156005e74fd69bdc9e29be639f61002def2501094192a60fa5404b509e110593f6074a3
+  checksum: 10/a45a0a6b5a3478654ebf62a71072dd86f85056a1b7091b6f7b8d9c0a82fe5c6afd0929bb4fcfcb0b037b34c97cb755b514738a5db2ed8b51e428a19011d0f1d5
   languageName: node
   linkType: hard
 
-"@vueuse/metadata@npm:14.3.0":
-  version: 14.3.0
-  resolution: "@vueuse/metadata@npm:14.3.0"
-  checksum: 10/6be5cd87e48ed4b718f444c0597be115de577616f2d9600f7fd1ad6ba466f748c7cde6b583086a3079f39a5edc0d43fc9caca526d775285fd45d5d3860404f4f
+"@vueuse/metadata@npm:14.4.0":
+  version: 14.4.0
+  resolution: "@vueuse/metadata@npm:14.4.0"
+  checksum: 10/5a9442f85272e724a96e8addb8ba1e80afee29fc7ab871f24367947510d5197e865e9b481e0281d6b8e77d48ded41d73c63c57d9571709c999850e2cffc2c884
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:14.3.0":
-  version: 14.3.0
-  resolution: "@vueuse/shared@npm:14.3.0"
+"@vueuse/shared@npm:14.4.0":
+  version: 14.4.0
+  resolution: "@vueuse/shared@npm:14.4.0"
   peerDependencies:
     vue: ^3.5.0
-  checksum: 10/27e680b964b906ef75c49e9db01e063d90d9434b34b3f24529874c48780016f19abebb1f9b0e68ca19e9eeaa3a776c8772d68630772c17ca4d996ed0a928fd74
+  checksum: 10/f68ae6e5e5f569e82a1002aba9761b0b90eb403f188d505c459df86b453fbf98e99e9634749b318a93d81b5198d42d294b477ae2a986eaa603591916b756096b
   languageName: node
   linkType: hard
 
@@ -3168,7 +3168,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": "npm:1.47.0-beta.dev-1784059873"
+    "@anzusystems/common-admin": "npm:1.47.0-beta.dev-1784059874"
     "@cypress/grep": "npm:^6.0.2"
     "@floating-ui/dom": "npm:^1.8.0"
     "@intlify/unplugin-vue-i18n": "npm:^11.2.4"
@@ -3195,8 +3195,8 @@ __metadata:
     "@vue/tsconfig": "npm:^0.9.1"
     "@vuelidate/core": "npm:^2.0.3"
     "@vuelidate/validators": "npm:^2.0.4"
-    "@vueuse/core": "npm:14.3.0"
-    "@vueuse/integrations": "npm:14.3.0"
+    "@vueuse/core": "npm:14.4.0"
+    "@vueuse/integrations": "npm:14.4.0"
     axios: "npm:^1.19.0"
     browserslist: "npm:^4.28.7"
     cypress: "npm:15.20.0"
