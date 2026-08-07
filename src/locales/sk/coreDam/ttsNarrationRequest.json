@@ -31,7 +31,7 @@
   },
   "button": {
     "synthesize": "Syntetizovať",
-    "cancelRequest": "Zrušiť request"
+    "cancelRequest": "Zrušiť požiadavku"
   },
   "synthesize": {
     "title": "Syntetizovať TTS audio",
@@ -44,17 +44,17 @@
     "podcasts": "Naviazať na podcasty"
   },
   "cancelRequest": {
-    "title": "Zrušiť čakajúci TTS request",
-    "description": "Požiadať o zrušenie čakajúceho audio-narration requestu. Ak worker už stihol výsledok prehodiť, zrušenie nemusí byť účinné."
+    "title": "Zrušiť čakajúcu TTS požiadavku",
+    "description": "Požiadať o zrušenie čakajúcej požiadavky na audio naráciu. Ak spracovanie už stihlo výsledok nahradiť, zrušenie nemusí byť účinné."
   },
   "detail": {
-    "requestSection": "Request",
+    "requestSection": "Požiadavka",
     "ttsAssetSection": "TTS Asset",
-    "noTtsAsset": "Žiadny TTS asset (request neskončil alebo výsledok nebol zachovaný)",
+    "noTtsAsset": "Žiadny TTS asset (požiadavka neskončila alebo výsledok nebol zachovaný)",
     "fields": {
       "id": "ID",
       "status": "Stav",
-      "chunkProgress": "Chunky (dokončené / spolu)",
+      "chunkProgress": "Časti (dokončené / spolu)",
       "chunksFailed": "{count} zlyhalo | {count} zlyhali | {count} zlyhalo",
       "mode": "Mód",
       "voiceFamilySlug": "Hlasová rodina",
@@ -63,9 +63,9 @@
       "failureReason": "Dôvod zlyhania",
       "startedAt": "Začaté",
       "assetAssetId": "ID assetu",
-      "assetDiscriminator": "Diskriminátor",
+      "assetDiscriminator": "Poskytovateľ",
       "assetVoiceFamilyId": "Hlasová rodina",
-      "externalVoiceId": "Externé ID hlasu",
+      "externalVoiceId": "ID externého hlasu",
       "assetStatus": "Stav",
       "assetFailureReason": "Dôvod zlyhania",
       "assetCreatedAt": "Vytvorené",

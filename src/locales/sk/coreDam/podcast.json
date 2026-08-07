@@ -18,7 +18,7 @@
       "importFrom": "Import od"
     },
     "imagePreview": "Obrázok",
-    "altImage": "Alt Obrázok",
+    "altImage": "Alt obrázok",
     "exportData": "Exportné dáta",
     "flags": {
       "webPublicExportEnabled": "Povolené na webe",
@@ -36,7 +36,7 @@
   },
   "tabs": {
     "detail": "Detail podcastu",
-    "episodes": "Epizóda podcastu"
+    "episodes": "Epizódy podcastu"
   },
   "lastImportStatus": {
     "notImported": "Neimportované",

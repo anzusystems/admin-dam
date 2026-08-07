@@ -11,9 +11,9 @@
     "assetAndMainFileIds": "Id",
     "type": "Type",
     "inPodcast": "In podcast",
-    "keywordIds": "Keyword ids",
+    "keywordIds": "Keywords",
     "authorIds": "Authors",
-    "createdByIds": "CreatedBy",
+    "createdByIds": "Created by",
     "fromRss": "From RSS",
     "ttsAudio": "Synthesized (TTS)",
     "distributedInServices": "Distributed in services",
@@ -43,8 +43,8 @@
     "slotsCountFrom": "Slots count from",
     "slotsCountUntil": "Slots count until",
     "createdAtFrom": "Created from - to",
-    "createdAtUntil": "CreatedAt until",
-    "mainFileSingleUse": "Single-use license",
+    "createdAtUntil": "Created until",
+    "mainFileSingleUse": "Single-use licence",
     "mainFileInternal": "Internal"
   },
   "meta": {
@@ -66,7 +66,7 @@
   "sibling": {
     "title": "Sibling",
     "select": "Select",
-    "noAsset": "No asset"
+    "noAsset": "Asset not found"
   },
   "assetType": {
     "image": "Image",
@@ -95,14 +95,14 @@
   "list": {
     "table": {
       "thead": {
-        "thumbnail": "thumbnail",
-        "title": "title",
-        "createdDate": "createdDate",
-        "advanced": "advanced",
-        "format": "format",
-        "size": "size",
-        "createdBy": "createdBy",
-        "slot": "slot"
+        "thumbnail": "Thumbnail",
+        "title": "Title",
+        "createdDate": "Created",
+        "advanced": "Advanced",
+        "format": "Format",
+        "size": "Size",
+        "createdBy": "Created by",
+        "slot": "Slots"
       }
     },
     "noTitle": "no title",
@@ -132,7 +132,7 @@
     },
     "noAssetSelected": "No asset selected",
     "tabs": {
-      "info": "Meta",
+      "info": "Info",
       "roi": "Focus",
       "distribution": "Distribution",
       "slots": "Slots",
@@ -231,7 +231,7 @@
     "general": "General"
   },
   "externalProvider": {
-    "importToDam": "Import to DAM",
+    "importToDam": "Import to ADAM",
     "viewDetail": "View detail",
     "id": "ID",
     "title": "Title"

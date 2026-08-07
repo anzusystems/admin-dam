@@ -2,7 +2,7 @@
   "model": {
     "id": "ID",
     "name": "Name",
-    "extSystem": "External System",
+    "extSystem": "External system",
     "extId": "External ID",
     "internalRule": {
       "active": "Internal rule active",
@@ -16,6 +16,6 @@
     "extId": "External ID"
   },
   "meta": {
-    "create": "Create license"
+    "create": "Create licence"
   }
 }

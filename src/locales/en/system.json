@@ -10,17 +10,17 @@
     "dragAndDrop": "Drag and drop files for upload",
     "incorrectFormatSize": "Incorrect format or size",
     "stop": "Close",
-    "stopConfirmQuestion": "Are you sure you want to stop upload",
+    "stopConfirmQuestion": "Are you sure you want to stop the upload?",
     "waiting": "Waiting",
     "processing": "Processing",
     "uploading": "Uploading",
     "done": "Done",
     "limits": {
       "uploadWarning": "Upload warning",
-      "onUploadLimit": "You are already on upload limit ({limit}). Finish upload, then try again.",
+      "onUploadLimit": "You have reached the upload limit ({limit}). Finish the current upload, then try again.",
       "addingOverLimit": "You are trying to upload additional {count} files",
       "countAlreadyInProgress": "{count} file(s) are already in progress.",
-      "onlyAllowedAtOnce": "Only {count} are allowed to upload at once",
+      "onlyAllowedAtOnce": "Only {count} file(s) can be uploaded at once.",
       "cancelOrUploadFirst": "Do you want to cancel or upload only first {count} file(s)?",
       "actionAddFirstItems": "Add first {count} file(s)"
     }
@@ -84,26 +84,26 @@
     "logout": "Logout"
   },
   "uploadErrors": {
-    "unknownError": "System error, try again later or contact administrator",
+    "unknownError": "System error. Try again later or contact an administrator.",
     "systemError": "Error",
     "size": "Incorrect size",
     "offset": "Incorrect offset",
-    "mimeType": "Incorrect mime type"
+    "mimeType": "Incorrect file format"
   },
   "closePage": {
     "title": "This page/tab can be safely closed."
   },
   "notFoundPage": {
-    "title": "Ops, 404",
-    "subTitle": "This site doesn't exist",
+    "title": "Oops, 404.",
+    "subTitle": "This page doesn't exist. If it should, please contact an administrator.",
     "return": "Return me to homepage"
   },
   "unauthorizedPage": {
-    "title": "Ops, 401",
-    "subTitle": "You dont have access to this page",
+    "title": "Oops, 401.",
+    "subTitle": "You don't have permission to access this page. If you need access, please contact an administrator.",
     "return": "Return me to homepage"
   },
   "error": {
-    "notificationsNotConnected": "Notification service is not working, some elements of admin will not work correctly."
+    "notificationsNotConnected": "The notification service is temporarily unavailable; some parts of the admin may not work correctly."
   }
 }

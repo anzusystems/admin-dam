@@ -8,7 +8,7 @@
     "assetLicenceGroup": {
       "list": "Asset licence groups",
       "detail": "Licence group",
-      "edit": "Licence groups"
+      "edit": "Licence group"
     },
     "author": {
       "list": "Authors",
@@ -85,7 +85,7 @@
     }
   },
   "anzuUser": {
-    "list": "Permission users",
+    "list": "User permissions",
     "detail": "User",
     "edit": "User"
   },

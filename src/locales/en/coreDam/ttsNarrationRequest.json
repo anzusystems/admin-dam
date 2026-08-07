@@ -37,7 +37,7 @@
     "title": "Synthesize TTS audio",
     "text": "Text",
     "textPlaceholder": "Paste the article text here…",
-    "extSystem": "Ext system",
+    "extSystem": "External system",
     "assetLicence": "Asset licence",
     "assetTitle": "Asset title",
     "assetTitlePlaceholder": "Optional — auto-generated when left empty",
@@ -63,7 +63,7 @@
       "failureReason": "Failure reason",
       "startedAt": "Started at",
       "assetAssetId": "Asset ID",
-      "assetDiscriminator": "Discriminator",
+      "assetDiscriminator": "Provider",
       "assetVoiceFamilyId": "Voice family",
       "externalVoiceId": "External voice ID",
       "assetStatus": "Status",
@@ -72,7 +72,7 @@
       "assetModifiedAt": "Modified",
       "sourceTextHash": "Source text hash",
       "assetId": "Asset",
-      "extSystemId": "Ext system",
+      "extSystemId": "External system",
       "assetLicence": "Asset licence"
     }
   }

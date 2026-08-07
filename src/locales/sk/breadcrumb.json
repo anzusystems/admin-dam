@@ -2,8 +2,8 @@
   "coreDam": {
     "assetLicence": {
       "list": "Licencie assetov",
-      "detail": "Licencie",
-      "edit": "Licencie"
+      "detail": "Licencia",
+      "edit": "Licencia"
     },
     "assetLicenceGroup": {
       "list": "Skupiny licencií assetov",
@@ -17,13 +17,13 @@
     },
     "distributionCategory": {
       "list": "Kategórie distribúcie",
-      "detail": "Kategórie",
-      "edit": "Kategórie"
+      "detail": "Kategória",
+      "edit": "Kategória"
     },
     "distributionCategorySelect": {
       "list": "Výbery v distribučných kategóriách",
-      "detail": "Výbery",
-      "edit": "Výbery"
+      "detail": "Výber",
+      "edit": "Výber"
     },
     "podcast": {
       "list": "Podcasty",

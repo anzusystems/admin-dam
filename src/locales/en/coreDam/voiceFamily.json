@@ -1,11 +1,11 @@
 {
   "model": {
     "id": "ID",
-    "extSystem": "Ext system",
+    "extSystem": "External system",
     "slug": "Slug",
-    "displayName": "Display Name",
+    "displayName": "Display name",
     "language": "Language",
-    "preferredProvider": "Preferred Provider",
+    "preferredProvider": "Preferred provider",
     "active": "Active",
     "keywords": "Keywords (auto-tag)"
   },

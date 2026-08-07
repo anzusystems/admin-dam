@@ -1,6 +1,6 @@
 {
   "model": {
-    "distributionService": "Meno distribučného servisu",
+    "distributionService": "Názov distribučnej služby",
     "privacy": "Uložiť alebo zverejniť ako:",
     "language": "Jazyk",
     "playlist": "Zoznam videí",
@@ -19,7 +19,7 @@
     "private": "Súkromné",
     "public": "Verejné",
     "unlisted": "Nezaradené",
-    "dynamic": "Harmonogram"
+    "dynamic": "Naplánované"
   },
   "videoPreviewLink": "Video náhľad na YouTube",
   "videoAdministrationLink": "Administrácia videa na YouTube",
@@ -28,7 +28,7 @@
   "logoutButton": "Odhlásiť YouTube kanál",
   "logout": {
     "logoutTitle": "Odhlásiť YouTube kanál",
-    "logoutText": "Skutočne sa chcete odhlásiť z tohto youtube kanála?",
+    "logoutText": "Skutočne sa chcete odhlásiť z tohto YouTube kanála?",
     "logoutOpen": "Odhlásiť YouTube kanál",
     "logoutConfirm": "Potvrdiť odhlásenie"
   }
