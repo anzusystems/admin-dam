@@ -6,7 +6,7 @@ export function usePublicExportListFilter() {
   const fields = [
     { name: 'id' as const, default: null, type: 'string' },
     { name: 'type' as const, default: null, type: 'string' },
-    { name: 'slug' as const, default: null, type: 'string', variant: 'startsWith' },
+    { name: 'slug' as const, default: null, type: 'string', variant: 'startsWith', render: { skip: true } },
   ] satisfies readonly MakeFilterOption[]
 
   const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {

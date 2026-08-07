@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import {
+  AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
   FilterConfigKey,
@@ -27,14 +28,25 @@ const { assetTypeOptions } = useAssetType()
 <template>
   <AFilterWrapper
     v-model:datatable-hidden-columns="datatableHiddenColumns"
+    enable-top
     @submit="emit('submit')"
     @reset="emit('reset')"
   >
-    <template #item.type>
-      <AFilterValueObjectOptionsSelect
-        name="type"
-        :items="assetTypeOptions"
-      />
+    <template #top>
+      <VRow>
+        <VCol
+          cols="12"
+          md="6"
+        >
+          <AFilterValueObjectOptionsSelect
+            name="type"
+            :items="assetTypeOptions"
+          />
+        </VCol>
+      </VRow>
+    </template>
+    <template #search>
+      <AFilterString name="id" />
     </template>
   </AFilterWrapper>
 </template>

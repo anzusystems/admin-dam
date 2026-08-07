@@ -5,8 +5,9 @@ const filterFields = [
   {
     name: 'id' as const,
     default: null,
-    type: 'integer',
+    type: 'string',
     titleT: 'common.job.filter.id',
+    render: { skip: true },
   },
   {
     name: 'status' as const,

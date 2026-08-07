@@ -3,7 +3,7 @@ import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 
 const filterFieldsList = [
   { name: 'id' as const, default: null, type: 'integer' },
-  { name: 'title' as const, default: null, type: 'string' },
+  { name: 'title' as const, default: null, type: 'string', render: { skip: true } },
 ] satisfies readonly MakeFilterOption[]
 
 const listFiltersStore = createFilterStore(filterFieldsList)

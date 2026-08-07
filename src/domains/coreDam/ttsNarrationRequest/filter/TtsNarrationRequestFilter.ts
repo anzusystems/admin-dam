@@ -4,7 +4,7 @@ import { ENTITY } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRe
 
 const fields = [
   { name: 'status' as const, variant: 'in', default: [], type: 'string' },
-  { name: 'voiceFamilySlug' as const, default: null, type: 'string' },
+  { name: 'voiceFamilySlug' as const, default: null, type: 'string', render: { skip: true } },
 ] satisfies readonly MakeFilterOption[]
 
 const store = createFilterStore(fields)

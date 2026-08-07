@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {
   AFilterBooleanSelect,
+  AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
   FilterConfigKey,
@@ -31,6 +32,9 @@ const { authorTypeOptions } = useDamAuthorType()
     @submit="emit('submit')"
     @reset="emit('reset')"
   >
+    <template #search>
+      <AFilterString name="text" />
+    </template>
     <template #item.type>
       <AFilterValueObjectOptionsSelect
         name="type"

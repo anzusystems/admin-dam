@@ -4,7 +4,7 @@ import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 
 const filterFieldsList = [
   { name: 'id' as const, default: null, type: 'integer' },
-  { name: 'extId' as const, default: null, type: 'string' },
+  { name: 'extId' as const, default: null, type: 'string', render: { skip: true } },
   { name: 'extSystem' as const, titleT: 'coreDam.extSystem.filter.extSystem', default: null },
 ] satisfies readonly MakeFilterOption[]
 

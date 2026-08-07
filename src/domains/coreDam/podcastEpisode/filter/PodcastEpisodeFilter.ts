@@ -5,7 +5,14 @@ import { ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 export function usePodcastEpisodeListFilter() {
   const filterFields = [
     { name: 'id' as const, default: null, type: 'string' },
-    { name: 'title' as const, default: null, type: 'string', variant: 'startsWith', apiName: 'texts.title' },
+    {
+      name: 'title' as const,
+      default: null,
+      type: 'string',
+      variant: 'startsWith',
+      apiName: 'texts.title',
+      render: { skip: true },
+    },
     {
       name: 'webPublicExportEnabled' as const,
       default: null,

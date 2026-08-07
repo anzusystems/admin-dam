@@ -31,14 +31,14 @@ const { ttsRequestStatusOptions } = useTtsRequestStatus()
     @submit="emit('submit')"
     @reset="emit('reset')"
   >
+    <template #search>
+      <AFilterString name="voiceFamilySlug" />
+    </template>
     <template #item.status>
       <AFilterValueObjectOptionsSelect
         name="status"
         :items="ttsRequestStatusOptions"
       />
-    </template>
-    <template #item.voiceFamilySlug>
-      <AFilterString name="voiceFamilySlug" />
     </template>
   </AFilterWrapper>
 </template>

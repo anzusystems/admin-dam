@@ -10,6 +10,7 @@ const filterFieldsList = [
     default: null,
     type: 'string',
     variant: 'startsWith',
+    render: { skip: true },
   },
   {
     name: 'webPublicExportEnabled' as const,

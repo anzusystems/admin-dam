@@ -4,7 +4,7 @@ import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const fields = [
   { name: 'id' as const, default: null, type: 'string' },
-  { name: 'text' as const, default: null, type: 'string' },
+  { name: 'text' as const, default: null, type: 'string', variant: 'search', render: { skip: true } },
   { name: 'identifier' as const, default: null, type: 'string' },
   { name: 'reviewed' as const, default: null, type: 'boolean' },
   { name: 'type' as const, default: null, type: 'string' },

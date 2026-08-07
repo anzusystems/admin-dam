@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
 import { useAssetLicenceGroupListActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 
 const emit = defineEmits<{
@@ -19,7 +19,12 @@ const { datatableHiddenColumns } = useAssetLicenceGroupListActions()
 <template>
   <AFilterWrapper
     v-model:datatable-hidden-columns="datatableHiddenColumns"
+    hide-more
     @submit="emit('submit')"
     @reset="emit('reset')"
-  />
+  >
+    <template #search>
+      <AFilterString name="id" />
+    </template>
+  </AFilterWrapper>
 </template>

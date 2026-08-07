@@ -11,5 +11,5 @@ const option = computed(() => getJobResourceOption(props.value))
 </script>
 
 <template>
-  <AChipNoLink>{{ option.title }}</AChipNoLink>
+  <AChipNoLink>{{ option?.title ?? value }}</AChipNoLink>
 </template>

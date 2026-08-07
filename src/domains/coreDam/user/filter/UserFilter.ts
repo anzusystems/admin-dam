@@ -5,7 +5,7 @@ import { ENTITY } from '@/domains/coreDam/user/api/userApi'
 export function useUserListFilter() {
   const fields = [
     { name: 'id' as const, default: null, type: 'integer' },
-    { name: 'email' as const, default: null, type: 'string', variant: 'startsWith' },
+    { name: 'email' as const, default: null, type: 'string', variant: 'startsWith', render: { skip: true } },
   ] satisfies readonly MakeFilterOption[]
 
   const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {

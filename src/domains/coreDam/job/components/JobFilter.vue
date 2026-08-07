@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  AFilterString,
   AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
@@ -32,6 +33,9 @@ const { jobStatusOptions } = useJobStatus()
     @submit="emit('submit')"
     @reset="emit('reset')"
   >
+    <template #search>
+      <AFilterString name="id" />
+    </template>
     <template #item.status>
       <AFilterValueObjectOptionsSelect
         name="status"

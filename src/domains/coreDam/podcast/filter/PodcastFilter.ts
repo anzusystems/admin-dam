@@ -15,6 +15,7 @@ export function usePodcastListFilter() {
       variant: 'startsWith',
       default: null,
       type: 'string',
+      render: { skip: true },
     },
     {
       name: 'webPublicExportEnabled' as const,

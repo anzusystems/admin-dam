@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
   FilterConfigKey,
@@ -32,6 +33,9 @@ const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
     @submit="emit('submit')"
     @reset="emit('reset')"
   >
+    <template #search>
+      <AFilterString name="phrase" />
+    </template>
     <template #item.type>
       <AFilterValueObjectOptionsSelect
         name="type"

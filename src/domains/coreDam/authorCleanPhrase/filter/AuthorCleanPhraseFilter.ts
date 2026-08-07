@@ -5,7 +5,7 @@ import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusys
 export function useAuthorCleanPhraseListFilter() {
   const fields = [
     { name: 'id' as const, default: null, type: 'string' },
-    { name: 'phrase' as const, default: null, type: 'string' },
+    { name: 'phrase' as const, default: null, type: 'string', render: { skip: true } },
     { name: 'mode' as const, default: null, type: 'string' },
     { name: 'type' as const, default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]

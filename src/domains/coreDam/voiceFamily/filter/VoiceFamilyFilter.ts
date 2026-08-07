@@ -4,7 +4,7 @@ import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 
 const filterFieldsList = [
   { name: 'id' as const, default: null, type: 'string' },
-  { name: 'displayName' as const, variant: 'startsWith', default: null, type: 'string' },
+  { name: 'displayName' as const, variant: 'startsWith', default: null, type: 'string', render: { skip: true } },
   { name: 'language' as const, default: null, type: 'string' },
   { name: 'active' as const, default: null, type: 'boolean' },
 ] satisfies readonly MakeFilterOption[]

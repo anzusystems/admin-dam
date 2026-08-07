@@ -5,7 +5,14 @@ import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusys
 export function useVideoShowListFilter() {
   const filterFields = [
     { name: 'id' as const, default: null, type: 'string' },
-    { name: 'title' as const, apiName: 'texts.title', variant: 'startsWith', default: null, type: 'string' },
+    {
+      name: 'title' as const,
+      apiName: 'texts.title',
+      variant: 'startsWith',
+      default: null,
+      type: 'string',
+      render: { skip: true },
+    },
     {
       name: 'webPublicExportEnabled' as const,
       apiName: 'flags.webPublicExportEnabled',

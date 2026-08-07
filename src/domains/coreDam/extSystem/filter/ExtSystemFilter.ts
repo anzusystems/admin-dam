@@ -5,7 +5,7 @@ import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 export function useExtSystemListFilter() {
   const fields = [
     { name: 'id' as const, default: null, type: 'integer' },
-    { name: 'name' as const, variant: 'startsWith', default: null, type: 'string' },
+    { name: 'name' as const, variant: 'startsWith', default: null, type: 'string', render: { skip: true } },
     { name: 'slug' as const, variant: 'startsWith', default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 

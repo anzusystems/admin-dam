@@ -5,8 +5,8 @@ import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusys
 
 const listFields = [
   { name: 'id' as const, default: null, type: 'integer' },
-  { name: 'name' as const, variant: 'startsWith', default: null, type: 'string' },
-  { name: 'type' as const, mandatory: true, default: DamAssetType.Video, type: 'string' },
+  { name: 'name' as const, variant: 'startsWith', default: null, type: 'string', render: { skip: true } },
+  { name: 'type' as const, mandatory: true, default: DamAssetType.Video, type: 'string', render: { skip: true } },
 ] satisfies readonly MakeFilterOption[]
 
 const listFilterStore = createFilterStore(listFields)

@@ -4,7 +4,7 @@ import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 
 const listFilterFields = [
   { name: 'id' as const, default: null, type: 'string' },
-  { name: 'text' as const, default: null, type: 'string' },
+  { name: 'text' as const, default: null, type: 'string', render: { skip: true } },
   { name: 'reviewed' as const, default: null, type: 'boolean' },
 ] satisfies readonly MakeFilterOption[]
 

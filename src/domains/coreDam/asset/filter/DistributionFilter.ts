@@ -21,10 +21,11 @@ const filterFields = [
   },
 ] satisfies readonly MakeFilterOption[]
 
-const distributionFilterStore = createFilterStore(filterFields)
-
 export function useDistributionFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, distributionFilterStore, {
+  // A fresh store per call: this filter is set programmatically by several
+  // components at once (sidebar list, the create dialogs, DistributionBlockedBy).
+  // Sharing one module-level store let them overwrite each other's criteria.
+  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
