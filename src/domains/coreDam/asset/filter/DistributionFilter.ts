@@ -22,9 +22,7 @@ const filterFields = [
 ] satisfies readonly MakeFilterOption[]
 
 export function useDistributionFilter() {
-  // A fresh store per call: this filter is set programmatically by several
-  // components at once (sidebar list, the create dialogs, DistributionBlockedBy).
-  // Sharing one module-level store let them overwrite each other's criteria.
+  // Must stay per-call, several components set this filter at the same time.
   const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,

@@ -8,6 +8,7 @@ import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/current
 import DistributionCategoryWidgetDialog from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
 
 const { t } = useI18n()
+const { showErrorsDefault } = useAlerts()
 
 const assetDetailStore = useAssetDetailStore()
 const { createDefault } = useDistributionCategoryFactory()
@@ -36,8 +37,13 @@ const assetType = computed(() => {
 const loadCategory = async (id: DocId) => {
   loading.value = true
   const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
-  category.value = await fetchDistributionCategory({ urlParams: { id } })
-  loading.value = false
+  try {
+    category.value = await fetchDistributionCategory({ urlParams: { id } })
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const afterSave = async (categoryId: DocIdNullable) => {

@@ -3,5 +3,10 @@
   "text": "Text",
   "url": "URL",
   "external": "External link",
-  "nofollow": "Nofollow"
+  "nofollow": "Nofollow",
+  "filterPlaceholder": {
+    "eq": "Exact match",
+    "contains": "Anywhere in the text",
+    "startsWith": "Starts with"
+  }
 }

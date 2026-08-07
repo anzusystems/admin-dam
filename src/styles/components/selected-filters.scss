@@ -1,6 +1,4 @@
-// common-admin ships `.a-selected-filters` with hardcoded light colours
-// (container #f5f5f5, chip #fff) and no dark variant, so in dark theme the
-// chips render white-on-white. Re-tint them from the Vuetify theme tokens.
+// common-admin hardcodes light colours here and ships no dark variant.
 .v-theme--dark {
   .a-selected-filters {
     background: rgb(var(--v-theme-on-surface), 0.08);
