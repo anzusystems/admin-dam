@@ -390,6 +390,22 @@ const { currentExtSystemId } = useCurrentExtSystem()
             />
           </VCol>
         </VRow>
+        <VRow>
+          <VCol>
+            <AFilterDatetimePicker
+              v-model="filter.uploadedAtFrom"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+          <VCol>
+            <AFilterDatetimePicker
+              v-model="filter.uploadedAtUntil"
+              @update:model-value="onAnyFilterUpdate"
+              @keydown.enter="submitFilter"
+            />
+          </VCol>
+        </VRow>
       </VForm>
     </div>
     <template #append>

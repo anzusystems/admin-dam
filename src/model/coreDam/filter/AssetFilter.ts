@@ -132,6 +132,12 @@ const filter = reactive({
   createdAtUntil: {
     ...makeFilter({ name: 'createdAtUntil', default: null }),
   },
+  uploadedAtFrom: {
+    ...makeFilter({ name: 'uploadedAtFrom', default: null }),
+  },
+  uploadedAtUntil: {
+    ...makeFilter({ name: 'uploadedAtUntil', default: null }),
+  },
   mainFileSingleUse: {
     ...makeFilter({ name: 'mainFileSingleUse', default: null }),
   },
