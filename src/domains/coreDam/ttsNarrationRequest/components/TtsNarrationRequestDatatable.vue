@@ -50,7 +50,7 @@ const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filter
   storeFiltersLocalStorage: false,
 })
 
-const { pagination } = usePagination(null)
+const { pagination } = usePagination('id')
 provide(DatatablePaginationKey, pagination)
 
 const cancelDialog = ref(false)

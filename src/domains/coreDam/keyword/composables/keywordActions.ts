@@ -24,9 +24,18 @@ export const useKeywordListActions = () => {
   const listItems = ref<DamKeyword[]>([])
   const { executeFetch } = useFetchKeywordList()
 
+  // A text search must sort by relevance, so the sort is dropped for that request only
+  // and the user's choice is restored once the search is cleared.
+  let lastSortBy: Pagination['sortBy'] = { key: 'createdAt', order: SortOrder.Desc }
+
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
-    pagination.value.sortBy = filterData.text ? null : { key: 'createdAt', order: SortOrder.Asc }
+    if (filterData.text) {
+      lastSortBy = pagination.value.sortBy ?? lastSortBy
+      pagination.value.sortBy = null
+    } else {
+      pagination.value.sortBy = pagination.value.sortBy ?? lastSortBy
+    }
     try {
       listItems.value = await executeFetch(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },

@@ -98,7 +98,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableOrdering
+          variant="createdAt"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"

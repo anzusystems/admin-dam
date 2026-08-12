@@ -105,7 +105,7 @@ export const useDistributionCategoryManageActions = () => {
   }
 
   const fetchDistributionCategorySelectsData = async (assetType: DamAssetTypeType) => {
-    const { pagination } = usePagination(SORT_BY_ID)
+    const { pagination } = usePagination('createdAt')
     const { filterData, filterConfig } = useDistributionCategorySelectListFilter()
     filterData.serviceSlug = getAvailableDistributionServiceSlugs(assetType)
     filterData.type = assetType

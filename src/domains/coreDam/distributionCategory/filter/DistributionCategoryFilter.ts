@@ -4,7 +4,7 @@ import { DamAssetType, DamAssetTypeDefault } from '@anzusystems/common-admin'
 import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
 
 const listFields = [
-  { name: 'id' as const, default: null, type: 'integer' },
+  { name: 'id' as const, default: null, type: 'string' },
   { name: 'name' as const, variant: 'startsWith', default: null, type: 'string', render: { skip: true } },
   { name: 'type' as const, mandatory: true, default: DamAssetType.Video, type: 'string', render: { skip: true } },
 ] satisfies readonly MakeFilterOption[]

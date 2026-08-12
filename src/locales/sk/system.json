@@ -2,7 +2,8 @@
   "datatable": {
     "ordering": {
       "webOrderPosition": "Web",
-      "mobileOrderPosition": "Appka"
+      "mobileOrderPosition": "Appka",
+      "position": "Podľa poradia"
     }
   },
   "upload": {

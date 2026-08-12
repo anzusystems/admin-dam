@@ -1,5 +1,5 @@
 import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
-import { useDamCachedUsers } from '@anzusystems/common-admin'
+import { SortOrder, useDamCachedUsers } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import type { Ref } from 'vue'
 import {
@@ -26,8 +26,18 @@ export const useAuthorListActions = () => {
 
   const listItems = ref<DamAuthor[]>([])
 
+  // A text search must sort by relevance, so the sort is dropped for that request only
+  // and the user's choice is restored once the search is cleared.
+  let lastSortBy: Pagination['sortBy'] = { key: 'createdAt', order: SortOrder.Desc }
+
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
+    if (filterData.text) {
+      lastSortBy = pagination.value.sortBy ?? lastSortBy
+      pagination.value.sortBy = null
+    } else {
+      pagination.value.sortBy = pagination.value.sortBy ?? lastSortBy
+    }
     try {
       listItems.value = await executeFetch(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },

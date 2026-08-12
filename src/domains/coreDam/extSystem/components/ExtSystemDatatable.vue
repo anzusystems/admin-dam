@@ -39,7 +39,7 @@ const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filter
   storeFiltersLocalStorage: false,
 })
 
-const { pagination } = usePagination('id')
+const { pagination } = usePagination('createdAt')
 provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
@@ -89,7 +89,10 @@ defineExpose({
     <div>
       <div class="d-flex align-center">
         <VSpacer />
-        <ADatatableOrdering @sort-by-change="sortByChange" />
+        <ADatatableOrdering
+          variant="createdAt"
+          @sort-by-change="sortByChange"
+        />
         <ADatatableConfigButton
           v-model:columns-hidden="columnsHidden"
           :columns-all="columnsAll"

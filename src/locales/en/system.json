@@ -2,7 +2,8 @@
   "datatable": {
     "ordering": {
       "webOrderPosition": "Web",
-      "mobileOrderPosition": "App"
+      "mobileOrderPosition": "App",
+      "position": "By position"
     }
   },
   "upload": {

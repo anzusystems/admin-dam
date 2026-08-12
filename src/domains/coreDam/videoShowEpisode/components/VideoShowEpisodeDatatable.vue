@@ -86,6 +86,7 @@ const getList = useDebounceFn(() => {
 })
 
 const customSort: DatatableOrderingOptions = [
+  { id: 5, titleT: 'system.datatable.ordering.position', sortBy: { key: 'position', order: SortOrder.Desc } },
   { id: 1, titleT: 'common.system.datatable.ordering.mostRecent', sortBy: { key: 'id', order: SortOrder.Desc } },
   { id: 2, titleT: 'common.system.datatable.ordering.oldest', sortBy: { key: 'id', order: SortOrder.Asc } },
   {
