@@ -9,7 +9,7 @@ describe(`Test asset audio function, Env: ${CY.cfg}`,
       cy.prepareData('audio/sample.mp3',true, assetIDs)
     })
     it('Create Metadata', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}`)
@@ -35,7 +35,7 @@ describe(`Test asset audio function, Env: ${CY.cfg}`,
       cy.alertMessage(ALERT_UPDATE)
     })
     it('Edit Metadata', ()=>{
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true }).type(`${ASSET_TITLE}-edit`)
@@ -45,7 +45,7 @@ describe(`Test asset audio function, Env: ${CY.cfg}`,
       cy.alertMessage(ALERT_UPDATE)
     })
     it('Clear Metadata', ()=>{
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .first().clear({ force: true })

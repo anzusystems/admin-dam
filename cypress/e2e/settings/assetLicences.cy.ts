@@ -28,12 +28,12 @@ describe(
           cy.urlContains(text)
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(text)
-          cy.urlContains('/asset-licence')
+          cy.urlContains('/asset-licences')
           LICENCE_ID = text
         })
     })
     it('Edit asset licence', () => {
-      cy.visit('asset-licence')
+      cy.visit('/asset-licences')
       cy.getCy('filter-integer', 10000).first().type(`${LICENCE_ID}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')

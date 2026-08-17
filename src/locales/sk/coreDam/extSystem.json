@@ -1,14 +1,27 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "slug": "Slug",
     "adminUsers": "Administrátori"
   },
   "filter": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "extSystem": "Externý systém",
     "slug": "Slug"
+  },
+  "ttsSettings": {
+    "title": "TTS nastavenia",
+    "activeProviderMode": "Aktívny TTS poskytovateľ",
+    "defaultVoiceFamily": "Predvolená hlasová rodina",
+    "autoKeyword": "Automatické kľúčové slovo (každé TTS audio)",
+    "ttsFreeAudioEpilogAsset": "TTS free audio Epilóg",
+    "ttsFreeAudioEpilogAssetSelect": "Vybrať audio asset",
+    "modes": {
+      "elevenlabs": "ElevenLabs",
+      "google_tts": "Google TTS",
+      "auto": "Automaticky"
+    }
   }
 }

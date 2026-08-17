@@ -8,7 +8,7 @@
     },
     "attributes": {
       "rssUrl": "RSS URL",
-      "extUrl": "Ext feed link",
+      "extUrl": "External podcast URL",
       "mode": "Mode",
       "lastImportStatus": "Last import status",
       "webOrderPosition": "Web order position",
@@ -18,8 +18,8 @@
       "importFrom": "Import from"
     },
     "imagePreview": "Image",
-    "altImage": "Alt Image",
-    "exportData": "Export Data",
+    "altImage": "Alt image",
+    "exportData": "Export data",
     "flags": {
       "webPublicExportEnabled": "Web export enabled",
       "mobilePublicExportEnabled": "Mobile export enabled"
@@ -32,7 +32,7 @@
     "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "meta": {
-    "create": "Podcast create"
+    "create": "Create podcast"
   },
   "tabs": {
     "detail": "Podcast detail",
@@ -44,7 +44,8 @@
     "importFailed": "Import failed"
   },
   "podcastMode": {
-    "import": "Import",
-    "notImport": "Not import"
-  }
+    "import": "Imported",
+    "notImport": "Not imported"
+  },
+  "filterMinChars": "Enter at least 2 characters"
 }

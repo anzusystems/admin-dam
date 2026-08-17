@@ -19,12 +19,13 @@
     "private": "Private",
     "public": "Public",
     "unlisted": "Unlisted",
-    "dynamic": "Dynamic"
+    "dynamic": "Scheduled"
   },
   "videoPreviewLink": "Video preview on YouTube",
   "videoAdministrationLink": "Video administration on YouTube",
   "loginDescription": "Login on new tab/window, then return to this screen",
   "loginButton": "Login",
+  "logoutButton": "Sign out of YouTube channel",
   "logout": {
     "logoutTitle": "YouTube channel logout",
     "logoutText": "Do you want to logout on this YouTube channel?",

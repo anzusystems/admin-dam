@@ -23,7 +23,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
       cy.prepareData('video/sample.mp4', 1, assetIDs)
     })
     it('Distribute video', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
 
       // Change distribution category
@@ -74,7 +74,7 @@ describe(`Test distribution Video function, Env: ${CY.cfg}`,
         .should('include.text', 'Distribuovaný')  // YT distribution
 
       // Logs core-dam check
-      cy.visit('/log')
+      cy.visit('/logs')
       cy.getCy('filter-value').first().click()
       cy.contains('.v-list-item', 'coreDam').click()
       cy.getCy('filter-submit').click()

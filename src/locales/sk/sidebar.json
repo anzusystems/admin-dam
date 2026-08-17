@@ -1,6 +1,6 @@
 {
   "settings": {
-    "backToAssets": "Návrat na assety",
+    "backToAssets": "Späť na assety",
     "settings": "Osobné",
     "users": "Používatelia",
     "podcasts": "Podcasty",
@@ -9,7 +9,7 @@
     "anzuUser": "Oprávnenia používateľov",
     "extSystems": "Externé systémy",
     "assetLicences": "Licencie assetov",
-    "assetLicenceGroups": "Skupiny Licencií assetov",
+    "assetLicenceGroups": "Skupiny licencií assetov",
     "keywords": "Kľúčové slová",
     "authors": "Autori",
     "distributionCategory": "Kategórie distribúcií",
@@ -18,6 +18,8 @@
     "beta": "Beta",
     "job": "Systémové úlohy",
     "authorCleanPhrase": "Čistenie autorov",
-    "publicExport": "Verejné exporty"
+    "publicExport": "Verejné exporty",
+    "voiceFamilies": "Hlasové rodiny",
+    "ttsNarrationRequest": "TTS Audio"
   }
 }

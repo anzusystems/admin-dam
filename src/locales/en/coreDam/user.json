@@ -5,20 +5,20 @@
   },
   "model": {
     "id": "ID",
-    "firstName": "Firstname",
-    "lastName": "Lastname",
+    "firstName": "First name",
+    "lastName": "Last name",
     "email": "Email",
-    "roles": "Role",
+    "roles": "Roles",
     "enabled": "Enabled",
     "plainPassword": "New password",
     "assetLicences": "Licences",
     "licenceGroups": "Licence groups",
-    "userToExtSystems": "User to External Systems",
-    "adminToExtSystems": "Admin to External Systems",
+    "userToExtSystems": "User in external systems",
+    "adminToExtSystems": "Admin in external systems",
     "superAdmin": "Super admin",
-    "permissionGroups": "Permission Group",
-    "allowedAssetExternalProviders": "Allowed External asset providers",
-    "allowedDistributionServices": "Allowed Distribution services",
+    "permissionGroups": "Permission groups",
+    "allowedAssetExternalProviders": "Allowed external asset providers",
+    "allowedDistributionServices": "Allowed distribution services",
     "createdBy": "Created by",
     "modifiedBy": "Modified by"
   },
@@ -30,6 +30,6 @@
     "create": "Create user"
   },
   "button": {
-    "editPermissions": "Edit Permissions"
+    "editPermissions": "Edit permissions"
   }
 }

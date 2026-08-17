@@ -2,7 +2,7 @@ import type { MessageSchema } from '@/plugins/i18n'
 import type { ObjectLeaves } from '@anzusystems/common-admin'
 import 'vue-router'
 
-import type { AclValue as CustomAclValue } from '@/composables/auth/auth'
+import type { AclValue as CustomAclValue } from '@/domains/system/auth/auth'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -35,6 +35,10 @@ declare module '@anzusystems/common-admin' {
   export type AclValue = CustomAclValue
   export function can(acl: CustomAclValue, subject?: object): boolean
   export interface DefineLocaleMessage extends MessageSchema {}
+
+  interface AssetFileProperties {
+    ttsAudio: boolean
+  }
 }
 
 declare module 'vue-i18n' {
