@@ -1,5 +1,6 @@
 # Changelog
 
+- [2.0.2](doc/changelog/2.0.2.md) — 2026-08-17
 - [2.0.1](doc/changelog/2.0.1.md) — 2026-08-17
 - [2.0.0](doc/changelog/2.0.0.md) — 2026-08-17
 - [1.29.0](doc/changelog/1.29.0.md) — 2026-06-15
