@@ -8,7 +8,7 @@ describe(
     if (CY.cfg === 'local'){
       //if not - create
       it('Create "Podcasty" in artemis_podcast_cms', () => {
-        cy.visit('/distribution-category-select')
+        cy.visit('/distribution-category-selects')
         cy.cardLoad()
         cy.getCy('filter-value').click()
         cy.get('.v-list-item').contains('Audio').click()
@@ -26,7 +26,7 @@ describe(
 
     it('Create distribution category', () => {
       cy.visit('/settings')
-      cy.visitSubpage('distribution-category-settings', 'distribution-category', 'Kategórie distribúcie')
+      cy.visitSubpage('distribution-category-settings', 'distribution-categories', 'Kategórie distribúcie')
       cy.getCyVisibleClick('button-create')
       cy.getCy('create-panel').should('be.visible')
       cy.getCy('category-type').should('be.visible').click()
@@ -46,11 +46,11 @@ describe(
           cy.urlContains(text)
           cy.getCyVisibleClick('button-close')
           cy.urlNotContains(text)
-          cy.urlContains('/distribution-category')
+          cy.urlContains('/distribution-categories')
         })
     })
     it('Edit distribution category', () => {
-      cy.visit('distribution-category')
+      cy.visit('/distribution-categories')
       cy.getCy('filter-value').click()
       cy.get('.v-list-item').contains('Audio').click()
       cy.cardLoad()

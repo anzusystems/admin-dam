@@ -1,20 +1,23 @@
 {
   "model": {
-    "podcastId": "Podcast Id",
+    "podcastId": "Podcast ID",
     "fullSync": "Full synchronization",
-    "authorId": "Author Id",
+    "authorId": "Author ID",
     "processAll": "Process all",
     "licence": "Licence",
-    "targetLicenceId": "Target Licence Id",
+    "targetLicenceId": "Target licence ID",
     "processFrom": "Process from",
     "processUntil": "Process until",
     "bulkSize": "Bulk size"
   },
   "jobResource": {
     "jobPodcastSynchronizer": "Podcast synchronizer",
-    "jobAuthorCurrentOptimize": "Author current optimize",
+    "jobAuthorCurrentOptimize": "Optimize current authors",
     "jobImageCopy": "Image copy",
-    "jobAssetFileReprocessInternalFlag": "Asset file reprocess internal flag",
-    "jobSynchronizeImageChanged": "Synchronize image changed"
+    "jobAssetFileReprocessInternalFlag": "Reprocess asset file internal flag",
+    "jobSynchronizeImageChanged": "Synchronize changed images"
+  },
+  "filter": {
+    "startedAtFrom": "Started at from - to"
   }
 }

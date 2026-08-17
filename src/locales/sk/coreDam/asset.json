@@ -11,21 +11,21 @@
     "assetAndMainFileIds": "Id",
     "type": "Typ",
     "inPodcast": "V podcastoch",
-    "keywordIds": "Klúčové slová",
+    "keywordIds": "Kľúčové slová",
     "authorIds": "Autori",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
     "ttsAudio": "Syntetické (TTS)",
     "distributedInServices": "Distribuované v službách",
-    "slotNames": "Mená slotov",
+    "slotNames": "Názvy slotov",
     "visible": "Viditeľný",
     "described": "Popísaný",
     "generatedBySystem": "Generované systémom",
     "status": "Stav",
     "orientation": "Orientácia",
     "closestMostDominantColor": "Najdominantnejšia farba",
-    "pixelSizeFrom": "Počet pixlov od",
-    "pixelSizeUntil": "Počet pixlov do",
+    "pixelSizeFrom": "Počet pixelov od",
+    "pixelSizeUntil": "Počet pixelov do",
     "widthFrom": "Šírka od",
     "widthUntil": "Šírka do",
     "heightFrom": "Výška od",
@@ -40,11 +40,9 @@
     "durationUntil": "Trvanie do",
     "bitrateFrom": "Bitrate od",
     "bitrateUntil": "Bitrate do",
-    "shortestDimensionFrom": "Najkratšia dimenzia od",
-    "shortestDimensionUntil": "Najkratšia dimenzia do",
     "slotsCountFrom": "Počet slotov od",
     "slotsCountUntil": "Počet slotov do",
-    "createdAtFrom": "Vytvorené od",
+    "createdAtFrom": "Vytvorené od - do",
     "createdAtUntil": "Vytvorené do",
     "mainFileSingleUse": "Jednorazová licencia",
     "mainFileInternal": "Interný"
@@ -124,10 +122,9 @@
     "next": "Nasledujúci asset",
     "refresh": "Znovu načítať zoznam"
   },
-
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
-    "licenceMismatch": "Aktívna licencia a licencia assetu sa nezhoduje",
+    "licenceMismatch": "Aktívna licencia a licencia assetu sa nezhodujú",
     "toggleInfo": "Info karta",
     "metadataToggle": {
       "show": "Skryť viac detailov",
@@ -151,7 +148,7 @@
       "provider": "Poskytovateľ",
       "failureReason": "Dôvod zlyhania",
       "createdAt": "Vytvorené",
-      "sourceRequest": "Zdrojový request"
+      "sourceRequest": "Zdrojová požiadavka"
     },
     "info": {
       "status": {
@@ -187,7 +184,7 @@
       "description": "Náhľady sú určené pre hlavný obrázok v článku, zoznamy článkov, titulky a rubriky. V tele článku sa zobrazuje formát bez orezania.",
       "refresh": "Znovu načítať náhľady",
       "rotate": {
-        "rotateMainFileImage": "Otočenie obrázku (hlavného súboru)",
+        "rotateMainFileImage": "Otočenie obrázka (hlavného súboru)",
         "rotateClockwise": "Otočiť doprava",
         "rotateCounterclockwise": "Otočiť doľava"
       }
@@ -205,8 +202,8 @@
       "title": "Nahrávanie súboru bude ukončené. Chcete pokračovať?",
       "confirm": "Ukončiť nahrávanie"
     },
-    "newAssetsUploadOverlayTitle": "New assets upload",
-    "slotsUploadOverlayTitle": "Asset slots upload"
+    "newAssetsUploadOverlayTitle": "Nahrávanie nových assetov",
+    "slotsUploadOverlayTitle": "Nahrávanie do slotov assetu"
   },
   "selected": {
     "selectedFiles": "Vybrané súbory",
@@ -221,7 +218,7 @@
     },
     "cancel": "Zrušiť",
     "save": "Uložiť a pokračovať",
-    "saveAndClose": "Uložiť a skončiť"
+    "saveAndClose": "Uložiť a ukončiť"
   },
   "massOperations": {
     "title": "Hromadné operácie",
@@ -234,7 +231,7 @@
     "general": "Hlavné"
   },
   "externalProvider": {
-    "importToDam": "Nahratie do ADAM",
+    "importToDam": "Nahrať do ADAM",
     "viewDetail": "Zobraziť detail",
     "id": "ID",
     "title": "Nadpis"
@@ -243,7 +240,7 @@
     "edit": "Upraviť",
     "duplicate": "Duplikát",
     "viewOriginal": "Zobraziť originál",
-    "displayTitle": "Meno originálu",
+    "displayTitle": "Názov originálu",
     "error": "Chyba",
     "copyAssetId": "Kopírovať asset ID"
   },
@@ -264,7 +261,7 @@
     }
   },
   "slots": {
-    "name": "Meno slotu",
+    "name": "Názov slotu",
     "file": "Súbor",
     "noFile": "Žiaden súbor",
     "mainFile": "Hlavný súbor",

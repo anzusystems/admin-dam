@@ -23,17 +23,17 @@ describe(`Test job function, Env: ${CY.cfg}`,
           const assetID = response.body.data[8].id
           const podcastID = response.body.data[8].podcasts[0]
           const assetTitle = response.body.data[8].texts.displayTitle
-          cy.visit(`/podcast/${podcastID}`)
+          cy.visit(`/podcasts/${podcastID}`)
           cy.getCy('podcast-list').click()
           cy.getCy('podcast-id').contains(podcastID)
 
-          cy.visit(`asset/${assetID}`)
+          cy.visit(`/assets/${assetID}`)
           cy.getCy('button-podcast').click()
           cy.getCy('button-delete').click()
           cy.getCy('button-confirm-delete').click()
           cy.request('DELETE', `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/${assetID}`)
 
-          cy.visit(`asset/${assetIDs[0]}`)
+          cy.visit(`/assets/${assetIDs[0]}`)
           cy.get('[data-cy="custom-field-title"] textarea')
             .first().clear({ force: true }).type(`${assetTitle}`)
           cy.get('[id="anzu-asset-detail-sidebar-actions"] [data-cy="button-save"]').click()
@@ -66,7 +66,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
                 cy.wrap(premiumText).should('include', 'Hlavný súbor')
               })
 
-              cy.visit(`${CY.url.proto}://admin-dam.${CY.url.domain}/podcast/${podcastID}`)
+              cy.visit(`${CY.url.proto}://admin-dam.${CY.url.domain}/podcasts/${podcastID}`)
               cy.getCy('episode-list').click()
               cy.getCy('table-detail').eq(0).click()
               cy.contains('h4', 'Povolené na webe')
@@ -76,7 +76,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
                 .parent()
                 .should('contain.text', 'nie')
 
-              cy.visit('/job')
+              cy.visit('/jobs')
               cy.getCy('button-create').click()
               cy.getCy('job-select').click()
               cy.get('.v-list-item').contains('Podcastový synchronizátor').click()
@@ -86,7 +86,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
               cy.get(':nth-child(1) > :nth-child(2) > .v-chip > .v-chip__content')
                 .should('include.text', 'Podcastový synchronizátor')
               cy.waitForJob()
-              cy.visit(`asset/${assetIDs[0]}`)
+              cy.visit(`/assets/${assetIDs[0]}`)
               cy.getCy('button-distribution').click()
               cy.get('.sidebar-info__content .text-body-2').contains('Distribuovaný')
 
@@ -104,7 +104,7 @@ describe(`Test job function, Env: ${CY.cfg}`,
                 cy.wrap(premiumTextBlock).should('include', 'sample')
               })
 
-              cy.visit(`${CY.url.proto}://admin-dam.${CY.url.domain}/podcast/${podcastID}`)
+              cy.visit(`${CY.url.proto}://admin-dam.${CY.url.domain}/podcasts/${podcastID}`)
               cy.getCy('episode-list').click()
               cy.getCy('table-detail').eq(0).click()
               cy.contains('h4', 'Povolené na webe')

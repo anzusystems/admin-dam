@@ -33,7 +33,7 @@ describe(
       cy.alertMessage(ALERT_UPDATE)
     })
     it('Delete distribution category select', () => {
-      cy.visit(`/distribution-category-select/${CATEGORY_ID}`)
+      cy.visit(`/distribution-category-selects/${CATEGORY_ID}`)
       cy.get('.v-list-item-title').contains(`Name+${RAND_NUM}`)
       cy.get('.v-list-item-subtitle').contains(RAND_NUM)
       cy.getCyVisibleClick('button-edit')

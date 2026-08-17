@@ -1,13 +1,13 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "slug": "Slug",
     "adminUsers": "Administrátori"
   },
   "filter": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "extSystem": "Externý systém",
     "slug": "Slug"
   },

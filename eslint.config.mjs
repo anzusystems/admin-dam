@@ -1,41 +1,12 @@
 import stylistic from '@stylistic/eslint-plugin'
-// import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 import pluginVue from 'eslint-plugin-vue'
 import pluginPinia from 'eslint-plugin-pinia'
+import pluginVuetify from 'eslint-plugin-vuetify'
+import oxlint from 'eslint-plugin-oxlint'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 
-const tsExtensionPlugin = {
-  rules: {
-    'no-ts-extension': {
-      meta: {
-        type: 'problem',
-        docs: {
-          description: 'Disallow .ts extension in import statements',
-        },
-        fixable: 'code',
-        schema: [],
-      },
-      create(context) {
-        return {
-          ImportDeclaration(node) {
-            const source = node.source.value
-            if (typeof source === 'string' && source.endsWith('.ts')) {
-              context.report({
-                node,
-                message: 'Do not include .ts extension in import paths',
-                fix(fixer) {
-                  const sourceText = node.source.raw
-                  const newSource = sourceText.replace(/\.ts(['"])$/, '$1')
-                  return fixer.replaceText(node.source, newSource)
-                },
-              })
-            }
-          },
-        }
-      },
-    },
-  },
-}
+import { recommended as anzuRecommended } from '@anzusystems/common-admin/eslint'
+import validRouteName from './eslint/rules/valid-route-name.mjs'
 
 export default defineConfigWithVueTs(
   {
@@ -44,11 +15,12 @@ export default defineConfigWithVueTs(
   },
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', '**/cypress/**'],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', '**/cypress/**', 'src/typed-router.d.ts', 'src/auto-imports.d.ts'],
   },
   pluginVue.configs['flat/essential'],
   pluginVue.configs['flat/strongly-recommended'],
   pluginVue.configs['flat/recommended'],
+  ...pluginVuetify.configs['flat/recommended-v4'],
   vueTsConfigs.recommended,
   {
     plugins: {
@@ -64,30 +36,29 @@ export default defineConfigWithVueTs(
       'pinia/require-setup-store-properties-export': 'error',
     },
   },
-  {
-    plugins: {
-      'ts-extension': tsExtensionPlugin,
-    },
-    rules: {
-      'ts-extension/no-ts-extension': 'error',
-    },
-  },
+  anzuRecommended({
+    // Fully migrated off the deprecated @anzusystems/common-admin barrel onto /labs,
+    // including the author/keyword cached-tagging components (now on the labs
+    // AFormRemoteAutocompleteWithCached). Rule fully enforced — no skips.
+    deprecatedImports: 'error',
+  }),
   {
     plugins: {
       '@stylistic': stylistic,
+      'anzu-local': {
+        rules: {
+          'valid-route-name': validRouteName,
+        },
+      },
     },
     rules: {
+      'anzu-local/valid-route-name': 'error',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-empty-interface': 'off',
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
-      'vue/multi-word-component-names': [
-        'error',
-        {
-          ignores: ['Acl'],
-        },
-      ],
+      'vue/multi-word-component-names': 'off',
       'vue/valid-v-slot': ['error', { allowModifiers: true }],
       '@stylistic/object-curly-spacing': ['error', 'always'],
       '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],
@@ -120,7 +91,35 @@ export default defineConfigWithVueTs(
       ],
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
+      'no-restricted-syntax': [
+        'error',
+        {
+          // A bare `x.validateAll()` statement throws away its boolean — it reveals row errors but does
+          // NOT block the save, so a collapsed invalid row slips through (QA 85050). Either gate on it
+          // (`if (x.validateAll() === false) return`) or pass `:validation-scope` to the list editor.
+          selector: 'ExpressionStatement > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+        {
+          selector: 'ExpressionStatement > ChainExpression > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+        {
+          // Same, awaited: `await x.validateAll()` as a statement still discards the boolean.
+          selector: 'ExpressionStatement > AwaitExpression > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+        {
+          selector:
+            'ExpressionStatement > AwaitExpression > ChainExpression > CallExpression[callee.property.name="validateAll"]',
+          message:
+            'Bare validateAll() discards its result and does NOT block the save (QA 85050). Gate on it (if (x.validateAll() === false) return) or pass :validation-scope to the list editor.',
+        },
+      ],
     },
-  }
-  // skipFormatting,
+  },
+  ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json')
 )

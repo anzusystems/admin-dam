@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "create": "Create public export"
+  },
   "model": {
     "id": "ID",
     "slug": "Slug",

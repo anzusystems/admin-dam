@@ -7,7 +7,7 @@
     "flags": {
       "reviewed": "Reviewed"
     },
-    "currentAuthors": "Current authors",
+    "currentAuthors": "Parent authors",
     "childAuthors": "Child authors",
     "createdBy": "Created by",
     "modifiedBy": "Modified by"
@@ -26,10 +26,10 @@
     "agency": "Agency"
   },
   "meta": {
-    "create": "Author Create"
+    "create": "Create author"
   },
   "button": {
     "add": "Add new author"
   },
-  "conflicts": "Authors conflicts"
+  "conflicts": "Author conflicts"
 }

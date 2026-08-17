@@ -35,7 +35,7 @@ xdescribe(`Test audio slots function, Env: ${CY.cfg}`,
   it('Visit data', ()=>{
     assetIDs.forEach((id)=>{
       cy.log(id)
-      cy.visit(`/asset/${id}`)
+      cy.visit(`/assets/${id}`)
       cy.urlContains(id)
     })
   })

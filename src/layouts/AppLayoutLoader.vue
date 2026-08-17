@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useTheme } from '@anzusystems/common-admin'
-
 const { theme } = useTheme()
 </script>
 

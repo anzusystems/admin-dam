@@ -18,7 +18,7 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
       cy.getCy('button-confirm').should('be.visible').click()
       cy.alertMessage(ALERT_CREATE)
 
-      cy.urlContains('/asset')
+      cy.urlContains('/assets')
       cy.get('.sidebar-info__content > .pa-2 > .v-alert').contains('Neobsahuje žiaden súbor')
       cy.get('.sidebar-info .v-btn').contains('Zobraziť viac').click()
       cy.getCy('button-download').should('be.visible')
@@ -53,7 +53,7 @@ describe(`Test image empty asset, Env: ${CY.cfg}`,
       cy.api_getFileID().then((assetID) => {
         cy.circleLoad()
 
-        cy.visit(`/asset/${assetID}`)
+        cy.visit(`/assets/${assetID}`)
         cy.circleLoad()
         cy.get('.dam-image-detail__sidebar [data-cy="custom-field-title"] textarea[rows]')
           .invoke('val').then((assetTitle)=>{
