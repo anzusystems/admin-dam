@@ -16,6 +16,14 @@ export function useAssetLicenceFactory() {
       },
       internalRuleAuthors: [],
       internalRuleUsers: [],
+      flags: {
+        manualUploadAllowed: true,
+        directUseAllowed: true,
+      },
+      autoDelete: {
+        active: false,
+        olderThanDays: 0,
+      },
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 0,

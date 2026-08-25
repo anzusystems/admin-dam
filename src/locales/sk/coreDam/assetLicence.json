@@ -4,6 +4,14 @@
     "name": "Názov",
     "extSystem": "Externý systém",
     "extId": "Externé ID",
+    "flags": {
+      "manualUploadAllowed": "Povolený manuálny upload",
+      "directUseAllowed": "Povolené priame použitie"
+    },
+    "autoDelete": {
+      "active": "Automatické mazanie",
+      "olderThanDays": "Mazať staršie ako (dní)"
+    },
     "internalRule": {
       "active": "Automaticky označovať ako interné",
       "markAsInternalSince": "Označovať ako interné od"
