@@ -8,7 +8,20 @@
   "filter": {
     "id": "ID",
     "name": "Name",
-    "extSystem": "Ext system",
+    "extSystem": "External system",
     "slug": "Slug"
+  },
+  "ttsSettings": {
+    "title": "TTS settings",
+    "activeProviderMode": "Active TTS provider",
+    "defaultVoiceFamily": "Default voice family",
+    "autoKeyword": "Auto keyword (every TTS audio)",
+    "ttsFreeAudioEpilogAsset": "TTS free audio Epilogue",
+    "ttsFreeAudioEpilogAssetSelect": "Select audio asset",
+    "modes": {
+      "elevenlabs": "ElevenLabs",
+      "google_tts": "Google TTS",
+      "auto": "Auto"
+    }
   }
 }

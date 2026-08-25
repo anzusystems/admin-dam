@@ -11,7 +11,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.prepareData('image/sampleMeta1.jpg', true, assetIDs)
     })
     it('Check image on Title-Description-Keywords-Artists', () => {
-      cy.visit(`/asset/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .should('have.value', EXPECTED_TITLE)
@@ -35,7 +35,7 @@ describe(`Test add audio asset to podcast episode function, Env: ${CY.cfg}`,
       cy.prepareData('image/sampleMeta2.jpg', true, assetIDs)
     })
     it('Check image on Subject-ImageDescription-Subjects-Owners', () => {
-      cy.visit(`/asset/${assetIDs[1]}`)
+      cy.visit(`/assets/${assetIDs[1]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea')
         .should('have.value', EXPECTED_TITLE)

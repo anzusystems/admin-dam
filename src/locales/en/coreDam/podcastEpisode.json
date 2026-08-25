@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "create": "Add episode"
+  },
   "model": {
     "id": "ID",
     "podcast": "Podcast",
@@ -10,9 +13,9 @@
       "webOrderPosition": "Web order position",
       "duration": "Duration",
       "mobileOrderPosition": "Mobile order position",
-      "extId": "Ext id",
-      "rssUrl": "Rss audio URL",
-      "extUrl": "Ext link",
+      "extId": "External ID",
+      "rssUrl": "RSS audio URL",
+      "extUrl": "External episode URL",
       "lastImportStatus": "Last import status"
     },
     "texts": {
@@ -36,10 +39,7 @@
     "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "button": {
-    "create": "Add Episode"
-  },
-  "meta": {
-    "create": "Add Episode"
+    "create": "Add episode"
   },
   "common": {
     "addAssetToNewPodcastEpisode": "Add asset to new podcast episode",

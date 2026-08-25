@@ -1,0 +1,229 @@
+<script setup lang="ts">
+import { ACL } from '@/domains/system/auth/auth'
+import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { damClient } from '@/shared/apiClients/damClient'
+import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
+import AssetDetailSidebarActionsTeleportTarget from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
+import AssetDetailSidebarImagePreview from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreview.vue'
+import AssetDetailSidebarMetadata from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarMetadata.vue'
+import AssetDetailSidebarROI from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarROI.vue'
+import AssetDetailSidebarDistribution from '@/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue'
+import AssetDetailSidebarPodcast from '@/domains/coreDam/asset/components/detail/components/podcast/AssetDetailSidebarPodcast.vue'
+import AssetDetailSidebarTts from '@/domains/coreDam/asset/components/detail/components/tts/AssetDetailSidebarTts.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { storeToRefs } from 'pinia'
+import AssetDetailSidebarSlots from '@/domains/coreDam/asset/components/detail/components/slots/AssetDetailSidebarSlots.vue'
+import AssetDetailSidebarVideoShow from '@/domains/coreDam/asset/components/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
+import DistributionCategoryWidget from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
+import {
+  type AssetFileFailReasonType,
+  type AssetFileProcessStatusType,
+  type DamAssetStatusType,
+  type DamAssetTypeType,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
+
+const props = withDefaults(
+  defineProps<{
+    assetId: DocId
+    isVideo: boolean
+    isAudio: boolean
+    isImage: boolean
+    isDocument: boolean
+    dataCy?: string
+    assetStatus: DamAssetStatusType
+    assetType: DamAssetTypeType
+    assetMainFileStatus?: AssetFileProcessStatusType | undefined
+    assetMainFileFailReason?: AssetFileFailReasonType | undefined
+  }>(),
+  {
+    assetMainFileStatus: undefined,
+    assetMainFileFailReason: undefined,
+    dataCy: undefined,
+  }
+)
+const emit = defineEmits<{
+  (e: 'postDelete', data: DocId): void
+  (e: 'mainRouteChanged'): void
+}>()
+
+const postDelete = (data: DocId) => {
+  emit('postDelete', data)
+}
+
+const { t } = useI18n()
+
+const { activeTab } = useAssetDetailTab()
+
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
+const typeHasDistributions = computed(() => {
+  return (configExtSystem[props.assetType]?.distribution?.distributionServices.length ?? 0) > 0
+})
+
+// Use the live store ref (kept in sync with the metadata switch) — assetFileProperties.ttsAudio
+// is the stale server snapshot and is not updated after a metadata save without a refetch.
+const { ttsAudio } = storeToRefs(useAssetDetailStore())
+const isTtsAudio = computed(() => ttsAudio.value)
+</script>
+
+<template>
+  <div class="sidebar-info d-flex w-100 h-100 flex-column">
+    <div class="w-100 d-flex flex-column">
+      <VTabs
+        v-model="activeTab"
+        show-arrows
+        class="sidebar-info__tabs"
+      >
+        <VTab
+          :value="AssetDetailTab.Info"
+          data-cy="button-meta"
+        >
+          {{ t('coreDam.asset.detail.tabs.info') }}
+        </VTab>
+        <VTab
+          v-if="isImage"
+          :value="AssetDetailTab.ROI"
+          data-cy="button-focus"
+        >
+          {{ t('coreDam.asset.detail.tabs.roi') }}
+        </VTab>
+        <Acl :permission="ACL.DAM_DISTRIBUTION_ACCESS">
+          <VTab
+            v-if="typeHasDistributions"
+            :value="AssetDetailTab.Distribution"
+            data-cy="button-distribution"
+          >
+            {{ t('coreDam.asset.detail.tabs.distribution') }}
+          </VTab>
+        </Acl>
+        <VTab
+          v-if="isAudio"
+          :value="AssetDetailTab.Podcast"
+          data-cy="button-podcast"
+        >
+          {{ t('coreDam.asset.detail.tabs.podcast') }}
+        </VTab>
+        <Acl :permission="ACL.DAM_TTS_ASSET_READ">
+          <VTab
+            v-if="isAudio && isTtsAudio"
+            :value="AssetDetailTab.Tts"
+            data-cy="button-tts"
+          >
+            {{ t('coreDam.asset.detail.tabs.tts') }}
+          </VTab>
+        </Acl>
+        <VTab
+          v-if="isVideo"
+          :value="AssetDetailTab.VideoShow"
+          data-cy="button-video-show"
+        >
+          {{ t('coreDam.asset.detail.tabs.videoShow') }}
+        </VTab>
+        <VTab
+          :value="AssetDetailTab.Slots"
+          data-cy="button-slots"
+        >
+          {{ t('coreDam.asset.detail.tabs.slots') }}
+        </VTab>
+        <VTab
+          v-if="isVideo"
+          :value="AssetDetailTab.ImagePreview"
+          data-cy="button-image-preview"
+        >
+          {{ t('coreDam.asset.detail.tabs.imagePreview') }}
+        </VTab>
+      </VTabs>
+
+      <div class="sidebar-info__content">
+        <AssetInfobox
+          :asset-status="assetStatus"
+          :asset-main-file-status="assetMainFileStatus"
+          :asset-main-file-fail-reason="assetMainFileFailReason"
+        />
+        <div
+          v-if="activeTab === AssetDetailTab.Info"
+          class="py-2"
+        >
+          <AssetDetailSidebarMetadata
+            :is-active="activeTab === AssetDetailTab.Info"
+            :asset-type="assetType"
+            @post-delete="postDelete"
+            @main-route-changed="emit('mainRouteChanged')"
+          />
+        </div>
+        <div
+          v-if="isImage && activeTab === AssetDetailTab.ROI"
+          class="py-2"
+        >
+          <AssetDetailSidebarROI :is-active="activeTab === AssetDetailTab.ROI" />
+        </div>
+        <Acl :permission="ACL.DAM_DISTRIBUTION_ACCESS">
+          <div
+            v-if="typeHasDistributions && activeTab === AssetDetailTab.Distribution"
+            class="py-2"
+          >
+            <DistributionCategoryWidget class="px-4 mb-4" />
+            <AssetDetailSidebarDistribution
+              :asset-id="assetId"
+              :is-active="activeTab === AssetDetailTab.Distribution"
+              :asset-type="assetType"
+              :asset-main-file-status="assetMainFileStatus"
+            />
+          </div>
+        </Acl>
+        <div
+          v-if="isAudio && activeTab === AssetDetailTab.Podcast"
+          class="py-2"
+        >
+          <AssetDetailSidebarPodcast
+            :asset-id="assetId"
+            :is-active="activeTab === AssetDetailTab.Podcast"
+          />
+        </div>
+        <Acl :permission="ACL.DAM_TTS_ASSET_READ">
+          <div
+            v-if="isAudio && isTtsAudio && activeTab === AssetDetailTab.Tts"
+            class="py-2"
+          >
+            <AssetDetailSidebarTts :asset-id="assetId" />
+          </div>
+        </Acl>
+        <div
+          v-if="isVideo && activeTab === AssetDetailTab.VideoShow"
+          class="py-2"
+        >
+          <AssetDetailSidebarVideoShow
+            :asset-id="assetId"
+            :is-active="activeTab === AssetDetailTab.VideoShow"
+          />
+        </div>
+        <div
+          v-if="activeTab === AssetDetailTab.Slots"
+          class="py-2"
+        >
+          <AssetDetailSidebarSlots
+            :asset-id="assetId"
+            :is-active="activeTab === AssetDetailTab.Slots"
+            :asset-type="assetType"
+          />
+        </div>
+        <div
+          v-if="isVideo && activeTab === AssetDetailTab.ImagePreview"
+          class="py-2"
+        >
+          <AssetDetailSidebarImagePreview :is-active="activeTab === AssetDetailTab.ImagePreview" />
+        </div>
+      </div>
+      <div class="sidebar-info__actions px-2">
+        <AssetDetailSidebarActionsTeleportTarget />
+      </div>
+    </div>
+  </div>
+</template>

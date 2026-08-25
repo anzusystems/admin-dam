@@ -19,8 +19,8 @@
   "meta": {
     "edit": "Edit distribution",
     "create": "Create distribution",
-    "showAdvanced": "Create distribution",
-    "hideAdvanced": "Create distribution"
+    "showAdvanced": "Show advanced distribution management",
+    "hideAdvanced": "Hide advanced distribution management"
   },
   "common": {
     "select": "Distribution category",
@@ -34,9 +34,8 @@
     "status": "Status",
     "error": "An error occurred",
     "blockedByDistribution": "Blocked by distribution",
-    "extId": "Ext ID",
+    "extId": "External ID",
     "failReason": "Fail reason",
     "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
-
   }
 }

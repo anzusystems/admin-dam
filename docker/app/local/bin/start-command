@@ -13,4 +13,9 @@ Xvfb -ac "${DISPLAY}" -screen 0 1920x1080x24+32 -nolisten tcp &
 
 echo "[INFO] Start nginx"
 sed -i '1 i user node;' /etc/nginx/nginx.conf
+# BUG-01: the SPA route "/assets" collides with the Vite build dir dist/assets/. nginx `try_files $uri $uri/`
+# matches that physical directory and returns 403 on a cold load/refresh/deep-link of the main page.
+# Serve index.html for the exact /assets path so it boots the SPA instead of 403-ing.
+grep -q 'location ~ \^/assets/' /etc/nginx/conf.d/default.conf \
+  || sed -i '/location \/ {/i location ~ ^/assets/?$ { try_files /index.html =404; }' /etc/nginx/conf.d/default.conf
 nginx -g 'daemon off;'

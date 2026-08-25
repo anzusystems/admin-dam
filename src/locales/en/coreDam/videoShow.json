@@ -21,7 +21,7 @@
     "mobilePublicExportEnabled": "Mobile export enabled"
   },
   "meta": {
-    "create": "Video show create"
+    "create": "Create video show"
   },
   "tabs": {
     "detail": "Video show detail",

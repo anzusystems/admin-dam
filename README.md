@@ -13,3 +13,5 @@ The software development team in Petit Press a.s. has developed a cloud based DA
 - [Local development](README-DEV.md)
 
 - [E2E testing](README-TEST.md)
+
+- [Changelog](CHANGELOG.md) — releases follow [Semantic Versioning](https://semver.org)

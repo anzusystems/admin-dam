@@ -1,0 +1,33 @@
+<script lang="ts" setup>
+import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { useDistributionCategoryOneStore } from '@/domains/coreDam/distributionCategory/store/distributionCategoryStore'
+
+const { distributionCategory, distributionCategorySelectedOptions } = storeToRefs(useDistributionCategoryOneStore())
+const { t } = useI18n()
+</script>
+
+<template>
+  <VRow>
+    <VCol cols="8">
+      <ARow
+        :title="t('coreDam.distributionCategory.model.name')"
+        :value="distributionCategory.name"
+      />
+      <ARow
+        v-for="(option, serviceName) in distributionCategorySelectedOptions"
+        :key="serviceName"
+        :title="serviceName + ''"
+      >
+        <VChip size="small">
+          {{ option?.name ?? '-' }}
+        </VChip>
+      </ARow>
+    </VCol>
+    <VCol cols="4">
+      <ARow :title="t('coreDam.distributionCategory.model.id')">
+        <ACopyText :value="distributionCategory.id" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="distributionCategory" />
+    </VCol>
+  </VRow>
+</template>
