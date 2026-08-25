@@ -3,7 +3,15 @@
     "id": "ID",
     "name": "Meno",
     "extSystem": "Externý systém",
-    "extId": "Externé ID"
+    "extId": "Externé ID",
+    "flags": {
+      "manualUploadAllowed": "Povolený manuálny upload",
+      "directUseAllowed": "Povolené priame použitie"
+    },
+    "autoDelete": {
+      "active": "Automatické mazanie",
+      "olderThanDays": "Mazať staršie ako (dní)"
+    }
   },
   "filter": {
     "id": "ID",

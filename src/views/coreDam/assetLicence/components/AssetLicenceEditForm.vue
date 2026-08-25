@@ -2,7 +2,7 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 import { useI18n } from 'vue-i18n'
-import { AFormTextField, ARow, ASystemEntityScope, DamExtSystemRemoteAutocomplete } from '@anzusystems/common-admin'
+import { AFormSwitch, AFormTextField, ARow, ASystemEntityScope, DamExtSystemRemoteAutocomplete } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/views/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
 import { damClient } from '@/services/api/clients/damClient'
@@ -47,6 +47,37 @@ const { t } = useI18n()
             :label="t('coreDam.assetLicence.model.extSystem')"
             :v="v$.assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
+          />
+        </ARow>
+        <ARow>
+          <AFormSwitch
+            v-model="assetLicence.flags.manualUploadAllowed"
+            :label="t('coreDam.assetLicence.model.flags.manualUploadAllowed')"
+            data-cy="asset-licence-manual-upload-allowed"
+          />
+        </ARow>
+        <ARow>
+          <AFormSwitch
+            v-model="assetLicence.flags.directUseAllowed"
+            :label="t('coreDam.assetLicence.model.flags.directUseAllowed')"
+            data-cy="asset-licence-direct-use-allowed"
+          />
+        </ARow>
+        <ARow>
+          <AFormSwitch
+            v-model="assetLicence.autoDelete.active"
+            :label="t('coreDam.assetLicence.model.autoDelete.active')"
+            data-cy="asset-licence-auto-delete-active"
+          />
+        </ARow>
+        <ARow v-if="assetLicence.autoDelete.active">
+          <AFormTextField
+            v-model="assetLicence.autoDelete.olderThanDays"
+            :label="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
+            :v="v$.assetLicence.autoDelete.olderThanDays"
+            type="number"
+            :step="1"
+            data-cy="asset-licence-auto-delete-older-than-days"
           />
         </ARow>
       </VCol>

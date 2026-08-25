@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
 import {
   ACreateDialog,
   AFormTextField,
@@ -14,6 +13,7 @@ import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFact
 import { useAssetLicenceValidation } from '@/views/coreDam/assetLicence/composables/assetLicenceValidation'
 import { createAssetLicence, ENTITY } from '@/services/api/coreDam/assetLicenceApi'
 import { damClient } from '@/services/api/clients/damClient'
+import type { AssetLicenceExtended } from '@/types/coreDam/AssetLicence'
 
 withDefaults(
   defineProps<{
@@ -26,11 +26,11 @@ withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'onSuccess', data: DamAssetLicence): void
+  (e: 'onSuccess', data: AssetLicenceExtended): void
 }>()
 
 const { createDefault } = useAssetLicenceFactory()
-const assetLicence = ref<DamAssetLicence>(createDefault())
+const assetLicence = ref<AssetLicenceExtended>(createDefault())
 const dialog = ref(false)
 
 const { v$ } = useAssetLicenceValidation(assetLicence)

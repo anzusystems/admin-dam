@@ -1,15 +1,23 @@
 import { SYSTEM_CORE_DAM } from '@/model/systems'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { dateTimeNow } from '@anzusystems/common-admin'
 import { ENTITY } from '@/services/api/coreDam/assetLicenceApi'
+import type { AssetLicenceExtended } from '@/types/coreDam/AssetLicence'
 
 export function useAssetLicenceFactory() {
-  const createDefault = (): DamAssetLicence => {
+  const createDefault = (): AssetLicenceExtended => {
     return {
       id: 0,
       name: '',
       extSystem: null,
       extId: '',
+      flags: {
+        manualUploadAllowed: true,
+        directUseAllowed: true,
+      },
+      autoDelete: {
+        active: false,
+        olderThanDays: 0,
+      },
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 0,

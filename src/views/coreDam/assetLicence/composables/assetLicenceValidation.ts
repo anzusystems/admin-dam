@@ -1,17 +1,25 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
+import type { AssetLicenceExtended } from '@/types/coreDam/AssetLicence'
 
-const { required, minLength } = useValidate()
+const { required, minLength, minValue } = useValidate()
 
-export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicence>) {
+export function useAssetLicenceValidation(assetLicence: Ref<AssetLicenceExtended>) {
   const rules = computed(() => ({
     assetLicence: {
       name: {
         required,
         minLength: minLength(3),
+      },
+      autoDelete: {
+        olderThanDays: assetLicence.value.autoDelete.active
+          ? {
+              required,
+              minValue: minValue(2),
+            }
+          : {},
       },
     },
   }))

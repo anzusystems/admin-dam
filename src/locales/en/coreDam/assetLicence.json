@@ -3,7 +3,15 @@
     "id": "ID",
     "name": "Name",
     "extSystem": "External System",
-    "extId": "External ID"
+    "extId": "External ID",
+    "flags": {
+      "manualUploadAllowed": "Manual upload allowed",
+      "directUseAllowed": "Direct use allowed"
+    },
+    "autoDelete": {
+      "active": "Auto delete",
+      "olderThanDays": "Delete older than (days)"
+    }
   },
   "filter": {
     "id": "ID",

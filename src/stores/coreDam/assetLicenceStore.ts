@@ -1,14 +1,14 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useAssetLicenceFactory } from '@/model/coreDam/factory/AssetLicenceFactory'
-import type { DamAssetLicence } from '@anzusystems/common-admin'
 import { ref } from 'vue'
+import type { AssetLicenceExtended } from '@/types/coreDam/AssetLicence'
 
 export const useAssetLicenceOneStore = defineStore('assetLicenceOneStore', () => {
   const { createDefault } = useAssetLicenceFactory()
 
-  const assetLicence = ref<DamAssetLicence>(createDefault())
+  const assetLicence = ref<AssetLicenceExtended>(createDefault())
 
-  function setAssetLicence(newAssetLicence: DamAssetLicence) {
+  function setAssetLicence(newAssetLicence: AssetLicenceExtended) {
     assetLicence.value = newAssetLicence
   }
 
