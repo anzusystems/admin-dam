@@ -1,13 +1,13 @@
-@use "vars/name";
-@use "vars/colors";
-@use "vars/size";
+@use 'vars/name';
+@use 'vars/colors';
+@use 'vars/size';
 
 .#{name.$editor} {
   position: relative;
 
   &__card {
     border-radius: 4px;
-    border: 1px solid rgb(var(--v-border-color), var(--v-border-opacity));
+    border: 1px solid rgb(var(--v-border-color) / var(--v-border-opacity));
     background-color: rgb(var(--v-theme-surface));
     margin: 0;
     position: relative;
@@ -22,7 +22,7 @@
 
   &--readonly {
     .#{name.$editor}__content {
-      background-color: rgb(var(--v-theme-surface-variant), 0.3);
+      background-color: rgb(var(--v-theme-surface-variant) / 30%);
     }
   }
 

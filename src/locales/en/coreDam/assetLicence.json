@@ -2,7 +2,7 @@
   "model": {
     "id": "ID",
     "name": "Name",
-    "extSystem": "External System",
+    "extSystem": "External system",
     "extId": "External ID",
     "flags": {
       "manualUploadAllowed": "Manual upload allowed",
@@ -11,13 +11,19 @@
     "autoDelete": {
       "active": "Auto delete",
       "olderThanDays": "Delete older than (days)"
-    }
+    },
+    "internalRule": {
+      "active": "Internal rule active",
+      "markAsInternalSince": "Mark as internal since"
+    },
+    "internalRuleAuthors": "Internal rule authors",
+    "internalRuleUsers": "Internal rule users"
   },
   "filter": {
     "id": "ID",
     "extId": "External ID"
   },
   "meta": {
-    "create": "Create license"
+    "create": "Create licence"
   }
 }

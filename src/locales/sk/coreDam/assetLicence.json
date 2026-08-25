@@ -1,7 +1,7 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "extSystem": "Externý systém",
     "extId": "Externé ID",
     "flags": {
@@ -11,7 +11,13 @@
     "autoDelete": {
       "active": "Automatické mazanie",
       "olderThanDays": "Mazať staršie ako (dní)"
-    }
+    },
+    "internalRule": {
+      "active": "Automaticky označovať ako interné",
+      "markAsInternalSince": "Označovať ako interné od"
+    },
+    "internalRuleAuthors": "Interní autori",
+    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky"
   },
   "filter": {
     "id": "ID",

@@ -2,12 +2,13 @@
   "datatable": {
     "ordering": {
       "webOrderPosition": "Web",
-      "mobileOrderPosition": "Appka"
+      "mobileOrderPosition": "Appka",
+      "position": "Podľa poradia"
     }
   },
   "upload": {
     "add": "Pridať do nahrávania",
-    "dragAndDrop": "Sem presuň nahrávané súbory",
+    "dragAndDrop": "Sem presuňte nahrávané súbory",
     "incorrectFormatSize": "Nesprávny formát alebo veľkosť",
     "stop": "Zatvoriť",
     "stopConfirmQuestion": "Chcete ukončiť nahrávanie?",
@@ -31,7 +32,7 @@
   "imagePreview": {
     "selected": "Vybrané",
     "model": {
-      "fileId": "ID obrázku"
+      "fileId": "ID obrázka"
     },
     "status": {
       "isProcessingInfo": "Obrázok sa spracováva, skúste neskôr",
@@ -47,7 +48,7 @@
   "mainBar": {
     "upload": "Nahrať",
     "search": "Vyhľadať",
-    "backToAssets": "Návrat na assety",
+    "backToAssets": "Späť na assety",
     "options": "Nastavenia",
     "userOptions": "Konto",
     "customIntegrations": {
@@ -58,15 +59,15 @@
     "videoShows": "Video relácie",
     "extSystemLicenceSwitch": {
       "filter": {
-        "extSystemName": "Meno externého systému",
+        "extSystemName": "Názov externého systému",
         "extSystemId": "ID externého systému",
-        "licenceName": "Meno licencie",
+        "licenceName": "Názov licencie",
         "licenceExtId": "Externé ID licencie"
       },
-      "currentExtSystem": "Aktuálny externý system",
+      "currentExtSystem": "Aktuálny externý systém",
       "currentLicence": "Aktuálna licencia",
       "extSystem": "Externý systém",
-      "licence": "Licencie",
+      "licence": "Licencia",
       "title": "Prepnutie externého systému a licencie",
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
@@ -84,7 +85,7 @@
     "logout": "Odhlásenie"
   },
   "uploadErrors": {
-    "unknownError": "Systémova chyba. Skúste neskôr alebo kontaktujte administrátora.",
+    "unknownError": "Systémová chyba. Skúste neskôr alebo kontaktujte administrátora.",
     "systemError": "Chyba",
     "size": "Nesprávna veľkosť",
     "offset": "Nesprávny offset",
@@ -94,13 +95,13 @@
     "title": "Táto stránka/karta môže byť bezpečne zatvorená."
   },
   "notFoundPage": {
-    "title": "Ops, chyba 404.",
+    "title": "Ups, chyba 404.",
     "subTitle": "Táto stránka neexistuje. Pokiaľ by mala, kontaktujte administrátora.",
     "return": "Návrat na domovskú obrazovku"
   },
   "unauthorizedPage": {
-    "title": "Ops, chyba 401",
-    "subTitle": "Nemáte oprávnenie na danú stránku. Pokiaľ oprávnenie vyžadujete, kontaktuje administrátora.",
+    "title": "Ups, chyba 401.",
+    "subTitle": "Nemáte oprávnenie na danú stránku. Pokiaľ oprávnenie vyžadujete, kontaktujte administrátora.",
     "return": "Návrat na domovskú obrazovku"
   },
   "error": {

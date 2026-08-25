@@ -1,0 +1,34 @@
+<script lang="ts" setup>
+import type { AssetFileVideo } from '@anzusystems/common-admin'
+import { prettyBps, prettyDuration } from '@/shared/utils/file'
+
+withDefaults(
+  defineProps<{
+    file: AssetFileVideo
+  }>(),
+  {}
+)
+
+const { t } = useI18n()
+</script>
+
+<template>
+  <VRow>
+    <VCol>{{ t('coreDam.videoFile.model.videoAttributes.duration') }}</VCol>
+    <VCol cols="9">
+      {{ prettyDuration(file.videoAttributes.duration) }}
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>{{ t('coreDam.videoFile.model.videoAttributes.bitrate') }}</VCol>
+    <VCol cols="9">
+      {{ prettyBps(file.videoAttributes.bitrate) }}
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>{{ t('coreDam.videoFile.model.videoAttributes.codecName') }}</VCol>
+    <VCol cols="9">
+      {{ file.videoAttributes.codecName }}
+    </VCol>
+  </VRow>
+</template>

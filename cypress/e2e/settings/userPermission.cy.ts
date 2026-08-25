@@ -46,7 +46,7 @@ describe(
         })
     })
     it('Edit user', () => {
-      cy.visit('/anzu-user')
+      cy.visit('/anzu-users')
       cy.getCy('filter-integer', 10000).type(`${USER_ID}{ENTER}`)
       cy.cardLoad()
       cy.getCyVisibleClick('table-edit')
@@ -64,7 +64,7 @@ describe(
       cy.getCyVisibleClick('filter-reset')
     })
     it('Disable user', () => {
-      cy.visit('/anzu-user')
+      cy.visit('/anzu-users')
       cy.get("[data-cy='filter-string']").first().type(`${USER_EMAIL}{ENTER}`)
       cy.getCyVisibleClick('table-edit')
       cy.urlContains('/edit')

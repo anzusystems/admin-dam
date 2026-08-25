@@ -3,8 +3,8 @@
     "id": "ID",
     "phrase": "Phrase",
     "authorReplacement": "Replace by author",
-    "type": "Type",
-    "mode": "Mode",
+    "type": "Phrase type",
+    "mode": "Phrase operation",
     "position": "Position",
     "flags": {
       "wordBoundary": "Separate word"
@@ -21,11 +21,12 @@
     "playground": "Playground"
   },
   "meta": {
+    "create": "Create phrase",
     "playground": "Phrase testing",
     "test": "Test"
   },
   "dto": {
-    "name": "Name",
+    "name": "Text",
     "authorNames": "Author strings",
     "authors": "Authors"
   },
