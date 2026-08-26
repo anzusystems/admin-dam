@@ -7,7 +7,11 @@ import { fetchDocumentFile } from '@/domains/coreDam/asset/api/documentApi'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import { fetchVideoFile } from '@/domains/coreDam/asset/api/videoApi'
 import { externalProviderImport } from '@/domains/coreDam/shared/services/upload/externalProviderImportService'
-import { uploadStop, useUpload } from '@/domains/coreDam/shared/services/upload/uploadService'
+import {
+  resolveUploadErrorMessage,
+  uploadStop,
+  useUpload,
+} from '@/domains/coreDam/shared/services/upload/uploadService'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   AssetExternalProviderId,
@@ -45,6 +49,7 @@ const CHUNK_SIZE = 10485760
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   const { createDefault } = useUploadQueueItemFactory()
+  const { showError } = useAlerts()
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
@@ -359,8 +364,19 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       await upload()
       processUpload(queueId)
     } catch (e) {
+      const message = resolveUploadErrorMessage(e)
+      // One alert per distinct reason: a licence that refuses uploads fails every file in the batch,
+      // and the queue item itself keeps showing the reason inline.
+      const alreadyReported = getQueueItemsByStatus(queueId, UploadQueueItemStatus.Failed).some(
+        (failedItem) => failedItem.error.message === message
+      )
+
       item.error.hasError = true
+      item.error.message = message
       item.status = UploadQueueItemStatus.Failed
+      if (!alreadyReported) {
+        showError(message)
+      }
       recalculateQueueCounts(queueId)
       processUpload(queueId)
     }
