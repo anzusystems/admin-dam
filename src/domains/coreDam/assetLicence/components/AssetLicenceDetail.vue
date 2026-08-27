@@ -62,6 +62,12 @@ const { t } = useI18n()
           class="mr-2 mt-2"
         />
       </ARow>
+      <ARow
+        v-if="assetLicence.defaultAuthor"
+        :title="t('coreDam.assetLicence.model.defaultAuthor')"
+      >
+        <AuthorRemoteAutocompleteCachedAuthorChip :id="assetLicence.defaultAuthor" />
+      </ARow>
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.assetLicence.model.id')">

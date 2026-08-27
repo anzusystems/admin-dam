@@ -1,4 +1,4 @@
-import type { DamAssetLicence, DatetimeUTCNullable, DocId, IntegerId } from '@anzusystems/common-admin'
+import type { DamAssetLicence, DatetimeUTCNullable, DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
 
 export interface AssetLicenceInternalRule {
   active: boolean
@@ -21,4 +21,5 @@ export interface DamAssetLicenceExtended extends DamAssetLicence {
   internalRuleUsers: IntegerId[]
   flags: AssetLicenceFlags
   autoDelete: AssetLicenceAutoDelete
+  defaultAuthor: DocIdNullable
 }

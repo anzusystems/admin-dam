@@ -17,7 +17,8 @@
       "markAsInternalSince": "Mark as internal since"
     },
     "internalRuleAuthors": "Internal rule authors",
-    "internalRuleUsers": "Internal rule users"
+    "internalRuleUsers": "Internal rule users",
+    "defaultAuthor": "Default author"
   },
   "filter": {
     "id": "ID",

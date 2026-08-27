@@ -17,7 +17,8 @@
       "markAsInternalSince": "Označovať ako interné od"
     },
     "internalRuleAuthors": "Interní autori",
-    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky"
+    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky",
+    "defaultAuthor": "Predvolený autor"
   },
   "filter": {
     "id": "ID",

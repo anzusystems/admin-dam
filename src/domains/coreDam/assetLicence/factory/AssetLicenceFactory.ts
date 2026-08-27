@@ -24,6 +24,7 @@ export function useAssetLicenceFactory() {
         active: false,
         olderThanDays: 0,
       },
+      defaultAuthor: null,
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 0,
