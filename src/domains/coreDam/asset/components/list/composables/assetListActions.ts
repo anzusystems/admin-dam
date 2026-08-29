@@ -1,4 +1,4 @@
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
 import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
@@ -47,6 +47,8 @@ export const customSortOptions = [
 
 const filterIsTouched = ref(false)
 
+let seededListViewId: IntegerId | null | undefined = undefined
+
 export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const router = useRouter()
   const assetListStore = useAssetListStore()
@@ -58,7 +60,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { currentAssetLicenceId } = useCurrentAssetLicence()
+  const { currentListView, listLicenceIds, listAssetTypes, setCurrentListView } = useCurrentListView()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
@@ -84,13 +86,20 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       assetListStore.showLoader('hard')
       assetListStore.setList(
-        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filterData, filterConfig),
+        await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
       showErrorsDefault(error)
     } finally {
       assetListStore.hideLoader('hard')
+    }
+  }
+
+  const applyListViewTypes = () => {
+    filterData.type = [...listAssetTypes.value]
+    if (!listAssetTypes.value.includes(DamAssetType.Audio)) {
+      filterData.inPodcast = null
     }
   }
 
@@ -109,7 +118,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       assetListStore.showLoader('soft')
       assetListStore.appendList(
-        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filterData, filterConfig),
+        await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {
@@ -280,8 +289,21 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
     assetListStore.resetList()
     assetDetailStore.reset()
+    const currentListViewId = currentListView.value?.id ?? null
+    if (currentListViewId !== seededListViewId) {
+      applyListViewTypes()
+      seededListViewId = currentListViewId
+    }
     await fetchAssetList()
     assetListStore.keyboardNavigationEnable()
+  }
+
+  const selectListView = async (id: IntegerId | null) => {
+    if (id === currentListView.value?.id) return
+    setCurrentListView(id)
+    applyListViewTypes()
+    seededListViewId = currentListView.value?.id ?? null
+    await fetchAssetList()
   }
 
   const listUnmounted = () => {
@@ -319,6 +341,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     filterUnTouch,
     listMounted,
     listUnmounted,
+    selectListView,
     showDetail,
     refreshActiveItem,
     onItemClick,

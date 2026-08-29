@@ -7,6 +7,7 @@ import {
 } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import MainWrapper from '@/domains/system/components/MainWrapper.vue'
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
+import AssetToolbarListViewSwitch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarListViewSwitch.vue'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
@@ -153,6 +154,7 @@ onUnmounted(() => {
         vertical
         class="ml-1 mr-2 my-2"
       />
+      <AssetToolbarListViewSwitch />
       <AssetToolbarTypeFilters />
     </template>
     <template #second-bar-right>

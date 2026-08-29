@@ -1,0 +1,18 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Názov",
+    "extSystem": "Externý systém",
+    "position": "Poradie",
+    "groups": "Skupiny licencií",
+    "licences": "Licencie",
+    "types": "Typy assetov"
+  },
+  "filter": {
+    "id": "ID"
+  },
+  "meta": {
+    "create": "Vytvoriť výlist",
+    "switch": "Prepnúť výlist"
+  }
+}

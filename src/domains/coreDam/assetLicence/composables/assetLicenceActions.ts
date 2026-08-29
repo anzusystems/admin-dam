@@ -145,6 +145,30 @@ export const useAssetLicenceEditActions = () => {
   }
 }
 
+export const useAssetLicenceSelectActions = () => {
+  const { executeFetch } = useFetchDamAssetLicenceList(damClient)
+
+  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
+    return assetLicences.map((assetLicence: DamAssetLicence) => ({
+      title: assetLicence.name,
+      value: assetLicence.id,
+    }))
+  }
+
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    return mapToValueObjectOption(await executeFetch(pagination, filterData, filterConfig))
+  }
+
+  const fetchItemsByIds = async (ids: number[]) => {
+    return mapToValueObjectOption(await fetchDamAssetLicenceListByIds(damClient, ids))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
+  }
+}
+
 export const useAssetLicenceByExtIdSelectActions = () => {
   const { executeFetch } = useFetchDamAssetLicenceList(damClient)
 

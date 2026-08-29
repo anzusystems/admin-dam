@@ -48,22 +48,23 @@ const END_POINT = '/adm/v1/asset'
 export const ENTITY = 'asset'
 const FETCH_BY_IDS_MAX_LIMIT = 25
 
-export const useFetchAssetList = () =>
+export const useFetchAssetList = (licenceIds: IntegerId[]) =>
   useApiFetchList<AssetSearchListItemDto[]>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
-    urlTemplate: END_POINT + '/licence/:licenceId',
+    urlTemplate: END_POINT + '/licence',
+    options: { params: { licences: licenceIds.join(',') } },
   })
 
 export const fetchAssetList = (
-  licenceId: number,
+  licenceIds: IntegerId[],
   pagination: Ref<Pagination>,
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchAssetList()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { licenceId } })
+  const { executeFetch } = useFetchAssetList(licenceIds)
+  return executeFetch(pagination, filterData, filterConfig)
 }
 
 async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {

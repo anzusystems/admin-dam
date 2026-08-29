@@ -1,0 +1,18 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "extSystem": "External system",
+    "position": "Position",
+    "groups": "Licence groups",
+    "licences": "Licences",
+    "types": "Asset types"
+  },
+  "filter": {
+    "id": "ID"
+  },
+  "meta": {
+    "create": "Create list view",
+    "switch": "Switch list view"
+  }
+}
