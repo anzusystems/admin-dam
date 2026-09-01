@@ -24,6 +24,20 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.assetLicence.model.extSystem')">
         <CachedExtSystemChip :id="assetLicence.extSystem" />
       </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.manualUploadAllowed')">
+        <ABooleanValue :value="assetLicence.flags.manualUploadAllowed" />
+      </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.directUseAllowed')">
+        <ABooleanValue :value="assetLicence.flags.directUseAllowed" />
+      </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.autoDelete.active')">
+        <ABooleanValue :value="assetLicence.autoDelete.active" />
+      </ARow>
+      <ARow
+        v-if="assetLicence.autoDelete.active"
+        :title="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
+        :value="assetLicence.autoDelete.olderThanDays"
+      />
       <ARow :title="t('coreDam.assetLicence.model.internalRule.active')">
         <ABooleanValue :value="assetLicence.internalRule.active" />
       </ARow>

@@ -218,4 +218,13 @@ const { currentExtSystemId } = useCurrentExtSystem()
       />
     </VCol>
   </VRow>
+  <VRow>
+    <VCol>
+      <AFilterTimeInterval
+        name-from="uploadedAtFrom"
+        name-until="uploadedAtUntil"
+        :allowed="allowedTimeIntervalValuesSubject"
+      />
+    </VCol>
+  </VRow>
 </template>

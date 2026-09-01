@@ -58,6 +58,40 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <VSwitch
+            v-model="assetLicence.flags.manualUploadAllowed"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.manualUploadAllowed')"
+            data-cy="asset-licence-manual-upload-allowed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.flags.directUseAllowed"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.directUseAllowed')"
+            data-cy="asset-licence-direct-use-allowed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.autoDelete.active"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.autoDelete.active')"
+            data-cy="asset-licence-auto-delete-active"
+          />
+        </ARow>
+        <ARow v-if="assetLicence.autoDelete.active">
+          <AFormTextField
+            v-model="assetLicence.autoDelete.olderThanDays"
+            :label="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
+            :v="v$.assetLicence.autoDelete.olderThanDays"
+            type="number"
+            :step="1"
+            data-cy="asset-licence-auto-delete-older-than-days"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
             v-model="assetLicence.internalRule.active"
             class="pl-2"
             :label="t('coreDam.assetLicence.model.internalRule.active')"

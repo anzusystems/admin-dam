@@ -44,6 +44,8 @@
     "slotsCountUntil": "Slots count until",
     "createdAtFrom": "Created from - to",
     "createdAtUntil": "Created until",
+    "uploadedAtFrom": "Uploaded from",
+    "uploadedAtUntil": "Uploaded until",
     "mainFileSingleUse": "Single-use licence",
     "mainFileInternal": "Internal"
   },

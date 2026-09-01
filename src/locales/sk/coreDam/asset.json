@@ -44,6 +44,8 @@
     "slotsCountUntil": "Počet slotov do",
     "createdAtFrom": "Vytvorené od - do",
     "createdAtUntil": "Vytvorené do",
+    "uploadedAtFrom": "Nahraté od",
+    "uploadedAtUntil": "Nahraté do",
     "mainFileSingleUse": "Jednorazová licencia",
     "mainFileInternal": "Interný"
   },

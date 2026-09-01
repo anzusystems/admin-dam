@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
-const { required, minLength } = useValidate()
+const { required, minLength, minValue } = useValidate()
 
 export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExtended>) {
   const rules = computed(() => ({
@@ -9,6 +9,14 @@ export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExten
       name: {
         required,
         minLength: minLength(3),
+      },
+      autoDelete: {
+        olderThanDays: assetLicence.value.autoDelete.active
+          ? {
+              required,
+              minValue: minValue(2),
+            }
+          : {},
       },
     },
   }))
