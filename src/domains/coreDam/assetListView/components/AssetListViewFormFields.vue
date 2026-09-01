@@ -71,9 +71,9 @@ const onExtSystemChange = () => {
       v-model="assetListView.licences"
       :label="t('coreDam.assetListView.model.licences')"
       :ext-system-id="assetListView.extSystem"
+      :v="v$.assetListView.licences"
       multiple
       required
-      hide-details
       data-cy="asset-list-view-licences"
     />
   </ARow>

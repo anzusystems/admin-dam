@@ -1,5 +1,6 @@
 {
   "error_invalid_key": "Neplatný kľúč.",
   "error_invalid_licence": "Neplatná licencia.",
-  "error_invalid_ext_system": "Neplatný externý systém."
+  "error_invalid_ext_system": "Neplatný externý systém.",
+  "error_licence_required_by_list_view": "Licenciu používa výlist assetov, najprv ju z výlistu odoberte."
 }

@@ -2,6 +2,7 @@
 import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import { useDamAssetLicenceInnerFilter } from '@anzusystems/common-admin'
 import { useAssetLicenceSelectActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
+import type { BaseValidation } from '@vuelidate/core'
 
 const props = withDefaults(
   defineProps<{
@@ -12,6 +13,7 @@ const props = withDefaults(
     dataCy?: string
     extSystemId?: IntegerId | null
     hideDetails?: boolean
+    v?: BaseValidation
   }>(),
   {
     label: undefined,
@@ -20,6 +22,7 @@ const props = withDefaults(
     dataCy: '',
     extSystemId: null,
     hideDetails: undefined,
+    v: undefined,
   }
 )
 const emit = defineEmits<{
@@ -56,6 +59,7 @@ watch(
   <AFormRemoteAutocomplete
     :key="extSystemId + ''"
     v-model="modelValueComputed"
+    :v="v"
     :required="required"
     :label="label"
     :fetch-items="fetchItems"
