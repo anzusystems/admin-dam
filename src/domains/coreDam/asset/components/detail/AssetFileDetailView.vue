@@ -126,8 +126,16 @@ onMounted(() => {
           :height="64"
           class="system-border-b pr-1"
         >
-          <div class="text-label-large d-flex pl-2">
-            <div>{{ toolbarTitle }}</div>
+          <div class="text-label-large d-flex pl-2 min-width-0 overflow-hidden">
+            <div class="text-truncate">
+              {{ toolbarTitle }}
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ toolbarTitle }}
+              </VTooltip>
+            </div>
           </div>
           <VSpacer />
           <div>

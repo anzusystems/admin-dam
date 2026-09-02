@@ -197,12 +197,20 @@ const { currentExtSystemId } = useCurrentExtSystem()
           </div>
           <div
             v-if="assetDetailStore.view === 'list'"
-            class="text-label-large d-flex"
+            class="text-label-large d-flex min-width-0 overflow-hidden"
           >
             <div class="pr-4">
               {{ totalCountText }}
             </div>
-            <div>{{ toolbarTitle }}</div>
+            <div class="text-truncate">
+              {{ toolbarTitle }}
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ toolbarTitle }}
+              </VTooltip>
+            </div>
           </div>
           <VSpacer />
           <div>
