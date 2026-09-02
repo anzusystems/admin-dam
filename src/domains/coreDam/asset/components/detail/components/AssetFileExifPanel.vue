@@ -18,8 +18,6 @@ interface ExifEntry {
 
 const { t } = useI18n()
 
-const panels = ref(['exif'])
-
 const entries = computed<ExifEntry[]>(() => {
   if (!props.exifData) return []
   return Object.entries(props.exifData)
@@ -29,36 +27,29 @@ const entries = computed<ExifEntry[]>(() => {
 </script>
 
 <template>
-  <VExpansionPanels
-    v-model="panels"
-    multiple
-    class="v-expansion-panels--compact"
+  <div
+    class="pa-3 text-body-small"
+    data-cy="asset-exif-panel"
   >
-    <VExpansionPanel
-      elevation="0"
-      :title="t('coreDam.asset.detail.exif.title', { count: entries.length })"
-      value="exif"
-      data-cy="asset-exif-panel"
+    <div class="text-label-large pb-3">
+      {{ t('coreDam.asset.detail.exif.title', { count: entries.length }) }}
+    </div>
+    <div
+      v-if="entries.length === 0"
+      class="text-medium-emphasis"
     >
-      <VExpansionPanelText class="text-body-small">
-        <div
-          v-if="entries.length === 0"
-          class="text-medium-emphasis"
-        >
-          {{ t('coreDam.asset.detail.exif.empty') }}
-        </div>
-        <VRow
-          v-for="entry in entries"
-          :key="entry.key"
-        >
-          <VCol cols="3">
-            {{ entry.key }}
-          </VCol>
-          <VCol cols="9">
-            <ACopyText :value="entry.value" />
-          </VCol>
-        </VRow>
-      </VExpansionPanelText>
-    </VExpansionPanel>
-  </VExpansionPanels>
+      {{ t('coreDam.asset.detail.exif.empty') }}
+    </div>
+    <VRow
+      v-for="entry in entries"
+      :key="entry.key"
+    >
+      <VCol cols="3">
+        {{ entry.key }}
+      </VCol>
+      <VCol cols="9">
+        <ACopyText :value="entry.value" />
+      </VCol>
+    </VRow>
+  </div>
 </template>
