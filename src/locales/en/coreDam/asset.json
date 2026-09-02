@@ -133,6 +133,12 @@
       "hide": "Show more metadata"
     },
     "noAssetSelected": "No asset selected",
+    "exif": {
+      "title": "Main file EXIF ({count})",
+      "filter": "Filter by key or value",
+      "noResults": "No EXIF entry matches the filter.",
+      "valueCopied": "Value was copied to clipboard."
+    },
     "tabs": {
       "info": "Info",
       "roi": "Focus",

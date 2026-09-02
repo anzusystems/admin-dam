@@ -74,6 +74,16 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <VSwitch
+            v-model="assetLicence.flags.singleUseEnforced"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.singleUseEnforced')"
+            :hint="t('coreDam.assetLicence.model.flags.singleUseEnforcedHint')"
+            persistent-hint
+            data-cy="asset-licence-single-use-enforced"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
             v-model="assetLicence.autoDelete.active"
             class="pl-2"
             :label="t('coreDam.assetLicence.model.autoDelete.active')"

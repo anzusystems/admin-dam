@@ -30,6 +30,9 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.assetLicence.model.flags.directUseAllowed')">
         <ABooleanValue :value="assetLicence.flags.directUseAllowed" />
       </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.singleUseEnforced')">
+        <ABooleanValue :value="assetLicence.flags.singleUseEnforced" />
+      </ARow>
       <ARow :title="t('coreDam.assetLicence.model.autoDelete.active')">
         <ABooleanValue :value="assetLicence.autoDelete.active" />
       </ARow>

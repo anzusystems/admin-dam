@@ -6,7 +6,9 @@
     "extId": "Externé ID",
     "flags": {
       "manualUploadAllowed": "Povolený manuálny upload",
-      "directUseAllowed": "Povolené priame použitie"
+      "directUseAllowed": "Povolené priame použitie",
+      "singleUseEnforced": "Vynútené jednorazové použitie",
+      "singleUseEnforcedHint": "Platí pre nové a upravené súbory. Existujúce súbory licencie prepne príkaz anzu-dam:asset-licence:enforce-single-use."
     },
     "autoDelete": {
       "active": "Automatické mazanie",

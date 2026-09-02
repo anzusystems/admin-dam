@@ -8,6 +8,7 @@ export interface AssetLicenceInternalRule {
 export interface AssetLicenceFlags {
   manualUploadAllowed: boolean
   directUseAllowed: boolean
+  singleUseEnforced: boolean
 }
 
 export interface AssetLicenceAutoDelete {

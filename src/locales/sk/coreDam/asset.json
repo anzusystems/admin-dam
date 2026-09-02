@@ -133,6 +133,12 @@
       "hide": "Zobraziť viac detailov"
     },
     "noAssetSelected": "Žiadne vybrané assety",
+    "exif": {
+      "title": "EXIF hlavného súboru ({count})",
+      "filter": "Filtrovať podľa kľúča alebo hodnoty",
+      "noResults": "Žiadny EXIF záznam nezodpovedá filtru.",
+      "valueCopied": "Hodnota bola skopírovaná do schránky."
+    },
     "tabs": {
       "info": "Info",
       "roi": "Fókus",

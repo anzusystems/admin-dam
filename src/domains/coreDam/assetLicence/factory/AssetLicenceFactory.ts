@@ -19,6 +19,7 @@ export function useAssetLicenceFactory() {
       flags: {
         manualUploadAllowed: true,
         directUseAllowed: true,
+        singleUseEnforced: false,
       },
       autoDelete: {
         active: false,
