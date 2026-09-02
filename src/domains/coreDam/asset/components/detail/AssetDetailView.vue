@@ -141,7 +141,7 @@ onMounted(() => {
             </div>
           </div>
           <VSpacer />
-          <div>
+          <div class="d-flex flex-shrink-0">
             <VBtn
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"

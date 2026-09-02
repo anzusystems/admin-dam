@@ -100,13 +100,6 @@ const mainFileExifData = computed<ExifData | undefined>(() => {
         </VTab>
         <VTab
           v-if="isImage"
-          :value="AssetDetailTab.Exif"
-          data-cy="button-exif"
-        >
-          {{ t('coreDam.asset.detail.tabs.exif') }}
-        </VTab>
-        <VTab
-          v-if="isImage"
           :value="AssetDetailTab.ROI"
           data-cy="button-focus"
         >
@@ -175,12 +168,10 @@ const mainFileExifData = computed<ExifData | undefined>(() => {
             @post-delete="postDelete"
             @main-route-changed="emit('mainRouteChanged')"
           />
-        </div>
-        <div
-          v-if="isImage && activeTab === AssetDetailTab.Exif"
-          class="py-2"
-        >
-          <AssetFileExifPanel :exif-data="mainFileExifData" />
+          <AssetFileExifPanel
+            v-if="isImage"
+            :exif-data="mainFileExifData"
+          />
         </div>
         <div
           v-if="isImage && activeTab === AssetDetailTab.ROI"

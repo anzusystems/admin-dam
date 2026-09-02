@@ -134,8 +134,7 @@
     },
     "noAssetSelected": "No asset selected",
     "exif": {
-      "title": "Main file EXIF ({count})",
-      "empty": "The main file carries no EXIF data."
+      "title": "Main file EXIF ({count})"
     },
     "tabs": {
       "info": "Info",
@@ -145,8 +144,7 @@
       "podcast": "Podcast",
       "tts": "TTS",
       "videoShow": "Video show",
-      "imagePreview": "Image preview",
-      "exif": "EXIF"
+      "imagePreview": "Image preview"
     },
     "tts": {
       "noEntry": "No TTS metadata for this asset.",

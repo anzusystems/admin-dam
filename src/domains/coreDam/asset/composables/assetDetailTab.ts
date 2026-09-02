@@ -1,6 +1,5 @@
 export const AssetDetailTab = {
   Info: 'meta',
-  Exif: 'exif',
   ROI: 'roi',
   Distribution: 'distribution',
   Podcast: 'podcast',

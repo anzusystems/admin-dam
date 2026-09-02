@@ -111,7 +111,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
           :height="64"
           class="system-border-b"
         >
-          <div>
+          <div class="flex-shrink-0">
             <VBtn
               variant="text"
               icon
@@ -146,7 +146,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
             </VBtn>
           </div>
           <div class="text-label-large d-flex min-width-0 overflow-hidden">
-            <div class="pr-4">
+            <div class="pr-4 flex-shrink-0">
               {{ totalCountText }}
             </div>
             <div class="text-truncate">
@@ -160,7 +160,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
             </div>
           </div>
           <VSpacer />
-          <div>
+          <div class="d-flex flex-shrink-0">
             <VBtn
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"

@@ -134,8 +134,7 @@
     },
     "noAssetSelected": "Žiadne vybrané assety",
     "exif": {
-      "title": "EXIF hlavného súboru ({count})",
-      "empty": "Hlavný súbor nemá žiadne EXIF dáta."
+      "title": "EXIF hlavného súboru ({count})"
     },
     "tabs": {
       "info": "Info",
@@ -145,8 +144,7 @@
       "podcast": "Podcasty",
       "tts": "TTS",
       "videoShow": "Video relácie",
-      "imagePreview": "Miniatúra",
-      "exif": "EXIF"
+      "imagePreview": "Miniatúra"
     },
     "tts": {
       "noEntry": "Pre tento asset nie sú TTS údaje.",
