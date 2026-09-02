@@ -137,7 +137,8 @@
       "title": "Main file EXIF ({count})",
       "filter": "Filter by key or value",
       "noResults": "No EXIF entry matches the filter.",
-      "valueCopied": "Value was copied to clipboard."
+      "valueCopied": "Value was copied to clipboard.",
+      "empty": "The main file carries no EXIF data."
     },
     "tabs": {
       "info": "Info",
@@ -147,7 +148,8 @@
       "podcast": "Podcast",
       "tts": "TTS",
       "videoShow": "Video show",
-      "imagePreview": "Image preview"
+      "imagePreview": "Image preview",
+      "exif": "EXIF"
     },
     "tts": {
       "noEntry": "No TTS metadata for this asset.",

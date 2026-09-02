@@ -137,7 +137,8 @@
       "title": "EXIF hlavného súboru ({count})",
       "filter": "Filtrovať podľa kľúča alebo hodnoty",
       "noResults": "Žiadny EXIF záznam nezodpovedá filtru.",
-      "valueCopied": "Hodnota bola skopírovaná do schránky."
+      "valueCopied": "Hodnota bola skopírovaná do schránky.",
+      "empty": "Hlavný súbor nemá žiadne EXIF dáta."
     },
     "tabs": {
       "info": "Info",
@@ -147,7 +148,8 @@
       "podcast": "Podcasty",
       "tts": "TTS",
       "videoShow": "Video relácie",
-      "imagePreview": "Miniatúra"
+      "imagePreview": "Miniatúra",
+      "exif": "EXIF"
     },
     "tts": {
       "noEntry": "Pre tento asset nie sú TTS údaje.",
