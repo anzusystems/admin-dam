@@ -13,6 +13,7 @@ const props = withDefaults(
 
 interface ExifEntry {
   key: string
+  label: string
   value: string
 }
 
@@ -23,7 +24,11 @@ const panels = ref<string[]>([])
 const entries = computed<ExifEntry[]>(() => {
   if (!props.exifData) return []
   return Object.entries(props.exifData)
-    .map(([key, value]) => ({ key, value: value === null ? '' : String(value) }))
+    .map(([key, value]) => ({
+      key,
+      label: key.replace(/([a-z0-9])([A-Z])/g, '$1 $2'),
+      value: value === null ? '' : String(value),
+    }))
     .sort((a, b) => a.key.localeCompare(b.key))
 })
 </script>
@@ -46,10 +51,13 @@ const entries = computed<ExifEntry[]>(() => {
           v-for="entry in entries"
           :key="entry.key"
         >
-          <VCol cols="3">
-            {{ entry.key }}
+          <VCol
+            cols="4"
+            class="text-break"
+          >
+            {{ entry.label }}
           </VCol>
-          <VCol cols="9">
+          <VCol cols="8">
             <ACopyText :value="entry.value" />
           </VCol>
         </VRow>

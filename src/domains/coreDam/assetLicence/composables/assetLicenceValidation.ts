@@ -9,7 +9,7 @@ export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExten
     assetLicence: {
       name: {
         required,
-        minLength: minLength(3),
+        minLength: minLength(2),
       },
       badge: {
         maxLength: maxLength(3),
