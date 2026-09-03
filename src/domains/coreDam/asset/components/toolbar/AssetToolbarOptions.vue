@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { ACL } from '@/domains/system/auth/auth'
-import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { type DamCurrentUserDto, type DamExtSystem } from '@anzusystems/common-admin'
+import { useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 
 withDefaults(
@@ -22,11 +23,11 @@ withDefaults(
 const { t } = useI18n()
 
 const { currentExtSystemId } = useCurrentExtSystem()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { uploadAllowed } = useCurrentListView()
+const { useCurrentUser } = useAuth()
+const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
 const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
-const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
 
 const displayTextExtSystem = computed(() => {
   if (currentExtSystem.value && currentExtSystem.value.name.length > 0) {
@@ -36,10 +37,11 @@ const displayTextExtSystem = computed(() => {
 })
 
 const displayTextLicence = computed(() => {
-  if (currentAssetLicence.value && currentAssetLicence.value.name.length > 0) {
-    return currentAssetLicence.value.name
+  const selectedLicence = currentUser.value?.selectedLicenceDto
+  if (selectedLicence && selectedLicence.name.length > 0) {
+    return selectedLicence.name
   }
-  return currentAssetLicenceId.value + ''
+  return String(currentUser.value?.selectedLicence ?? '')
 })
 
 const dialog = ref(false)
@@ -53,14 +55,9 @@ const { showErrorsDefault } = useAlerts()
 const { executeRequest: fetchExtSystem } = useFetchExtSystem()
 
 onMounted(async () => {
-  if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
+  if (currentExtSystemId.value > 0) {
     try {
-      const [assetLicence, extSystem] = await Promise.all([
-        fetchAssetLicence(currentAssetLicenceId.value),
-        fetchExtSystem({ urlParams: { id: currentExtSystemId.value } }),
-      ])
-      currentAssetLicence.value = assetLicence
-      currentExtSystem.value = extSystem
+      currentExtSystem.value = await fetchExtSystem({ urlParams: { id: currentExtSystemId.value } })
     } catch (error) {
       showErrorsDefault(error)
     }
