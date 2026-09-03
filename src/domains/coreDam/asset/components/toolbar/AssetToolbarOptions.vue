@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ACL } from '@/domains/system/auth/auth'
-import { damClient } from '@/shared/apiClients/damClient'
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
+import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 
 withDefaults(
   defineProps<{
@@ -19,16 +21,51 @@ withDefaults(
 
 const { t } = useI18n()
 
+const { currentExtSystemId } = useCurrentExtSystem()
+const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { uploadAllowed } = useCurrentListView()
 
-const { getDamConfigExtSystem } = useDamConfigState(damClient)
-const { currentExtSystemId } = useCurrentExtSystem()
-const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
-if (isUndefined(configExtSystem)) {
-  throw new Error('Ext system must be initialised.')
+const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
+const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
+
+const displayTextExtSystem = computed(() => {
+  if (currentExtSystem.value && currentExtSystem.value.name.length > 0) {
+    return currentExtSystem.value.name
+  }
+  return currentExtSystemId.value + ''
+})
+
+const displayTextLicence = computed(() => {
+  if (currentAssetLicence.value && currentAssetLicence.value.name.length > 0) {
+    return currentAssetLicence.value.name
+  }
+  return currentAssetLicenceId.value + ''
+})
+
+const dialog = ref(false)
+
+const openDialog = () => {
+  dialog.value = true
 }
 
-const externalProviders = computed(() => configExtSystem.assetExternalProviders ?? {})
+const { showErrorsDefault } = useAlerts()
+
+const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+
+onMounted(async () => {
+  if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
+    try {
+      const [assetLicence, extSystem] = await Promise.all([
+        fetchAssetLicence(currentAssetLicenceId.value),
+        fetchExtSystem({ urlParams: { id: currentExtSystemId.value } }),
+      ])
+      currentAssetLicence.value = assetLicence
+      currentExtSystem.value = extSystem
+    } catch (error) {
+      showErrorsDefault(error)
+    }
+  }
+})
 </script>
 
 <template>
@@ -63,18 +100,15 @@ const externalProviders = computed(() => configExtSystem.assetExternalProviders 
               data-cy="button-main-video-show"
             />
           </Acl>
-          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
-            <template v-if="!isEmptyObject(externalProviders)">
-              <VDivider />
-              <VListItem
-                v-for="(provider, key) in externalProviders"
-                :key="key"
-                :to="{ name: '/(coreDam)/external-providers/[provider]', params: { provider: key } }"
-                :title="provider.title"
-                prepend-icon="mdi-puzzle-outline"
-              />
-            </template>
-          </Acl>
+          <VDivider />
+          <VListItem
+            v-show="variant === 'main'"
+            :title="t('system.mainBar.extSystemLicenceSwitch.changeLicence')"
+            :subtitle="displayTextExtSystem + '/' + displayTextLicence"
+            data-cy="button-switch-licence"
+            prepend-icon="mdi-key-arrow-right"
+            @click.stop="openDialog"
+          />
           <VDivider />
           <VListItem
             v-show="variant === 'main'"
@@ -99,4 +133,10 @@ const externalProviders = computed(() => configExtSystem.assetExternalProviders 
       {{ t('system.mainBar.options') }}
     </VTooltip>
   </VBtn>
+  <AssetToolbarExtSystemLicenceDialog
+    v-if="dialog"
+    v-model="dialog"
+    :ext-system-name="displayTextExtSystem"
+    :licence-name="displayTextLicence"
+  />
 </template>

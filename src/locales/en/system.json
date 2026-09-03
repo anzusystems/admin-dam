@@ -68,7 +68,8 @@
       "description": "Important: Please finish all work first, any progress will be lost!",
       "confirm": "Confirm and reload admin",
       "changeToLicenceId": "Change to licence ID",
-      "chooseLicence": "Choose licence"
+      "chooseLicence": "Choose licence",
+      "changeLicence": "Change licence:"
     },
     "listViewSwitch": {
       "title": "List view and licence"
