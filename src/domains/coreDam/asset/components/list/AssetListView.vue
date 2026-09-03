@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { GridView, useGridView } from '@/domains/system/composables/gridView'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'
-import {
-  customSortOptions,
-  useAssetListActions,
-} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import MainWrapper from '@/domains/system/components/MainWrapper.vue'
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'
+import AssetToolbarSorting from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSorting.vue'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetListSidebarFilter from '@/domains/coreDam/asset/components/list/components/AssetListSidebarFilter.vue'
 import AssetListSidebarMetadata from '@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue'
@@ -21,8 +19,7 @@ import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/as
 import { onKeyUp } from '@vueuse/core'
 import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
 import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
-import type { DatatableOrderingOption } from '@anzusystems/common-admin'
-import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin/labs'
+import { DatatablePaginationKey } from '@anzusystems/common-admin/labs'
 
 const { t } = useI18n()
 
@@ -79,13 +76,6 @@ const componentComputed = computed(() => {
       return AssetListTilesView
   }
 })
-
-const sortByChange = (data: DatatableOrderingOption) => {
-  if (data.sortBy) {
-    pagination.value.sortBy = data.sortBy
-    fetchAssetList()
-  }
-}
 
 onUnmounted(() => {
   listUnmounted()
@@ -175,10 +165,7 @@ onUnmounted(() => {
         vertical
         class="mx-1 my-2 hidden-xs"
       />
-      <ADatatableOrdering
-        :custom-options="customSortOptions"
-        @sort-by-change="sortByChange"
-      />
+      <AssetToolbarSorting />
       <VDivider
         vertical
         class="mx-1 my-2 hidden-xs"
