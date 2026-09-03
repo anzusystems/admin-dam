@@ -1,21 +1,29 @@
-import type { DamAssetLicence, DamAssetLicenceMinimal } from '@anzusystems/common-admin'
 import { fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
+import type {
+  DamAssetLicenceCached,
+  DamAssetLicenceExtended,
+} from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
-const mapFullToMinimal = (assetLicence: DamAssetLicence): DamAssetLicenceMinimal => ({
+const mapFullToMinimal = (assetLicence: DamAssetLicenceExtended): DamAssetLicenceCached => ({
   id: assetLicence.id,
   name: assetLicence.name,
+  badge: assetLicence.badge ?? '',
 })
 
-const mapIdToMinimal = (id: IntegerId): DamAssetLicenceMinimal => {
-  return { id: id, name: '' }
+const mapIdToMinimal = (id: IntegerId): DamAssetLicenceCached => {
+  return { id: id, name: '', badge: '' }
 }
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   IntegerId,
-  DamAssetLicence,
-  DamAssetLicenceMinimal
->(mapFullToMinimal, mapIdToMinimal, (ids: IntegerId[]) => fetchDamAssetLicenceListByIds(damClient, ids))
+  DamAssetLicenceExtended,
+  DamAssetLicenceCached
+>(
+  mapFullToMinimal,
+  mapIdToMinimal,
+  (ids: IntegerId[]) => fetchDamAssetLicenceListByIds(damClient, ids) as Promise<DamAssetLicenceExtended[]>
+)
 
 export const useCachedAssetLicences = () => {
   return {

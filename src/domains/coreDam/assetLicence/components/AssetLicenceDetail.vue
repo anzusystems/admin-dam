@@ -21,6 +21,10 @@ const { t } = useI18n()
         :title="t('coreDam.assetLicence.model.extId')"
         :value="assetLicence.extId"
       />
+      <ARow
+        :title="t('coreDam.assetLicence.model.badge')"
+        :value="assetLicence.badge"
+      />
       <ARow :title="t('coreDam.assetLicence.model.extSystem')">
         <CachedExtSystemChip :id="assetLicence.extSystem" />
       </ARow>

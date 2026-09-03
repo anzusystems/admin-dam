@@ -4,6 +4,7 @@
     "name": "Name",
     "extSystem": "External system",
     "extId": "External ID",
+    "badge": "Badge",
     "flags": {
       "manualUploadAllowed": "Manual upload allowed",
       "directUseAllowed": "Direct use allowed",

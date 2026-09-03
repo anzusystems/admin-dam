@@ -19,9 +19,11 @@ const props = withDefaults(
     assetType: DamAssetTypeType
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
+    licenceBadge?: string
   }>(),
   {
     disableAbsolute: false,
+    licenceBadge: '',
   }
 )
 
@@ -87,10 +89,19 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0"
+    v-show="data.icons.length > 0 || licenceBadge.length > 0"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
+    <VChip
+      v-if="licenceBadge.length > 0"
+      size="x-small"
+      variant="flat"
+      class="align-self-center mr-1"
+      data-cy="asset-licence-badge"
+    >
+      {{ licenceBadge }}
+    </VChip>
     <img
       v-for="(item, index) in data.icons"
       :key="item"

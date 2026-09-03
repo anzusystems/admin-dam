@@ -1,3 +1,4 @@
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
@@ -62,6 +63,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   })
   const { currentListView, listLicenceIds, listAssetTypes } = useCurrentListView()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -89,6 +91,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
+      addToCachedAssetLicences(...listLicenceIds.value)
+      fetchCachedAssetLicences()
     } catch (error) {
       showErrorsDefault(error)
     } finally {

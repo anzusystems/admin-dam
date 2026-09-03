@@ -2,6 +2,7 @@
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const props = withDefaults(
   defineProps<{
@@ -27,6 +28,8 @@ const IMAGE_HEIGHT = 200
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
+const { getCachedAssetLicence } = useCachedAssetLicences()
+const licenceBadge = computed(() => getCachedAssetLicence(asset.value.licence)?.badge ?? '')
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
@@ -77,6 +80,7 @@ const selectMultiple = () => {
         :fallback-height="IMAGE_HEIGHT"
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
+        :licence-badge="licenceBadge"
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">

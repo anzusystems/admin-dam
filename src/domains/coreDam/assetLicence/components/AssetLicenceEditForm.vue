@@ -48,6 +48,16 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <AFormTextField
+            :model-value="assetLicence.badge"
+            :label="t('coreDam.assetLicence.model.badge')"
+            :v="v$.assetLicence.badge"
+            :maxlength="3"
+            data-cy="asset-licence-badge"
+            @update:model-value="assetLicence.badge = String($event ?? '').toUpperCase()"
+          />
+        </ARow>
+        <ARow>
           <DamExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
             :client="damClient"
