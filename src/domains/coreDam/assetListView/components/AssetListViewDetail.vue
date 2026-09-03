@@ -31,10 +31,6 @@ const { t } = useI18n()
           class="mr-1"
         />
       </ARow>
-      <ARow
-        :title="t('coreDam.assetListView.model.types')"
-        :value="assetListView.types.join(', ')"
-      />
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.assetListView.model.id')">

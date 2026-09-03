@@ -48,8 +48,6 @@ export const customSortOptions = [
 
 const filterIsTouched = ref(false)
 
-let seededListViewId: IntegerId | null | undefined = undefined
-
 export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const router = useRouter()
   const assetListStore = useAssetListStore()
@@ -61,7 +59,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { currentListView, listLicenceIds, listAssetTypes } = useCurrentListView()
+  const { listLicenceIds } = useCurrentListView()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { maxSelectedItems } = useBetaTestFeatures()
@@ -97,13 +95,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       showErrorsDefault(error)
     } finally {
       assetListStore.hideLoader('hard')
-    }
-  }
-
-  const applyListViewTypes = () => {
-    filterData.type = [...listAssetTypes.value]
-    if (!listAssetTypes.value.includes(DamAssetType.Audio)) {
-      filterData.inPodcast = null
     }
   }
 
@@ -293,11 +284,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
     assetListStore.resetList()
     assetDetailStore.reset()
-    const currentListViewId = currentListView.value?.id ?? null
-    if (currentListViewId !== seededListViewId) {
-      applyListViewTypes()
-      seededListViewId = currentListViewId
-    }
     await fetchAssetList()
     assetListStore.keyboardNavigationEnable()
   }

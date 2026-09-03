@@ -1,4 +1,4 @@
-import type { DamAssetTypeType, DamCurrentUserDto } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
 
 export interface AssetListView extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: IntegerId
@@ -7,7 +7,6 @@ export interface AssetListView extends AnzuUserAndTimeTrackingAware, ResourceNam
   position: number
   groups: IntegerId[]
   licences: IntegerId[]
-  types: DamAssetTypeType[]
   uploadLicence: IntegerIdNullable
 }
 
@@ -19,7 +18,6 @@ export interface AssetListViewResolved {
   name: string
   extSystem: IntegerId
   licences: IntegerId[]
-  types: DamAssetTypeType[]
   uploadLicence?: IntegerIdNullable
 }
 

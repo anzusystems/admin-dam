@@ -1,4 +1,4 @@
-import { DamAssetType, fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useFetchAssetLicenceGroup } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
@@ -8,7 +8,6 @@ import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetL
  * a view his audience is not entitled to. Without targeting the whole external system is offered.
  */
 export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
-  const { t } = useI18n()
   const { showErrorsDefault } = useAlerts()
   const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
@@ -16,13 +15,6 @@ export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
   const uploadLicenceOptions = ref<ValueObjectOption<IntegerId>[]>([])
 
   const targetedByGroups = computed(() => assetListView.value.groups.length > 0)
-
-  const assetTypeOptions = computed<ValueObjectOption<string>[]>(() =>
-    Object.values(DamAssetType).map((type) => ({
-      value: type,
-      title: t('coreDam.asset.assetType.' + type),
-    }))
-  )
 
   let requestSequence = 0
 
@@ -93,7 +85,6 @@ export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
   )
 
   return {
-    assetTypeOptions,
     groupLicenceOptions,
     uploadLicenceOptions,
     targetedByGroups,

@@ -5,7 +5,6 @@ import type {
   AssetListViewResolved,
   DamCurrentUserWithListViewsDto,
 } from '@/domains/coreDam/assetListView/types/AssetListView'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
 export const useCurrentListView = () => {
   const { useCurrentUser } = useAuth()
@@ -29,15 +28,12 @@ export const useCurrentListView = () => {
     currentListView.value ? currentListView.value.licences : [currentAssetLicenceId.value]
   )
 
-  const listAssetTypes = computed<DamAssetTypeType[]>(() => currentListView.value?.types ?? [])
-
   const uploadAllowed = computed<boolean>(() => currentAssetLicenceId.value > 0)
 
   return {
     availableListViews,
     currentListView,
     listLicenceIds,
-    listAssetTypes,
     uploadAllowed,
   }
 }

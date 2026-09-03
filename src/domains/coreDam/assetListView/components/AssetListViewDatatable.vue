@@ -46,8 +46,6 @@ provide(DatatablePaginationKey, pagination)
 
 const { can } = useAuth()
 
-const { t } = useI18n()
-
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id && can(ACL.DAM_ASSET_LIST_VIEW_READ))
     router.push({ name: '/(coreDam)/asset-list-views/[id]', params: { id: item.id } })
@@ -60,7 +58,6 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
     { key: 'extSystem' },
     { key: 'position' },
     { key: 'licences' },
-    { key: 'types' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -133,16 +130,6 @@ defineExpose({
             :key="assetLicenceId"
             class="mr-1"
           />
-        </template>
-        <template #item.types="{ item }: { item: DatatableItem }">
-          <VChip
-            v-for="type in item.types"
-            :key="type"
-            class="mr-1"
-            size="small"
-          >
-            {{ t('coreDam.asset.assetType.' + type) }}
-          </VChip>
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />

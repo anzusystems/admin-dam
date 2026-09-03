@@ -11,7 +11,6 @@ export function useAssetListViewFactory() {
       position: 0,
       groups: [],
       licences: [],
-      types: [],
       uploadLicence: null,
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
