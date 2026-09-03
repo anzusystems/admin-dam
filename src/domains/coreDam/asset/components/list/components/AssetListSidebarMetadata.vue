@@ -1,10 +1,17 @@
 <script lang="ts" setup>
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
-import { browserHistoryReplaceUrlByRouter, DamAssetStatus, useDamCachedUsers } from '@anzusystems/common-admin'
+import {
+  assetFileIsImageFile,
+  browserHistoryReplaceUrlByRouter,
+  DamAssetStatus,
+  useDamCachedUsers,
+} from '@anzusystems/common-admin'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
+import AssetFileExifPanel from '@/domains/coreDam/asset/components/detail/components/AssetFileExifPanel.vue'
+import type { ExifData } from '@/domains/coreDam/asset/types/AssetExif'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { ACL } from '@/domains/system/auth/auth'
@@ -82,6 +89,11 @@ const assetMainFile = computed(() => {
   return asset.value?.mainFile || undefined
 })
 
+const mainFileExifData = computed<ExifData | undefined>(() => {
+  if (!assetMainFile.value || !assetFileIsImageFile(assetMainFile.value)) return undefined
+  return assetMainFile.value.metadata?.exifData as unknown as ExifData | undefined
+})
+
 watch(
   asset,
   (newValue, oldValue) => {
@@ -124,6 +136,7 @@ watch(
         :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
       />
       <AssetMetadata @main-route-changed="emit('mainRouteChanged')" />
+      <AssetFileExifPanel :exif-data="mainFileExifData" />
     </div>
     <template
       v-if="!loader && asset"
