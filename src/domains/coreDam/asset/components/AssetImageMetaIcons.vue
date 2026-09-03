@@ -93,15 +93,13 @@ const data = computed(() => {
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
-    <VChip
+    <span
       v-if="licenceBadge.length > 0"
-      size="x-small"
-      variant="flat"
-      class="align-self-center mr-1"
+      class="asset-image__licence-badge"
       data-cy="asset-licence-badge"
     >
       {{ licenceBadge }}
-    </VChip>
+    </span>
     <img
       v-for="(item, index) in data.icons"
       :key="item"
@@ -126,6 +124,22 @@ const data = computed(() => {
   img.img-svg {
     height: 30px;
     padding: 2px;
+  }
+
+  // Same look as the SVG meta icons (low.svg): half-transparent black circle with white bold letters.
+  .asset-image__licence-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    margin: 2px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
   }
 }
 </style>
