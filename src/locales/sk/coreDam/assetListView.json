@@ -6,13 +6,16 @@
     "position": "Poradie",
     "groups": "Skupiny licencií",
     "licences": "Licencie",
-    "types": "Typy assetov"
+    "types": "Typy assetov",
+    "uploadLicence": "Licencia pre nahrávanie"
   },
   "filter": {
     "id": "ID"
   },
   "meta": {
-    "create": "Vytvoriť výlist",
-    "switch": "Prepnúť výlist"
+    "create": "Vytvoriť výlist"
+  },
+  "validation": {
+    "uploadLicence": "Licencia pre nahrávanie musí byť jedna z vybraných licencií."
   }
 }

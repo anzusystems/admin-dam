@@ -3,7 +3,8 @@ import { SYSTEM_DAM } from '@/shared/systems'
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { type DamCurrentUserDto, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
+import { isDocId, useDamConfigStore } from '@anzusystems/common-admin'
 
 const currentExtSystemId = ref(0)
 
@@ -13,7 +14,7 @@ export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
 ) => {
   const { useCurrentUser } = useAuth()
-  const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+  const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
 
   const damConfigStore = useDamConfigStore()
   const { damPrvConfig, initialized } = storeToRefs(damConfigStore)
@@ -26,7 +27,15 @@ export const initCurrentExtSystemAndLicence = async (
     console.error('Current user must be loaded first.')
     return false
   }
+
+  const view = currentUser.value.listViews?.find((v) => v.id === currentUser.value?.selectedListView) ?? null
+
   if (isUndefined(loadConfig)) {
+    if (view) {
+      currentExtSystemId.value = view.extSystem
+      currentAssetLicenceId.value = view.uploadLicence ?? 0
+      return true
+    }
     if (damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId) {
       if (currentUser.value.selectedLicenceDto) {
         currentExtSystemId.value = currentUser.value.selectedLicenceDto.extSystem
@@ -54,6 +63,14 @@ export const initCurrentExtSystemAndLicence = async (
     }
     if (isNull(assetRes)) {
       return false
+    }
+    if (view && view.licences.includes(assetRes.licence)) {
+      const assetDetailStore = useAssetDetailStore()
+      assetDetailStore.directDetailLoad = true
+      assetDetailStore.setAsset(assetRes)
+      currentExtSystemId.value = view.extSystem
+      currentAssetLicenceId.value = view.uploadLicence ?? 0
+      return true
     }
     const licenceRes = await fetchAssetLicence(assetRes.licence)
     if (licenceRes.id && licenceRes.extSystem) {

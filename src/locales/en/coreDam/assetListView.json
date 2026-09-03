@@ -6,13 +6,16 @@
     "position": "Position",
     "groups": "Licence groups",
     "licences": "Licences",
-    "types": "Asset types"
+    "types": "Asset types",
+    "uploadLicence": "Upload licence"
   },
   "filter": {
     "id": "ID"
   },
   "meta": {
-    "create": "Create list view",
-    "switch": "Switch list view"
+    "create": "Create list view"
+  },
+  "validation": {
+    "uploadLicence": "Upload licence must be one of the selected licences."
   }
 }

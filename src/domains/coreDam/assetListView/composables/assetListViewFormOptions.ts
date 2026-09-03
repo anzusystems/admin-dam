@@ -13,6 +13,7 @@ export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
   const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
   const groupLicenceOptions = ref<ValueObjectOption<IntegerId>[]>([])
+  const uploadLicenceOptions = ref<ValueObjectOption<IntegerId>[]>([])
 
   const targetedByGroups = computed(() => assetListView.value.groups.length > 0)
 
@@ -60,9 +61,41 @@ export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
     { immediate: true, deep: true }
   )
 
+  let uploadLicenceRequestSequence = 0
+
+  const loadUploadLicenceOptions = async (): Promise<void> => {
+    const sequence = ++uploadLicenceRequestSequence
+    if (assetListView.value.licences.length === 0) {
+      uploadLicenceOptions.value = []
+      return
+    }
+    try {
+      const licences = await fetchDamAssetLicenceListByIds(damClient, assetListView.value.licences)
+      if (sequence !== uploadLicenceRequestSequence) return
+      uploadLicenceOptions.value = licences.map((licence) => ({ value: licence.id, title: licence.name }))
+    } catch (error) {
+      if (sequence === uploadLicenceRequestSequence) showErrorsDefault(error)
+    }
+  }
+
+  watch(
+    () => assetListView.value.licences,
+    async () => {
+      await loadUploadLicenceOptions()
+      if (
+        !isNull(assetListView.value.uploadLicence) &&
+        !assetListView.value.licences.includes(assetListView.value.uploadLicence)
+      ) {
+        assetListView.value.uploadLicence = null
+      }
+    },
+    { immediate: true, deep: true }
+  )
+
   return {
     assetTypeOptions,
     groupLicenceOptions,
+    uploadLicenceOptions,
     targetedByGroups,
   }
 }

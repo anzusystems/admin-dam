@@ -52,8 +52,7 @@
     "options": "Options",
     "userOptions": "Account",
     "customIntegrations": {
-      "title": "Custom integrations",
-      "assets": "Assets"
+      "title": "Custom integrations"
     },
     "podcasts": "Podcasts",
     "videoShows": "Video shows",
@@ -72,7 +71,7 @@
       "description": "Important: Please finish all work first, any progress will be lost!",
       "confirm": "Confirm and reload admin",
       "changeToLicenceId": "Change to licence ID",
-      "changeLicence": "Change licence:"
+      "chooseLicence": "Choose licence"
     }
   },
   "settings": {

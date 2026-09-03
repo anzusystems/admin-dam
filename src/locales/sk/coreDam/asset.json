@@ -208,7 +208,8 @@
       "confirm": "Ukončiť nahrávanie"
     },
     "newAssetsUploadOverlayTitle": "Nahrávanie nových assetov",
-    "slotsUploadOverlayTitle": "Nahrávanie do slotov assetu"
+    "slotsUploadOverlayTitle": "Nahrávanie do slotov assetu",
+    "notAllowed": "Pre aktuálny výber licencie nie je nahrávanie povolené."
   },
   "selected": {
     "selectedFiles": "Vybrané súbory",

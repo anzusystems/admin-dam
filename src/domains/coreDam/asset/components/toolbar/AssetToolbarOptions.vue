@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { ACL } from '@/domains/system/auth/auth'
-import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 
 withDefaults(
   defineProps<{
@@ -20,50 +16,7 @@ withDefaults(
 
 const { t } = useI18n()
 
-const { currentExtSystemId } = useCurrentExtSystem()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
-
-const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
-const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
-
-const displayTextExtSystem = computed(() => {
-  if (currentExtSystem.value && currentExtSystem.value.name.length > 0) {
-    return currentExtSystem.value.name
-  }
-  return currentExtSystemId.value + ''
-})
-
-const displayTextLicence = computed(() => {
-  if (currentAssetLicence.value && currentAssetLicence.value.name.length > 0) {
-    return currentAssetLicence.value.name
-  }
-  return currentAssetLicenceId.value + ''
-})
-
-const dialog = ref(false)
-
-const openDialog = () => {
-  dialog.value = true
-}
-
-const { showErrorsDefault } = useAlerts()
-
-const { executeRequest: fetchExtSystem } = useFetchExtSystem()
-
-onMounted(async () => {
-  if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
-    try {
-      const [assetLicence, extSystem] = await Promise.all([
-        fetchAssetLicence(currentAssetLicenceId.value),
-        fetchExtSystem({ urlParams: { id: currentExtSystemId.value } }),
-      ])
-      currentAssetLicence.value = assetLicence
-      currentExtSystem.value = extSystem
-    } catch (error) {
-      showErrorsDefault(error)
-    }
-  }
-})
+const { uploadAllowed } = useCurrentListView()
 </script>
 
 <template>
@@ -79,7 +32,7 @@ onMounted(async () => {
       <VCard min-width="300">
         <VList>
           <Acl :permission="ACL.DAM_ASSET_CREATE">
-            <AssetCreateButton />
+            <AssetCreateButton v-if="uploadAllowed" />
           </Acl>
           <VDivider />
           <Acl :permission="ACL.DAM_PODCAST_UI">
@@ -98,15 +51,6 @@ onMounted(async () => {
               data-cy="button-main-video-show"
             />
           </Acl>
-          <VDivider />
-          <VListItem
-            v-show="variant === 'main'"
-            :title="t('system.mainBar.extSystemLicenceSwitch.changeLicence')"
-            :subtitle="displayTextExtSystem + '/' + displayTextLicence"
-            data-cy="button-switch-licence"
-            prepend-icon="mdi-key-arrow-right"
-            @click.stop="openDialog"
-          />
           <VDivider />
           <VListItem
             v-show="variant === 'main'"
@@ -131,10 +75,4 @@ onMounted(async () => {
       {{ t('system.mainBar.options') }}
     </VTooltip>
   </VBtn>
-  <AssetToolbarExtSystemLicenceDialog
-    v-if="dialog"
-    v-model="dialog"
-    :ext-system-name="displayTextExtSystem"
-    :licence-name="displayTextLicence"
-  />
 </template>

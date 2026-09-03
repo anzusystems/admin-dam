@@ -52,8 +52,7 @@
     "options": "Nastavenia",
     "userOptions": "Konto",
     "customIntegrations": {
-      "title": "Vlastné integrácie",
-      "assets": "Assety"
+      "title": "Vlastné integrácie"
     },
     "podcasts": "Podcasty",
     "videoShows": "Video relácie",
@@ -72,7 +71,7 @@
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
       "changeToLicenceId": "Zmena na ID licencie",
-      "changeLicence": "Zmeniť licenciu:"
+      "chooseLicence": "Zvoliť licenciu"
     }
   },
   "settings": {

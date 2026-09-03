@@ -10,7 +10,6 @@ import logoNoText from '@/assets/logo-adam-no-text.svg'
 import AssetToolbarIntegrations from '@/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/shared/EnvConfigService'
-import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 
@@ -52,9 +51,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         </div>
 
         <div class="d-flex align-center">
-          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
-            <AssetToolbarIntegrations />
-          </Acl>
+          <AssetToolbarIntegrations />
           <slot name="main-bar-middle" />
         </div>
 

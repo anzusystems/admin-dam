@@ -60,7 +60,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { currentListView, listLicenceIds, listAssetTypes, setCurrentListView } = useCurrentListView()
+  const { currentListView, listLicenceIds, listAssetTypes } = useCurrentListView()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
@@ -298,14 +298,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.keyboardNavigationEnable()
   }
 
-  const selectListView = async (id: IntegerId | null) => {
-    if (id === currentListView.value?.id) return
-    setCurrentListView(id)
-    applyListViewTypes()
-    seededListViewId = currentListView.value?.id ?? null
-    await fetchAssetList()
-  }
-
   const listUnmounted = () => {
     assetListStore.keyboardNavigationDisable()
   }
@@ -341,7 +333,6 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     filterUnTouch,
     listMounted,
     listUnmounted,
-    selectListView,
     showDetail,
     refreshActiveItem,
     onItemClick,

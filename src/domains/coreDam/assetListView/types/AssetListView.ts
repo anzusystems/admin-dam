@@ -8,6 +8,7 @@ export interface AssetListView extends AnzuUserAndTimeTrackingAware, ResourceNam
   groups: IntegerId[]
   licences: IntegerId[]
   types: DamAssetTypeType[]
+  uploadLicence: IntegerIdNullable
 }
 
 /**
@@ -19,8 +20,10 @@ export interface AssetListViewResolved {
   extSystem: IntegerId
   licences: IntegerId[]
   types: DamAssetTypeType[]
+  uploadLicence?: IntegerIdNullable
 }
 
 export type DamCurrentUserWithListViewsDto = DamCurrentUserDto & {
   listViews: AssetListViewResolved[]
+  selectedListView?: IntegerIdNullable
 }

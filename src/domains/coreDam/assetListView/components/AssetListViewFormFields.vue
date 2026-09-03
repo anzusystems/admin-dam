@@ -15,7 +15,8 @@ import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/comp
 const assetListView = defineModel<AssetListView>({ required: true })
 
 const { v$ } = useAssetListViewValidation(assetListView)
-const { assetTypeOptions, groupLicenceOptions, targetedByGroups } = useAssetListViewFormOptions(assetListView)
+const { assetTypeOptions, groupLicenceOptions, uploadLicenceOptions, targetedByGroups } =
+  useAssetListViewFormOptions(assetListView)
 
 const { t } = useI18n()
 
@@ -75,6 +76,16 @@ const onExtSystemChange = () => {
       multiple
       required
       data-cy="asset-list-view-licences"
+    />
+  </ARow>
+  <ARow>
+    <AFormValueObjectOptionsSelect
+      v-model="assetListView.uploadLicence"
+      :label="t('coreDam.assetListView.model.uploadLicence')"
+      :items="uploadLicenceOptions"
+      :v="v$.assetListView.uploadLicence"
+      clearable
+      data-cy="asset-list-view-upload-licence"
     />
   </ARow>
   <ARow>

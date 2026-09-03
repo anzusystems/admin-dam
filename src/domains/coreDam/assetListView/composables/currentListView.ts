@@ -7,12 +7,6 @@ import type {
 } from '@/domains/coreDam/assetListView/types/AssetListView'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
-const selectedListViewId = ref<IntegerId | null>(null)
-
-/**
- * Scope of the asset list. Without an applicable view it stays on the upload licence, which is the behaviour
- * of the single licence listing.
- */
 export const useCurrentListView = () => {
   const { useCurrentUser } = useAuth()
   const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
@@ -23,12 +17,13 @@ export const useCurrentListView = () => {
     () => currentUser.value?.listViews?.filter((view) => view.extSystem === currentExtSystemId.value) ?? []
   )
 
-  const currentListView = computed<AssetListViewResolved | null>(
-    () =>
-      availableListViews.value.find((view) => view.id === selectedListViewId.value) ??
-      availableListViews.value[0] ??
-      null
-  )
+  const currentListView = computed<AssetListViewResolved | null>(() => {
+    const view = currentUser.value?.listViews?.find((view) => view.id === currentUser.value?.selectedListView)
+    if (!view) return null
+    return view.extSystem === currentExtSystemId.value && (view.uploadLicence ?? 0) === currentAssetLicenceId.value
+      ? view
+      : null
+  })
 
   const listLicenceIds = computed<IntegerId[]>(() =>
     currentListView.value ? currentListView.value.licences : [currentAssetLicenceId.value]
@@ -36,15 +31,13 @@ export const useCurrentListView = () => {
 
   const listAssetTypes = computed<DamAssetTypeType[]>(() => currentListView.value?.types ?? [])
 
-  const setCurrentListView = (id: IntegerId | null) => {
-    selectedListViewId.value = id
-  }
+  const uploadAllowed = computed<boolean>(() => currentAssetLicenceId.value > 0)
 
   return {
     availableListViews,
     currentListView,
     listLicenceIds,
     listAssetTypes,
-    setCurrentListView,
+    uploadAllowed,
   }
 }

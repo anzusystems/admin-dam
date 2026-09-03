@@ -4,12 +4,14 @@ import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externa
 import ExternalProviderAssetMetadata from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadata.vue'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 
 const { t } = useI18n()
 
 const { sidebarRight } = useMainWrapper()
 
 const { asset, loader } = useExternalProviderAssetDetailActions()
+const { uploadAllowed } = useCurrentListView()
 
 const assetDetailStore = useExternalProviderAssetDetailStore()
 
@@ -54,6 +56,7 @@ const onImport = () => {
     >
       <div class="pa-2 d-flex align-center justify-center">
         <ABtnPrimary
+          v-if="uploadAllowed"
           class="mr-2"
           size="small"
           @click.stop="onImport"
