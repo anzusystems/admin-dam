@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ACL } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
+import { useDamConfigState } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
@@ -17,6 +20,15 @@ withDefaults(
 const { t } = useI18n()
 
 const { uploadAllowed } = useCurrentListView()
+
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
+const externalProviders = computed(() => configExtSystem.assetExternalProviders ?? {})
 </script>
 
 <template>
@@ -50,6 +62,18 @@ const { uploadAllowed } = useCurrentListView()
               prepend-icon="mdi-video"
               data-cy="button-main-video-show"
             />
+          </Acl>
+          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
+            <template v-if="!isEmptyObject(externalProviders)">
+              <VDivider />
+              <VListItem
+                v-for="(provider, key) in externalProviders"
+                :key="key"
+                :to="{ name: '/(coreDam)/external-providers/[provider]', params: { provider: key } }"
+                :title="provider.title"
+                prepend-icon="mdi-puzzle-outline"
+              />
+            </template>
           </Acl>
           <VDivider />
           <VListItem

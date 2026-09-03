@@ -51,9 +51,6 @@
     "backToAssets": "Back to assets",
     "options": "Options",
     "userOptions": "Account",
-    "customIntegrations": {
-      "title": "Custom integrations"
-    },
     "podcasts": "Podcasts",
     "videoShows": "Video shows",
     "extSystemLicenceSwitch": {
@@ -72,6 +69,9 @@
       "confirm": "Confirm and reload admin",
       "changeToLicenceId": "Change to licence ID",
       "chooseLicence": "Choose licence"
+    },
+    "listViewSwitch": {
+      "title": "List view and licence"
     }
   },
   "settings": {

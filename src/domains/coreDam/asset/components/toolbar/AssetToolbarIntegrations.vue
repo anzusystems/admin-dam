@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { useDamConfigState } from '@anzusystems/common-admin'
-import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { useAuth } from '@/domains/system/auth/auth'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
-import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_DAM } from '@/shared/systems'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
@@ -14,7 +12,6 @@ import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetList
 const { t } = useI18n()
 
 const router = useRouter()
-const route = useRoute()
 
 const { useCurrentUser } = useAuth()
 const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
@@ -22,16 +19,6 @@ const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DA
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { availableListViews, currentListView } = useCurrentListView()
-
-const { getDamConfigExtSystem } = useDamConfigState(damClient)
-const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
-if (isUndefined(configExtSystem)) {
-  throw new Error('Ext system must be initialised.')
-}
-
-const externalProviders = computed(() => {
-  return configExtSystem.assetExternalProviders ?? {}
-})
 
 const { showErrorsDefault } = useAlerts()
 
@@ -57,22 +44,7 @@ onMounted(async () => {
   }
 })
 
-const activeProviderDisplayText = computed(() => {
-  const providerParam = (route.params as { provider?: string }).provider as undefined | string
-  const matchedProvider = providerParam ? externalProviders.value[providerParam] : undefined
-  if (route.name === '/(coreDam)/external-providers/[provider]' && matchedProvider) {
-    return matchedProvider.title
-  }
-  return undefined
-})
-
-const activeDisplayText = computed(() => {
-  return activeProviderDisplayText.value ?? currentListView.value?.name ?? displayTextLicence.value
-})
-
-const goToExternalProvider = (provider: string) => {
-  router.push({ name: '/(coreDam)/external-providers/[provider]', params: { provider } })
-}
+const activeDisplayText = computed(() => currentListView.value?.name ?? displayTextLicence.value)
 
 const licenceDialog = ref(false)
 
@@ -113,7 +85,7 @@ const onSelectView = async (id: IntegerId) => {
           activator="parent"
           location="bottom"
         >
-          {{ t('system.mainBar.customIntegrations.title') }}
+          {{ t('system.mainBar.listViewSwitch.title') }}
         </VTooltip>
       </VBtn>
     </template>
@@ -131,17 +103,6 @@ const onSelectView = async (id: IntegerId) => {
         data-cy="button-switch-licence"
         @click.stop="openLicenceDialog"
       />
-      <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
-        <template v-if="!isEmptyObject(externalProviders)">
-          <VDivider />
-          <VListItem
-            v-for="(value, key) in externalProviders"
-            :key="key"
-            :title="value.title"
-            @click.stop="goToExternalProvider(key)"
-          />
-        </template>
-      </Acl>
     </VList>
   </VMenu>
   <AssetToolbarExtSystemLicenceDialog
