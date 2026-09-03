@@ -5,6 +5,8 @@ import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/val
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
@@ -58,6 +60,18 @@ const isTypeAudio = computed(() => {
 const isTypeVideo = computed(() => {
   return assetType.value === DamAssetType.Video
 })
+
+const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+
+watch(
+  () => asset.value?.licence,
+  (licence) => {
+    if (isUndefined(licence)) return
+    addToCachedAssetLicences(licence)
+    fetchCachedAssetLicences()
+  },
+  { immediate: true }
+)
 
 const assetMainFile = computed<null | AssetFile>(() => {
   return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
@@ -217,6 +231,14 @@ const onAnyMetadataChange = () => {
           </VCol>
           <VCol cols="9">
             {{ asset.attributes.assetType }}
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.field.licence') }}
+          </VCol>
+          <VCol cols="9">
+            <CachedAssetLicenceChip :id="asset.licence" />
           </VCol>
         </VRow>
         <VRow>
