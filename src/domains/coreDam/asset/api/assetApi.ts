@@ -1,3 +1,4 @@
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { damClient } from '@/shared/apiClients/damClient'
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
