@@ -35,4 +35,5 @@ export interface DamAssetLicenceExtended extends DamAssetLicence {
 
 export type DamAssetLicenceCached = DamAssetLicenceMinimal & {
   badge: string
+  autoDelete: AssetLicenceAutoDelete
 }

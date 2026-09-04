@@ -7,11 +7,14 @@ import {
   ICON_TTS,
   LOW_DIMENSION,
 } from '@/domains/coreDam/asset/components/assetImageIconsConfig'
+import { useAssetAutoDelete } from '@/domains/coreDam/asset/composables/assetAutoDelete'
 import {
   type AssetFileProperties,
   DamAssetType,
   type DamAssetTypeType,
+  dateTimeFriendly,
   useDamConfigStore,
+  useRemainingTime,
 } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -20,14 +23,28 @@ const props = withDefaults(
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
     licenceBadge?: string
+    singleUse?: boolean
+    autoDeleteAt?: Date | null
   }>(),
   {
     disableAbsolute: false,
     licenceBadge: '',
+    singleUse: false,
+    autoDeleteAt: null,
   }
 )
 
 const { t } = useI18n()
+const { remainingTimeShort } = useRemainingTime()
+const { remainingSeconds } = useAssetAutoDelete()
+
+const autoDeleteBadge = computed(() => {
+  if (!props.autoDeleteAt) return null
+  return {
+    text: remainingTimeShort(remainingSeconds(props.autoDeleteAt)),
+    title: t('coreDam.asset.metaIcons.autoDeleteAt', { date: dateTimeFriendly(props.autoDeleteAt.toISOString()) }),
+  }
+})
 
 const checkDimensions = (icons: string[], titles: string[]) => {
   if (props.assetFileProperties.width === 0 || props.assetFileProperties.height === 0) {
@@ -89,7 +106,7 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0 || licenceBadge.length > 0"
+    v-show="data.icons.length > 0 || licenceBadge.length > 0 || singleUse || autoDeleteBadge"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
@@ -99,6 +116,22 @@ const data = computed(() => {
       data-cy="asset-licence-badge"
     >
       {{ licenceBadge }}
+    </span>
+    <span
+      v-if="singleUse"
+      class="asset-image__licence-badge"
+      :title="t('coreDam.asset.metaIcons.singleUse')"
+      data-cy="asset-single-use-badge"
+    >
+      1×
+    </span>
+    <span
+      v-if="autoDeleteBadge"
+      class="asset-image__licence-badge asset-image__licence-badge--wide"
+      :title="autoDeleteBadge.title"
+      data-cy="asset-auto-delete-badge"
+    >
+      {{ autoDeleteBadge.text }}
     </span>
     <img
       v-for="(item, index) in data.icons"
@@ -135,11 +168,18 @@ const data = computed(() => {
     height: 26px;
     margin: 2px;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgb(0 0 0 / 50%);
     color: #fff;
     font-size: 10px;
     font-weight: 700;
     line-height: 1;
+  }
+
+  .asset-image__licence-badge--wide {
+    width: auto;
+    padding: 0 8px;
+    border-radius: 13px;
+    white-space: nowrap;
   }
 }
 </style>

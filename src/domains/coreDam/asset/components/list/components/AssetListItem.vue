@@ -3,6 +3,7 @@ import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useAssetAutoDelete } from '@/domains/coreDam/asset/composables/assetAutoDelete'
 
 const props = withDefaults(
   defineProps<{
@@ -30,6 +31,8 @@ const IMAGE_HEIGHT = 200
 const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
 const { getCachedAssetLicence } = useCachedAssetLicences()
 const licenceBadge = computed(() => getCachedAssetLicence(asset.value.licence)?.badge ?? '')
+const { autoDeleteAt } = useAssetAutoDelete()
+const assetAutoDeleteAt = computed(() => autoDeleteAt(asset.value.licence, asset.value.createdAt))
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
@@ -81,6 +84,8 @@ const selectMultiple = () => {
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
         :licence-badge="licenceBadge"
+        :single-use="asset.mainFileSingleUse === true"
+        :auto-delete-at="assetAutoDeleteAt"
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
