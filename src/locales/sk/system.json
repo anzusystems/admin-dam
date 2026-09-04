@@ -51,10 +51,6 @@
     "backToAssets": "Späť na assety",
     "options": "Nastavenia",
     "userOptions": "Konto",
-    "customIntegrations": {
-      "title": "Vlastné integrácie",
-      "assets": "Assety"
-    },
     "podcasts": "Podcasty",
     "videoShows": "Video relácie",
     "extSystemLicenceSwitch": {
@@ -72,7 +68,11 @@
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
       "changeToLicenceId": "Zmena na ID licencie",
+      "chooseLicence": "Zvoliť licenciu",
       "changeLicence": "Zmeniť licenciu:"
+    },
+    "listViewSwitch": {
+      "title": "Výber a licencia"
     }
   },
   "settings": {

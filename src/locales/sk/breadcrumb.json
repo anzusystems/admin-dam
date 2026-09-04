@@ -10,6 +10,11 @@
       "detail": "Skupina licencie",
       "edit": "Skupina licencie"
     },
+    "assetListView": {
+      "list": "Výlisty assetov",
+      "detail": "Výlist",
+      "edit": "Výlist"
+    },
     "author": {
       "list": "Autori",
       "detail": "Autor",
