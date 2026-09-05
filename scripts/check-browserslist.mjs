@@ -2,8 +2,8 @@
 // Fails the build when the browser data behind browserslist has gone stale.
 // browserslist only prints a warning at six months, which is how this data once
 // went a year without anyone noticing. Same threshold and same measure as its own
-// oldDataWarning, so the two can never disagree - this just stops the build
-// instead of scrolling past in the log.
+// oldDataWarning, except that BROWSERSLIST_IGNORE_OLD_DATA silences that one
+// and not this - and this stops the build instead of scrolling past in the log.
 import browserslist from 'browserslist'
 
 const MAX_MONTHS = 6
