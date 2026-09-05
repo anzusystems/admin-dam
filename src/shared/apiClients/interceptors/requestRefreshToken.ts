@@ -1,8 +1,7 @@
 import type { InternalAxiosRequestConfig } from 'axios'
 import { useRefreshToken } from '@/domains/system/auth/authApi'
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { getAuthCookieState } from '@/shared/apiClients/authCookies'
 import { logoutUser } from '@/domains/system/composables/currentUser'
-import { envConfig } from '@/shared/EnvConfigService'
 
 type AcceptRequestConfigCallbackType = (accept: boolean) => void
 
@@ -17,15 +16,15 @@ const addRefreshUserSubscriber = (callback: AcceptRequestConfigCallbackType) => 
 const userRefreshRequestInterceptor = (
   requestConfig: Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig
 ): Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig => {
-  const cookies = useCookies([envConfig.cookies.refreshTokenExistsName, envConfig.cookies.jwtPayloadName])
+  const { refreshTokenExists, jwtPayload } = getAuthCookieState()
 
-  if (!cookies.get(envConfig.cookies.refreshTokenExistsName) && !cookies.get(envConfig.cookies.jwtPayloadName)) {
+  if (!refreshTokenExists && !jwtPayload) {
     logoutUser()
 
     return Promise.reject(requestConfig)
   }
 
-  if (cookies.get(envConfig.cookies.refreshTokenExistsName) && !cookies.get(envConfig.cookies.jwtPayloadName)) {
+  if (refreshTokenExists && !jwtPayload) {
     if (!isRefreshingToken) {
       isRefreshingToken = true
       const { executeRequest: refreshToken } = useRefreshToken()

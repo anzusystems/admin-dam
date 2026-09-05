@@ -45,6 +45,10 @@ import {
 } from '@anzusystems/common-admin'
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
+
+// The axios cancel token only exists while a chunk is in flight, so cancelling between chunks or
+// during a retry sleep left the upload running to completion.
+const uploadStopHandles = new WeakMap<UploadQueueItem, () => void>()
 const CHUNK_SIZE = 10485760
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
@@ -273,8 +277,19 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
   async function removeByIndex(queueId: string, index: number) {
     if (queueId in queues.value && queues.value[queueId].items[index]) {
+      const item = queues.value[queueId].items[index]
+      // Removal can land mid-upload — the asset is deleted server-side first — so the chunk loop
+      // would keep POSTing 404s and report a ghost failure. Same teardown as stopItemUpload.
+      item.status = UploadQueueItemStatus.Stop
+      // The fallback reschedules itself, so a removed item would poll fetchAsset for minutes.
+      clearTimeout(item.notificationFallbackTimer)
+      uploadStopHandles.get(item)?.()
+      uploadStopHandles.delete(item)
       queues.value[queueId].items.splice(index, 1)
       recalculateQueueCounts(queueId)
+      // The catch in queueItemUploadStart returns early on Stop without scheduling, so the freed
+      // slot has to be refilled here or the queue stalls.
+      processUpload(queueId)
     }
   }
 
@@ -309,13 +324,14 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       return
     }
     const uploadingCount = getQueueItemsByStatus(queueId, UploadQueueItemStatus.Uploading).length
-    if (uploadingCount === QUEUE_MAX_PARALLEL_UPLOADS) {
+    // The count can already exceed the limit, and starting QUEUE_MAX_PARALLEL_UPLOADS regardless
+    // of it was what pushed it over — fill only the free slots.
+    const availableSlots = QUEUE_MAX_PARALLEL_UPLOADS - uploadingCount
+    if (availableSlots <= 0) {
       // wait for empty upload slot
       return
     }
-    for (let i = 0; i < QUEUE_MAX_PARALLEL_UPLOADS; i++) {
-      if (waitingItems[i]) queueItemUploadStart(waitingItems[i], queueId)
-    }
+    waitingItems.slice(0, availableSlots).forEach((waitingItem) => queueItemUploadStart(waitingItem, queueId))
   }
 
   function stopUpload(queueId: string) {
@@ -323,6 +339,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     const currentItems = getQueueItemsByStatus(queueId, UploadQueueItemStatus.Uploading)
     queues.value[queueId].items.forEach((item) => {
       item.status = UploadQueueItemStatus.Stop
+      clearTimeout(item.notificationFallbackTimer)
+      uploadStopHandles.get(item)?.()
+      uploadStopHandles.delete(item)
     })
     if (currentItems.length > 0) {
       currentItems.forEach((item) => {
@@ -338,6 +357,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   async function stopItemUpload(queueId: string, queueItem: UploadQueueItem, index: number) {
     if (!queues.value[queueId] || queues.value[queueId].items.length === 0) return
     queueItem.status = UploadQueueItemStatus.Stop
+    clearTimeout(queueItem.notificationFallbackTimer)
+    uploadStopHandles.get(queueItem)?.()
+    uploadStopHandles.delete(queueItem)
     if (queueItem.latestChunkCancelToken) {
       uploadStop(queueItem.latestChunkCancelToken)
     }
@@ -356,14 +378,21 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     }
 
     // standard + slot upload
-    const { upload, uploadInit } = useUpload(item, (progress: number, speed: number, estimate: number) => {
+    const { upload, uploadInit, stop } = useUpload(item, (progress: number, speed: number, estimate: number) => {
       setUploadSpeed(item, progress, speed, estimate)
     })
+    uploadStopHandles.set(item, stop)
     try {
       await uploadInit()
       await upload()
+      uploadStopHandles.delete(item)
       processUpload(queueId)
     } catch (e) {
+      uploadStopHandles.delete(item)
+      if (item.status === UploadQueueItemStatus.Stop) {
+        // Cancelled by the user — the item is already gone from the queue, nothing to report.
+        return
+      }
       const message = resolveUploadErrorMessage(e)
       // One alert per distinct reason: a licence that refuses uploads fails every file in the batch,
       // and the queue item itself keeps showing the reason inline.
@@ -510,6 +539,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   function clearQueue(queueId: string) {
+    queues.value[queueId]?.items.forEach((item) => clearTimeout(item.notificationFallbackTimer))
     queues.value[queueId] = {
       items: [],
       totalCount: 0,

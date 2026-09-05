@@ -77,8 +77,10 @@ export const uploadChunk = (
       })
     )
 
-    damClient(CHUNK_UPLOAD_TIMEOUT)
+    damClient()
       .post(url, formData, {
+        // Chunk uploads need longer than the instance default; axios merges per-request over it.
+        timeout: CHUNK_UPLOAD_TIMEOUT * 1000,
         cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
         headers: {
           'Content-Type': 'multipart/form-data',

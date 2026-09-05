@@ -8,9 +8,8 @@ import { useLoginStatus } from '@/domains/system/composables/loginStatus'
 import { SYSTEM_DAM } from '@/shared/systems'
 import { checkAbility } from '@/router/checkAbility'
 import { damClient } from '@/shared/apiClients/damClient'
-import { envConfig } from '@/shared/EnvConfigService'
 import { DamAssetType, type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { getAuthCookieState } from '@/shared/apiClients/authCookies'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 const initialized = ref(false)
@@ -49,7 +48,6 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     if (configExtSystem.image?.enabled) enabledAssetTypes.push(DamAssetType.Image)
     if (configExtSystem.document?.enabled) enabledAssetTypes.push(DamAssetType.Document)
     await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
-    initAppNotificationListeners()
   } catch (error) {
     return '/login'
   }
@@ -61,23 +59,31 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     return '/login'
   } else if (isStatusUnauthorized()) {
     return '/unauthorized'
-  } else if (to.path === '/') {
-    initialized.value = true
-    return { name: '/(coreDam)/assets' }
-  } else {
-    initialized.value = true
-    return await checkAbility(to)
   }
+
+  // Only once this function is committed to succeeding — a bail-out above leaves `initialized`
+  // false and the next navigation would re-register. Notifications are optional, so the catch is
+  // required: `checkGuard` has none, and a malformed webSocketUrl throws synchronously and would
+  // then block every protected navigation.
+  try {
+    initAppNotificationListeners()
+  } catch (error) {
+    console.error('appInitialize: notification listeners failed to start', error)
+  }
+  initialized.value = true
+
+  if (to.path === '/') {
+    return { name: '/(coreDam)/assets' }
+  }
+
+  return await checkAbility(to)
 }
 
 export function useAppInitialize() {
-  const cookies = useCookies([envConfig.cookies.refreshTokenExistsName, envConfig.cookies.jwtPayloadName])
-
   const hasAppAuthCookie = () => {
-    const refreshTokenExistsCookie = cookies.get(envConfig.cookies.refreshTokenExistsName)
-    const jwtPayloadCookie = cookies.get(envConfig.cookies.jwtPayloadName)
+    const { refreshTokenExists, jwtPayload } = getAuthCookieState()
 
-    return isDefined(refreshTokenExistsCookie) || isDefined(jwtPayloadCookie)
+    return isDefined(refreshTokenExists) || isDefined(jwtPayload)
   }
   const isAppInitialized = () => initialized.value
 

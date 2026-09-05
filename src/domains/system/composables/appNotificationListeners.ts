@@ -10,15 +10,20 @@ import {
   useDamNotifications,
 } from '@anzusystems/common-admin'
 
+// Registered from the router guard, outside any effect scope, so the `off` handle is the only way
+// to unregister. The bus dedupes by identity and every run passes a fresh closure.
+let removeAppNotificationListener: (() => void) | null = null
+
 export const initAppNotificationListeners = () => {
+  if (removeAppNotificationListener) return
+
   const { openConnection } = initDamNotifications()
   const { addDamNotificationListener } = useDamNotifications()
-  openConnection()
 
   const uploadQueuesStore = useUploadQueuesStore()
   const distributionListStore = useDistributionListStore()
 
-  addDamNotificationListener((event) => {
+  const off = addDamNotificationListener((event) => {
     switch (event.name) {
       case DamNotificationName.AssetFileProcessed:
         uploadQueuesStore.queueItemProcessed(event.data.asset)
@@ -55,4 +60,17 @@ export const initAppNotificationListeners = () => {
       }
     }
   })
+
+  try {
+    openConnection()
+    removeAppNotificationListener = off
+  } catch (error) {
+    off()
+    throw error
+  }
+}
+
+export const destroyAppNotificationListeners = () => {
+  removeAppNotificationListener?.()
+  removeAppNotificationListener = null
 }

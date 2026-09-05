@@ -1,8 +1,30 @@
 import type { App } from 'vue'
+import type { AxiosInstance } from 'axios'
+import axios from 'axios'
 import { envConfig } from '@/shared/EnvConfigService'
 import { LogLevel } from '@anzusystems/common-admin'
 import { SYSTEM_ADMIN_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
+
+let logClient: AxiosInstance | null = null
+
+/**
+ * Not via `damClient`: the log endpoint is an absolute url, so `runWhen` does not filter it —
+ * the auth interceptor would run and a 401 would sign the user out.
+ */
+const getLogClient = (): AxiosInstance => {
+  if (isNull(logClient)) {
+    logClient = axios.create({
+      timeout: envConfig.dam.apiTimeout * 1000,
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Version': SYSTEM_ADMIN_DAM + '-' + envConfig.appVersion,
+      },
+    })
+  }
+
+  return logClient
+}
 
 export const createLog = (
   message = '',
@@ -23,7 +45,10 @@ export const createLog = (
   }
   console.error(data)
 
-  damClient().post(envConfig.apiLogError.apiUrl, JSON.stringify(data))
+  // Without the catch a rejected log request becomes an unhandled rejection.
+  getLogClient()
+    .post(envConfig.apiLogError.apiUrl, JSON.stringify(data))
+    .catch(() => undefined)
 }
 
 export const initErrorHandler = (app: App<Element>) => {

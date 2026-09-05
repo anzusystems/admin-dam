@@ -19,6 +19,10 @@ const SPEED_CHECK_INTERVAL = 1000
 const CHUNK_RETRY_INTERVAL = 1000
 const CHUNK_RETRY_MULTIPLY = 3
 
+// Not exported: the store decides via `item.status === Stop`, since a stop during an axios
+// request surfaces as a cancel error instead.
+const UPLOAD_STOPPED = 'upload stopped'
+
 const failUpload = async (queueItem: UploadQueueItem, error: unknown = null) => {
   throw error
 }
@@ -111,6 +115,10 @@ export function useUpload(
   let lastTimestamp = 0
   let endTimestamp = 0
   let lastLoaded = 0
+  let speedCheckTimerId: ReturnType<typeof setTimeout> | undefined = undefined
+  // Checked at every point the chunk loop can be interrupted; the cancel token covers only the
+  // in-flight chunk.
+  let stopped = false
   const sha = rusha.createHash()
   const { updateChunkSize, lastChunkSize } = useDamUploadChunkSize(envConfig.dam.apiTimeout)
 
@@ -148,8 +156,10 @@ export function useUpload(
   }
 
   const processAndUploadChunk = async (offset: number): Promise<File> => {
+    if (stopped) return Promise.reject(UPLOAD_STOPPED)
     updateChunkSize(queueItem.progress.speed)
     let arrayBuffer = await readFile(offset, lastChunkSize.value, queueItem.file!)
+    if (stopped) return Promise.reject(UPLOAD_STOPPED)
     let chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
 
     queueItem.currentChunkIndex = offset
@@ -179,6 +189,7 @@ export function useUpload(
         }
 
         await sleep(sleepTime)
+        if (stopped) return Promise.reject(UPLOAD_STOPPED)
         attempt === CHUNK_MAX_RETRY - 1 ? (sleepTime = 1) : (sleepTime *= CHUNK_RETRY_MULTIPLY)
       }
     } while (attempt < CHUNK_MAX_RETRY)
@@ -198,13 +209,21 @@ export function useUpload(
       }
 
       if (endTimestamp === 0) {
-        setTimeout(function () {
+        speedCheckTimerId = setTimeout(function () {
           speedCheckRun()
         }, SPEED_CHECK_INTERVAL)
       }
     }
 
     speedCheckRun()
+  }
+
+  const stopSpeedCheck = () => {
+    endTimestamp = getCurrentTimestamp()
+    if (speedCheckTimerId !== undefined) {
+      clearTimeout(speedCheckTimerId)
+      speedCheckTimerId = undefined
+    }
   }
 
   const uploadInit = async () => {
@@ -236,24 +255,36 @@ export function useUpload(
     const filesize = queueItem.file?.size
     if (isUndefined(filesize)) return Promise.reject()
 
-    let i = 0
-    while (i < filesize) {
-      const uploadedChunk = await processAndUploadChunk(i)
-      i += uploadedChunk.size
-      progress.value = (i / filesize) * 100
-    }
+    // Stops the speed-check chain on every exit; endTimestamp was set only on success, so a
+    // failed upload left the 1s timer rescheduling forever and holding the closure.
+    try {
+      let i = 0
+      while (i < filesize) {
+        if (stopped) return Promise.reject(UPLOAD_STOPPED)
+        const uploadedChunk = await processAndUploadChunk(i)
+        i += uploadedChunk.size
+        progress.value = (i / filesize) * 100
+      }
 
-    endTimestamp = Date.now() / 1000
-    return await finishUpload(queueItem, sha.digest('hex'))
+      return await finishUpload(queueItem, sha.digest('hex'))
+    } finally {
+      stopSpeedCheck()
+    }
+  }
+
+  const stop = () => {
+    stopped = true
+    stopSpeedCheck()
+    queueItem.latestChunkCancelToken?.cancel('axios request cancelled')
   }
 
   return {
     uploadInit,
     upload,
+    stop,
   }
 }
 
 export const uploadStop = (cancelTokenSource: CancelTokenSource) => {
-  // todo stop speed check
   cancelTokenSource.cancel('axios request cancelled')
 }
