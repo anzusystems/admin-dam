@@ -29,23 +29,21 @@ const checkReallyDraggingEnded = (event: DragEvent, dragging: boolean) => {
   }
 }
 
+const onDragOver = (event: DragEvent) => {
+  event.preventDefault()
+  checkReallyDraggingEnded(event, true)
+}
+const onDragEnd = (event: DragEvent) => {
+  event.preventDefault()
+  checkReallyDraggingEnded(event, false)
+}
+
 export function useWindowFilesDragWatcher() {
   if (!isInitialized.value && window.document) {
     isInitialized.value = true
-    window.document.addEventListener('dragover', (event) => {
-      event.preventDefault()
-      checkReallyDraggingEnded(event, true)
-    })
-
-    window.document.addEventListener('dragleave', (event) => {
-      event.preventDefault()
-      checkReallyDraggingEnded(event, false)
-    })
-
-    window.document.addEventListener('drop', (event) => {
-      event.preventDefault()
-      checkReallyDraggingEnded(event, false)
-    })
+    window.document.addEventListener('dragover', onDragOver)
+    window.document.addEventListener('dragleave', onDragEnd)
+    window.document.addEventListener('drop', onDragEnd)
   }
 
   const hideDragOverWindow = () => {

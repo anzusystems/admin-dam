@@ -73,6 +73,14 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     list.value[index].selected = !list.value[index].selected
   }
 
+  /* The whole list against one set of ids, the same rule `setList` applies when it builds the rows:
+   * a row is selected exactly while its asset is in the mass-edit queue. */
+  function setSelectedByIds(ids: AssetExternalProviderId[]) {
+    list.value.forEach((item) => {
+      item.selected = ids.includes(item.asset.id)
+    })
+  }
+
   function toggleSelectedByIds(ids: AssetExternalProviderId[]) {
     list.value.forEach((item) => {
       if (ids.includes(item.asset.id)) {
@@ -149,6 +157,7 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     appendList,
     setList,
     toggleSelectedByIndex,
+    setSelectedByIds,
     toggleSelectedByIds,
     setActiveByIndex,
     setActiveNext,

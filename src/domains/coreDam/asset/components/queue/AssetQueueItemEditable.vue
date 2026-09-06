@@ -47,7 +47,7 @@ const emit = defineEmits<{
   (e: 'update:authors', data: DocId[]): void
   (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
-  (e: 'removeItem', index: number): void
+  (e: 'removeItem', assetId: DocId): void
   (e: 'refreshItem', data: { index: number; assetId: DocId }): void
 }>()
 
@@ -130,14 +130,31 @@ const showDetail = async () => {
   assetListStore.keyboardNavigationDisable()
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
-  assetDetailStore.setAsset(await fetchAsset(props.item.assetId))
-  assetDetailStore.hideLoader()
+  // Counted in the store: this dialog and the list write to one detail.
+  const detailRequest = assetDetailStore.startDetailRequest()
+  try {
+    const asset = await fetchAsset(props.item.assetId)
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
+    assetDetailStore.setAsset(asset)
+  } catch (error) {
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
+    const dialogWasOpen = assetDetailStore.detail
+    // Cleared, not merely closed: the panel behind renders the same asset.
+    assetDetailStore.reset()
+    assetListStore.keyboardNavigationEnable()
+    // If it is already closed, the user has stopped waiting for this answer.
+    if (!dialogWasOpen) return
+    showErrorsDefault(error)
+  } finally {
+    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
+  }
 }
 const remove = async () => {
   if (!props.item.assetId) return
   try {
     await deleteAsset(props.item.assetId)
-    emit('removeItem', props.index)
+    // By asset: the delete is awaited, and the index can shift onto another row meanwhile.
+    emit('removeItem', props.item.assetId)
     showRecordWas('deleted')
   } catch (error) {
     showErrorsDefault(error)
@@ -168,27 +185,66 @@ const showCancel = computed(() => {
       UploadQueueItemStatus.Loading,
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
+      // Processing too: with no notification and no fallback it stays here until refresh or cancel.
+      UploadQueueItemStatus.Processing,
+      // And `Failed`: delete is no answer there - a refused import never created an asset.
+      UploadQueueItemStatus.Failed,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
 })
 
+const stillRunning = (status: UploadQueueItemStatusType) =>
+  status === UploadQueueItemStatus.Uploading || status === UploadQueueItemStatus.Processing
+
 watch(
   () => props.item.status,
   async (newValue) => {
-    if (newValue === UploadQueueItemStatus.Uploading || newValue === UploadQueueItemStatus.Processing) {
-      clearTimeout(refreshTimer.value)
+    clearTimeout(refreshTimer.value)
+    refreshTimer.value = undefined
+    if (stillRunning(newValue)) {
       refreshTimer.value = setTimeout(() => {
-        if (newValue === UploadQueueItemStatus.Uploading || newValue === UploadQueueItemStatus.Processing) {
-          showRefresh.value = true
-        }
+        // The status when the timer fires, not when it was set.
+        if (stillRunning(props.item.status)) showRefresh.value = true
       }, SHOW_REFRESH_AFTER_SECONDS * 1000)
-    } else if (newValue === UploadQueueItemStatus.Uploaded) {
+
+      return
+    }
+    if (newValue === UploadQueueItemStatus.Uploaded) {
+      // A failure has already been reported; the button is the only thing that can undo it.
+      if (props.item.error.hasError) {
+        showRefresh.value = true
+
+        return
+      }
+      showRefresh.value = false
+      // A duplicate is not given metadata to edit, so there is nothing for refresh to fetch.
+      if (props.item.canEditMetadata || props.item.isDuplicate) return
+      /* Without its metadata notification the form stays disabled and the bulk save skips the row; refresh is the
+       * only way back. */
+      refreshTimer.value = setTimeout(() => {
+        if (props.item.status !== UploadQueueItemStatus.Uploaded) return
+        if (props.item.canEditMetadata || props.item.isDuplicate) return
+        showRefresh.value = true
+      }, SHOW_REFRESH_AFTER_SECONDS * 1000)
+
+      return
+    }
+    // Failed or stopped: there is nothing left for a refresh to find.
+    showRefresh.value = false
+  },
+  { immediate: true }
+)
+
+watch(
+  () => props.item.canEditMetadata,
+  (canEdit) => {
+    // The metadata notification can arrive after the file one; the button is only for its absence.
+    if (canEdit && props.item.status === UploadQueueItemStatus.Uploaded && !props.item.error.hasError) {
       clearTimeout(refreshTimer.value)
       refreshTimer.value = undefined
       showRefresh.value = false
     }
-  },
-  { immediate: true }
+  }
 )
 
 onUnmounted(() => {

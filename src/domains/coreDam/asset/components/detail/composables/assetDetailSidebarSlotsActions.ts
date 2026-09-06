@@ -24,9 +24,16 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
 
   const getList = async () => {
     assetSlotsStore.showLoader()
-    const items = await fetchAssetSlotList(assetId, pagination, filterData, filterConfig)
-    assetSlotsStore.setList(items)
-    assetSlotsStore.hideLoader()
+    // Without the finally a failed fetch leaves the slot panel spinning with nothing to say, and
+    // every mutation below calls this from its own `finally`.
+    try {
+      const items = await fetchAssetSlotList(assetId, pagination, filterData, filterConfig)
+      assetSlotsStore.setList(items)
+    } catch (error) {
+      showErrorsDefault(error)
+    } finally {
+      assetSlotsStore.hideLoader()
+    }
   }
 
   const removeAssetFile = async (fileId: DocId) => {

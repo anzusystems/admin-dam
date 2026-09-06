@@ -19,13 +19,8 @@ const SPEED_CHECK_INTERVAL = 1000
 const CHUNK_RETRY_INTERVAL = 1000
 const CHUNK_RETRY_MULTIPLY = 3
 
-// Not exported: the store decides via `item.status === Stop`, since a stop during an axios
-// request surfaces as a cancel error instead.
+// Not exported: a stop during a request surfaces as a cancel error, so the store reads the status.
 const UPLOAD_STOPPED = 'upload stopped'
-
-const failUpload = async (queueItem: UploadQueueItem, error: unknown = null) => {
-  throw error
-}
 
 const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
   return await uploadFinish(queueItem, sha)
@@ -66,10 +61,7 @@ const handleForbiddenOperationMessage = (error: Error) => {
   return detail && te(key) ? t(key) : t('error.apiForbiddenOperation.noTranslation')
 }
 
-/**
- * A rejected upload carries the reason in the API response; without this the queue item only gets
- * a red icon and the user never learns why the file was refused.
- */
+// A rejected upload carries its reason in the response; without this the row is only a red icon.
 export const resolveUploadErrorMessage = (error: unknown) => {
   const { t } = i18n.global || i18n
 
@@ -116,8 +108,7 @@ export function useUpload(
   let endTimestamp = 0
   let lastLoaded = 0
   let speedCheckTimerId: ReturnType<typeof setTimeout> | undefined = undefined
-  // Checked at every point the chunk loop can be interrupted; the cancel token covers only the
-  // in-flight chunk.
+  // Checked wherever the chunk loop can be interrupted; the token covers only the chunk in flight.
   let stopped = false
   const sha = rusha.createHash()
   const { updateChunkSize, lastChunkSize } = useDamUploadChunkSize(envConfig.dam.apiTimeout)
@@ -170,6 +161,10 @@ export function useUpload(
     let attempt = 0
     do {
       attempt++
+      /* Axios starts `loaded` from zero on each attempt, so the previous baseline makes the retry's
+       * first sample hugely negative - which collapses the adaptive chunk size. */
+      lastLoaded = 0
+      lastTimestamp = 0
       try {
         await uploadChunk(chunkFile, offset)
         sha.update(arrayBuffer.data)
@@ -183,14 +178,16 @@ export function useUpload(
           return Promise.reject(error)
         }
 
+        // Before the work for an attempt that never happens: the loop ends here.
+        if (attempt >= CHUNK_MAX_RETRY) break
+
         if (updateChunkSize(queueItem.progress.speed)) {
           arrayBuffer = await readFile(offset, lastChunkSize.value, queueItem.file!)
           chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
         }
-
         await sleep(sleepTime)
         if (stopped) return Promise.reject(UPLOAD_STOPPED)
-        attempt === CHUNK_MAX_RETRY - 1 ? (sleepTime = 1) : (sleepTime *= CHUNK_RETRY_MULTIPLY)
+        sleepTime *= CHUNK_RETRY_MULTIPLY
       }
     } while (attempt < CHUNK_MAX_RETRY)
     return Promise.reject('Unable to upload chunk, max tries exceeded')
@@ -229,7 +226,9 @@ export function useUpload(
   const uploadInit = async () => {
     return new Promise((resolve, reject) => {
       if (!queueItem.file) {
-        failUpload(queueItem)
+        // Rejected, not left hanging: the outer promise would never settle, holding a slot.
+        reject(new Error('uploadService: the queue item has no file'))
+
         return
       }
       fileSize.value = queueItem.file ? queueItem.file.size : 0
@@ -239,6 +238,12 @@ export function useUpload(
         .then((res) => {
           queueItem.assetId = res.asset
           queueItem.fileId = res.id
+          // A stop asked for while this was on the wire; the asset it created stays on the server.
+          if (stopped) {
+            reject(UPLOAD_STOPPED)
+
+            return
+          }
           resolve(queueItem)
         })
         .catch((err) => {
@@ -255,8 +260,7 @@ export function useUpload(
     const filesize = queueItem.file?.size
     if (isUndefined(filesize)) return Promise.reject()
 
-    // Stops the speed-check chain on every exit; endTimestamp was set only on success, so a
-    // failed upload left the 1s timer rescheduling forever and holding the closure.
+    // On every exit of the loop: `endTimestamp` was set only on success, so a failure left it going.
     try {
       let i = 0
       while (i < filesize) {
@@ -265,6 +269,9 @@ export function useUpload(
         i += uploadedChunk.size
         progress.value = (i / filesize) * 100
       }
+
+      // The last chunk can land after the stop.
+      if (stopped) return Promise.reject(UPLOAD_STOPPED)
 
       return await finishUpload(queueItem, sha.digest('hex'))
     } finally {

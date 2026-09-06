@@ -61,21 +61,12 @@ const fileTitle = computed(() => {
     : props.item.assetFile.id
 })
 
+// Item and index together, from one lookup, so they cannot drift apart: the row is rendered with
+// the index and the progress from the item, and both have to mean the same upload.
 const uploadQueueItemInAnyProgress = computed(() => {
-  const item = uploadQueuesStore.getQueueItemForSlotItem(QUEUE_ID_UPLOAD_SLOTS, props.slotName, props.assetId)
-  if (item && item.status !== UploadQueueItemStatus.Uploaded) return item
+  const found = uploadQueuesStore.getQueueItemForSlotItem(QUEUE_ID_UPLOAD_SLOTS, props.slotName, props.assetId)
+  if (found && found.item.status !== UploadQueueItemStatus.Uploaded) return found
   return undefined
-})
-
-const uploadQueueItemInAnyProgressIndex = computed(() => {
-  if (isUndefined(uploadQueueItemInAnyProgress.value)) return -1
-  return uploadQueuesStore
-    .getQueueItems(QUEUE_ID_UPLOAD_SLOTS)
-    .findIndex(
-      (item) =>
-        item.assetId === uploadQueueItemInAnyProgress.value?.assetId &&
-        item.slotName === uploadQueueItemInAnyProgress.value?.slotName
-    )
 })
 
 const statusComputed = computed(() => {
@@ -134,7 +125,7 @@ const switchSlot = (targetName: string) => {
 }
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item)
 }
 </script>
 
@@ -147,10 +138,9 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div class="dam-upload-queue dam-upload-queue--list w-100 h-100 d-block">
           <AssetQueueItemList
-            v-if="uploadQueueItemInAnyProgressIndex > -1"
-            :key="uploadQueueItemInAnyProgress.key"
-            :index="uploadQueueItemInAnyProgressIndex"
-            :item="uploadQueueItemInAnyProgress"
+            :key="uploadQueueItemInAnyProgress.item.key"
+            :index="uploadQueueItemInAnyProgress.index"
+            :item="uploadQueueItemInAnyProgress.item"
             :queue-id="QUEUE_ID_UPLOAD_SLOTS"
             @cancel-item="cancelItem"
           />

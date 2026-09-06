@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
+import { AssetFileFailReason, UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
+import { useAssetFileFailReason } from '@/domains/coreDam/asset/valueObject/AssetFileFailReason'
 
 const props = withDefaults(
   defineProps<{
@@ -16,6 +17,17 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { getAssetFileFailReasonOption } = useAssetFileFailReason()
+
+/* This row has no chip and no room for a message, so whatever there is to say hangs off the icon:
+ * the reason for a failure, the message for the fallback giving up. */
+const errorTitle = computed(() => {
+  if (props.item.error.assetFileFailReason !== AssetFileFailReason.None) {
+    return getAssetFileFailReasonOption(props.item.error.assetFileFailReason)?.title ?? ''
+  }
+
+  return props.item.error.message
+})
 
 const loading = computed(() => {
   return (
@@ -42,6 +54,9 @@ const showCancel = computed(() => {
       UploadQueueItemStatus.Loading,
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
+      // Processing and Failed too: the row is drawn for every status but `Uploaded`, over the slot.
+      UploadQueueItemStatus.Processing,
+      UploadQueueItemStatus.Failed,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
 })
@@ -57,20 +72,23 @@ const { remainingTimeShort } = useRemainingTime()
           <div
             class="dam-upload-queue__item-status align-center justify-center"
             :class="{ 'dam-upload-queue__item-status--permanent': !showCancel }"
+            :title="errorTitle"
           >
+            <!-- The error first: an item that gave up waiting keeps the status it was given, so
+                 the spinner would otherwise go on covering the one thing that explains it. -->
+            <VIcon
+              v-if="item.error.hasError"
+              icon="mdi-alert"
+              color="error"
+              :size="16"
+            />
             <VProgressCircular
-              v-if="loading"
+              v-else-if="loading"
               color="primary"
               :indeterminate="loadingProgress === null"
               :size="16"
               :width="3"
               :model-value="loadingProgress ? loadingProgress : undefined"
-            />
-            <VIcon
-              v-else-if="item.error.hasError"
-              icon="mdi-alert"
-              color="error"
-              :size="16"
             />
             <VIcon
               v-else-if="item.isDuplicate"

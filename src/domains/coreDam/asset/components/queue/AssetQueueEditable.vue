@@ -29,6 +29,12 @@ const refreshItem = async (data: { index: number; assetId: DocId }) => {
     const asset = await fetchAsset(data.assetId)
     if (asset.attributes.assetStatus === DamAssetStatus.WithFile) {
       await uploadQueuesStore.queueItemProcessed(asset.id)
+      /* And the metadata, but only while the item has none: refetching what did load would throw away whatever the
+       * user has typed. */
+      const refreshed = list.value.find((item) => item.assetId === data.assetId)
+      if (refreshed && !refreshed.canEditMetadata) {
+        await uploadQueuesStore.queueItemMetadataProcessed(asset.id)
+      }
     } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
       await uploadQueuesStore.queueItemDuplicate(asset.id, asset.mainFile.originAssetFile, asset.attributes.assetType)
     } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed) {
@@ -48,11 +54,11 @@ const list = computed(() => {
 })
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item)
 }
 
-const removeItem = (index: number) => {
-  uploadQueuesStore.removeByIndex(props.queueId, index)
+const removeItem = (assetId: DocId) => {
+  uploadQueuesStore.removeByAssetId(props.queueId, assetId)
 }
 
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()

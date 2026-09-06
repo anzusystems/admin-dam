@@ -89,7 +89,11 @@
     "systemError": "Error",
     "size": "Incorrect size",
     "offset": "Incorrect offset",
-    "mimeType": "Incorrect file format"
+    "mimeType": "Incorrect file format",
+    "metadataFailed": "Metadata could not be loaded. Use the item refresh button, or remove the item and try again.",
+    "metadataUnavailable": "Metadata could not be loaded. Remove the item and select it again.",
+    "processingTooLong": "Processing is taking too long. Use item refresh button or remove item and retry later.",
+    "processingTooLongSlot": "Processing is taking too long. Cancel the item and try again later."
   },
   "closePage": {
     "title": "This page/tab can be safely closed."
@@ -98,6 +102,11 @@
     "title": "Oops, 404.",
     "subTitle": "This page doesn't exist. If it should, please contact an administrator.",
     "return": "Return me to homepage"
+  },
+  "errorPage": {
+    "title": "Oops, something went wrong.",
+    "subTitle": "The application could not be started. Please try again, and contact an administrator if it persists.",
+    "return": "Try again"
   },
   "unauthorizedPage": {
     "title": "Oops, 401.",

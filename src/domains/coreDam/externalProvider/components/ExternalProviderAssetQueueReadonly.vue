@@ -27,7 +27,7 @@ const removeItem = (index: number) => {
         <VRow class="dam-upload-queue dam-upload-queue--editable pa-2 mb-5">
           <VCol
             v-for="(item, index) in list"
-            :key="item.assetId + ''"
+            :key="item.key"
             xxl="2"
             xl="3"
             md="4"

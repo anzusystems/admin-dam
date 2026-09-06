@@ -7,10 +7,8 @@ import { SYSTEM_ADMIN_DAM } from '@/shared/systems'
 
 let logClient: AxiosInstance | null = null
 
-/**
- * Not via `damClient`: the log endpoint is an absolute url, so `runWhen` does not filter it —
- * the auth interceptor would run and a 401 would sign the user out.
- */
+/* Not via `damClient`: it signs the user out when there is no auth cookie and again on a 401, which is exactly what
+ * must not happen while reporting an error. */
 const getLogClient = (): AxiosInstance => {
   if (isNull(logClient)) {
     logClient = axios.create({

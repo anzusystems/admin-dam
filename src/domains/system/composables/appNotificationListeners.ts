@@ -10,8 +10,8 @@ import {
   useDamNotifications,
 } from '@anzusystems/common-admin'
 
-// Registered from the router guard, outside any effect scope, so the `off` handle is the only way
-// to unregister. The bus dedupes by identity and every run passes a fresh closure.
+/* Registered from the router guard, outside any effect scope: nothing tears this down for the life
+ * of the document, so a failed `openConnection` takes the listener back off itself. */
 let removeAppNotificationListener: (() => void) | null = null
 
 export const initAppNotificationListeners = () => {
@@ -25,14 +25,20 @@ export const initAppNotificationListeners = () => {
 
   const off = addDamNotificationListener((event) => {
     switch (event.name) {
+      // `data.id` is the asset file: without it two slot uploads of one asset settle each other.
       case DamNotificationName.AssetFileProcessed:
-        uploadQueuesStore.queueItemProcessed(event.data.asset)
+        uploadQueuesStore.queueItemProcessed(event.data.asset, event.data.id)
         break
       case DamNotificationName.AssetFileFailed:
-        uploadQueuesStore.queueItemFailed(event.data.asset, event.data.failReason)
+        uploadQueuesStore.queueItemFailed(event.data.asset, event.data.failReason, event.data.id)
         break
       case DamNotificationName.AssetFileDuplicate:
-        uploadQueuesStore.queueItemDuplicate(event.data.asset, event.data.originAssetFile, event.data.assetType)
+        uploadQueuesStore.queueItemDuplicate(
+          event.data.asset,
+          event.data.originAssetFile,
+          event.data.assetType,
+          event.data.id
+        )
         break
       case DamNotificationName.AssetMetadataProcessed:
         uploadQueuesStore.queueItemMetadataProcessed(event.data.asset)
@@ -68,9 +74,4 @@ export const initAppNotificationListeners = () => {
     off()
     throw error
   }
-}
-
-export const destroyAppNotificationListeners = () => {
-  removeAppNotificationListener?.()
-  removeAppNotificationListener = null
 }

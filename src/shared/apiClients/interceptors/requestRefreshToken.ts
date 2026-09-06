@@ -8,8 +8,12 @@ type AcceptRequestConfigCallbackType = (accept: boolean) => void
 let isRefreshingToken = false
 let userRefreshSubscribers: Array<AcceptRequestConfigCallbackType> = []
 
-const onRefreshedUser = (accept = true) =>
-  (userRefreshSubscribers = userRefreshSubscribers.filter((callback) => callback(accept)))
+// Detached before the callbacks run: `filter` worked only because they return undefined.
+const onRefreshedUser = (accept = true) => {
+  const subscribers = userRefreshSubscribers
+  userRefreshSubscribers = []
+  subscribers.forEach((callback) => callback(accept))
+}
 
 const addRefreshUserSubscriber = (callback: AcceptRequestConfigCallbackType) => userRefreshSubscribers.push(callback)
 
@@ -28,13 +32,18 @@ const userRefreshRequestInterceptor = (
     if (!isRefreshingToken) {
       isRefreshingToken = true
       const { executeRequest: refreshToken } = useRefreshToken()
+      /* Before the flush, not after: a request made from a released caller's own continuation
+       * would find the flag up and join a queue nobody is going to flush again. */
       refreshToken({ object: {} })
-        .then(() => onRefreshedUser())
+        .then(() => {
+          isRefreshingToken = false
+          onRefreshedUser()
+        })
         .catch(() => {
+          isRefreshingToken = false
           onRefreshedUser(false)
           logoutUser()
         })
-        .finally(() => (isRefreshingToken = false))
     }
 
     return new Promise((resolve, reject) =>

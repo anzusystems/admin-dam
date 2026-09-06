@@ -71,6 +71,14 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     list.value[index].selected = !list.value[index].selected
   }
 
+  /* The same rule `setList` applies when it builds the rows: a row is selected exactly while its asset is in the
+   * mass-edit queue. */
+  function setSelectedByIds(ids: DocId[]) {
+    list.value.forEach((item) => {
+      item.selected = ids.includes(item.asset.id)
+    })
+  }
+
   function toggleSelectedByIds(ids: DocId[]) {
     list.value.forEach((item) => {
       if (ids.includes(item.asset.id)) {
@@ -157,6 +165,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     setList,
     setDeletingById,
     toggleSelectedByIndex,
+    setSelectedByIds,
     toggleSelectedByIds,
     setActiveByIndex,
     getActiveAsset,

@@ -20,7 +20,7 @@ const list = computed(() => {
 })
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item)
 }
 </script>
 

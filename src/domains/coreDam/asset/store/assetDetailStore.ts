@@ -18,6 +18,17 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const mainFileInternal = ref(false)
   const ttsAudio = ref(false)
 
+  /* Clicks, held-down arrow keys, the queue's edit button and the deep-link view put several detail
+   * fetches on the wire at once and they do not come back in order; only the newest may write here.
+   * It always reaches its own `finally` and lowers the loader - after `abandonDetailRequests` none
+   * is newest, and the loader waits for the reset every component does on mount. */
+  let detailRequests = 0
+  const startDetailRequest = () => ++detailRequests
+  const isCurrentDetailRequest = (token: number) => token === detailRequests
+  /* Nothing on the wire is this detail's answer any more - called where the user leaves it behind
+   * altogether, because a request coming back after that moved the address from wherever they went. */
+  const abandonDetailRequests = () => detailRequests++
+
   function updateLastFetched(id: DocId) {
     lastFetchedId.value = id
     lastFetched.value = Date.now()
@@ -28,6 +39,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   }
 
   function hideDetail() {
+    // Only the dialog: the requests stay, because the panel on the right reads this same store.
     detail.value = false
   }
 
@@ -78,6 +90,12 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   }
 
   function reset() {
+    abandonDetailRequests()
+    /* The cache keys off these two, so leaving them behind meant a click within five seconds of a
+     * reset short-circuited to a detail that is no longer loaded - a fullscreen dialog with no
+     * content and no way out but Esc. */
+    lastFetchedId.value = ''
+    lastFetched.value = 0
     asset.value = null
     authorConflicts.value = []
     loader.value = false
@@ -105,6 +123,9 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileOverrideInternal,
     mainFileInternal,
     ttsAudio,
+    startDetailRequest,
+    isCurrentDetailRequest,
+    abandonDetailRequests,
     updateLastFetched,
     showDetail,
     hideDetail,

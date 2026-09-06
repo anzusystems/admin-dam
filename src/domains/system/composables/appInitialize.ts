@@ -14,25 +14,54 @@ import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 const initialized = ref(false)
 
+// A start-up that could not be completed; nothing is known here about why.
+const ERROR_PATH = '/error'
+// A deep link that could not be resolved to an asset; anything else goes to the page above.
+const NOT_FOUND_PATH = '/not-found'
+
 export async function createAppInitialize(to: RouteLocationNormalized): Promise<NavigationGuardReturn> {
-  const { isStatusNotDefined, isStatusSsoCommunicationFailure, isStatusInternalErrorFailure, isStatusUnauthorized } =
-    useLoginStatus(to)
+  const { isStatusUnauthorized } = useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements, getDamConfigExtSystem } =
     useDamConfigState(damClient)
   const { useCurrentUser } = useAuth()
-  const { fetchCurrentUser, currentUser } = useCurrentUser(SYSTEM_DAM)
+  const { fetchCurrentUser } = useCurrentUser(SYSTEM_DAM)
 
-  try {
-    const updateCurrentUserPromise = fetchCurrentUser(damClient, '/adm/users/current')
-    const loadDamConfigPromise = loadDamPrvConfig()
-    await Promise.all([updateCurrentUserPromise, loadDamConfigPromise])
-  } catch (error) {
+  /* Before anything is fetched: the private config is protected, so for a user the SSO has just
+   * refused it is the request most likely to fail, and it answered before this verdict was read. */
+  if (isStatusUnauthorized()) {
+    return '/unauthorized'
+  }
+
+  /* Settled, not raced: `Promise.all` left the current-user answer unread, and a user that does
+   * load is the only thing here that rules out a sign-in problem - `loadDamPrvConfig` rejects with
+   * a bare `false`, and a failed user read says nothing either way. */
+  const [userLoad, configLoad] = await Promise.allSettled([
+    fetchCurrentUser(damClient, '/adm/users/current'),
+    loadDamPrvConfig(),
+  ])
+
+  /* What this attempt read, not what the ref holds: `fetchCurrentUser` answers `undefined` on every failure but
+   * leaves the previous user in place, and a bailed-out start-up runs all of this again on the next navigation. */
+  if (userLoad.status === 'rejected' || isUndefined(userLoad.value)) {
     return '/login'
   }
+  if (configLoad.status === 'rejected') {
+    // The user is readable, so not the case above; what it is instead the rejection does not say.
+    console.error('appInitialize: private configuration failed to load', configLoad.reason)
+
+    return ERROR_PATH
+  }
+
+  const extSystemConfig = getInitCurrentExtSystemAndLicenceConfig(to, (to.params as { id?: string }).id)
+  let extSystemResolved = false
   try {
-    await initCurrentExtSystemAndLicence(getInitCurrentExtSystemAndLicenceConfig(to, (to.params as { id?: string }).id))
+    extSystemResolved = await initCurrentExtSystemAndLicence(extSystemConfig)
   } catch (error) {
-    return '/login'
+    return ERROR_PATH
+  }
+  if (!extSystemResolved) {
+    // It answers `false` rather than throwing, and dropping that carried on with ext system `0`.
+    return isUndefined(extSystemConfig) ? ERROR_PATH : NOT_FOUND_PATH
   }
 
   try {
@@ -40,7 +69,7 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     await loadDamConfigExtSystem(currentExtSystemId.value)
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
     if (isUndefined(configExtSystem)) {
-      return '/login'
+      return ERROR_PATH
     }
     const enabledAssetTypes: DamAssetTypeType[] = []
     if (configExtSystem.audio?.enabled) enabledAssetTypes.push(DamAssetType.Audio)
@@ -49,22 +78,12 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     if (configExtSystem.document?.enabled) enabledAssetTypes.push(DamAssetType.Document)
     await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
   } catch (error) {
-    return '/login'
+    return ERROR_PATH
   }
 
-  if (
-    (isStatusNotDefined() || isStatusSsoCommunicationFailure() || isStatusInternalErrorFailure()) &&
-    isUndefined(currentUser.value)
-  ) {
-    return '/login'
-  } else if (isStatusUnauthorized()) {
-    return '/unauthorized'
-  }
-
-  // Only once this function is committed to succeeding — a bail-out above leaves `initialized`
-  // false and the next navigation would re-register. Notifications are optional, so the catch is
-  // required: `checkGuard` has none, and a malformed webSocketUrl throws synchronously and would
-  // then block every protected navigation.
+  /* Only once this is committed to succeeding: a bail-out above leaves `initialized` false and the
+   * next navigation would re-register. Notifications are optional, so a malformed `webSocketUrl` -
+   * which throws synchronously - must not block every protected navigation. */
   try {
     initAppNotificationListeners()
   } catch (error) {

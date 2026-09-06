@@ -14,7 +14,7 @@ const list = computed(() => {
   <div class="dam-upload-queue dam-upload-queue--simple w-100 d-flex align-center justify-start">
     <AssetQueueSelectedItemSimple
       v-for="(item, index) in list"
-      :key="item.assetId ? item.assetId : 'null'"
+      :key="item.key"
       :index="index"
       :item="item"
       :queue-id="QUEUE_ID_MASS_EDIT"

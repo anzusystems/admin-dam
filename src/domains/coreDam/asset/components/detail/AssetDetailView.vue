@@ -70,8 +70,11 @@ const getDetail = async () => {
   assetDetailStore.setView('list')
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
+  // Counted with the list's own detail fetches: they all write to this one store.
+  const detailRequest = assetDetailStore.startDetailRequest()
   try {
     const res = await fetchAsset(assetId.value)
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     if (currentAssetLicenceId.value !== res.licence) {
       showErrorT('coreDam.asset.detail.licenceMismatch')
       assetDetailStore.hideLoader()
@@ -81,9 +84,10 @@ const getDetail = async () => {
     addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
     fetchCachedUsers()
   } catch (error) {
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     showErrorsDefault(error)
   } finally {
-    assetDetailStore.hideLoader()
+    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
   }
 }
 

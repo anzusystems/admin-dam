@@ -54,10 +54,13 @@ import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueues
 import type { AssetFileDownloadLink, DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   AssetFileProcessStatus,
+  i18n,
   type AssetFileRoute,
   DamAssetType,
   type DamUploadStartResponse,
+  UploadQueueItemType,
   type UploadQueueItem,
+  type UploadQueueItemStatusType,
   UploadQueueItemStatus,
 } from '@anzusystems/common-admin'
 import type { AxiosProgressEvent } from 'axios'
@@ -65,6 +68,7 @@ import type { AxiosProgressEvent } from 'axios'
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
 
+// Every switch below rejects on a type it does not cover: the promise would otherwise never settle.
 export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
   return new Promise((resolve, reject) => {
     switch (item.assetType) {
@@ -96,6 +100,8 @@ export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartRespo
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
     }
   })
 }
@@ -104,30 +110,77 @@ function calculateFallbackTime(item: UploadQueueItem) {
   return NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * item.notificationFallbackTry * item.notificationFallbackTry
 }
 
-// this is just a testing version, todo test
+// Stopped and failed too: checking only `Uploaded` kept polling for a cancelled item.
+const isSettled = (status: UploadQueueItemStatusType) =>
+  status === UploadQueueItemStatus.Uploaded ||
+  status === UploadQueueItemStatus.Stop ||
+  status === UploadQueueItemStatus.Failed
+
 async function notificationFallbackCallback(item: UploadQueueItem) {
   clearTimeout(item.notificationFallbackTimer)
-  if (item.status === UploadQueueItemStatus.Uploaded) return
-  if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) return
+  if (isSettled(item.status)) return
+  if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) {
+    // Said out loud rather than given up on in silence.
+    item.error.hasError = true
+    const { t } = i18n.global || i18n
+    // The slot row has only Cancel, so it must not be sent looking for a refresh button.
+    item.error.message = t(
+      item.type === UploadQueueItemType.SlotFile
+        ? 'system.uploadErrors.processingTooLongSlot'
+        : 'system.uploadErrors.processingTooLong'
+    )
+
+    return
+  }
   if (!item.assetId) return
-  const asset = await fetchAsset(item.assetId)
-  if (asset && asset.mainFile && asset.mainFile.fileAttributes) {
+  let asset: Awaited<ReturnType<typeof fetchAsset>> | undefined = undefined
+  try {
+    asset = await fetchAsset(item.assetId)
+  } catch (error) {
+    // One failed request must not end the chain: the rejection skipped the reschedule below.
+    console.error('notificationFallback: asset fetch failed', error)
+  }
+  // Only when the main file is this item's: a slot posts to its own and would read the wrong one.
+  const isOurFile = asset?.mainFile && (isNull(item.fileId) || asset.mainFile.id === item.fileId)
+  if (asset && asset.mainFile && isOurFile && asset.mainFile.fileAttributes) {
     const uploadQueuesStore = useUploadQueuesStore()
     if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Processed) {
-      uploadQueuesStore.queueItemProcessed(asset.id)
+      uploadQueuesStore.queueItemProcessed(asset.id, item.fileId)
       return
     } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
-      uploadQueuesStore.queueItemDuplicate(asset.id)
+      uploadQueuesStore.queueItemDuplicate(asset.id, null, null, item.fileId)
       return
     } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Failed) {
-      uploadQueuesStore.queueItemFailed(asset.id, asset.mainFile.fileAttributes.failReason)
+      uploadQueuesStore.queueItemFailed(asset.id, asset.mainFile.fileAttributes.failReason, item.fileId)
       return
     }
   }
+  // Again after the fetch: a stop during it used to schedule the next attempt anyway.
+  if (isSettled(item.status)) return
   item.notificationFallbackTry++
   item.notificationFallbackTimer = setTimeout(function () {
     notificationFallbackCallback(item)
   }, calculateFallbackTime(item))
+}
+
+/* Exported for the external-provider import: its item carries no ids until the import responds, so
+ * a notification that wins that race matches nothing and is gone, and nothing else would settle it -
+ * hence not behind `uploadStatusFallback`, unlike the one `startProcessing` arms. */
+export const armNotificationFallback = (item: UploadQueueItem) => {
+  if (item.status !== UploadQueueItemStatus.Processing) return
+  clearTimeout(item.notificationFallbackTimer)
+  item.notificationFallbackTimer = setTimeout(function () {
+    notificationFallbackCallback(item)
+  }, calculateFallbackTime(item))
+}
+
+/* Only if nothing has settled the item meanwhile: the notification can beat the finish response,
+ * and `Processing` written over `Uploaded` waits for a notification that has already been - where
+ * no fallback is armed, or it cannot identify the file, for good. */
+function startProcessing(item: UploadQueueItem) {
+  if (item.status !== UploadQueueItemStatus.Uploading) return
+  item.status = UploadQueueItemStatus.Processing
+  if (envConfig.uploadStatusFallback) armNotificationFallback(item)
 }
 
 export const uploadFinish = (item: UploadQueueItem, sha: string) => {
@@ -136,12 +189,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case DamAssetType.Image:
         imageUploadFinish(item, sha)
           .then((res) => {
-            item.status = UploadQueueItemStatus.Processing
-            if (envConfig.uploadStatusFallback) {
-              item.notificationFallbackTimer = setTimeout(function () {
-                notificationFallbackCallback(item)
-              }, calculateFallbackTime(item))
-            }
+            startProcessing(item)
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -149,12 +197,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case DamAssetType.Audio:
         audioUploadFinish(item, sha)
           .then((res) => {
-            item.status = UploadQueueItemStatus.Processing
-            if (envConfig.uploadStatusFallback) {
-              item.notificationFallbackTimer = setTimeout(function () {
-                notificationFallbackCallback(item)
-              }, calculateFallbackTime(item))
-            }
+            startProcessing(item)
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -162,12 +205,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case DamAssetType.Video:
         videoUploadFinish(item, sha)
           .then((res) => {
-            item.status = UploadQueueItemStatus.Processing
-            if (envConfig.uploadStatusFallback) {
-              item.notificationFallbackTimer = setTimeout(function () {
-                notificationFallbackCallback(item)
-              }, calculateFallbackTime(item))
-            }
+            startProcessing(item)
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -175,16 +213,13 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) => {
       case DamAssetType.Document:
         documentUploadFinish(item, sha)
           .then((res) => {
-            item.status = UploadQueueItemStatus.Processing
-            if (envConfig.uploadStatusFallback) {
-              item.notificationFallbackTimer = setTimeout(function () {
-                notificationFallbackCallback(item)
-              }, calculateFallbackTime(item))
-            }
+            startProcessing(item)
             resolve(res)
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
     }
   })
 }
@@ -235,6 +270,9 @@ export const uploadChunk = (
             reject(err)
           })
         break
+      default:
+        // An uncovered type would hang the chunk loop, and with it one of the two slots.
+        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
     }
   })
 }
@@ -273,6 +311,8 @@ export const externalProviderUpload: (item: UploadQueueItem) => Promise<DamUploa
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
     }
   })
 }
@@ -308,6 +348,8 @@ export const unsetAssetSlot = (assetType: DamAssetTypeType, fileId: DocId, asset
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }
@@ -343,6 +385,8 @@ export const deleteFile = (assetType: DamAssetTypeType, fileId: DocId) => {
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }
@@ -378,6 +422,8 @@ export const makeMainFile = (assetType: DamAssetTypeType, fileId: DocId, assetId
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }
@@ -413,6 +459,8 @@ export const existingFileToSlot = (assetType: DamAssetTypeType, fileId: DocId, a
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }
@@ -448,6 +496,8 @@ export const fileDownloadLink = (assetType: DamAssetTypeType, fileId: DocId) => 
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }
@@ -476,6 +526,8 @@ export const makePublicFile = (assetType: DamAssetTypeType, assetFileId: DocId, 
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }
@@ -504,6 +556,8 @@ export const makePrivateFile = (assetType: DamAssetTypeType, assetFileId: DocId)
           })
           .catch((err) => reject(err))
         break
+      default:
+        reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
 }

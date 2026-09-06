@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
-import { arrayFlatten, arrayFromArgs, damFileTypeFix } from '@anzusystems/common-admin'
+import { arrayFlatten, arrayFromArgs } from '@anzusystems/common-admin'
+import { checkFormats, checkSizes } from '@/domains/coreDam/shared/services/upload/fileValidation'
 
 type InputRef = null | HTMLInputElement
 
@@ -64,12 +65,13 @@ const onDrop = (event: DragEvent) => {
   }
 }
 
+// Local declarations shadow the DOM ones, which take an error callback the platform will use.
 interface FileSystemFileEntry extends FileSystemEntry {
-  file(callback: (file: File) => void): void
+  file(callback: (file: File) => void, errorCallback?: (error: unknown) => void): void
 }
 
 interface FileSystemDirectoryReader {
-  readEntries(callback: (entries: FileSystemEntry[]) => void): void
+  readEntries(callback: (entries: FileSystemEntry[]) => void, errorCallback?: (error: unknown) => void): void
 }
 
 interface FileSystemDirectoryEntry extends FileSystemEntry {
@@ -99,25 +101,69 @@ function flattenFileArray(array: (File | File[])[]): File[] {
   return result
 }
 
+/* `readEntries` answers in batches - Chromium caps them at 100 - and the same reader has to be asked until it answers
+ * with an empty one. */
+const readAllEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> => {
+  return new Promise((resolve, reject) => {
+    const entries: FileSystemEntry[] = []
+    const readBatch = () => {
+      reader.readEntries((batch: FileSystemEntry[]) => {
+        if (batch.length === 0) {
+          resolve(entries)
+
+          return
+        }
+        entries.push(...batch)
+        readBatch()
+      }, reject)
+    }
+    readBatch()
+  })
+}
+
+type SettledEntry = { read: true; value: File | File[] } | { read: false; reason: unknown }
+
+const settleEntry = (entry: Promise<File | File[]>): Promise<SettledEntry> =>
+  entry.then(
+    (value): SettledEntry => ({ read: true, value }),
+    (reason): SettledEntry => ({ read: false, reason })
+  )
+
+const collectRead = (results: SettledEntry[]): (File | File[])[] => {
+  const read: (File | File[])[] = []
+  results.forEach((result) => {
+    if (result.read) read.push(result.value)
+    else console.error('FileUpload: a dropped entry could not be read', result.reason)
+  })
+
+  return read
+}
+
 const traverseFileTree = (item: FileSystemEntry, path = '') => {
   // Based on https://stackoverflow.com/questions/3590058
-  return new Promise<File | File[]>((resolve) => {
+  return new Promise<File | File[]>((resolve, reject) => {
     if (isFileEntry(item)) {
       item.file((file: File) => {
         ;(file as File & { $path: string }).$path = path
         resolve(file)
-      })
+      }, reject)
     } else if (isDirectoryEntry(item)) {
-      item.createReader().readEntries((entries: FileSystemEntry[]) => {
-        const queue: Promise<File | File[]>[] = []
-        for (let i = 0; i < entries.length; i++) {
-          queue.push(traverseFileTree(entries[i], path + item.name + '/'))
-        }
-        Promise.all(queue).then((filesArr) => {
-          const flattenedFiles = flattenFileArray(filesArr)
-          resolve(flattenedFiles)
+      readAllEntries(item.createReader())
+        .then((entries) => {
+          const queue: Promise<File | File[]>[] = []
+          for (let i = 0; i < entries.length; i++) {
+            queue.push(traverseFileTree(entries[i], path + item.name + '/'))
+          }
+
+          // Every entry settled on its own, or one unreadable file discards the folder around it.
+          return Promise.all(queue.map(settleEntry)).then((results) => {
+            resolve(flattenFileArray(collectRead(results)))
+          })
         })
-      })
+        .catch(reject)
+    } else {
+      // Neither a file nor a directory: unsettled, the whole drop produces no reaction at all.
+      resolve([])
     }
   })
 }
@@ -149,8 +195,9 @@ const onFileChange = (event: Event) => {
         queue.push(traverseFileTree(item))
       }
     }
-    Promise.all(queue).then((filesArr) => {
-      setFiles(arrayFromArgs<File>(filesArr as File[]))
+    // Each entry on its own: `Promise.all` would throw away every file that did read.
+    Promise.all(queue.map(settleEntry)).then((results) => {
+      setFiles(arrayFromArgs<File>(collectRead(results) as File[]))
     })
     return
   }
@@ -198,51 +245,6 @@ const checkFormatsAndSizes = (files: File[]) => {
   }
 
   return validFiles
-}
-const checkFormats = (file: File, accepts: string[]) => {
-  if (accepts.length === 0) {
-    return true
-  }
-  for (let i = 0; i < accepts.length; i++) {
-    if (accepts[i].startsWith('.')) {
-      // .format
-      if (file.name.toLowerCase().endsWith(accepts[i])) {
-        return true
-      }
-    } else {
-      // type
-      const splitType = accepts[i].split('/')
-      if (splitType[1] === '*' && damFileTypeFix(file).startsWith(splitType[0] + '/')) {
-        return true
-      } else if (accepts[i] === damFileTypeFix(file)) {
-        return true
-      }
-    }
-  }
-  return false
-}
-const checkSizes = (file: File, keys: Array<string>, sizes: Record<string, number> | undefined) => {
-  if (keys.length === 0 || isUndefined(sizes)) {
-    return true
-  }
-  for (let j = 0; j < keys.length; j++) {
-    if (keys[j] === '*' && sizes[keys[j]] <= file.size) {
-      // *
-      return true
-    } else if (keys[j].startsWith('.') && sizes[keys[j]] <= file.size) {
-      // .format
-      return true
-    } else {
-      // type
-      const splitType = keys[j].split('/')
-      if (splitType[1] === '*' && damFileTypeFix(file).startsWith(splitType[0] + '/') && sizes[keys[j]] > file.size) {
-        return true
-      } else if (keys[j] === damFileTypeFix(file) && sizes[keys[j]] > file.size) {
-        return true
-      }
-    }
-  }
-  return false
 }
 
 watch(selectedFiles, (newValue, oldValue) => {

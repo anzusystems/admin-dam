@@ -89,7 +89,11 @@
     "systemError": "Chyba",
     "size": "Nesprávna veľkosť",
     "offset": "Nesprávny offset",
-    "mimeType": "Nesprávny formát súboru"
+    "mimeType": "Nesprávny formát súboru",
+    "metadataFailed": "Metadáta sa nepodarilo načítať. Použite tlačidlo obnoviť alebo položku odstráňte a skúste to znova.",
+    "metadataUnavailable": "Metadáta sa nepodarilo načítať. Odstráňte položku a označte ju znova.",
+    "processingTooLong": "Spracovanie trvá príliš dlho. Použite tlačidlo obnoviť alebo položku odstráňte a skúste to neskôr.",
+    "processingTooLongSlot": "Spracovanie trvá príliš dlho. Zrušte položku a skúste to neskôr."
   },
   "closePage": {
     "title": "Táto stránka/karta môže byť bezpečne zatvorená."
@@ -98,6 +102,11 @@
     "title": "Ups, chyba 404.",
     "subTitle": "Táto stránka neexistuje. Pokiaľ by mala, kontaktujte administrátora.",
     "return": "Návrat na domovskú obrazovku"
+  },
+  "errorPage": {
+    "title": "Ups, niečo sa pokazilo.",
+    "subTitle": "Aplikáciu sa nepodarilo spustiť. Skúste to prosím znova a ak to potrvá, kontaktujte administrátora.",
+    "return": "Skúsiť znova"
   },
   "unauthorizedPage": {
     "title": "Ups, chyba 401.",

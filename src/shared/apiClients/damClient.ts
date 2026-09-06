@@ -9,11 +9,8 @@ import { PUB_END_POINT_PREFIX } from '@/shared/configurationApi'
 
 let mainInstance: AxiosInstance | null = null
 
-/**
- * Interceptors inside the guard: this factory runs on every request, so registering outside grew
- * `interceptors.*.handlers` without bound. Takes no per-request arguments — those cannot work on
- * a shared instance; pass `timeout` and `onUploadProgress` in the request config.
- */
+/* Interceptors inside the guard: this factory runs on every request, so registering outside grew
+ * `interceptors.*.handlers` without bound. */
 const damClient = function (): AxiosInstance {
   if (isNull(mainInstance)) {
     mainInstance = axios.create({
@@ -26,7 +23,8 @@ const damClient = function (): AxiosInstance {
       },
     })
 
-    // refresh token interceptor should run on all request except current user api which performs token refresh action
+    // Off the two prefixes that must not recurse into it: `/auth`, which performs the refresh
+    // itself, and `/pub`, which is unauthenticated configuration.
     mainInstance.interceptors.request.use(userRefreshRequestInterceptor, undefined, {
       runWhen: (requestConfig: AxiosRequestConfig): boolean => {
         return !requestConfig.url?.startsWith(AUTH_PATH_PREFIX) && !requestConfig.url?.startsWith(PUB_END_POINT_PREFIX)

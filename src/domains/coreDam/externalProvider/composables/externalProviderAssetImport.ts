@@ -34,7 +34,8 @@ export const useExternalProviderAssetImport = () => {
     const uploadQueueStore = useUploadQueuesStore()
     const queueItemsSelected = uploadQueueStore.getQueueItems(QUEUE_ID_MASS_EDIT)
     const totalWantedItems = queueItemsSelected.length + uploadQueueStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
-    if (totalWantedItems >= maxUploadItems.value) {
+    // Exactly the maximum is allowed, as it is for an ordinary upload.
+    if (totalWantedItems > maxUploadItems.value) {
       showWarning(
         'Max upload limit is ' +
           maxUploadItems.value +

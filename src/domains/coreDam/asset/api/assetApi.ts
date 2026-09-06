@@ -37,10 +37,14 @@ export interface AssetMetadataBulkItem {
   authors: DocId[]
   described: boolean
   customData: AssetCustomData
-  mainFileSingleUse: boolean | null
-  mainFileOverrideInternal: boolean
-  mainFileInternal: boolean
-  ttsAudio: boolean
+  /* Optional on purpose: `AssetMetadataBulkManager` guards each of these with `isXUndefined()`, so
+   * a field left out is one this save does not write - the only way to edit metadata without also
+   * writing flags the form never showed. The backend still runs its internal rules afterwards,
+   * which can move `internal` on their own. */
+  mainFileSingleUse?: boolean | null
+  mainFileOverrideInternal?: boolean
+  mainFileInternal?: boolean
+  ttsAudio?: boolean
 }
 
 const BULK_METADATA_LIMIT = 10
@@ -156,17 +160,16 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   const dtoItems: AssetMetadataBulkItem[] = []
   items.forEach((item) => {
     if (!isNull(item.assetId) && item.canEditMetadata) {
-      dtoItems.push({
+      const dtoItem: AssetMetadataBulkItem = {
         id: item.assetId,
         keywords: item.keywords,
         authors: item.authors,
         described: true,
         customData: item.customData,
-        mainFileSingleUse: item.mainFileSingleUse,
-        mainFileOverrideInternal: false,
-        mainFileInternal: false,
-        ttsAudio: false,
-      })
+      }
+      // Only what this form edits.
+      if (!isNull(item.mainFileSingleUse)) dtoItem.mainFileSingleUse = item.mainFileSingleUse
+      dtoItems.push(dtoItem)
     }
   })
 
@@ -174,8 +177,9 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
 }
 
 async function updateMetadataSequence(items: UploadQueueItem[]) {
-  const totalCalls = Math.ceil(items.length / BULK_METADATA_LIMIT)
   const bulkItems = listItemsToMetadataBulkItems(items)
+  // From the filtered array: counting the input sent trailing PATCHes with an empty body.
+  const totalCalls = Math.ceil(bulkItems.length / BULK_METADATA_LIMIT)
   const responses = []
   if (bulkItems.length === 0) return Promise.resolve([])
 

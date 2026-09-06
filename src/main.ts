@@ -38,7 +38,7 @@ loadEnvConfig(() => {
           },
         },
         apiTimeout: envConfig.dam.apiTimeout,
-        uploadStatusFallback: true,
+        uploadStatusFallback: envConfig.uploadStatusFallback,
         adminDomain: envConfig.dam.adminUrl,
         notification: {
           enabled: envConfig.notification.enabled,

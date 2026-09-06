@@ -45,6 +45,10 @@ const showDetail = async (asset: AssetDetailItemDto) => {
   assetDetailStore.setView('queue')
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
+  /* Nothing is fetched here - the asset has just been created - but the detail is opened all the
+   * same, so it has to take its turn: a request from before this one, coming back with an error,
+   * would otherwise see an open dialog and close it over the new asset. */
+  assetDetailStore.startDetailRequest()
   assetDetailStore.setAsset(asset)
   addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
   fetchCachedUsers()

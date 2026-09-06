@@ -3,7 +3,14 @@ import { SYSTEM_DAM } from '@/shared/systems'
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { type DamCurrentUserDto, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import {
+  type DamCurrentUserDto,
+  HTTP_STATUS_NOT_FOUND,
+  isAnzuApiForbiddenError,
+  isDocId,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
+import { isAxiosError } from 'axios'
 
 const currentExtSystemId = ref(0)
 
@@ -50,12 +57,27 @@ export const initCurrentExtSystemAndLicence = async (
         assetRes = await fetchAssetByFileId(loadConfig.id)
       }
     } catch (e) {
-      return false
+      /* Only "it is not there" answers `false`, which becomes the not-found page; an outage has to
+       * reach the caller, or it would tell the user their asset was deleted. The status is on
+       * `cause` - `useApiRequest` wraps every failure, and no wrapper is an axios error. */
+      if (isAnzuApiForbiddenError(e)) return false
+      const cause = (e as { cause?: unknown })?.cause
+      if (isAxiosError(cause) && cause.response?.status === HTTP_STATUS_NOT_FOUND) return false
+      throw e
     }
     if (isNull(assetRes)) {
       return false
     }
-    const licenceRes = await fetchAssetLicence(assetRes.licence)
+    // Same classification: a licence this user may not read is a dead link, not an outage.
+    let licenceRes
+    try {
+      licenceRes = await fetchAssetLicence(assetRes.licence)
+    } catch (e) {
+      if (isAnzuApiForbiddenError(e)) return false
+      const licenceCause = (e as { cause?: unknown })?.cause
+      if (isAxiosError(licenceCause) && licenceCause.response?.status === HTTP_STATUS_NOT_FOUND) return false
+      throw e
+    }
     if (licenceRes.id && licenceRes.extSystem) {
       const assetDetailStore = useAssetDetailStore()
       assetDetailStore.directDetailLoad = true
