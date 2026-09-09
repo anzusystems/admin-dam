@@ -27,8 +27,6 @@ import jsValidation from '@/locales/sk/error/jsValidation.json'
 import breadcrumb from '@/locales/sk/breadcrumb.json'
 import audioFile from '@/locales/sk/coreDam/audioFile.json'
 import videoFile from '@/locales/sk/coreDam/videoFile.json'
-import anzuUser from '@/locales/sk/common/anzuUser.json'
-import commonModel from '@/locales/sk/common/model.json'
 import authorCleanPhrase from '@/locales/sk/coreDam/authorCleanPhrase.json'
 import publicExport from '@/locales/sk/coreDam/publicExport.json'
 import voiceFamily from '@/locales/sk/coreDam/voiceFamily.json'
@@ -36,20 +34,7 @@ import voice from '@/locales/sk/coreDam/voice.json'
 import ttsNarrationRequest from '@/locales/sk/coreDam/ttsNarrationRequest.json'
 
 export default {
-  common: {
-    ...messagesSk.common,
-    model: {
-      ...messagesSk.common.model,
-      ...commonModel,
-    },
-    anzuUser: {
-      ...messagesSk.common.anzuUser,
-      filter: {
-        ...messagesSk.common.anzuUser.filter,
-        ...anzuUser.filter,
-      },
-    },
-  },
+  common: messagesSk.common,
   $vuetify: messagesSk.$vuetify,
   coreDam: {
     asset,
