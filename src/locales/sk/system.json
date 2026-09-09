@@ -77,7 +77,16 @@
   },
   "settings": {
     "locale": "Lokalizácia",
-    "theme": "Téma"
+    "theme": "Téma",
+    "debug": {
+      "throwTitle": "DEBUG: Test vyhodenia chyby",
+      "throwButton": "Vyhodiť",
+      "logTitle": "DEBUG: Test zalogovania chyby",
+      "logButton": "Zalogovať",
+      "unreleasedTitle": "DEBUG: Zobraziť nevydané funkcie",
+      "unreleasedShow": "Zobraziť",
+      "unreleasedHide": "Skryť"
+    }
   },
   "currentUser": {
     "settings": "Nastavenia",

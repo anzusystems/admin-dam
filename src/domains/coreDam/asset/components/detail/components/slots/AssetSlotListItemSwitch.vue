@@ -80,7 +80,7 @@ const onSwitch = () => {
           v-if="targetOptions.length === 0"
           class="my-2 text-warning"
         >
-          {{ t('coreDam.asset.slots.switch.no') }}
+          {{ t('coreDam.asset.slots.switch.noTargetSlots') }}
         </div>
         <div
           v-else

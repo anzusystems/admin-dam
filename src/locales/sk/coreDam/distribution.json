@@ -20,7 +20,9 @@
     "edit": "Upraviť distribúciu",
     "create": "Vytvoriť distribúciu",
     "showAdvanced": "Zobraziť pokročilú správu distribúcií",
-    "hideAdvanced": "Skryť pokročilú správu distribúcií"
+    "hideAdvanced": "Skryť pokročilú správu distribúcií",
+    "unsupported": "Nepodporovaná distribúcia",
+    "selectName": "Prosím vyberte názov distribúcie"
   },
   "common": {
     "select": "Kategória distribúcie",
@@ -37,5 +39,19 @@
     "extId": "Externé ID",
     "failReason": "Dôvod zlyhania",
     "assetFileStatusCantDistribute": "Súbor musí byť pred distribúciou spracovaný."
+  },
+  "youtubeTerms": {
+    "intro": "Táto aplikácia využíva",
+    "apiServices": "Služby YouTube API",
+    "googlePrivacy": "Zásady ochrany osobných údajov spoločnosti Google",
+    "apiClientTerms": "Podmienky používania a zásady ochrany osobných údajov API klienta",
+    "apiServicesTerms": "Zmluvné podmienky služieb YouTube API",
+    "privacy": "Zásady ochrany osobných údajov",
+    "cookies": "Pravidlá používania cookies",
+    "subscriptionTerms": "Všeobecné obchodné podmienky online predplatného Sme.sk",
+    "serviceTerms": "Všeobecné obchodné podmienky a pravidlá služieb Sme.sk",
+    "serviceProvisionTerms": "Podmienky poskytovania služby",
+    "communityGuidelines": "Pokyny pre komunitu",
+    "copyright": "Autorské práva"
   }
 }

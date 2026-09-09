@@ -77,7 +77,16 @@
   },
   "settings": {
     "locale": "Locale",
-    "theme": "Theme"
+    "theme": "Theme",
+    "debug": {
+      "throwTitle": "DEBUG: Test throw error",
+      "throwButton": "Throw",
+      "logTitle": "DEBUG: Test log error",
+      "logButton": "Log",
+      "unreleasedTitle": "DEBUG: Show unreleased features",
+      "unreleasedShow": "Show",
+      "unreleasedHide": "Hide"
+    }
   },
   "currentUser": {
     "settings": "Settings",

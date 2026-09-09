@@ -97,7 +97,7 @@ const onAssetChipClick = () => {
       </ARow>
       <ARow
         v-if="imageSrc"
-        title="Image"
+        :title="t('coreDam.podcastEpisode.model.image')"
       >
         <AssetImage
           :src="imageSrc"

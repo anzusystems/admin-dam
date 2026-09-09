@@ -20,7 +20,9 @@
     "edit": "Edit distribution",
     "create": "Create distribution",
     "showAdvanced": "Show advanced distribution management",
-    "hideAdvanced": "Hide advanced distribution management"
+    "hideAdvanced": "Hide advanced distribution management",
+    "unsupported": "Unsupported distribution",
+    "selectName": "Please select distribution name"
   },
   "common": {
     "select": "Distribution category",
@@ -37,5 +39,19 @@
     "extId": "External ID",
     "failReason": "Fail reason",
     "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
+  },
+  "youtubeTerms": {
+    "intro": "This application uses",
+    "apiServices": "YouTube API Services",
+    "googlePrivacy": "Google Privacy Policy",
+    "apiClientTerms": "API Client Terms of Use and Privacy Policies",
+    "apiServicesTerms": "YouTube API Services Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "subscriptionTerms": "Sme.sk online subscription terms and conditions",
+    "serviceTerms": "Sme.sk general terms and conditions of service",
+    "serviceProvisionTerms": "Terms of Service",
+    "communityGuidelines": "Community Guidelines",
+    "copyright": "Copyright"
   }
 }

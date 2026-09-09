@@ -19,5 +19,8 @@
   },
   "filter": {
     "startedAtFrom": "Started at from - to"
+  },
+  "meta": {
+    "unsupported": "Unsupported"
   }
 }

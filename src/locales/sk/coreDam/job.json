@@ -19,5 +19,8 @@
   },
   "filter": {
     "startedAtFrom": "Začiatok od - do"
+  },
+  "meta": {
+    "unsupported": "Nepodporované"
   }
 }

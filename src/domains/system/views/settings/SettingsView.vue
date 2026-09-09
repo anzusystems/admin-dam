@@ -32,6 +32,12 @@ const logTestError = () => {
 }
 
 const { showUnreleasedFeatures } = useUnreleasedFeatures()
+
+const unreleasedToggleLabel = computed(() =>
+  showUnreleasedFeatures.value
+    ? t('system.settings.debug.unreleasedShow')
+    : t('system.settings.debug.unreleasedHide')
+)
 </script>
 
 <template>
@@ -67,11 +73,11 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
         class="pb-2 align-center"
       >
         <VCol cols="3">
-          DEBUG: Test throw error
+          {{ t('system.settings.debug.throwTitle') }}
         </VCol>
         <VCol>
           <VBtn @click.stop="throwTestError">
-            Throw
+            {{ t('system.settings.debug.throwButton') }}
           </VBtn>
         </VCol>
       </VRow>
@@ -80,11 +86,11 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
         class="pb-2 align-center"
       >
         <VCol cols="3">
-          DEBUG: Test log error
+          {{ t('system.settings.debug.logTitle') }}
         </VCol>
         <VCol>
           <VBtn @click.stop="logTestError">
-            Log
+            {{ t('system.settings.debug.logButton') }}
           </VBtn>
         </VCol>
       </VRow>
@@ -93,12 +99,12 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
         class="pb-2 align-center"
       >
         <VCol cols="3">
-          DEBUG: Show unreleased features
+          {{ t('system.settings.debug.unreleasedTitle') }}
         </VCol>
         <VCol>
           <VSwitch
             v-model="showUnreleasedFeatures"
-            :label="showUnreleasedFeatures ? 'Show' : 'Hide'"
+            :label="unreleasedToggleLabel"
           />
         </VCol>
       </VRow>
