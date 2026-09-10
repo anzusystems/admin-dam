@@ -19,7 +19,7 @@
     "limits": {
       "uploadWarning": "Upload warning",
       "onUploadLimit": "You have reached the upload limit ({limit}). Finish the current upload, then try again.",
-      "addingOverLimit": "You are trying to upload additional {count} files",
+      "addingOverLimit": "You are trying to upload additional {count} files.",
       "countAlreadyInProgress": "{count} file(s) are already in progress.",
       "onlyAllowedAtOnce": "Only {count} file(s) can be uploaded at once.",
       "cancelOrUploadFirst": "Do you want to cancel or upload only first {count} file(s)?",

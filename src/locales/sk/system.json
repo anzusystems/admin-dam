@@ -18,10 +18,10 @@
     "done": "Hotovo",
     "limits": {
       "uploadWarning": "Varovanie pri nahrávaní",
-      "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova",
+      "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova.",
       "addingOverLimit": "Pokúšate sa nahrať ďalšie súbory ({count}).",
       "countAlreadyInProgress": "{count} súbor(y) prebiehajú.",
-      "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
+      "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne.",
       "cancelOrUploadFirst": "Chcete zrušiť alebo nahrať iba prvých {count} súborov?",
       "actionAddFirstItems": "Pridať prvých {count} súborov"
     }

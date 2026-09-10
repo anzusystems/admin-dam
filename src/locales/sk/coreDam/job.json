@@ -1,11 +1,11 @@
 {
   "model": {
-    "podcastId": "Podcast Id",
+    "podcastId": "Podcast ID",
     "fullSync": "Plná synchronizácia",
     "authorId": "Autor ID",
     "processAll": "Spracuj všetko",
-    "licence": "Licencia Id",
-    "targetLicenceId": "Cieľová licencia Id",
+    "licence": "Licencia ID",
+    "targetLicenceId": "Cieľová licencia ID",
     "processFrom": "Spracovať od",
     "processUntil": "Spracovať do",
     "bulkSize": "Veľkosť dávky"
