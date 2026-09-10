@@ -70,6 +70,9 @@ export default {
   system,
   ...{
     error: {
+      // Spread first so namespaces this admin never overrides still arrive — the
+      // package's own alerts.ts calls error.apiTimedOut.message, for one.
+      ...messagesSk.error,
       apiValidation: {
         ...messagesSk.error.apiValidation,
         ...apiValidation,
