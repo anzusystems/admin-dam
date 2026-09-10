@@ -107,20 +107,10 @@
   "closePage": {
     "title": "This page/tab can be safely closed."
   },
-  "notFoundPage": {
-    "title": "Oops, 404.",
-    "subTitle": "This page doesn't exist. If it should, please contact an administrator.",
-    "return": "Return me to homepage"
-  },
   "errorPage": {
     "title": "Oops, something went wrong.",
     "subTitle": "The application could not be started. Please try again, and contact an administrator if it persists.",
     "return": "Try again"
-  },
-  "unauthorizedPage": {
-    "title": "Oops, 401.",
-    "subTitle": "You don't have permission to access this page. If you need access, please contact an administrator.",
-    "return": "Return me to homepage"
   },
   "error": {
     "notificationsNotConnected": "The notification service is temporarily unavailable; some parts of the admin may not work correctly."

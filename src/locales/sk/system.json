@@ -107,20 +107,10 @@
   "closePage": {
     "title": "Táto stránka/karta môže byť bezpečne zatvorená."
   },
-  "notFoundPage": {
-    "title": "Ups, chyba 404.",
-    "subTitle": "Táto stránka neexistuje. Pokiaľ by mala, kontaktujte administrátora.",
-    "return": "Návrat na domovskú obrazovku"
-  },
   "errorPage": {
     "title": "Ups, niečo sa pokazilo.",
     "subTitle": "Aplikáciu sa nepodarilo spustiť. Skúste to prosím znova a ak to potrvá, kontaktujte administrátora.",
     "return": "Skúsiť znova"
-  },
-  "unauthorizedPage": {
-    "title": "Ups, chyba 401.",
-    "subTitle": "Nemáte oprávnenie na danú stránku. Pokiaľ oprávnenie vyžadujete, kontaktujte administrátora.",
-    "return": "Návrat na domovskú obrazovku"
   },
   "error": {
     "notificationsNotConnected": "Notifikačná služba má dočasný výpadok, niektoré funkcie sa nemusia správať korektne."
