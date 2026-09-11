@@ -10,6 +10,6 @@ describe(`Test Log-out function, Env: ${CY.cfg}`,
     cy.get('.v-btn')
       .should('be.visible')
       .invoke('text')
-      .should('eq', ' Log in ')
+      .should('eq', 'Prihlásiť sa')
   })
 })

@@ -60,7 +60,7 @@ const onRemove = () => {
   >
     <VCard v-if="dialog">
       <ADialogToolbar @on-cancel="onCancel">
-        {{ t('common.modal.system.confirmDelete') }}
+        {{ t('common.system.modal.confirmDelete') }}
       </ADialogToolbar>
       <VCardText>
         <div
