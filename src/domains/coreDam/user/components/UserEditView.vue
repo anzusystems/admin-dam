@@ -7,7 +7,7 @@ import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, user } =
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
   useUserEditActions()
 
 const { t } = useI18n()
@@ -16,7 +16,7 @@ const breadcrumbs = defineBreadcrumbs(
   computed(() => [
     { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
     {
-      title: user.value.id + '' || t('breadcrumb.coreDam.user.edit'),
+      title: `${t('breadcrumb.coreDam.user.edit')} #${id}`,
       routeName: '/(coreDam)/users/[id]/edit',
     },
   ])

@@ -5,7 +5,7 @@ import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusyst
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
 
-const { detailLoading, fetchData, resetStore, user } = useUserDetailActions()
+const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 
 const { t } = useI18n()
 
@@ -13,7 +13,7 @@ const breadcrumbs = defineBreadcrumbs(
   computed(() => [
     { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
     {
-      title: user.value.id + '' || t('breadcrumb.coreDam.user.detail'),
+      title: `${t('breadcrumb.coreDam.user.detail')} #${id}`,
       routeName: '/(coreDam)/users/[id]',
     },
   ])
