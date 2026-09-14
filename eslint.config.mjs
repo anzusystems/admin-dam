@@ -1,4 +1,13 @@
-import stylistic from '@stylistic/eslint-plugin'
+import { existsSync, readFileSync } from 'node:fs'
+
+// Written by unplugin-auto-import during `yarn generate:dts`, which `yarn ci` runs before
+// eslint. A missing file is not fatal -- a bare `npx eslint` on a fresh clone still lints,
+// it only loses the rules below.
+const autoImportGlobalsPath = new URL('./.eslintrc-auto-import.json', import.meta.url)
+const autoImportGlobals = existsSync(autoImportGlobalsPath)
+  ? JSON.parse(readFileSync(autoImportGlobalsPath, 'utf8')).globals
+  : {}
+
 import pluginVue from 'eslint-plugin-vue'
 import pluginPinia from 'eslint-plugin-pinia'
 import pluginVuetify from 'eslint-plugin-vuetify'
@@ -9,6 +18,19 @@ import { recommended as anzuRecommended } from '@anzusystems/common-admin/eslint
 import validRouteName from './eslint/rules/valid-route-name.mjs'
 
 export default defineConfigWithVueTs(
+  {
+    // eslint-plugin-vue resolves `ref`, `computed` and friends through the import statement,
+    // and falls back to a global of the same name. Auto-imports remove the import without
+    // declaring the global, so both paths miss and five error-level rules go quiet here --
+    // no-ref-as-operand, no-side-effects-in-computed-properties, return-in-computed-property,
+    // no-async-in-computed-properties, no-ref-object-reactivity-loss -- plus
+    // no-lifecycle-after-await and no-watch-after-await, which need the same globals but only
+    // fire on an Options-API `setup()`.
+    name: 'app/auto-import-globals',
+    languageOptions: {
+      globals: autoImportGlobals,
+    },
+  },
   {
     name: 'app/files-to-lint',
     files: ['**/*.{ts,mts,tsx,vue}'],
@@ -44,7 +66,6 @@ export default defineConfigWithVueTs(
   }),
   {
     plugins: {
-      '@stylistic': stylistic,
       'anzu-local': {
         rules: {
           'valid-route-name': validRouteName,
@@ -56,24 +77,8 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-empty-interface': 'off',
-      '@stylistic/semi': ['error', 'never'],
-      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
       'vue/multi-word-component-names': 'off',
       'vue/valid-v-slot': ['error', { allowModifiers: true }],
-      '@stylistic/object-curly-spacing': ['error', 'always'],
-      '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],
-      '@stylistic/no-trailing-spaces': 'error',
-      '@stylistic/comma-dangle': ['error', 'only-multiline'],
-      '@stylistic/max-len': [
-        'error',
-        {
-          code: 120,
-          ignoreTrailingComments: true,
-          ignoreUrls: true,
-          ignoreRegExpLiterals: true,
-          ignorePattern: '^import .*',
-        },
-      ],
       'vue/no-template-target-blank': ['error'],
       'vue/block-order': ['error', { order: [['script', 'template'], 'style'] }],
       'vue/define-macros-order': ['error'],
@@ -121,5 +126,27 @@ export default defineConfigWithVueTs(
       ],
     },
   },
-  ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json')
+  ...oxlint.buildFromOxlintConfigFile('./.oxlintrc.json'),
+  {
+    // The only eslint rules that fight oxfmt. Measured: with this block removed, eslint
+    // reports on these same rules and no others, in every repo we checked.
+    //
+    // html-self-closing is configured rather than switched off, because only its `void`
+    // half conflicts: oxfmt writes `<img />` where the rule's default demands `<img>`.
+    // With `void: 'any'` the formatter keeps that half and eslint keeps `<VBtn></VBtn>`.
+    name: 'app/owned-by-oxfmt',
+    rules: {
+      'vue/html-closing-bracket-newline': 'off',
+      'vue/html-indent': 'off',
+      'vue/singleline-html-element-content-newline': 'off',
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: { void: 'any', normal: 'always', component: 'always' },
+          svg: 'always',
+          math: 'always',
+        },
+      ],
+    },
+  }
 )

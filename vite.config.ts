@@ -181,6 +181,10 @@ export default defineConfig({
       imports: autoImports,
       dts: 'src/auto-imports.d.ts',
       vueTemplate: true,
+      // Feeds `eslint.config.mjs`. Without these names declared as globals, eslint-plugin-vue
+      // resolves `ref` and friends through the import statement only, and several error-level
+      // rules go quiet -- `vue/no-ref-as-operand` among them. `eslint.config.mjs` lists which.
+      eslintrc: { enabled: true, filepath: './.eslintrc-auto-import.json', globalsPropValue: 'readonly' },
     }),
     sentryVitePlugin({
       disable: !shouldEnableSentry,

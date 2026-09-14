@@ -57,3 +57,6 @@ docker-compose.override.yml*
 
 # Exclusions
 !.gitkeep
+
+# Generated
+.eslintrc-auto-import.json

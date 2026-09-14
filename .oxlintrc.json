@@ -1,101 +1,40 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "vue",
-    "typescript"
-  ],
-  "categories": {
-    "correctness": "off"
-  },
-  "env": {
-    "builtin": true
-  },
-  "ignorePatterns": [
-    "**/dist/**",
-    "**/dist-ssr/**",
-    "**/coverage/**",
-    ".stylelintrc.js",
-    "cypress/**",
-    "eslint.config.mjs",
-    "src/typed-router.d.ts",
-    "src/auto-imports.d.ts"
-  ],
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "vue"],
+  "env": { "browser": true },
+  "ignorePatterns": ["dist", "dist-ssr", "coverage", "cypress", "src/typed-router.d.ts", "src/auto-imports.d.ts"],
+  "categories": { "correctness": "error" },
   "rules": {
-    "vue/no-arrow-functions-in-watch": "error",
-    "vue/no-deprecated-destroyed-lifecycle": "error",
-    "vue/no-export-in-script-setup": "error",
-    "vue/no-lifecycle-after-await": "error",
-    "vue/prefer-import-from-vue": "error",
-    "vue/valid-define-emits": "error",
-    "vue/valid-define-props": "error",
-    "vue/no-multiple-slot-args": "warn",
-    "vue/no-required-prop-with-default": "warn",
-    "vue/require-typed-ref": "error",
-    "no-array-constructor": "error",
-    "no-unused-vars": [
-      "error",
-      {
-        "caughtErrors": "none"
-      }
-    ],
-    "no-restricted-imports": [
-      "error",
-      {
-        "patterns": [
-          {
-            "group": [
-              "../*",
-              "./*"
-            ],
-            "message": "Use absolute imports with @ instead of relative imports"
-          }
-        ]
-      }
-    ],
-    "typescript/no-duplicate-enum-values": "error",
-    "typescript/no-extra-non-null-assertion": "error",
-    "typescript/no-misused-new": "error",
+    "no-unused-vars": ["error", { "caughtErrors": "none" }],
+    "no-unused-expressions": "off",
+
+    "no-var": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+    "typescript/no-array-constructor": "error",
     "typescript/no-namespace": "error",
-    "typescript/no-non-null-asserted-optional-chain": "error",
     "typescript/no-require-imports": "error",
-    "typescript/no-this-alias": "error",
     "typescript/no-unnecessary-type-constraint": "error",
-    "typescript/no-unsafe-declaration-merging": "error",
     "typescript/no-unsafe-function-type": "error",
-    "typescript/no-wrapper-object-types": "error",
-    "typescript/prefer-as-const": "error",
-    "typescript/prefer-namespace-keyword": "error",
-    "typescript/triple-slash-reference": "error"
-  },
-  "overrides": [
-    {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts",
-        "**/*.vue"
-      ],
-      "rules": {
-        "constructor-super": "off",
-        "no-class-assign": "off",
-        "no-const-assign": "off",
-        "no-dupe-class-members": "off",
-        "no-dupe-keys": "off",
-        "no-func-assign": "off",
-        "no-import-assign": "off",
-        "no-new-native-nonconstructor": "off",
-        "no-obj-calls": "off",
-        "no-redeclare": "off",
-        "no-setter-return": "off",
-        "no-this-before-super": "off",
-        "no-unsafe-negation": "off",
-        "no-var": "error",
-        "no-with": "off",
-        "prefer-const": "error",
-        "prefer-rest-params": "error",
-        "prefer-spread": "error"
-      }
-    }
-  ]
+    "vue/component-definition-name-casing": "error",
+    "vue/no-multiple-slot-args": "error",
+    "vue/no-required-prop-with-default": "error",
+    "vue/prop-name-casing": "error",
+    "vue/require-default-prop": "error",
+    "vue/require-prop-types": "error",
+    "vue/require-typed-ref": "error",
+
+    // oxlint does not run prefer-const inside a .vue file at all, so handing it over
+    // would switch it off for every SFC. Left to eslint, which does both.
+    "prefer-const": "off",
+
+    // These five resolve `computed`, `watch` and the lifecycle hooks through the import
+    // statement. Auto-imports removed those imports, so oxlint's versions say nothing;
+    // eslint's still work, because they also walk the globals from auto-import.
+    "vue/no-async-in-computed-properties": "off",
+    "vue/no-side-effects-in-computed-properties": "off",
+    "vue/return-in-computed-property": "off",
+    "vue/no-lifecycle-after-await": "off",
+    "vue/no-watch-after-await": "off"
+  }
 }

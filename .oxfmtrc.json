@@ -4,14 +4,6 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "es5",
-  "ignorePatterns": [],
-  "overrides": [
-    {
-      "files": ["**/*.scss"],
-      "options": {
-        "trailingComma": "none"
-      }
-    }
-  ],
-  "exclude": ["dist/", "cypress/", "coverage/"]
+  "singleAttributePerLine": true,
+  "ignorePatterns": ["/*", "!/src", "!/scripts", "!/eslint", "!/*.ts", "!/*.mjs"]
 }
