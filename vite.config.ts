@@ -56,10 +56,7 @@ export default defineConfig({
             return 'vue-core'
           }
           // i18n stack
-          if (
-            id.includes('node_modules/vue-i18n/') ||
-            id.includes('node_modules/@intlify/')
-          ) {
+          if (id.includes('node_modules/vue-i18n/') || id.includes('node_modules/@intlify/')) {
             return 'vue-i18n'
           }
           // Vuetify UI framework
@@ -80,10 +77,7 @@ export default defineConfig({
             return 'common-admin'
           }
           // TipTap editor and ProseMirror
-          if (
-            id.includes('node_modules/@tiptap/') ||
-            id.includes('node_modules/prosemirror-')
-          ) {
+          if (id.includes('node_modules/@tiptap/') || id.includes('node_modules/prosemirror-')) {
             return 'tiptap'
           }
           // Realtime / sockets
@@ -109,12 +103,13 @@ export default defineConfig({
           }
         },
         chunkFileNames: (chunkInfo) => {
-          const toKebab = (str: string) => str
-            .replace(/\?.*$/, '')
-            .replace(/\.(vue|ts|js|json)$/, '')
-            .replace(/\[|\]|\.\.\./g, '')
-            .replace(/([a-z])([A-Z])/g, '$1-$2')
-            .toLowerCase()
+          const toKebab = (str: string) =>
+            str
+              .replace(/\?.*$/, '')
+              .replace(/\.(vue|ts|js|json)$/, '')
+              .replace(/\[|\]|\.\.\./g, '')
+              .replace(/([a-z])([A-Z])/g, '$1-$2')
+              .toLowerCase()
 
           const generic = ['id', 'edit', 'index', 'new', 'create', 'view', 'list']
           const moduleIds = chunkInfo.moduleIds
@@ -134,7 +129,9 @@ export default defineConfig({
             }
           }
 
-          const parts = toKebab(chunkInfo.name || 'chunk').split(/[-/]/).filter(Boolean)
+          const parts = toKebab(chunkInfo.name || 'chunk')
+            .split(/[-/]/)
+            .filter(Boolean)
           const last2 = parts.slice(-2)
           const isGeneric = last2.every((p) => generic.includes(p))
           const name = isGeneric ? parts.slice(-4).join('-') : last2.join('-')
