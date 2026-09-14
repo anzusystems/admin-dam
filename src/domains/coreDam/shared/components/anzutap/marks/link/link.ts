@@ -204,7 +204,11 @@ export function isAllowedUri(uri: string | undefined, protocols?: LinkOptions['p
     !uri ||
     uri
       .replace(ATTR_WHITESPACE, '')
-      .match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z0-9+.-]+(?:[^a-z+.:-]|$))`, 'i'))
+      // Both hyphens are escaped as `\\-` because this is a template literal: a single
+      // backslash would be eaten before RegExp sees it, and a bare `-` between `.` and `:`
+      // would then be read as the range U+002E-U+003A, quietly covering `/` and the digits.
+      // DOMPurify, which this is taken from, uses a regex literal where `\-` is the escape.
+      .match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z0-9+.\\-]+(?:[^a-z+.\\-:]|$))`, 'i'))
   )
 }
 
