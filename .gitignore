@@ -60,3 +60,7 @@ docker-compose.override.yml*
 
 # Generated
 .eslintrc-auto-import.json
+
+# Lint caches
+.eslintcache
+.stylelintcache

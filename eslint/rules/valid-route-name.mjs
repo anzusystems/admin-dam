@@ -60,8 +60,7 @@ export default {
     function checkProperty(prop) {
       if (!prop || prop.type !== 'Property') return
       const key = prop.key
-      const keyName =
-        key.type === 'Identifier' ? key.name : key.type === 'Literal' ? String(key.value) : null
+      const keyName = key.type === 'Identifier' ? key.name : key.type === 'Literal' ? String(key.value) : null
       if (!isRouteKey(keyName)) return
       const val = prop.value
       if (val && val.type === 'Literal') {
