@@ -51,9 +51,7 @@ const activeProviderModeLabel = computed(
           v-if="extSystem.ttsSettings.defaultVoiceFamilyId"
           :id="extSystem.ttsSettings.defaultVoiceFamilyId"
         />
-        <template v-else>
-          —
-        </template>
+        <template v-else> — </template>
       </ARow>
       <ARow :title="t('coreDam.extSystem.ttsSettings.autoKeyword')">
         <ACachedChip
@@ -63,18 +61,14 @@ const activeProviderModeLabel = computed(
           :route="'/(coreDam)/keywords/[id]'"
           display-text-path="name"
         />
-        <template v-else>
-          —
-        </template>
+        <template v-else> — </template>
       </ARow>
       <ARow :title="t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAsset')">
         <AssetChip
           v-if="extSystem.ttsFreeAudioEpilogAsset"
           :id="extSystem.ttsFreeAudioEpilogAsset"
         />
-        <template v-else>
-          —
-        </template>
+        <template v-else> — </template>
       </ARow>
     </VCol>
     <VCol cols="4">

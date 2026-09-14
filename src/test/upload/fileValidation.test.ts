@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { checkFormats, checkSizes } from '@/domains/coreDam/shared/services/upload/fileValidation'
 
-const file = (name: string, size: number, type = 'image/jpeg') =>
-  ({ name, size, type }) as File
+const file = (name: string, size: number, type = 'image/jpeg') => ({ name, size, type }) as File
 
 describe('the size limit', () => {
   it('takes a file that is exactly the limit', () => {

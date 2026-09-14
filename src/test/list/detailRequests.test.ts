@@ -60,9 +60,7 @@ const detailOf = (id: string) => ({
 const load = async () => {
   vi.resetModules()
   setActivePinia(createPinia())
-  const { useAssetListActions } = await import(
-    '@/domains/coreDam/asset/components/list/composables/assetListActions'
-  )
+  const { useAssetListActions } = await import('@/domains/coreDam/asset/components/list/composables/assetListActions')
   const { useAssetListStore } = await import('@/domains/coreDam/asset/store/assetListStore')
   const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
   const assetListStore = useAssetListStore()

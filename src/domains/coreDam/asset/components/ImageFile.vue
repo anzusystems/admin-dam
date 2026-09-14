@@ -112,7 +112,7 @@ watch(
       <div
         :class="
           'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
-            ' d-flex align-center justify-center flex-column'
+          ' d-flex align-center justify-center flex-column'
         "
       >
         <VIcon

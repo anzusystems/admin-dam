@@ -81,7 +81,7 @@ const serviceRequirements = computed(() => {
         >
           {{ t('coreDam.youtubeDistribution.videoPreviewLink') }}
         </a>
-        <br>
+        <br />
         <a
           :href="'https://studio.youtube.com/video/' + item.extId + '/edit/basic'"
           target="_blank"

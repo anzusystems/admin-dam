@@ -121,9 +121,7 @@ onMounted(fetchDetail)
             <template v-if="detail.assetId">
               <AssetChip :id="detail.assetId" />
             </template>
-            <template v-else>
-              —
-            </template>
+            <template v-else> — </template>
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.cancelRequested')">
             <ABooleanValue

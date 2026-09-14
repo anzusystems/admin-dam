@@ -70,8 +70,7 @@ type QueueRow = {
   error: { hasError: boolean; message: string }
 }
 
-const itemsOf = (store: { queues: Record<string, { items: unknown[] }> }) =>
-  store.queues[QUEUE].items as QueueRow[]
+const itemsOf = (store: { queues: Record<string, { items: unknown[] }> }) => store.queues[QUEUE].items as QueueRow[]
 
 beforeEach(() => {
   vi.clearAllMocks()

@@ -353,7 +353,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     type="file"
     @change="onFileChange"
     @reset="onReset"
-  >
+  />
 </template>
 
 <style lang="scss">

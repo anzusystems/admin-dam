@@ -239,10 +239,10 @@ onMounted(async () => {
                 <div class="text-body-small">
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
-                  }})<br>
+                  }})<br />
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
                     licenceName
-                  }})<br>
+                  }})<br />
                 </div>
               </VCol>
             </VRow>

@@ -53,12 +53,10 @@ const listItem = (id: string) => ({
 const load = async () => {
   vi.resetModules()
   setActivePinia(createPinia())
-  const { useExternalProviderAssetListActions } = await import(
-    '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-  )
-  const { useExternalProviderAssetListStore } = await import(
-    '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
-  )
+  const { useExternalProviderAssetListActions } =
+    await import('@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions')
+  const { useExternalProviderAssetListStore } =
+    await import('@/domains/coreDam/externalProvider/store/externalProviderAssetListStore')
 
   return {
     actions: useExternalProviderAssetListActions(),

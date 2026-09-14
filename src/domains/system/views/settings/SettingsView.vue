@@ -34,9 +34,7 @@ const logTestError = () => {
 const { showUnreleasedFeatures } = useUnreleasedFeatures()
 
 const unreleasedToggleLabel = computed(() =>
-  showUnreleasedFeatures.value
-    ? t('system.settings.debug.unreleasedShow')
-    : t('system.settings.debug.unreleasedHide')
+  showUnreleasedFeatures.value ? t('system.settings.debug.unreleasedShow') : t('system.settings.debug.unreleasedHide')
 )
 </script>
 

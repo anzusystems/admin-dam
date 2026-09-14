@@ -47,9 +47,7 @@ beforeEach(() => {
 
 describe('a deep link to an asset the server answers 404 for', () => {
   it('answers false, which the start-up turns into the not-found page', async () => {
-    const { initCurrentExtSystemAndLicence } = await import(
-      '@/domains/coreDam/asset/composables/currentExtSystem'
-    )
+    const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
     fetchAsset.mockRejectedValue(new AnzuApiAxiosError(axiosStatus(404)))
 
     await expect(
@@ -59,9 +57,7 @@ describe('a deep link to an asset the server answers 404 for', () => {
   })
 
   it('reads the asset before it can be shown which licence it is in', async () => {
-    const { initCurrentExtSystemAndLicence } = await import(
-      '@/domains/coreDam/asset/composables/currentExtSystem'
-    )
+    const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
     fetchAsset.mockResolvedValue({ id: 'asset-1', licence: 1 })
 
     await expect(
@@ -70,9 +66,7 @@ describe('a deep link to an asset the server answers 404 for', () => {
   })
 
   it('lets an outage through, so it is not reported as a missing asset', async () => {
-    const { initCurrentExtSystemAndLicence } = await import(
-      '@/domains/coreDam/asset/composables/currentExtSystem'
-    )
+    const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
     fetchAsset.mockRejectedValue(new AnzuApiAxiosError(axiosStatus(500)))
 
     // Answering `false` here would tell the user their asset had been deleted.
@@ -82,9 +76,7 @@ describe('a deep link to an asset the server answers 404 for', () => {
   })
 
   it('treats a refusal as a missing asset too', async () => {
-    const { initCurrentExtSystemAndLicence } = await import(
-      '@/domains/coreDam/asset/composables/currentExtSystem'
-    )
+    const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
     // `useApiRequest` has its own class for this one, so the check on `cause` cannot answer it.
     fetchAsset.mockRejectedValue(new AnzuApiForbiddenError())
 
@@ -96,9 +88,7 @@ describe('a deep link to an asset the server answers 404 for', () => {
 
 describe('a deep link into a licence the user may not read', () => {
   it('answers false, the same as an asset that is not there', async () => {
-    const { initCurrentExtSystemAndLicence } = await import(
-      '@/domains/coreDam/asset/composables/currentExtSystem'
-    )
+    const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
     fetchAsset.mockResolvedValue({ id: 'asset-1', licence: 1 })
     fetchAssetLicence.mockRejectedValue(new AnzuApiForbiddenError())
 
@@ -110,9 +100,7 @@ describe('a deep link into a licence the user may not read', () => {
   })
 
   it('still lets an outage on the licence through', async () => {
-    const { initCurrentExtSystemAndLicence } = await import(
-      '@/domains/coreDam/asset/composables/currentExtSystem'
-    )
+    const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
     fetchAsset.mockResolvedValue({ id: 'asset-1', licence: 1 })
     fetchAssetLicence.mockRejectedValue(new AnzuApiAxiosError(axiosStatus(500)))
 

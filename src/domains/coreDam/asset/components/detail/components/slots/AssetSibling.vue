@@ -74,9 +74,7 @@ const pickAssetType = computed(() => {
             @click.stop="removeItem"
           />
         </div>
-        <div v-else>
-          -
-        </div>
+        <div v-else>-</div>
       </VCol>
       <VCol
         cols="3"

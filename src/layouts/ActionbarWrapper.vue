@@ -68,9 +68,7 @@ const breadcrumbTo = (item: BreadcrumbItem, index: number): RouteLocationRaw | u
                   {{ breadcrumb.title }}
                 </div>
               </VBreadcrumbsItem>
-              <VBreadcrumbsDivider v-if="index < breadcrumbs.items.value.length - 1">
-                &raquo;
-              </VBreadcrumbsDivider>
+              <VBreadcrumbsDivider v-if="index < breadcrumbs.items.value.length - 1"> &raquo; </VBreadcrumbsDivider>
             </template>
           </VBreadcrumbs>
         </div>
