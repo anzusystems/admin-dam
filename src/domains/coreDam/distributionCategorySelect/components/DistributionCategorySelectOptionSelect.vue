@@ -44,7 +44,7 @@ const isRequired = computed(() => {
 
 const { requiredIf } = useValidate()
 
-const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired.value) } }, { modelValueComputed })
+const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired) } }, { modelValueComputed })
 
 const errorMessageComputed = computed(() => {
   if (v$.value.$errors?.length) return [v$.value.$errors.map((item: ErrorObject) => item.$message).join(' ')]

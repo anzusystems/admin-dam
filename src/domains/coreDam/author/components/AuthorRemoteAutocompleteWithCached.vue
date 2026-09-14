@@ -65,7 +65,7 @@ const { requiredIf } = useValidate()
 
 const rules = {
   modelValueComputed: {
-    required: requiredIf(requiredComputed.value),
+    required: requiredIf(requiredComputed),
   },
 }
 
@@ -81,7 +81,7 @@ provide(FilterInnerDataKey, filterData)
 const addAuthor = async (id: null | DocId | undefined) => {
   if (!id) return
   if (!modelValueComputed.value.includes(id)) {
-    modelValueComputed.value = [...modelValueComputed.value, ...[id]]
+    modelValueComputed.value = [...modelValueComputed.value, id]
   }
 }
 
