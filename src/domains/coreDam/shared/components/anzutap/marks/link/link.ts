@@ -182,6 +182,9 @@ declare module '@tiptap/core' {
 // From DOMPurify
 // https://github.com/cure53/DOMPurify/blob/main/src/regexp.js
 
+// The control range is the point: this is DOMPurify's ATTR_WHITESPACE verbatim, and it
+// has to strip C0 characters from the URI before the protocol check.
+// oxlint-disable-next-line no-control-regex
 const ATTR_WHITESPACE = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g
 
 export function isAllowedUri(uri: string | undefined, protocols?: LinkOptions['protocols']) {
@@ -201,7 +204,7 @@ export function isAllowedUri(uri: string | undefined, protocols?: LinkOptions['p
     !uri ||
     uri
       .replace(ATTR_WHITESPACE, '')
-      .match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z0-9+.\-]+(?:[^a-z+.\-:]|$))`, 'i'))
+      .match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z0-9+.-]+(?:[^a-z+.:-]|$))`, 'i'))
   )
 }
 

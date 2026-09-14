@@ -68,8 +68,14 @@ const routableAssetFile = computed(() => {
   return null
 })
 
+// useKeywordAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
 
+// useAuthorAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
 const onAnyMetadataChange = () => {
@@ -223,16 +229,14 @@ const onAnyMetadataChange = () => {
           <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
-          <VCol cols="9">
-            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
-          </VCol>
+          <VCol cols="9"> {{ dateTimePretty(asset.createdAt) }}<br /><CachedDamUserChip :id="asset.createdBy" /> </VCol>
         </VRow>
         <VRow>
           <VCol cols="3">
             {{ t('common.model.tracking.modified') }}
           </VCol>
           <VCol cols="9">
-            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+            {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">

@@ -171,8 +171,14 @@ const status = computed(() => {
   return props.item.assetStatus
 })
 
+// useKeywordAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
 
+// useAuthorAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
 const cancelItem = () => {
@@ -283,7 +289,7 @@ onUnmounted(() => {
             v-if="item.isDuplicate"
             :class="
               'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
-                ' d-flex align-center justify-center flex-column'
+              ' d-flex align-center justify-center flex-column'
             "
           >
             <VIcon
@@ -308,7 +314,7 @@ onUnmounted(() => {
             v-if="item.error.hasError"
             :class="
               'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
-                ' d-flex align-center justify-center flex-column'
+              ' d-flex align-center justify-center flex-column'
             "
           >
             <VIcon

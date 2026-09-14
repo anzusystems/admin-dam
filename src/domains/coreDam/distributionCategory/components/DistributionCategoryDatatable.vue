@@ -70,10 +70,16 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
 
 const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
-    ...[{ key: 'id' }, { key: 'name' }, { key: 'type' }],
+    { key: 'id' },
+    { key: 'name' },
+    { key: 'type' },
 
+    // createDatatableColumnsConfig takes a plain ColumnConfig[], not a ref, so the columns
+    // are fixed at setup by its signature.
+    // eslint-disable-next-line vue/no-ref-object-reactivity-loss
     ...distributionServicesTableColumns.value,
-    ...[{ key: 'createdAt' }, { key: 'modifiedAt' }],
+    { key: 'createdAt' },
+    { key: 'modifiedAt' },
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,

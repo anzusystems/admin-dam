@@ -68,23 +68,21 @@ export default {
   sidebar,
   breadcrumb,
   system,
-  ...{
-    error: {
-      // Spread first so namespaces this admin never overrides still arrive — the
-      // package's own alerts.ts calls error.apiTimedOut.message, for one.
-      ...messagesEn.error,
-      apiValidation: {
-        ...messagesEn.error.apiValidation,
-        ...apiValidation,
-      },
-      apiForbiddenOperation: {
-        ...messagesEn.error.apiForbiddenOperation,
-        ...apiForbiddenOperation,
-      },
-      jsValidation: {
-        ...messagesEn.error.jsValidation,
-        ...jsValidation,
-      },
+  error: {
+    // Spread first so namespaces this admin never overrides still arrive — the
+    // package's own alerts.ts calls error.apiTimedOut.message, for one.
+    ...messagesEn.error,
+    apiValidation: {
+      ...messagesEn.error.apiValidation,
+      ...apiValidation,
+    },
+    apiForbiddenOperation: {
+      ...messagesEn.error.apiForbiddenOperation,
+      ...apiForbiddenOperation,
+    },
+    jsValidation: {
+      ...messagesEn.error.jsValidation,
+      ...jsValidation,
     },
   },
 }
