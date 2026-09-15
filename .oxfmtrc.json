@@ -5,5 +5,13 @@
   "singleQuote": true,
   "trailingComma": "es5",
   "singleAttributePerLine": true,
-  "ignorePatterns": ["/*", "!/src", "!/scripts", "!/eslint", "!/*.ts", "!/*.mjs"]
+  "ignorePatterns": [
+    "/*",
+    "!/src",
+    "!/scripts",
+    "!/eslint",
+    "!/*.mts",
+    "!/*.mjs",
+    "!/env.d.ts"
+  ]
 }

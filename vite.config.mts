@@ -7,7 +7,7 @@ import vuetify from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 // oxlint-disable-next-line no-restricted-imports
-import { autoImports } from './autoImports.config'
+import { autoImports } from './autoImports.config.mts'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
@@ -43,64 +43,72 @@ export default defineConfig({
   build: {
     sourcemap: shouldEnableSentry ? 'hidden' : false,
     target: 'es2019',
-    cssMinify: 'lightningcss',
-    rollupOptions: {
+    rolldownOptions: {
+      // Advisory, and it fires on builds that are already fast -- common-admin switches it off
+      // the same way.
+      checks: { pluginTimings: false },
       output: {
-        manualChunks: (id) => {
-          // Core Vue runtime
-          if (
-            id.includes('node_modules/vue/') ||
-            id.includes('node_modules/vue-router/') ||
-            id.includes('node_modules/pinia/')
-          ) {
-            return 'vue-core'
-          }
-          // i18n stack
-          if (id.includes('node_modules/vue-i18n/') || id.includes('node_modules/@intlify/')) {
-            return 'vue-i18n'
-          }
-          // Vuetify UI framework
-          if (id.includes('node_modules/vuetify/')) {
-            return 'vuetify'
-          }
-          // Anzu admin library — split common-admin's pre-bundled sub-files (each ~150-950kB raw)
-          if (id.includes('node_modules/@anzusystems/common-admin/dist/labs')) {
-            return 'common-admin-labs'
-          }
-          if (id.includes('node_modules/@anzusystems/common-admin/dist/AFormRemoteAutocomplete')) {
-            return 'common-admin-autocomplete'
-          }
-          if (id.includes('node_modules/@anzusystems/common-admin/dist/index-')) {
-            return 'common-admin-internals'
-          }
-          if (id.includes('node_modules/@anzusystems/common-admin/')) {
-            return 'common-admin'
-          }
-          // TipTap editor and ProseMirror
-          if (id.includes('node_modules/@tiptap/') || id.includes('node_modules/prosemirror-')) {
-            return 'tiptap'
-          }
-          // Realtime / sockets
-          if (id.includes('node_modules/socket.io-')) {
-            return 'realtime'
-          }
-          // Sentry
-          if (id.includes('node_modules/@sentry/')) {
-            return 'sentry'
-          }
-          // Vendor utility libs (axios, vuelidate, floating-ui, jwt, cookie, uuid, rusha, sortablejs)
-          if (
-            id.includes('node_modules/axios/') ||
-            id.includes('node_modules/@vuelidate/') ||
-            id.includes('node_modules/@floating-ui/') ||
-            id.includes('node_modules/jwt-decode/') ||
-            id.includes('node_modules/universal-cookie/') ||
-            id.includes('node_modules/uuid/') ||
-            id.includes('node_modules/rusha/') ||
-            id.includes('node_modules/sortablejs/')
-          ) {
-            return 'vendor-utils'
-          }
+        codeSplitting: {
+          groups: [
+            {
+              name: (id) => {
+                // Core Vue runtime
+                if (
+                  id.includes('node_modules/vue/') ||
+                  id.includes('node_modules/vue-router/') ||
+                  id.includes('node_modules/pinia/')
+                ) {
+                  return 'vue-core'
+                }
+                // i18n stack
+                if (id.includes('node_modules/vue-i18n/') || id.includes('node_modules/@intlify/')) {
+                  return 'vue-i18n'
+                }
+                // Vuetify UI framework
+                if (id.includes('node_modules/vuetify/')) {
+                  return 'vuetify'
+                }
+                // Anzu admin library — split common-admin's pre-bundled sub-files (each ~150-950kB raw)
+                if (id.includes('node_modules/@anzusystems/common-admin/dist/labs')) {
+                  return 'common-admin-labs'
+                }
+                if (id.includes('node_modules/@anzusystems/common-admin/dist/AFormRemoteAutocomplete')) {
+                  return 'common-admin-autocomplete'
+                }
+                if (id.includes('node_modules/@anzusystems/common-admin/dist/index-')) {
+                  return 'common-admin-internals'
+                }
+                if (id.includes('node_modules/@anzusystems/common-admin/')) {
+                  return 'common-admin'
+                }
+                // TipTap editor and ProseMirror
+                if (id.includes('node_modules/@tiptap/') || id.includes('node_modules/prosemirror-')) {
+                  return 'tiptap'
+                }
+                // Realtime / sockets
+                if (id.includes('node_modules/socket.io-')) {
+                  return 'realtime'
+                }
+                // Sentry
+                if (id.includes('node_modules/@sentry/')) {
+                  return 'sentry'
+                }
+                // Vendor utility libs (axios, vuelidate, floating-ui, jwt, cookie, uuid, rusha, sortablejs)
+                if (
+                  id.includes('node_modules/axios/') ||
+                  id.includes('node_modules/@vuelidate/') ||
+                  id.includes('node_modules/@floating-ui/') ||
+                  id.includes('node_modules/jwt-decode/') ||
+                  id.includes('node_modules/universal-cookie/') ||
+                  id.includes('node_modules/uuid/') ||
+                  id.includes('node_modules/rusha/') ||
+                  id.includes('node_modules/sortablejs/')
+                ) {
+                  return 'vendor-utils'
+                }
+              },
+            },
+          ],
         },
         chunkFileNames: (chunkInfo) => {
           const toKebab = (str: string) =>

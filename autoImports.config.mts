@@ -1,6 +1,6 @@
 import type { Options } from 'unplugin-auto-import/types'
 
-// Shared by `vite.config.ts` and `vitest.config.ts`: the modules under test call these helpers at
+// Shared by `vite.config.mts` and `vitest.config.mts`: the modules under test call these helpers at
 // runtime, so the test build has to auto-import exactly the same list as the app build.
 export const autoImports: Options['imports'] = [
   'vue',
