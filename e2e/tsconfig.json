@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2022", "dom"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["cypress", "@cypress/grep", "cypress-downloadfile", "node"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
+}

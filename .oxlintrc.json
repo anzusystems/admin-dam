@@ -2,7 +2,7 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["eslint", "typescript", "unicorn", "oxc", "vue"],
   "env": { "browser": true },
-  "ignorePatterns": ["dist", "dist-ssr", "coverage", "cypress", "src/typed-router.d.ts", "src/auto-imports.d.ts"],
+  "ignorePatterns": ["dist", "dist-ssr", "coverage", "e2e", "src/typed-router.d.ts", "src/auto-imports.d.ts"],
   "categories": { "correctness": "error" },
   "rules": {
     "no-unused-vars": ["error", { "caughtErrors": "none" }],

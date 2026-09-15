@@ -26,7 +26,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-    // Scoped to `src/`: `cypress/` holds the e2e specs, which vitest's default include would collect.
+    // Scoped to `src/`: `e2e/` holds the e2e specs, which vitest's default include would collect.
     include: ['src/**/*.{test,spec}.ts'],
     server: {
       deps: {

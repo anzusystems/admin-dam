@@ -25,11 +25,6 @@ src/auto-imports.d.ts
 # Tests
 coverage
 .scannerwork
-cypress/report
-cypress/config/*
-!cypress/config/cypress.config.ts
-cypress/downloads
-cypress/fixtures
 
 # Managed by yarn
 .yarn/*

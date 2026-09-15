@@ -42,7 +42,7 @@ export default defineConfigWithVueTs(
       '**/dist-ssr/**',
       '**/coverage/**',
       '.stylelintrc.js',
-      '**/cypress/**',
+      '**/e2e/**',
       'src/typed-router.d.ts',
       'src/auto-imports.d.ts',
     ],

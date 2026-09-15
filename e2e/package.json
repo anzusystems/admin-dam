@@ -1,0 +1,31 @@
+{
+  "name": "dam-e2e-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "End-to-end tests for admin-dam using Cypress",
+  "scripts": {
+    "test:open": "cypress open -C config/cypress.config.ts",
+    "test:run": "cypress run -C config/cypress.config.ts",
+    "lint:tsc": "tsc -p tsconfig.json --noEmit",
+    "lint:oxlint": "oxlint . --disable-nested-config",
+    "lint:oxlint:fix": "oxlint . --fix --disable-nested-config",
+    "format": "oxfmt --disable-nested-config commands config support tests utils",
+    "format:check": "oxfmt --disable-nested-config commands config support tests utils --check",
+    "ci": "yarn format:check && yarn lint:oxlint",
+    "lint": "yarn ci",
+    "lint:fix": "yarn lint:oxlint:fix && yarn format"
+  },
+  "devDependencies": {
+    "@cypress/grep": "^6.0.3",
+    "@types/node": "^24.13.3",
+    "cypress": "15.20.1",
+    "cypress-downloadfile": "1.2.4",
+    "cypress-mochawesome-reporter": "^5.0.0",
+    "oxfmt": "^0.67.0",
+    "oxlint": "1.82.0",
+    "typescript": "~6.0.3"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  }
+}

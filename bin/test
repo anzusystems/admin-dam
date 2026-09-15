@@ -11,7 +11,8 @@ FILTER=""
 TAG=""
 RUNNER="yarn"
 DASHBOARD_OPTIONS="--record false"
-CONFIG_FILE="cypress/config/cypress.config.ts"
+E2E_DIR="${PROJECT_ROOT}/e2e"
+CONFIG_FILE="config/cypress.config.ts"
 
 cd "${PROJECT_ROOT}" || exit 1
 # Initialize default variables
@@ -31,7 +32,7 @@ function help() {
         -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
         -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
         -t --tag     (Optional) Only for dashboard runs tags for cypress dashboard list
-        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder
+        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'e2e/report' folder
 
     Examples:
         $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
@@ -102,13 +103,17 @@ if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; t
     exit
 fi
 
-if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
-    echo "[ERROR] Config file '${ENV}.ts' does not exist in cypress/config folder"
+if [ -n "${ENV}" ] && [ ! -f "e2e/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
+    echo "[ERROR] Config file '${ENV}.ts' does not exist in e2e/config folder"
     help
     exit
 fi
 
 if [ -f /.dockerenv ]; then
+    # The e2e suite is its own yarn project, so cypress lives there, not in the app's
+    # node_modules. Everything below runs from e2e/.
+    cd "${E2E_DIR}" || exit 1
+    yarn install || exit 1
     if [ ! -d "${CYPRESS_CACHE_FOLDER}" ] ; then
         ${RUNNER} cypress install --force
     fi

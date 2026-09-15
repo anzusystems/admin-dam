@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+.pnp.*
+
+# Cypress artifacts
+report/
+downloads/
+screenshots/
+videos/
+
+# Media samples the specs upload; binary, not tracked.
+fixtures/
+
+# Environment configs hold credentials — only the cypress config itself is tracked.
+config/*
+!config/cypress.config.ts
+
+# Lint caches
+.eslintcache
+.stylelintcache
+
+# Logs
+*.log

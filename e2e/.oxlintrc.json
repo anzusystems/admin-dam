@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc"],
+  "env": { "browser": true },
+  "categories": { "correctness": "error" },
+  "rules": {
+    "no-unused-vars": ["error", { "caughtErrors": "none", "argsIgnorePattern": "^_" }],
+    "no-unused-expressions": "off",
+
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+    "typescript/no-array-constructor": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-unsafe-function-type": "error",
+
+    // Cypress and Playwright both load their node-side plugins with require(), in a CJS context.
+    "typescript/no-require-imports": "off"
+  }
+}
