@@ -3,14 +3,14 @@
 import { CY } from '../../utils/common'
 describe(
   `Test cache-control , Env: ${CY.cfg}`,
-  { tags: ['@assets', '@cacheControl'], env: { visitBaseUrl: true } },
+  { tags: ['@assets', '@cacheControl'], expose: { visitBaseUrl: true } },
   () => {
     if (CY.cfg !== 'stg' && CY.cfg !== 'dev') {
       it('Tests skipped - only possible in stg/dev env', () => {})
       return
     }
     it('cacheControl', () => {
-      cy.request({
+      cy.request<{ data: Array<{ mainFile: { links: { image_list: { url: string } } } }> }>({
         method: 'GET',
         url:
           `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/licence/100000/search?` +

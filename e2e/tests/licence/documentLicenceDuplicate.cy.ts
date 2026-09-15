@@ -9,13 +9,13 @@ const TESTED_LICENCE_IDS = {
 } as const
 describe(
   `Test asset document licence duplicate function, Env: ${CY.cfg}`,
-  { tags: ['@assetDocLicence', '@licence'], env: { visitBaseUrl: false } },
+  { tags: ['@assetDocLicence', '@licence'], expose: { visitBaseUrl: false } },
   () => {
     it('Prepare Test Data', () => {
-      cy.prepareData('document/sample.doc', 0)
-      cy.prepareData('document/sample.pdf', 0)
-      cy.prepareData('document/sample.txt', 0)
-      cy.prepareData('document/sample.xls', 0)
+      cy.prepareData('document/sample.doc', false)
+      cy.prepareData('document/sample.pdf', false)
+      cy.prepareData('document/sample.txt', false)
+      cy.prepareData('document/sample.xls', false)
     })
     it('Cms-system 1', () => {
       cy.visit('/assets')

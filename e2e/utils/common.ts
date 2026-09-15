@@ -1,4 +1,6 @@
-export const CY = Cypress.env('')
+// Cypress 16 removed Cypress.env(); `expose` is the browser-visible half and, like env(),
+// returns the whole object when called with no key.
+export const CY = Cypress.expose()
 export const RAND_NUM = `${Cypress._.random(1000, 9999)}`
 export const LENGUAGE_SK = 'Slovensky'
 export const LENGUAGE_EN = 'English'

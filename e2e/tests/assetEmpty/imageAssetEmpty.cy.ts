@@ -4,7 +4,7 @@ import { ALERT_CREATE, ASSET_TITLE, CY } from '../../utils/common'
 
 describe(`Test image empty asset, Env: ${CY.cfg}`, { tags: ['@assetImageEmpty', '@assetEmpty'] }, () => {
   it('Prepare Test Data', () => {
-    cy.prepareData('image/sample.png', 0)
+    cy.prepareData('image/sample.png', false)
   })
   it('Test empty asset', () => {
     cy.api_waitPageLoad('main')

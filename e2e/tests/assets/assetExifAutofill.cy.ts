@@ -13,15 +13,18 @@ describe(
       cy.prepareData('image/sampleMeta1.jpg', true, assetIDs)
     })
     it('Check image on Title-Description-Keywords-Artists', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea').should('have.value', EXPECTED_TITLE)
       cy.get('[data-cy="custom-field-description"] textarea').should('have.value', EXPECTED_DESCRIPTION)
       cy.getCy('custom-field-keywords').click()
+      // `.should()`, not `.then()`: the overlay list is still populating when the command runs,
+      // and only `.should()` retries. The assertion this replaced never executed, so there is no
+      // history saying a single pass would be enough.
       cy.get('.v-overlay__content > .v-list > .v-list-item')
         .invoke('text')
-        .then((text) => {
-          text.trim().includes(EXPECTED_KEYWORDS)
+        .should((text) => {
+          EXPECTED_KEYWORDS.forEach((keyword) => expect(text.trim()).to.contain(keyword))
         })
       cy.get('body').type('{esc}')
       cy.getCy('custom-field-authors').click()

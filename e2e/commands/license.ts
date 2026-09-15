@@ -15,7 +15,7 @@ declare global {
        * Change asset licence
        * @param idLicence - licence id
        */
-      changeLicence(idLicence: string): Chainable<any>
+      changeLicence(idLicence: number): Chainable<any>
       /**
        * Provide user credentials form config/cypress.config.ts env to login, if they don't exist, use provided values.
        * @param dir - direction to needed folder
@@ -40,7 +40,7 @@ Cypress.Commands.add('duplicateShouldExist', (value: boolean) => {
     })
 })
 
-Cypress.Commands.add('changeLicence', (idLicence: string) => {
+Cypress.Commands.add('changeLicence', (idLicence: number) => {
   cy.get(':nth-child(3) > .mx-1').should('be.visible').click()
   cy.getCy('button-switch-licence').should('be.visible').click()
   cy.getCy('field-change-on-id-licence').type(`${idLicence}`)

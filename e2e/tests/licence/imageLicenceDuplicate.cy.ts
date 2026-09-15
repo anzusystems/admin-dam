@@ -11,13 +11,13 @@ const TESTED_LICENCE_IDS = {
 
 describe(
   `Test asset image licence duplicate function, Env: ${CY.cfg}`,
-  { tags: ['@assetImageLicence', '@licence'], env: { visitBaseUrl: false } },
+  { tags: ['@assetImageLicence', '@licence'], expose: { visitBaseUrl: false } },
   () => {
     it('Prepare Test Data', () => {
-      cy.prepareData('image/sample.png', 0)
-      cy.prepareData('image/sample.gif', 0)
-      cy.prepareData('image/sample.jpeg', 0)
-      cy.prepareData('image/sample.webp', 0)
+      cy.prepareData('image/sample.png', false)
+      cy.prepareData('image/sample.gif', false)
+      cy.prepareData('image/sample.jpeg', false)
+      cy.prepareData('image/sample.webp', false)
     })
     it('CMS', () => {
       cy.visit('/assets')

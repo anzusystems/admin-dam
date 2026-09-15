@@ -12,13 +12,13 @@ describe(`Test upload of various audio, Env: ${CY.cfg}`, { tags: ['@audioUpload'
         cy.uploadFile(`audio/sample.${fileType}`, uploadType)
         cy.api_getFileID().then((responseID) => {
           fileIDs.push(responseID)
-          cy.waitForUpload(ALERT_UPLOAD, 25000)
+          cy.waitForUpload(ALERT_UPLOAD)
           cy.verifyFileType(responseID, 'audio', fileType)
         })
       })
     })
   })
-  it('Audio: Delete', { env: { visitBaseUrl: false } }, () => {
+  it('Audio: Delete', { expose: { visitBaseUrl: false } }, () => {
     cy.deleteFile(fileIDs)
   })
 })

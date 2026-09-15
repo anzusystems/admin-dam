@@ -4,7 +4,7 @@ import { ALERT_UPDATE, CY, EXTERNAL_SYS } from '../../utils/common'
 
 describe(
   `Test ext system function, Env: ${CY.cfg}`,
-  { tags: ['@extSystem', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@extSystem', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Edit ext system', () => {
       cy.visit('/settings')

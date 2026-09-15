@@ -4,7 +4,7 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME } from '../..
 
 describe(
   `Test distribution category function, Env: ${CY.cfg}`,
-  { tags: ['@distributionCategory', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@distributionCategory', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     if (CY.cfg === 'local') {
       //if not - create

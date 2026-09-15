@@ -11,7 +11,7 @@ describe(`Test upload of various images, Env: ${CY.cfg}`, { tags: ['@imageUpload
         cy.uploadFile(`image/sample.${fileType}`, uploadType, 20000)
         cy.api_getFileID().then((responseID) => {
           fileIDs.push(responseID)
-          cy.waitForUpload(ALERT_UPLOAD, 20000)
+          cy.waitForUpload(ALERT_UPLOAD)
           cy.verifyFileType(responseID, 'image', fileType)
         })
       })
@@ -22,7 +22,7 @@ describe(`Test upload of various images, Env: ${CY.cfg}`, { tags: ['@imageUpload
       cy.prepareData('image/animation.gif', false)
       cy.uploadFile('image/animation.gif', uploadType, 20000)
       cy.api_getFileID().then((responseID) => {
-        cy.waitForUpload(ALERT_UPLOAD, 20000)
+        cy.waitForUpload(ALERT_UPLOAD)
         cy.visit(`/assets/${responseID}`)
         cy.api_waitPageLoad('asset-edit')
         cy.get(':nth-child(9) > .v-col-9').contains('áno')
@@ -30,7 +30,7 @@ describe(`Test upload of various images, Env: ${CY.cfg}`, { tags: ['@imageUpload
       })
     })
   })
-  it('Image: Delete', { env: { visitBaseUrl: false } }, () => {
+  it('Image: Delete', { expose: { visitBaseUrl: false } }, () => {
     cy.deleteFile(fileIDs)
   })
 })

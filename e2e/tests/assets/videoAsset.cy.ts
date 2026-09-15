@@ -8,7 +8,7 @@ describe(`Test asset video function, Env: ${CY.cfg}`, { tags: ['@assetVideo', '@
     cy.prepareData('video/sample.mp4', true, assetIDs)
   })
   it('Create Metadata', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true }).type(`${ASSET_TITLE}`)
     cy.get('[data-cy="custom-field-description"] textarea').first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
@@ -33,7 +33,7 @@ describe(`Test asset video function, Env: ${CY.cfg}`, { tags: ['@assetVideo', '@
     cy.alertMessage(ALERT_UPDATE)
   })
   it('Edit Metadata', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true }).type(`${ASSET_TITLE}-edit`)
     cy.get('[data-cy="custom-field-description"] textarea').first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
@@ -41,7 +41,7 @@ describe(`Test asset video function, Env: ${CY.cfg}`, { tags: ['@assetVideo', '@
     cy.alertMessage(ALERT_UPDATE)
   })
   it('Clear Metadata', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true })
     cy.get('[data-cy="custom-field-description"] textarea').first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
@@ -56,7 +56,7 @@ describe(`Test asset video function, Env: ${CY.cfg}`, { tags: ['@assetVideo', '@
     cy.getCy('button-image-preview').should('be.visible')
   })
   it('Test Image Preview', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.getCy('button-image-preview').click()
     cy.waitSec(2)

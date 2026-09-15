@@ -4,7 +4,7 @@ import { ALERT_UPDATE, CY, RAND_NUM } from '../../utils/common'
 let CATEGORY_ID = ''
 describe(
   `Test distribution category select function, Env: ${CY.cfg}`,
-  { tags: ['@distributionCategorySelect', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@distributionCategorySelect', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create distribution category select', () => {
       cy.visit('/settings')

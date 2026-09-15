@@ -11,7 +11,7 @@ describe(
       cy.prepareData('video/sample.mp4', true, assetIDs)
     })
     it('Add video asset to video show episode', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true }).type(`${ASSET_TITLE}`)
       cy.get('[data-cy="custom-field-description"] textarea')
@@ -30,7 +30,7 @@ describe(
       cy.alertMessage(ALERT_CREATE)
     })
     it('Delete video-show episode', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-video-show').should('be.visible').click()
       cy.get('.text-body-2').contains(`${VIDEO_SHOW_TITLE}-edit`).should('exist')

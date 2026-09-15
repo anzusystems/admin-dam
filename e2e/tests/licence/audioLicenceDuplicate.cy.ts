@@ -9,12 +9,12 @@ const TESTED_LICENCE_IDS = {
 } as const
 describe(
   `Test asset audio licence duplicate function, Env: ${CY.cfg}`,
-  { tags: ['@assetAudioLicence', '@licence'], env: { visitBaseUrl: false } },
+  { tags: ['@assetAudioLicence', '@licence'], expose: { visitBaseUrl: false } },
   () => {
     it('Prepare Test Data', () => {
-      cy.prepareData('audio/sample.mp3', 0)
-      cy.prepareData('audio/sample.wav', 0)
-      cy.prepareData('audio/sample.m4a', 0)
+      cy.prepareData('audio/sample.mp3', false)
+      cy.prepareData('audio/sample.wav', false)
+      cy.prepareData('audio/sample.m4a', false)
     })
     it('CMS-system 1', () => {
       cy.visit('/assets')

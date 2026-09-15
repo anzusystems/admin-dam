@@ -4,7 +4,7 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, USER_FIRST_NAME } from '../../utils/com
 let KEYWORD_ID = ''
 describe(
   `Test keyword function, Env: ${CY.cfg}`,
-  { tags: ['@keyword', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@keyword', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create keyword', () => {
       cy.visit('/settings')

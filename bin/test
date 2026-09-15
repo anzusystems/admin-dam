@@ -117,11 +117,18 @@ if [ -f /.dockerenv ]; then
     if [ ! -d "${CYPRESS_CACHE_FOLDER}" ] ; then
         ${RUNNER} cypress install --force
     fi
+    # `--expose`, not `--env` or `CYPRESS_grepTags`: Cypress 16 removed `Cypress.env()`, so
+    # everything the specs read in the browser goes through `expose`.
+    #
+    # One `--expose`, never two: the CLI option carries no collector, so a second occurrence
+    # replaces the first. Pairs are comma separated, which is why a filter's own commas become
+    # spaces -- `@a @b` is @cypress/grep's OR, and a comma there would be read as a pair boundary.
+    EXPOSE="cfg=${ENV}"
+    [ -n "${FILTER}" ] && EXPOSE="${EXPOSE},grepTags=${FILTER//,/ }"
     # shellcheck disable=SC2086
-    CYPRESS_grepTags=${FILTER} \
     dbus-launch ${RUNNER} cypress run \
         --config-file ${CONFIG_FILE} \
-        --env cfg=${ENV} \
+        --expose "${EXPOSE}" \
         --browser ${BROWSER} \
         ${DASHBOARD_OPTIONS}
     exit

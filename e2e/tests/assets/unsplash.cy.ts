@@ -5,7 +5,7 @@ const assetIDs: Array<string> = []
 
 xdescribe(
   `Test audio slots function, Env: ${CY.cfg}`,
-  { tags: ['@unsplash', '@assets'], env: { visitBaseUrl: true } },
+  { tags: ['@unsplash', '@assets'], expose: { visitBaseUrl: true } },
   () => {
     it('test Unsplash Image', () => {
       cy.api_waitPageLoad('main')

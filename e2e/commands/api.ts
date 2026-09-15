@@ -7,7 +7,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       api_getFile(id: string, failOnStatusCode?: boolean): Chainable<any>
-      api_getFileID(idx: number = 0, timeout?: number): Chainable<string>
+      api_getFileID(idx?: number, timeout?: number): Chainable<string>
       api_getFileType(id: string): Chainable<string>
       api_deleteFile(id: string): Chainable<any>
       /**
@@ -15,20 +15,29 @@ declare global {
        * @param pagePart - type of page that loads. main (asset's page) || asset-edit (asset edit page)
        * @param idLicence - ID of licence, default - CMS licence
        */
-      api_waitPageLoad(pagePart: string = 'main', idLicence: string = '100000'): Chainable<any>
+      api_waitPageLoad(pagePart?: string, idLicence?: number): Chainable<any>
     }
   }
 }
 
+// `cy.wait` types the response as optional: an intercept can be fulfilled by a request that
+// never got one. Here that is a failure of the test, not a value to carry on with.
+const assetIdFromResponse = (data: { response?: { body?: { id?: unknown } } }): string => {
+  const id = data.response?.body?.id
+  if (typeof id !== 'string')
+    throw new Error(`No asset id in the upload response: ${JSON.stringify(data.response?.body)}`)
+  return id
+}
+
 const CORE_DAM_ASSET = (id?: string) => `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset/${id}`
-Cypress.Commands.add('api_getFileID', (idx: number = 0, timeout?: number) => {
+Cypress.Commands.add('api_getFileID', (idx: number = 0, timeout: number = 60000) => {
   cy.intercept({
     method: 'GET',
     url: CORE_DAM_ASSET('*'),
     times: 1,
   }).as(`uploadApi${idx}`)
-  cy.wait(`@uploadApi${idx}`, { timeout: timeout | 60000 }).then((data) => {
-    return cy.wrap(data.response.body.id)
+  cy.wait(`@uploadApi${idx}`, { timeout }).then((data) => {
+    return cy.wrap(assetIdFromResponse(data))
   })
 })
 
@@ -51,7 +60,7 @@ Cypress.Commands.add('api_getFileType', (id: string) => {
   })
 })
 
-Cypress.Commands.add('api_waitPageLoad', (pagePart: string = 'main', idLicence: string = '100000') => {
+Cypress.Commands.add('api_waitPageLoad', (pagePart: string = 'main', idLicence: number = 100000) => {
   let url = ''
   switch (pagePart) {
     case 'main':

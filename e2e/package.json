@@ -9,20 +9,20 @@
     "lint:tsc": "tsc -p tsconfig.json --noEmit",
     "lint:oxlint": "oxlint . --disable-nested-config",
     "lint:oxlint:fix": "oxlint . --fix --disable-nested-config",
-    "format": "oxfmt --disable-nested-config commands config support tests utils",
-    "format:check": "oxfmt --disable-nested-config commands config support tests utils --check",
-    "ci": "yarn format:check && yarn lint:oxlint",
+    "format": "oxfmt --disable-nested-config commands config support tests types utils",
+    "format:check": "oxfmt --disable-nested-config commands config support tests types utils --check",
+    "ci": "yarn lint:tsc && yarn format:check && yarn lint:oxlint",
     "lint": "yarn ci",
     "lint:fix": "yarn lint:oxlint:fix && yarn format"
   },
   "devDependencies": {
-    "@cypress/grep": "^6.0.3",
-    "@types/node": "^24.13.3",
-    "cypress": "15.20.1",
+    "@cypress/grep": "^7.0.0",
+    "@types/node": "^24.13.4",
+    "cypress": "^16.0.0",
     "cypress-downloadfile": "1.2.4",
     "cypress-mochawesome-reporter": "^5.0.0",
-    "oxfmt": "^0.67.0",
-    "oxlint": "1.82.0",
+    "oxfmt": "^0.68.0",
+    "oxlint": "1.83.0",
     "typescript": "~6.0.3"
   },
   "engines": {

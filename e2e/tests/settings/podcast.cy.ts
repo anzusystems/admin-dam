@@ -5,7 +5,7 @@ let PODCAST_ID = ''
 let EPISODE_ID = ''
 describe(
   `Test Podcast function, Env: ${CY.cfg}`,
-  { tags: ['@podcast', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@podcast', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create podcast', () => {
       cy.visit('/settings')

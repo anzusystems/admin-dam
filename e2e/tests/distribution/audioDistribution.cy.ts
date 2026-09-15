@@ -14,10 +14,10 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`, { tags: ['@distribu
     return
   }
   it('Prepare Test Data', () => {
-    cy.prepareData('audio/sample.mp3', 1, assetIDs)
+    cy.prepareData('audio/sample.mp3', true, assetIDs)
   })
   it('Distribute audio', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
 
     // Add to podcast

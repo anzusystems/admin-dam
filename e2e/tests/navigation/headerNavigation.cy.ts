@@ -4,7 +4,7 @@ import { CY } from '../../utils/common'
 
 describe(
   `Test header navigation menu function, Env: ${CY.cfg}`,
-  { tags: ['@headerNavigation', '@navigation'], env: { visitBaseUrl: true } },
+  { tags: ['@headerNavigation', '@navigation'], expose: { visitBaseUrl: true } },
   () => {
     it('Test Settings Navigation menu', () => {
       cy.api_waitPageLoad('main')

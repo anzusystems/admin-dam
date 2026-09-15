@@ -4,7 +4,7 @@
   "env": { "browser": true },
   "categories": { "correctness": "error" },
   "rules": {
-    "no-unused-vars": ["error", { "caughtErrors": "none", "argsIgnorePattern": "^_" }],
+    "no-unused-vars": ["error", { "caughtErrors": "none", "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
     "no-unused-expressions": "off",
 
     "no-var": "error",

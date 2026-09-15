@@ -61,7 +61,8 @@ declare global {
        * @param withUpload - if true - uploads file on server, saves ID
        * @param assetIDs - Array where file ids will be pushed
        */
-      prepareData(path: string, withUpload: boolean, assetIDs?: string[]): Chainable<any>
+      prepareData(path: string, withUpload: false): Chainable<any>
+      prepareData(path: string, withUpload: true, assetIDs: string[]): Chainable<any>
       /**
        * Waits for job
        */
@@ -116,9 +117,9 @@ Cypress.Commands.add('failOnUncaughtException', (option) => {
   })
 })
 
-Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs: string[]) => {
-  cy.exec('[ -f fixtures/' + path + ' ] && echo "file exists"', { failOnNonZeroExit: false }).then((res) => {
-    if (res.stdout != 'file exists') {
+Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs?: string[]) => {
+  cy.task<boolean>('fixtureExists', path).then((exists) => {
+    if (!exists) {
       cy.downloadFile(
         `https://storage.googleapis.com/anzu-e2e-test-data-devel-bel/${path}`,
         `../fixtures/${path.split('/')[0]}`,
@@ -128,7 +129,7 @@ Cypress.Commands.add('prepareData', (path: string, withUpload: boolean, assetIDs
     if (withUpload) {
       cy.uploadFile(`${path}`, 'select')
       cy.api_getFileID().then((responseID) => {
-        assetIDs.push(responseID)
+        assetIDs?.push(responseID)
       })
       cy.waitForUpload('Nahrávanie ukončené')
       cy.getCy('button-add-description').click()

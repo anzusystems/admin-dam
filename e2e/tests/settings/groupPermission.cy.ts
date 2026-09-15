@@ -4,7 +4,7 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM } from '../../utils/common'
 let GROUP_ID = ''
 describe(
   `Test permission groups function, Env: ${CY.cfg}`,
-  { tags: ['@groupPermission', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@groupPermission', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create permission group', () => {
       cy.visit('/settings')

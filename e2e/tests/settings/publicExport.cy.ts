@@ -5,7 +5,7 @@ let PUBLIC_EXPORT_ID = ''
 
 describe(
   `Test public export function, Env: ${CY.cfg}`,
-  { tags: ['@publicExport', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@publicExport', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create public export', () => {
       cy.visit('/public-exports')

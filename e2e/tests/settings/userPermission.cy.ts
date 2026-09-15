@@ -5,7 +5,7 @@ let USER_ID = ''
 const RAND_NUM = `${Cypress._.random(50, 100)}`
 describe(
   `Test permission user function, Env: ${CY.cfg}`,
-  { tags: ['@userPermission', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@userPermission', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create user', () => {
       cy.visit('/settings')

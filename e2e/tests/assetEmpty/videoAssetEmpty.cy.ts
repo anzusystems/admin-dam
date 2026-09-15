@@ -4,7 +4,7 @@ import { ALERT_CREATE, ASSET_TITLE, CY } from '../../utils/common'
 
 describe(`Test video empty asset, Env: ${CY.cfg}`, { tags: ['@assetVideoEmpty', '@assetEmpty'] }, () => {
   it('Prepare Test Data', () => {
-    cy.prepareData('video/sample.mp4', 0)
+    cy.prepareData('video/sample.mp4', false)
   })
   it('Test empty asset', () => {
     cy.api_waitPageLoad('main')

@@ -9,11 +9,11 @@ const TESTED_LICENCE_IDS = {
 } as const
 describe(
   `Test asset video licence duplicate function, Env: ${CY.cfg}`,
-  { tags: ['@assetVideoLicence', '@licence'], env: { visitBaseUrl: false } },
+  { tags: ['@assetVideoLicence', '@licence'], expose: { visitBaseUrl: false } },
   () => {
     it('Prepare Test Data', () => {
-      cy.prepareData('video/sample.mp4', 0)
-      cy.prepareData('video/sample.mov', 0)
+      cy.prepareData('video/sample.mp4', false)
+      cy.prepareData('video/sample.mov', false)
     })
     it('Cms-system 1', () => {
       cy.visit('/assets')

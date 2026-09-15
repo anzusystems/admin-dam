@@ -5,7 +5,7 @@ const assetIDs: Array<string> = []
 
 describe(
   `Test audio slots function, Env: ${CY.cfg}`,
-  { tags: ['@audioSlots', '@assets'], env: { visitBaseUrl: false } },
+  { tags: ['@audioSlots', '@assets'], expose: { visitBaseUrl: false } },
   () => {
     it('Prepare Test Data', () => {
       cy.visit('/')
@@ -13,7 +13,7 @@ describe(
       cy.prepareData('audio/sample2.mp3', false)
     })
     it('Public-Private', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCy('button-slots').click()
       cy.get('button.v-btn:contains("Znovu načítať sloty assetu")').should('be.visible').click()
@@ -44,14 +44,14 @@ describe(
       cy.get('.sidebar-info').contains('Súbor je neprístupný')
     })
     it('ID', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCyVisibleClick('button-slots')
       cy.getCyVisibleClick('button-slot-actions')
       cy.getCy('button-slot-copy-id').should('be.visible')
     })
     it('Duplicate slot - free to premium', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCyVisibleClick('button-slots')
       cy.getCyVisibleClick('button-slot-actions')
@@ -107,7 +107,7 @@ describe(
         })
     })
     it('Remove free file', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCyVisibleClick('button-slots')
       cy.getCy('button-slot-actions').eq(0).click()
@@ -132,7 +132,7 @@ describe(
         })
     })
     it('Add new free file', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCyVisibleClick('button-slots')
       cy.get('input[type="file"]', { timeout: 10000 })
@@ -141,9 +141,10 @@ describe(
           { contents: 'fixtures/audio/sample2.mp3' },
           { waitForAnimations: true, force: true, action: 'drag-drop' }
         )
-      cy.intercept('GET', `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset-slot/asset/${assetIDs}?*`).as(
-        'uploadApi'
-      )
+      cy.intercept(
+        'GET',
+        `${CY.url.proto}://core-dam.${CY.url.domain}/api/adm/v1/asset-slot/asset/${assetIDs[0]}?*`
+      ).as('uploadApi')
       cy.wait('@uploadApi', { timeout: 30000 })
       cy.get(':nth-child(1) > .v-row > :nth-child(1)')
         .invoke('text')
@@ -155,7 +156,7 @@ describe(
         })
     })
     it('Change Slots with each other', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCyVisibleClick('button-slots')
       cy.get('.sidebar-info .mdi-lock-open').eq(1).click()
@@ -195,7 +196,7 @@ describe(
         })
     })
     it('Twin slot', () => {
-      cy.visit(`/assets/${assetIDs}`)
+      cy.visit(`/assets/${assetIDs[0]}`)
       cy.api_waitPageLoad('asset-edit')
       cy.getCyVisibleClick('button-slots')
       cy.get('.v-btn').contains('Pridať').click()
@@ -207,7 +208,7 @@ describe(
           cy.get('.v-btn').contains('Potvrdiť').click()
           cy.get('.sidebar-info__content .v-chip--link').should('be.visible').click()
           cy.get('[data-cy="custom-field-title"] textarea[rows]').should('have.value', twinVideoAssetTitle)
-          cy.visit(`/assets/${assetIDs}`)
+          cy.visit(`/assets/${assetIDs[0]}`)
           cy.api_waitPageLoad('asset-edit')
           cy.getCyVisibleClick('button-slots')
           cy.get('.sidebar-info__content .v-chip--link').should('be.visible')

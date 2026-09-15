@@ -4,7 +4,7 @@ import { ALERT_CREATE, ALERT_UPDATE, CY, RAND_NUM, USER_FIRST_NAME } from '../..
 let USER_ID = ''
 describe(
   `Test authors function, Env: ${CY.cfg}`,
-  { tags: ['@author', '@settings'], env: { visitBaseUrl: false } },
+  { tags: ['@author', '@settings'], expose: { visitBaseUrl: false } },
   () => {
     it('Create author', () => {
       cy.visit('/settings')

@@ -10,9 +10,12 @@ import '../commands/upload'
 import '../commands/license'
 
 // plugins
-import '@cypress/grep'
+// @cypress/grep 6 no longer registers itself on import.
+import { register as registerCypressGrep } from '@cypress/grep'
 import 'cypress-mochawesome-reporter/register'
 import { CY } from '../utils/common'
+
+registerCypressGrep()
 
 beforeEach(function () {
   //Prevent  cypress to fail on uncaught err.

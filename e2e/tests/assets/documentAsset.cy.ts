@@ -8,7 +8,7 @@ describe(`Test asset document function, Env: ${CY.cfg}`, { tags: ['@assetDocumen
     cy.prepareData('document/sample.doc', true, assetIDs)
   })
   it('Create Metadata', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true }).type(`${ASSET_TITLE}`)
     cy.get('[data-cy="custom-field-description"] textarea').first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
@@ -24,7 +24,7 @@ describe(`Test asset document function, Env: ${CY.cfg}`, { tags: ['@assetDocumen
     cy.alertMessage(ALERT_UPDATE)
   })
   it('Edit Metadata', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true }).type(`${ASSET_TITLE}-edit`)
     cy.get('[data-cy="custom-field-description"] textarea').first().clear({ force: true }).type(`${ASSET_DESCRIPTION}`)
@@ -32,7 +32,7 @@ describe(`Test asset document function, Env: ${CY.cfg}`, { tags: ['@assetDocumen
     cy.alertMessage(ALERT_UPDATE)
   })
   it('Clear Metadata', () => {
-    cy.visit(`/assets/${assetIDs}`)
+    cy.visit(`/assets/${assetIDs[0]}`)
     cy.api_waitPageLoad('asset-edit')
     cy.get('[data-cy="custom-field-title"] textarea').first().clear({ force: true })
     cy.get('[data-cy="custom-field-description"] textarea').first().clear({ force: true })

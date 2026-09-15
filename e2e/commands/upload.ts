@@ -42,16 +42,16 @@ Cypress.Commands.add(
       else return fileType
     }
     cy.api_getFileType(fileID).then((type) => {
-      fileGroup = fileType.includes('txt') ? 'text' : fileGroup
-      expect(type).to.contain(fileGroup).and.to.contain(getFileType(fileType))
+      const expectedGroup = fileType.includes('txt') ? 'text' : fileGroup
+      expect(type).to.contain(expectedGroup).and.to.contain(getFileType(fileType))
     })
   }
 )
-Cypress.Commands.add('waitForUpload', (alertUpload: string, timeout: number = 10000) => {
-  cy.contains('[data-cy="upload-overlay-title"]', alertUpload, { timeout: timeout | 90000 })
+Cypress.Commands.add('waitForUpload', (alertUpload: string, timeout: number = 90000) => {
+  cy.contains('[data-cy="upload-overlay-title"]', alertUpload, { timeout })
 })
 Cypress.Commands.add('uploadFile', (fileName: string, action: 'select' | 'drag-drop', timeout: number = 10000) => {
-  cy.get('input[type="file"]', { timeout: timeout | 10000 })
+  cy.get('input[type="file"]', { timeout })
     .first()
     .selectFile(
       {
@@ -66,20 +66,28 @@ Cypress.Commands.add('uploadFile', (fileName: string, action: 'select' | 'drag-d
     )
 })
 
+// A header can be a string or a list of them, and a response missing the directive fails the
+// test rather than parsing `null`.
+const maxAge = (header: string | string[] | undefined, name: string): number => {
+  const match = /max-age=(\d+)/.exec(String(header))
+  if (match === null) throw new Error(`${name} carries no max-age: ${header}`)
+  return Number.parseInt(match[1], 10)
+}
+
 Cypress.Commands.add('cacheControl', (file: string) => {
   cy.request({
     method: 'GET',
     url: `${CY.url.proto}://imageadmin.smedatastaging.sk/image/${file}`,
   }).then((response) => {
     // cache-control, max-age = 0
-    const CACHE_MAX_AGE = parseInt(response.headers['cache-control'].toString().match(/max-age=(\d+)/)[1])
+    const CACHE_MAX_AGE = maxAge(response.headers['cache-control'], 'cache-control')
     expect(CACHE_MAX_AGE).to.be.eq(0)
 
     // cache-control - public
     expect(response.headers['cache-control']).to.include('public')
 
     // strict-transport-security, max-age > 0
-    const SECURE_MAX_AGE = parseInt(response.headers['strict-transport-security'].toString().match(/max-age=(\d+)/)[1])
+    const SECURE_MAX_AGE = maxAge(response.headers['strict-transport-security'], 'strict-transport-security')
     expect(SECURE_MAX_AGE).to.be.gte(0)
   })
 
@@ -88,14 +96,14 @@ Cypress.Commands.add('cacheControl', (file: string) => {
     url: `${CY.url.proto}://image.smedatastaging.sk/image/w200-h200/${file.split('/')[1]}`,
   }).then((response) => {
     // cache-control, max-age > 0
-    const CACHE_MAX_AGE = parseInt(response.headers['cache-control'].toString().match(/max-age=(\d+)/)[1])
+    const CACHE_MAX_AGE = maxAge(response.headers['cache-control'], 'cache-control')
     expect(CACHE_MAX_AGE).to.be.gte(0)
 
     // cache-control - public
     expect(response.headers['cache-control']).to.include('public')
 
     // strict-transport-security, max-age > 0
-    const SECURE_MAX_AGE = parseInt(response.headers['strict-transport-security'].toString().match(/max-age=(\d+)/)[1])
+    const SECURE_MAX_AGE = maxAge(response.headers['strict-transport-security'], 'strict-transport-security')
     expect(SECURE_MAX_AGE).to.be.gte(0)
   })
 })

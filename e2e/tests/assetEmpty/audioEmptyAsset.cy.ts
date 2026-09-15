@@ -4,7 +4,7 @@ import { ALERT_CREATE, ASSET_TITLE, CY } from '../../utils/common'
 
 describe(`Test audio empty asset, Env: ${CY.cfg}`, { tags: ['@assetAudioEmpty', '@assetEmpty'] }, () => {
   it('Prepare Test Data', () => {
-    cy.prepareData('audio/sample.mp3', 0)
+    cy.prepareData('audio/sample.mp3', false)
   })
   it('Test empty asset', () => {
     cy.api_waitPageLoad('main')
