@@ -180,7 +180,7 @@ export default defineConfig({
     VueI18nPlugin({
       runtimeOnly: false,
       globalSFCScope: true,
-      include: path.resolve(_dirname, './src/locales/**.json'),
+      include: path.resolve(_dirname, './src/locales/**/*.json'),
     }),
     AutoImport({
       imports: autoImports,
