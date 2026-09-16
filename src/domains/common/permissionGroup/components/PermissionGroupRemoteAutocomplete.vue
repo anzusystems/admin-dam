@@ -6,7 +6,6 @@ import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filte
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | number | string[] | number[] | null
     client: () => AxiosInstance
     label?: string | undefined
     required?: boolean | undefined
@@ -24,16 +23,13 @@ const props = withDefaults(
     dataCy: 'permissionGroup-select',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | number | string[] | number[] | null): void
-}>()
-
+const modelValue = defineModel<string | number | string[] | number[] | null>({ required: true })
 const modelValueComputed = computed<number | number[] | null>({
   get() {
-    return props.modelValue as number | number[] | null
+    return modelValue.value as number | number[] | null
   },
   set(newValue) {
-    emit('update:modelValue', cloneDeep<number | number[] | null>(newValue))
+    modelValue.value = cloneDeep<number | number[] | null>(newValue)
   },
 })
 

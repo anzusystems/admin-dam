@@ -18,9 +18,8 @@ import {
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 import ABtnAdvanced from '@/domains/coreDam/shared/components/ABtnAdvanced.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: boolean
     extSystemName: string
     licenceName: string
     dataCy?: string
@@ -29,16 +28,13 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-}>()
-
+const modelValue = defineModel<boolean>({ required: true })
 const dialog = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 

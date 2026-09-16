@@ -11,23 +11,23 @@ import {
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetTypeType
-    modelValue: { [key: string]: CustomDataValue }
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: { [key: string]: CustomDataValue }): void
   (e: 'fillEmptyField', data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }): void
   (e: 'replaceField', data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue }): void
 }>()
+
+const modelValue = defineModel<{ [key: string]: CustomDataValue }>({ required: true })
 
 const { t } = useI18n()
 
 const updateModelValue = (data: { property: string; value: CustomDataValue }) => {
   const updated = {} as { [key: string]: CustomDataValue }
   updated[data.property] = data.value
-  emit('update:modelValue', { ...props.modelValue, ...updated })
+  modelValue.value = { ...modelValue.value, ...updated }
 }
 
 const fillEmptyField = (elementProperty: string, value: CustomDataValue) => {

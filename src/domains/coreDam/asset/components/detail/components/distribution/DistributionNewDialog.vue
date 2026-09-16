@@ -16,22 +16,22 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     assetType: DamAssetTypeType
     assetId: DocId
   }>(),
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
   (e: 'reloadList'): void
 }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 const value = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 

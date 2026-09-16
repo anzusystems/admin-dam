@@ -16,15 +16,15 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     fileId: DocId
   }>(),
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
   (e: 'afterSuccessfulConfirm'): void
 }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 
 const { t } = useI18n()
 
@@ -54,7 +54,7 @@ const invalidImage = (index: number) => {
 }
 
 const closeDialog = () => {
-  emit('update:modelValue', false)
+  modelValue.value = false
 }
 
 const { showRecordWas, showErrorsDefault } = useAlerts()

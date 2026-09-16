@@ -8,23 +8,23 @@ import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DistributionCategoryOption | null | undefined
     select: DistributionCategorySelect
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: DistributionCategoryOption | null | undefined): void
   (e: 'blur', data: DistributionCategoryOption | null | undefined): void
 }>()
 
+const modelValue = defineModel<DistributionCategoryOption | null | undefined>({ required: true })
+
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: DistributionCategoryOption | null | undefined) {
-    emit('update:modelValue', cloneDeep<DistributionCategoryOption | null | undefined>(newValue))
+    modelValue.value = cloneDeep<DistributionCategoryOption | null | undefined>(newValue)
   },
 })
 

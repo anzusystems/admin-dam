@@ -3,9 +3,8 @@ import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } fro
 import { useVideoShowSelectActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowFilter } from '@/domains/coreDam/videoShow/filter/VideoShowFilter'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: DocIdNullable
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -22,16 +21,13 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocIdNullable): void
-}>()
-
+const modelValue = defineModel<DocIdNullable>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: DocIdNullable) {
-    emit('update:modelValue', cloneDeep(newValue))
+    modelValue.value = cloneDeep(newValue)
   },
 })
 

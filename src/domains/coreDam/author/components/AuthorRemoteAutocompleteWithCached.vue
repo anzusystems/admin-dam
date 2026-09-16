@@ -17,7 +17,6 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocId[]
     queueId?: string | undefined
     label?: string | undefined
     required?: boolean | null
@@ -40,16 +39,13 @@ const props = withDefaults(
     validationScope: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocId[]): void
-}>()
-
+const modelValue = defineModel<DocId[]>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', cloneDeep(newValue))
+    modelValue.value = cloneDeep(newValue)
   },
 })
 

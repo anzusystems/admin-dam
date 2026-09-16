@@ -3,18 +3,14 @@ import type { AxiosInstance } from 'axios'
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 
 const props = defineProps<{
-  modelValue: string[]
   client: () => AxiosInstance
-}>()
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string[]): void
 }>()
 const roles = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newRoles: string[]) {
-    emit('update:modelValue', newRoles)
+    modelValue.value = newRoles
   },
 })
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -27,6 +23,7 @@ const items = computed(() =>
     }
   })
 )
+const modelValue = defineModel<string[]>({ required: true })
 const { t } = useI18n()
 </script>
 

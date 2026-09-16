@@ -5,7 +5,6 @@ import type { YoutubeLanguage } from '@/domains/coreDam/asset/types/Distribution
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string
     distributionServiceName: DamDistributionServiceName
     label?: string
   }>(),
@@ -13,16 +12,13 @@ const props = withDefaults(
     label: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string): void
-}>()
-
+const modelValue = defineModel<string>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: string) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 

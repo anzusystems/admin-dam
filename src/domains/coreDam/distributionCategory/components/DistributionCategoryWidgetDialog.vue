@@ -14,20 +14,19 @@ import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-ad
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: boolean
     categoryId?: DocIdNullable
     assetId: DocId
     assetType: DamAssetTypeType
   }>(),
   {
-    modelValue: false,
     categoryId: null,
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
   (e: 'afterSave', data: DocIdNullable): void
 }>()
+
+const modelValue = defineModel<boolean>({ default: false })
 
 const { t } = useI18n()
 
@@ -40,10 +39,10 @@ const category = ref<DistributionCategory>(createDefault(currentExtSystemId.valu
 
 const dialogComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 

@@ -17,9 +17,8 @@ import {
   SORT_BY_SCORE_DATE,
 } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: AssetFileImagePreviewNullable
     width?: number
     height?: number
     showActions?: boolean
@@ -31,9 +30,10 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: AssetFileImagePreviewNullable): void
   (e: 'changed', data: AssetFileImagePreviewNullable): void
 }>()
+
+const modelValue = defineModel<AssetFileImagePreviewNullable>({ required: true })
 
 const { t } = useI18n()
 
@@ -52,10 +52,10 @@ const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const imagePreviewModel = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 

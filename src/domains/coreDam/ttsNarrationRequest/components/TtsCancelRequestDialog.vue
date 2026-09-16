@@ -6,22 +6,22 @@ import { useTtsNarrationRequestCancelRequestActions } from '@/domains/coreDam/tt
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     requestId: DocId | null
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
   (e: 'onSuccess'): void
 }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 
 const { t } = useI18n()
 const { cancelRequestButtonLoading, cancelRequest } = useTtsNarrationRequestCancelRequestActions()
 
 const close = () => {
-  emit('update:modelValue', false)
+  modelValue.value = false
 }
 
 const onConfirm = async () => {
@@ -38,7 +38,7 @@ const onConfirm = async () => {
   <VDialog
     :model-value="modelValue"
     :width="500"
-    @update:model-value="(val) => emit('update:modelValue', val)"
+    @update:model-value="(val) => (modelValue = val)"
   >
     <VCard v-if="modelValue && requestId">
       <ADialogToolbar @on-cancel="close">

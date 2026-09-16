@@ -14,7 +14,6 @@ import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/Podc
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     dataCy?: string
     assetId: DocId
   }>(),
@@ -23,15 +22,16 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
   (e: 'reloadList'): void
 }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 const value = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 

@@ -8,16 +8,16 @@ import VoiceManage from '@/domains/coreDam/voiceFamily/components/VoiceManage.vu
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     voice: Voice | null
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
   (e: 'onSuccess'): void
 }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 
 const { t } = useI18n()
 const { saveButtonLoading, onUpdate } = useVoiceEditActions()
@@ -28,7 +28,7 @@ const localVoice = ref<Voice | null>(null)
 // keeps the same props.voice reference, so a watch on props.voice alone would not fire and stale
 // (cancelled) edits would linger in localVoice.
 watch(
-  [() => props.modelValue, () => props.voice],
+  [() => modelValue.value, () => props.voice],
   ([open, newVoice]) => {
     if (open && newVoice) {
       localVoice.value = cloneDeep(newVoice)
@@ -38,13 +38,13 @@ watch(
 )
 
 const onCancel = () => {
-  emit('update:modelValue', false)
+  modelValue.value = false
 }
 
 const onConfirm = () => {
   if (!localVoice.value) return
   onUpdate(localVoice.value, () => {
-    emit('update:modelValue', false)
+    modelValue.value = false
     emit('onSuccess')
   })
 }
@@ -55,7 +55,7 @@ const onConfirm = () => {
     :model-value="modelValue"
     :width="600"
     scrollable
-    @update:model-value="(val) => emit('update:modelValue', val)"
+    @update:model-value="(val) => (modelValue = val)"
   >
     <VCard v-if="modelValue && localVoice">
       <ADialogToolbar @on-cancel="onCancel">

@@ -7,7 +7,6 @@ import { useAssetLicenceByExtIdSelectActions } from '@/domains/coreDam/assetLice
 
 const props = withDefaults(
   defineProps<{
-    modelValue: number | null | number[]
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -28,16 +27,13 @@ const props = withDefaults(
     disableInitFetch: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: IntegerIdNullable | IntegerId[]): void
-}>()
-
+const modelValue = defineModel<IntegerIdNullable | IntegerId[]>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: number | null | number[]) {
-    emit('update:modelValue', cloneDeep<number | null | number[]>(newValue))
+    modelValue.value = cloneDeep<number | null | number[]>(newValue)
   },
 })
 

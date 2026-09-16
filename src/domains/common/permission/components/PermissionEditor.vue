@@ -16,16 +16,13 @@ import {
 import type { AxiosInstance } from 'axios'
 
 const props = defineProps<{
-  modelValue: Permissions
   resolvedPermissions?: Permissions
   roles?: string[]
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: Permissions): void
-}>()
-const permissions = computed(() => cloneDeep(props.modelValue))
+const modelValue = defineModel<Permissions>({ required: true })
+const permissions = computed(() => cloneDeep(modelValue.value))
 const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized, translatePermission } =
   // eslint-disable-next-line vue/no-setup-props-reactivity-loss
   usePermissionConfigActions(props.client)
@@ -33,11 +30,11 @@ const changeGrant = (subject: string, action: string, grant?: GrantType) => {
   const permissionName = subject + '_' + action
   if (isUndefined(grant) && Object.hasOwn(permissions.value, permissionName)) {
     objectDeletePropertyByPath(permissions.value, permissionName)
-    emit('update:modelValue', permissions.value)
+    modelValue.value = permissions.value
     return
   }
   objectSetValueByPath(permissions.value, permissionName, grant)
-  emit('update:modelValue', permissions.value)
+  modelValue.value = permissions.value
 }
 const getSelectedGrant = (subject: string, action: string) => {
   const permissionName = subject + '_' + action

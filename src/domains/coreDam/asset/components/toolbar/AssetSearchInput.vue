@@ -1,24 +1,20 @@
 <script lang="ts" setup>
-const props = withDefaults(
-  defineProps<{
-    modelValue: string | null
-  }>(),
-  {}
-)
+withDefaults(defineProps<{}>(), {})
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: string): void
   (e: 'submit'): void
 }>()
+
+const modelValue = defineModel<string | null>({ required: true })
 
 const { t } = useI18n()
 
 const modelValueComputed = computed({
   get() {
-    return props.modelValue ?? ''
+    return modelValue.value ?? ''
   },
   set(newValue: string) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 </script>

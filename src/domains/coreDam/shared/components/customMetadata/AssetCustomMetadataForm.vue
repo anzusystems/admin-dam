@@ -11,7 +11,6 @@ import {
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetTypeType
-    modelValue: { [key: string]: CustomDataValue }
     dataCy?: string
   }>(),
   {
@@ -19,9 +18,10 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: CustomDataValue): void
   (e: 'anyChange'): void
 }>()
+
+const modelValue = defineModel<{ [key: string]: CustomDataValue }>({ required: true })
 
 const { getDamConfigAssetCustomFormElements, getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -51,7 +51,7 @@ const pinnedCount = computed(() => {
     :pinned-count="pinnedCount"
     :elements="elements"
     @any-change="emit('anyChange')"
-    @update:model-value="emit('update:modelValue', $event)"
+    @update:model-value="modelValue = $event"
   >
     <template #before-pinned>
       <slot name="before-pinned" />

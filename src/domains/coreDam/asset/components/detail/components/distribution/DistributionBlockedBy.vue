@@ -24,7 +24,6 @@ import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string[]
     distributionServiceName: DamDistributionServiceName
     config: DamDistributionRequirementsConfig
     assetFileId: DocIdNullable
@@ -32,16 +31,13 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string[]): void
-}>()
-
+const modelValue = defineModel<string[]>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', cloneDeep(newValue))
+    modelValue.value = cloneDeep(newValue)
   },
 })
 

@@ -13,7 +13,6 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     fileId: DocId
     assetType: DamAssetTypeType
     title: string
@@ -21,9 +20,10 @@ const props = withDefaults(
   {}
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
   (e: 'afterUpdate'): void
 }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 
 const { t } = useI18n()
 
@@ -31,13 +31,13 @@ const buttonLoading = ref(false)
 const slug = ref('')
 
 const onCancel = () => {
-  emit('update:modelValue', false)
+  modelValue.value = false
 }
 
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const modelValueComputed = computed(() => {
-  return props.modelValue
+  return modelValue.value
 })
 
 watch(modelValueComputed, (newValue) => {
@@ -90,7 +90,7 @@ const onConfirm = async () => {
 <template>
   <VDialog
     :model-value="modelValue"
-    @update:model-value="emit('update:modelValue', $event)"
+    @update:model-value="modelValue = $event"
   >
     <VCard
       v-if="modelValue"

@@ -5,9 +5,8 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import AssetByImageIdLink from '@/domains/coreDam/asset/components/AssetByImageIdLink.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: DocIdNullable
     width?: number
     height?: number
     showActions?: boolean
@@ -18,10 +17,7 @@ const props = withDefaults(
     showActions: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocIdNullable): void
-}>()
-
+const modelValue = defineModel<DocIdNullable>({ required: true })
 const { t } = useI18n()
 
 const loading = ref(false)
@@ -37,10 +33,10 @@ const fetchImage = async (id: DocId) => {
 
 const fileIdModel = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
