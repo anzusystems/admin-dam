@@ -31,7 +31,8 @@
     "format:check": "oxfmt --disable-nested-config src scripts eslint eslint.config.mjs autoImports.config.mts env.d.ts vite.config.mts vitest.config.mts --check",
     "browserslist:update": "npx --yes update-browserslist-db@latest",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@anzusystems/common-admin": "1.47.0-beta.dev-1788935857",
@@ -72,6 +73,7 @@
     "@types/rusha": "^0.8.3",
     "@types/sortablejs": "^1.15.9",
     "@vitejs/plugin-vue": "^6.0.9",
+    "@vitest/ui": "^5.0.1",
     "@vue/devtools-api": "^8.2.1",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/language-server": "3.3.11",
