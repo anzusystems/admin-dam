@@ -148,9 +148,12 @@ if [ -f /.dockerenv ]; then
     # node_modules. Everything below runs from e2e/.
     cd "${E2E_DIR}" || exit 1
     yarn install || exit 1
-    if [ ! -d "${CYPRESS_CACHE_FOLDER}" ] ; then
-        ${RUNNER} cypress install --force
-    fi
+
+    # Idempotent: skips when the binary is already in the cache. The guard this replaces tested
+    # `${CYPRESS_CACHE_FOLDER}`, a path `.env.docker.dist` sets relative to the working directory --
+    # correct only as long as nobody moves the `cd` above it, and `--force` re-downloaded on every
+    # miss. blog and inhouse run the plain install, which needs neither.
+    ${RUNNER} cypress install
     # `--expose`, not `--env` or `CYPRESS_grepTags`: Cypress 16 removed `Cypress.env()`, so
     # everything the specs read in the browser goes through `expose`.
     #
