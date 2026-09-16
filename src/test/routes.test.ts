@@ -28,9 +28,11 @@ const declaredPaths = [...declaration.matchAll(/'[^']+':\s*RouteRecordInfo<\s*'(
 const router = createRouter({ history: createMemoryHistory(), routes })
 
 // `:id(\d+)` has to be filled with something the constraint accepts, or the route would fail to
-// match for a reason that says nothing about the route itself.
+// match for a reason that says nothing about the route itself. The trailing `?` of an optional
+// param goes with it: left in place it starts a query string, and everything after it -- `/edit` in
+// `/articles/:docId/:version?/edit` -- stops being part of the path.
 const fillParams = (path: string) =>
-  path.replace(/:[a-zA-Z]+\(\\d\+\)/g, '1').replace(/:[a-zA-Z]+(\([^)]*\))?/g, 'sample')
+  path.replace(/:[a-zA-Z]+\(\\d\+\)\??/g, '1').replace(/:[a-zA-Z]+(\([^)]*\))?\??/g, 'sample')
 
 describe('generated routes', () => {
   it('declares exactly the pages that exist on disk', () => {
