@@ -14,6 +14,12 @@ provide(FilterDataKey, filterData)
 
 const activeTab = ref<null | string>(null)
 const datatables = ref<{ [key: string]: InstanceType<typeof LogDatatableType> | null }>({})
+
+// The cast lives here rather than in the template: a template expression resolves names against the
+// setup bindings, so `InstanceType<typeof LogDatatableType>` is not in scope there.
+const setDatatableRef = (system: string) => (el: unknown) => {
+  datatables.value[system] = el as InstanceType<typeof LogDatatableType> | null
+}
 const counts = ref<Record<string, string>>({})
 
 const { listLoading } = useLogListActions()
@@ -100,11 +106,7 @@ const breadcrumbs = defineBreadcrumbs(
       >
         <LogDatatable
           :key="system"
-          :ref="
-            (el) => {
-              datatables[system] = el as any
-            }
-          "
+          :ref="setDatatableRef(system)"
           :system="system"
           @count-change="updateCount($event, system)"
         />
