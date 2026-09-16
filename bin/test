@@ -13,6 +13,8 @@ RUNNER="yarn"
 DASHBOARD_OPTIONS="--record false"
 E2E_DIR="${PROJECT_ROOT}/e2e"
 CONFIG_FILE="config/cypress.config.ts"
+RUN_UNIT=true
+RUN_E2E=true
 
 cd "${PROJECT_ROOT}" || exit 1
 # Initialize default variables
@@ -25,9 +27,11 @@ docker_env_vars
 
 function help() {
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nBash script used to run the tests in the application container
+    \nBash script used to run the tests: vitest over src/, and the Cypress e2e suite
 
     Options:
+        --unit       (Optional) Run only the vitest suite (src/test), skip e2e
+        --e2e        (Optional) Run only the Cypress e2e suite, skip vitest
         -e --env     (Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)
         -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
         -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
@@ -35,7 +39,9 @@ function help() {
         -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'e2e/report' folder
 
     Examples:
-        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
+        $(printf %q "${BASH_SOURCE[0]}")
+        $(printf %q "${BASH_SOURCE[0]}") --unit
+        $(printf %q "${BASH_SOURCE[0]}") --e2e -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
     \n"
 }
 
@@ -44,6 +50,16 @@ function help() {
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
+    --unit)
+        RUN_E2E=false
+        shift 1
+        continue
+        ;;
+    --e2e)
+        RUN_UNIT=false
+        shift 1
+        continue
+        ;;
     -b)
         BROWSER=$2
         shift; shift
@@ -97,6 +113,12 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
+if [ "${RUN_UNIT}" = "false" ] && [ "${RUN_E2E}" = "false" ]; then
+    echo "[ERROR] '--unit' and '--e2e' select a single suite each; passing both leaves nothing to run"
+    help
+    exit 1
+fi
+
 if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
     echo "[ERROR] Invalid value: '${BROWSER}' using '-b, --browser' option"
     help
@@ -110,6 +132,18 @@ if [ -n "${ENV}" ] && [ ! -f "e2e/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^d
 fi
 
 if [ -f /.dockerenv ]; then
+    STATUS=0
+
+    # vitest first: it needs no environment and no browser, so its result is on screen within seconds.
+    if [ "${RUN_UNIT}" = "true" ]; then
+        echo "[INFO] yarn test"
+        (cd "${PROJECT_ROOT}" && yarn test) || STATUS=1
+    fi
+
+    if [ "${RUN_E2E}" = "false" ]; then
+        exit ${STATUS}
+    fi
+
     # The e2e suite is its own yarn project, so cypress lives there, not in the app's
     # node_modules. Everything below runs from e2e/.
     cd "${E2E_DIR}" || exit 1
@@ -130,8 +164,8 @@ if [ -f /.dockerenv ]; then
         --config-file ${CONFIG_FILE} \
         --expose "${EXPOSE}" \
         --browser ${BROWSER} \
-        ${DASHBOARD_OPTIONS}
-    exit
+        ${DASHBOARD_OPTIONS} || STATUS=1
+    exit ${STATUS}
 fi
 
 bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'
