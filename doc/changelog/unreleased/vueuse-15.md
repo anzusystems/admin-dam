@@ -17,12 +17,16 @@ planned
   v15 changed — and no `useEventSource` or `useIDBKeyval`. Dropping Node 20 costs nothing: `engines`
   is already `^22.22.2 || ^24.15.0 || >=26.0.0`, and CI and the dev image are both node24.
 
-  **One regression arrives from outside this repo.** `ADatatablePagination`, which 26 components
-  render, throttles its four page buttons with `useThrottleFn(() => { page = page + 1 }, 300)` — a
-  relative mutation on a click handler, exactly the shape v15's `trailing: true` default breaks: a
-  double-click on next/prev now fires once immediately and replays at the 300 ms boundary, stepping
-  two pages from one burst. The call site is in the prebuilt `@anzusystems/common-admin` dist, so it
-  cannot be fixed from here; the pin stays where it is until a common-admin build carrying the
-  explicit `trailing: false` lands. Until then `yarn install` also warns that the installed
-  common-admin still asks for `@vueuse/core@^14.1.0` — a peer range its own v15 work has already
-  moved to `^15.0.0`, unreleased.
+  One call site outside this repo did need the flip. `ADatatablePagination`, which 26 components
+  render, throttles its four page buttons with a relative mutation on a click handler — exactly the
+  shape v15's new `trailing: true` default breaks, where a double-click on next/prev fires once
+  immediately and replays at the 300 ms boundary, stepping two pages from one burst. The call site
+  lives in `@anzusystems/common-admin`; the pinned `1.47.0-beta.dev-1788935859` carries the explicit
+  `trailing: false` on all four buttons, so the behaviour here is unchanged from v14.
+
+- **The rest of the bumps in the same round.** `@anzusystems/common-admin`
+  `1.47.0-beta.dev-1788935857` → `1.47.0-beta.dev-1788935859`, the build whose `@vueuse/*` peer
+  ranges are `^15.0.0` and whose datatable pagination passes `trailing: false` explicitly;
+  `@sentry/vue` `10.74.0` → `10.75.0`; `vue-i18n` `11.4.10` → `11.4.12`; `unplugin` `3.3.0` →
+  `3.4.0`; `@types/node` `24.13.4` → `24.13.5`. All patch or minor, none touching an API this repo
+  calls.
