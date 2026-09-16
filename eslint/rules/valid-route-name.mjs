@@ -1,7 +1,15 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const TYPED_ROUTER_PATH = path.resolve(process.cwd(), 'src/typed-router.d.ts')
+// Resolved from this file, not from `process.cwd()`: running eslint from a subdirectory used to
+// leave the rule with nothing to check, and it said so by checking nothing.
+const TYPED_ROUTER_PATH = path.resolve(fileURLToPath(import.meta.url), '../../../src/typed-router.d.ts')
+
+// The declaration is generated and gitignored, so a fresh clone has none until `generate:dts` has
+// run. Staying quiet then would turn the whole rule into a no-op exactly when nobody expects it,
+// so the first file of the run says so instead. Once per run, not once per file.
+let reportedMissing = false
 
 let cachedRoutes = null
 let cachedMtimeMs = 0
@@ -44,11 +52,21 @@ export default {
       unknown:
         "Unknown route name '{{name}}'. Not found in src/typed-router.d.ts. " +
         'Run `yarn generate:dts` if routes were just added.',
+      missing:
+        'src/typed-router.d.ts is missing or empty, so route names cannot be validated. ' + 'Run `yarn generate:dts`.',
     },
   },
   create(context) {
     const routes = loadRoutes()
-    if (routes.size === 0) return {}
+    if (routes.size === 0) {
+      if (reportedMissing) return {}
+      reportedMissing = true
+      return {
+        Program(node) {
+          context.report({ node, messageId: 'missing' })
+        },
+      }
+    }
 
     function checkLiteral(node, value) {
       if (typeof value !== 'string') return
