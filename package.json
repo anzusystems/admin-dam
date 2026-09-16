@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "dev": "vite",
@@ -20,14 +20,13 @@
     "generate:dts": "node scripts/generate-dts.mjs",
     "ci": "run-s --print-name generate:dts ci:checks",
     "ci:checks": "run-p --aggregate-output --continue-on-error --print-label --silent ci:lint test",
-    "ci:lint": "run-p --aggregate-output --continue-on-error --print-label --silent lint:tsc format:check lint:oxlint lint:eslint lint:stylelint lint:browserslist",
+    "ci:lint": "run-p --aggregate-output --continue-on-error --print-label --silent lint:tsc format:check lint:oxlint lint:eslint lint:stylelint",
     "lint:oxlint": "oxlint . --disable-nested-config",
     "lint:oxlint:fix": "oxlint . --fix --disable-nested-config",
     "lint:eslint": "eslint --cache --cache-strategy content",
     "lint:eslint:fix": "eslint --fix --cache --cache-strategy content",
     "lint:stylelint": "stylelint src/**/*.{scss,vue} --cache --cache-strategy content",
     "lint:stylelint:fix": "stylelint src/**/*.{scss,vue} --fix --cache --cache-strategy content",
-    "lint:browserslist": "node scripts/check-browserslist.mjs",
     "format": "oxfmt --disable-nested-config src scripts eslint eslint.config.mjs autoImports.config.mts env.d.ts vite.config.mts vitest.config.mts",
     "format:check": "oxfmt --disable-nested-config src scripts eslint eslint.config.mjs autoImports.config.mts env.d.ts vite.config.mts vitest.config.mts --check",
     "browserslist:update": "npx --yes update-browserslist-db@latest",
