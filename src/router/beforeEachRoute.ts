@@ -1,5 +1,7 @@
 import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
+import { checkForNewVersion } from '@/router/checkNewVersion'
+import { RELOAD_VETO_GRACE } from '@/appReload'
 import { checkAbility } from '@/router/checkAbility'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useDamConfigState, useDamConfigStore } from '@anzusystems/common-admin'
@@ -12,6 +14,11 @@ export const beforeEachRoute = async (to: RouteLocationNormalized): Promise<Navi
   const { isAppInitialized } = useAppInitialize()
   const damConfigStore = useDamConfigStore()
   const { initialized } = storeToRefs(damConfigStore)
+
+  // parked while the reload commits, aborted 3s later if a beforeunload veto kept us alive
+  if (checkForNewVersion()) {
+    return new Promise<NavigationGuardReturn>((resolve) => setTimeout(() => resolve(false), RELOAD_VETO_GRACE))
+  }
 
   if (!initLanguageMessagesLoaded.value) await initLoadLanguageMessages()
   if (!initialized.value.damPubConfig) {
