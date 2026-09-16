@@ -7,6 +7,7 @@ import vuetify from 'eslint-plugin-vuetify'
 import oxlintPlugin from 'eslint-plugin-oxlint'
 import { recommended as anzuRecommended } from '@anzusystems/common-admin/eslint'
 import validRouteName from './eslint/rules/valid-route-name.mjs'
+import fs from 'node:fs'
 
 const { buildFromOxlintConfigFile } = oxlintPlugin
 
@@ -17,6 +18,41 @@ const autoImportGlobalsPath = new URL('./.eslintrc-auto-import.json', import.met
 const autoImportGlobals = existsSync(autoImportGlobalsPath)
   ? JSON.parse(readFileSync(autoImportGlobalsPath, 'utf8')).globals
   : {}
+
+const getVuetifyComponents = () => {
+  try {
+    const content = fs.readFileSync(new URL('./node_modules/vuetify/dist/vuetify.d.ts', import.meta.url), 'utf-8')
+    const match = content.match(/interface GlobalComponents \{([\s\S]*?)\}/)
+    if (match && match[1]) {
+      const matches = match[1].matchAll(/^\s+([V][a-zA-Z0-9]+):/gm)
+      return Array.from(matches, (m) => m[1])
+    }
+    return []
+  } catch (e) {
+    console.error('Error reading vuetify.d.ts', e)
+    return []
+  }
+}
+const vuetifyComponents = getVuetifyComponents()
+
+const getCommonAliases = () => {
+  try {
+    const content = fs.readFileSync(
+      new URL('./node_modules/@anzusystems/common-admin/dist/common-admin.d.ts', import.meta.url),
+      'utf-8'
+    )
+    const match = content.match(/commonAliases: \(\) => \{([\s\S]*?)\};/)
+    if (match && match[1]) {
+      const matches = match[1].matchAll(/^\s+([A-Z][a-zA-Z0-9]+):/gm)
+      return Array.from(matches, (m) => m[1])
+    }
+    return []
+  } catch (e) {
+    console.error('Error reading common-admin.d.ts', e)
+    return []
+  }
+}
+const commonAliases = getCommonAliases()
 
 export default defineConfigWithVueTs(
   {
@@ -101,6 +137,28 @@ export default defineConfigWithVueTs(
         },
       ],
       'vue/valid-v-slot': ['error', { allowModifiers: true }],
+      'vue/no-undef-components': [
+        'error',
+        {
+          // Registered globally rather than imported, so the rule cannot see them:
+          // `Acl` by common-admin's own plugin (AnzuSystemsCommonAdmin.ts:98) and the `GMap*`
+          // family by vue-google-maps-community-fork, which admin-inhouse installs.
+          ignorePatterns: [
+            ...vuetifyComponents,
+            ...commonAliases,
+            'RouterLink',
+            'RouterView',
+            'Acl',
+            'GMapMap',
+            'GMapCluster',
+            'GMapMarker',
+          ],
+        },
+      ],
+      'vue/attribute-hyphenation': ['error', 'always'],
+      'vue/v-on-event-hyphenation': ['error', 'always'],
+      'vue/custom-event-name-casing': ['error', 'camelCase'],
+      'vue/define-emits-declaration': ['error', 'type-based'],
       'vue/no-template-target-blank': ['error'],
       'vue/block-order': ['error', { order: [['script', 'template'], 'style'] }],
       'vue/define-macros-order': ['error'],
