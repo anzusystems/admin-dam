@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+import VueRouter from 'vue-router/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import { fileURLToPath, URL } from 'url'
@@ -6,9 +7,21 @@ import { defineConfig } from 'vitest/config'
 // Root config files sit outside `src`, so the `@` alias does not resolve here.
 // oxlint-disable-next-line no-restricted-imports
 import { autoImports } from './autoImports.config.mts'
+import { routerPages } from './routerPages.config.mts'
 
 export default defineConfig({
   plugins: [
+    // The route smoke test imports `vue-router/auto-routes`, which only exists while this plugin
+    // runs. `dts: false` for the same reason AutoImport has it: the declaration belongs to
+    // `yarn generate:dts` and the dev server.
+    VueRouter({
+      ...routerPages,
+      dts: false,
+      // Pinned, not inherited: `routerPages` switches to `async` under NODE_ENV=production, which
+      // leaves the page components as un-awaited thunks. The suite would still pass while
+      // evaluating nothing.
+      importMode: 'sync',
+    }),
     vue(),
     // `dts: false`: the declaration file belongs to `yarn dev` and `generate:dts`, and a test run
     // must not rewrite it.

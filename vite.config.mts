@@ -8,6 +8,7 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 // oxlint-disable-next-line no-restricted-imports
 import { autoImports } from './autoImports.config.mts'
+import { routerPages } from './routerPages.config.mts'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
@@ -157,21 +158,8 @@ export default defineConfig({
   plugins: [
     watchCommonAdmin(),
     VueRouter({
-      routesFolder: 'src/pages',
+      ...routerPages,
       dts: 'src/typed-router.d.ts',
-      importMode: process.env.NODE_ENV === 'production' ? 'async' : 'sync',
-      getRouteName: (node) => {
-        let name = ''
-        let current = node
-        while (current.parent) {
-          const segment = current.value.rawSegment === 'index' ? '' : current.value.rawSegment
-          if (segment) {
-            name = '/' + segment + name
-          }
-          current = current.parent
-        }
-        return name || '/'
-      },
     }),
     vue(),
     vuetify({
