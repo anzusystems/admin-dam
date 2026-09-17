@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -46,7 +46,10 @@ onBeforeUnmount(() => {
         :loading="saveButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/voice-families'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/voice-families'"
+        :skip-route-names="['/(coreDam)/voice-families/[id]', '/(coreDam)/voice-families/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

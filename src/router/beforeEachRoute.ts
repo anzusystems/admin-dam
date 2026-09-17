@@ -4,12 +4,22 @@ import { checkForNewVersion } from '@/router/checkNewVersion'
 import { RELOAD_VETO_GRACE } from '@/appReload'
 import { checkAbility } from '@/router/checkAbility'
 import { damClient } from '@/shared/apiClients/damClient'
-import { useDamConfigState, useDamConfigStore } from '@anzusystems/common-admin'
+import { useDamConfigState, useDamConfigStore, useRouteHistory } from '@anzusystems/common-admin'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 const ERROR_PATH = '/error'
 
-export const beforeEachRoute = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
+export const beforeEachRoute = async (
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized
+): Promise<NavigationGuardReturn> => {
+  const { addRoute } = useRouteHistory()
+  // the very first navigation comes from nowhere, and a nameless route is nothing to
+  // hand back to anyway
+  if (from.name) {
+    addRoute(from)
+  }
+
   const { loadDamPubConfig } = useDamConfigState(damClient)
   const { isAppInitialized } = useAppInitialize()
   const damConfigStore = useDamConfigStore()

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import AnzuUserEditForm from '@/domains/common/anzuUser/components/AnzuUserEditForm.vue'
@@ -42,7 +42,10 @@ onBeforeUnmount(() => {
         :loading="saveButtonLoading"
         @save-record="updateAnzuUser"
       />
-      <AActionCloseButton :route-name="'/(common)/anzu-users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/anzu-users'"
+        :skip-route-names="['/(common)/anzu-users/[id]', '/(common)/anzu-users/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

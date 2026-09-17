@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import VideoShowEditForm from '@/domains/coreDam/videoShow/components/VideoShowEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -45,7 +45,15 @@ const breadcrumbs = defineBreadcrumbs(
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/video-shows'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/video-shows'"
+        :skip-route-names="[
+          '/(coreDam)/video-shows/[id]',
+          '/(coreDam)/video-shows/[id]/edit',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 

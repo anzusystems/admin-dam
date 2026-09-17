@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 import {
   useVoiceFamilyDetailActions,
@@ -60,7 +60,10 @@ onBeforeUnmount(() => {
           @delete-record="removeVoiceFamily(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/voice-families'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/voice-families'"
+        :skip-route-names="['/(coreDam)/voice-families/[id]', '/(coreDam)/voice-families/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

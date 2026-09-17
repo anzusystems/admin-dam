@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import UserEditForm from '@/domains/coreDam/user/components/UserEditForm.vue'
 import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -45,7 +45,10 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
 
-      <AActionCloseButton :route-name="'/(coreDam)/users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/users'"
+        :skip-route-names="['/(coreDam)/users/[id]', '/(coreDam)/users/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

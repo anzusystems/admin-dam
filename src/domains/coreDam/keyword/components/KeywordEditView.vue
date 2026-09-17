@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import KeywordEditForm from '@/domains/coreDam/keyword/components/KeywordEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -44,7 +44,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/keywords'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/keywords'"
+        :skip-route-names="['/(coreDam)/keywords/[id]', '/(coreDam)/keywords/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

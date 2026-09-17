@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import ExtSystemDetail from '@/domains/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -45,7 +45,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/ext-systems/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/ext-systems'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/ext-systems'"
+        :skip-route-names="['/(coreDam)/ext-systems/[id]', '/(coreDam)/ext-systems/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

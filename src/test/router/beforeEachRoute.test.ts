@@ -31,6 +31,10 @@ const protectedRoute = { path: '/assets', meta: { requiresAuth: true } } as neve
 const publicRoute = { path: '/login', meta: { requiresAuth: false } } as never
 const errorRoute = { path: '/error', meta: { requiresAuth: false } } as never
 
+// The guard records the route being left before it decides anything, so every call carries one.
+// A nameless route is what the very first navigation comes from, and it records nothing.
+const fromNowhere = { path: '/', name: undefined, meta: {} } as never
+
 const load = async () => {
   vi.resetModules()
 
@@ -54,7 +58,7 @@ describe('the route guard', () => {
     checkAbility.mockResolvedValue('/unauthorized')
 
     // Calling it is not enough: what it answers has to be what the router is told.
-    expect(await beforeEachRoute(protectedRoute)).toBe('/unauthorized')
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBe('/unauthorized')
     expect(checkAbility).toHaveBeenCalledTimes(1)
   })
 
@@ -62,7 +66,7 @@ describe('the route guard', () => {
     const { beforeEachRoute } = await load()
     loadDamPubConfig.mockRejectedValue(new Error('502'))
 
-    expect(await beforeEachRoute(protectedRoute)).toBe('/error')
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBe('/error')
   })
 
   it('still refuses a forbidden route when the configuration fails under a running application', async () => {
@@ -72,7 +76,7 @@ describe('the route guard', () => {
     checkAbility.mockResolvedValue('/unauthorized')
 
     // Answering the navigation here would skip the guard below, on one failed configuration load.
-    expect(await beforeEachRoute(protectedRoute)).toBe('/unauthorized')
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBe('/unauthorized')
     expect(checkAbility).toHaveBeenCalledTimes(1)
   })
 
@@ -82,7 +86,7 @@ describe('the route guard', () => {
     loadDamPubConfig.mockRejectedValue(new Error('502'))
 
     // The error page recovers with a full reload, which would take the upload queue with it.
-    expect(await beforeEachRoute(protectedRoute)).not.toBe('/error')
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).not.toBe('/error')
   })
 
   it('lets the error page itself through', async () => {
@@ -90,14 +94,14 @@ describe('the route guard', () => {
     loadDamPubConfig.mockRejectedValue(new Error('502'))
 
     // Redirecting to the page the user is already on is a loop the router never leaves.
-    expect(await beforeEachRoute(errorRoute)).toBeUndefined()
+    expect(await beforeEachRoute(errorRoute, fromNowhere)).toBeUndefined()
   })
 
   it('leaves a public route alone', async () => {
     const { beforeEachRoute } = await load()
     initialized.value = { damPubConfig: true }
 
-    expect(await beforeEachRoute(publicRoute)).toBeUndefined()
+    expect(await beforeEachRoute(publicRoute, fromNowhere)).toBeUndefined()
     expect(checkAbility).not.toHaveBeenCalled()
     expect(createAppInitialize).not.toHaveBeenCalled()
   })
@@ -106,7 +110,7 @@ describe('the route guard', () => {
     const { beforeEachRoute } = await load()
     initialized.value = { damPubConfig: true }
 
-    await beforeEachRoute(protectedRoute)
+    await beforeEachRoute(protectedRoute, fromNowhere)
 
     expect(createAppInitialize).toHaveBeenCalledTimes(1)
   })
@@ -116,6 +120,6 @@ describe('the route guard', () => {
     initialized.value = { damPubConfig: true }
     hasAuthCookie = false
 
-    expect(await beforeEachRoute(protectedRoute)).toBe('/login')
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBe('/login')
   })
 })

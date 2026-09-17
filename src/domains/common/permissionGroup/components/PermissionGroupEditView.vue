@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import PermissionGroupEditForm from '@/domains/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
@@ -43,7 +43,10 @@ onBeforeUnmount(() => {
         :loading="saveButtonLoading"
         @save-record="updatePermissionGroup"
       />
-      <AActionCloseButton :route-name="'/(common)/permission-groups'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/permission-groups'"
+        :skip-route-names="['/(common)/permission-groups/[id]', '/(common)/permission-groups/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

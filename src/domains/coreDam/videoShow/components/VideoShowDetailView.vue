@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { useVideoShowDetailActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import VideoShowDetail from '@/domains/coreDam/videoShow/components/VideoShowDetail.vue'
 import { useVideoShowDetailTab, VideoShowDetailTab } from '@/domains/coreDam/videoShow/composables/videoShowDetailTab'
@@ -85,7 +85,15 @@ const afterVideoShowEpisodeCreate = () => {
           :route-name="'/(coreDam)/video-shows/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/video-shows'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/video-shows'"
+        :skip-route-names="[
+          '/(coreDam)/video-shows/[id]',
+          '/(coreDam)/video-shows/[id]/edit',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { usePublicExportEditActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 import PublicExportEditForm from '@/domains/coreDam/publicExport/components/PublicExportEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -44,9 +44,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton
-        :route-name="'/(coreDam)/public-exports/[id]'"
-        :route-params="{ id: id }"
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/public-exports/[id]'"
+        :fallback-route-params="{ id: id }"
+        :skip-route-names="['/(coreDam)/public-exports/[id]/edit']"
       />
     </template>
   </ActionbarWrapper>

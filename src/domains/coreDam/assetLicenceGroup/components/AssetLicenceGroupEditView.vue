@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceGroupEditActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import AssetLicenceGroupEditForm from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -51,7 +51,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/asset-licence-groups'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/asset-licence-groups'"
+        :skip-route-names="['/(coreDam)/asset-licence-groups/[id]', '/(coreDam)/asset-licence-groups/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

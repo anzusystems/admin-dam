@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import UserDetail from '@/domains/coreDam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/domains/coreDam/user/composables/userActions'
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -52,7 +52,10 @@ onBeforeUnmount(() => {
           button-t="coreDam.user.button.editPermissions"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/users'"
+        :skip-route-names="['/(coreDam)/users/[id]', '/(coreDam)/users/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

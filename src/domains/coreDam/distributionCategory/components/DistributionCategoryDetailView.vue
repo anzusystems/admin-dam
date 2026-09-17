@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useDistributionCategoryDetailActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import DistributionCategoryDetail from '@/domains/coreDam/distributionCategory/components/DistributionCategoryDetail.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -45,7 +45,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/distribution-categories/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/distribution-categories'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/distribution-categories'"
+        :skip-route-names="['/(coreDam)/distribution-categories/[id]', '/(coreDam)/distribution-categories/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

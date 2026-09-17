@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  useI18n,
+} from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { damClient } from '@/shared/apiClients/damClient'
 import PermissionGroupDetail from '@/domains/common/permissionGroup/components/PermissionGroupDetail.vue'
@@ -55,7 +61,10 @@ onBeforeUnmount(() => {
       >
         <AActionDeleteButton @delete-record="deletePermissionGroup(id)" />
       </Acl>
-      <AActionCloseButton :route-name="'/(common)/permission-groups'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/permission-groups'"
+        :skip-route-names="['/(common)/permission-groups/[id]', '/(common)/permission-groups/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

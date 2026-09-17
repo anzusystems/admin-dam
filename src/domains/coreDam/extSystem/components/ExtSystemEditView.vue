@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemEditForm from '@/domains/coreDam/extSystem/components/ExtSystemEditForm.vue'
 import ExtSystemTtsSettingsForm from '@/domains/coreDam/extSystem/components/ExtSystemTtsSettingsForm.vue'
@@ -45,7 +45,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/ext-systems'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/ext-systems'"
+        :skip-route-names="['/(coreDam)/ext-systems/[id]', '/(coreDam)/ext-systems/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

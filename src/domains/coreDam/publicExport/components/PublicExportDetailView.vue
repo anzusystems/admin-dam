@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  useI18n,
+} from '@anzusystems/common-admin'
 import {
   usePublicExportDetailActions,
   usePublicExportRemoveActions,
@@ -56,7 +62,10 @@ onBeforeUnmount(() => {
           @delete-record="removePublicExport(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/public-exports'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/public-exports'"
+        :skip-route-names="['/(coreDam)/public-exports/[id]', '/(coreDam)/public-exports/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

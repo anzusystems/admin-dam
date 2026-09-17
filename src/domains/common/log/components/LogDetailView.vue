@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, ACard, useI18n } from '@anzusystems/common-admin'
 import { useLogDetailActions } from '@/domains/common/log/composables/logActions'
 import LogDetail from '@/domains/common/log/components/LogDetail.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -39,7 +39,10 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButton :route-name="'/(common)/logs'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/logs'"
+        :skip-route-names="['/(common)/logs/[system]/[type]/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

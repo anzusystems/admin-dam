@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
 import AuthorEditForm from '@/domains/coreDam/author/components/AuthorEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -44,7 +44,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/authors'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/authors'"
+        :skip-route-names="['/(coreDam)/authors/[id]', '/(coreDam)/authors/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

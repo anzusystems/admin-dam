@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAssetLicenceDetailActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceDetail from '@/domains/coreDam/assetLicence/components/AssetLicenceDetail.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -45,7 +45,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/asset-licences/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/asset-licences'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/asset-licences'"
+        :skip-route-names="['/(coreDam)/asset-licences/[id]', '/(coreDam)/asset-licences/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

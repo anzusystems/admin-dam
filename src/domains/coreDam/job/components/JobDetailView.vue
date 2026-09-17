@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {
-  AActionCloseButton,
+  AActionCloseButtonHistory,
   ACard,
   AJobDetailCommon,
   JOB_RESOURCE_USER_DATA_DELETE,
@@ -75,7 +75,10 @@ const breadcrumbs = defineBreadcrumbs(
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButton :route-name="'/(coreDam)/jobs'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/jobs'"
+        :skip-route-names="['/(coreDam)/jobs/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

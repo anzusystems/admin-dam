@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  useI18n,
+} from '@anzusystems/common-admin'
 import {
   useAuthorCleanPhraseDetailActions,
   useAuthorCleanPhraseRemoveActions,
@@ -56,7 +62,10 @@ onBeforeUnmount(() => {
           @delete-record="removeAuthorCleanPhrase(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrases'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/author-clean-phrases'"
+        :skip-route-names="['/(coreDam)/author-clean-phrases/[id]', '/(coreDam)/author-clean-phrases/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

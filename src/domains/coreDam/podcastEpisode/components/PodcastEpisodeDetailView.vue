@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  useI18n,
+} from '@anzusystems/common-admin'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
@@ -72,9 +78,13 @@ const breadcrumbs = defineBreadcrumbs(
           @delete-record="deletePodcast(id, onSuccessfulCallback)"
         />
       </Acl>
-      <AActionCloseButton
-        :route-name="'/(coreDam)/podcasts/[id]'"
-        :route-params="{ id: podcastId }"
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/podcasts/[id]'"
+        :fallback-route-params="{ id: podcastId }"
+        :skip-route-names="[
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+        ]"
       />
     </template>
   </ActionbarWrapper>

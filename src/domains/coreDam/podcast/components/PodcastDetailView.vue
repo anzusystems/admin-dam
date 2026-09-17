@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard } from '@anzusystems/common-admin'
 import { usePodcastDetailActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import PodcastDetail from '@/domains/coreDam/podcast/components/PodcastDetail.vue'
 import { PodcastDetailTab, usePodcastDetailTab } from '@/domains/coreDam/podcast/composables/podcastDetailTab'
@@ -85,7 +85,15 @@ const afterPodcastEpisodeCreate = () => {
           :route-name="'/(coreDam)/podcasts/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/podcasts'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/podcasts'"
+        :skip-route-names="[
+          '/(coreDam)/podcasts/[id]',
+          '/(coreDam)/podcasts/[id]/edit',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 

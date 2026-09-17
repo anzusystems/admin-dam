@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
-  AActionCloseButton,
+  AActionCloseButtonHistory,
   ABooleanValue,
   ACard,
   ACopyText,
@@ -65,7 +65,10 @@ onMounted(fetchDetail)
           {{ t('coreDam.ttsNarrationRequest.button.cancelRequest') }}
         </VBtn>
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/tts-narration-requests'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/tts-narration-requests'"
+        :skip-route-names="['/(coreDam)/tts-narration-requests/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

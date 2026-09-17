@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAuthorCleanPhraseEditActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
 import AuthorCleanPhraseEditForm from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -51,9 +51,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton
-        :route-name="'/(coreDam)/author-clean-phrases/[id]'"
-        :route-params="{ id: id }"
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/author-clean-phrases/[id]'"
+        :fallback-route-params="{ id: id }"
+        :skip-route-names="['/(coreDam)/author-clean-phrases/[id]/edit']"
       />
     </template>
   </ActionbarWrapper>

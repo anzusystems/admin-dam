@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { routes, handleHotUpdate } from 'vue-router/auto-routes'
 import { beforeEachRoute } from '@/router/beforeEachRoute'
 import { addLegacyRedirects } from '@/router/legacyRedirects'
+import { initRouteHistory } from '@/router/routeHistory'
+
+initRouteHistory()
 
 const vueRouter = createRouter({
   history: createWebHistory(),
@@ -17,8 +20,8 @@ if (import.meta.hot) {
   })
 }
 
-vueRouter.beforeEach(async (to) => {
-  return await beforeEachRoute(to)
+vueRouter.beforeEach(async (to, from) => {
+  return await beforeEachRoute(to, from)
 })
 
 export const router = vueRouter

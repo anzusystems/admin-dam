@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import DistributionCategorySelectEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -68,7 +68,13 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onSave"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/distribution-category-selects'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/distribution-category-selects'"
+        :skip-route-names="[
+          '/(coreDam)/distribution-category-selects/[id]',
+          '/(coreDam)/distribution-category-selects/[id]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 

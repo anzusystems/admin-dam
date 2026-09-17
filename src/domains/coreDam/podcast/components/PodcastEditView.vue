@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import PodcastEditForm from '@/domains/coreDam/podcast/components/PodcastEditForm.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -55,7 +55,15 @@ const breadcrumbs = defineBreadcrumbs(
         :disabled="saveAndCloseButtonLoading"
         @save-record="onSave"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/podcasts'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/podcasts'"
+        :skip-route-names="[
+          '/(coreDam)/podcasts/[id]',
+          '/(coreDam)/podcasts/[id]/edit',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 
