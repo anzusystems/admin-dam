@@ -64,6 +64,9 @@ const buttons = Object.entries(sources).flatMap(([path, source]) =>
     // a handful of buttons compute their destination, and those hold an expression rather than a
     // literal -- the walk still has to be right, only the fallback cannot be read from here
     fallback: listOf(attrs, 'fallback-route-name'),
+    // told apart from a missing prop, so the checks that need a literal skip such a button loudly
+    // rather than passing over it
+    fallbackComputed: /:fallback-route-name="/.test(attrs) && !listOf(attrs, 'fallback-route-name')?.length,
   }))
 )
 
@@ -100,7 +103,16 @@ describe('close buttons', () => {
     // still has to name its siblings: only the active one is skipped for it.
     const own = owningRoutes(file)
     expect(own).not.toEqual([])
-    if (own.length === 1) expect(skip).not.toContain(own[0])
+
+    if (own.length === 1) {
+      expect(skip).not.toContain(own[0])
+      return
+    }
+
+    // A component rendered by more than one page is the other way round: only the ACTIVE route is
+    // skipped for it, so every route it can appear on has to be named or closing one view hands the
+    // user straight into its sibling.
+    expect(own.filter((name) => !skip.includes(name))).toEqual([])
   })
 
   it.each(buttons)('$label names the sibling views of the record it closes', ({ file, skip, fallback }) => {
@@ -117,8 +129,15 @@ describe('close buttons', () => {
         if (own.includes(other)) continue
         if (other === record || other.startsWith(`${record}/`)) expected.add(other)
       }
-      const created = `${fallback?.[0] ?? ''}/new`
-      if (/\[[^\]]*\]/.test(name) && routeNames.has(created) && !own.includes(created)) expected.add(created)
+      // Only when the fallback really is this record's own listing: creating pushes to the detail,
+      // so closing the detail must not walk back into the empty form. A button that closes across
+      // entities -- a stats detail returning to the jobs listing -- was never reached that way.
+      const listing = fallback?.[0] ?? ''
+      const created = `${listing}/new`
+      const ownListing = listing !== '' && name.startsWith(`${listing}/`)
+      if (ownListing && /\[[^\]]*\]/.test(name) && routeNames.has(created) && !own.includes(created)) {
+        expected.add(created)
+      }
     }
 
     expect([...expected].filter((name) => !skip.includes(name))).toEqual([])
@@ -138,6 +157,16 @@ describe('close buttons', () => {
     )
 
     expect(bad).toEqual([])
+  })
+
+  it('says how many buttons compute their fallback', () => {
+    // Two checks below need a literal to read: "points at routes that exist" and "never skips the
+    // route it falls back to". A button whose fallback is a template expression is outside both,
+    // and silently so -- this states the size of that gap instead of leaving it invisible. The
+    // sibling check does still cover them, since it derives from the routes they sit on.
+    const computed = buttons.filter(({ fallbackComputed }) => fallbackComputed).map(({ label }) => label)
+
+    expect(computed.length).toBeLessThanOrEqual(3)
   })
 
   it('blacklists only routes that exist', () => {
