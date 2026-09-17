@@ -88,7 +88,6 @@ const afterPodcastEpisodeCreate = () => {
       <AActionCloseButtonHistory
         :fallback-route-name="'/(coreDam)/podcasts'"
         :skip-route-names="[
-          '/(coreDam)/podcasts/[id]',
           '/(coreDam)/podcasts/[id]/edit',
           '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
           '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',

@@ -75,10 +75,7 @@ const breadcrumbs = defineBreadcrumbs(
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButtonHistory
-        :fallback-route-name="'/(coreDam)/jobs'"
-        :skip-route-names="['/(coreDam)/jobs/[id]']"
-      />
+      <AActionCloseButtonHistory :fallback-route-name="'/(coreDam)/jobs'" />
     </template>
   </ActionbarWrapper>
 

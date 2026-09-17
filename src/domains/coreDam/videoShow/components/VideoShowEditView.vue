@@ -49,7 +49,6 @@ const breadcrumbs = defineBreadcrumbs(
         :fallback-route-name="'/(coreDam)/video-shows'"
         :skip-route-names="[
           '/(coreDam)/video-shows/[id]',
-          '/(coreDam)/video-shows/[id]/edit',
           '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
           '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
         ]"

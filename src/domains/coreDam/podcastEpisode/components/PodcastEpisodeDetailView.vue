@@ -81,10 +81,7 @@ const breadcrumbs = defineBreadcrumbs(
       <AActionCloseButtonHistory
         :fallback-route-name="'/(coreDam)/podcasts/[id]'"
         :fallback-route-params="{ id: podcastId }"
-        :skip-route-names="[
-          '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
-          '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
-        ]"
+        :skip-route-names="['/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit']"
       />
     </template>
   </ActionbarWrapper>

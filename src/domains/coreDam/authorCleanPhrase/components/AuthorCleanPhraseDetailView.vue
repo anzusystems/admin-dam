@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
       </Acl>
       <AActionCloseButtonHistory
         :fallback-route-name="'/(coreDam)/author-clean-phrases'"
-        :skip-route-names="['/(coreDam)/author-clean-phrases/[id]', '/(coreDam)/author-clean-phrases/[id]/edit']"
+        :skip-route-names="['/(coreDam)/author-clean-phrases/[id]/edit']"
       />
     </template>
   </ActionbarWrapper>

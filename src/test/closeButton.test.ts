@@ -58,12 +58,26 @@ const buttons = Object.entries(sources).flatMap(([path, source]) =>
   [...source.matchAll(/<AActionCloseButtonHistory(?![A-Za-z])([^>]*?)\/>/g)].map(([, attrs]) => ({
     file: toSrcPath(path),
     label: `${toSrcPath(path)}`,
-    skip: listOf(attrs, 'skip-route-names'),
+    // Absent means "nothing beyond my own route", which the library skips anyway -- the button
+    // defaults the prop to an empty list, so it still walks back by name.
+    skip: listOf(attrs, 'skip-route-names') ?? [],
     // a handful of buttons compute their destination, and those hold an expression rather than a
     // literal -- the walk still has to be right, only the fallback cannot be read from here
     fallback: listOf(attrs, 'fallback-route-name'),
   }))
 )
+
+// The longest prefix of a route whose last segment is dynamic -- `/x/[id]/edit` -> `/x/[id]`.
+// Everything at or under it is another view of the same record.
+const recordPrefix = (name: string) => {
+  const parts = name.split('/')
+  for (let i = parts.length - 1; i > 0; i--) {
+    if (/\[[^\]]*\]/.test(parts[i])) return parts.slice(0, i + 1).join('/')
+  }
+  return name
+}
+
+const closableRoutes = [...new Set(buttons.flatMap(({ file }) => owningRoutes(file)))]
 
 describe('close buttons', () => {
   it('finds every button, and none of the plain variant', () => {
@@ -80,16 +94,38 @@ describe('close buttons', () => {
     expect(plain).toEqual([])
   })
 
-  it.each(buttons)('$label names the routes it must not return to', ({ file, skip }) => {
-    expect(skip).toBeDefined()
-
+  it.each(buttons)('$label does not repeat the route it sits on', ({ file, skip }) => {
+    // `navigateBack` skips the current route itself, so naming it here says nothing and is one
+    // more string to go stale when a page is renamed. A component rendered by more than one page
+    // still has to name its siblings: only the active one is skipped for it.
     const own = owningRoutes(file)
     expect(own).not.toEqual([])
-    expect(own.filter((name) => !skip!.includes(name))).toEqual([])
+    if (own.length === 1) expect(skip).not.toContain(own[0])
+  })
+
+  it.each(buttons)('$label names the sibling views of the record it closes', ({ file, skip, fallback }) => {
+    // The walk must not hand back another view OF THE SAME RECORD -- its edit form, a deeper
+    // record underneath it, or the create form a save redirected away from. Those are the ones
+    // the caller still has to name.
+    // Minus the fallback: a handful of edit views close one level up into their own detail rather
+    // than to a listing, and that route is the destination, not something to walk past.
+    const own = [...owningRoutes(file), ...(fallback ?? [])]
+    const expected = new Set<string>()
+    for (const name of owningRoutes(file)) {
+      const record = recordPrefix(name)
+      for (const other of closableRoutes) {
+        if (own.includes(other)) continue
+        if (other === record || other.startsWith(`${record}/`)) expected.add(other)
+      }
+      const created = `${fallback?.[0] ?? ''}/new`
+      if (/\[[^\]]*\]/.test(name) && routeNames.has(created) && !own.includes(created)) expected.add(created)
+    }
+
+    expect([...expected].filter((name) => !skip.includes(name))).toEqual([])
   })
 
   it.each(buttons)('$label points at routes that exist', ({ skip, fallback }) => {
-    expect([...(skip ?? []), ...(fallback ?? [])].filter((name) => !routeNames.has(name))).toEqual([])
+    expect([...skip, ...(fallback ?? [])].filter((name) => !routeNames.has(name))).toEqual([])
   })
 
   it('never skips the route it falls back to', () => {
@@ -98,7 +134,7 @@ describe('close buttons', () => {
     // walk straight past the intended destination and only reach it in a fresh tab, where there is
     // no history left to walk.
     const bad = buttons.flatMap(({ label, skip, fallback }) =>
-      (fallback ?? []).filter((name) => skip?.includes(name)).map((name) => `${label}: ${name}`)
+      (fallback ?? []).filter((name) => skip.includes(name)).map((name) => `${label}: ${name}`)
     )
 
     expect(bad).toEqual([])

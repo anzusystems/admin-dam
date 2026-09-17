@@ -39,10 +39,7 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButtonHistory
-        :fallback-route-name="'/(common)/logs'"
-        :skip-route-names="['/(common)/logs/[system]/[type]/[id]']"
-      />
+      <AActionCloseButtonHistory :fallback-route-name="'/(common)/logs'" />
     </template>
   </ActionbarWrapper>
 

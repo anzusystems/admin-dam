@@ -65,10 +65,7 @@ onMounted(fetchDetail)
           {{ t('coreDam.ttsNarrationRequest.button.cancelRequest') }}
         </VBtn>
       </Acl>
-      <AActionCloseButtonHistory
-        :fallback-route-name="'/(coreDam)/tts-narration-requests'"
-        :skip-route-names="['/(coreDam)/tts-narration-requests/[id]']"
-      />
+      <AActionCloseButtonHistory :fallback-route-name="'/(coreDam)/tts-narration-requests'" />
     </template>
   </ActionbarWrapper>
 

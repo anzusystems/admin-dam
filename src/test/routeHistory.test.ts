@@ -27,6 +27,14 @@ const visit = (name: string, fullPath = name) =>
 // instantiate here, and the assertions only ever compare names.
 const recorded = () => (history as unknown as { value: { name: string }[] }).value.map((route) => route.name)
 
+// `navigateBack` reads the route it is called from -- it never hands that one back -- so the
+// double has to carry one. These cases all run as if the user were on a record view.
+const routerOn = (name: string, fullPath = name) => ({
+  push: vi.fn(),
+  back: vi.fn(),
+  currentRoute: { value: { name, fullPath } },
+})
+
 beforeEach(() => {
   clearHistory()
   initRouteHistory()
@@ -58,11 +66,13 @@ describe('route history', () => {
   })
 
   it('walks back past the view being closed to the one before it', () => {
+    // With an empty skip list, exactly as the buttons pass it now: the view being closed is the
+    // one the router is on, and `navigateBack` never hands that back.
     visit(listing)
     visit(record)
 
-    const router = { push: vi.fn(), back: vi.fn() }
-    navigateBack(router as never, { skipRouteNames: [record], fallbackRouteName: listing })
+    const router = routerOn(record)
+    navigateBack(router as never, { skipRouteNames: [], fallbackRouteName: listing })
 
     expect(router.push).toHaveBeenCalledWith(listing)
     expect(router.back).not.toHaveBeenCalled()
@@ -72,8 +82,8 @@ describe('route history', () => {
     // A tab opened straight on a record: nothing was visited before it.
     visit(record)
 
-    const router = { push: vi.fn(), back: vi.fn() }
-    navigateBack(router as never, { skipRouteNames: [record], fallbackRouteName: listing })
+    const router = routerOn(record)
+    navigateBack(router as never, { skipRouteNames: [], fallbackRouteName: listing })
 
     expect(router.push).toHaveBeenCalledWith({ name: listing, params: undefined })
   })
@@ -82,8 +92,8 @@ describe('route history', () => {
     visit(listing)
     visit(routeHistoryBlacklist[0])
 
-    const router = { push: vi.fn(), back: vi.fn() }
-    navigateBack(router as never, { skipRouteNames: [record], fallbackRouteName: listing })
+    const router = routerOn(record)
+    navigateBack(router as never, { skipRouteNames: [], fallbackRouteName: listing })
 
     expect(router.push).toHaveBeenCalledWith(listing)
   })
