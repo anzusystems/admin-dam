@@ -1,7 +1,13 @@
 <script lang="ts" setup>
-import { ACL } from '@/domains/system/auth/auth'
+import { LogTypeDefault } from '@anzusystems/common-admin/labs'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
 
+const { useCurrentUser } = useAuth()
 const { t } = useI18n()
+
+// Logs are gated on the role, not a permission.
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 </script>
 
 <template>
@@ -217,9 +223,9 @@ const { t } = useI18n()
         </VTooltip>
       </VListItem>
     </Acl>
-    <Acl :permission="ACL.DAM_LOG_UI">
+    <template v-if="isSuperAdmin">
       <VListItem
-        :to="{ name: '/(common)/logs' }"
+        :to="{ name: '/(common)/logs/dam/[type]', params: { type: LogTypeDefault } }"
         prepend-icon="mdi-math-log"
         data-cy="log-settings"
       >
@@ -230,6 +236,6 @@ const { t } = useI18n()
           {{ t('sidebar.settings.log') }}
         </VTooltip>
       </VListItem>
-    </Acl>
+    </template>
   </VList>
 </template>

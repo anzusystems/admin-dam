@@ -74,10 +74,8 @@ describe(`Test distribution Audio function, Env: ${CY.cfg}`, { tags: ['@distribu
     ) // JW distribution
 
     // Logs core-dam check
-    cy.visit('/logs')
-    cy.getCy('filter-value').first().click()
-    cy.contains('.v-list-item', 'coreDam').click()
-    cy.getCy('filter-submit').click()
+    // coreDam is the route now, not a filter value.
+    cy.visit('/logs/dam/app')
     cy.contains('.v-data-table__tr', '[Artemis] Distribute').within(() => {
       cy.contains('INFO')
     })

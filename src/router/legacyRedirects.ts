@@ -31,7 +31,7 @@ const RENAMED_ROOTS: Record<string, string> = {
   '/external-provider': '/external-providers',
   '/job': '/jobs',
   '/keyword': '/keywords',
-  '/log': '/logs',
+  '/log': '/logs/dam/app',
   '/permission-group': '/permission-groups',
   '/podcast': '/podcasts',
   '/public-export': '/public-exports',

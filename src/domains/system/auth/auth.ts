@@ -102,7 +102,6 @@ export const ACL = {
   DAM_PODCAST_UI: 'dam_podcast_ui',
   DAM_PODCAST_EPISODE_UI: 'dam_podcastEpisode_ui',
   DAM_AUTHOR_CLEAN_PHRASE_UI: 'dam_authorCleanPhrase_ui',
-  DAM_LOG_UI: 'dam_log_ui',
   DAM_JOB_UI: 'dam_job_ui',
   DAM_PUBLIC_EXPORT_CREATE: 'dam_publicExport_create',
   DAM_PUBLIC_EXPORT_UPDATE: 'dam_publicExport_update',

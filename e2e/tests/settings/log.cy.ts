@@ -5,15 +5,13 @@ import { CY } from '../../utils/common'
 describe(`Test log, Env: ${CY.cfg}`, { tags: ['@log', '@settings'], expose: { visitBaseUrl: false } }, () => {
   it('Verify log page', () => {
     cy.visit('/settings')
-    cy.visitSubpage('log-settings', 'log', 'Logy')
-    cy.getCy('filter-value').first().click()
-    cy.contains('.v-list-item', 'coreDam').click()
-    cy.contains('.v-list-item', 'adminDam').click()
+    // The system is a route segment now, not a filter, so there is no multiselect to open and no
+    // tab strip to appear -- the table is there on arrival and a reset no longer empties it.
+    cy.visitSubpage('log-settings', 'logs/dam/app', 'Logy')
+    cy.get('.v-table').should('be.visible')
     cy.getCyVisibleClick('filter-submit')
-    cy.get('.v-tabs').should('be.visible')
     cy.get('.v-table').should('be.visible')
     cy.getCyVisibleClick('filter-reset')
-    cy.get('.v-tabs').should('not.exist')
-    cy.get('.v-table').should('not.exist')
+    cy.get('.v-table').should('be.visible')
   })
 })

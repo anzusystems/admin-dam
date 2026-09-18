@@ -9,6 +9,12 @@ declare module 'vue-router' {
     layout?: string
     requiresAuth?: boolean
     requiredPermissions?: Array<CustomAclValue>
+    /**
+     * The system whose superadmin this route is for. Logs are gated on the role, not on a
+     * permission. `definePage` needs a literal, so the value is repeated here rather than read
+     * from `LOG_SYSTEM`; a route test pins the two together.
+     */
+    superAdminOf?: string
     breadcrumbT?: ObjectLeaves<MessageSchema> | string
   }
 }
