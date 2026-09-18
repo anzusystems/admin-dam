@@ -11,7 +11,6 @@ export interface EnvConfig {
   dam: {
     apiUrl: string
     apiTimeout: number
-    imageUrl: string
     adminUrl: string
     authorCleanPhraseTestSample: string
   }

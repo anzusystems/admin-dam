@@ -13,7 +13,6 @@ export const envConfig: EnvConfig = {
   dam: {
     apiUrl: '',
     apiTimeout: 1,
-    imageUrl: '',
     adminUrl: '',
     authorCleanPhraseTestSample: '',
   },
@@ -36,7 +35,6 @@ const setEnvConfig = (data: EnvConfig) => {
     envConfig.cookies.jwtPayloadName = data.cookies.jwtPayloadName
     envConfig.dam.apiUrl = data.dam.apiUrl
     envConfig.dam.apiTimeout = data.dam.apiTimeout
-    envConfig.dam.imageUrl = data.dam.imageUrl
     envConfig.dam.adminUrl = data.dam.adminUrl
     envConfig.dam.authorCleanPhraseTestSample = data.dam.authorCleanPhraseTestSample
     envConfig.notification.enabled = data.notification.enabled
