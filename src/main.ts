@@ -2,7 +2,6 @@ import App from '@/App.vue'
 import AppLayoutLoader from '@/layouts/AppLayoutLoader.vue'
 import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
 import AppLayoutDrawer from '@/layouts/AppLayoutDrawer.vue'
-import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
 import { vuetify } from '@/plugins/vuetify'
 import { router } from '@/router'
@@ -48,7 +47,6 @@ loadEnvConfig(() => {
     .component('AppLayoutLoader', AppLayoutLoader)
     .component('AppLayoutMain', AppLayoutMain)
     .component('AppLayoutDrawer', AppLayoutDrawer)
-    .component('AppLayoutBlank', AppLayoutBlank)
     .component('AppLayoutFullscreen', AppLayoutFullscreen)
 
   if (envConfig.sentry.dsn) {
