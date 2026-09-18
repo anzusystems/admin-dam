@@ -2,10 +2,6 @@
   "adminSwitcherConfigUrl": "${ADMIN_SWITCHER_CONFIG_URL}",
   "appEnvironment": "${APP_ENVIRONMENT}",
   "appVersion": "${APP_VERSION}",
-  "apiLogError": {
-    "enabled": ${API_LOG_ERROR_ENABLED},
-    "apiUrl": "${API_LOG_ERROR_URL}"
-  },
   "logoutCoreDamUrl": "${LOGOUT_CORE_DAM_URL}",
   "uploadStatusFallback": ${UPLOAD_STATUS_FALLBACK},
   "cookies": {
