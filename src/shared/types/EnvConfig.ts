@@ -2,10 +2,6 @@ export interface EnvConfig {
   adminSwitcherConfigUrl: string
   appEnvironment: string
   appVersion: string
-  apiLogError: {
-    enabled: boolean
-    apiUrl: string
-  }
   logoutCoreDamUrl: string
   uploadStatusFallback: boolean
   cookies: {

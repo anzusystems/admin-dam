@@ -4,10 +4,6 @@ export const envConfig: EnvConfig = {
   adminSwitcherConfigUrl: '',
   appEnvironment: '',
   appVersion: '',
-  apiLogError: {
-    enabled: false,
-    apiUrl: '',
-  },
   logoutCoreDamUrl: '',
   uploadStatusFallback: true,
   cookies: {
@@ -35,8 +31,6 @@ const setEnvConfig = (data: EnvConfig) => {
     envConfig.adminSwitcherConfigUrl = data.adminSwitcherConfigUrl
     envConfig.appEnvironment = data.appEnvironment
     envConfig.appVersion = data.appVersion
-    envConfig.apiLogError.enabled = data.apiLogError.enabled
-    envConfig.apiLogError.apiUrl = data.apiLogError.apiUrl
     envConfig.logoutCoreDamUrl = data.logoutCoreDamUrl
     envConfig.cookies.refreshTokenExistsName = data.cookies.refreshTokenExistsName
     envConfig.cookies.jwtPayloadName = data.cookies.jwtPayloadName

@@ -7,7 +7,6 @@ import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
 import { vuetify } from '@/plugins/vuetify'
 import { router } from '@/router'
 import { envConfig, loadEnvConfig } from '@/shared/EnvConfigService'
-import { initErrorHandler } from '@/shared/ErrorHandlerApiService'
 import { AnzuSystemsCommonAdmin, loadCommonFonts, type PluginOptions } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
 import { damClient } from '@/shared/apiClients/damClient'
@@ -58,9 +57,13 @@ loadEnvConfig(() => {
       dsn: envConfig.sentry.dsn,
       release: envConfig.appVersion,
       environment: envConfig.appEnvironment,
-      sendDefaultPii: true,
+      dataCollection: {
+        userInfo: true,
+        cookies: true,
+        httpHeaders: { request: true, response: true },
+        urlQueryParams: true,
+      },
       tracesSampleRate: 0,
-      profilesSampleRate: 0,
       replaysOnErrorSampleRate: 0.2,
       transport: Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport),
       integrations: [
@@ -73,8 +76,6 @@ loadEnvConfig(() => {
         Sentry.httpClientIntegration(),
       ],
     })
-  } else {
-    initErrorHandler(app)
   }
 
   app.mount('#app')
