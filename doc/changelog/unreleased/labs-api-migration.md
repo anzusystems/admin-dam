@@ -23,6 +23,13 @@ planned
     as `undefined` typed as an array, and failed later somewhere unrelated; it is now a thrown,
     logged error naming the url
 
+- **A 204 on a list read is an empty list, not an error.** The old call raised
+  `AnzuApiResponseCodeError` on a no-content answer unless it had asked for `optionalBody`, and none
+  of these had. Nothing in scope answers 204 today — core-cms sends 200 with a body for an empty
+  list, and owl, the notification service and artemis all write 200 explicitly — so this is a
+  difference in what would happen, not in what does. It is also the reading that matches the
+  endpoint: no content on a list is a list of nothing.
+
 - **`anzu/prefer-api-fetch-items` is on as an error.** A `useApiRequest` whose response type is a
   list — a bare array, or an envelope with a list in `data` — has to be `useApiFetchItems`, which
   checks the shape it was told to expect. A call that legitimately reads the envelope's metadata
