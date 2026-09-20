@@ -16,8 +16,8 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId,
   mapIdToMinimal,
   (ids) => {
     const { currentExtSystemId } = useCurrentExtSystem()
-    const { executeFetch } = useFetchPodcastListByIds()
-    return executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
+    const { execute } = useFetchPodcastListByIds()
+    return execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
   }
 )
 

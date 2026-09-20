@@ -36,9 +36,9 @@ export const useFetchAssetLicence = () =>
 /**
  * Back-compat standalone fetch used by the not-yet-migrated `asset` slice
  * (AssetToolbarExtSystemLicenceDialog.vue, AssetToolbarOptions.vue, currentExtSystem.ts).
- * Remove once those callers move to `useFetchAssetLicence().executeRequest({ urlParams: { id } })`.
+ * Remove once those callers move to `useFetchAssetLicence().execute({ urlParams: { id } })`.
  */
 export const fetchAssetLicence = (id: number) => {
-  const { executeRequest } = useFetchAssetLicence()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchAssetLicence()
+  return execute({ urlParams: { id } })
 }

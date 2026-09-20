@@ -1,5 +1,5 @@
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiRequest } from '@anzusystems/common-admin/labs'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {
@@ -20,8 +20,8 @@ export const useCreateCustomDistribution = () =>
   })
 
 export const createCustomDistribution = (assetFileId: DocId, data: DistributionCustomCreateRedistributeDto) => {
-  const { executeRequest } = useCreateCustomDistribution()
-  return executeRequest({ urlParams: { assetFileId }, object: data })
+  const { execute } = useCreateCustomDistribution()
+  return execute({ urlParams: { assetFileId }, body: data })
 }
 
 export const useRedistributeCustomDistribution = () =>
@@ -37,8 +37,8 @@ export const redistributeCustomDistribution = (
   distributionId: DocId,
   data: DistributionCustomCreateRedistributeDto
 ) => {
-  const { executeRequest } = useRedistributeCustomDistribution()
-  return executeRequest({ urlParams: { distributionId }, object: data })
+  const { execute } = useRedistributeCustomDistribution()
+  return execute({ urlParams: { distributionId }, body: data })
 }
 
 export const usePrepareFormDataCustomDistribution = () =>
@@ -54,12 +54,12 @@ export const prepareFormDataCustomDistribution = (
   assetFileId: DocId,
   distributionServiceName: DamDistributionServiceName
 ) => {
-  const { executeRequest } = usePrepareFormDataCustomDistribution()
-  return executeRequest({ urlParams: { assetFileId, distributionServiceName } })
+  const { execute } = usePrepareFormDataCustomDistribution()
+  return execute({ urlParams: { assetFileId, distributionServiceName } })
 }
 
 export const useCancelCustomDistribution = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,
@@ -68,6 +68,6 @@ export const useCancelCustomDistribution = () =>
   })
 
 export const cancelCustomDistribution = (distributionId: DocId) => {
-  const { executeRequest } = useCancelCustomDistribution()
-  return executeRequest({ urlParams: { distributionId } })
+  const { execute } = useCancelCustomDistribution()
+  return execute({ urlParams: { distributionId } })
 }

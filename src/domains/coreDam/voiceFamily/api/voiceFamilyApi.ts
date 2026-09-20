@@ -1,6 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { VoiceFamily, VoiceFamilyCreate, VoiceFamilyUpdate } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
 import { RESOURCE_VOICE_FAMILY } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
 
@@ -9,7 +9,7 @@ const END_POINT_LIST_EXT_SYSTEM = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = RESOURCE_VOICE_FAMILY
 
 export const useFetchVoiceFamilyListByExtSystem = () =>
-  useApiFetchList<VoiceFamily[]>({
+  useApiFetchList<VoiceFamily>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -17,7 +17,7 @@ export const useFetchVoiceFamilyListByExtSystem = () =>
   })
 
 export const useFetchVoiceFamilyListByIds = () =>
-  useApiFetchByIds<VoiceFamily[]>({
+  useApiFetchByIds<VoiceFamily>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -52,7 +52,7 @@ export const useUpdateVoiceFamily = () =>
   })
 
 export const useDeleteVoiceFamily = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,

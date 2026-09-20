@@ -26,12 +26,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useUserListActions = () => {
   const listItems = ref<DamUser[]>([])
-  const { executeFetch } = useFetchDamUserList(damClient)
+  const { execute } = useFetchDamUserList(damClient)
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -133,10 +133,10 @@ export const useUserEditActions = () => {
 }
 
 export const useUserSelectActions = () => {
-  const { executeFetch } = useFetchDamUserList(damClient)
+  const { execute } = useFetchDamUserList(damClient)
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    const users = await executeFetch(pagination, filterData, filterConfig)
+    const users = await execute(pagination, filterData, filterConfig)
 
     return <ValueObjectOption<number>[]>users.map((user: DamUser) => ({
       title: user.email,

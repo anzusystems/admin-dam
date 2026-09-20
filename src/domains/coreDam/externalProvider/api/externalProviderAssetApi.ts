@@ -10,7 +10,7 @@ const END_POINT = '/adm/v1/asset-external-provider'
 export const ENTITY = 'asset'
 
 export const useFetchExternalProviderAssetList = () =>
-  useApiFetchList<AssetExternalProviderListDto[]>({
+  useApiFetchList<AssetExternalProviderListDto>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,

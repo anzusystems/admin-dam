@@ -31,8 +31,8 @@ export const useFetchRoi = () =>
   })
 
 export const fetchRoi = (id: DocId) => {
-  const { executeRequest } = useFetchRoi()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchRoi()
+  return execute({ urlParams: { id } })
 }
 
 export const useUpdateRoi = () =>
@@ -45,12 +45,12 @@ export const useUpdateRoi = () =>
   })
 
 export const updateRoi = (id: DocId, data: RegionOfInterest) => {
-  const { executeRequest } = useUpdateRoi()
-  return executeRequest({ urlParams: { id }, object: data })
+  const { execute } = useUpdateRoi()
+  return execute({ urlParams: { id }, body: data })
 }
 
 export const useFetchImageRoiList = () =>
-  useApiFetchList<RegionOfInterest[]>({
+  useApiFetchList<RegionOfInterest>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -63,6 +63,6 @@ export const fetchImageRoiList = (
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchImageRoiList()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { id: imageId } })
+  const { execute } = useFetchImageRoiList()
+  return execute(pagination, filterData, filterConfig, { urlParams: { id: imageId } })
 }

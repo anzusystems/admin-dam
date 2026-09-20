@@ -1,6 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { Voice, VoiceDiscriminatorType } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { RESOURCE_VOICE, VoiceDiscriminator } from '@/domains/coreDam/voiceFamily/types/Voice'
 
@@ -20,7 +20,7 @@ export const writeEndpoint = (discriminator: VoiceDiscriminatorType): string => 
 }
 
 export const useFetchVoiceListByFamily = () =>
-  useApiFetchList<Voice[]>({
+  useApiFetchList<Voice>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -46,7 +46,7 @@ export const useUpdateVoice = () =>
   })
 
 export const useDeleteVoice = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,

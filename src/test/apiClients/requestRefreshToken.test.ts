@@ -7,7 +7,7 @@ let refreshTokenExists: string | undefined = 'yes'
 let jwtPayload: string | undefined = 'payload'
 
 vi.mock('@/domains/system/auth/authApi', () => ({
-  useRefreshToken: () => ({ executeRequest: executeRefresh }),
+  useRefreshToken: () => ({ execute: executeRefresh }),
   AUTH_PATH_PREFIX: '/auth',
 }))
 vi.mock('@/shared/apiClients/authCookies', () => ({

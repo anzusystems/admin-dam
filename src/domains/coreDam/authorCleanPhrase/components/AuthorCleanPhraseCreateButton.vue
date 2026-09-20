@@ -43,9 +43,9 @@ const onOpen = () => {
   authorCleanPhrase.value = createDefault(currentExtSystemId.value)
 }
 
-const { executeRequest: createAuthorCleanPhrase } = useCreateAuthorCleanPhrase()
+const { execute: createAuthorCleanPhrase } = useCreateAuthorCleanPhrase()
 const create = async () => {
-  return await createAuthorCleanPhrase({ object: authorCleanPhrase.value })
+  return await createAuthorCleanPhrase({ body: authorCleanPhrase.value })
 }
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()

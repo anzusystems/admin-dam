@@ -20,11 +20,11 @@ export const useAnzuUserActions = () => {
   const { addToCachedPermissionGroups, fetchCachedPermissionGroups } = useCachedPermissionGroups()
 
   const anzuUserList = ref<AnzuUser[]>([])
-  const { executeFetch } = useFetchAnzuUserList()
+  const { execute } = useFetchAnzuUserList()
   const fetchAnzuUserList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      anzuUserList.value = await executeFetch(pagination, filterData, filterConfig)
+      anzuUserList.value = await execute(pagination, filterData, filterConfig)
       anzuUserList.value.forEach((anzuUser) => addToCachedPermissionGroups(anzuUser.permissionGroups))
       fetchCachedPermissionGroups()
     } catch (error) {
@@ -40,7 +40,7 @@ export const useAnzuUserActions = () => {
   const fetchAnzuUser = async (id: number) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchAnzuUserRequest } = useFetchAnzuUser()
+      const { execute: fetchAnzuUserRequest } = useFetchAnzuUser()
       const anzuUserRes = await fetchAnzuUserRequest({ urlParams: { id } })
       anzuUserOneStore.setAnzuUser(anzuUserRes)
       addToCachedPermissionGroups(anzuUserRes.permissionGroups)
@@ -64,10 +64,10 @@ export const useAnzuUserActions = () => {
         saveButtonLoading.value = false
         return
       }
-      const { executeRequest: updateAnzuUserRequest } = useUpdateAnzuUser()
+      const { execute: updateAnzuUserRequest } = useUpdateAnzuUser()
       await updateAnzuUserRequest({
         urlParams: { id: anzuUserOneStore.anzuUser.id },
-        object: anzuUserOneStore.anzuUser,
+        body: anzuUserOneStore.anzuUser,
       })
       showRecordWas('updated')
       if (!close) return
@@ -88,8 +88,8 @@ export const useAnzuUserActions = () => {
         saveButtonLoading.value = false
         return
       }
-      const { executeRequest: createAnzuUserRequest } = useCreateAnzuUser()
-      const anzuUserRes = await createAnzuUserRequest({ object: anzuUserOneStore.anzuUser })
+      const { execute: createAnzuUserRequest } = useCreateAnzuUser()
+      const anzuUserRes = await createAnzuUserRequest({ body: anzuUserOneStore.anzuUser })
       showRecordWas('created')
       if (close) {
         router.push({ name: '/(common)/anzu-users' })

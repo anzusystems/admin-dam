@@ -27,12 +27,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useAssetLicenceListActions = () => {
   const listItems = ref<DamAssetLicenceExtended[]>([])
-  const { executeFetch } = useFetchDamAssetLicenceList(damClient)
+  const { execute } = useFetchDamAssetLicenceList(damClient)
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = (await executeFetch(pagination, filterData, filterConfig)) as DamAssetLicenceExtended[]
+      listItems.value = (await execute(pagination, filterData, filterConfig)) as DamAssetLicenceExtended[]
       addToCachedExtSystems(listItems.value.map((item) => item.extSystem))
       fetchCachedExtSystems()
     } catch (error) {
@@ -57,7 +57,7 @@ export const useAssetLicenceDetailActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchAssetLicence } = useFetchAssetLicence()
+      const { execute: fetchAssetLicence } = useFetchAssetLicence()
       const assetLicence = await fetchAssetLicence({ urlParams: { id } })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
@@ -90,7 +90,7 @@ export const useAssetLicenceEditActions = () => {
   const fetchData = async (id: number) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchAssetLicence } = useFetchAssetLicence()
+      const { execute: fetchAssetLicence } = useFetchAssetLicence()
       const assetLicence = await fetchAssetLicence({ urlParams: { id } })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
@@ -116,10 +116,10 @@ export const useAssetLicenceEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateAssetLicence } = useUpdateAssetLicence()
+      const { execute: updateAssetLicence } = useUpdateAssetLicence()
       await updateAssetLicence({
         urlParams: { id: assetLicenceOneStore.assetLicence.id },
-        object: assetLicence.value,
+        body: assetLicence.value,
       })
       showRecordWas('updated')
       if (!close) return
@@ -144,7 +144,7 @@ export const useAssetLicenceEditActions = () => {
 }
 
 export const useAssetLicenceByExtIdSelectActions = () => {
-  const { executeFetch } = useFetchDamAssetLicenceList(damClient)
+  const { execute } = useFetchDamAssetLicenceList(damClient)
 
   const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
     return assetLicences.map((assetLicence: DamAssetLicence) => ({
@@ -154,7 +154,7 @@ export const useAssetLicenceByExtIdSelectActions = () => {
   }
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjectOption(await executeFetch(pagination, filterData, filterConfig))
+    return mapToValueObjectOption(await execute(pagination, filterData, filterConfig))
   }
 
   const fetchItemsByIds = async (ids: number[]) => {

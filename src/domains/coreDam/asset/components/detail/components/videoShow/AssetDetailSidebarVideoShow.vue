@@ -28,7 +28,7 @@ const showPagination = computed(
   () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
 )
 
-const { executeFetch } = useFetchVideoShowEpisodeListByAsset()
+const { execute } = useFetchVideoShowEpisodeListByAsset()
 
 const listItems = ref<VideoShowEpisode[]>([])
 const loading = ref(false)
@@ -47,7 +47,7 @@ const { addToCachedVideoShows, fetchCachedVideoShows } = useCachedVideoShows()
 
 const getList = async () => {
   loading.value = true
-  const items = await executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
+  const items = await execute(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
   addToCachedVideoShows(items.map((item) => item.videoShow))
   fetchCachedVideoShows()
   listItems.value = items

@@ -36,14 +36,14 @@ const dialog = ref(false)
 const { v$ } = useVideoShowValidation(videoShow)
 const { t } = useI18n()
 
-const { executeRequest: createVideoShow } = useCreateVideoShow()
+const { execute: createVideoShow } = useCreateVideoShow()
 
 const onOpen = () => {
   videoShow.value = createDefault(currentAssetLicenceId.value)
 }
 
 const create = async () => {
-  return await createVideoShow({ object: videoShow.value })
+  return await createVideoShow({ body: videoShow.value })
 }
 </script>
 

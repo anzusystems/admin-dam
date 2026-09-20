@@ -42,8 +42,8 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const { createDefault } = useVideoShowEpisodeFactory()
 const videoShowEpisode = ref<VideoShowEpisode>(createDefault(currentExtSystemId.value))
 
-const { executeRequest: createVideoShowEpisode } = useCreateVideoShowEpisode()
-const { executeRequest: prepareFormDataVideoShowEpisode } = usePrepareFormDataVideoShowEpisode()
+const { execute: createVideoShowEpisode } = useCreateVideoShowEpisode()
+const { execute: prepareFormDataVideoShowEpisode } = usePrepareFormDataVideoShowEpisode()
 
 const saving = ref(false)
 const loadingFormData = ref(false)
@@ -64,7 +64,7 @@ const submit = async () => {
       saving.value = false
       return
     }
-    await createVideoShowEpisode({ object: videoShowEpisode.value })
+    await createVideoShowEpisode({ body: videoShowEpisode.value })
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {

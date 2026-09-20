@@ -41,14 +41,14 @@ const onCancel = () => {
 
 const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
-const { executeRequest: playground } = usePlaygroundAuthorCleanPhrase()
+const { execute: playground } = usePlaygroundAuthorCleanPhrase()
 
 const onConfirm = async () => {
   try {
     buttonLoading.value = true
     authorCleanPhraseRes.value = await playground({
       urlParams: { extSystemId: currentExtSystemId.value },
-      object: authorNameDto.value,
+      body: authorNameDto.value,
     })
 
     authorCleanPhraseRes.value.authors.forEach((authorId) => {

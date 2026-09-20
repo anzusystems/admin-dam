@@ -35,7 +35,7 @@ const emit = defineEmits<{
 }>()
 
 const { createAnzuUser } = useAnzuUserFactory()
-const { executeRequest: createAnzuUserRequest } = useCreateAnzuUser()
+const { execute: createAnzuUserRequest } = useCreateAnzuUser()
 const anzuUser = ref<AnzuUser>(createAnzuUser())
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -63,7 +63,7 @@ const onConfirm = async () => {
       buttonLoading.value = false
       return
     }
-    const res = await createAnzuUserRequest({ object: anzuUser.value })
+    const res = await createAnzuUserRequest({ body: anzuUser.value })
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false

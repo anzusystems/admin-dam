@@ -1,6 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type {
   AuthorCleanPhrase,
   AuthorCleanResultDto,
@@ -13,7 +13,7 @@ const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'authorCleanPhrase'
 
 export const useFetchAuthorCleanPhraseList = () =>
-  useApiFetchList<AuthorCleanPhrase[]>({
+  useApiFetchList<AuthorCleanPhrase>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -48,7 +48,7 @@ export const useFetchAuthorCleanPhrase = () =>
   })
 
 export const useDeleteAuthorCleanPhrase = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,

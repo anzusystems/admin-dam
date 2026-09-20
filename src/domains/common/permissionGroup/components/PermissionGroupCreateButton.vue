@@ -33,7 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const { createPermissionGroup } = usePermissionGroupFactory()
-const { executeRequest: apiCreatePermissionGroup } = useCreatePermissionGroup()
+const { execute: apiCreatePermissionGroup } = useCreatePermissionGroup()
 const permissionGroup = ref<PermissionGroup>(createPermissionGroup())
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -61,7 +61,7 @@ const onConfirm = async () => {
       buttonLoading.value = false
       return
     }
-    const res = await apiCreatePermissionGroup({ object: permissionGroup.value })
+    const res = await apiCreatePermissionGroup({ body: permissionGroup.value })
     emit('afterCreate', res)
     showRecordWas('created')
     dialog.value = false

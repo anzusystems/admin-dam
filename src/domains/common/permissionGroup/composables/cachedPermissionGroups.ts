@@ -12,8 +12,8 @@ const mapIdToMinimal = (id: IntegerId): PermissionGroupMinimal => {
 }
 
 const fetchPermissionGroupListByIds = (ids: IntegerId[]) => {
-  const { executeFetch } = useFetchPermissionGroupListByIds()
-  return executeFetch(ids)
+  const { execute } = useFetchPermissionGroupListByIds()
+  return execute(ids)
 }
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<

@@ -9,14 +9,14 @@ export const useSimpleLoginActions = () => {
   const simpleLoginForm: Ref<SimpleLoginForm> = ref(createDefault())
   const { showErrorT } = useAlerts()
 
-  const { executeRequest: login } = useLogin()
+  const { execute: login } = useLogin()
 
   const onLogin = async () => {
     // The button binds to it: without this there is no feedback and nothing stops a second submit.
     if (loginButtonLoading.value) return
     loginButtonLoading.value = true
     try {
-      await login({ object: simpleLoginForm.value })
+      await login({ body: simpleLoginForm.value })
       /* A full load, not a router push: the current user, the ACL, the configuration and the login
        * status live in module state a navigation carries over. */
       window.location.href = '/'

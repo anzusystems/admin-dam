@@ -18,7 +18,7 @@ export const usePermissionConfigActions = (client: () => AxiosInstance) => {
     }
     permissionConfigStore.setLoadingPermissionConfig(true)
     try {
-      const { executeRequest: apiFetchPermissionConfig } = useFetchPermissionConfig()
+      const { execute: apiFetchPermissionConfig } = useFetchPermissionConfig()
       const permissionConfigRes = await apiFetchPermissionConfig({})
       permissionConfigStore.setPermissionConfig(permissionConfigRes)
       permissionConfigStore.setPermissionConfigInitialized(true)

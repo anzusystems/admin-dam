@@ -64,7 +64,7 @@ const onConfirm = async () => {
 
 const loadCategory = async (id: DocId) => {
   category.value = createDefault(currentExtSystemId.value)
-  const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
+  const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
   category.value = await fetchDistributionCategory({ urlParams: { id } })
 }
 

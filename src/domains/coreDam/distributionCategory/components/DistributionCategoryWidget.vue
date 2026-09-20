@@ -36,7 +36,7 @@ const assetType = computed(() => {
 
 const loadCategory = async (id: DocId) => {
   loading.value = true
-  const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
+  const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
   try {
     category.value = await fetchDistributionCategory({ urlParams: { id } })
   } catch (error) {

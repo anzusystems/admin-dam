@@ -8,7 +8,7 @@ const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'distributionCategorySelect'
 
 export const useFetchDistributionCategorySelectListByIds = () =>
-  useApiFetchByIds<DistributionCategorySelect[]>({
+  useApiFetchByIds<DistributionCategorySelect>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -16,7 +16,7 @@ export const useFetchDistributionCategorySelectListByIds = () =>
   })
 
 export const useFetchDistributionCategorySelectList = () =>
-  useApiFetchList<DistributionCategorySelect[]>({
+  useApiFetchList<DistributionCategorySelect>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,

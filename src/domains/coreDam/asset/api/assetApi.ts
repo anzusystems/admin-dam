@@ -25,6 +25,7 @@ import {
   type FilterConfig,
   type FilterData,
   type Pagination,
+  useApiCommand,
   useApiFetchList,
   useApiRequest,
 } from '@anzusystems/common-admin/labs'
@@ -53,7 +54,7 @@ export const ENTITY = 'asset'
 const FETCH_BY_IDS_MAX_LIMIT = 25
 
 export const useFetchAssetList = () =>
-  useApiFetchList<AssetSearchListItemDto[]>({
+  useApiFetchList<AssetSearchListItemDto>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -66,8 +67,8 @@ export const fetchAssetList = (
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchAssetList()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { licenceId } })
+  const { execute } = useFetchAssetList()
+  return execute(pagination, filterData, filterConfig, { urlParams: { licenceId } })
 }
 
 async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {
@@ -124,8 +125,8 @@ export const useFetchAsset = () =>
   })
 
 export const fetchAsset = (id: DocId) => {
-  const { executeRequest } = useFetchAsset()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchAsset()
+  return execute({ urlParams: { id } })
 }
 
 export const useFetchAssetByFileId = () =>
@@ -138,8 +139,8 @@ export const useFetchAssetByFileId = () =>
   })
 
 export const fetchAssetByFileId = (fileId: DocId) => {
-  const { executeRequest } = useFetchAssetByFileId()
-  return executeRequest({ urlParams: { fileId } })
+  const { execute } = useFetchAssetByFileId()
+  return execute({ urlParams: { fileId } })
 }
 
 export const useFetchAssetMetadata = () =>
@@ -152,8 +153,8 @@ export const useFetchAssetMetadata = () =>
   })
 
 export const fetchAssetMetadata = (id: DocId) => {
-  const { executeRequest } = useFetchAssetMetadata()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchAssetMetadata()
+  return execute({ urlParams: { id } })
 }
 
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
@@ -290,7 +291,7 @@ export const updateAssetMetadata = (
 }
 
 export const useDeleteAsset = () =>
-  useApiRequest<AssetDetailItemDto, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,
@@ -299,12 +300,12 @@ export const useDeleteAsset = () =>
   })
 
 export const deleteAsset = (id: DocId) => {
-  const { executeRequest } = useDeleteAsset()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useDeleteAsset()
+  return execute({ urlParams: { id } })
 }
 
 export const useUpdateAssetCategory = () =>
-  useApiRequest<unknown, { id: DocId; distributionCategory: DocIdNullable }>({
+  useApiCommand<{ id: DocId; distributionCategory: DocIdNullable }>({
     client: damClient,
     method: 'PUT',
     system: SYSTEM_CORE_DAM,
@@ -313,10 +314,10 @@ export const useUpdateAssetCategory = () =>
   })
 
 export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocIdNullable) => {
-  const { executeRequest } = useUpdateAssetCategory()
-  return executeRequest({
+  const { execute } = useUpdateAssetCategory()
+  return execute({
     urlParams: { assetId },
-    object: { id: assetId, distributionCategory: distributionCategoryId },
+    body: { id: assetId, distributionCategory: distributionCategoryId },
   })
 }
 
@@ -330,8 +331,8 @@ export const useCreateAsset = () =>
   })
 
 export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) => {
-  const { executeRequest } = useCreateAsset()
-  return executeRequest({ urlParams: { licenceId }, object: data })
+  const { execute } = useCreateAsset()
+  return execute({ urlParams: { licenceId }, body: data })
 }
 
 export const useSetSibling = () =>
@@ -344,8 +345,8 @@ export const useSetSibling = () =>
   })
 
 export const setSibling = (assetId: DocId, targetAssetId: DocId) => {
-  const { executeRequest } = useSetSibling()
-  return executeRequest({ urlParams: { assetId, targetAssetId }, object: {} })
+  const { execute } = useSetSibling()
+  return execute({ urlParams: { assetId, targetAssetId }, body: {} })
 }
 
 export const useRemoveSibling = () =>
@@ -358,6 +359,6 @@ export const useRemoveSibling = () =>
   })
 
 export const removeSibling = (assetId: DocId) => {
-  const { executeRequest } = useRemoveSibling()
-  return executeRequest({ urlParams: { assetId }, object: {} })
+  const { execute } = useRemoveSibling()
+  return execute({ urlParams: { assetId }, body: {} })
 }

@@ -35,10 +35,10 @@ const onOpen = () => {
   podcastEpisode.value = createDefault(currentExtSystemId.value, props.podcastId)
 }
 
-const { executeRequest: createPodcastEpisode } = useCreatePodcastEpisode()
+const { execute: createPodcastEpisode } = useCreatePodcastEpisode()
 
 const create = async () => {
-  return await createPodcastEpisode({ object: podcastEpisode.value })
+  return await createPodcastEpisode({ body: podcastEpisode.value })
 }
 </script>
 

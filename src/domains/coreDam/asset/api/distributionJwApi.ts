@@ -20,8 +20,8 @@ export const useCreateJwDistribution = () =>
   })
 
 export const createJwDistribution = (assetFileId: DocId, data: DistributionJwCreateRedistributeDto) => {
-  const { executeRequest } = useCreateJwDistribution()
-  return executeRequest({ urlParams: { assetFileId }, object: data })
+  const { execute } = useCreateJwDistribution()
+  return execute({ urlParams: { assetFileId }, body: data })
 }
 
 export const useRedistributeJwDistribution = () =>
@@ -34,8 +34,8 @@ export const useRedistributeJwDistribution = () =>
   })
 
 export const redistributeJwDistribution = (distributionId: DocId, data: DistributionJwCreateRedistributeDto) => {
-  const { executeRequest } = useRedistributeJwDistribution()
-  return executeRequest({ urlParams: { distributionId }, object: data })
+  const { execute } = useRedistributeJwDistribution()
+  return execute({ urlParams: { distributionId }, body: data })
 }
 
 export const usePrepareFormDataJwDistribution = () =>
@@ -51,6 +51,6 @@ export const prepareFormDataJwDistribution = (
   assetFileId: DocId,
   distributionServiceName: DamDistributionServiceName
 ) => {
-  const { executeRequest } = usePrepareFormDataJwDistribution()
-  return executeRequest({ urlParams: { assetFileId, distributionServiceName } })
+  const { execute } = usePrepareFormDataJwDistribution()
+  return execute({ urlParams: { assetFileId, distributionServiceName } })
 }

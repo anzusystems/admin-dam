@@ -23,12 +23,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useDistributionCategorySelectListActions = () => {
   const listItems = ref<DistributionCategorySelect[]>([])
-  const { executeFetch } = useFetchDistributionCategorySelectList()
+  const { execute } = useFetchDistributionCategorySelectList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -53,7 +53,7 @@ export const useDistributionCategorySelectDetailActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+      const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
       const distributionCategorySelect = await fetchDistributionCategorySelect({ urlParams: { id } })
       distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
     } catch (error) {
@@ -80,7 +80,7 @@ export const useDistributionCategorySelectEditActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+      const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
       const distributionCategorySelect = await fetchDistributionCategorySelect({ urlParams: { id } })
       distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
     } catch (error) {
@@ -106,7 +106,7 @@ export const useDistributionCategorySelectEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateDistributionCategorySelect } = useUpdateDistributionCategorySelect()
+      const { execute: updateDistributionCategorySelect } = useUpdateDistributionCategorySelect()
       // New rows carry a negative temp id for the editor key; the API expects '' for new options.
       const object: DistributionCategorySelect = {
         ...distributionCategorySelect.value,
@@ -116,7 +116,7 @@ export const useDistributionCategorySelectEditActions = () => {
       }
       const updated = await updateDistributionCategorySelect({
         urlParams: { id: distributionCategorySelectOneStore.distributionCategorySelect.id },
-        object,
+        body: object,
       })
       // Adopt the response (real ids for new rows, sorted by `setDistributionCategorySelect`) so the
       // editor can re-baseline via commit() and saved rows lose their unsaved markers.

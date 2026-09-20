@@ -8,7 +8,7 @@ const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'keyword'
 
 export const useFetchKeywordList = () =>
-  useApiFetchList<DamKeyword[]>({
+  useApiFetchList<DamKeyword>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -16,7 +16,7 @@ export const useFetchKeywordList = () =>
   })
 
 export const useFetchKeywordListByIds = () =>
-  useApiFetchByIds<DamKeyword[]>({
+  useApiFetchByIds<DamKeyword>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -52,11 +52,11 @@ export const useFetchKeyword = () =>
   })
 
 export const fetchKeywordListByIds = (extSystemId: number, ids: string[]) => {
-  const { executeFetch } = useFetchKeywordListByIds()
-  return executeFetch(ids, { urlParams: { extSystemId } })
+  const { execute } = useFetchKeywordListByIds()
+  return execute(ids, { urlParams: { extSystemId } })
 }
 
 export const createKeyword = (data: DamKeyword) => {
-  const { executeRequest } = useCreateKeyword()
-  return executeRequest({ object: data })
+  const { execute } = useCreateKeyword()
+  return execute({ body: data })
 }

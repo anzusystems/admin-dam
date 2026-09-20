@@ -21,14 +21,14 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const usePodcastListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchPodcastListByExtSystem()
+  const { execute } = useFetchPodcastListByExtSystem()
 
   const listItems = ref<Podcast[]>([])
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -49,7 +49,7 @@ export const usePodcastListActions = () => {
 export const usePodcastDetailActions = () => {
   const podcastOneStore = usePodcastOneStore()
   const { podcast } = storeToRefs(podcastOneStore)
-  const { executeRequest: fetchPodcast } = useFetchPodcast()
+  const { execute: fetchPodcast } = useFetchPodcast()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -76,8 +76,8 @@ export const usePodcastEditActions = () => {
   const router = useRouter()
   const podcastOneStore = usePodcastOneStore()
   const { podcast } = storeToRefs(podcastOneStore)
-  const { executeRequest: fetchPodcast } = useFetchPodcast()
-  const { executeRequest: updatePodcast } = useUpdatePodcast()
+  const { execute: fetchPodcast } = useFetchPodcast()
+  const { execute: updatePodcast } = useUpdatePodcast()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -111,7 +111,7 @@ export const usePodcastEditActions = () => {
       }
       const updatedPodcast = await updatePodcast({
         urlParams: { id: podcastOneStore.podcast.id },
-        object,
+        body: object,
       })
       // Adopt the server response (real ids for new rows, sorted by `setPodcast`) so the
       // editor can re-baseline via `commit()` and saved rows lose their unsaved markers.
@@ -143,11 +143,11 @@ export const usePodcastEditActions = () => {
 // the user picks one); omitted or empty → falls back to the global current ext-system.
 export const usePodcastSelectActions = (extSystemId?: () => IntegerIdNullable | undefined) => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchPodcastListByExtSystem()
+  const { execute } = useFetchPodcastListByExtSystem()
   const resolveExtSystemId = (): IntegerId => extSystemId?.() || currentExtSystemId.value
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    const podcasts = await executeFetch(pagination, filterData, filterConfig, {
+    const podcasts = await execute(pagination, filterData, filterConfig, {
       urlParams: { extSystemId: resolveExtSystemId() },
     })
 
@@ -158,7 +158,7 @@ export const usePodcastSelectActions = (extSystemId?: () => IntegerIdNullable | 
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
-    const { executeFetch: executeFetchByIds } = useFetchPodcastListByIds()
+    const { execute: executeFetchByIds } = useFetchPodcastListByIds()
     const podcasts = await executeFetchByIds(ids, { urlParams: { extSystemId: resolveExtSystemId() } })
 
     return <ValueObjectOption<string>[]>podcasts.map((podcast: Podcast) => ({

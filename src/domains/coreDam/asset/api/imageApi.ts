@@ -8,7 +8,7 @@ import {
   type UploadQueueItem,
   UploadQueueItemType,
 } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { AxiosProgressEvent } from 'axios'
@@ -26,8 +26,8 @@ export const useFetchImageFile = () =>
   })
 
 export const fetchImageFile = (id: DocId) => {
-  const { executeRequest } = useFetchImageFile()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchImageFile()
+  return execute({ urlParams: { id } })
 }
 
 export const uploadStart = (item: UploadQueueItem) => {
@@ -196,7 +196,7 @@ export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
 }
 
 export const useDeleteImage = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,
@@ -205,8 +205,8 @@ export const useDeleteImage = () =>
   })
 
 export const deleteImage = (imageId: DocId) => {
-  const { executeRequest } = useDeleteImage()
-  return executeRequest({ urlParams: { id: imageId } })
+  const { execute } = useDeleteImage()
+  return execute({ urlParams: { id: imageId } })
 }
 
 export const makeMainFile = (imageId: DocId, assetId: DocId) => {

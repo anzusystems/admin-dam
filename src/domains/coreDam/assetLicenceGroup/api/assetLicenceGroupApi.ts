@@ -7,7 +7,7 @@ const END_POINT = '/adm/v1/asset-licence-group'
 export const ENTITY = 'assetLicenceGroup'
 
 export const useFetchAssetLicenceGroupList = () =>
-  useApiFetchList<DamAssetLicenceGroup[]>({
+  useApiFetchList<DamAssetLicenceGroup>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,

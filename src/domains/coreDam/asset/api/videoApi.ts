@@ -15,6 +15,7 @@ import {
   type FilterConfig,
   type FilterData,
   type Pagination,
+  useApiCommand,
   useApiFetchList,
   useApiRequest,
 } from '@anzusystems/common-admin/labs'
@@ -37,8 +38,8 @@ export const useFetchVideoFile = () =>
   })
 
 export const fetchVideoFile = (id: DocId) => {
-  const { executeRequest } = useFetchVideoFile()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchVideoFile()
+  return execute({ urlParams: { id } })
 }
 
 export const uploadStart = (item: UploadQueueItem) => {
@@ -292,7 +293,7 @@ export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePr
 }
 
 export const useFetchVideoFileDistributionPreviewList = () =>
-  useApiFetchList<DistributionImagePreviewDto[]>({
+  useApiFetchList<DistributionImagePreviewDto>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -305,12 +306,12 @@ export const fetchVideoFileDistributionPreviewList = (
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchVideoFileDistributionPreviewList()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { fileId } })
+  const { execute } = useFetchVideoFileDistributionPreviewList()
+  return execute(pagination, filterData, filterConfig, { urlParams: { fileId } })
 }
 
 export const useSetVideoFileDistributionPreview = () =>
-  useApiRequest<null, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'PATCH',
     system: SYSTEM_CORE_DAM,
@@ -319,6 +320,6 @@ export const useSetVideoFileDistributionPreview = () =>
   })
 
 export const setVideoFileDistributionPreview = (fileId: DocId, distributionId: DocId) => {
-  const { executeRequest } = useSetVideoFileDistributionPreview()
-  return executeRequest({ urlParams: { fileId, distributionId } })
+  const { execute } = useSetVideoFileDistributionPreview()
+  return execute({ urlParams: { fileId, distributionId } })
 }

@@ -39,10 +39,10 @@ const onOpen = () => {
   assetLicenceGroup.value = createDefault()
 }
 
-const { executeRequest: createAssetLicenceGroup } = useCreateAssetLicenceGroup()
+const { execute: createAssetLicenceGroup } = useCreateAssetLicenceGroup()
 
 const create = async () => {
-  return await createAssetLicenceGroup({ object: assetLicenceGroup.value })
+  return await createAssetLicenceGroup({ body: assetLicenceGroup.value })
 }
 </script>
 

@@ -12,7 +12,7 @@ const END_POINT = '/adm/v1/tts-narration-request'
 export const ENTITY = 'ttsNarrationRequest'
 
 export const useFetchTtsNarrationRequestListByExtSystem = () =>
-  useApiFetchList<TtsNarrationRequest[]>({
+  useApiFetchList<TtsNarrationRequest>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,

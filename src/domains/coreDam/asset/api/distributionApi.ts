@@ -3,6 +3,7 @@ import {
   type FilterConfig,
   type FilterData,
   type Pagination,
+  useApiCommand,
   useApiFetchList,
   useApiRequest,
 } from '@anzusystems/common-admin/labs'
@@ -11,7 +12,6 @@ import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {
   DistributionAuthorized,
   DistributionCustomItem,
-  DistributionItem,
   DistributionJwItem,
   DistributionUpdateDto,
   DistributionYoutubeItem,
@@ -31,14 +31,14 @@ export const useFetchDistribution = () =>
   })
 
 export const fetchDistribution = (id: DocId) => {
-  const { executeRequest } = useFetchDistribution()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchDistribution()
+  return execute({ urlParams: { id } })
 }
 
 export const useFetchAssetDistributionList = <
   T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem,
 >() =>
-  useApiFetchList<Array<T>>({
+  useApiFetchList<T>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -51,14 +51,14 @@ export const fetchAssetDistributionList = <T = DistributionJwItem | Distribution
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchAssetDistributionList<T>()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId } })
+  const { execute } = useFetchAssetDistributionList<T>()
+  return execute(pagination, filterData, filterConfig, { urlParams: { assetId } })
 }
 
 export const useFetchAssetFileDistributionList = <
   T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem,
 >() =>
-  useApiFetchList<Array<T>>({
+  useApiFetchList<T>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -73,8 +73,8 @@ export const fetchAssetFileDistributionList = <
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchAssetFileDistributionList<T>()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { assetFileId } })
+  const { execute } = useFetchAssetFileDistributionList<T>()
+  return execute(pagination, filterData, filterConfig, { urlParams: { assetFileId } })
 }
 
 export const useDistributionIsAuthorized = () =>
@@ -87,11 +87,11 @@ export const useDistributionIsAuthorized = () =>
   })
 
 export const distributionIsAuthorized = (distributionServiceName: DamDistributionServiceName) => {
-  const { executeRequest } = useDistributionIsAuthorized()
-  return executeRequest({ urlParams: { distributionServiceName } })
+  const { execute } = useDistributionIsAuthorized()
+  return execute({ urlParams: { distributionServiceName } })
 }
 
-export const useUpsertAssetDistributions = <T = DistributionUpdateDto>() =>
+export const useUpsertAssetDistributions = <T extends NonNullable<unknown> = DistributionUpdateDto>() =>
   useApiRequest<T, T>({
     client: damClient,
     method: 'PATCH',
@@ -100,13 +100,16 @@ export const useUpsertAssetDistributions = <T = DistributionUpdateDto>() =>
     urlTemplate: END_POINT,
   })
 
-export const upsertAssetDistributions = <T = DistributionUpdateDto>(_assetId: DocId, data: T) => {
-  const { executeRequest } = useUpsertAssetDistributions<T>()
-  return executeRequest({ object: data })
+export const upsertAssetDistributions = <T extends NonNullable<unknown> = DistributionUpdateDto>(
+  _assetId: DocId,
+  data: T
+) => {
+  const { execute } = useUpsertAssetDistributions<T>()
+  return execute({ body: data })
 }
 
 export const useDeleteDistribution = () =>
-  useApiRequest<DistributionItem, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,
@@ -115,6 +118,6 @@ export const useDeleteDistribution = () =>
   })
 
 export const deleteDistribution = (id: DocId) => {
-  const { executeRequest } = useDeleteDistribution()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useDeleteDistribution()
+  return execute({ urlParams: { id } })
 }

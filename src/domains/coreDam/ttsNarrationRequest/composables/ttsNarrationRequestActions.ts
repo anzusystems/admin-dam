@@ -39,13 +39,13 @@ const cancelRequestButtonLoading = ref(false)
 
 export const useTtsNarrationRequestListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchTtsNarrationRequestListByExtSystem()
+  const { execute } = useFetchTtsNarrationRequestListByExtSystem()
   const listItems = ref<Array<TtsNarrationRequest>>([])
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -64,11 +64,11 @@ export const useTtsNarrationRequestListActions = () => {
 }
 
 export const useTtsNarrationRequestSynthesizeActions = () => {
-  const { executeRequest: synthesizeTtsNarrationRequest } = useSynthesizeTtsNarrationRequest()
+  const { execute: synthesizeTtsNarrationRequest } = useSynthesizeTtsNarrationRequest()
 
   // Passed to ACreateDialog's call-create; the dialog owns loading + error/success handling.
   const synthesize = (payload: TtsSynthesizeRequestDto): Promise<TtsSynthesizeResponse> =>
-    synthesizeTtsNarrationRequest({ object: payload })
+    synthesizeTtsNarrationRequest({ body: payload })
 
   return {
     synthesize,
@@ -76,12 +76,12 @@ export const useTtsNarrationRequestSynthesizeActions = () => {
 }
 
 export const useTtsNarrationRequestCancelRequestActions = () => {
-  const { executeRequest: cancelTtsNarrationRequest } = useCancelTtsNarrationRequest()
+  const { execute: cancelTtsNarrationRequest } = useCancelTtsNarrationRequest()
 
   const cancelRequest = async (requestId: DocId): Promise<TtsNarrationRequest | null> => {
     cancelRequestButtonLoading.value = true
     try {
-      const res = await cancelTtsNarrationRequest({ urlParams: { requestId }, object: {} })
+      const res = await cancelTtsNarrationRequest({ urlParams: { requestId }, body: {} })
       showRecordWas('updated')
       return res
     } catch (error) {
@@ -102,7 +102,7 @@ export const useTtsNarrationRequestDetailActions = (getId: () => DocId) => {
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
   const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies, isLoadedCachedVoiceFamily } = useCachedVoiceFamiliesById()
-  const { executeRequest: fetchTtsNarrationRequest } = useFetchTtsNarrationRequest()
+  const { execute: fetchTtsNarrationRequest } = useFetchTtsNarrationRequest()
 
   const detail = ref<TtsNarrationRequestDetail | null>(null)
   const detailLoading = ref(true)

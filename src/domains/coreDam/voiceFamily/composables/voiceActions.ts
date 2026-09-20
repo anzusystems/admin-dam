@@ -16,7 +16,7 @@ import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
-// Voice list has no filter UI — an empty filter satisfies the new executeFetch signature.
+// Voice list has no filter UI — an empty filter satisfies the new execute signature.
 const emptyFilterFields = [] satisfies readonly MakeFilterOption[]
 const { filterData: emptyFilterData, filterConfig: emptyFilterConfig } = createFilter(
   emptyFilterFields,
@@ -28,13 +28,13 @@ const listLoading = ref(false)
 const saveButtonLoading = ref(false)
 
 export const useVoiceListActions = () => {
-  const { executeFetch } = useFetchVoiceListByFamily()
+  const { execute } = useFetchVoiceListByFamily()
   const listItems = ref<Voice[]>([])
 
   const fetchList = async (voiceFamilyId: DocId, pagination: Ref<Pagination>) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, emptyFilterData, emptyFilterConfig, {
+      listItems.value = await execute(pagination, emptyFilterData, emptyFilterConfig, {
         urlParams: { voiceFamilyId },
       })
     } catch (error) {
@@ -44,7 +44,7 @@ export const useVoiceListActions = () => {
     }
   }
 
-  const { executeRequest: deleteVoice } = useDeleteVoice()
+  const { execute: deleteVoice } = useDeleteVoice()
   const removeVoice = async (id: DocId): Promise<boolean> => {
     try {
       await deleteVoice({ urlParams: { id } })
@@ -65,11 +65,11 @@ export const useVoiceListActions = () => {
 }
 
 export const useVoiceCreateActions = () => {
-  const { executeRequest: createVoiceRequest } = useCreateVoice()
+  const { execute: createVoiceRequest } = useCreateVoice()
 
   // Passed to ACreateDialog's call-create; the dialog owns loading + error handling.
   const createVoice = (voice: Voice): Promise<Voice> =>
-    createVoiceRequest({ urlTemplate: writeEndpoint(voice.discriminator), object: voice })
+    createVoiceRequest({ urlTemplate: writeEndpoint(voice.discriminator), body: voice })
 
   return {
     createVoice,
@@ -78,7 +78,7 @@ export const useVoiceCreateActions = () => {
 
 export const useVoiceEditActions = () => {
   const v$ = useVuelidate()
-  const { executeRequest: updateVoiceRequest } = useUpdateVoice()
+  const { execute: updateVoiceRequest } = useUpdateVoice()
 
   const onUpdate = async (voice: Voice, onSuccess?: () => void) => {
     try {
@@ -92,7 +92,7 @@ export const useVoiceEditActions = () => {
       await updateVoiceRequest({
         urlTemplate: writeEndpoint(voice.discriminator) + '/:id',
         urlParams: { id: voice.id },
-        object: voice,
+        body: voice,
       })
       showRecordWas('updated')
       if (onSuccess) onSuccess()

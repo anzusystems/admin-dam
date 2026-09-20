@@ -17,6 +17,6 @@ export const useFetchTtsAsset = () =>
   })
 
 export const fetchTtsAsset = (assetId: DocId) => {
-  const { executeRequest } = useFetchTtsAsset()
-  return executeRequest({ urlParams: { assetId } })
+  const { execute } = useFetchTtsAsset()
+  return execute({ urlParams: { assetId } })
 }

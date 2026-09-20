@@ -36,8 +36,8 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  const { executeRequest } = useCreateVideoShowEpisode()
-  return await executeRequest({ object: videoShowEpisode.value })
+  const { execute } = useCreateVideoShowEpisode()
+  return await execute({ body: videoShowEpisode.value })
 }
 </script>
 

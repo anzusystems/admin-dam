@@ -8,7 +8,7 @@ const END_POINT = '/adm/v1/ext-system'
 export const ENTITY = 'extSystem'
 
 export const useFetchExtSystemList = () =>
-  useApiFetchList<DamExtSystem[]>({
+  useApiFetchList<DamExtSystem>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -16,7 +16,7 @@ export const useFetchExtSystemList = () =>
   })
 
 export const useFetchExtSystemListByIds = () =>
-  useApiFetchByIds<DamExtSystem[]>({
+  useApiFetchByIds<DamExtSystem>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,

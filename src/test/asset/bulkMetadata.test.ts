@@ -9,7 +9,7 @@ vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => ({ patch }) }
 vi.mock('@anzusystems/common-admin/labs', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
   useApiFetchList: () => ({ fetchList: vi.fn() }),
-  useApiRequest: () => ({ executeRequest: vi.fn() }),
+  useApiRequest: () => ({ execute: vi.fn() }),
 }))
 
 const queueItem = (over: Record<string, unknown> = {}) => ({

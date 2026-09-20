@@ -41,8 +41,8 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  const { executeRequest: createPublicExport } = useCreatePublicExport()
-  return await createPublicExport({ object: publicExport.value })
+  const { execute: createPublicExport } = useCreatePublicExport()
+  return await createPublicExport({ body: publicExport.value })
 }
 
 const { exportTypeOptions } = useExportTypeTypes()

@@ -31,10 +31,10 @@ const userRefreshRequestInterceptor = (
   if (refreshTokenExists && !jwtPayload) {
     if (!isRefreshingToken) {
       isRefreshingToken = true
-      const { executeRequest: refreshToken } = useRefreshToken()
+      const { execute: refreshToken } = useRefreshToken()
       /* Before the flush, not after: a request made from a released caller's own continuation
        * would find the flag up and join a queue nobody is going to flush again. */
-      refreshToken({ object: {} })
+      refreshToken({ body: {} })
         .then(() => {
           isRefreshingToken = false
           onRefreshedUser()

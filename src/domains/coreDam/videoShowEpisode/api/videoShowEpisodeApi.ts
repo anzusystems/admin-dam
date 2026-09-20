@@ -1,13 +1,13 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 
 const END_POINT = '/adm/v1/video-show-episode'
 export const ENTITY = 'videoShowEpisode'
 
 export const useFetchVideoShowEpisodeListByVideoShow = () =>
-  useApiFetchList<VideoShowEpisode[]>({
+  useApiFetchList<VideoShowEpisode>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -15,7 +15,7 @@ export const useFetchVideoShowEpisodeListByVideoShow = () =>
   })
 
 export const useFetchVideoShowEpisodeListByAsset = () =>
-  useApiFetchList<VideoShowEpisode[]>({
+  useApiFetchList<VideoShowEpisode>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -59,7 +59,7 @@ export const useFetchVideoShowEpisode = () =>
   })
 
 export const useDeleteVideoShowEpisode = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,

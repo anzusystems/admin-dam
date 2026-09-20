@@ -43,10 +43,10 @@ const onOpen = () => {
   podcast.value = createDefault(currentAssetLicenceId.value)
 }
 
-const { executeRequest: createPodcast } = useCreatePodcast()
+const { execute: createPodcast } = useCreatePodcast()
 
 const create = async () => {
-  return await createPodcast({ object: podcast.value })
+  return await createPodcast({ body: podcast.value })
 }
 
 const { podcastModeOptions } = usePodcastMode()

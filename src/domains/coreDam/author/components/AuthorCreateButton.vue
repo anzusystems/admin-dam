@@ -74,7 +74,7 @@ const onConfirm = async () => {
       buttonLoading.value = false
       return
     }
-    const res = await createAuthor({ object: author.value })
+    const res = await createAuthor({ body: author.value })
     emit('onSuccess', res)
     showRecordWas('created')
     dialog.value = false
@@ -89,7 +89,7 @@ const onConfirm = async () => {
 }
 
 const { authorTypeOptions } = useDamAuthorType()
-const { executeRequest: createAuthor } = useCreateAuthor()
+const { execute: createAuthor } = useCreateAuthor()
 
 defineExpose({
   open: onClick,

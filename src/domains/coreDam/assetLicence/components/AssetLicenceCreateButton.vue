@@ -40,10 +40,10 @@ const onOpen = () => {
   assetLicence.value = createDefault()
 }
 
-const { executeRequest: createAssetLicence } = useCreateAssetLicence()
+const { execute: createAssetLicence } = useCreateAssetLicence()
 
 const create = async () => {
-  return await createAssetLicence({ object: assetLicence.value })
+  return await createAssetLicence({ body: assetLicence.value })
 }
 </script>
 

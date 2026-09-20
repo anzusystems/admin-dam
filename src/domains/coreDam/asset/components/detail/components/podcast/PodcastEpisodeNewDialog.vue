@@ -42,8 +42,8 @@ const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
 
-const { executeRequest: createPodcastEpisode } = useCreatePodcastEpisode()
-const { executeRequest: prepareFormDataPodcastEpisode } = usePrepareFormDataPodcastEpisode()
+const { execute: createPodcastEpisode } = useCreatePodcastEpisode()
+const { execute: prepareFormDataPodcastEpisode } = usePrepareFormDataPodcastEpisode()
 
 const saving = ref(false)
 const loadingFormData = ref(false)
@@ -64,7 +64,7 @@ const submit = async () => {
       saving.value = false
       return
     }
-    await createPodcastEpisode({ object: podcastEpisode.value })
+    await createPodcastEpisode({ body: podcastEpisode.value })
     showRecordWas('created')
     closeDialog(true)
   } catch (error) {

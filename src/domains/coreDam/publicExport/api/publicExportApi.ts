@@ -1,13 +1,13 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { PublicExport } from '@/domains/coreDam/publicExport/types/PublicExport'
 
 const END_POINT = '/adm/v1/public-export'
 export const ENTITY = 'publicExport'
 
 export const useFetchPublicExportList = () =>
-  useApiFetchList<PublicExport[]>({
+  useApiFetchList<PublicExport>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -42,7 +42,7 @@ export const useFetchPublicExport = () =>
   })
 
 export const useDeletePublicExport = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,

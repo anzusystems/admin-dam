@@ -19,7 +19,7 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const usePodcastEpisodeListActions = () => {
   const listItems = ref<PodcastEpisode[]>([])
-  const { executeFetch } = useFetchPodcastEpisodeListByPodcast()
+  const { execute } = useFetchPodcastEpisodeListByPodcast()
 
   const fetchList = async (
     podcastId: DocId,
@@ -29,7 +29,7 @@ export const usePodcastEpisodeListActions = () => {
   ) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, { urlParams: { podcastId } })
+      listItems.value = await execute(pagination, filterData, filterConfig, { urlParams: { podcastId } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -46,7 +46,7 @@ export const usePodcastEpisodeListActions = () => {
 }
 
 export const usePodcastEpisodeRemoveActions = () => {
-  const { executeRequest: deletePodcastEpisode } = useDeletePodcastEpisode()
+  const { execute: deletePodcastEpisode } = useDeletePodcastEpisode()
 
   const deletePodcast = async (id: DocId, onSuccessfulCallback: () => void) => {
     detailLoading.value = true
@@ -68,7 +68,7 @@ export const usePodcastEpisodeRemoveActions = () => {
 export const usePodcastEpisodeDetailActions = () => {
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
-  const { executeRequest: fetchPodcastEpisode } = useFetchPodcastEpisode()
+  const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
 
   const fetchData = async (id: DocId) => {
     detailLoading.value = true
@@ -95,8 +95,8 @@ export const usePodcastEpisodeEditActions = () => {
   const router = useRouter()
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
-  const { executeRequest: fetchPodcastEpisode } = useFetchPodcastEpisode()
-  const { executeRequest: updatePodcastEpisode } = useUpdatePodcastEpisode()
+  const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
+  const { execute: updatePodcastEpisode } = useUpdatePodcastEpisode()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -122,7 +122,7 @@ export const usePodcastEpisodeEditActions = () => {
       }
       await updatePodcastEpisode({
         urlParams: { id: podcastEpisodeOneStore.podcastEpisode.id },
-        object: podcastEpisode.value,
+        body: podcastEpisode.value,
       })
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return

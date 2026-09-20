@@ -22,12 +22,12 @@ const saveAndCloseButtonLoading = ref(false)
 export const useAuthorCleanPhraseListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<AuthorCleanPhrase[]>([])
-  const { executeFetch } = useFetchAuthorCleanPhraseList()
+  const { execute } = useFetchAuthorCleanPhraseList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -47,7 +47,7 @@ export const useAuthorCleanPhraseListActions = () => {
 
 export const useAuthorCleanPhraseRemoveActions = () => {
   const router = useRouter()
-  const { executeRequest: deleteAuthorCleanPhrase } = useDeleteAuthorCleanPhrase()
+  const { execute: deleteAuthorCleanPhrase } = useDeleteAuthorCleanPhrase()
   const removeAuthorCleanPhrase = async (id: IntegerId) => {
     detailLoading.value = true
     try {
@@ -74,7 +74,7 @@ export const useAuthorCleanPhraseDetailActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+      const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
       const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
       if (authorCleanPhrase.authorReplacement) {
@@ -105,7 +105,7 @@ export const useAuthorCleanPhraseEditActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+      const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
       const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
     } catch (error) {
@@ -125,10 +125,10 @@ export const useAuthorCleanPhraseEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateAuthorCleanPhrase } = useUpdateAuthorCleanPhrase()
+      const { execute: updateAuthorCleanPhrase } = useUpdateAuthorCleanPhrase()
       await updateAuthorCleanPhrase({
         urlParams: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
-        object: authorCleanPhrase.value,
+        body: authorCleanPhrase.value,
       })
       showRecordWas('updated')
 

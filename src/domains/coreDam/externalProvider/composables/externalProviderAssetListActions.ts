@@ -51,8 +51,8 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { executeFetch } = useFetchExternalProviderAssetList()
-  const { executeRequest: fetchExternalProviderAsset } = useFetchExternalProviderAsset()
+  const { execute } = useFetchExternalProviderAssetList()
+  const { execute: fetchExternalProviderAsset } = useFetchExternalProviderAsset()
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
 
@@ -74,7 +74,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     try {
       externalProviderAssetListStore.showLoader('hard')
       const answered = paginationForRequest()
-      const firstPage = await executeFetch(answered, filterData, filterConfig, {
+      const firstPage = await execute(answered, filterData, filterConfig, {
         urlParams: { externalProvider: activeExternalProvider.value },
       })
       // Two filter changes answer in whatever order they like; the older one used to win.
@@ -137,7 +137,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     try {
       externalProviderAssetListStore.showLoader('soft')
       const answered = paginationForRequest()
-      const nextPage = await executeFetch(answered, filterData, filterConfig, {
+      const nextPage = await execute(answered, filterData, filterConfig, {
         urlParams: { externalProvider: activeExternalProvider.value },
       })
       // Only onto the list that asked for it, not the one a filter change has put in its place.

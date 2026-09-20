@@ -22,7 +22,7 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useAuthorListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchAuthorList()
+  const { execute } = useFetchAuthorList()
 
   const listItems = ref<DamAuthor[]>([])
 
@@ -39,7 +39,7 @@ export const useAuthorListActions = () => {
       pagination.value.sortBy = pagination.value.sortBy ?? lastSortBy
     }
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -62,7 +62,7 @@ export const useAuthorDetailActions = () => {
   const { author } = storeToRefs(authorOneStore)
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
-  const { executeRequest: fetchAuthor } = useFetchAuthor()
+  const { execute: fetchAuthor } = useFetchAuthor()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -101,8 +101,8 @@ export const useAuthorEditActions = () => {
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
-  const { executeRequest: fetchAuthor } = useFetchAuthor()
-  const { executeRequest: updateAuthor } = useUpdateAuthor()
+  const { execute: fetchAuthor } = useFetchAuthor()
+  const { execute: updateAuthor } = useUpdateAuthor()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -133,7 +133,7 @@ export const useAuthorEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAuthor({ urlParams: { id: authorOneStore.author.id }, object: author.value })
+      await updateAuthor({ urlParams: { id: authorOneStore.author.id }, body: author.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/authors' })
@@ -158,7 +158,7 @@ export const useAuthorEditActions = () => {
 
 export const useAuthorSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchAuthorList()
+  const { execute } = useFetchAuthorList()
 
   const mapToMinimal = (author: DamAuthor): DamAuthorMinimal => ({
     id: author.id,
@@ -182,7 +182,7 @@ export const useAuthorSelectActions = () => {
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToValueObjects(
-      await executeFetch(pagination, filterData, filterConfig, {
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
@@ -190,14 +190,14 @@ export const useAuthorSelectActions = () => {
 
   const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToMinimals(
-      await executeFetch(pagination, filterData, filterConfig, {
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
   }
 
   const fetchItemsByIds = async (ids: string[]) => {
-    const { executeFetch: executeFetchByIds } = useFetchAuthorListByIds()
+    const { execute: executeFetchByIds } = useFetchAuthorListByIds()
     return mapToValueObjects(await executeFetchByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } }))
   }
 

@@ -29,7 +29,7 @@ const showPagination = computed(
   () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
 )
 
-const { executeFetch } = useFetchPodcastEpisodeListByAsset()
+const { execute } = useFetchPodcastEpisodeListByAsset()
 
 const listItems = ref<PodcastEpisode[]>([])
 const loading = ref(false)
@@ -53,7 +53,7 @@ const deletePodcastEpisode = (id: DocId) => {
 
 const getList = async () => {
   loading.value = true
-  const items = await executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
+  const items = await execute(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
   addToCachedPodcasts(items.map((item) => item.podcast))
   fetchCachedPodcasts()
   listItems.value = items

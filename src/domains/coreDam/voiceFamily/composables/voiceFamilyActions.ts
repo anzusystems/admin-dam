@@ -30,13 +30,13 @@ const saveButtonLoading = ref(false)
 
 export const useVoiceFamilyListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchVoiceFamilyListByExtSystem()
+  const { execute } = useFetchVoiceFamilyListByExtSystem()
   const listItems = ref<VoiceFamily[]>([])
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -55,7 +55,7 @@ export const useVoiceFamilyListActions = () => {
 }
 
 export const useVoiceFamilyCreateActions = () => {
-  const { executeRequest: createVoiceFamilyRequest } = useCreateVoiceFamily()
+  const { execute: createVoiceFamilyRequest } = useCreateVoiceFamily()
 
   // Passed to ACreateDialog's call-create; the dialog owns loading + error handling.
   const createVoiceFamily = (voiceFamily: VoiceFamily): Promise<VoiceFamily> => {
@@ -68,7 +68,7 @@ export const useVoiceFamilyCreateActions = () => {
       active: voiceFamily.active,
       keywords: voiceFamily.keywords,
     }
-    return createVoiceFamilyRequest({ object: payload })
+    return createVoiceFamilyRequest({ body: payload })
   }
 
   return {
@@ -78,7 +78,7 @@ export const useVoiceFamilyCreateActions = () => {
 
 export const useVoiceFamilyRemoveActions = () => {
   const router = useRouter()
-  const { executeRequest: deleteVoiceFamily } = useDeleteVoiceFamily()
+  const { execute: deleteVoiceFamily } = useDeleteVoiceFamily()
   const removeVoiceFamily = async (id: DocId) => {
     detailLoading.value = true
     try {
@@ -102,7 +102,7 @@ export const useVoiceFamilyRemoveActions = () => {
 export const useVoiceFamilyDetailActions = () => {
   const voiceFamilyOneStore = useVoiceFamilyOneStore()
   const { voiceFamily } = storeToRefs(voiceFamilyOneStore)
-  const { executeRequest: fetchVoiceFamily } = useFetchVoiceFamily()
+  const { execute: fetchVoiceFamily } = useFetchVoiceFamily()
 
   const fetchData = async (id: DocId) => {
     detailLoading.value = true
@@ -127,8 +127,8 @@ export const useVoiceFamilyEditActions = () => {
   const v$ = useVuelidate()
   const voiceFamilyOneStore = useVoiceFamilyOneStore()
   const { voiceFamily } = storeToRefs(voiceFamilyOneStore)
-  const { executeRequest: fetchVoiceFamily } = useFetchVoiceFamily()
-  const { executeRequest: updateVoiceFamily } = useUpdateVoiceFamily()
+  const { execute: fetchVoiceFamily } = useFetchVoiceFamily()
+  const { execute: updateVoiceFamily } = useUpdateVoiceFamily()
 
   const fetchData = async (id: DocId) => {
     detailLoading.value = true
@@ -158,7 +158,7 @@ export const useVoiceFamilyEditActions = () => {
         active: voiceFamily.value.active,
         keywords: voiceFamily.value.keywords,
       }
-      await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, object: payload })
+      await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, body: payload })
       showRecordWas('updated')
     } catch (error) {
       showErrorsDefault(error)
@@ -179,12 +179,12 @@ export const useVoiceFamilyEditActions = () => {
 
 export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => IntegerId)) => {
   const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
-  const { executeFetch } = useFetchVoiceFamilyListByExtSystem()
-  const { executeFetch: executeFetchByIds } = useFetchVoiceFamilyListByIds()
+  const { execute } = useFetchVoiceFamilyListByExtSystem()
+  const { execute: executeFetchByIds } = useFetchVoiceFamilyListByIds()
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     try {
-      const items = await executeFetch(pagination, filterData, filterConfig, {
+      const items = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: resolveExtSystemId() },
       })
 
@@ -221,11 +221,11 @@ export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => Inte
 // Slug-valued voice-family options for a RemoteAutocomplete (the synthesize request carries the slug).
 export const useVoiceFamilySlugSelectActions = (extSystemId: IntegerId | (() => IntegerId)) => {
   const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
-  const { executeFetch } = useFetchVoiceFamilyListByExtSystem()
+  const { execute } = useFetchVoiceFamilyListByExtSystem()
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     try {
-      const items = await executeFetch(pagination, filterData, filterConfig, {
+      const items = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: resolveExtSystemId() },
       })
 
@@ -253,7 +253,7 @@ export const useVoiceFamilySlugSelectActions = (extSystemId: IntegerId | (() => 
       })
       filterData.slug = slugs
       const { pagination } = usePagination(null)
-      const items = await executeFetch(pagination, filterData, filterConfig, {
+      const items = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: resolveExtSystemId() },
       })
 

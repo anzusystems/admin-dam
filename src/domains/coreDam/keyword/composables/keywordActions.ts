@@ -22,7 +22,7 @@ const saveAndCloseButtonLoading = ref(false)
 export const useKeywordListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<DamKeyword[]>([])
-  const { executeFetch } = useFetchKeywordList()
+  const { execute } = useFetchKeywordList()
 
   // A text search must sort by relevance, so the sort is dropped for that request only
   // and the user's choice is restored once the search is cleared.
@@ -37,7 +37,7 @@ export const useKeywordListActions = () => {
       pagination.value.sortBy = pagination.value.sortBy ?? lastSortBy
     }
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -63,7 +63,7 @@ export const useKeywordDetailActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchKeyword } = useFetchKeyword()
+      const { execute: fetchKeyword } = useFetchKeyword()
       const keyword = await fetchKeyword({ urlParams: { id } })
       keywordOneStore.setKeyword(keyword)
       addToCachedUsers(keyword.createdBy, keyword.modifiedBy)
@@ -92,7 +92,7 @@ export const useKeywordEditActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchKeyword } = useFetchKeyword()
+      const { execute: fetchKeyword } = useFetchKeyword()
       const keyword = await fetchKeyword({ urlParams: { id } })
       keywordOneStore.setKeyword(keyword)
     } catch (error) {
@@ -112,8 +112,8 @@ export const useKeywordEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateKeyword } = useUpdateKeyword()
-      await updateKeyword({ urlParams: { id: keywordOneStore.keyword.id }, object: keyword.value })
+      const { execute: updateKeyword } = useUpdateKeyword()
+      await updateKeyword({ urlParams: { id: keywordOneStore.keyword.id }, body: keyword.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/keywords' })
@@ -138,7 +138,7 @@ export const useKeywordEditActions = () => {
 
 export const useKeywordSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchKeywordList()
+  const { execute } = useFetchKeywordList()
 
   const mapToValueObject = (keyword: DamKeyword): ValueObjectOption<string> => ({
     title: keyword.name,
@@ -160,7 +160,7 @@ export const useKeywordSelectActions = () => {
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToValueObjects(
-      await executeFetch(pagination, filterData, filterConfig, {
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
@@ -168,7 +168,7 @@ export const useKeywordSelectActions = () => {
 
   const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     return mapToMinimals(
-      await executeFetch(pagination, filterData, filterConfig, {
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )

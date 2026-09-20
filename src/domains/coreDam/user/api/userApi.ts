@@ -18,6 +18,6 @@ export const useUpdateCurrentUser = () =>
   })
 
 export const updateCurrentUser = (data: UpdateCurrentUserDto) => {
-  const { executeRequest } = useUpdateCurrentUser()
-  return executeRequest({ object: data })
+  const { execute } = useUpdateCurrentUser()
+  return execute({ body: data })
 }

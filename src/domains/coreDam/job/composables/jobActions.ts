@@ -15,12 +15,12 @@ const { useFetchJobList, fetchJob } = useJobApi<Job>(damClient, SYSTEM_CORE_DAM)
 
 export const useJobListActions = () => {
   const listItems = ref<Array<Job>>([])
-  const { executeFetch } = useFetchJobList()
+  const { execute } = useFetchJobList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {

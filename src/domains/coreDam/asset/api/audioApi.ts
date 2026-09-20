@@ -24,8 +24,8 @@ export const useFetchAudioFile = () =>
   })
 
 export const fetchAudioFile = (id: DocId) => {
-  const { executeRequest } = useFetchAudioFile()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchAudioFile()
+  return execute({ urlParams: { id } })
 }
 
 export const uploadStart = (item: UploadQueueItem) => {

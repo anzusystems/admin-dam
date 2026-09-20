@@ -21,12 +21,12 @@ export const useAssetLicenceGroupListActions = () => {
   const listItems = ref<DamAssetLicenceGroup[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
-  const { executeFetch } = useFetchAssetLicenceGroupList()
+  const { execute } = useFetchAssetLicenceGroupList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      const res = await executeFetch(pagination, filterData, filterConfig)
+      const res = await execute(pagination, filterData, filterConfig)
       res.forEach((item) => {
         addToCachedAssetLicences(item.licences)
         addToCachedExtSystems(item.extSystem)
@@ -54,7 +54,7 @@ export const useAssetLicenceGroupDetailActions = () => {
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
-  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
+  const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
@@ -85,8 +85,8 @@ export const useAssetLicenceGroupEditActions = () => {
   const router = useRouter()
   const assetLicenceGroupOneStore = useAssetLicenceGroupOneStore()
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
-  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
-  const { executeRequest: updateAssetLicenceGroup } = useUpdateAssetLicenceGroup()
+  const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
+  const { execute: updateAssetLicenceGroup } = useUpdateAssetLicenceGroup()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
@@ -111,7 +111,7 @@ export const useAssetLicenceGroupEditActions = () => {
       }
       await updateAssetLicenceGroup({
         urlParams: { id: assetLicenceGroupOneStore.assetLicenceGroup.id },
-        object: assetLicenceGroup.value,
+        body: assetLicenceGroup.value,
       })
       showRecordWas('updated')
       if (!close) return

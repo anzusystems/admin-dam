@@ -1,13 +1,13 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 
 const END_POINT = '/adm/v1/podcast-episode'
 export const ENTITY = 'podcastEpisode'
 
 export const useFetchPodcastEpisodeListByPodcast = () =>
-  useApiFetchList<PodcastEpisode[]>({
+  useApiFetchList<PodcastEpisode>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -15,7 +15,7 @@ export const useFetchPodcastEpisodeListByPodcast = () =>
   })
 
 export const useFetchPodcastEpisodeListByAsset = () =>
-  useApiFetchList<PodcastEpisode[]>({
+  useApiFetchList<PodcastEpisode>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -59,7 +59,7 @@ export const useFetchPodcastEpisode = () =>
   })
 
 export const useDeletePodcastEpisode = () =>
-  useApiRequest<void, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'DELETE',
     system: SYSTEM_CORE_DAM,

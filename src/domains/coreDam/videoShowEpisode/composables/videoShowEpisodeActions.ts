@@ -18,7 +18,7 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useVideoShowEpisodeListActions = () => {
   const listItems = ref<VideoShowEpisode[]>([])
-  const { executeFetch } = useFetchVideoShowEpisodeListByVideoShow()
+  const { execute } = useFetchVideoShowEpisodeListByVideoShow()
 
   const fetchList = async (
     videoShowId: DocId,
@@ -28,7 +28,7 @@ export const useVideoShowEpisodeListActions = () => {
   ) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, { urlParams: { videoShowId } })
+      listItems.value = await execute(pagination, filterData, filterConfig, { urlParams: { videoShowId } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -51,7 +51,7 @@ export const useVideoShowEpisodeDetailActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchVideoShowEpisode } = useFetchVideoShowEpisode()
+      const { execute: fetchVideoShowEpisode } = useFetchVideoShowEpisode()
       const videoShowEpisode = await fetchVideoShowEpisode({ urlParams: { id } })
       videoShowEpisodeOneStore.setVideoShowEpisode(videoShowEpisode)
     } catch (error) {
@@ -78,7 +78,7 @@ export const useVideoShowEpisodeEditActions = () => {
   const fetchData = async (id: string) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchVideoShowEpisode } = useFetchVideoShowEpisode()
+      const { execute: fetchVideoShowEpisode } = useFetchVideoShowEpisode()
       const videoShowEpisode = await fetchVideoShowEpisode({ urlParams: { id } })
       videoShowEpisodeOneStore.setVideoShowEpisode(videoShowEpisode)
     } catch (error) {
@@ -98,10 +98,10 @@ export const useVideoShowEpisodeEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateVideoShowEpisode } = useUpdateVideoShowEpisode()
+      const { execute: updateVideoShowEpisode } = useUpdateVideoShowEpisode()
       await updateVideoShowEpisode({
         urlParams: { id: videoShowEpisodeOneStore.videoShowEpisode.id },
-        object: videoShowEpisode.value,
+        body: videoShowEpisode.value,
       })
       showRecordWas('updated')
       if (!close || !videoShowEpisodeOneStore.videoShowEpisode.videoShow) return

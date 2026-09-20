@@ -24,10 +24,10 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useExtSystemSelectActions = () => {
-  const { executeFetch } = useFetchExtSystemList()
+  const { execute } = useFetchExtSystemList()
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    const extSystems = await executeFetch(pagination, filterData, filterConfig)
+    const extSystems = await execute(pagination, filterData, filterConfig)
 
     return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
       title: extSystem.slug,
@@ -36,7 +36,7 @@ export const useExtSystemSelectActions = () => {
   }
 
   const fetchItemsByIds = async (ids: IntegerId[]) => {
-    const { executeFetch: executeFetchByIds } = useFetchExtSystemListByIds()
+    const { execute: executeFetchByIds } = useFetchExtSystemListByIds()
     const extSystems = await executeFetchByIds(ids)
 
     return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
@@ -53,12 +53,12 @@ export const useExtSystemSelectActions = () => {
 
 export const useExtSystemListActions = () => {
   const listItems = ref<DamExtSystem[]>([])
-  const { executeFetch } = useFetchExtSystemList()
+  const { execute } = useFetchExtSystemList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -77,7 +77,7 @@ export const useExtSystemListActions = () => {
 export const useExtSystemDetailActions = () => {
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
-  const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+  const { execute: fetchExtSystem } = useFetchExtSystem()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
@@ -114,8 +114,8 @@ export const useExtSystemEditActions = () => {
   const router = useRouter()
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
-  const { executeRequest: fetchExtSystem } = useFetchExtSystem()
-  const { executeRequest: updateExtSystem } = useUpdateExtSystem()
+  const { execute: fetchExtSystem } = useFetchExtSystem()
+  const { execute: updateExtSystem } = useUpdateExtSystem()
 
   const fetchData = async (id: number) => {
     detailLoading.value = true
@@ -141,7 +141,7 @@ export const useExtSystemEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, object: extSystem.value })
+      await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, body: extSystem.value })
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/ext-systems' })

@@ -29,8 +29,8 @@ export const useFetchDocumentFile = () =>
   })
 
 export const fetchDocumentFile = (id: DocId) => {
-  const { executeRequest } = useFetchDocumentFile()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchDocumentFile()
+  return execute({ urlParams: { id } })
 }
 
 export const uploadStart = (item: UploadQueueItem) => {

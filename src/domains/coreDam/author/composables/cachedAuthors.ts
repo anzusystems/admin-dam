@@ -19,8 +19,8 @@ const { cache, toFetch, fetch, add, addManual, addManualMinimal, has, get, isLoa
   DamAuthorMinimal
 >(mapFullToMinimal, mapIdToMinimal, (ids) => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchAuthorListByIds()
-  return executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
+  const { execute } = useFetchAuthorListByIds()
+  return execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
 })
 
 export const useCachedAuthors = () => {

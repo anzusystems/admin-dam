@@ -8,7 +8,7 @@ export const ENTITY = 'anzuUser'
 const END_POINT = '/adm/v1/anzu-user'
 
 export const useFetchAnzuUserListByIds = () =>
-  useApiFetchByIds<AnzuUser[]>({
+  useApiFetchByIds<AnzuUser>({
     client: damClient,
     system: SYSTEM,
     entity: ENTITY,
@@ -16,7 +16,7 @@ export const useFetchAnzuUserListByIds = () =>
   })
 
 export const useFetchAnzuUserList = () =>
-  useApiFetchList<AnzuUser[]>({
+  useApiFetchList<AnzuUser>({
     client: damClient,
     system: SYSTEM,
     entity: ENTITY,

@@ -20,12 +20,12 @@ const saveAndCloseButtonLoading = ref(false)
 export const usePublicExportListActions = () => {
   const listItems = ref<PublicExport[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
-  const { executeFetch } = useFetchPublicExportList()
+  const { execute } = useFetchPublicExportList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      const res = await executeFetch(pagination, filterData, filterConfig)
+      const res = await execute(pagination, filterData, filterConfig)
       res.forEach((item) => item.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId)))
       fetchCachedAssetLicences()
       listItems.value = res
@@ -49,7 +49,7 @@ export const usePublicExportRemoveActions = () => {
   const removePublicExport = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest: deletePublicExport } = useDeletePublicExport()
+      const { execute: deletePublicExport } = useDeletePublicExport()
       await deletePublicExport({ urlParams: { id } })
       showRecordWas('updated')
       router.push({ name: '/(coreDam)/public-exports' })
@@ -73,7 +73,7 @@ export const usePublicExportDetailActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchPublicExport } = useFetchPublicExport()
+      const { execute: fetchPublicExport } = useFetchPublicExport()
       const res = await fetchPublicExport({ urlParams: { id } })
       res.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId))
       fetchCachedAssetLicences()
@@ -103,7 +103,7 @@ export const usePublicExportEditActions = () => {
   const fetchData = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchPublicExport } = useFetchPublicExport()
+      const { execute: fetchPublicExport } = useFetchPublicExport()
       const res = await fetchPublicExport({ urlParams: { id } })
       res.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId))
       fetchCachedAssetLicences()
@@ -125,10 +125,10 @@ export const usePublicExportEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updatePublicExport } = useUpdatePublicExport()
+      const { execute: updatePublicExport } = useUpdatePublicExport()
       await updatePublicExport({
         urlParams: { id: publicExportOneStore.publicExport.id },
-        object: publicExport.value,
+        body: publicExport.value,
       })
       showRecordWas('updated')
 

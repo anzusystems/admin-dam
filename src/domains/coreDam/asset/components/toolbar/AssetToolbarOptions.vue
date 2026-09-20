@@ -48,7 +48,7 @@ const openDialog = () => {
 
 const { showErrorsDefault } = useAlerts()
 
-const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+const { execute: fetchExtSystem } = useFetchExtSystem()
 
 onMounted(async () => {
   if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {

@@ -19,7 +19,7 @@ const mapIdToMinimal = (id: DocId): TtsNarrationRequestMinimal => ({
 // The BE exposes no batch endpoint for narration requests (only get-one), so resolve each id
 // individually. In practice the cache only ever holds a single referenced request (e.g. an asset's
 // lastRequestId), so the fan-out stays tiny.
-const { executeRequest: fetchTtsNarrationRequest } = useFetchTtsNarrationRequest()
+const { execute: fetchTtsNarrationRequest } = useFetchTtsNarrationRequest()
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   DocId,

@@ -28,8 +28,8 @@ const {
   isLoaded: isLoadedCached,
 } = defineCached<DocId, VoiceFamily, VoiceFamilyMinimal>(mapFullToMinimal, mapIdToMinimal, (ids: DocId[]) => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchVoiceFamilyListByIds()
-  return executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
+  const { execute } = useFetchVoiceFamilyListByIds()
+  return execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
 })
 
 export const useCachedVoiceFamiliesById = () => {

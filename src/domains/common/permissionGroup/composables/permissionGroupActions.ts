@@ -20,8 +20,8 @@ const detailLoading = ref(false)
 const saveButtonLoading = ref(false)
 
 export const usePermissionGroupActions = () => {
-  const { executeFetch } = useFetchPermissionGroupList()
-  const { executeFetch: fetchListByIds } = useFetchPermissionGroupListByIds()
+  const { execute } = useFetchPermissionGroupList()
+  const { execute: fetchListByIds } = useFetchPermissionGroupListByIds()
 
   const permissionGroupList = ref<PermissionGroup[]>([])
   const fetchPermissionGroupList = async (
@@ -31,7 +31,7 @@ export const usePermissionGroupActions = () => {
   ) => {
     listLoading.value = true
     try {
-      permissionGroupList.value = await executeFetch(pagination, filterData, filterConfig)
+      permissionGroupList.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -44,8 +44,8 @@ export const usePermissionGroupActions = () => {
   const fetchPermissionGroup = async (id: number) => {
     detailLoading.value = true
     try {
-      const { executeRequest } = useFetchPermissionGroup()
-      const permissionGroupRes = await executeRequest({ urlParams: { id } })
+      const { execute } = useFetchPermissionGroup()
+      const permissionGroupRes = await execute({ urlParams: { id } })
       permissionGroupOneStore.setPermissionGroup(permissionGroupRes)
     } catch (error) {
       showErrorsDefault(error)
@@ -58,8 +58,8 @@ export const usePermissionGroupActions = () => {
   const deletePermissionGroup = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest } = useDeletePermissionGroup()
-      await executeRequest({ urlParams: { id } })
+      const { execute } = useDeletePermissionGroup()
+      await execute({ urlParams: { id } })
       showRecordWas('deleted')
       router.push({ name: '/(common)/permission-groups' })
     } catch (error) {
@@ -79,10 +79,10 @@ export const usePermissionGroupActions = () => {
         saveButtonLoading.value = false
         return
       }
-      const { executeRequest } = useUpdatePermissionGroup()
-      await executeRequest({
+      const { execute } = useUpdatePermissionGroup()
+      await execute({
         urlParams: { id: permissionGroupOneStore.permissionGroup.id },
-        object: permissionGroupOneStore.permissionGroup,
+        body: permissionGroupOneStore.permissionGroup,
       })
       showRecordWas('updated')
       if (!close) return
@@ -103,8 +103,8 @@ export const usePermissionGroupActions = () => {
         saveButtonLoading.value = false
         return
       }
-      const { executeRequest } = useCreatePermissionGroup()
-      const permissionGroupRes = await executeRequest({ object: permissionGroupOneStore.permissionGroup })
+      const { execute } = useCreatePermissionGroup()
+      const permissionGroupRes = await execute({ body: permissionGroupOneStore.permissionGroup })
       showRecordWas('created')
       if (close) {
         router.push({ name: '/(common)/permission-groups' })
@@ -124,7 +124,7 @@ export const usePermissionGroupActions = () => {
     filterData: FilterData,
     filterConfig: FilterConfig
   ) => {
-    const permissionGroups = await executeFetch(pagination, filterData, filterConfig)
+    const permissionGroups = await execute(pagination, filterData, filterConfig)
     permissionGroups.forEach((permissionGroup) => addManualToCachedPermissionGroups(permissionGroup))
 
     return <ValueObjectOption<number>[]>permissionGroups.map((permissionGroup: PermissionGroup) => ({
@@ -162,7 +162,7 @@ export const usePermissionGroupActions = () => {
 }
 
 export const usePermissionGroupSelectAction = () => {
-  const { executeFetch } = useFetchPermissionGroupList()
+  const { execute } = useFetchPermissionGroupList()
 
   const mapToValueObject = (permissionGroup: PermissionGroup): ValueObjectOption<IntegerId> => ({
     title: permissionGroup.title,
@@ -174,12 +174,12 @@ export const usePermissionGroupSelectAction = () => {
   }
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjects(await executeFetch(pagination, filterData, filterConfig))
+    return mapToValueObjects(await execute(pagination, filterData, filterConfig))
   }
 
   const fetchItemsByIds = async (ids: IntegerId[]) => {
-    const { executeFetch } = useFetchPermissionGroupListByIds()
-    return mapToValueObjects(await executeFetch(ids))
+    const { execute } = useFetchPermissionGroupListByIds()
+    return mapToValueObjects(await execute(ids))
   }
 
   return {

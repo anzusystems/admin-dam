@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick, ref } from 'vue'
 
-const executeFetch = vi.fn<(...args: unknown[]) => Promise<unknown[]>>(async () => [])
+const execute = vi.fn<(...args: unknown[]) => Promise<unknown[]>>(async () => [])
 
 // The rows a page carries say which page it is, so a page fetched twice is visible in the list.
 const pageOf = (args: unknown[]) => {
@@ -16,9 +16,9 @@ const pageOf = (args: unknown[]) => {
 let hasNextPage = true
 
 vi.mock('@/domains/coreDam/externalProvider/api/externalProviderAssetApi', () => ({
-  useFetchExternalProviderAssetList: () => ({ executeFetch: (...args: unknown[]) => executeFetch(...args) }),
-  // The detail fetch destructures `executeRequest`, not `executeFetch`.
-  useFetchExternalProviderAsset: () => ({ executeRequest: vi.fn() }),
+  useFetchExternalProviderAssetList: () => ({ execute: (...args: unknown[]) => execute(...args) }),
+  // The detail fetch destructures `execute`, not `execute`.
+  useFetchExternalProviderAsset: () => ({ execute: vi.fn() }),
 }))
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
@@ -68,7 +68,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   massEditItems.value = []
   hasNextPage = true
-  executeFetch.mockImplementation(async (...args: unknown[]) => pageOf(args))
+  execute.mockImplementation(async (...args: unknown[]) => pageOf(args))
 })
 
 // This composable is a near copy of the asset list one, and the fixes below were made in both.
@@ -91,7 +91,7 @@ describe('the external provider list', () => {
   it('leaves the newer list on screen, not the one that answered last', async () => {
     const { actions, listStore } = await load()
     let finishOld: (value: unknown[]) => void = () => undefined
-    executeFetch.mockImplementationOnce(() => new Promise((resolve) => (finishOld = resolve)))
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishOld = resolve)))
 
     const older = actions.fetchAssetList()
     await actions.fetchAssetList()
@@ -105,17 +105,17 @@ describe('the external provider list', () => {
     const { actions, listStore } = await load()
     await actions.fetchAssetList()
     let finishStalePage: (value: unknown[]) => void = () => undefined
-    executeFetch.mockImplementationOnce(() => new Promise((resolve) => (finishStalePage = resolve)))
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishStalePage = resolve)))
     const stalePage = actions.fetchNextPage()
 
     await actions.fetchAssetList()
     // The new list's own scroll, with the old request still on the wire and nothing aborting it.
     let finishNewPage: (value: unknown[]) => void = () => undefined
-    executeFetch.mockImplementationOnce(() => new Promise((resolve) => (finishNewPage = resolve)))
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishNewPage = resolve)))
     const newPage = actions.fetchNextPage()
 
     // Four requests: both lists and one next page each.
-    expect(executeFetch).toHaveBeenCalledTimes(4)
+    expect(execute).toHaveBeenCalledTimes(4)
     finishStalePage([listItem('stale')])
     await stalePage
     // The old one may not take the spinner down under the request that is still running.
@@ -131,7 +131,7 @@ describe('the external provider list', () => {
     const { actions, listStore } = await load()
     await actions.fetchAssetList()
     let finishStalePage: (value: unknown[]) => void = () => undefined
-    executeFetch.mockImplementationOnce(() => new Promise((resolve) => (finishStalePage = resolve)))
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishStalePage = resolve)))
     const stalePage = actions.fetchNextPage()
 
     await actions.fetchAssetList()
@@ -145,12 +145,12 @@ describe('the external provider list', () => {
     const { actions, listStore } = await load()
     await actions.fetchAssetList()
     let finishStalePage: (value: unknown[]) => void = () => undefined
-    executeFetch.mockImplementationOnce(() => new Promise((resolve) => (finishStalePage = resolve)))
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishStalePage = resolve)))
     const stalePage = actions.fetchNextPage()
-    const stalePagination = executeFetch.mock.calls.at(-1)?.[0] as { value: { hasNextPage?: boolean } }
+    const stalePagination = execute.mock.calls.at(-1)?.[0] as { value: { hasNextPage?: boolean } }
 
     let finishNewList: (value: unknown[]) => void = () => undefined
-    executeFetch.mockImplementationOnce(() => new Promise((resolve) => (finishNewList = resolve)))
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishNewList = resolve)))
     const newList = actions.fetchAssetList()
     await actions.fetchNextPage()
     // The stale answer comes back first and writes onto whatever pagination it was handed.

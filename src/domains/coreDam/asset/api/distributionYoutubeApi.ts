@@ -3,6 +3,7 @@ import {
   createFilter,
   createFilterStore,
   type MakeFilterOption,
+  useApiCommand,
   useApiFetchList,
   useApiRequest,
   usePagination,
@@ -33,8 +34,8 @@ export const useCreateYoutubeDistribution = () =>
   })
 
 export const createYoutubeDistribution = (assetFileId: DocId, data: DistributionYoutubeCreateRedistributeDto) => {
-  const { executeRequest } = useCreateYoutubeDistribution()
-  return executeRequest({ urlParams: { assetFileId }, object: data })
+  const { execute } = useCreateYoutubeDistribution()
+  return execute({ urlParams: { assetFileId }, body: data })
 }
 
 export const useRedistributeYoutubeDistribution = () =>
@@ -50,8 +51,8 @@ export const redistributeYoutubeDistribution = (
   distributionId: DocId,
   data: DistributionYoutubeCreateRedistributeDto
 ) => {
-  const { executeRequest } = useRedistributeYoutubeDistribution()
-  return executeRequest({ urlParams: { distributionId }, object: data })
+  const { execute } = useRedistributeYoutubeDistribution()
+  return execute({ urlParams: { distributionId }, body: data })
 }
 
 export const usePrepareFormDataYoutubeDistribution = () =>
@@ -67,8 +68,8 @@ export const prepareFormDataYoutubeDistribution = (
   assetFileId: DocId,
   distributionServiceName: DamDistributionServiceName
 ) => {
-  const { executeRequest } = usePrepareFormDataYoutubeDistribution()
-  return executeRequest({ urlParams: { assetFileId, distributionServiceName } })
+  const { execute } = usePrepareFormDataYoutubeDistribution()
+  return execute({ urlParams: { assetFileId, distributionServiceName } })
 }
 
 export const useGetYoutubeAuthUrl = () =>
@@ -81,12 +82,12 @@ export const useGetYoutubeAuthUrl = () =>
   })
 
 export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName) => {
-  const { executeRequest } = useGetYoutubeAuthUrl()
-  return executeRequest({ urlParams: { distributionServiceName } })
+  const { execute } = useGetYoutubeAuthUrl()
+  return execute({ urlParams: { distributionServiceName } })
 }
 
 export const useFetchYoutubeLanguages = () =>
-  useApiFetchList<YoutubeLanguage[]>({
+  useApiFetchList<YoutubeLanguage>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -99,12 +100,12 @@ export const fetchYoutubeLanguages = (distributionServiceName: DamDistributionSe
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-  const { executeFetch } = useFetchYoutubeLanguages()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { distributionServiceName } })
+  const { execute } = useFetchYoutubeLanguages()
+  return execute(pagination, filterData, filterConfig, { urlParams: { distributionServiceName } })
 }
 
 export const useFetchYoutubePlaylists = () =>
-  useApiFetchList<YoutubePlaylist[]>({
+  useApiFetchList<YoutubePlaylist>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -117,14 +118,14 @@ export const fetchYoutubePlaylists = (distributionServiceName: DamDistributionSe
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-  const { executeFetch } = useFetchYoutubePlaylists()
-  return executeFetch(pagination, filterData, filterConfig, {
+  const { execute } = useFetchYoutubePlaylists()
+  return execute(pagination, filterData, filterConfig, {
     urlParams: { distributionServiceName, forceReload: booleanToInteger(forceReload) },
   })
 }
 
 export const useLogoutYoutube = () =>
-  useApiRequest<unknown, null>({
+  useApiCommand<null>({
     client: damClient,
     method: 'GET',
     system: SYSTEM_CORE_DAM,
@@ -133,6 +134,6 @@ export const useLogoutYoutube = () =>
   })
 
 export const logoutYoutube = (distributionServiceName: DamDistributionServiceName) => {
-  const { executeRequest } = useLogoutYoutube()
-  return executeRequest({ urlParams: { distributionServiceName } })
+  const { execute } = useLogoutYoutube()
+  return execute({ urlParams: { distributionServiceName } })
 }

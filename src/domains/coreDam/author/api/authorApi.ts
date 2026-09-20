@@ -8,7 +8,7 @@ const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'author'
 
 export const useFetchAuthorListByIds = () =>
-  useApiFetchByIds<DamAuthor[]>({
+  useApiFetchByIds<DamAuthor>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -17,7 +17,7 @@ export const useFetchAuthorListByIds = () =>
   })
 
 export const useFetchAuthorList = () =>
-  useApiFetchList<DamAuthor[]>({
+  useApiFetchList<DamAuthor>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,

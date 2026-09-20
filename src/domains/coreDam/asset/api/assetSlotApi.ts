@@ -4,8 +4,8 @@ import {
   type FilterConfig,
   type FilterData,
   type Pagination,
+  useApiCommand,
   useApiFetchList,
-  useApiRequest,
 } from '@anzusystems/common-admin/labs'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type { Ref } from 'vue'
@@ -14,7 +14,7 @@ const END_POINT = '/adm/v1/asset-slot'
 export const ENTITY = 'assetSlot'
 
 export const useFetchAssetSlotList = () =>
-  useApiFetchList<AssetSlot[]>({
+  useApiFetchList<AssetSlot>({
     client: damClient,
     system: SYSTEM_CORE_DAM,
     entity: ENTITY,
@@ -27,12 +27,12 @@ export const fetchAssetSlotList = (
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchAssetSlotList()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId } })
+  const { execute } = useFetchAssetSlotList()
+  return execute(pagination, filterData, filterConfig, { urlParams: { assetId } })
 }
 
 export const useUpdateAssetSlots = () =>
-  useApiRequest<unknown, Array<{ assetFile: DocId | null; slotName: string }>>({
+  useApiCommand<Array<{ assetFile: DocId | null; slotName: string }>>({
     client: damClient,
     method: 'PATCH',
     system: SYSTEM_CORE_DAM,
@@ -41,6 +41,6 @@ export const useUpdateAssetSlots = () =>
   })
 
 export const updateAssetSlots = (assetId: DocId, data: Array<{ assetFile: DocId | null; slotName: string }>) => {
-  const { executeRequest } = useUpdateAssetSlots()
-  return executeRequest({ urlParams: { assetId }, object: data })
+  const { execute } = useUpdateAssetSlots()
+  return execute({ urlParams: { assetId }, body: data })
 }
