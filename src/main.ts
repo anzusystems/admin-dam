@@ -6,24 +6,15 @@ import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
 import { vuetify } from '@/plugins/vuetify'
 import { router } from '@/router'
-import { envConfig, loadEnvConfig } from '@/services/EnvConfigService'
-import { initErrorHandler } from '@/services/ErrorHandlerApiService'
-import { createPinia } from 'pinia'
-import { createApp } from 'vue'
-import {
-  AnzuSystemsCommonAdmin,
-  i18n,
-  type LanguageCode,
-  loadCommonFonts,
-  type PluginOptions
-} from '@anzusystems/common-admin'
+import { envConfig, loadEnvConfig } from '@/shared/EnvConfigService'
+import { initErrorHandler } from '@/shared/ErrorHandlerApiService'
+import { AnzuSystemsCommonAdmin, loadCommonFonts, type PluginOptions } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
-import { damClient } from '@/services/api/clients/damClient'
+import { damClient } from '@/shared/apiClients/damClient'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
-
-export const DEFAULT_LANGUAGE: LanguageCode = 'sk'
-export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['en', 'sk']
+import * as Sentry from '@sentry/vue'
+import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 
 dayjs.extend(Duration)
 
@@ -60,6 +51,31 @@ loadEnvConfig(() => {
     .component('AppLayoutDrawer', AppLayoutDrawer)
     .component('AppLayoutBlank', AppLayoutBlank)
     .component('AppLayoutFullscreen', AppLayoutFullscreen)
-  initErrorHandler(app)
+
+  if (envConfig.sentry.dsn) {
+    Sentry.init({
+      app,
+      dsn: envConfig.sentry.dsn,
+      release: envConfig.appVersion,
+      environment: envConfig.appEnvironment,
+      sendDefaultPii: true,
+      tracesSampleRate: 0,
+      profilesSampleRate: 0,
+      replaysOnErrorSampleRate: 0.2,
+      transport: Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport),
+      integrations: [
+        Sentry.browserTracingIntegration({ router, routeLabel: 'path' }),
+        Sentry.replayIntegration({
+          maskAllText: false,
+          maskAllInputs: false,
+          blockAllMedia: false,
+        }),
+        Sentry.httpClientIntegration(),
+      ],
+    })
+  } else {
+    initErrorHandler(app)
+  }
+
   app.mount('#app')
 })

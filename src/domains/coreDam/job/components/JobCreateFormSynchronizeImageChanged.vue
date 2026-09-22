@@ -1,0 +1,113 @@
+<script lang="ts" setup>
+import { AFormDatetimePicker, AFormTextField, ARow } from '@anzusystems/common-admin'
+import { useJobApi } from '@anzusystems/common-admin/labs'
+import type { JobSynchronizeImageChanged } from '@/domains/coreDam/job/types/Job'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
+
+const emit = defineEmits<{
+  (e: 'onSuccess'): void
+  (e: 'closeDialog'): void
+}>()
+
+const buttonLoading = ref(false)
+const { createSynchronizeImageChanged } = useJobFactory()
+const job = ref<JobSynchronizeImageChanged>(createSynchronizeImageChanged())
+
+const { t } = useI18n()
+
+const onCancel = () => {
+  emit('closeDialog')
+}
+
+const { createJob } = useJobApi<JobSynchronizeImageChanged>(damClient, SYSTEM_CORE_DAM)
+const { showRecordWas, showErrorsDefault, showValidationError } = useAlerts()
+
+const { required, minValue, maxValue } = useValidate()
+
+const rules = {
+  job: {
+    targetLicenceId: {
+      required,
+      minValue: minValue(1),
+    },
+    bulkSize: {
+      required,
+      minValue: minValue(10),
+      maxValue: maxValue(1000),
+    },
+  },
+}
+
+const v$ = useVuelidate(rules, { job })
+
+const onConfirm = async () => {
+  try {
+    buttonLoading.value = true
+    v$.value.$touch()
+    if (v$.value.$invalid) {
+      showValidationError()
+      buttonLoading.value = false
+      return
+    }
+    await createJob(job.value)
+    showRecordWas('created')
+    emit('onSuccess')
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    buttonLoading.value = false
+    emit('closeDialog')
+  }
+}
+</script>
+
+<template>
+  <VCardText>
+    <ARow>
+      <AFormTextField
+        v-model="job.targetLicenceId"
+        :label="t('coreDam.job.model.targetLicenceId')"
+        data-cy="targetLicenceId"
+        required
+      />
+    </ARow>
+    <ARow>
+      <AFormDatetimePicker
+        v-model="job.processFrom"
+        :label="t('coreDam.job.model.processFrom')"
+        clearable
+        data-cy="processFrom"
+      />
+    </ARow>
+    <ARow>
+      <AFormDatetimePicker
+        v-model="job.processUntil"
+        :label="t('coreDam.job.model.processUntil')"
+        clearable
+        data-cy="processUntil"
+      />
+    </ARow>
+    <ARow>
+      <AFormTextField
+        v-model="job.bulkSize"
+        :label="t('coreDam.job.model.bulkSize')"
+        data-cy="bulkSize"
+        required
+      />
+    </ARow>
+  </VCardText>
+  <VCardActions>
+    <VSpacer />
+    <ABtnTertiary @click.stop="onCancel">
+      {{ t('common.button.cancel') }}
+    </ABtnTertiary>
+    <ABtnPrimary
+      :loading="buttonLoading"
+      @click.stop="onConfirm"
+    >
+      {{ t('common.button.create') }}
+    </ABtnPrimary>
+  </VCardActions>
+</template>

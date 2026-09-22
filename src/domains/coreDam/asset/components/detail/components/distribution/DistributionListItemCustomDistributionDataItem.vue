@@ -1,0 +1,23 @@
+<script setup lang="ts">
+import type { DistributionDataItem } from '@/domains/coreDam/asset/types/Distribution'
+import { DistributionDataItemType } from '@/domains/coreDam/asset/types/Distribution'
+
+withDefaults(
+  defineProps<{
+    title: string
+    item: DistributionDataItem
+  }>(),
+  {}
+)
+</script>
+
+<template>
+  <a
+    v-if="item.type === DistributionDataItemType.Url && item.value && item.value.length > 0"
+    :href="item.value"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {{ title }}
+  </a>
+</template>

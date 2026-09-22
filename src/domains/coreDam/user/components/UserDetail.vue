@@ -1,0 +1,89 @@
+<script lang="ts" setup>
+import { ACopyText, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
+import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import ExternalProviderAssetChip from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetChip.vue'
+import DistributionServiceChip from '@/domains/coreDam/shared/distribution/components/DistributionServiceChip.vue'
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+
+const { user, userAssetLicenceGroups } = storeToRefs(useUserOneStore())
+
+const { t } = useI18n()
+</script>
+
+<template>
+  <VRow>
+    <VCol cols="8">
+      <ARow :title="t('coreDam.user.model.licenceGroups')">
+        <VChip
+          v-for="userAssetLicenceGroup in userAssetLicenceGroups"
+          :key="userAssetLicenceGroup.id"
+          :append-icon="COMMON_CONFIG.CHIP.ICON.LINK"
+          label
+          size="small"
+          class="mr-1"
+          :to="{ name: '/(coreDam)/asset-licence-groups/[id]', params: { id: userAssetLicenceGroup.id } }"
+        >
+          {{ userAssetLicenceGroup.name }}
+        </VChip>
+      </ARow>
+      <ARow :title="t('coreDam.user.model.assetLicences')">
+        <CachedAssetLicenceChip
+          v-for="assetLicenceId in user.assetLicences"
+          :id="assetLicenceId"
+          :key="assetLicenceId"
+          class="mr-1"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.user.model.adminToExtSystems')">
+        <CachedExtSystemChip
+          v-for="adminToExtSystem in user.adminToExtSystems"
+          :id="adminToExtSystem"
+          :key="adminToExtSystem"
+          class="mr-1"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.user.model.userToExtSystems')">
+        <CachedExtSystemChip
+          v-for="userToExtSystem in user.userToExtSystems"
+          :id="userToExtSystem"
+          :key="userToExtSystem"
+          class="mr-1"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
+        <ExternalProviderAssetChip
+          v-for="allowedAssetExternalProvider in user.allowedAssetExternalProviders"
+          :key="allowedAssetExternalProvider"
+          class="mr-1"
+          :provider-name="allowedAssetExternalProvider"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.user.model.allowedAssetExternalProviders')">
+        <DistributionServiceChip
+          v-for="allowedDistributionService in user.allowedDistributionServices"
+          :key="allowedDistributionService"
+          class="mr-1"
+          :service-name="allowedDistributionService"
+        />
+      </ARow>
+    </VCol>
+    <VCol cols="4">
+      <ARow :title="t('coreDam.user.model.id')">
+        <ACopyText :value="user.id" />
+      </ARow>
+      <ARow
+        :title="t('coreDam.user.model.email')"
+        :value="user.email"
+      />
+      <ARow :title="t('coreDam.user.model.createdBy')">
+        <CachedDamUserChip :id="user.createdBy" />
+      </ARow>
+      <ARow :title="t('coreDam.user.model.modifiedBy')">
+        <CachedDamUserChip :id="user.modifiedBy" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="user" />
+    </VCol>
+  </VRow>
+</template>

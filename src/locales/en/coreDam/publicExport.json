@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "create": "Create public export"
+  },
   "model": {
     "id": "ID",
     "slug": "Slug",
@@ -13,6 +16,11 @@
   "exportType": {
     "mobile": "Mobile",
     "web": "Web"
+  },
+  "deviceType": {
+    "all": "All",
+    "ios": "iOS",
+    "android": "Android"
   },
   "button": {
     "create": "Add public export"

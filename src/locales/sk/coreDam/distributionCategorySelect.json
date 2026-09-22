@@ -1,7 +1,7 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "serviceSlug": "Distribučná služba",
     "value": "Hodnota",
     "options": "Nastavenie",
@@ -9,7 +9,7 @@
   },
   "filter": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "type": "Typ assetu"
   }
 }

@@ -4,7 +4,9 @@
     "name": "Name",
     "flags": {
       "reviewed": "Reviewed"
-    }
+    },
+    "createdBy": "Created by",
+    "modifiedBy": "Modified by"
   },
   "filter": {
     "id": "ID",
@@ -12,7 +14,7 @@
     "reviewed": "Reviewed"
   },
   "meta": {
-    "create": "Keyword create"
+    "create": "Create keyword"
   },
   "button": {
     "add": "Add new keyword"

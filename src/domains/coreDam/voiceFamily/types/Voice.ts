@@ -1,0 +1,51 @@
+import type { AnzuUserAndTimeTrackingAware, DocId, ResourceNameSystemAware } from '@anzusystems/common-admin'
+
+export const RESOURCE_VOICE = 'voice'
+
+export const VoiceDiscriminator = {
+  Elevenlabs: 'elevenlabs',
+  GoogleTts: 'google_tts',
+} as const
+export type VoiceDiscriminatorType = (typeof VoiceDiscriminator)[keyof typeof VoiceDiscriminator]
+export const VoiceDiscriminatorDefault = VoiceDiscriminator.Elevenlabs
+
+export const GoogleSsmlGender = {
+  Male: 'MALE',
+  Female: 'FEMALE',
+  Neutral: 'NEUTRAL',
+} as const
+export type GoogleSsmlGenderType = (typeof GoogleSsmlGender)[keyof typeof GoogleSsmlGender]
+export const GoogleSsmlGenderDefault = GoogleSsmlGender.Neutral
+
+interface VoiceBase extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
+  id: DocId
+  voiceFamily: DocId
+  externalVoiceId: string
+  main: boolean
+  active: boolean
+  readonly discriminator: VoiceDiscriminatorType
+}
+
+export interface ElevenlabsVoice extends VoiceBase {
+  discriminator: typeof VoiceDiscriminator.Elevenlabs
+  modelId: string
+  stability: number
+  similarityBoost: number
+}
+
+// Default ElevenLabs model seeded for a new voice; the field stays user-editable in the form.
+export const ELEVENLABS_DEFAULT_MODEL_ID = 'eleven_multilingual_v2'
+
+export interface GoogleTtsVoice extends VoiceBase {
+  discriminator: typeof VoiceDiscriminator.GoogleTts
+  ssmlGender: GoogleSsmlGenderType
+  speakingRate: number
+  pitch: number
+}
+
+export type Voice = ElevenlabsVoice | GoogleTtsVoice
+
+export type VoiceDiscriminatorTypeMap = {
+  [VoiceDiscriminator.Elevenlabs]: ElevenlabsVoice
+  [VoiceDiscriminator.GoogleTts]: GoogleTtsVoice
+}

@@ -18,7 +18,8 @@
       "importFrom": "Import od"
     },
     "imagePreview": "Obrázok",
-    "altImage": "Alt Obrázok",
+    "altImage": "Alt obrázok",
+    "exportData": "Exportné dáta",
     "flags": {
       "webPublicExportEnabled": "Povolené na webe",
       "mobilePublicExportEnabled": "Povolené v appke"
@@ -35,7 +36,7 @@
   },
   "tabs": {
     "detail": "Detail podcastu",
-    "episodes": "Epizóda podcastu"
+    "episodes": "Epizódy podcastu"
   },
   "lastImportStatus": {
     "notImported": "Neimportované",
@@ -45,5 +46,6 @@
   "podcastMode": {
     "import": "Importovaný",
     "notImport": "Neimportovaný"
-  }
+  },
+  "filterMinChars": "Zadajte minimálne 2 znaky"
 }

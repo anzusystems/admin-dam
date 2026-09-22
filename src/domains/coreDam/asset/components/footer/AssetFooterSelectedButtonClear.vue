@@ -1,0 +1,106 @@
+<script lang="ts" setup>
+import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
+
+withDefaults(
+  defineProps<{
+    dialogMaxWidth?: number
+    variant?: 'normal' | 'small'
+    dataCy?: string
+  }>(),
+  {
+    dialogMaxWidth: 300,
+    variant: 'normal',
+    dataCy: 'button-clear',
+  }
+)
+const emit = defineEmits<{
+  (e: 'confirm'): void
+}>()
+
+const dialog = ref(false)
+
+const onClick = (event: Event) => {
+  eventClickBlur(event)
+  dialog.value = true
+}
+const onConfirm = () => {
+  emit('confirm')
+  dialog.value = false
+}
+
+const onCancel = () => {
+  dialog.value = false
+}
+
+const { t } = useI18n()
+</script>
+
+<template>
+  <div class="d-inline-flex">
+    <VBtn
+      v-if="variant === 'small'"
+      variant="text"
+      :width="26"
+      :height="26"
+      icon
+      class="mr-2"
+      :data-cy="dataCy"
+      @click.stop="onClick"
+    >
+      <VIcon icon="mdi-close" />
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('coreDam.asset.selected.clear') }}
+      </VTooltip>
+    </VBtn>
+    <VBtn
+      v-else-if="variant === 'normal'"
+      :height="36"
+      :width="36"
+      variant="text"
+      icon
+      @click.stop="onClick"
+    >
+      <VIcon icon="mdi-close" />
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('coreDam.asset.selected.cancel') }}
+      </VTooltip>
+    </VBtn>
+    <VDialog
+      v-model="dialog"
+      :width="500"
+    >
+      <VCard
+        v-if="dialog"
+        data-cy="delete-panel"
+      >
+        <ADialogToolbar @on-cancel="onCancel">
+          {{ t('coreDam.asset.selected.clearOverlay.title') }}
+        </ADialogToolbar>
+        <VCardText>
+          {{ t('coreDam.asset.selected.clearOverlay.description') }}
+        </VCardText>
+        <VCardActions>
+          <VSpacer />
+          <ABtnTertiary
+            data-cy="button-cancel"
+            @click.stop="onCancel"
+          >
+            {{ t('common.button.cancel') }}
+          </ABtnTertiary>
+          <ABtnPrimary
+            data-cy="button-confirm"
+            @click.stop="onConfirm"
+          >
+            {{ t('coreDam.asset.selected.clearOverlay.confirm') }}
+          </ABtnPrimary>
+        </VCardActions>
+      </VCard>
+    </VDialog>
+  </div>
+</template>

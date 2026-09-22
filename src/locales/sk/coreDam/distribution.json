@@ -10,7 +10,7 @@
     "failed": "Chyba"
   },
   "failReason": {
-    "none": "Žiaden",
+    "none": "Žiadny",
     "unknown": "Neznámy",
     "quotaReached": "Dosiahnutá kvóta",
     "remoteProcessFailed": "Vzdialené spracovávanie zlyhalo",
@@ -36,6 +36,6 @@
     "blockedByDistribution": "Blokované distribúciou",
     "extId": "Externé ID",
     "failReason": "Dôvod zlyhania",
-    "assetFileStatusCantDistribute": "Asset file must be processed before distribution"
+    "assetFileStatusCantDistribute": "Súbor musí byť pred distribúciou spracovaný."
   }
 }

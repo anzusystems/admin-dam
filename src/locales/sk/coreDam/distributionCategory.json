@@ -1,12 +1,12 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "type": "Typ"
   },
   "filter": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "type": "Typ assetu"
   },
   "notSelected": "Nie je vybraná žiadna distribučná kategória",

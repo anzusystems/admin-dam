@@ -1,0 +1,66 @@
+<script lang="ts" setup>
+import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields, useDamAuthorType } from '@anzusystems/common-admin'
+import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+
+const { author } = storeToRefs(useAuthorOneStore())
+
+const { t } = useI18n()
+
+const { getAuthorTypeOption } = useDamAuthorType()
+</script>
+
+<template>
+  <VRow>
+    <VCol cols="8">
+      <ARow
+        :title="t('coreDam.author.model.name')"
+        :value="author.name"
+      />
+      <ARow
+        :title="t('coreDam.author.model.identifier')"
+        :value="author.identifier"
+      />
+      <ARow :title="t('coreDam.author.model.type')">
+        <VChip size="small">
+          {{ getAuthorTypeOption(author.type)?.title }}
+        </VChip>
+      </ARow>
+      <ARow :title="t('coreDam.author.model.currentAuthors')">
+        <AuthorRemoteAutocompleteCachedAuthorChip
+          v-for="authorId in author.currentAuthors"
+          :id="authorId"
+          :key="authorId"
+          class="pr-2"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.childAuthors')">
+        <AuthorRemoteAutocompleteCachedAuthorChip
+          v-for="authorId in author.childAuthors"
+          :id="authorId"
+          :key="authorId"
+          class="pr-2"
+        />
+      </ARow>
+    </VCol>
+    <VCol cols="4">
+      <ARow :title="t('coreDam.author.model.id')">
+        <ACopyText :value="author.id" />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.flags.reviewed')">
+        <ABooleanValue
+          chip
+          :value="author.flags.reviewed"
+        />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.createdBy')">
+        <CachedDamUserChip :id="author.createdBy" />
+      </ARow>
+      <ARow :title="t('coreDam.author.model.modifiedBy')">
+        <CachedDamUserChip :id="author.modifiedBy" />
+      </ARow>
+      <AUserAndTimeTrackingFields :data="author" />
+    </VCol>
+  </VRow>
+</template>

@@ -1,15 +1,17 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "flags": {
-      "reviewed": "Overený"
-    }
+      "reviewed": "Skontrolované"
+    },
+    "createdBy": "Vytvoril",
+    "modifiedBy": "Upravil"
   },
   "filter": {
     "id": "ID",
     "text": "Text",
-    "reviewed": "Overený"
+    "reviewed": "Skontrolované"
   },
   "meta": {
     "create": "Vytvoriť kľúčové slovo"

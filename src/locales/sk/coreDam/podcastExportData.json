@@ -1,0 +1,13 @@
+{
+  "model": {
+    "id": "ID",
+    "exportType": "Typ exportu",
+    "deviceType": "Typ zariadenia",
+    "podcast": "Podcast",
+    "body": "Obsah"
+  },
+  "meta": {
+    "create": "Vytvoriť exportné dáta podcastu",
+    "edit": "Upraviť exportné dáta podcastu"
+  }
+}

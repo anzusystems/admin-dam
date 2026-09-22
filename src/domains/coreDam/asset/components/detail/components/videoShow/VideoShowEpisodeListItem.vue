@@ -1,0 +1,28 @@
+<script setup lang="ts">
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+import CachedVideoShowChip from '@/domains/coreDam/videoShow/components/CachedVideoShowChip.vue'
+
+withDefaults(
+  defineProps<{
+    item: VideoShowEpisode
+  }>(),
+  {}
+)
+
+const { t } = useI18n()
+</script>
+
+<template>
+  <div class="pa-4 pb-8 text-body-medium">
+    <VRow>
+      <VCol>
+        <div class="font-weight-bold">
+          {{ item.texts.title }}
+        </div>
+      </VCol>
+    </VRow>
+    <VRow>
+      <VCol>{{ t('coreDam.videoShowEpisode.model.videoShow') }}: <CachedVideoShowChip :id="item.videoShow" /></VCol>
+    </VRow>
+  </div>
+</template>

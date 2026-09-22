@@ -1,48 +1,41 @@
-## [1.3.3](https://github.com/anzusystems/admin-dam/compare/1.3.2...1.3.3) (2024-03-12)
+# Changelog
 
-### Features
-* Podcast episode extUrl, podcast extUrl
-
-## [1.3.2](https://github.com/anzusystems/admin-dam/compare/1.3.1...1.3.2) (2024-02-29)
-
-### Features
-* changed Podcast rssUrl max length validation
-
-## [1.3.1](https://github.com/anzusystems/admin-dam/compare/1.2.0...1.3.0) (2024-01-19)
-
-### Features
-* `MakeImagePublic` action now does not need any payload
-* clickable assetId chip in `VideoShowEpisodeDetail` 
-
-## [1.3.0](https://github.com/anzusystems/admin-dam/compare/1.2.0...1.3.0) (2024-01-10)
-
-### Features
-* update `common-admin` (part of the code related to image processing has been moved to `common-admin`)
-* `AssetFileRoute` support
-* animated gif in image detail
-
-## [1.2.0](https://github.com/anzusystems/admin-dam/compare/1.1.1...1.2.0) (2023-10-26)
-
-### Features
-* rework search bar
-* filter by keywords
-* audio/video metadata (bps, codec, length)
-* responsivity improvements
-
-## [1.1.1](https://github.com/anzusystems/admin-dam/compare/1.1.0...1.1.1) (2023-10-10)
-
-### Features
-* `AssetCustomMetadataElement.vue` is now using `property` instead of `key`, `assetCustomFormApi.ts` supports both fields (key, property) and maps it to property. This is a step to standardise format between core-dam and core-cms 
-
-## [1.1.0](https://github.com/anzusystems/admin-dam/compare/1.0.0...1.1.0) (2023-06-19)
-
-### Features
-* remaining time in massEdit view
-* hide mass edit tab when uploading single asse
-
-### Bug Fixes
-* fixed sk translation (asset select)
-
-## [1.0.0](https://github.com/anzusystems/admin-dam/releases/tag/1.0.0) (2023-06-07)
-
-* main stable release
+- [2.1.0](doc/changelog/2.1.0.md) — 2026-08-17
+- [2.0.0](doc/changelog/2.0.0.md) — 2026-08-17
+- [1.29.0](doc/changelog/1.29.0.md) — 2026-06-15
+- [1.28.0](doc/changelog/1.28.0.md) — 2026-03-11
+- [1.27.0](doc/changelog/1.27.0.md) — 2026-03-10
+- [1.26.0](doc/changelog/1.26.0.md) — 2026-03-05
+- [1.25.0](doc/changelog/1.25.0.md) — 2026-02-09
+- [1.24.0](doc/changelog/1.24.0.md) — 2025-12-11
+- [1.23.0](doc/changelog/1.23.0.md) — 2025-12-02
+- [1.22.0](doc/changelog/1.22.0.md) — 2025-11-27
+- [1.21.0](doc/changelog/1.21.0.md) — 2025-11-25
+- [1.20.0](doc/changelog/1.20.0.md) — 2025-11-25
+- [1.19.0](doc/changelog/1.19.0.md) — 2025-11-25
+- [1.18.0](doc/changelog/1.18.0.md) — 2025-11-07
+- [1.17.0](doc/changelog/1.17.0.md) — 2025-11-03
+- [1.16.0](doc/changelog/1.16.0.md) — 2025-10-17
+- [1.15.0](doc/changelog/1.15.0.md) — 2025-10-15
+- [1.14.2](doc/changelog/1.14.2.md) — 2025-10-03
+- [1.14.1](doc/changelog/1.14.1.md) — 2025-10-03
+- [1.14.0](doc/changelog/1.14.0.md) — 2025-07-29
+- [1.13.0](doc/changelog/1.13.0.md) — 2025-07-07
+- [1.12.0](doc/changelog/1.12.0.md) — 2025-07-01
+- [1.11.0](doc/changelog/1.11.0.md) — 2025-06-16
+- [1.10.0](doc/changelog/1.10.0.md) — 2025-05-15
+- [1.9.0](doc/changelog/1.9.0.md) — 2025-02-24
+- [1.8.0](doc/changelog/1.8.0.md) — 2025-02-05
+- [1.7.0](doc/changelog/1.7.0.md) — 2025-01-21
+- [1.6.0](doc/changelog/1.6.0.md) — 2025-01-16
+- [1.5.1](doc/changelog/1.5.1.md) — 2024-10-18
+- [1.5.0](doc/changelog/1.5.0.md) — 2024-10-07
+- [1.4.0](doc/changelog/1.4.0.md) — 2024-07-09
+- [1.3.3](doc/changelog/1.3.3.md) — 2024-03-12
+- [1.3.2](doc/changelog/1.3.2.md) — 2024-02-29
+- [1.3.1](doc/changelog/1.3.1.md) — 2024-01-19
+- [1.3.0](doc/changelog/1.3.0.md) — 2024-01-10
+- [1.2.0](doc/changelog/1.2.0.md) — 2023-10-26
+- [1.1.1](doc/changelog/1.1.1.md) — 2023-10-10
+- [1.1.0](doc/changelog/1.1.0.md) — 2023-06-19
+- [1.0.0](doc/changelog/1.0.0.md) — 2023-06-07

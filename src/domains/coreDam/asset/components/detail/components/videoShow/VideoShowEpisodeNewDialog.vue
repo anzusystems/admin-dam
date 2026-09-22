@@ -1,0 +1,169 @@
+<script lang="ts" setup>
+import { ADialogToolbar, AFormDatetimePicker, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
+import {
+  ENTITY,
+  useCreateVideoShowEpisode,
+  usePrepareFormDataVideoShowEpisode,
+} from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
+import VideoShowRemoteAutocomplete from '@/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
+
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean
+    dataCy?: string
+    assetId: DocId
+  }>(),
+  {
+    dataCy: undefined,
+  }
+)
+const emit = defineEmits<{
+  (e: 'update:modelValue', data: boolean): void
+  (e: 'reloadList'): void
+}>()
+const value = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: boolean) {
+    emit('update:modelValue', newValue)
+  },
+})
+
+const { t } = useI18n()
+const { currentExtSystemId } = useCurrentExtSystem()
+const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+const { createDefault } = useVideoShowEpisodeFactory()
+const videoShowEpisode = ref<VideoShowEpisode>(createDefault(currentExtSystemId.value))
+
+const { executeRequest: createVideoShowEpisode } = useCreateVideoShowEpisode()
+const { executeRequest: prepareFormDataVideoShowEpisode } = usePrepareFormDataVideoShowEpisode()
+
+const saving = ref(false)
+const loadingFormData = ref(false)
+
+const { v$ } = useVideoShowEpisodeValidation(videoShowEpisode)
+
+const closeDialog = (reloadList = false) => {
+  value.value = false
+  if (reloadList) emit('reloadList')
+}
+
+const submit = async () => {
+  try {
+    saving.value = true
+    v$.value.$touch()
+    if (v$.value.$invalid) {
+      showValidationError()
+      saving.value = false
+      return
+    }
+    await createVideoShowEpisode({ object: videoShowEpisode.value })
+    showRecordWas('created')
+    closeDialog(true)
+  } catch (error) {
+    showErrorsDefault(error)
+  } finally {
+    saving.value = false
+  }
+}
+
+const loadFormData = async () => {
+  if (!videoShowEpisode.value.videoShow) return
+  loadingFormData.value = true
+  const res = await prepareFormDataVideoShowEpisode({
+    urlParams: { assetId: props.assetId, videoShowId: videoShowEpisode.value.videoShow },
+  })
+  videoShowEpisode.value.texts.title = res.texts.title
+  loadingFormData.value = false
+}
+
+const videoShowEpisodeVideoShow = computed(() => {
+  return videoShowEpisode.value.videoShow
+})
+
+watch(videoShowEpisodeVideoShow, (newValue, oldValue) => {
+  if (newValue !== oldValue && !isNull(newValue)) {
+    loadFormData()
+  }
+})
+
+onMounted(async () => {
+  videoShowEpisode.value.asset = props.assetId
+})
+</script>
+
+<template>
+  <VDialog
+    v-model="value"
+    :width="500"
+  >
+    <VCard v-if="value">
+      <ADialogToolbar @on-cancel="closeDialog(false)">
+        {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
+      </ADialogToolbar>
+      <VCardText>
+        <ASystemEntityScope
+          :system="SYSTEM_CORE_DAM"
+          :subject="ENTITY"
+        >
+          <ARow>
+            <VideoShowRemoteAutocomplete
+              v-model="videoShowEpisode.videoShow"
+              required
+              data-cy="field-choose-video-show"
+              :label="t('coreDam.videoShowEpisode.model.videoShow')"
+            />
+          </ARow>
+          <div
+            v-if="loadingFormData"
+            class="d-flex w-100 justify-center align-center pa-2"
+          >
+            <VProgressCircular
+              indeterminate
+              color="primary"
+            />
+          </div>
+          <template v-if="videoShowEpisode.videoShow && !loadingFormData">
+            <ARow>
+              <AFormTextarea
+                v-model="videoShowEpisode.texts.title"
+                data-cy="field-title-episode"
+                :label="t('coreDam.videoShowEpisode.model.texts.title')"
+                :v="v$.videoShowEpisode.texts.title"
+              />
+            </ARow>
+          </template>
+          <ARow>
+            <AFormDatetimePicker
+              v-model="videoShowEpisode.dates.publicationDate"
+              :label="t('coreDam.videoShowEpisode.model.dates.publicationDate')"
+            />
+          </ARow>
+        </ASystemEntityScope>
+      </VCardText>
+      <VCardActions>
+        <VSpacer />
+        <ABtnTertiary
+          data-cy="button-cancel"
+          @click.stop="closeDialog(false)"
+        >
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          data-cy="button-add"
+          :loading="saving"
+          @click.stop="submit"
+        >
+          {{ t('common.button.add') }}
+        </ABtnPrimary>
+      </VCardActions>
+    </VCard>
+  </VDialog>
+</template>

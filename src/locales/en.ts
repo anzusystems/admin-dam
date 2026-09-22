@@ -12,11 +12,13 @@ import customDistribution from '@/locales/en/coreDam/customDistribution.json'
 import youtubeDistribution from '@/locales/en/coreDam/youtubeDistribution.json'
 import audioFile from '@/locales/en/coreDam/audioFile.json'
 import videoFile from '@/locales/en/coreDam/videoFile.json'
+import commonModel from '@/locales/en/common/model.json'
 import extSystem from '@/locales/en/coreDam/extSystem.json'
 import job from '@/locales/en/coreDam/job.json'
 import keyword from '@/locales/en/coreDam/keyword.json'
 import podcast from '@/locales/en/coreDam/podcast.json'
 import podcastEpisode from '@/locales/en/coreDam/podcastEpisode.json'
+import podcastExportData from '@/locales/en/coreDam/podcastExportData.json'
 import user from '@/locales/en/coreDam/user.json'
 import anzuUser from '@/locales/en/common/anzuUser.json'
 import videoShow from '@/locales/en/coreDam/videoShow.json'
@@ -28,10 +30,17 @@ import jsValidation from '@/locales/en/error/jsValidation.json'
 import breadcrumb from '@/locales/en/breadcrumb.json'
 import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
 import publicExport from '@/locales/en/coreDam/publicExport.json'
+import voiceFamily from '@/locales/en/coreDam/voiceFamily.json'
+import voice from '@/locales/en/coreDam/voice.json'
+import ttsNarrationRequest from '@/locales/en/coreDam/ttsNarrationRequest.json'
 
 export default {
   common: {
     ...messagesEn.common,
+    model: {
+      ...messagesEn.common.model,
+      ...commonModel,
+    },
     anzuUser: {
       ...messagesEn.common.anzuUser,
       filter: {
@@ -57,12 +66,16 @@ export default {
     keyword,
     podcast,
     podcastEpisode,
+    podcastExportData,
     user,
     videoShow,
     videoShowEpisode,
     audioFile,
     videoFile,
     publicExport,
+    voiceFamily,
+    voice,
+    ttsNarrationRequest,
   },
   auth,
   sidebar,

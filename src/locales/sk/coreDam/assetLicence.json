@@ -1,9 +1,15 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "extSystem": "Externý systém",
-    "extId": "Externé ID"
+    "extId": "Externé ID",
+    "internalRule": {
+      "active": "Automaticky označovať ako interné",
+      "markAsInternalSince": "Označovať ako interné od"
+    },
+    "internalRuleAuthors": "Interní autori",
+    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky"
   },
   "filter": {
     "id": "ID",

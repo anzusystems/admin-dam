@@ -1,7 +1,7 @@
 {
   "model": {
     "id": "ID",
-    "name": "Meno",
+    "name": "Názov",
     "extSystem": "Externý systém",
     "licences": "Licencie"
   },

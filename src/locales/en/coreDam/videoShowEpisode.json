@@ -33,7 +33,7 @@
     "create": "Add Episode"
   },
   "common": {
-    "addAssetToNewVideoShowEpisode": "Add asset to new Video show episode",
+    "addAssetToNewVideoShowEpisode": "Add asset to new video show episode",
     "noEntries": "Nothing to show"
   }
 }

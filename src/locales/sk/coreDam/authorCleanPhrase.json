@@ -21,6 +21,7 @@
     "playground": "Ihrisko"
   },
   "meta": {
+    "create": "Vytvoriť frázu",
     "playground": "Testovanie pravidiel",
     "test": "Testuj"
   },

@@ -22,5 +22,8 @@
   "notification": {
     "enabled": ${NOTIFICATION_ENABLED},
     "webSocketUrl": "${NOTIFICATION_WEBSOCKET_URL}"
+  },
+  "sentry": {
+    "dsn": "${SENTRY_DSN}"
   }
 }

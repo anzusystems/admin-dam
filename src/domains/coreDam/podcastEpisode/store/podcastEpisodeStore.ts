@@ -1,0 +1,26 @@
+import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+
+export const usePodcastEpisodeOneStore = defineStore('podcastEpisodeOneStore', () => {
+  const { createDefault } = usePodcastEpisodeFactory()
+
+  const podcastEpisode = ref<PodcastEpisode>(createDefault(0))
+
+  function setPodcastEpisode(newPodcastEpisode: PodcastEpisode) {
+    podcastEpisode.value = newPodcastEpisode
+  }
+
+  function reset() {
+    podcastEpisode.value = createDefault(0)
+  }
+
+  return {
+    podcastEpisode,
+    setPodcastEpisode,
+    reset,
+  }
+})
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(usePodcastEpisodeOneStore, import.meta.hot))
+}

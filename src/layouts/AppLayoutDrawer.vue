@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
-import { ref } from 'vue'
-import { ROUTE } from '@/router/routes'
-import { envConfig } from '@/services/EnvConfigService'
-import ActionbarTeleportTarget from '@/components/system/ActionbarTeleportTarget.vue'
+import { AAlerts, ASystemBar } from '@anzusystems/common-admin'
+import { envConfig } from '@/shared/EnvConfigService'
+import ActionbarTeleportTarget from '@/domains/system/components/ActionbarTeleportTarget.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
 import { useDisplay } from 'vuetify'
-import SidebarMain from '@/components/system/sidebar/SidebarMain.vue'
-import SidebarRail from '@/components/system/sidebar/SidebarRail.vue'
-import SidebarAppendMain from '@/components/system/sidebar/SidebarAppendMain.vue'
-import SidebarAppendRail from '@/components/system/sidebar/SidebarAppendRail.vue'
+import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
+import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
+import SidebarAppendMain from '@/domains/system/components/sidebar/SidebarAppendMain.vue'
+import SidebarAppendRail from '@/domains/system/components/sidebar/SidebarAppendRail.vue'
 
 const { mobile } = useDisplay()
 
@@ -68,7 +66,7 @@ const { theme } = useTheme()
           />
         </div>
         <div class="main-logo mr-sm-2">
-          <RouterLink :to="{ name: ROUTE.SYSTEM.HOMEPAGE }">
+          <RouterLink to="/">
             <img
               width="104"
               height="42"
@@ -94,7 +92,7 @@ const { theme } = useTheme()
       <!--          <VAppBarNavIcon @click.stop="navIconClick" />-->
       <!--          <VSpacer />-->
       <!--          <VBtn-->
-      <!--            :to="{ name: ROUTE.DAM.ASSET.LIST }"-->
+      <!--            :to="{ name: '/(coreDam)/assets' }"-->
       <!--            size="small"-->
       <!--            variant="text"-->
       <!--            class="mx-2"-->

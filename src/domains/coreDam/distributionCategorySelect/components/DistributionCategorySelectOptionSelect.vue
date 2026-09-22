@@ -1,0 +1,83 @@
+<script lang="ts" setup>
+import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
+import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import type { ErrorObject } from '@vuelidate/core'
+import { useDamConfigState } from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { damClient } from '@/shared/apiClients/damClient'
+
+const props = withDefaults(
+  defineProps<{
+    modelValue: DistributionCategoryOption | null | undefined
+    select: DistributionCategorySelect
+  }>(),
+  {}
+)
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', data: DistributionCategoryOption | null | undefined): void
+  (e: 'blur', data: DistributionCategoryOption | null | undefined): void
+}>()
+
+const modelValueComputed = computed({
+  get() {
+    return props.modelValue
+  },
+  set(newValue: DistributionCategoryOption | null | undefined) {
+    emit('update:modelValue', cloneDeep<DistributionCategoryOption | null | undefined>(newValue))
+  },
+})
+
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
+const { currentExtSystemId } = useCurrentExtSystem()
+const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+if (isUndefined(configExtSystem)) {
+  throw new Error('Ext system must be initialised.')
+}
+
+const isRequired = computed(() => {
+  return (
+    configExtSystem[props.select.type]?.distribution?.distributionRequirements[props.select.serviceSlug]?.categorySelect
+      ?.required ?? false
+  )
+})
+
+const { requiredIf } = useValidate()
+
+const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired.value) } }, { modelValueComputed })
+
+const errorMessageComputed = computed(() => {
+  if (v$.value.$errors?.length) return [v$.value.$errors.map((item: ErrorObject) => item.$message).join(' ')]
+  return []
+})
+
+const onBlur = () => {
+  emit('blur', modelValueComputed.value)
+  v$.value.$touch()
+}
+</script>
+
+<template>
+  <VSelect
+    v-model="modelValueComputed"
+    :items="select.options"
+    item-title="name"
+    item-value="id"
+    :label="select.serviceSlug"
+    clearable
+    :disabled="select.options.length === 0"
+    no-filter
+    :error-messages="errorMessageComputed"
+    data-cy="distribution-category-select"
+    return-object
+    @blur="onBlur"
+  >
+    <template #label>
+      <span>{{ select.serviceSlug }}</span>
+      <span
+        v-if="isRequired"
+        class="required"
+      />
+    </template>
+  </VSelect>
+</template>

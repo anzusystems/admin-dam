@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "create": "Vytvoriť verejný export"
+  },
   "model": {
     "id": "ID",
     "slug": "Slug",
@@ -13,6 +16,11 @@
   "exportType": {
     "mobile": "Appka",
     "web": "Web"
+  },
+  "deviceType": {
+    "all": "Všetky",
+    "ios": "iOS",
+    "android": "Android"
   },
   "button": {
     "create": "Pridať verejný export"

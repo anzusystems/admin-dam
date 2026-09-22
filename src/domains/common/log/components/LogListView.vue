@@ -1,0 +1,114 @@
+<script lang="ts" setup>
+import type LogDatatableType from '@/domains/common/log/components/LogDatatable.vue'
+import LogDatatable from '@/domains/common/log/components/LogDatatable.vue'
+import { useLogFilter } from '@/domains/common/log/filter/LogFilter'
+import { ACard, useI18n } from '@anzusystems/common-admin'
+import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import LogFilter from '@/domains/common/log/components/LogFilter.vue'
+import { useLogListActions } from '@/domains/common/log/composables/logActions'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+
+const { filterData, filterConfig } = useLogFilter()
+provide(FilterConfigKey, filterConfig)
+provide(FilterDataKey, filterData)
+
+const activeTab = ref<null | string>(null)
+const datatables = ref<{ [key: string]: InstanceType<typeof LogDatatableType> | null }>({})
+const counts = ref<Record<string, string>>({})
+
+const { listLoading } = useLogListActions()
+
+const submitFilter = () => {
+  for (const system in datatables.value) {
+    if (isNull(datatables.value[system])) continue
+    datatables.value[system]?.submitFilter()
+  }
+}
+
+const resetFilter = () => {
+  for (const system in datatables.value) {
+    if (isNull(datatables.value[system])) continue
+    datatables.value[system]?.resetFilter()
+  }
+}
+const updateCount = (count: string, system: string) => {
+  counts.value[system] = count
+}
+
+const systems = computed<string[]>(() => {
+  return (filterData.system as string[] | null)?.map((item) => item.toString()) ?? []
+})
+
+watch(
+  systems,
+  (newValue) => {
+    if (newValue.length === 0) {
+      activeTab.value = null
+      return
+    }
+    if (activeTab.value === null) {
+      activeTab.value = newValue[0]
+      return
+    }
+    if (!newValue.includes(activeTab.value)) {
+      activeTab.value = newValue[0]
+    }
+  },
+  { immediate: true }
+)
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(
+  computed(() => [{ title: t('breadcrumb.log.list'), routeName: '/(common)/logs' }])
+)
+</script>
+
+<template>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs" />
+
+  <ACard :loading="listLoading">
+    <VCardText>
+      <LogFilter
+        @submit="submitFilter"
+        @reset="resetFilter"
+      />
+      <VTabs
+        v-if="systems.length > 1"
+        v-model="activeTab"
+        color="primary"
+      >
+        <VTab
+          v-for="system in systems"
+          :key="system"
+          :value="system"
+        >
+          <span>{{ system }}</span>
+          <VChip
+            v-if="counts[system]"
+            class="ml-1"
+            size="small"
+          >
+            {{ counts[system] }}
+          </VChip>
+        </VTab>
+      </VTabs>
+      <div
+        v-for="system in systems"
+        v-show="system === activeTab"
+        :key="system"
+      >
+        <LogDatatable
+          :key="system"
+          :ref="
+            (el) => {
+              datatables[system] = el as any
+            }
+          "
+          :system="system"
+          @count-change="updateCount($event, system)"
+        />
+      </div>
+    </VCardText>
+  </ACard>
+</template>
