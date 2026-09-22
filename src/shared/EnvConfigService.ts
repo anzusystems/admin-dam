@@ -4,6 +4,7 @@ export const envConfig: EnvConfig = {
   adminSwitcherConfigUrl: '',
   appEnvironment: '',
   appVersion: '',
+  appLabel: '',
   logoutCoreDamUrl: '',
   uploadStatusFallback: true,
   cookies: {
@@ -30,6 +31,7 @@ const setEnvConfig = (data: EnvConfig) => {
     envConfig.adminSwitcherConfigUrl = data.adminSwitcherConfigUrl
     envConfig.appEnvironment = data.appEnvironment
     envConfig.appVersion = data.appVersion
+    envConfig.appLabel = data.appLabel ?? ''
     envConfig.logoutCoreDamUrl = data.logoutCoreDamUrl
     envConfig.cookies.refreshTokenExistsName = data.cookies.refreshTokenExistsName
     envConfig.cookies.jwtPayloadName = data.cookies.jwtPayloadName

@@ -2,6 +2,7 @@
   "adminSwitcherConfigUrl": "${ADMIN_SWITCHER_CONFIG_URL}",
   "appEnvironment": "${APP_ENVIRONMENT}",
   "appVersion": "${APP_VERSION}",
+  "appLabel": "${APP_LABEL}",
   "logoutCoreDamUrl": "${LOGOUT_CORE_DAM_URL}",
   "uploadStatusFallback": ${UPLOAD_STATUS_FALLBACK},
   "cookies": {

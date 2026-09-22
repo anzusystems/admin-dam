@@ -1,7 +1,7 @@
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
-import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'

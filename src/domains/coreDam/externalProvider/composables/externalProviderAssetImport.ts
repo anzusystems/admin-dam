@@ -7,7 +7,7 @@ import type {
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
-import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 
 export const useExternalProviderAssetImport = () => {
   const { maxUploadItems } = useBetaTestFeatures()

@@ -173,6 +173,8 @@ export default defineConfig({
     AutoImport({
       imports: autoImports,
       dts: 'src/auto-imports.d.ts',
+      // A flat file in `src/shared` is a global; anything in a subdirectory is a normal import.
+      dirs: ['./src/shared/*'],
       vueTemplate: true,
       // Feeds `eslint.config.mjs`. Without these names declared as globals, eslint-plugin-vue
       // resolves `ref` and friends through the import statement only, and several error-level

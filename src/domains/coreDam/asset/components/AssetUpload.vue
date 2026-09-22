@@ -2,7 +2,7 @@
 import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
-import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import {

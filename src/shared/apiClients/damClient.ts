@@ -5,7 +5,7 @@ import { SYSTEM_ADMIN_DAM } from '@/shared/systems'
 import { userRefreshRequestInterceptor } from '@/shared/apiClients/interceptors/requestRefreshToken'
 import { logoutUserResponseInterceptor } from '@/shared/apiClients/interceptors/responseLogoutUser'
 import { AUTH_PATH_PREFIX } from '@/domains/system/auth/authApi'
-import { PUB_END_POINT_PREFIX } from '@/shared/configurationApi'
+import { PUB_END_POINT_PREFIX } from '@/shared/apiClients/configurationApi'
 
 let mainInstance: AxiosInstance | null = null
 

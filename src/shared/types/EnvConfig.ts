@@ -2,6 +2,7 @@ export interface EnvConfig {
   adminSwitcherConfigUrl: string
   appEnvironment: string
   appVersion: string
+  appLabel: string
   logoutCoreDamUrl: string
   uploadStatusFallback: boolean
   cookies: {

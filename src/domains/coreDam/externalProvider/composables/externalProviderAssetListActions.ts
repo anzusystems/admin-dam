@@ -9,7 +9,7 @@ import { useExternalProviders } from '@/domains/coreDam/asset/composables/extern
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
