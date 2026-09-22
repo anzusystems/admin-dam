@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import { useDebugFeatures } from '@anzusystems/common-admin'
 import { LogTypeDefault } from '@anzusystems/common-admin/labs'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
 
 const { useCurrentUser } = useAuth()
+const { showDebugFeatures } = useDebugFeatures()
 const { t } = useI18n()
 
 // Logs are gated on the role, not a permission.
@@ -124,6 +126,33 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         prepend-icon="mdi-account-edit-outline"
         :title="t('sidebar.settings.anzuUser')"
         data-cy="user-permissions"
+      />
+    </Acl>
+    <!--
+      The merged view: the AnzuUser half and the dam half of the same record on one page, saved by
+      one call. It sits beside both originals until their parity is signed off, then takes over
+      `/users` and the two entries above and in the Settings group collapse into one.
+    -->
+    <Acl
+      v-if="showDebugFeatures"
+      :permission="ACL.DAM_USER_READ"
+    >
+      <VListItem
+        :to="{ name: '/(coreDam)/users-new' }"
+        prepend-icon="mdi-account-edit-outline"
+        :title="`${t('sidebar.settings.anzuUser')} (new)`"
+        data-cy="user-permissions-new"
+      />
+    </Acl>
+    <Acl
+      v-if="showDebugFeatures"
+      :permission="ACL.DAM_PERMISSION_GROUP_UI"
+    >
+      <VListItem
+        :to="{ name: '/(common)/permission-groups-new' }"
+        prepend-icon="mdi-folder-account-outline"
+        :title="`${t('sidebar.settings.permissionGroups')} (new)`"
+        data-cy="permission-group-settings-new"
       />
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">

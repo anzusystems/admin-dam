@@ -1,0 +1,98 @@
+<script lang="ts" setup>
+import {
+  ARow,
+  DamAssetLicenceGroupRemoteAutocomplete,
+  DamAssetLicenceRemoteAutocomplete,
+  DamDistributionServiceSelect,
+  DamExternalProviderAssetSelect,
+  DamExtSystemRemoteAutocomplete,
+} from '@anzusystems/common-admin'
+import { damClient } from '@/shared/apiClients/damClient'
+import type { DamUser } from '@/domains/system/descriptors/userSystemDescriptor'
+
+defineProps<{
+  readonly?: boolean
+}>()
+
+const user = defineModel<DamUser>('user', { required: true })
+
+const { t } = useI18n()
+</script>
+
+<template>
+  <!--
+    The dam half of the merged form. It goes into the shared form's `#systemFields` slot, so both
+    halves are saved by one `PUT /adm/users/{id}` -- the endpoint takes `DamUserDto`, which is
+    `UserDto` plus exactly these fields.
+
+    "Nové heslo" is deliberately gone: no PHP in `core-dam` or `core-dam-bundle` accepts
+    `plainPassword`, and the endpoint drops unknown keys, so whatever was typed there was never
+    written anywhere.
+  -->
+  <ARow>
+    <DamAssetLicenceGroupRemoteAutocomplete
+      v-model="user.licenceGroups"
+      :client="damClient"
+      :label="t('coreDam.user.model.licenceGroups')"
+      :readonly="readonly"
+      multiple
+      :clearable="!readonly"
+      data-cy="user-asset-licence-groups"
+    />
+  </ARow>
+  <ARow>
+    <DamAssetLicenceRemoteAutocomplete
+      v-model="user.assetLicences"
+      :client="damClient"
+      :label="t('coreDam.user.model.assetLicences')"
+      :readonly="readonly"
+      multiple
+      :clearable="!readonly"
+      data-cy="user-asset-licences"
+    />
+  </ARow>
+  <ARow>
+    <DamExtSystemRemoteAutocomplete
+      v-model="user.adminToExtSystems"
+      :client="damClient"
+      :label="t('coreDam.user.model.adminToExtSystems')"
+      :readonly="readonly"
+      multiple
+      :clearable="!readonly"
+      data-cy="user-admin-to-ext-systems"
+    />
+  </ARow>
+  <ARow>
+    <DamExtSystemRemoteAutocomplete
+      v-model="user.userToExtSystems"
+      :client="damClient"
+      :label="t('coreDam.user.model.userToExtSystems')"
+      :readonly="readonly"
+      multiple
+      :clearable="!readonly"
+      data-cy="user-user-to-ext-systems"
+    />
+  </ARow>
+  <ARow>
+    <DamExternalProviderAssetSelect
+      v-model="user.allowedAssetExternalProviders"
+      :client="damClient"
+      :label="t('coreDam.user.model.allowedAssetExternalProviders')"
+      :readonly="readonly"
+      multiple
+      :clearable="!readonly"
+      data-cy="user-allowed-asset-external-providers"
+    />
+  </ARow>
+  <ARow>
+    <DamDistributionServiceSelect
+      v-model="user.allowedDistributionServices"
+      :client="damClient"
+      :label="t('coreDam.user.model.allowedDistributionServices')"
+      :readonly="readonly"
+      multiple
+      :clearable="!readonly"
+      data-cy="user-allowed-distribution-services"
+    />
+  </ARow>
+</template>

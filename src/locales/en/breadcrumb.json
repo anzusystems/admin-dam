@@ -87,7 +87,8 @@
   "anzuUser": {
     "list": "User permissions",
     "detail": "User",
-    "edit": "User"
+    "edit": "User",
+    "create": "New user"
   },
   "log": {
     "list": "Logs",
@@ -96,7 +97,8 @@
   "permissionGroup": {
     "list": "Permission groups",
     "detail": "Group",
-    "edit": "Group"
+    "edit": "Group",
+    "create": "New group"
   },
   "settings": "Settings"
 }
