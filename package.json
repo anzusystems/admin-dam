@@ -35,7 +35,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.47.0-beta.dev-1789936376",
+    "@anzusystems/common-admin": "1.47.0-beta.dev-1790102667",
     "@floating-ui/dom": "^1.8.0",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^10.75.0",
