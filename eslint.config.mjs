@@ -10,7 +10,7 @@ export default [
   },
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', '**/cypress/**'],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', 'e2e/**'],
   },
   ...pluginVue.configs['flat/essential'],
   ...pluginVue.configs['flat/strongly-recommended'],

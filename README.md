@@ -12,4 +12,4 @@ The software development team in Petit Press a.s. has developed a cloud based DA
 ## Getting started
 - [Local development](README-DEV.md)
 
-- [E2E testing](README-TEST.md)
+- [E2E testing](e2e/README.md)

@@ -21,11 +21,8 @@ node_modules
 # Tests
 coverage
 .scannerwork
-cypress/report
-cypress/config
-cypress/downloads
-cypress/fixtures
-!cypress/config/cypress.config.ts
+.playwright-cli
+.playwright-mcp
 
 # Managed by yarn
 .yarn/*

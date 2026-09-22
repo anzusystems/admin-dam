@@ -17,8 +17,7 @@
     "lint:stylelint": "stylelint **/*.{scss,vue}",
     "lint:stylelint:fix": "stylelint **/*.{scss,vue} --fix",
     "lint:prettier": "prettier -c \"src/**/*.{ts,vue}\"",
-    "lint:prettier:fix": "prettier -w \"src/**/*.{ts,vue}\"",
-    "cy:open": "CYPRESS_CACHE_FOLDER='node_modules/.cache/Cypress' yarn cypress open -C cypress/config/cypress.config.ts"
+    "lint:prettier:fix": "prettier -w \"src/**/*.{ts,vue}\""
   },
   "dependencies": {
     "@anzusystems/common-admin": "1.47.0-beta.179",
@@ -29,6 +28,7 @@
     "@vueuse/integrations": "13.1.0",
     "axios": "^1.8.4",
     "cropperjs": "^1.6.2",
+    "dayjs": "^1.11.4",
     "jwt-decode": "^4.0.0",
     "pinia": "^3.0.2",
     "rusha": "^0.8.14",
@@ -42,7 +42,6 @@
     "vuetify": "^3.8.2"
   },
   "devDependencies": {
-    "@cypress/grep": "^4.1.0",
     "@intlify/unplugin-vue-i18n": "^6.0.8",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@tsconfig/node22": "^22.0.1",
@@ -55,9 +54,6 @@
     "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/language-server": "2.2.10",
     "@vue/tsconfig": "^0.7.0",
-    "cypress": "^14.4.1",
-    "cypress-downloadfile": "1.2.4",
-    "cypress-mochawesome-reporter": "^3.8.2",
     "eslint": "9.25.1",
     "eslint-plugin-vue": "^10.0.0",
     "npm-run-all2": "^7.0.2",
