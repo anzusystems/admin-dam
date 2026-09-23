@@ -77,10 +77,6 @@ export default defineConfig({
                 if (id.includes('node_modules/@tiptap/') || id.includes('node_modules/prosemirror-')) {
                   return 'tiptap'
                 }
-                // Realtime / sockets
-                if (id.includes('node_modules/socket.io-')) {
-                  return 'realtime'
-                }
                 // Sentry
                 if (id.includes('node_modules/@sentry/')) {
                   return 'sentry'

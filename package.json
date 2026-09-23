@@ -56,7 +56,6 @@
     "jwt-decode": "^4.0.0",
     "pinia": "^4.0.3",
     "rusha": "^0.8.14",
-    "socket.io-client": "^4.8.3",
     "sortablejs": "^1.15.7",
     "universal-cookie": "^8.1.2",
     "uuid": "^14.0.2",
