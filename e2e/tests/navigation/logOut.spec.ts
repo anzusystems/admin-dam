@@ -20,6 +20,6 @@ test.describe.serial(`${ADMIN_SUITE} - Log out`, () => {
     await page.locator('[data-cy="navbar-user-logout"]').filter({ visible: true }).first().click()
     await page.locator('[data-cy="button-confirm"]').filter({ visible: true }).first().click()
     await expect(page).toHaveURL(/\/login/)
-    await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Prihlásiť sa' })).toBeVisible()
   })
 })

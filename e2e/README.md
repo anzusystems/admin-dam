@@ -80,7 +80,7 @@ before the first test runs. The list lives in `pages/shared/fixtures.ts`.
 
 1. force-login through core-dam,
 2. Slovak language and dark theme (`localStorage`),
-3. **"DEBUG: Show unreleased features"** switched on in `/settings`, so merged-but-hidden features are covered,
+3. **"DEBUG: Zobraziť nevydané funkcie"** switched on in `/settings`, so merged-but-hidden features are covered,
 4. the licence from `LICENCE_ID` selected through the header licence dialog,
 5. clipboard permissions for the context.
 
@@ -126,10 +126,13 @@ yarn test:run --grep-invert "@destructive|@integration"
 ## Running tests via `bin/test`
 
 `bin/test` (repo root) works in both Docker and non-Docker environments: outside Docker it delegates to the
-application container, inside it installs dependencies and runs Playwright directly.
+application container, inside it installs dependencies and runs the tests directly. It runs the vitest suite first
+(`src/test`, no environment or browser needed) and then Playwright; `--unit` or `--e2e` picks one, and it exits
+non-zero when either suite failed.
 
 | Flag                        | Description                                          | Default |
 | --------------------------- | ---------------------------------------------------- | ------- |
+| `--unit` / `--e2e`          | Run only vitest / only Playwright                    | both    |
 | `-e, --env <env>`           | Target environment (`local` \| `devel` \| `staging`) | `devel` |
 | `-f, --filter <pattern>`    | Grep pattern for test names or tags (e.g. `@smoke`)  | —       |
 | `-i, --filter-invert <pat>` | Skip tests matching the pattern                      | —       |
@@ -140,9 +143,10 @@ application container, inside it installs dependencies and runs Playwright direc
 | `-- <args>`                 | Pass remaining args directly to Playwright           | —       |
 
 ```bash
-bin/test -f @smoke
-bin/test -i "@destructive|@integration"
+bin/test --e2e -f @smoke
+bin/test --e2e -i "@destructive|@integration"
 bin/test --spec tests/settings/author.spec.ts
+bin/test --unit
 bin/test -e staging -- --retries=0
 ```
 

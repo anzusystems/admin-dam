@@ -53,16 +53,17 @@ export async function changeToSlovakDarkTheme(page: Page): Promise<void> {
 }
 
 /**
- * Turn on the super-admin "DEBUG: Show unreleased features" switch on the settings page, so the suite
+ * Turn on the super-admin "DEBUG: Zobraziť nevydané funkcie" switch on the settings page, so the suite
  * covers features that are merged but still hidden from regular users. Left alone when it is already on.
+ * Read in Slovak: `changeToSlovakDarkTheme` has switched the language before this runs.
  */
 export async function showUnreleasedFeatures(page: Page): Promise<void> {
   await page.goto('/settings')
-  const toggle = page.locator('.v-row').filter({ hasText: 'DEBUG: Show unreleased features' }).getByRole('checkbox')
+  const toggle = page.locator('.v-row').filter({ hasText: 'DEBUG: Zobraziť nevydané funkcie' }).getByRole('checkbox')
   await expect(toggle).toBeVisible()
   if (!(await toggle.isChecked())) await toggle.click()
   await expect(toggle).toBeChecked()
-  await expect(toggle).toHaveAccessibleName('Show')
+  await expect(toggle).toHaveAccessibleName('Zobraziť')
 }
 
 /**

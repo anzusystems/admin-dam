@@ -17,24 +17,19 @@ test.describe.serial(`${ADMIN_SUITE} - Log`, () => {
     await page.context().close()
   })
 
-  test('lists the logs of the selected systems', async () => {
-    await openSettingsSection(page, 'log-settings', 'logs', 'Logy')
-    const systemFilter = page.locator('[data-cy="filter-value"]').filter({ hasText: 'Systém' }).first()
-    await systemFilter.click()
-    const options = page.locator('.v-overlay--active .v-list-item')
-    await options.filter({ hasText: 'coreDam' }).click()
-    await options.filter({ hasText: 'adminDam' }).click()
-    await page.keyboard.press('Escape')
-    await visibleCy(page, 'filter-submit').click()
-    await cardLoad(page)
-    await expect(page.locator('main .v-tabs')).toBeVisible()
-    // One table per selected system, rendered in its own tab.
+  // The system is a route segment now, not a filter: there is no system select to open and no tab strip
+  // to appear, the table is there on arrival and neither a search nor a reset takes it away.
+  test('lists the app logs of coreDam', async () => {
+    await openSettingsSection(page, 'log-settings', 'logs/dam/app', 'Logy')
     await expect(page.locator('main .v-table').first()).toBeVisible()
   })
 
-  test('hides the logs again after a filter reset', async () => {
+  test('keeps the table through a search and a filter reset', async () => {
+    await visibleCy(page, 'filter-submit').click()
+    await cardLoad(page)
+    await expect(page.locator('main .v-table').first()).toBeVisible()
     await visibleCy(page, 'filter-reset').click()
-    await expect(page.locator('main .v-tabs')).toHaveCount(0)
-    await expect(page.locator('main .v-table')).toHaveCount(0)
+    await cardLoad(page)
+    await expect(page.locator('main .v-table').first()).toBeVisible()
   })
 })

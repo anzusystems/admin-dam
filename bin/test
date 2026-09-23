@@ -8,7 +8,6 @@ E2E_DIR="${PROJECT_ROOT}/e2e"
 ENV="devel"
 FILTER=""
 FILTER_INVERT=""
-BROWSER=""
 SPEC=""
 HEADED=false
 UI=false
@@ -27,7 +26,6 @@ function help() {
         -e --env           (Optional) Target environment (Allowed: local | devel | staging, Default: devel)
         -f --filter        (Optional) Grep pattern for test names or tags (e.g. @smoke)
         -i --filter-invert (Optional) Skip tests matching the grep pattern (e.g. @destructive)
-        -b --browser       (Optional) Browser to use (Allowed: chromium | firefox | webkit, Default: chromium)
         --spec             (Optional) Test file or glob pattern (e.g. tests/settings/author.spec.ts)
         --headed           (Optional) Run with visible browser window
         --ui               (Optional) Open Playwright UI mode
@@ -50,16 +48,6 @@ function help() {
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    -b)
-        BROWSER=$2
-        shift; shift
-        continue
-        ;;
-    --browser*)
-        BROWSER=${1#*=}
-        shift 1
-        continue
-        ;;
     -e)
         ENV=$2
         shift; shift
@@ -157,12 +145,6 @@ if [[ ! ${ENV} =~ ^local$|^devel$|^staging$ ]]; then
     exit 1
 fi
 
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^chromium$|^firefox$|^webkit$ ]]; then
-    echo "[ERROR] Invalid value: '${BROWSER}' for '-b, --browser' option. Allowed: chromium | firefox | webkit"
-    help
-    exit 1
-fi
-
 #######################################################################################################################
 # Inside Docker: run tests directly
 #######################################################################################################################
@@ -188,7 +170,8 @@ if [ -f /.dockerenv ]; then
         yarn install
     fi
 
-    # Install Playwright browser binaries (idempotent — skips if already installed)
+    # Chromium only: the drag-and-drop uploads drive it over CDP, which the other browsers do not speak.
+    # Idempotent — skips if already installed.
     yarn playwright install chromium
 
     # An array, not a string: a value with spaces -- `-f "two words"`, or anything after `--` --
@@ -197,7 +180,6 @@ if [ -f /.dockerenv ]; then
 
     [ -n "${FILTER}" ]        && CMD+=(--grep "${FILTER}")
     [ -n "${FILTER_INVERT}" ] && CMD+=(--grep-invert "${FILTER_INVERT}")
-    [ -n "${BROWSER}" ]       && CMD+=(--browser "${BROWSER}")
     [ "${HEADED}" = "true" ]  && CMD+=(--headed)
     [ "${UI}" = "true" ]      && CMD+=(--ui)
     [ -n "${SPEC}" ]          && CMD+=("${SPEC}")
@@ -222,7 +204,6 @@ DELEGATE=(-e "${ENV}")
 [ "${INSTALL_DEPENDENCIES}" = "false" ] && DELEGATE+=(--no-install)
 [ -n "${FILTER}" ]                       && DELEGATE+=(-f "${FILTER}")
 [ -n "${FILTER_INVERT}" ]                && DELEGATE+=(-i "${FILTER_INVERT}")
-[ -n "${BROWSER}" ]                      && DELEGATE+=(-b "${BROWSER}")
 [ "${HEADED}" = "true" ]                 && DELEGATE+=(--headed)
 [ "${UI}" = "true" ]                     && DELEGATE+=(--ui)
 [ -n "${SPEC}" ]                         && DELEGATE+=(--spec "${SPEC}")

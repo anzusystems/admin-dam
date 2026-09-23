@@ -175,10 +175,15 @@ export async function chooseAssetType(page: Page, type: AssetType): Promise<URLS
   return searchParams(page, () => page.locator(`[data-cy="${TYPE_BUTTON[type]}"]`).first().click())
 }
 
-/** Switch the ordering of the list. Pressing the ordering already in effect sends no request. */
+/**
+ * Switch the ordering of the list. It is common-admin's `ADatatableOrdering`: a "Radenie:" label beside a
+ * button that names the ordering in effect and opens a menu of all of them. Picking the ordering already
+ * in effect sends no request.
+ */
 export async function chooseSorting(page: Page, sorting: Sorting): Promise<URLSearchParams> {
+  await page.getByText('Radenie:', { exact: true }).first().locator('xpath=following-sibling::button[1]').click()
   return searchParams(page, () =>
-    page.locator('[data-cy="asset-sorting"]').first().getByRole('button', { name: SORTING_BUTTON[sorting] }).click()
+    page.locator('.v-overlay--active .v-list-item').filter({ hasText: SORTING_BUTTON[sorting] }).first().click()
   )
 }
 

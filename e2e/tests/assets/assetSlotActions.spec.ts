@@ -153,10 +153,8 @@ test.describe.serial(`${ADMIN_SUITE} - Asset slot actions`, () => {
     await cancelSlotRemove(page, dialog)
   })
 
-  test('the remove dialog is titled in Slovak @bug', async () => {
-    test.fail() // DAM-B7: the title renders the raw i18n key — see KNOWN-BUGS.md
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B7' })
-
+  // DAM-B7, fixed: the title asked for the undefined `common.modal.system.confirmDelete` and showed the raw key.
+  test('the remove dialog is titled in Slovak', async () => {
     await openSlots(page, ASSET_ID)
     const dialog = await openSlotRemove(page, 'bonus')
     await expect(dialog.locator('.v-toolbar-title')).toHaveText('Odstrániť?')
