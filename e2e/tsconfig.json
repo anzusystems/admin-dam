@@ -1,23 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "lib": ["es2022", "dom"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "module": "nodenext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    // Written out rather than inherited: TypeScript 6 turns `strict` on by default and 5.9 does
-    // not, so without this line the version pin decides how much of the suite is checked.
     "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "types": ["cypress", "@cypress/grep", "cypress-downloadfile", "node"]
+    "types": ["node"],
+    "paths": {
+      "@pages/*": ["./pages/*"]
+    }
   },
-  // The cypress config is the only tracked file under `config/`. Listed here rather than left to
-  // `include`, because `files` entries ignore `exclude`.
-  "files": ["config/cypress.config.ts"],
-  "include": ["./**/*.ts"],
-  // `config/<env>.ts` hold credentials, are gitignored and exist only on machines that run the
-  // suite. Checking them would make `yarn ci` depend on an untracked file.
-  "exclude": ["node_modules", "config/*.ts"]
+  "files": [],
+  "references": [
+    {
+      "path": "./pages"
+    },
+    {
+      "path": "./tests"
+    },
+    {
+      "path": "./tsconfig.setup.json"
+    }
+  ]
 }

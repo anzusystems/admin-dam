@@ -51,6 +51,7 @@ docker-compose.override.yml*
 # Local tooling artifacts
 .common-admin-updated
 .playwright-cli/
+.playwright-mcp/
 
 # Exclusions
 !.gitkeep

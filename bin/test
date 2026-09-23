@@ -1,65 +1,55 @@
 #!/bin/bash
-# Script used to run the tests in the application container
-#######################################################################################################################
-# Default variables
-#######################################################################################################################
+# Run the project's tests: vitest (src/test) and Playwright e2e (e2e/), both by default.
+# Outside Docker: delegates to the application container.
+# Inside Docker: installs dependencies and runs tests directly.
+
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
-ARGS="$*"
-BROWSER="chrome"
-ENV="local"
-FILTER=""
-TAG=""
-RUNNER="yarn"
-DASHBOARD_OPTIONS="--record false"
 E2E_DIR="${PROJECT_ROOT}/e2e"
-CONFIG_FILE="config/cypress.config.ts"
+ENV="devel"
+FILTER=""
+FILTER_INVERT=""
+BROWSER=""
+SPEC=""
+HEADED=false
+UI=false
+INSTALL_DEPENDENCIES=true
+PASSTHROUGH=()
 RUN_UNIT=true
 RUN_E2E=true
 
-cd "${PROJECT_ROOT}" || exit 1
-# Initialize default variables
-# shellcheck disable=SC1091
-. ./bin/docker-libvariables
-# Initialize functions
-# shellcheck disable=SC1091
-. ./bin/docker-libfunctions
-docker_env_vars
-
 function help() {
-    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nBash script used to run the tests: vitest over src/, and the Cypress e2e suite
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPTIONS]...
+    \nRun the tests for admin-dam: vitest and Playwright e2e, both unless one is selected
 
     Options:
-        --unit       (Optional) Run only the vitest suite (src/test), skip e2e
-        --e2e        (Optional) Run only the Cypress e2e suite, skip vitest
-        -e --env     (Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)
-        -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
-        -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
-        -t --tag     (Optional) Only for dashboard runs tags for cypress dashboard list
-        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'e2e/report' folder
+        --unit             (Optional) Run only the vitest suite (src/test), skip e2e
+        --e2e              (Optional) Run only the Playwright e2e suite, skip vitest
+        -e --env           (Optional) Target environment (Allowed: local | devel | staging, Default: devel)
+        -f --filter        (Optional) Grep pattern for test names or tags (e.g. @smoke)
+        -i --filter-invert (Optional) Skip tests matching the grep pattern (e.g. @destructive)
+        -b --browser       (Optional) Browser to use (Allowed: chromium | firefox | webkit, Default: chromium)
+        --spec             (Optional) Test file or glob pattern (e.g. tests/settings/author.spec.ts)
+        --headed           (Optional) Run with visible browser window
+        --ui               (Optional) Open Playwright UI mode
+        --no-install       (Optional) Skip yarn install
+        --                 (Optional) Pass remaining args directly to Playwright (e.g. -- --retries=0 --workers=2)
 
     Examples:
         $(printf %q "${BASH_SOURCE[0]}")
         $(printf %q "${BASH_SOURCE[0]}") --unit
-        $(printf %q "${BASH_SOURCE[0]}") --e2e -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
+        $(printf %q "${BASH_SOURCE[0]}") --e2e -e staging -f @smoke
+        $(printf %q "${BASH_SOURCE[0]}") -i \"@destructive|@integration\"
+        $(printf %q "${BASH_SOURCE[0]}") --spec tests/settings/author.spec.ts
+        $(printf %q "${BASH_SOURCE[0]}") -e devel --headed
+        $(printf %q "${BASH_SOURCE[0]}") --no-install -- --retries=0
     \n"
 }
 
 #######################################################################################################################
-# Go through all command line arguments and setup variables accordingly
+# Parse arguments
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    --unit)
-        RUN_E2E=false
-        shift 1
-        continue
-        ;;
-    --e2e)
-        RUN_UNIT=false
-        shift 1
-        continue
-        ;;
     -b)
         BROWSER=$2
         shift; shift
@@ -85,25 +75,64 @@ while [ "$#" -gt 0 ]; do
         shift; shift
         continue
         ;;
+    --filter-invert*)
+        FILTER_INVERT=${1#*=}
+        shift 1
+        continue
+        ;;
     --filter*)
         FILTER=${1#*=}
         shift 1
         continue
         ;;
-    -t)
-        TAG=$2
+    -i)
+        FILTER_INVERT=$2
         shift; shift
         continue
         ;;
-    --tag*)
-        TAG=${1#*=}
+    --spec)
+        SPEC=$2
+        shift; shift
+        continue
+        ;;
+    --spec=*)
+        SPEC=${1#*=}
         shift 1
         continue
         ;;
-    -d)
-        DASHBOARD_OPTIONS="--record --tag ${ENV},${TAG},${FILTER}"
+    --headed)
+        HEADED=true
         shift 1
         continue
+        ;;
+    --ui)
+        UI=true
+        shift 1
+        continue
+        ;;
+    --no-install)
+        INSTALL_DEPENDENCIES=false
+        shift 1
+        continue
+        ;;
+    --unit)
+        RUN_E2E=false
+        shift 1
+        continue
+        ;;
+    --e2e)
+        RUN_UNIT=false
+        shift 1
+        continue
+        ;;
+    -h | --help)
+        help
+        exit 0
+        ;;
+    --)
+        shift
+        PASSTHROUGH=("$@")
+        break
         ;;
     *)
         echo "[WARN] Unknown command line switch: $1"
@@ -113,62 +142,95 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
+#######################################################################################################################
+# Validate
+#######################################################################################################################
 if [ "${RUN_UNIT}" = "false" ] && [ "${RUN_E2E}" = "false" ]; then
     echo "[ERROR] '--unit' and '--e2e' select a single suite each; passing both leaves nothing to run"
     help
     exit 1
 fi
 
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
-    echo "[ERROR] Invalid value: '${BROWSER}' using '-b, --browser' option"
+if [[ ! ${ENV} =~ ^local$|^devel$|^staging$ ]]; then
+    echo "[ERROR] Invalid value: '${ENV}' for '-e, --env' option. Allowed: local | devel | staging"
     help
     exit 1
 fi
 
-if [ -n "${ENV}" ] && [ ! -f "e2e/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
-    echo "[ERROR] Config file '${ENV}.ts' does not exist in e2e/config folder"
+if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^chromium$|^firefox$|^webkit$ ]]; then
+    echo "[ERROR] Invalid value: '${BROWSER}' for '-b, --browser' option. Allowed: chromium | firefox | webkit"
     help
     exit 1
 fi
 
+#######################################################################################################################
+# Inside Docker: run tests directly
+#######################################################################################################################
 if [ -f /.dockerenv ]; then
     STATUS=0
 
     # vitest first: it needs no environment and no browser, so its result is on screen within seconds.
     if [ "${RUN_UNIT}" = "true" ]; then
-        echo "[INFO] yarn test"
-        (cd "${PROJECT_ROOT}" && yarn test) || STATUS=1
+        cd "${PROJECT_ROOT}" || exit 1
+        UNIT_CMD=(yarn test)
+        [ ${#PASSTHROUGH[@]} -gt 0 ] && [ "${RUN_E2E}" = "false" ] && UNIT_CMD+=("${PASSTHROUGH[@]}")
+        echo "[INFO] ${UNIT_CMD[*]}"
+        "${UNIT_CMD[@]}" || STATUS=1
     fi
 
     if [ "${RUN_E2E}" = "false" ]; then
         exit ${STATUS}
     fi
 
-    # The e2e suite is its own yarn project, so cypress lives there, not in the app's
-    # node_modules. Everything below runs from e2e/.
     cd "${E2E_DIR}" || exit 1
-    yarn install || exit 1
 
-    # Idempotent: skips when the binary is already in the cache. The guard this replaces tested
-    # `${CYPRESS_CACHE_FOLDER}`, a path `.env.docker.dist` sets relative to the working directory --
-    # correct only as long as nobody moves the `cd` above it, and `--force` re-downloaded on every
-    # miss. blog and inhouse run the plain install, which needs neither.
-    ${RUNNER} cypress install
-    # `--expose`, not `--env` or `CYPRESS_grepTags`: Cypress 16 removed `Cypress.env()`, so
-    # everything the specs read in the browser goes through `expose`.
-    #
-    # One `--expose`, never two: the CLI option carries no collector, so a second occurrence
-    # replaces the first. Pairs are comma separated, which is why a filter's own commas become
-    # spaces -- `@a @b` is @cypress/grep's OR, and a comma there would be read as a pair boundary.
-    EXPOSE="cfg=${ENV}"
-    [ -n "${FILTER}" ] && EXPOSE="${EXPOSE},grepTags=${FILTER//,/ }"
-    # shellcheck disable=SC2086
-    dbus-launch ${RUNNER} cypress run \
-        --config-file ${CONFIG_FILE} \
-        --expose "${EXPOSE}" \
-        --browser ${BROWSER} \
-        ${DASHBOARD_OPTIONS} || STATUS=1
+    if [ "${INSTALL_DEPENDENCIES}" = "true" ]; then
+        yarn install
+    fi
+
+    # Install Playwright browser binaries (idempotent — skips if already installed)
+    yarn playwright install chromium
+
+    # An array, not a string: a value with spaces -- `-f "two words"`, or anything after `--` --
+    # survives as one argument, which `eval` on a flattened string cannot guarantee.
+    CMD=(yarn playwright test --config playwright.config.ts)
+
+    [ -n "${FILTER}" ]        && CMD+=(--grep "${FILTER}")
+    [ -n "${FILTER_INVERT}" ] && CMD+=(--grep-invert "${FILTER_INVERT}")
+    [ -n "${BROWSER}" ]       && CMD+=(--browser "${BROWSER}")
+    [ "${HEADED}" = "true" ]  && CMD+=(--headed)
+    [ "${UI}" = "true" ]      && CMD+=(--ui)
+    [ -n "${SPEC}" ]          && CMD+=("${SPEC}")
+    [ ${#PASSTHROUGH[@]} -gt 0 ] && CMD+=("${PASSTHROUGH[@]}")
+
+    echo "[INFO] ADAM_ENV=${ENV} ${CMD[*]}"
+    ADAM_ENV="${ENV}" "${CMD[@]}" || STATUS=1
     exit ${STATUS}
 fi
 
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'
+#######################################################################################################################
+# Outside Docker: delegate to the application container
+#######################################################################################################################
+cd "${PROJECT_ROOT}" || exit 1
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+
+# Reconstruct args from parsed variables so each is a proper separate token.
+DELEGATE=(-e "${ENV}")
+[ "${RUN_E2E}" = "false" ]               && DELEGATE+=(--unit)
+[ "${RUN_UNIT}" = "false" ]              && DELEGATE+=(--e2e)
+[ "${INSTALL_DEPENDENCIES}" = "false" ] && DELEGATE+=(--no-install)
+[ -n "${FILTER}" ]                       && DELEGATE+=(-f "${FILTER}")
+[ -n "${FILTER_INVERT}" ]                && DELEGATE+=(-i "${FILTER_INVERT}")
+[ -n "${BROWSER}" ]                      && DELEGATE+=(-b "${BROWSER}")
+[ "${HEADED}" = "true" ]                 && DELEGATE+=(--headed)
+[ "${UI}" = "true" ]                     && DELEGATE+=(--ui)
+[ -n "${SPEC}" ]                         && DELEGATE+=(--spec "${SPEC}")
+[ ${#PASSTHROUGH[@]} -gt 0 ] && DELEGATE+=(-- "${PASSTHROUGH[@]}")
+
+# bin/docker-compose joins its arguments with `$*` and hands the result to `eval`, so a value with
+# spaces would arrive as several arguments. Quote each one for that round trip; eval undoes it.
+QUOTED=()
+for ARG in "${DELEGATE[@]}"; do QUOTED+=("$(printf %q "${ARG}")"); done
+
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" /var/www/html/bin/test "${QUOTED[@]}"

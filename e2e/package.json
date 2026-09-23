@@ -1,31 +1,34 @@
 {
-  "name": "dam-e2e-tests",
+  "name": "adam-e2e-tests",
   "version": "1.0.0",
   "private": true,
-  "description": "End-to-end tests for admin-dam using Cypress",
+  "description": "End-to-end tests for ADAM using Playwright",
   "scripts": {
-    "test:open": "cypress open -C config/cypress.config.ts",
-    "test:run": "cypress run -C config/cypress.config.ts",
-    "lint:tsc": "tsc -p tsconfig.json --noEmit",
+    "test:open": "playwright test --ui --config playwright.config.ts",
+    "test:open:win": "playwright test --ui --ui-host=0.0.0.0 --ui-port=8080 --config playwright.config.ts",
+    "test:run": "playwright test --config playwright.config.ts",
+    "test:run:local": "ADAM_ENV=local playwright test --config playwright.config.ts",
+    "test:run:devel": "ADAM_ENV=devel playwright test --config playwright.config.ts",
+    "test:run:staging": "ADAM_ENV=staging playwright test --config playwright.config.ts",
+    "lint": "yarn ci",
+    "lint:fix": "yarn lint:oxlint:fix && yarn format",
+    "lint:tsc": "tsc -b",
     "lint:oxlint": "oxlint . --disable-nested-config",
     "lint:oxlint:fix": "oxlint . --fix --disable-nested-config",
-    "format": "oxfmt --disable-nested-config commands config support tests types utils",
-    "format:check": "oxfmt --disable-nested-config commands config support tests types utils --check",
-    "ci": "yarn lint:tsc && yarn format:check && yarn lint:oxlint",
-    "lint": "yarn ci",
-    "lint:fix": "yarn lint:oxlint:fix && yarn format"
+    "format": "oxfmt --disable-nested-config pages setup tests playwright.config.ts",
+    "format:check": "oxfmt --disable-nested-config pages setup tests playwright.config.ts --check",
+    "ci": "yarn lint:tsc && yarn format:check && yarn lint:oxlint"
   },
   "devDependencies": {
-    "@cypress/grep": "^7.0.0",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^24.13.6",
-    "cypress": "^16.1.0",
-    "cypress-downloadfile": "1.2.4",
-    "cypress-mochawesome-reporter": "^5.0.0",
+    "dotenv": "^18.0.3",
     "oxfmt": "^0.70.0",
     "oxlint": "1.85.0",
-    "typescript": "~6.0.3"
+    "typescript": "~7.0.2"
   },
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
-  }
+  },
+  "packageManager": "yarn@4.18.0"
 }

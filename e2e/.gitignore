@@ -3,24 +3,57 @@ node_modules/
 .yarn/*
 !.yarn/patches
 !.yarn/releases
-.pnp.*
 
-# Cypress artifacts
-report/
-downloads/
-screenshots/
-videos/
+# TypeScript build info
+.tsbuildinfo/
+*.tsbuildinfo
 
-# Media samples the specs upload; binary, not tracked.
+# Playwright config files - ignore all files in config/ except the main config
+playwright/config/*
+!playwright/config/playwright.config.ts
+
+# Playwright artifacts
+playwright/report/
+playwright/test-results/
+playwright/playwright-report/
+playwright/blob-report/
+playwright/trace/
+playwright/.cache/
+
+# Compiled JavaScript
+playwright/**/*.js
+
+# Test output and logs
+*.log
+test-results/
+playwright-report/
+blob-report/
+
+# OS and IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Environment files - NEVER COMMIT CREDENTIALS!
+# Ignore all .env files except the template files
+.env
+.env.*
+!.env.example
+!.env.dist
+.env.*.local
+
+# New Playwright (migrated tests) artifacts
+.report/
+.results/
+.state/
+
+# playwright-cli skill session artifacts (DOM snapshots + console logs)
+.playwright-cli/
+*.png
+*.yaml
+
+# Media fixtures are downloaded from the e2e test data bucket by globalSetup
 fixtures/
 
-# Environment configs hold credentials — only the cypress config itself is tracked.
-config/*
-!config/cypress.config.ts
-
-# Lint caches
-.eslintcache
-.stylelintcache
-
-# Logs
-*.log
+# Agent memory (per-agent, machine-local notes written by .claude/agents/e2e-tester.md)
+.claude/agent-memory/
