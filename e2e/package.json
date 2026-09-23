@@ -17,12 +17,12 @@
   },
   "devDependencies": {
     "@cypress/grep": "^7.0.0",
-    "@types/node": "^24.13.4",
-    "cypress": "^16.0.0",
+    "@types/node": "^24.13.6",
+    "cypress": "^16.1.0",
     "cypress-downloadfile": "1.2.4",
     "cypress-mochawesome-reporter": "^5.0.0",
-    "oxfmt": "^0.68.0",
-    "oxlint": "1.83.0",
+    "oxfmt": "^0.70.0",
+    "oxlint": "1.85.0",
     "typescript": "~6.0.3"
   },
   "engines": {
