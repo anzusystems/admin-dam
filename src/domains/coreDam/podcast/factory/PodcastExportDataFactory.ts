@@ -2,7 +2,7 @@ import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastE
 import { ExportTypeDefault } from '@/domains/coreDam/asset/valueObject/ExportType'
 import { DeviceTypeDefault } from '@/domains/coreDam/asset/valueObject/DeviceType'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { nextListEditorTempId } from '@anzusystems/common-admin/labs'
+import { nextListEditorTempId } from '@anzusystems/common-admin'
 
 const ENTITY = 'podcastExportData'
 

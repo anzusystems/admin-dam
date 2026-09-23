@@ -105,7 +105,7 @@ export default defineConfigWithVueTs(
       'pinia/require-setup-store-properties-export': 'error',
     },
   },
-  anzuRecommended({ deprecatedImports: 'error' }),
+  anzuRecommended(),
   {
     name: 'app/rules',
     plugins: {

@@ -1,4 +1,4 @@
-import { type FilterConfig, type FilterData, type Pagination, useJobApi } from '@anzusystems/common-admin/labs'
+import { type FilterConfig, type FilterData, type Pagination, useJobApi } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'

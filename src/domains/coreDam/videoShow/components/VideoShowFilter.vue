@@ -5,7 +5,7 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 
 const emit = defineEmits<{

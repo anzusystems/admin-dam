@@ -1,6 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { AAnzuUserForm, useAnzuUserActions } from '@anzusystems/common-admin/labs'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  AAnzuUserForm,
+  useAnzuUserActions,
+} from '@anzusystems/common-admin'
 import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'
 import { ACL } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'

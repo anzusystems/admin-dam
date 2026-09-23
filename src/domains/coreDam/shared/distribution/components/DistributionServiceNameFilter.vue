@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { useDamConfigStore } from '@anzusystems/common-admin'
-import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin/labs'
+import { useDamConfigStore, AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin'
 
 defineProps<{
   name: string

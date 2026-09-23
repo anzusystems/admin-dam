@@ -69,16 +69,7 @@ export default defineConfig({
                 if (id.includes('node_modules/vuetify/')) {
                   return 'vuetify'
                 }
-                // Anzu admin library — split common-admin's pre-bundled sub-files (each ~150-950kB raw)
-                if (id.includes('node_modules/@anzusystems/common-admin/dist/labs')) {
-                  return 'common-admin-labs'
-                }
-                if (id.includes('node_modules/@anzusystems/common-admin/dist/AFormRemoteAutocomplete')) {
-                  return 'common-admin-autocomplete'
-                }
-                if (id.includes('node_modules/@anzusystems/common-admin/dist/index-')) {
-                  return 'common-admin-internals'
-                }
+                // Anzu admin library
                 if (id.includes('node_modules/@anzusystems/common-admin/')) {
                   return 'common-admin'
                 }

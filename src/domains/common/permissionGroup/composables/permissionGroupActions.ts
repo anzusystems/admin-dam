@@ -1,6 +1,5 @@
 import type { Ref } from 'vue'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import type { PermissionGroup } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination, PermissionGroup } from '@anzusystems/common-admin'
 import {
   useCreatePermissionGroup,
   useDeletePermissionGroup,

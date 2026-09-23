@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
 import { usePermissionGroupSelectAction } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 

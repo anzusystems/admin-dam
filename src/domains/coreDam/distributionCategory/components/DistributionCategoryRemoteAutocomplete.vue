@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
 

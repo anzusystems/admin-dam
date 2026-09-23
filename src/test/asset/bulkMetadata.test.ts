@@ -6,7 +6,7 @@ const patch = vi.fn<(url: string, body: string) => Promise<{ status: number; dat
 }))
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => ({ patch }) }))
-vi.mock('@anzusystems/common-admin/labs', async (importOriginal) => ({
+vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
   useApiFetchList: () => ({ fetchList: vi.fn() }),
   useApiRequest: () => ({ execute: vi.fn() }),

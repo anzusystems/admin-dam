@@ -1,6 +1,5 @@
-import { defineUserSystemDescriptor, type AnyUserSystemDescriptor } from '@anzusystems/common-admin/labs'
-import type { AxiosClientFn } from '@anzusystems/common-admin/labs'
-import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
+import { defineUserSystemDescriptor, type AnyUserSystemDescriptor } from '@anzusystems/common-admin'
+import type { AxiosClientFn, AnzuUser, IntegerId } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 
 /**

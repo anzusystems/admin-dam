@@ -6,7 +6,7 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useDistributionCategorySelectListActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 
 const emit = defineEmits<{

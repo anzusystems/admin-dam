@@ -22,7 +22,7 @@ import { onKeyUp } from '@vueuse/core'
 import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
 import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
 import type { DatatableOrderingOption } from '@anzusystems/common-admin'
-import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin/labs'
+import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 

@@ -1,4 +1,4 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin'
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 

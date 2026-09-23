@@ -9,7 +9,7 @@ import {
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
+import { usePagination } from '@anzusystems/common-admin'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetTypeType) {
   const assetSlotsStore = useAssetSlotsStore()

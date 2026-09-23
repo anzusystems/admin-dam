@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { ASortableListEditor, type ListEditorHandle } from '@anzusystems/common-admin/labs'
+import { ASystemEntityScope, ASortableListEditor, type ListEditorHandle } from '@anzusystems/common-admin'
 import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import { useDistributionCategoryOptionFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryOptionFactory'
 import DistributionCategoryOptionEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'

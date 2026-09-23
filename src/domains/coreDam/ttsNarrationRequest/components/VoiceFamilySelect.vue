@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type IntegerIdNullable } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import {
+  type IntegerIdNullable,
+  AFormRemoteAutocomplete,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+} from '@anzusystems/common-admin'
 import { useVoiceFamilySlugSelectActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyFilter } from '@/domains/coreDam/voiceFamily/filter/VoiceFamilyFilter'
 

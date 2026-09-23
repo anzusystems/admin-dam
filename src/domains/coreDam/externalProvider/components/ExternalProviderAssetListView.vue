@@ -18,7 +18,7 @@ import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,
 } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
-import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 import { onKeyUp } from '@vueuse/core'
 
 const { t } = useI18n()

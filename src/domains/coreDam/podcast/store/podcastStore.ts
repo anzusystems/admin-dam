@@ -1,6 +1,6 @@
 import { usePodcastFactory } from '@/domains/coreDam/podcast/factory/PodcastFactory'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
-import { sortByPosition } from '@anzusystems/common-admin/labs'
+import { sortByPosition } from '@anzusystems/common-admin'
 
 export const usePodcastOneStore = defineStore('podcastOneStore', () => {
   const { createDefault } = usePodcastFactory()

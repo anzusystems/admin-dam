@@ -1,6 +1,6 @@
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin'
 
 export function useAssetLicenceGroupListFilter() {
   const fields = [

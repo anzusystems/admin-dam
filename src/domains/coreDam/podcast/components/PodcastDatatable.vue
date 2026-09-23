@@ -11,8 +11,6 @@ import {
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
   SortOrder,
-} from '@anzusystems/common-admin'
-import {
   ADatatableOrdering,
   ADatatablePagination,
   createDatatableColumnsConfig,
@@ -22,7 +20,7 @@ import {
   type Pagination,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'

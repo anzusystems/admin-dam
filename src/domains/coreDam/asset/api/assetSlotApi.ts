@@ -6,7 +6,7 @@ import {
   type Pagination,
   useApiCommand,
   useApiFetchList,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type { Ref } from 'vue'
 

@@ -1,5 +1,5 @@
 import { damClient } from '@/shared/apiClients/damClient'
-import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {
   TtsNarrationRequest,

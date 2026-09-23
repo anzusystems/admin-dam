@@ -6,8 +6,6 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-} from '@anzusystems/common-admin'
-import {
   ADatatableOrdering,
   ADatatablePagination,
   createDatatableColumnsConfig,
@@ -16,7 +14,7 @@ import {
   FilterDataKey,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
 import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 import { usePermissionGroupListFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'

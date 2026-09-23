@@ -5,7 +5,7 @@ import {
   type Pagination,
   useApiFetchList,
   useApiRequest,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
 import type { Ref } from 'vue'

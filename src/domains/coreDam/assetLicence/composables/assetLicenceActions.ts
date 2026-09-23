@@ -1,10 +1,15 @@
-import type { DamAssetLicence, ValueObjectOption } from '@anzusystems/common-admin'
+import type {
+  DamAssetLicence,
+  ValueObjectOption,
+  FilterConfig,
+  FilterData,
+  Pagination,
+} from '@anzusystems/common-admin'
 import {
   fetchDamAssetLicenceListByIds,
   useDamCachedUsers,
   useFetchDamAssetLicenceList,
 } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import type { Ref } from 'vue'
 import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'

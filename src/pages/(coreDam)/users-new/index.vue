@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { AActionCreateButton, ACard } from '@anzusystems/common-admin'
-import { AAnzuUserDatatable, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { AActionCreateButton, ACard, AAnzuUserDatatable, type MakeFilterOption } from '@anzusystems/common-admin'
 import PermissionGroupRemoteSelect from '@/domains/common/permissionGroup/components/PermissionGroupRemoteSelect.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'

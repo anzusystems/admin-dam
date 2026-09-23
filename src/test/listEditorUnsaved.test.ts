@@ -2,8 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createApp, h, nextTick, ref, type Ref } from 'vue'
 import { createI18n } from 'vue-i18n'
 import { createVuetify } from 'vuetify'
-import { AnzuSystemsCommonAdmin, type PluginOptions } from '@anzusystems/common-admin'
-import { ASortableListEditor } from '@anzusystems/common-admin/labs'
+import { AnzuSystemsCommonAdmin, type PluginOptions, ASortableListEditor } from '@anzusystems/common-admin'
 
 // The unsaved ("amber") lifecycle every list editor in this admin depends on:
 // nothing marked on arrival, marked the moment something changes, cleared once the save is

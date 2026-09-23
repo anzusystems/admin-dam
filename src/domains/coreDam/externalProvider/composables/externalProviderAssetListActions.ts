@@ -1,5 +1,10 @@
-import { UploadQueueItemType, useDamConfigState } from '@anzusystems/common-admin'
-import { type Pagination, useFilterHelpers, usePagination } from '@anzusystems/common-admin/labs'
+import {
+  UploadQueueItemType,
+  useDamConfigState,
+  type Pagination,
+  useFilterHelpers,
+  usePagination,
+} from '@anzusystems/common-admin'
 import { useExternalProviderAssetListFilter } from '@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter'
 import {
   useFetchExternalProviderAsset,

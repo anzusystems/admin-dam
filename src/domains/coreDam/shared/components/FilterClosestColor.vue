@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { pickTextColorBasedOnBgColor } from '@/shared/utils/colors'
-import { arrayItemToggle, useDamConfigStore } from '@anzusystems/common-admin'
-import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { arrayItemToggle, useDamConfigStore, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

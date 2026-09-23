@@ -29,8 +29,8 @@ import {
   type DamDistributionServiceName,
   useDamConfigState,
   useDamConfigStore,
+  usePagination,
 } from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{

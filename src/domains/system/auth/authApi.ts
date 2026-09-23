@@ -1,6 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiRequest } from '@anzusystems/common-admin'
 import type { SimpleLoginForm } from '@/domains/system/auth/simpleLogin'
 
 export const AUTH_PATH_PREFIX = '/auth'

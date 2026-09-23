@@ -1,7 +1,18 @@
-import type { DocId, IntegerId, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { createFilter, createFilterStore, type MakeFilterOption, usePagination } from '@anzusystems/common-admin/labs'
+import type {
+  DocId,
+  IntegerId,
+  ValueObjectOption,
+  FilterConfig,
+  FilterData,
+  Pagination,
+} from '@anzusystems/common-admin'
+import {
+  useAlerts,
+  createFilter,
+  createFilterStore,
+  type MakeFilterOption,
+  usePagination,
+} from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 import {

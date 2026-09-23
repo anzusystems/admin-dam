@@ -6,8 +6,8 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
-import { useDamAuthorType } from '@anzusystems/common-admin'
+  useDamAuthorType,
+} from '@anzusystems/common-admin'
 import { useAuthorListActions } from '@/domains/coreDam/author/composables/authorActions'
 
 const emit = defineEmits<{

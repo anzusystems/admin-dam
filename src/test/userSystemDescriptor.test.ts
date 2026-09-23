@@ -4,7 +4,7 @@ import {
   resolveEnabledWrite,
   resolveMetadataWrite,
   resolveProbeEndpoint,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 
 describe('dam user system descriptor', () => {

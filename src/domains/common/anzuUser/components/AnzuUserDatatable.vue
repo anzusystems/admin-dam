@@ -8,8 +8,6 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-} from '@anzusystems/common-admin'
-import {
   ADatatableOrdering,
   ADatatablePagination,
   createDatatableColumnsConfig,
@@ -18,7 +16,7 @@ import {
   FilterDataKey,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
 import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'

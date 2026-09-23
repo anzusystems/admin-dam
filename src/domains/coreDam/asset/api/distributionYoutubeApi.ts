@@ -1,5 +1,6 @@
-import { booleanToInteger, type DamDistributionServiceName } from '@anzusystems/common-admin'
 import {
+  booleanToInteger,
+  type DamDistributionServiceName,
   createFilter,
   createFilterStore,
   type MakeFilterOption,
@@ -7,7 +8,7 @@ import {
   useApiFetchList,
   useApiRequest,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {

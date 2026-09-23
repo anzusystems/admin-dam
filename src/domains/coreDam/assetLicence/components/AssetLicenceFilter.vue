@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 import { useAssetLicenceListActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import FilterExtSystemRemoteAutocomplete from '@/domains/coreDam/extSystem/components/FilterExtSystemRemoteAutocomplete.vue'
 

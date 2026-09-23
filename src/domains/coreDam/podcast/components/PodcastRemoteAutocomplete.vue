@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
 import { usePodcastSelectActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter'
 

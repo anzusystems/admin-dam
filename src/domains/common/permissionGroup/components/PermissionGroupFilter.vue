@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 
 const emit = defineEmits<{

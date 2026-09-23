@@ -8,7 +8,7 @@ import DistributionListItem from '@/domains/coreDam/asset/components/detail/comp
 import DistributionNewDialog from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialog.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import type { AssetFileProcessStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
 import DistributionManage from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManage.vue'
 
 const props = withDefaults(

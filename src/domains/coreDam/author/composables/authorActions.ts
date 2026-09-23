@@ -1,6 +1,5 @@
-import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
+import type { DamAuthor, DamAuthorMinimal, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import { SortOrder, useDamCachedUsers } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import type { Ref } from 'vue'
 import {
   useFetchAuthor,

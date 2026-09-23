@@ -1,11 +1,9 @@
 import { createI18n } from 'vue-i18n'
 import type { Locale, Path } from 'vue-i18n'
-import { slovakPluralizationRule } from '@anzusystems/common-admin'
+import { slovakPluralizationRule, type LanguageCode } from '@anzusystems/common-admin'
 import type sk from '@/locales/sk'
 
 export type MessageSchema = typeof sk
-
-import { type LanguageCode } from '@anzusystems/common-admin'
 
 export const DEFAULT_LANGUAGE: LanguageCode = 'sk'
 export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['sk', 'en']

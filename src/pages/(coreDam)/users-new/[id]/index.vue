@@ -6,8 +6,9 @@ import {
   ARow,
   AUserAndTimeTrackingFields,
   useDamCachedUsers,
+  AAnzuUserForm,
+  useAnzuUserActions,
 } from '@anzusystems/common-admin'
-import { AAnzuUserForm, useAnzuUserActions } from '@anzusystems/common-admin/labs'
 import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'

@@ -1,4 +1,4 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin'
 
 const filterFields = [
   { name: 'id' as const, default: null, type: 'string' },

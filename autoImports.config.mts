@@ -49,7 +49,6 @@ export const autoImports: Options['imports'] = [
       'ValueObjectOption',
       'AnzuUserAndTimeTrackingAware',
       'ResourceNameSystemAware',
-      'SortableItem',
     ],
     type: true,
   },

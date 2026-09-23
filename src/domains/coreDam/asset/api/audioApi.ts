@@ -5,8 +5,8 @@ import {
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   UploadQueueItemType,
+  useApiRequest,
 } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { AxiosProgressEvent } from 'axios'

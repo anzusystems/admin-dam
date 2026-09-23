@@ -12,8 +12,10 @@ import {
   ASystemEntityScope,
   type AssetSelectReturnData,
   DamAssetType,
+  AFormRemoteAutocomplete,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
 } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'

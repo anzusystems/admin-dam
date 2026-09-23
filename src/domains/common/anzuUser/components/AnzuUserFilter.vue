@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import PermissionGroupRemoteSelect from '@/domains/common/permissionGroup/components/PermissionGroupRemoteSelect.vue'
 import { damClient } from '@/shared/apiClients/damClient'

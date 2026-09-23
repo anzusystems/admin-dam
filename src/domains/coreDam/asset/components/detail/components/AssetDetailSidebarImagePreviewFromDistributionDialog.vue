@@ -4,15 +4,17 @@ import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
 import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
-import { ACard, ADialogToolbar, useDamConfigStore } from '@anzusystems/common-admin'
 import {
+  ACard,
+  ADialogToolbar,
+  useDamConfigStore,
   ADatatablePagination,
   createFilter,
   createFilterStore,
   DatatablePaginationKey,
   type MakeFilterOption,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

@@ -1,5 +1,4 @@
-import type { AnzuUser } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { AnzuUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import {
   useCreateAnzuUser,
   useFetchAnzuUser,

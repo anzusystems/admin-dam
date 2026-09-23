@@ -9,8 +9,6 @@ import {
   AJobStatusChip,
   ATableCopyIdButton,
   ATableDetailButton,
-} from '@anzusystems/common-admin'
-import {
   ADatatableOrdering,
   ADatatablePagination,
   createDatatableColumnsConfig,
@@ -19,7 +17,7 @@ import {
   FilterDataKey,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
 import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'

@@ -1,7 +1,7 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { DamCurrentUserDto } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiRequest } from '@anzusystems/common-admin'
 import type { UpdateCurrentUserDto } from '@/domains/system/auth/CurrentUser'
 
 const END_POINT = '/adm/users'

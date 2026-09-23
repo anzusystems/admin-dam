@@ -1,6 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionSaveButton, ACard } from '@anzusystems/common-admin'
-import { APermissionGroupManage, usePermissionGroupActions } from '@anzusystems/common-admin/labs'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  APermissionGroupManage,
+  usePermissionGroupActions,
+} from '@anzusystems/common-admin'
 import { ACL } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'

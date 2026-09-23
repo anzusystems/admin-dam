@@ -1,11 +1,12 @@
 <script lang="ts" setup generic="I extends DamKeywordMinimal">
 import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
-import { useDamKeywordFactory, type ValidationScope } from '@anzusystems/common-admin'
 import {
+  useDamKeywordFactory,
+  type ValidationScope,
   AFormRemoteAutocompleteWithCached,
   FilterInnerConfigKey,
   FilterInnerDataKey,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'

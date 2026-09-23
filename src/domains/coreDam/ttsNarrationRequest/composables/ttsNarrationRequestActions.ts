@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 import { type DocId, useAlerts } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type {
   TtsNarrationRequest,
   TtsNarrationRequestDetail,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-import { AFilterString, AFilterWrapperSidebar } from '@anzusystems/common-admin/labs'
+import { AFilterString, AFilterWrapperSidebar } from '@anzusystems/common-admin'
 
 const { sidebarLeft } = useMainWrapper()
 

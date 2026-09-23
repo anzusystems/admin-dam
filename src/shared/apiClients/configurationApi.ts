@@ -1,6 +1,6 @@
 import { damClient } from '@/shared/apiClients/damClient'
 import type { DamExtSystemConfig, DamPrvConfig, DamPubConfig } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiRequest } from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/configuration'

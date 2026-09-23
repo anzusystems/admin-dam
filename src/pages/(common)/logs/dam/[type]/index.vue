@@ -1,6 +1,11 @@
 <script lang="ts" setup>
-import { dateTimeEndOfDay, dateTimeStartOfDay, type Log } from '@anzusystems/common-admin'
-import { ALogListView, type LogTypeType } from '@anzusystems/common-admin/labs'
+import {
+  dateTimeEndOfDay,
+  dateTimeStartOfDay,
+  type Log,
+  ALogListView,
+  type LogTypeType,
+} from '@anzusystems/common-admin'
 import { LOG_SYSTEM } from '@/domains/system/logSystems'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'

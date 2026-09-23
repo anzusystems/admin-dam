@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { AFormDatetimePicker, AFormTextField, ARow } from '@anzusystems/common-admin'
-import { useJobApi } from '@anzusystems/common-admin/labs'
+import { AFormDatetimePicker, AFormTextField, ARow, useJobApi } from '@anzusystems/common-admin'
 import type { JobSynchronizeImageChanged } from '@/domains/coreDam/job/types/Job'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'

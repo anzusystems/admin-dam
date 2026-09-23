@@ -6,8 +6,8 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
-import { useJobStatus } from '@anzusystems/common-admin'
+  useJobStatus,
+} from '@anzusystems/common-admin'
 import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 

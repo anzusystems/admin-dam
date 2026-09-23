@@ -2,7 +2,7 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { DamExtSystem } from '@anzusystems/common-admin'
 import type { ExtSystem } from '@/domains/coreDam/extSystem/types/ExtSystem'
-import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/ext-system'
 export const ENTITY = 'extSystem'

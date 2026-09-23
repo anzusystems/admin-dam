@@ -20,15 +20,13 @@ import {
   type UploadQueueItem,
   useDamConfigState,
   type ValidationError,
-} from '@anzusystems/common-admin'
-import {
   type FilterConfig,
   type FilterData,
   type Pagination,
   useApiCommand,
   useApiFetchList,
   useApiRequest,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { isAxiosError } from 'axios'
 import type { Ref } from 'vue'
 

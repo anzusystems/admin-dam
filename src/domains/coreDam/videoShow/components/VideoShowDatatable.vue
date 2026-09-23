@@ -10,8 +10,6 @@ import {
   ATableEditButton,
   type DatatableOrderingOption,
   type DatatableOrderingOptions,
-} from '@anzusystems/common-admin'
-import {
   ADatatableOrdering,
   ADatatablePagination,
   createDatatableColumnsConfig,
@@ -20,7 +18,7 @@ import {
   FilterDataKey,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
 import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import VideoShowFilter from '@/domains/coreDam/videoShow/components/VideoShowFilter.vue'

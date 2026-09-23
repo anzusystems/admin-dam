@@ -1,5 +1,5 @@
 import type { PermissionGroup } from '@anzusystems/common-admin'
-import { useApiCommand, useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const SYSTEM = 'common'

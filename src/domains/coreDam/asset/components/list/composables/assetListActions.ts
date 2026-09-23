@@ -16,8 +16,10 @@ import {
   SortOrder,
   UploadQueueItemType,
   useDamCachedUsers,
+  type Pagination,
+  useFilterHelpers,
+  usePagination,
 } from '@anzusystems/common-admin'
-import { type Pagination, useFilterHelpers, usePagination } from '@anzusystems/common-admin/labs'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'

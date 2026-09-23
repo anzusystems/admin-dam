@@ -16,8 +16,8 @@ import {
   type DamDistributionServiceName,
   type DocIdNullable,
   useDamConfigState,
+  usePagination,
 } from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
 import useVuelidate, { type ErrorObject } from '@vuelidate/core'
 
 // now only supports strategy AtLeastOne, as BE too

@@ -1,5 +1,5 @@
 import type { AnzuUser } from '@anzusystems/common-admin'
-import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const SYSTEM = 'common'

@@ -5,7 +5,7 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { usePublicExportListActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 

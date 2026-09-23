@@ -10,15 +10,13 @@ import {
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
   UploadQueueItemType,
-} from '@anzusystems/common-admin'
-import {
   type FilterConfig,
   type FilterData,
   type Pagination,
   useApiCommand,
   useApiFetchList,
   useApiRequest,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'

@@ -41,8 +41,8 @@ import {
   AFormValueObjectOptionsSelect,
   AssetFileProcessStatus,
   ASystemEntityScope,
+  usePagination,
 } from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{

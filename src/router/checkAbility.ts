@@ -1,7 +1,6 @@
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
-import { type AclValue } from '@anzusystems/common-admin'
+import { type AclValue, isLogType, LogTypeDefault } from '@anzusystems/common-admin'
 import { useAuth } from '@/domains/system/auth/auth'
-import { isLogType, LogTypeDefault } from '@anzusystems/common-admin/labs'
 
 export const checkAbility = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
   const superAdminResult = checkSuperAdmin(to)

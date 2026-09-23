@@ -5,7 +5,7 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 
 const emit = defineEmits<{

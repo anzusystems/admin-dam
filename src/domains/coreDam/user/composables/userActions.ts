@@ -1,12 +1,13 @@
-import { type DamUser, useDamCachedUsers } from '@anzusystems/common-admin'
 import {
+  type DamUser,
+  useDamCachedUsers,
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserListByIds,
   updateDamUser,
   useFetchDamUserList,
 } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
-import { useDamAssetLicenceInnerFilter } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocomplete,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+  useDamAssetLicenceInnerFilter,
+} from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { useAssetLicenceByExtIdSelectActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 

@@ -5,8 +5,9 @@ import {
   AActionEditButton,
   ACard,
   AUserAndTimeTrackingFields,
+  APermissionGroupDetail,
+  usePermissionGroupActions,
 } from '@anzusystems/common-admin'
-import { APermissionGroupDetail, usePermissionGroupActions } from '@anzusystems/common-admin/labs'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'

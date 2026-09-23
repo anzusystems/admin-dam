@@ -1,5 +1,5 @@
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { useApiCommand, useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiCommand, useApiRequest } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type {

@@ -8,8 +8,10 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
+  ASortableListEditor,
+  type ListEditorHandle,
+  type ListViewItem,
 } from '@anzusystems/common-admin'
-import { ASortableListEditor, type ListEditorHandle, type ListViewItem } from '@anzusystems/common-admin/labs'
 import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'

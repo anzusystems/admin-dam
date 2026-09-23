@@ -10,14 +10,12 @@ import {
   DamAuthorFilterRemoteAutocomplete,
   DamKeywordFilterRemoteAutocomplete,
   DamUserFilterRemoteAutocomplete,
-} from '@anzusystems/common-admin'
-import {
   AFilterBooleanSelect,
   AFilterInteger,
   AFilterString,
   AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 
 const { assetTypeOptions } = useAssetType()

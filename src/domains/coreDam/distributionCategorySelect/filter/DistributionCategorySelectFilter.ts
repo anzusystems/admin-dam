@@ -1,7 +1,6 @@
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import { DamAssetType } from '@anzusystems/common-admin'
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { DamAssetType, createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin'
 
 const filterFields = [
   { name: 'id' as const, default: null, type: 'string' },

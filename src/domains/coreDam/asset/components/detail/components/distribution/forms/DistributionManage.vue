@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AListEditor, type ListViewItem } from '@anzusystems/common-admin/labs'
+import { AListEditor, type ListViewItem } from '@anzusystems/common-admin'
 import {
   type DistributionItem,
   distributionItemIsCustomItem,

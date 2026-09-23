@@ -7,8 +7,9 @@ import {
   HTTP_STATUS_NO_CONTENT,
   type UploadQueueItem,
   UploadQueueItemType,
+  useApiCommand,
+  useApiRequest,
 } from '@anzusystems/common-admin'
-import { useApiCommand, useApiRequest } from '@anzusystems/common-admin/labs'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import type { AxiosProgressEvent } from 'axios'

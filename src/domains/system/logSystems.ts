@@ -1,4 +1,4 @@
-import { DEFAULT_LOG_PATHS, type AxiosClientFn, type LogPaths } from '@anzusystems/common-admin/labs'
+import { DEFAULT_LOG_PATHS, type AxiosClientFn, type LogPaths } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 
 /**

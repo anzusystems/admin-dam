@@ -12,10 +12,8 @@ import {
 import { useFetchDistributionCategorySelectList } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
 import { useDistributionCategoryOneStore } from '@/domains/coreDam/distributionCategory/store/distributionCategoryStore'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { useDamConfigState } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { usePagination } from '@anzusystems/common-admin/labs'
+import type { DamAssetTypeType, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { useDamConfigState, usePagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()

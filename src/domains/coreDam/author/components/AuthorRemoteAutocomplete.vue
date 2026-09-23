@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
 import { useAuthorSelectActions } from '@/domains/coreDam/author/composables/authorActions'
 import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 

@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ABooleanValue, ADatetime } from '@anzusystems/common-admin'
+import {
+  ABooleanValue,
+  ADatetime,
+  ADatatablePagination,
+  DatatablePaginationKey,
+  usePagination,
+} from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
 import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { useVoiceListActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
 import VoiceBindingCreateDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingCreateDialog.vue'

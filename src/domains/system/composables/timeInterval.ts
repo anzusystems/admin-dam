@@ -1,4 +1,4 @@
-import { TimeIntervalSpecialOptions, type TimeIntervalToolsValue } from '@anzusystems/common-admin/labs'
+import { TimeIntervalSpecialOptions, type TimeIntervalToolsValue } from '@anzusystems/common-admin'
 
 export const allowedTimeIntervalValuesSubject: TimeIntervalToolsValue[] = [
   1_440,
