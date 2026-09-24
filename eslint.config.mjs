@@ -46,6 +46,14 @@ const getCommonAliases = () => {
   }
 }
 const commonAliases = getCommonAliases()
+// The aliases come out of the library's bundled declarations by a regex. Should their format change,
+// the regex finds nothing and every ABtn* reads as an unknown component: say what broke instead.
+const missingAliases = ['ABtnPrimary', 'ABtnSecondary', 'ABtnTertiary', 'ABtnIcon'].filter(
+  (alias) => !commonAliases.includes(alias)
+)
+if (missingAliases.length > 0) {
+  throw new Error(`eslint.config.mjs: ${missingAliases.join(', ')} not found in common-admin's commonAliases`)
+}
 
 export default defineConfigWithVueTs(
   {

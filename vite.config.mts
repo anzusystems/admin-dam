@@ -51,6 +51,18 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             {
+              // What the app needs from common-admin at startup, in one chunk: the library ships one
+              // file per module, so a page takes only the modules it imports. With
+              // `includeDependenciesRecursively` (the default, written out) the chunk also takes what those
+              // modules import -- Vue, Vuetify, axios, ... -- which measured the smallest first view in all
+              // six admins, at the cost of that chunk changing whenever any of them does.
+              name: 'common-admin',
+              test: /node_modules[\\/]@anzusystems[\\/]common-admin[\\/]/,
+              tags: ['$initial'],
+              priority: 100,
+              includeDependenciesRecursively: true,
+            },
+            {
               name: (id) => {
                 // Core Vue runtime
                 if (
@@ -67,10 +79,6 @@ export default defineConfig({
                 // Vuetify UI framework
                 if (id.includes('node_modules/vuetify/')) {
                   return 'vuetify'
-                }
-                // Anzu admin library
-                if (id.includes('node_modules/@anzusystems/common-admin/')) {
-                  return 'common-admin'
                 }
                 // TipTap editor and ProseMirror
                 if (id.includes('node_modules/@tiptap/') || id.includes('node_modules/prosemirror-')) {
