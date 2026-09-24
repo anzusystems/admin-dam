@@ -22,7 +22,7 @@ function watchCommonAdmin(): Plugin {
     name: 'watch-common-admin',
     configureServer(server) {
       server.watcher.add(triggerFile)
-      server.watcher.on('change', (file) => {
+      const onTrigger = (file: string) => {
         if (file === triggerFile) {
           // A restart, not a reload: the new files reach the page only once the optimizer has
           // bundled them again, and the browser keeps the old ones under an unchanged `?v=` (both
@@ -30,7 +30,10 @@ function watchCommonAdmin(): Plugin {
           console.log('[watch-common-admin] common-admin was replaced, restarting the server...')
           void server.restart(true)
         }
-      })
+      }
+      // `add` too: on a fresh checkout the file does not exist until the first copy.sh creates it
+      server.watcher.on('add', onTrigger)
+      server.watcher.on('change', onTrigger)
     },
   }
 }
