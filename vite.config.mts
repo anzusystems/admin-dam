@@ -18,22 +18,17 @@ const _dirname = dirname(fileURLToPath(import.meta.url))
 
 function watchCommonAdmin(): Plugin {
   const triggerFile = path.resolve(_dirname, '.common-admin-updated')
-  const commonAdminPath = '/node_modules/@anzusystems/common-admin/'
   return {
     name: 'watch-common-admin',
     configureServer(server) {
       server.watcher.add(triggerFile)
       server.watcher.on('change', (file) => {
         if (file === triggerFile) {
-          let count = 0
-          server.moduleGraph.idToModuleMap.forEach((mod) => {
-            if (mod.id?.includes(commonAdminPath) || mod.file?.includes(commonAdminPath)) {
-              server.moduleGraph.invalidateModule(mod)
-              count++
-            }
-          })
-          console.log(`[watch-common-admin] Invalidated ${count} modules, reloading...`)
-          server.ws.send({ type: 'full-reload' })
+          // A restart, not a reload: the new files reach the page only once the optimizer has
+          // bundled them again, and the browser keeps the old ones under an unchanged `?v=` (both
+          // measured). `true` forces that re-optimization.
+          console.log('[watch-common-admin] common-admin was replaced, restarting the server...')
+          void server.restart(true)
         }
       })
     },
