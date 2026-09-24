@@ -3,9 +3,10 @@ import { ref } from 'vue'
 
 // `useSystemBar().newVersion` is flipped by `ASystemBar`, which polls config.json and compares
 // `appVersion` to the running one. The guard is what turns that flag into a reload.
+// `useSystemBar` is all the guard takes from common-admin. Spreading the real module in would load all
+// of it again after every `vi.resetModules()`, which is what pushed the first case past its timeout.
 const newVersion = ref(false)
-vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
-  ...((await importOriginal()) as Record<string, unknown>),
+vi.mock('@anzusystems/common-admin', () => ({
   useSystemBar: () => ({ newVersion }),
 }))
 

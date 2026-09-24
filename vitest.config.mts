@@ -36,11 +36,13 @@ export default defineConfig({
     // `ci:checks` runs this next to the whole lint set, so a worker can lose the CPU for longer
     // than vitest's 5 s default -- and a timed-out test has been observed leaving state that makes
     // a later test in the same file fail as if the product were broken. These govern a single
-    // test and a single hook; the slowest of either here is single-digit milliseconds, so the
-    // margin is for starvation, not for slow code. `hookTimeout` defaults to 10 s and is raised
-    // with it, or the hooks become the weaker link.
-    testTimeout: 15000,
-    hookTimeout: 15000,
+    // test and a single hook. The slowest is the first test that imports common-admin: it waits while
+    // the library's ~790 modules are transformed and evaluated, 16 s in a cold admin-inhouse run with
+    // nothing else running, and CI runs it next to the lint set on fewer cores. Everything else takes
+    // single-digit milliseconds. `hookTimeout` defaults to 10 s and is raised with it, or the hooks
+    // become the weaker link.
+    testTimeout: 60000,
+    hookTimeout: 60000,
     // No fsModuleCache: it keys a module on its own content, so a changed import (a type used in
     // `defineProps`) or a renamed file can leave a stale transform. Set, not left out, so vitest does not
     // suggest turning it on after every run.
