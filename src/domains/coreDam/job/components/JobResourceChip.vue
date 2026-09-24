@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { type JobResource, useJobResource } from '@/domains/coreDam/job/valueObject/JobResource'
 import { AChipNoLink } from '@anzusystems/common-admin'
+
+import { useJobResource } from '@/domains/coreDam/job/valueObject/JobResource'
+import type { JobResource } from '@/domains/coreDam/job/valueObject/JobResource'
 
 const props = defineProps<{
   value: JobResource

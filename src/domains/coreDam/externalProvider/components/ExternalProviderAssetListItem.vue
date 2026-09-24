@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import type { ExternalProviderAssetListItem } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
+import type { ExternalProviderAssetListItem } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 
 const props = withDefaults(
   defineProps<{

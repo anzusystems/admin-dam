@@ -1,6 +1,7 @@
 import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
-import { fetchKeywordListByIds } from '@/domains/coreDam/keyword/api/keywordApi'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { fetchKeywordListByIds } from '@/domains/coreDam/keyword/api/keywordApi'
 
 const mapFullToMinimal = (keyword: DamKeyword): DamKeywordMinimal => ({
   id: keyword.id,

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, useCreateVideoShow } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
 import { useVideoShowFactory } from '@/domains/coreDam/videoShow/factory/VideoShowFactory'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
-import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

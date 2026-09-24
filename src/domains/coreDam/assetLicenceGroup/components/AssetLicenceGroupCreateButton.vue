@@ -4,15 +4,16 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  type DamAssetLicenceGroup,
   DamAssetLicenceRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
-import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
+
 import { ENTITY, useCreateAssetLicenceGroup } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
+import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
+import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

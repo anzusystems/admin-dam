@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAssetLicenceGroupEditActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
+
 import AssetLicenceGroupEditForm from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditForm.vue'
+import { useAssetLicenceGroupEditActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useDistributionCategoryEditActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+
 import DistributionCategoryEditForm from '@/domains/coreDam/distributionCategory/components/DistributionCategoryEditForm.vue'
+import { useDistributionCategoryEditActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()

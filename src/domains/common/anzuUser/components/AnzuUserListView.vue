@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { damClient } from '@/shared/apiClients/damClient'
-import AnzuUserDatatable from '@/domains/common/anzuUser/components/AnzuUserDatatable.vue'
-import AnzuUserCreateButton from '@/domains/common/anzuUser/components/AnzuUserCreateButton.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
+import AnzuUserCreateButton from '@/domains/common/anzuUser/components/AnzuUserCreateButton.vue'
+import AnzuUserDatatable from '@/domains/common/anzuUser/components/AnzuUserDatatable.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)
 

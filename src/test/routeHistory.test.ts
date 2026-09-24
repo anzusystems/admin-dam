@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useRouteHistory } from '@anzusystems/common-admin'
-import declaration from '@/typed-router.d.ts?raw'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { initRouteHistory, routeHistoryBlacklist } from '@/router/routeHistory'
+import declaration from '@/typed-router.d.ts?raw'
 
 // What the close buttons stand on.
 //

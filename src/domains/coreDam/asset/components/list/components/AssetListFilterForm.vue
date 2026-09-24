@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import FilterClosestColor from '@/domains/coreDam/shared/components/FilterClosestColor.vue'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useAssetStatus } from '@/domains/coreDam/asset/valueObject/DamAssetStatus'
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import { useImageOrientation } from '@/domains/coreDam/asset/valueObject/ImageOrientation'
-import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
-import DistributionServiceNameFilter from '@/domains/coreDam/shared/distribution/components/DistributionServiceNameFilter.vue'
 import {
-  DamAuthorFilterRemoteAutocomplete,
-  DamKeywordFilterRemoteAutocomplete,
-  DamUserFilterRemoteAutocomplete,
   AFilterBooleanSelect,
   AFilterInteger,
   AFilterString,
   AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
+  DamAuthorFilterRemoteAutocomplete,
+  DamKeywordFilterRemoteAutocomplete,
+  DamUserFilterRemoteAutocomplete,
 } from '@anzusystems/common-admin'
+
+import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetStatus } from '@/domains/coreDam/asset/valueObject/DamAssetStatus'
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import { useImageOrientation } from '@/domains/coreDam/asset/valueObject/ImageOrientation'
+import FilterClosestColor from '@/domains/coreDam/shared/components/FilterClosestColor.vue'
+import DistributionServiceNameFilter from '@/domains/coreDam/shared/distribution/components/DistributionServiceNameFilter.vue'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 
 const { assetTypeOptions } = useAssetType()

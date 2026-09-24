@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 
 const emit = defineEmits<{
   (e: 'closeDialog'): void

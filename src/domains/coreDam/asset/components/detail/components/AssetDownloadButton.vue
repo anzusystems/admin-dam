@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
+
+import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
 const props = withDefaults(
   defineProps<{

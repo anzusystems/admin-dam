@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+
 import UserEditForm from '@/domains/coreDam/user/components/UserEditForm.vue'
 import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'

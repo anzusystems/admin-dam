@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["eslint", "typescript", "unicorn", "oxc", "vue"],
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "vue", "import"],
   "env": { "browser": true },
   "ignorePatterns": ["dist", "dist-ssr", "coverage", "e2e", "src/typed-router.d.ts", "src/auto-imports.d.ts"],
   "categories": { "correctness": "error" },
@@ -35,6 +35,14 @@
     "vue/no-side-effects-in-computed-properties": "off",
     "vue/return-in-computed-property": "off",
     "vue/no-lifecycle-after-await": "off",
-    "vue/no-watch-after-await": "off"
+    "vue/no-watch-after-await": "off",
+
+    // Imports: oxfmt sorts the statements (`sortImports` in .oxfmtrc.json); these sort the names
+    // inside the braces, merge two imports of one module and keep types in their own `import type`.
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }],
+    "import/no-duplicates": ["error", { "considerQueryString": true }],
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    // Reads `@/typed-router.d.ts?raw` in the route tests as a module without a default export.
+    "import/default": "off"
   }
 }

@@ -1,5 +1,5 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useCommonJobFactory } from '@anzusystems/common-admin'
+
 import type {
   JobAssetFileReprocessInternalFlag,
   JobAuthorCurrentOptimize,
@@ -12,6 +12,7 @@ import {
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
   JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
 } from '@/domains/coreDam/job/valueObject/JobResource'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useJobFactory() {
   const { createBase } = useCommonJobFactory()

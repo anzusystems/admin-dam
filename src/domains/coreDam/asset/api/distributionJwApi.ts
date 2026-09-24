@@ -1,11 +1,12 @@
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { useApiRequest } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import type {
   DistributionJwCreateRedistributeDto,
   DistributionJwItem,
 } from '@/domains/coreDam/asset/types/Distribution'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/jw-distribution'
 export const ENTITY = 'jwDistribution'

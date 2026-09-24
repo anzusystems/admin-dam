@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { type DamAssetTypeType, DamAssetType } from '@anzusystems/common-admin'
+import { DamAssetType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 
 const { t } = useI18n()

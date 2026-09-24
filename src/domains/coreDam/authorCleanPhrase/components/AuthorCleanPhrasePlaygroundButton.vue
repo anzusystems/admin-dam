@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow } from '@anzusystems/common-admin'
-import { usePlaygroundAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { usePlaygroundAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanResultDto, AuthorNameDto } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 withDefaults(
   defineProps<{

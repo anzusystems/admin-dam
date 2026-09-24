@@ -1,6 +1,7 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { type DamAssetLicenceGroup } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useAssetLicenceGroupFactory() {
   const createDefault = (): DamAssetLicenceGroup => {

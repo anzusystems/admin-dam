@@ -1,7 +1,8 @@
 import type { InternalAxiosRequestConfig } from 'axios'
+
 import { useRefreshToken } from '@/domains/system/auth/authApi'
-import { getAuthCookieState } from '@/shared/apiClients/authCookies'
 import { logoutUser } from '@/domains/system/composables/currentUser'
+import { getAuthCookieState } from '@/shared/apiClients/authCookies'
 
 type AcceptRequestConfigCallbackType = (accept: boolean) => void
 

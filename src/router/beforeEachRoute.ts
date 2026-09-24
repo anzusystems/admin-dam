@@ -1,11 +1,12 @@
-import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
-import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
-import { checkForNewVersion } from '@/router/checkNewVersion'
-import { RELOAD_VETO_GRACE } from '@/appReload'
-import { checkAbility } from '@/router/checkAbility'
-import { damClient } from '@/shared/apiClients/damClient'
 import { useDamConfigState, useDamConfigStore, useRouteHistory } from '@anzusystems/common-admin'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
+
+import { RELOAD_VETO_GRACE } from '@/appReload'
+import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
+import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
+import { checkAbility } from '@/router/checkAbility'
+import { checkForNewVersion } from '@/router/checkNewVersion'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const ERROR_PATH = '/error'
 

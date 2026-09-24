@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { AChipNoLink } from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType } from '@anzusystems/common-admin'
+
 import { useAssetFileFailReason } from '@/domains/coreDam/asset/valueObject/AssetFileFailReason'
-import { AChipNoLink, type AssetFileFailReasonType } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

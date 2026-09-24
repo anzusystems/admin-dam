@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
+
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
-import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
-import { useFetchVideoShowEpisodeListByAsset } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import VideoShowEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeListItem.vue'
 import VideoShowEpisodeNewDialog from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeNewDialog.vue'
 import { useCachedVideoShows } from '@/domains/coreDam/videoShow/composables/cachedVideoShow'
+import { useFetchVideoShowEpisodeListByAsset } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 
 const props = withDefaults(
   defineProps<{

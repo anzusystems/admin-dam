@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { isOneOf } from '@anzusystems/common-admin'
+
 import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
-import { isOneOf } from '@anzusystems/common-admin'
-import { useAssetFooterUploadSlotsView } from '@/domains/coreDam/asset/composables/assetFooterUploadSlots'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { useAssetFooterUploadSlotsView } from '@/domains/coreDam/asset/composables/assetFooterUploadSlots'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 
 const { t } = useI18n()
 

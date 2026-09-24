@@ -1,35 +1,4 @@
 <script lang="ts" setup>
-import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import {
-  DistributionYoutubePrivacy,
-  useDistributionYoutubePrivacy,
-} from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
-import {
-  createYoutubeDistribution,
-  ENTITY,
-  getYoutubeAuthUrl,
-  prepareFormDataYoutubeDistribution,
-  redistributeYoutubeDistribution,
-} from '@/domains/coreDam/asset/api/distributionYoutubeApi'
-import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import type {
-  DistributionYoutubeCreateRedistributeDto,
-  DistributionYoutubeItem,
-} from '@/domains/coreDam/asset/types/Distribution'
-import { DistributionAuthStatus } from '@/domains/coreDam/asset/types/DistributionAuth'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
-import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
-import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
-import DistributionNewDialogYoutubeLogoutButton from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutubeLogoutButton.vue'
-import DistributionYoutubeLanguageSelect from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
-import DistributionYoutubePlaylistSelect from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
-import DistributionYoutubeTermOfUse from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
-import YoutubeLogo from '@/domains/coreDam/asset/components/detail/components/distribution/YoutubeLogo.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
@@ -39,10 +8,42 @@ import {
   AFormDatetimePicker,
   AFormTextarea,
   AFormValueObjectOptionsSelect,
-  AssetFileProcessStatus,
   ASystemEntityScope,
+  AssetFileProcessStatus,
   usePagination,
 } from '@anzusystems/common-admin'
+
+import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
+import {
+  ENTITY,
+  createYoutubeDistribution,
+  getYoutubeAuthUrl,
+  prepareFormDataYoutubeDistribution,
+  redistributeYoutubeDistribution,
+} from '@/domains/coreDam/asset/api/distributionYoutubeApi'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
+import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
+import DistributionNewDialogYoutubeLogoutButton from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutubeLogoutButton.vue'
+import DistributionYoutubeLanguageSelect from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubeLanguageSelect.vue'
+import DistributionYoutubePlaylistSelect from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubePlaylistSelect.vue'
+import DistributionYoutubeTermOfUse from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
+import YoutubeLogo from '@/domains/coreDam/asset/components/detail/components/distribution/YoutubeLogo.vue'
+import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import type {
+  DistributionYoutubeCreateRedistributeDto,
+  DistributionYoutubeItem,
+} from '@/domains/coreDam/asset/types/Distribution'
+import { DistributionAuthStatus } from '@/domains/coreDam/asset/types/DistributionAuth'
+import {
+  DistributionYoutubePrivacy,
+  useDistributionYoutubePrivacy,
+} from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import { DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
+
+import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
 
 const props = withDefaults(
   defineProps<{

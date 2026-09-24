@@ -1,7 +1,8 @@
+import { useApiRequest } from '@anzusystems/common-admin'
+
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useApiRequest } from '@anzusystems/common-admin'
-import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 const END_POINT = '/adm/v1/asset-licence'
 export const ENTITY = 'assetLicence'

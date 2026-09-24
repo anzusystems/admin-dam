@@ -1,12 +1,8 @@
 <script lang="ts" setup>
+import { AssetFileProcessStatus, DamAssetStatus } from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType, AssetFileProcessStatusType, DamAssetStatusType } from '@anzusystems/common-admin'
+
 import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
-import {
-  type AssetFileFailReasonType,
-  AssetFileProcessStatus,
-  type AssetFileProcessStatusType,
-  DamAssetStatus,
-  type DamAssetStatusType,
-} from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{

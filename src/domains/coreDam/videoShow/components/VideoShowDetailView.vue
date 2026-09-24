@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { useVideoShowDetailActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+
 import VideoShowDetail from '@/domains/coreDam/videoShow/components/VideoShowDetail.vue'
-import { useVideoShowDetailTab, VideoShowDetailTab } from '@/domains/coreDam/videoShow/composables/videoShowDetailTab'
-import VideoShowEpisodeDatatable from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
+import { useVideoShowDetailActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+import { VideoShowDetailTab, useVideoShowDetailTab } from '@/domains/coreDam/videoShow/composables/videoShowDetailTab'
 import VideoShowEpisodeCreateButton from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue'
+import VideoShowEpisodeDatatable from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
 import { useVideoShowEpisodeListActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, videoShow } = useVideoShowDetailActions()
 const { listLoading } = useVideoShowEpisodeListActions()

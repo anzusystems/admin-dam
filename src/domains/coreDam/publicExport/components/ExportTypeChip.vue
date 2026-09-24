@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
-import { type ExportTypeType, useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+
+import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+import type { ExportTypeType } from '@/domains/coreDam/asset/valueObject/ExportType'
 
 const props = withDefaults(
   defineProps<{

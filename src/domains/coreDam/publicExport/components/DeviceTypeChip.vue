@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
-import { type DeviceTypeType, useDeviceTypeTypes } from '@/domains/coreDam/asset/valueObject/DeviceType'
+
+import { useDeviceTypeTypes } from '@/domains/coreDam/asset/valueObject/DeviceType'
+import type { DeviceTypeType } from '@/domains/coreDam/asset/valueObject/DeviceType'
 
 const props = withDefaults(
   defineProps<{

@@ -1,15 +1,16 @@
 import type { DamAuthor, DamAuthorMinimal, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import { SortOrder, useDamCachedUsers } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   useFetchAuthor,
   useFetchAuthorList,
   useFetchAuthorListByIds,
   useUpdateAuthor,
 } from '@/domains/coreDam/author/api/authorApi'
-import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

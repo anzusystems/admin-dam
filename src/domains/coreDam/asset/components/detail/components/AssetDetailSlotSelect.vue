@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetDetailSidebarSlotsActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsActions'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 

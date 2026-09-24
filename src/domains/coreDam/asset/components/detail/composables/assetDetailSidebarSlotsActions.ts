@@ -1,15 +1,16 @@
-import { useAssetSlotFilter } from '@/domains/coreDam/asset/filter/AssetSlotFilter'
-import { fetchAssetSlotList, updateAssetSlots } from '@/domains/coreDam/asset/api/assetSlotApi'
-import {
-  deleteFile,
-  existingFileToSlot,
-  makeMainFile as apiMakeMainFile,
-  unsetAssetSlot,
-} from '@/domains/coreDam/asset/api/fileApi'
-import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { usePagination } from '@anzusystems/common-admin'
+
+import { fetchAssetSlotList, updateAssetSlots } from '@/domains/coreDam/asset/api/assetSlotApi'
+import {
+  makeMainFile as apiMakeMainFile,
+  deleteFile,
+  existingFileToSlot,
+  unsetAssetSlot,
+} from '@/domains/coreDam/asset/api/fileApi'
+import { useAssetSlotFilter } from '@/domains/coreDam/asset/filter/AssetSlotFilter'
+import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetTypeType) {
   const assetSlotsStore = useAssetSlotsStore()

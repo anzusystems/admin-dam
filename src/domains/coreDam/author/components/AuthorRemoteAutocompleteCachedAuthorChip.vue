@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 
 const props = withDefaults(
   defineProps<{

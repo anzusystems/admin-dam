@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { AAvatarColorPicker, ACopyText, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import type { AxiosInstance } from 'axios'
-import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
-import PermissionGroupRemoteAutocomplete from '@/domains/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
-import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'
-import { usePermissionActions } from '@/domains/common/permission/composables/permissionActions'
-import { useAnzuUserEditValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
+
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
+import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
+import { useAnzuUserEditValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
+import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
+import { usePermissionActions } from '@/domains/common/permission/composables/permissionActions'
+import PermissionGroupRemoteAutocomplete from '@/domains/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 
 defineProps<{
   client: () => AxiosInstance

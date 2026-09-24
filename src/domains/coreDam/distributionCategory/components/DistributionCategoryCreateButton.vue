@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import { useDistributionCategoryCreateActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
-import { useDistributionCategoryValidation } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryValidation'
-import DistributionCategorySelectOptionSelect from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
@@ -13,6 +7,13 @@ import {
   ARow,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
+
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
+import { useDistributionCategoryCreateActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryValidation } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryValidation'
+import DistributionCategorySelectOptionSelect from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

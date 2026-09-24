@@ -1,18 +1,24 @@
 import App from '@/App.vue'
-import AppLayoutLoader from '@/layouts/AppLayoutLoader.vue'
-import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
 import AppLayoutDrawer from '@/layouts/AppLayoutDrawer.vue'
 import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
+import AppLayoutLoader from '@/layouts/AppLayoutLoader.vue'
+import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
+// Vuetify's stylesheets (with the MDI icons) before common-admin's, whose rules are not in a layer:
+// the cascade depends on the order. The comment after this block keeps the import sorting out of it.
+import { AnzuSystemsCommonAdmin, loadCommonFonts } from '@anzusystems/common-admin'
+import type { PluginOptions } from '@anzusystems/common-admin'
+
 import { vuetify } from '@/plugins/vuetify'
 import { router } from '@/router'
 import { envConfig, loadEnvConfig } from '@/shared/EnvConfigService'
-import { AnzuSystemsCommonAdmin, loadCommonFonts, type PluginOptions } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
-import { damClient } from '@/shared/apiClients/damClient'
+// End of the stylesheet order.
+import * as Sentry from '@sentry/vue'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
-import * as Sentry from '@sentry/vue'
+
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
+import { damClient } from '@/shared/apiClients/damClient'
 
 dayjs.extend(Duration)
 

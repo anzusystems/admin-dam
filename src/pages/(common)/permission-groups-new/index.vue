@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AActionCreateButton, ACard, APermissionGroupDatatable } from '@anzusystems/common-admin'
+
 import { ACL, useAuth } from '@/domains/system/auth/auth'
-import { damClient } from '@/shared/apiClients/damClient'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 definePage({
   meta: {

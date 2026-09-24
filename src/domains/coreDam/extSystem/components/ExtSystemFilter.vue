@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
+
 import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 
 const emit = defineEmits<{

@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { ACard, type ValidationScope } from '@anzusystems/common-admin'
-import {
-  DistributionItemResourceName,
-  type DistributionItemResourceNameType,
-  type DistributionUpdateDto,
-} from '@/domains/coreDam/asset/types/Distribution'
+import { ACard } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+
+import CustomDistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/CustomDistributionForm.vue'
 import JwDistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/JwDistributionForm.vue'
 import YoutubeDistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/YoutubeDistributionForm.vue'
-import CustomDistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/CustomDistributionForm.vue'
+import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
+import type {
+  DistributionItemResourceNameType,
+  DistributionUpdateDto,
+} from '@/domains/coreDam/asset/types/Distribution'
 
 withDefaults(
   defineProps<{

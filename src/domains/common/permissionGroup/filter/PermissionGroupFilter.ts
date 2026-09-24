@@ -1,4 +1,6 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 
 const filterFieldsList = [

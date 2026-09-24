@@ -1,5 +1,6 @@
 import type { DamAssetLicence, DamAssetLicenceMinimal } from '@anzusystems/common-admin'
 import { fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
+
 import { damClient } from '@/shared/apiClients/damClient'
 
 const mapFullToMinimal = (assetLicence: DamAssetLicence): DamAssetLicenceMinimal => ({

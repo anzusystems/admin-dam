@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { ADialogToolbar } from '@anzusystems/common-admin'
+
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import { ADialogToolbar } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

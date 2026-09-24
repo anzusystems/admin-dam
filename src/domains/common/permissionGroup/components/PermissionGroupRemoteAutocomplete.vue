@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
+
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 
 const props = withDefaults(

@@ -1,19 +1,16 @@
 <script setup lang="ts">
+import { DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+
+import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
+import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
-import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
-import {
-  type DamAssetTypeType,
-  type DamDistributionServiceTypeType,
-  DamDistributionStatus,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{

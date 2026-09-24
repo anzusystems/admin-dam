@@ -1,13 +1,13 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import type {
   AuthorCleanPhrase,
   AuthorCleanResultDto,
   AuthorNameDto,
 } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import { AuthorCleanPhraseModeDefault } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
 import { AuthorCleanPhraseTypeDefault } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 import { envConfig } from '@/shared/EnvConfigService'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const DEFAULT_POSITION = 100
 

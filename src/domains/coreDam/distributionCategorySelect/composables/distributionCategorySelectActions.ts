@@ -1,14 +1,15 @@
 import { isAnzuApiValidationError, renumberPositions } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   useFetchDistributionCategorySelect,
   useFetchDistributionCategorySelectList,
   useUpdateDistributionCategorySelect,
 } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 import { useDistributionCategorySelectOneStore } from '@/domains/coreDam/distributionCategorySelect/store/distributionCategorySelectStore'
+import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 
 const { showValidationError, showRecordWas, showErrorsDefault, showApiValidationError } = useAlerts()
 

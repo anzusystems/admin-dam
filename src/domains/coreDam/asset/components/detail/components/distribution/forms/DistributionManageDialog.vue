@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import { ADialogToolbar, AFormTextField, AFormValueObjectOptionsSelect, ARow } from '@anzusystems/common-admin'
-import {
-  DistributionItemResourceName,
-  type DistributionItemResourceNameType,
-  type DistributionUpdateDto,
-} from '@/domains/coreDam/asset/types/Distribution'
+
+import { upsertAssetDistributions } from '@/domains/coreDam/asset/api/distributionApi'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import DistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionForm.vue'
-import { DistributionUpdateDtoValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { useDistributionUpdateDtoValidations } from '@/domains/coreDam/asset/components/detail/composables/distributionValidations'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
+import type {
+  DistributionItemResourceNameType,
+  DistributionUpdateDto,
+} from '@/domains/coreDam/asset/types/Distribution'
 import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
-import { upsertAssetDistributions } from '@/domains/coreDam/asset/api/distributionApi'
+import { DistributionUpdateDtoValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const props = withDefaults(
   defineProps<{

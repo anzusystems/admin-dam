@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { AActionCreateButton, ACard, AAnzuUserDatatable, type MakeFilterOption } from '@anzusystems/common-admin'
+import { AActionCreateButton, AAnzuUserDatatable, ACard } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import PermissionGroupRemoteSelect from '@/domains/common/permissionGroup/components/PermissionGroupRemoteSelect.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
-import { damClient } from '@/shared/apiClients/damClient'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 definePage({
   meta: {

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { ADialogToolbar } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import { useTtsNarrationRequestCancelRequestActions } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 
 const props = withDefaults(

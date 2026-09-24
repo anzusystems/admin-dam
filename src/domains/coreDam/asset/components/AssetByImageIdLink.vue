@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { AssetFileImage } from '@anzusystems/common-admin'
+
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 
 const props = withDefaults(

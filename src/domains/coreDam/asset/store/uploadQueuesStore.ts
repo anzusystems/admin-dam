@@ -1,17 +1,37 @@
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useExternalProviders } from '@/domains/coreDam/asset/composables/externalProviders'
-import { damClient } from '@/shared/apiClients/damClient'
+import {
+  AssetFileFailReason,
+  AssetFileLinkType,
+  DamAssetStatus,
+  DamAssetType,
+  UploadQueueItemStatus,
+  UploadQueueItemType,
+  damFileTypeFix,
+  getAssetTypeByMimeType,
+  i18n,
+  useAssetSuggestions,
+  useDamConfigState,
+  useUploadQueueItemFactory,
+} from '@anzusystems/common-admin'
+import type {
+  AssetDetailItemDto,
+  AssetFileFailReasonType,
+  AssetFileNullable,
+  AssetSearchListItemDto,
+  CustomDataValue,
+  DamAssetTypeType,
+  DocIdNullable,
+  UploadQueue,
+  UploadQueueItem,
+  UploadQueueItemStatusType,
+} from '@anzusystems/common-admin'
+
 import { fetchAsset, fetchAssetListByIds } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAudioFile } from '@/domains/coreDam/asset/api/audioApi'
 import { fetchDocumentFile } from '@/domains/coreDam/asset/api/documentApi'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import { fetchVideoFile } from '@/domains/coreDam/asset/api/videoApi'
-import { externalProviderImport } from '@/domains/coreDam/shared/services/upload/externalProviderImportService'
-import {
-  resolveUploadErrorMessage,
-  uploadStop,
-  useUpload,
-} from '@/domains/coreDam/shared/services/upload/uploadService'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useExternalProviders } from '@/domains/coreDam/asset/composables/externalProviders'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   AssetExternalProviderId,
@@ -19,32 +39,13 @@ import type {
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
-import type {
-  AssetFileFailReasonType,
-  CustomDataValue,
-  DamAssetTypeType,
-  UploadQueueItemStatusType,
-} from '@anzusystems/common-admin'
+import { externalProviderImport } from '@/domains/coreDam/shared/services/upload/externalProviderImportService'
 import {
-  i18n,
-  type AssetDetailItemDto,
-  AssetFileFailReason,
-  AssetFileLinkType,
-  type AssetFileNullable,
-  type AssetSearchListItemDto,
-  DamAssetStatus,
-  DamAssetType,
-  damFileTypeFix,
-  type DocIdNullable,
-  getAssetTypeByMimeType,
-  type UploadQueue,
-  type UploadQueueItem,
-  UploadQueueItemStatus,
-  UploadQueueItemType,
-  useAssetSuggestions,
-  useDamConfigState,
-  useUploadQueueItemFactory,
-} from '@anzusystems/common-admin'
+  resolveUploadErrorMessage,
+  uploadStop,
+  useUpload,
+} from '@/domains/coreDam/shared/services/upload/uploadService'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
 

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextarea, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { ADialogToolbar, AFormTextField, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
+import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 import {
   ENTITY,
   useCreatePodcastEpisode,
   usePrepareFormDataPodcastEpisode,
 } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
-import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
+import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

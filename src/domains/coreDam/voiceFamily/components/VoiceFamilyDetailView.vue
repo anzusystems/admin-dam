@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { AActionCloseButtonHistory, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import VoiceBindingsList from '@/domains/coreDam/voiceFamily/components/VoiceBindingsList.vue'
+import VoiceFamilyDetail from '@/domains/coreDam/voiceFamily/components/VoiceFamilyDetail.vue'
 import {
   useVoiceFamilyDetailActions,
   useVoiceFamilyRemoveActions,
 } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
-import VoiceFamilyDetail from '@/domains/coreDam/voiceFamily/components/VoiceFamilyDetail.vue'
-import VoiceBindingsList from '@/domains/coreDam/voiceFamily/components/VoiceBindingsList.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, voiceFamily } = useVoiceFamilyDetailActions()
 const { removeVoiceFamily } = useVoiceFamilyRemoveActions()

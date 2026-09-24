@@ -2,24 +2,25 @@
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+
 import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
-import { usePermissionGroupListFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import PermissionGroupFilter from '@/domains/common/permissionGroup/components/PermissionGroupFilter.vue'
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
+import { usePermissionGroupListFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 type DatatableItem = PermissionGroup

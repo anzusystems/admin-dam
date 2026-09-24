@@ -1,5 +1,7 @@
-import { type LanguageCode, modifyLanguageSettings, i18n as commonAdminI18n } from '@anzusystems/common-admin'
-import { i18n, AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } from '@/plugins/i18n'
+import { i18n as commonAdminI18n, modifyLanguageSettings } from '@anzusystems/common-admin'
+import type { LanguageCode } from '@anzusystems/common-admin'
+
+import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 
 export const initLanguageMessagesLoaded = ref(false)
 

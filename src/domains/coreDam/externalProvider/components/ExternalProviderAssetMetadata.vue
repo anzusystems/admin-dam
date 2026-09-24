@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'
-import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
 import ExternalProviderAssetDetailSidebarActionsWrapper from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailSidebarActionsWrapper.vue'
+import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
+import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
 
 const props = withDefaults(

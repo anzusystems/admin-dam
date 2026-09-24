@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import type { DistributionItem } from '@/domains/coreDam/asset/types/Distribution'
+import { useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
+import type { DistributionItem } from '@/domains/coreDam/asset/types/Distribution'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(

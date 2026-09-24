@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+
 import UserDetail from '@/domains/coreDam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/domains/coreDam/user/composables/userActions'
-import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 

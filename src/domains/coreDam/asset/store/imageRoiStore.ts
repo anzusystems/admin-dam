@@ -1,5 +1,6 @@
-import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
 import type { AssetFileImage } from '@anzusystems/common-admin'
+
+import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
 
 export const useImageRoiStore = defineStore('damImageRoiStore', () => {
   const imageFile = ref<AssetFileImage | null>(null)

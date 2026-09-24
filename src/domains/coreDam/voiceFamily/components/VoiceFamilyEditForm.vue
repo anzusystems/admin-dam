@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
-import { useI18n } from 'vue-i18n'
 import {
+  AFormRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  AFormRemoteAutocomplete,
   FilterInnerConfigKey,
   FilterInnerDataKey,
 } from '@anzusystems/common-admin'
-import { useVoiceFamilyEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
-import { useVoiceFamilyValidation } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyValidation'
-import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
-import { useLanguage } from '@/domains/coreDam/voiceFamily/valueObject/Language'
+import { useI18n } from 'vue-i18n'
+
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
+import { useVoiceFamilyEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
+import { useVoiceFamilyValidation } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyValidation'
+import { useLanguage } from '@/domains/coreDam/voiceFamily/valueObject/Language'
+import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { voiceFamily } = useVoiceFamilyEditActions()
 

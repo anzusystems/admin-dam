@@ -1,6 +1,7 @@
+import { sortByPosition } from '@anzusystems/common-admin'
+
 import { useDistributionCategorySelectFactory } from '@/domains/coreDam/distributionCategorySelect/factory/DistributionCategorySelectFactory'
 import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
-import { sortByPosition } from '@anzusystems/common-admin'
 
 export const useDistributionCategorySelectOneStore = defineStore('distributionCategorySelectOneStore', () => {
   const { createDefault } = useDistributionCategorySelectFactory()

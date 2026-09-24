@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import declaration from '@/typed-router.d.ts?raw'
+
 import { routeHistoryBlacklist } from '@/router/routeHistory'
+import declaration from '@/typed-router.d.ts?raw'
 
 // The close buttons and the two route lists each one carries.
 //

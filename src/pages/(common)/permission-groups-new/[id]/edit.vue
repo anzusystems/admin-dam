@@ -6,10 +6,11 @@ import {
   APermissionGroupManage,
   usePermissionGroupActions,
 } from '@anzusystems/common-admin'
+
 import { ACL } from '@/domains/system/auth/auth'
-import { damClient } from '@/shared/apiClients/damClient'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 definePage({
   path: '/permission-groups-new/:id(\\d+)/edit',

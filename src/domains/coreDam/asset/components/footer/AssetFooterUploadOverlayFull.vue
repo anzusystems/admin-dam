@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { useDisplay } from 'vuetify'
+
+import { bulkUpdateAssetsMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
+import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
+import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
-import { bulkUpdateAssetsMetadata } from '@/domains/coreDam/asset/api/assetApi'
-import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
-import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
-import { useDisplay } from 'vuetify'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 
 const { t } = useI18n()
 

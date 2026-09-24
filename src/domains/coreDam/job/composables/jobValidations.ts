@@ -1,4 +1,5 @@
 import * as validators from '@vuelidate/validators'
+
 import type { Job } from '@/domains/coreDam/job/types/Job'
 import type { JobResource } from '@/domains/coreDam/job/valueObject/JobResource'
 

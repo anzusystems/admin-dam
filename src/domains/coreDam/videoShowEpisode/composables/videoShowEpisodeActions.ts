@@ -1,12 +1,13 @@
-import type { Ref } from 'vue'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+
 import {
   useFetchVideoShowEpisode,
   useFetchVideoShowEpisodeListByVideoShow,
   useUpdateVideoShowEpisode,
 } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
-import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 import { useVideoShowEpisodeOneStore } from '@/domains/coreDam/videoShowEpisode/store/videoShowEpisodeStore'
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

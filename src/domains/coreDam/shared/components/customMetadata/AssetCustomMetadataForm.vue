@@ -1,12 +1,9 @@
 <script lang="ts" setup>
+import { ACustomDataForm, useDamConfigState } from '@anzusystems/common-admin'
+import type { CustomDataValue, DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
-import {
-  ACustomDataForm,
-  type CustomDataValue,
-  type DamAssetTypeType,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

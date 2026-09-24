@@ -7,11 +7,12 @@ import {
   ASystemEntityScope,
   useDamKeywordFactory,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createKeyword, ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY, createKeyword } from '@/domains/coreDam/keyword/api/keywordApi'
 import { useKeywordValidation } from '@/domains/coreDam/keyword/composables/keywordValidation'
 import { KeywordCreateValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

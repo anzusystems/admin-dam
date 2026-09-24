@@ -1,13 +1,12 @@
 import type { Editor } from '@tiptap/core'
-import {
-  LinkVariantDefault,
-  type LinkVariantType,
-} from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
+
+import { LinkVariantDefault } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
+import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
 import { validateLinkVariant } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkVariantValidation'
-import { MarkName } from '@/domains/coreDam/shared/components/anzutap/marks/marks'
-import { isTextSelected } from '@/domains/coreDam/shared/components/anzutap/utils/pm-utils'
 import type { LinkInternal } from '@/domains/coreDam/shared/components/anzutap/marks/link/link'
+import { MarkName } from '@/domains/coreDam/shared/components/anzutap/marks/marks'
 import type { EditorStorageWithLink } from '@/domains/coreDam/shared/components/anzutap/types/storage'
+import { isTextSelected } from '@/domains/coreDam/shared/components/anzutap/utils/pm-utils'
 
 export interface LinkDialogData {
   text: string

@@ -1,15 +1,16 @@
-import type { Ref } from 'vue'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import {
   useDeleteAuthorCleanPhrase,
   useFetchAuthorCleanPhrase,
   useFetchAuthorCleanPhraseList,
   useUpdateAuthorCleanPhrase,
 } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
-import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAuthorCleanPhraseOneStore } from '@/domains/coreDam/authorCleanPhrase/store/authorCleanPhraseStore'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

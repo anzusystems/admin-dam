@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
+
 import { LOG_SYSTEM } from '@/domains/system/logSystems'
 
 // The guard reads `meta.superAdminOf` and answers `undefined` when it is absent -- so a log page

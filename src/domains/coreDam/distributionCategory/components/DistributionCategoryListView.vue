@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { ACL } from '@/domains/system/auth/auth'
-import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { ACard, useI18n } from '@anzusystems/common-admin'
+
 import DistributionCategoryCreateButton from '@/domains/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
 import DistributionCategoryDatatable from '@/domains/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'
 import {
   useDistributionCategoryListActions,
   useDistributionCategoryManageActions,
 } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
+import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { filterData } = useDistributionCategoryListFilter()
 const { getAvailableDistributionServiceSlugs } = useDistributionCategoryManageActions()

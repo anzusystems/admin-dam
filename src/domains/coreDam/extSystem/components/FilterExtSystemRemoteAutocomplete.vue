@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
-import { useExtSystemFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
+
 import { useExtSystemSelectActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
+import { useExtSystemFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
 
 defineProps<{
   name: string

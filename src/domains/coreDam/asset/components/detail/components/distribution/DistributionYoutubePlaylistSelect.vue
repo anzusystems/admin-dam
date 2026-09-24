@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { fetchYoutubePlaylists } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+
+import { fetchYoutubePlaylists } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { YoutubePlaylist } from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(

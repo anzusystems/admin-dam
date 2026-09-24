@@ -1,15 +1,16 @@
 <script lang="ts" setup generic="I extends DamAuthorMinimal">
 import type { DamAuthor, DamAuthorMinimal, ValidationScope } from '@anzusystems/common-admin'
 import { AFormRemoteAutocompleteWithCached, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
-import { useAuthorSelectActions } from '@/domains/coreDam/author/composables/authorActions'
-import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
+
 import AuthorCreateButton from '@/domains/coreDam/author/components/AuthorCreateButton.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import AuthorRemoteAutocompleteCachedAuthorChipConflicts from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue'
+import { useAuthorSelectActions } from '@/domains/coreDam/author/composables/authorActions'
 import {
   useCachedAuthors,
   useCachedAuthorsForRemoteAutocomplete,
 } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 
 const props = withDefaults(
   defineProps<{

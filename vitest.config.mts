@@ -1,9 +1,9 @@
-/// <reference types="vitest" />
-import VueRouter from 'vue-router/vite'
+import { URL, fileURLToPath } from 'url'
+
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
-import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vitest/config'
+import VueRouter from 'vue-router/vite'
 // Root config files sit outside `src`, so the `@` alias does not resolve here.
 // oxlint-disable-next-line no-restricted-imports
 import { autoImports } from './autoImports.config.mts'

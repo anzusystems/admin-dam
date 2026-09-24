@@ -1,17 +1,18 @@
 import {
-  type AnzuApiValidationResponseData,
+  NEW_LINE_MARK,
+  UploadQueueItemStatus,
   axiosErrorResponseHasForbiddenOperationData,
   axiosErrorResponseHasValidationData,
   i18n,
-  NEW_LINE_MARK,
-  type UploadQueueItem,
-  UploadQueueItemStatus,
   useDamUploadChunkSize,
 } from '@anzusystems/common-admin'
-import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/domains/coreDam/asset/api/fileApi'
-import axios, { type CancelTokenSource, isAxiosError } from 'axios'
-import { envConfig } from '@/shared/EnvConfigService'
+import type { AnzuApiValidationResponseData, UploadQueueItem } from '@anzusystems/common-admin'
+import axios, { isAxiosError } from 'axios'
+import type { CancelTokenSource } from 'axios'
 import rusha from 'rusha'
+
+import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/domains/coreDam/asset/api/fileApi'
+import { envConfig } from '@/shared/EnvConfigService'
 
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4

@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { useImageRoiStore } from '@/domains/coreDam/asset/store/imageRoiStore'
-import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import AssetFileRotate from '@/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { assetFileIsImageFile, usePagination } from '@anzusystems/common-admin'
-import { fetchImageRoiList, fetchRoi } from '@/domains/coreDam/asset/api/imageRoiApi'
-import { useImageRoiFilter } from '@/domains/coreDam/asset/filter/ImageRoiFilter'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
+import { fetchImageRoiList, fetchRoi } from '@/domains/coreDam/asset/api/imageRoiApi'
+import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import AssetFileRotate from '@/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue'
+import { useImageRoiFilter } from '@/domains/coreDam/asset/filter/ImageRoiFilter'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useImageRoiStore } from '@/domains/coreDam/asset/store/imageRoiStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
 withDefaults(
   defineProps<{

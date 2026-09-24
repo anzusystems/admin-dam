@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { AssetFileImage } from '@anzusystems/common-admin'
 import { ADialogToolbar, AssetFileProcessStatus } from '@anzusystems/common-admin'
+
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import AssetByImageIdLink from '@/domains/coreDam/asset/components/AssetByImageIdLink.vue'

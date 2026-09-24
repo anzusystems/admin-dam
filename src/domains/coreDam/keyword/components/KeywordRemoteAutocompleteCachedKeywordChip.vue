@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { CachedItem, DamKeywordMinimal } from '@anzusystems/common-admin'
-import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 
 const props = withDefaults(
   defineProps<{

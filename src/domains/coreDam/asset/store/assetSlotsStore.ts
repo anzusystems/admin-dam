@@ -1,7 +1,9 @@
+import { useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import { type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
+import { damClient } from '@/shared/apiClients/damClient'
 
 export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
   const assetSlotNames = ref<string[]>([])

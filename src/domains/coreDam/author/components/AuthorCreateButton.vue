@@ -9,11 +9,12 @@ import {
   useDamAuthorFactory,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, useCreateAuthor } from '@/domains/coreDam/author/api/authorApi'
 import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { AuthorCreateValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { videoShow } = useVideoShowEditActions()
 

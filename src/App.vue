@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import '@/styles/main.scss'
-import AppLayout from '@/layouts/AppLayout.vue'
-import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
-import { envConfig } from '@/shared/EnvConfigService'
 import { useTitle } from '@vueuse/core'
+
+import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
+import AppLayout from '@/layouts/AppLayout.vue'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const route = useRoute()
 

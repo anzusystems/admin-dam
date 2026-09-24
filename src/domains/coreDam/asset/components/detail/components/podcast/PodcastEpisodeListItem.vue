@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
-import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import { AActionDeleteButton } from '@anzusystems/common-admin'
+
+import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 
 withDefaults(
   defineProps<{

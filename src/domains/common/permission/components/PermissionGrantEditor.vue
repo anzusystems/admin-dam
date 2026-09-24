@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { type GrantType, useGrant } from '@anzusystems/common-admin'
+import { useGrant } from '@anzusystems/common-admin'
+import type { GrantType } from '@anzusystems/common-admin'
 
 const props = defineProps<{
   availableGrants: GrantType[]

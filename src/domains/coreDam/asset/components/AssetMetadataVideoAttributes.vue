@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { AssetFileVideo } from '@anzusystems/common-admin'
+
 import { prettyBps, prettyDuration } from '@/shared/utils/file'
 
 withDefaults(

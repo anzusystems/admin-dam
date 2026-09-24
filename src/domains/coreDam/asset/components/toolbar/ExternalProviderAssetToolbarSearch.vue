@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 import AssetSearchInput from '@/domains/coreDam/asset/components/toolbar/AssetSearchInput.vue'
+import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 
 const { filterData, fetchAssetList } = useExternalProviderAssetListActions()
 

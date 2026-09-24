@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
+import { ADatatablePagination, DamAssetType, DatatablePaginationKey } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetSibling from '@/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue'
 import AssetSlotListItem from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsActions'
-import {
-  DamAssetType,
-  type DamAssetTypeType,
-  ADatatablePagination,
-  DatatablePaginationKey,
-} from '@anzusystems/common-admin'
-import AssetSibling from '@/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 
 const props = withDefaults(
   defineProps<{

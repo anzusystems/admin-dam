@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'
 import type { AxiosInstance } from 'axios'
+
 import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
+import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'
 
 defineProps<{
   client: () => AxiosInstance

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { AssetFileAudio } from '@anzusystems/common-admin'
+
 import { prettyDuration } from '@/shared/utils/file'
 
 withDefaults(

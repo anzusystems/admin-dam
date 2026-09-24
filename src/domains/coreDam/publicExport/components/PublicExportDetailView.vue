@@ -6,13 +6,14 @@ import {
   ACard,
   useI18n,
 } from '@anzusystems/common-admin'
+
+import PublicExportDetail from '@/domains/coreDam/publicExport/components/PublicExportDetail.vue'
 import {
   usePublicExportDetailActions,
   usePublicExportRemoveActions,
 } from '@/domains/coreDam/publicExport/composables/publicExportActions'
-import PublicExportDetail from '@/domains/coreDam/publicExport/components/PublicExportDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, publicExport } = usePublicExportDetailActions()
 const { removePublicExport } = usePublicExportRemoveActions()

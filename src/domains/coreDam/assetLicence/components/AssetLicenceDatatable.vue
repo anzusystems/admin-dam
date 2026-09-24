@@ -1,28 +1,29 @@
 <script lang="ts" setup>
-import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useAssetLicenceListActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import AssetLicenceFilter from '@/domains/coreDam/assetLicence/components/AssetLicenceFilter.vue'
+import { useAssetLicenceListActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceListFilter } from '@/domains/coreDam/assetLicence/filter/AssetLicenceFilter'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DamAssetLicenceExtended
 

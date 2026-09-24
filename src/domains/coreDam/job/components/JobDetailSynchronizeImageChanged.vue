@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AJobDetailCommon, ARow, dateTimePretty, useI18n } from '@anzusystems/common-admin'
-import type { JobSynchronizeImageChanged } from '@/domains/coreDam/job/types/Job'
+
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
+import type { JobSynchronizeImageChanged } from '@/domains/coreDam/job/types/Job'
 
 withDefaults(
   defineProps<{

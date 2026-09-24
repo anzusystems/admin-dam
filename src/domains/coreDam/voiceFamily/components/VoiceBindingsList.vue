@@ -1,19 +1,20 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ABooleanValue,
-  ADatetime,
   ADatatablePagination,
+  ADatetime,
   DatatablePaginationKey,
   usePagination,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
-import { useVoiceListActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import VoiceBindingCreateDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingCreateDialog.vue'
 import VoiceBindingEditDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingEditDialog.vue'
 import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
+import { useVoiceListActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(

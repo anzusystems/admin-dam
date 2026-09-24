@@ -1,5 +1,5 @@
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const HEIGHT_MINIMAL = 32
 const HEIGHT_COMPACT = 160

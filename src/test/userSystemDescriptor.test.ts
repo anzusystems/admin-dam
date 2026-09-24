@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest'
 import {
   resolveCreateEndpoint,
   resolveEnabledWrite,
   resolveMetadataWrite,
   resolveProbeEndpoint,
 } from '@anzusystems/common-admin'
+import { describe, expect, it } from 'vitest'
+
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 
 describe('dam user system descriptor', () => {

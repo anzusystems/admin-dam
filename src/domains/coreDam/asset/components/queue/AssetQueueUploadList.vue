@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { UploadQueueItem } from '@anzusystems/common-admin'
+
+import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

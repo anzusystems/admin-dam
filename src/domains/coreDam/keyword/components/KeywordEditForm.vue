@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordValidation } from '@/domains/coreDam/keyword/composables/keywordValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { keyword } = useKeywordEditActions()
 

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+
 import { updateAssetCategory } from '@/domains/coreDam/asset/api/assetApi'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   ENTITY,
   useFetchDistributionCategory,
 } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 import DistributionCategoryRemoteAutocomplete from '@/domains/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
+import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

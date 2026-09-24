@@ -1,19 +1,20 @@
 <script lang="ts" setup>
-import type { Permissions } from '@/shared/types/Permission'
-import PermissionGrantEditor from '@/domains/common/permission/components/PermissionGrantEditor.vue'
-import PermissionValueChip from '@/domains/common/permission/components/PermissionValueChip.vue'
-import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 import type { GrantType } from '@anzusystems/common-admin'
 import {
   Grant,
   GrantOrigin,
   GrantOriginDefault,
+  ROLE_SUPER_ADMIN,
   objectDeletePropertyByPath,
   objectGetValueByPath,
   objectSetValueByPath,
-  ROLE_SUPER_ADMIN,
 } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
+
+import PermissionGrantEditor from '@/domains/common/permission/components/PermissionGrantEditor.vue'
+import PermissionValueChip from '@/domains/common/permission/components/PermissionValueChip.vue'
+import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
+import type { Permissions } from '@/shared/types/Permission'
 
 const props = defineProps<{
   resolvedPermissions?: Permissions

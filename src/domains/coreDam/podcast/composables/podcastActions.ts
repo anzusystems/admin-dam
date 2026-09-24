@@ -1,15 +1,16 @@
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import { renumberPositions } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   useFetchPodcast,
   useFetchPodcastListByExtSystem,
   useFetchPodcastListByIds,
   useUpdatePodcast,
 } from '@/domains/coreDam/podcast/api/podcastApi'
-import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
+import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

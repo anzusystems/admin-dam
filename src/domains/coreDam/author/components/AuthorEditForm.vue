@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
@@ -8,10 +6,13 @@ import {
   ASystemEntityScope,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
-import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
-import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+
+import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
+import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { author } = useAuthorEditActions()
 const { v$ } = useAuthorValidation(author)

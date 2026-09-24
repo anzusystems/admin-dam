@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
-import { AssetFileProcessStatus, DamAssetStatus, type UploadQueueItem } from '@anzusystems/common-admin'
-import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { AssetFileProcessStatus, DamAssetStatus } from '@anzusystems/common-admin'
+import type { UploadQueueItem } from '@anzusystems/common-admin'
+
 import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
+import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
+import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 
 const props = withDefaults(
   defineProps<{

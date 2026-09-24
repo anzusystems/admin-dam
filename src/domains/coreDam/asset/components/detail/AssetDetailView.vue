@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import { DamAssetImageRoiSelect, isDocId, useDamCachedUsers } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+
+import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
+import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
+import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import {
   AssetDetailTab,
   AssetDetailTabDefault,
   useAssetDetailTab,
 } from '@/domains/coreDam/asset/composables/assetDetailTab'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
-import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 
 defineEmits<{
   (e: 'mainRouteChanged'): void

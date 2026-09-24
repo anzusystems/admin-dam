@@ -6,11 +6,12 @@ import {
   ACard,
   useI18n,
 } from '@anzusystems/common-admin'
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
-import { damClient } from '@/shared/apiClients/damClient'
+
 import PermissionGroupDetail from '@/domains/common/permissionGroup/components/PermissionGroupDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

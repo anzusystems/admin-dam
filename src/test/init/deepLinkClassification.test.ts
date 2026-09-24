@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createPinia, defineStore, setActivePinia } from 'pinia'
-import { ref } from 'vue'
 import { AxiosError, AxiosHeaders } from 'axios'
+import { createPinia, defineStore, setActivePinia } from 'pinia'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 // The real classes `useApiRequest` throws: the status is on `cause`, never on the error itself.
 import { AnzuApiAxiosError, AnzuApiForbiddenError } from '@anzusystems/common-admin'
 

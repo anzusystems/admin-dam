@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ADialogToolbar, DamDistributionServiceType } from '@anzusystems/common-admin'
-import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
+
 import { cancelCustomDistribution } from '@/domains/coreDam/asset/api/distributionCustomApi'
+import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
 
 const emit = defineEmits<{
   (e: 'reloadList'): void

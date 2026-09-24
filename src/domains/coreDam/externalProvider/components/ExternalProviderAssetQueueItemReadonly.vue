@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
+
+import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
 
 const props = withDefaults(

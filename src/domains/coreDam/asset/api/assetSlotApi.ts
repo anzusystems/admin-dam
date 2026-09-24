@@ -1,14 +1,10 @@
+import { useApiCommand, useApiFetchList } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import {
-  type FilterConfig,
-  type FilterData,
-  type Pagination,
-  useApiCommand,
-  useApiFetchList,
-} from '@anzusystems/common-admin'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import type { Ref } from 'vue'
 
 const END_POINT = '/adm/v1/asset-slot'
 export const ENTITY = 'assetSlot'

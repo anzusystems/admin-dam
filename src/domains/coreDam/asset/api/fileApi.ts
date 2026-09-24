@@ -1,8 +1,23 @@
+import {
+  AssetFileProcessStatus,
+  DamAssetType,
+  UploadQueueItemStatus,
+  UploadQueueItemType,
+  i18n,
+} from '@anzusystems/common-admin'
+import type {
+  AssetFileDownloadLink,
+  AssetFileRoute,
+  DamAssetTypeType,
+  DamUploadStartResponse,
+  UploadQueueItem,
+  UploadQueueItemStatusType,
+} from '@anzusystems/common-admin'
+import type { AxiosProgressEvent } from 'axios'
+
 import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import {
-  deleteAudio,
   downloadLink as audioDownloadLink,
-  existingAudioToSlot,
   externalProviderUpload as audioExternalProviderUpload,
   makeMainFile as audioMakeMainFile,
   makePrivate as audioMakePrivate,
@@ -11,11 +26,12 @@ import {
   uploadChunk as audioUploadChunk,
   uploadFinish as audioUploadFinish,
   uploadStart as audioUploadStart,
+  deleteAudio,
+  existingAudioToSlot,
 } from '@/domains/coreDam/asset/api/audioApi'
 import {
   deleteDocument,
   downloadLink as documentDownloadLink,
-  existingDocumentToSlot,
   externalProviderUpload as documentExternalProviderUpload,
   makeMainFile as documentMakeMainFile,
   makePrivate as documentMakePrivate,
@@ -24,11 +40,12 @@ import {
   uploadChunk as documentUploadChunk,
   uploadFinish as documentUploadFinish,
   uploadStart as documentUploadStart,
+  existingDocumentToSlot,
 } from '@/domains/coreDam/asset/api/documentApi'
 import {
   deleteImage,
-  downloadLink as imageDownloadLink,
   existingImageToSlot,
+  downloadLink as imageDownloadLink,
   externalProviderUpload as imageExternalProviderUpload,
   makeMainFile as imageMakeMainFile,
   makePrivate as imageMakePrivate,
@@ -40,8 +57,8 @@ import {
 } from '@/domains/coreDam/asset/api/imageApi'
 import {
   deleteVideo,
-  downloadLink as videoDownloadLink,
   existingVideoToSlot,
+  downloadLink as videoDownloadLink,
   externalProviderUpload as videoExternalProviderUpload,
   makeMainFile as videoMakeMainFile,
   unsetSlot as videoUnsetSlot,
@@ -49,21 +66,8 @@ import {
   uploadFinish as videoUploadFinish,
   uploadStart as videoUploadStart,
 } from '@/domains/coreDam/asset/api/videoApi'
-import { envConfig } from '@/shared/EnvConfigService'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import type { AssetFileDownloadLink, DamAssetTypeType } from '@anzusystems/common-admin'
-import {
-  AssetFileProcessStatus,
-  i18n,
-  type AssetFileRoute,
-  DamAssetType,
-  type DamUploadStartResponse,
-  UploadQueueItemType,
-  type UploadQueueItem,
-  type UploadQueueItemStatusType,
-  UploadQueueItemStatus,
-} from '@anzusystems/common-admin'
-import type { AxiosProgressEvent } from 'axios'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3

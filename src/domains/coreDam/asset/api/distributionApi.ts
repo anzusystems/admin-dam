@@ -1,14 +1,7 @@
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import {
-  type FilterConfig,
-  type FilterData,
-  type Pagination,
-  useApiCommand,
-  useApiFetchList,
-  useApiRequest,
-} from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+
 import type {
   DistributionAuthorized,
   DistributionCustomItem,
@@ -16,7 +9,8 @@ import type {
   DistributionUpdateDto,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import type { Ref } from 'vue'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/distribution'
 export const ENTITY = 'distribution'

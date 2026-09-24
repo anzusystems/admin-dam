@@ -1,11 +1,11 @@
 import svg2k from '@/assets/meta-icons/2k.svg'
 import svg4k from '@/assets/meta-icons/4k.svg'
 import svg8k from '@/assets/meta-icons/8k.svg'
-import svgqhd from '@/assets/meta-icons/qhd.svg'
 import svgfhd from '@/assets/meta-icons/fhd.svg'
-import svgslot from '@/assets/meta-icons/slot.svg'
 import svglow from '@/assets/meta-icons/low.svg'
+import svgqhd from '@/assets/meta-icons/qhd.svg'
 import svgrss from '@/assets/meta-icons/rss.svg'
+import svgslot from '@/assets/meta-icons/slot.svg'
 import svgtts from '@/assets/meta-icons/tts.svg'
 
 export const DIMENSIONS_CONFIG = [

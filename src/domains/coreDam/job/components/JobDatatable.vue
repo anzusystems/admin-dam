@@ -1,28 +1,29 @@
 <script lang="ts" setup>
-import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
-import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
-import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   AJobStatusChip,
   ATableCopyIdButton,
   ATableDetailButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+
+import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
-import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
+import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
+import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
 import type { Job } from '@/domains/coreDam/job/types/Job'
+import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = Job
 

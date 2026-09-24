@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
+import { ADialogToolbar, useDamAcceptTypeAndSizeHelper, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
+import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
-import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import {
-  ADialogToolbar,
-  type DamAssetTypeType,
-  useDamAcceptTypeAndSizeHelper,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

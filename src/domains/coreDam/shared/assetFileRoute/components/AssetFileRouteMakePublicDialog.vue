@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { makePublicFile } from '@/domains/coreDam/asset/api/fileApi'
 import {
   ADialogToolbar,
   AFormTextField,
   DamAssetType,
-  type DamAssetTypeType,
-  type DocId,
   stringToSlug,
   useAlerts,
   useValidate,
 } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+
+import { makePublicFile } from '@/domains/coreDam/asset/api/fileApi'
 
 const props = withDefaults(
   defineProps<{

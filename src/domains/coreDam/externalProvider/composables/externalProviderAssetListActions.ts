@@ -1,28 +1,24 @@
-import {
-  UploadQueueItemType,
-  useDamConfigState,
-  type Pagination,
-  useFilterHelpers,
-  usePagination,
-} from '@anzusystems/common-admin'
-import { useExternalProviderAssetListFilter } from '@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter'
-import {
-  useFetchExternalProviderAsset,
-  useFetchExternalProviderAssetList,
-} from '@/domains/coreDam/externalProvider/api/externalProviderAssetApi'
+import { UploadQueueItemType, useDamConfigState, useFilterHelpers, usePagination } from '@anzusystems/common-admin'
+import type { Pagination } from '@anzusystems/common-admin'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useExternalProviders } from '@/domains/coreDam/asset/composables/externalProviders'
-import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
+import {
+  useFetchExternalProviderAsset,
+  useFetchExternalProviderAssetList,
+} from '@/domains/coreDam/externalProvider/api/externalProviderAssetApi'
+import { useExternalProviderAssetListFilter } from '@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
-import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
+import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { damClient } from '@/shared/apiClients/damClient'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
+import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 

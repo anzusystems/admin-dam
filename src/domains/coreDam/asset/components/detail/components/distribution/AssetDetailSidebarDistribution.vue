@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import type { AssetFileProcessStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
+
 import { fetchAssetDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
-import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import DistributionCancelDialog from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionCancelDialog.vue'
 import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialog.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
-import type { AssetFileProcessStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
 import DistributionManage from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManage.vue'
+import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 
 const props = withDefaults(
   defineProps<{

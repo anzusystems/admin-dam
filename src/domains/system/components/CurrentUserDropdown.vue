@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { AnzuUserMinimal } from '@anzusystems/common-admin'
 import { ACurrentUserDropdown } from '@anzusystems/common-admin'
+
 import { useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
 

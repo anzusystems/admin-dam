@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
-import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
-import type { ErrorObject } from '@vuelidate/core'
 import { useDamConfigState } from '@anzusystems/common-admin'
+import type { ErrorObject } from '@vuelidate/core'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(

@@ -1,6 +1,7 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
 import { nextListEditorTempId } from '@anzusystems/common-admin'
+
+import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useDistributionCategoryOptionFactory() {
   const createDefault = (distributionCategorySelectId: string): DistributionCategoryOption => {

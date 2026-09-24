@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
-import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
 import { DamAssetImageRoiSelect, DamAssetType } from '@anzusystems/common-admin'
+
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
-import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
+import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
+import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import ExternalProviderAssetDetailDialogSidebar from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
+import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void

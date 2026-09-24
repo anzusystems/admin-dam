@@ -7,6 +7,7 @@ import {
   useDamAssetLicenceInnerFilter,
 } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
 import { useAssetLicenceByExtIdSelectActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 
 const props = withDefaults(

@@ -1,22 +1,24 @@
 <script lang="ts" setup>
-import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
-import AssetLicenceByExtIdRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import {
   ADialogToolbar,
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
-  type DamCurrentUserDto,
   DamExtSystemRemoteAutocomplete,
   useDamConfigStore,
 } from '@anzusystems/common-admin'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import type { ErrorObject } from '@vuelidate/core'
+
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import AssetLicenceByExtIdRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
+import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import ABtnAdvanced from '@/domains/coreDam/shared/components/ABtnAdvanced.vue'
+import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
+import { useAuth } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

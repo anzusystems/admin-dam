@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type AssetFileMainRouteAware } from '@anzusystems/common-admin'
+import type { AssetFileMainRouteAware } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{

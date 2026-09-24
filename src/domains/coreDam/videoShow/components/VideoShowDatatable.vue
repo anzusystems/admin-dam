@@ -1,30 +1,30 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+
+import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import VideoShowFilter from '@/domains/coreDam/videoShow/components/VideoShowFilter.vue'
+import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowListFilter } from '@/domains/coreDam/videoShow/filter/VideoShowFilter'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = VideoShow
 

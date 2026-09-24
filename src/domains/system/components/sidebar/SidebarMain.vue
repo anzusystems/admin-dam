@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { useDebugFeatures, LogTypeDefault } from '@anzusystems/common-admin'
+import { LogTypeDefault, useDebugFeatures } from '@anzusystems/common-admin'
+
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
 

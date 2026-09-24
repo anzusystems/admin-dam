@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
 import { arrayFlatten, arrayFromArgs } from '@anzusystems/common-admin'
+
+import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
 import { checkFormats, checkSizes } from '@/domains/coreDam/shared/services/upload/fileValidation'
 
 type InputRef = null | HTMLInputElement

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
+
 import declaration from '@/typed-router.d.ts?raw'
 
 // A smoke test over every generated route.

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import {
   AFormTextField,
   ARow,
@@ -8,9 +6,12 @@ import {
   DamAssetLicenceRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import { useAssetLicenceGroupEditActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetLicenceGroup } = useAssetLicenceGroupEditActions()
 

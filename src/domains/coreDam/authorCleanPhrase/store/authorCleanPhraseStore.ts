@@ -1,5 +1,5 @@
-import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
+import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
 
 export const useAuthorCleanPhraseOneStore = defineStore('authorCleanPhraseOneStore', () => {
   const { createDefault } = useAuthorCleanPhraseFactory()

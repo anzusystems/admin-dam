@@ -1,16 +1,18 @@
-import { useAuth } from '@/domains/system/auth/auth'
-import { initAppNotificationListeners } from '@/domains/system/composables/appNotificationListeners'
+import { DamAssetType, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
+
 import {
   initCurrentExtSystemAndLicence,
   useCurrentExtSystem,
 } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAuth } from '@/domains/system/auth/auth'
+import { initAppNotificationListeners } from '@/domains/system/composables/appNotificationListeners'
 import { useLoginStatus } from '@/domains/system/composables/loginStatus'
-import { SYSTEM_DAM } from '@/shared/systems'
 import { checkAbility } from '@/router/checkAbility'
-import { damClient } from '@/shared/apiClients/damClient'
-import { DamAssetType, type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
 import { getAuthCookieState } from '@/shared/apiClients/authCookies'
-import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const initialized = ref(false)
 

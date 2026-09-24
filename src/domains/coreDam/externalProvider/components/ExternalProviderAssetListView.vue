@@ -1,25 +1,26 @@
 <script lang="ts" setup>
-import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-import { useGridView } from '@/domains/system/composables/gridView'
-import ExternalProviderAssetListItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListItem.vue'
-import ExternalProviderAssetDetailDialog from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialog.vue'
-import MainWrapper from '@/domains/system/components/MainWrapper.vue'
-import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
+import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
+import { onKeyUp } from '@vueuse/core'
+
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import ExternalProviderAssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
-import ExternalProviderAssetListSidebarFilter from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListSidebarFilter.vue'
-import ExternalProviderAssetListSidebarMetadata from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListSidebarMetadata.vue'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
+import ExternalProviderAssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
-import ExternalProviderAssetFooterSelected from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetFooterSelected.vue'
-import ExternalProviderAssetFooterSelectedFull from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetFooterSelectedFull.vue'
 import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,
 } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
-import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
-import { onKeyUp } from '@vueuse/core'
+import ExternalProviderAssetDetailDialog from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialog.vue'
+import ExternalProviderAssetFooterSelected from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetFooterSelected.vue'
+import ExternalProviderAssetFooterSelectedFull from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetFooterSelectedFull.vue'
+import ExternalProviderAssetListItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListItem.vue'
+import ExternalProviderAssetListSidebarFilter from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListSidebarFilter.vue'
+import ExternalProviderAssetListSidebarMetadata from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetListSidebarMetadata.vue'
+import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
+import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
+import MainWrapper from '@/domains/system/components/MainWrapper.vue'
+import { useGridView } from '@/domains/system/composables/gridView'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { t } = useI18n()
 

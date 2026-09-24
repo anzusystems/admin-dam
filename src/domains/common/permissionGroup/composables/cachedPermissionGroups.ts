@@ -1,4 +1,5 @@
 import type { PermissionGroup, PermissionGroupMinimal } from '@anzusystems/common-admin'
+
 import { useFetchPermissionGroupListByIds } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 
 const mapFullToMinimal = (permissionGroup: PermissionGroup): PermissionGroupMinimal => ({

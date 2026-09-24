@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
+import type AssetLicenceDatatable from '@/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import KeywordCreateButton from '@/domains/coreDam/keyword/components/KeywordCreateButton.vue'
 import KeywordDatatable from '@/domains/coreDam/keyword/components/KeywordDatatable.vue'
-import type AssetLicenceDatatable from '@/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useKeywordListActions } from '@/domains/coreDam/keyword/composables/keywordActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 

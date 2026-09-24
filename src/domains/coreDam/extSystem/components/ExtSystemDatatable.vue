@@ -1,27 +1,28 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DamExtSystem,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { DamExtSystem } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { useExtSystemListFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
-import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemFilter from '@/domains/coreDam/extSystem/components/ExtSystemFilter.vue'
+import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
+import { useExtSystemListFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
 import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DamExtSystem
 

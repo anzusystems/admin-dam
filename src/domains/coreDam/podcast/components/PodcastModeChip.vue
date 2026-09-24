@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { type PodcastModeType, usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 import { AChipNoLink } from '@anzusystems/common-admin'
+
+import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
+import type { PodcastModeType } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 
 const props = withDefaults(
   defineProps<{

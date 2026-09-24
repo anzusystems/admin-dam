@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields, COMMON_CONFIG } from '@anzusystems/common-admin'
-import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
-import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
-import ExternalProviderAssetChip from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetChip.vue'
-import DistributionServiceChip from '@/domains/coreDam/shared/distribution/components/DistributionServiceChip.vue'
+
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import ExternalProviderAssetChip from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetChip.vue'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import DistributionServiceChip from '@/domains/coreDam/shared/distribution/components/DistributionServiceChip.vue'
+import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
 
 const { user, userAssetLicenceGroups } = storeToRefs(useUserOneStore())
 

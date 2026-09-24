@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ACachedChip } from '@anzusystems/common-admin'
+
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 
 withDefaults(

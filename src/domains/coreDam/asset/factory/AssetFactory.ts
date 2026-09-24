@@ -1,5 +1,6 @@
-import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
 import { DamAssetTypeDefault } from '@anzusystems/common-admin'
+
+import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
 
 export function useAssetFactory() {
   const createCreateDto = (): AssetCreateDto => {

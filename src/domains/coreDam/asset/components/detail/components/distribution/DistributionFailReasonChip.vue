@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import {
-  type DistributionFailReasonType,
-  useDistributionFailReason,
-} from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
+import { useDistributionFailReason } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
+import type { DistributionFailReasonType } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
 
 const props = withDefaults(
   defineProps<{

@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
 import PodcastCreateButton from '@/domains/coreDam/podcast/components/PodcastCreateButton.vue'
 import PodcastDatatable from '@/domains/coreDam/podcast/components/PodcastDatatable.vue'
 import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = usePodcastListActions()
 

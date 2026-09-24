@@ -1,6 +1,8 @@
+import { useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
-import { type DamAssetTypeType, useDamConfigState } from '@anzusystems/common-admin'
 
 export const useKeywordAssetTypeConfig = (assetType: DamAssetTypeType) => {
   const { getDamConfigExtSystem } = useDamConfigState(damClient)

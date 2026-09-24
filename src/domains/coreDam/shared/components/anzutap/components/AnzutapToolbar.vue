@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
-import {
-  useAnzutapToolbar,
-  type ToolbarItemButton,
-  type ToolbarItemSeparator,
+
+import { useAnzutapToolbar } from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
+import type {
+  ToolbarItemButton,
+  ToolbarItemSeparator,
 } from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
 import AnzutapToolbarItem from '@/domains/coreDam/shared/components/anzutap/components/AnzutapToolbarItem.vue'
 

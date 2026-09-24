@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { ACL } from '@/domains/system/auth/auth'
-import AuthorCleanPhraseDatatable from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'
+
 import AuthorCleanPhraseCreateButton from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseCreateButton.vue'
-import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
+import AuthorCleanPhraseDatatable from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'
 import AuthorCleanPhrasePlaygroundButton from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhrasePlaygroundButton.vue'
+import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
+import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useAuthorCleanPhraseListActions()
 

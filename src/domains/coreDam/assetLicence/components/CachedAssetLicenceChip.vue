@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ACachedChip } from '@anzusystems/common-admin'
+
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 
 withDefaults(

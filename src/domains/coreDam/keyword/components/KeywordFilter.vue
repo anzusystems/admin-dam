@@ -6,6 +6,7 @@ import {
   FilterConfigKey,
   FilterDataKey,
 } from '@anzusystems/common-admin'
+
 import { useKeywordListActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 
 const emit = defineEmits<{

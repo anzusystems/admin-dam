@@ -1,16 +1,14 @@
+import { DamDistributionStatus } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DamDistributionStatusType } from '@anzusystems/common-admin'
+
 import { fetchDistribution } from '@/domains/coreDam/asset/api/distributionApi'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import {
-  type DistributionAuth,
-  DistributionAuthStatus,
-  type DistributionAuthStatusType,
-} from '@/domains/coreDam/asset/types/DistributionAuth'
-import type { DamDistributionStatusType } from '@anzusystems/common-admin'
-import { type DamDistributionServiceName, DamDistributionStatus } from '@anzusystems/common-admin'
+import { DistributionAuthStatus } from '@/domains/coreDam/asset/types/DistributionAuth'
+import type { DistributionAuth, DistributionAuthStatusType } from '@/domains/coreDam/asset/types/DistributionAuth'
 
 export const useDistributionListStore = defineStore('damDistributionListStore', () => {
   const list = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])

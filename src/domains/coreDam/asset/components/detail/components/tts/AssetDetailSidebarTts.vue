@@ -1,12 +1,14 @@
 <script lang="ts" setup>
+import { ADatetime, ARow } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADatetime, ARow, type DocId } from '@anzusystems/common-admin'
-import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
-import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
-import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
-import CachedTtsNarrationRequestChip from '@/domains/coreDam/ttsNarrationRequest/components/CachedTtsNarrationRequestChip.vue'
+
 import { useAssetDetailSidebarTtsActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarTtsActions'
+import CachedTtsNarrationRequestChip from '@/domains/coreDam/ttsNarrationRequest/components/CachedTtsNarrationRequestChip.vue'
+import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
+import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
+import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 
 const props = withDefaults(
   defineProps<{

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Theme } from '@anzusystems/common-admin'
+
 import logoDark from '@/assets/yt_logo_rgb_dark.png'
 import logoLight from '@/assets/yt_logo_rgb_light.png'
 

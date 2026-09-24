@@ -1,4 +1,5 @@
 import type { DamAssetLicenceGroup, DamUser, DamUserUpdateDto } from '@anzusystems/common-admin'
+
 import { useUserFactory } from '@/domains/coreDam/user/factory/UserFactory'
 
 export const useUserOneStore = defineStore('damUserOneStore', () => {

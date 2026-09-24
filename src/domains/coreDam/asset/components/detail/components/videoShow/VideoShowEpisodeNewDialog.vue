@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { ADialogToolbar, AFormDatetimePicker, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
+import VideoShowRemoteAutocomplete from '@/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
 import {
   ENTITY,
   useCreateVideoShowEpisode,
   usePrepareFormDataVideoShowEpisode,
 } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
-import VideoShowRemoteAutocomplete from '@/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
+import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

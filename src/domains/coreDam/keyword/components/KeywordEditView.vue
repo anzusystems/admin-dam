@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
+
 import KeywordEditForm from '@/domains/coreDam/keyword/components/KeywordEditForm.vue'
+import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()

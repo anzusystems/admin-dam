@@ -1,9 +1,9 @@
 import type {
   DamAssetLicence,
-  ValueObjectOption,
   FilterConfig,
   FilterData,
   Pagination,
+  ValueObjectOption,
 } from '@anzusystems/common-admin'
 import {
   fetchDamAssetLicenceListByIds,
@@ -11,11 +11,12 @@ import {
   useFetchDamAssetLicenceList,
 } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
-import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
-import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'
+
 import { useFetchAssetLicence, useUpdateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()

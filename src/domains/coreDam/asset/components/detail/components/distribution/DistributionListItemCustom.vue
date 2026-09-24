@@ -1,22 +1,18 @@
 <script setup lang="ts">
+import { ACopyText, DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+
+import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
+import DistributionListItemCustomDistributionDataItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
+import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
 import { isDistributionCustomItem } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
-import DistributionListItemCustomDistributionDataItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
-import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
-import {
-  ACopyText,
-  type DamAssetTypeType,
-  type DamDistributionServiceTypeType,
-  DamDistributionStatus,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{

@@ -1,6 +1,6 @@
-import { useSimpleLoginFactory } from '@/domains/system/auth/SimpleLoginFactory'
 import { useLogin } from '@/domains/system/auth/authApi'
 import type { SimpleLoginForm } from '@/domains/system/auth/simpleLogin'
+import { useSimpleLoginFactory } from '@/domains/system/auth/SimpleLoginFactory'
 
 const loginButtonLoading = ref(false)
 

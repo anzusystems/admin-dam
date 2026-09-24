@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ACachedChip } from '@anzusystems/common-admin'
+
 import { useCachedPermissionGroups } from '@/domains/common/permissionGroup/composables/cachedPermissionGroups'
 
 withDefaults(

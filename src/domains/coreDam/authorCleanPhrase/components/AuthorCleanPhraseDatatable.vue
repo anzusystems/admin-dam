@@ -1,29 +1,30 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import AuthorCleanPhraseFilter from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue'
+import AuthorCleanPhraseModeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeStatusChip.vue'
+import AuthorCleanPhraseTypeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue'
+import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
+import { useAuthorCleanPhraseListFilter } from '@/domains/coreDam/authorCleanPhrase/filter/AuthorCleanPhraseFilter'
 import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
 import { ACL } from '@/domains/system/auth/auth'
-import { useAuthorCleanPhraseListFilter } from '@/domains/coreDam/authorCleanPhrase/filter/AuthorCleanPhraseFilter'
-import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import AuthorCleanPhraseTypeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue'
-import AuthorCleanPhraseModeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeStatusChip.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = AuthorCleanPhrase
 

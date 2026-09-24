@@ -1,5 +1,7 @@
+import { LogTypeDefault, isLogType } from '@anzusystems/common-admin'
+import type { AclValue } from '@anzusystems/common-admin'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
-import { type AclValue, isLogType, LogTypeDefault } from '@anzusystems/common-admin'
+
 import { useAuth } from '@/domains/system/auth/auth'
 
 export const checkAbility = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {

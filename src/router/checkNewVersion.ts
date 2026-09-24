@@ -1,4 +1,5 @@
 import { useSystemBar } from '@anzusystems/common-admin'
+
 import { requestAppReload } from '@/appReload'
 
 export function checkForNewVersion() {

@@ -1,36 +1,37 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
-  type DocId,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
+import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
+import TtsNarrationRequestFilter from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue'
+import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
+import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import {
   isCancellableRequest,
   useTtsNarrationRequestListActions,
 } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { useTtsNarrationRequestListFilter } from '@/domains/coreDam/ttsNarrationRequest/filter/TtsNarrationRequestFilter'
-import TtsNarrationRequestFilter from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue'
-import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
-import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
-import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
 import type { TtsNarrationRequest } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = TtsNarrationRequest
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { fetchYoutubeLanguages } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+
+import { fetchYoutubeLanguages } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { YoutubeLanguage } from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(

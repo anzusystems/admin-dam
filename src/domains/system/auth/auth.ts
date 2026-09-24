@@ -1,5 +1,6 @@
-import { SYSTEM_DAM } from '@/shared/systems'
 import { defineAuth } from '@anzusystems/common-admin'
+
+import { SYSTEM_DAM } from '@/shared/systems'
 
 export const ACL = {
   DAM_ASSET_CREATE: 'dam_asset_create',

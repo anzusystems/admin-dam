@@ -1,25 +1,26 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { ACL } from '@/domains/system/auth/auth'
-import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
-import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   AAssetSelect,
+  AFormRemoteAutocomplete,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  type AssetSelectReturnData,
   DamAssetType,
-  AFormRemoteAutocomplete,
   FilterInnerConfigKey,
   FilterInnerDataKey,
 } from '@anzusystems/common-admin'
-import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
+import type { AssetSelectReturnData } from '@anzusystems/common-admin'
+
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
+import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
+import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()

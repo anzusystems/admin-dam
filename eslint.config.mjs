@@ -1,13 +1,14 @@
-import { existsSync, readFileSync } from 'node:fs'
+import fs, { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import pluginVue from 'eslint-plugin-vue'
-import pluginPinia from 'eslint-plugin-pinia'
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import vuetify from 'eslint-plugin-vuetify'
-import oxlintPlugin from 'eslint-plugin-oxlint'
+
 import { recommended as anzuRecommended } from '@anzusystems/common-admin/eslint'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import oxlintPlugin from 'eslint-plugin-oxlint'
+import pluginPinia from 'eslint-plugin-pinia'
+import pluginVue from 'eslint-plugin-vue'
+import vuetify from 'eslint-plugin-vuetify'
+
 import validRouteName from './eslint/rules/valid-route-name.mjs'
-import fs from 'node:fs'
 
 const { buildFromOxlintConfigFile } = oxlintPlugin
 

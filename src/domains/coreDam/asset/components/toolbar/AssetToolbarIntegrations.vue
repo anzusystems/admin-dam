@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useDamConfigState } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
 

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useAuthorCleanPhraseOneStore } from '@/domains/coreDam/authorCleanPhrase/store/authorCleanPhraseStore'
+
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import AuthorCleanPhraseModeChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeChip.vue'
 import AuthorCleanPhraseTypeChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeChip.vue'
+import { useAuthorCleanPhraseOneStore } from '@/domains/coreDam/authorCleanPhrase/store/authorCleanPhraseStore'
 
 const { authorCleanPhrase } = storeToRefs(useAuthorCleanPhraseOneStore())
 

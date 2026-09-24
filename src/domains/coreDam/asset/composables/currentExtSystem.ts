@@ -1,16 +1,12 @@
+import { HTTP_STATUS_NOT_FOUND, isAnzuApiForbiddenError, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import { isAxiosError } from 'axios'
+
+import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
-import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import {
-  type DamCurrentUserDto,
-  HTTP_STATUS_NOT_FOUND,
-  isAnzuApiForbiddenError,
-  isDocId,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
-import { isAxiosError } from 'axios'
 
 const currentExtSystemId = ref(0)
 

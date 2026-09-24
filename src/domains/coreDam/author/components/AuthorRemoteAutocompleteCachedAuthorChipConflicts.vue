@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
+
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 
 const props = withDefaults(

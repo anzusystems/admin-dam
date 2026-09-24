@@ -3,18 +3,19 @@ import {
   ADialogToolbar,
   AFormValueObjectOptionsSelect,
   ARow,
-  type AssetDetailItemDto,
   ASystemEntityScope,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
-import { useAssetFactory } from '@/domains/coreDam/asset/factory/AssetFactory'
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import type { AssetDetailItemDto } from '@anzusystems/common-admin'
+
 import { createAsset } from '@/domains/coreDam/asset/api/assetApi'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetFactory } from '@/domains/coreDam/asset/factory/AssetFactory'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const emit = defineEmits<{
   (e: 'afterCreate', data: AssetDetailItemDto): void

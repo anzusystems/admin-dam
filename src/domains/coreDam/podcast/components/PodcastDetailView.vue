@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { usePodcastDetailActions } from '@/domains/coreDam/podcast/composables/podcastActions'
+
 import PodcastDetail from '@/domains/coreDam/podcast/components/PodcastDetail.vue'
+import { usePodcastDetailActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { PodcastDetailTab, usePodcastDetailTab } from '@/domains/coreDam/podcast/composables/podcastDetailTab'
-import PodcastEpisodeDatatable from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import PodcastEpisodeCreateButton from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
+import PodcastEpisodeDatatable from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import { usePodcastEpisodeListActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, podcast } = usePodcastDetailActions()
 const { listLoading } = usePodcastEpisodeListActions()

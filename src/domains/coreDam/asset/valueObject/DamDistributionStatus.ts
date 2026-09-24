@@ -1,4 +1,5 @@
-import { DamDistributionStatus, type DamDistributionStatusType } from '@anzusystems/common-admin'
+import { DamDistributionStatus } from '@anzusystems/common-admin'
+import type { DamDistributionStatusType } from '@anzusystems/common-admin'
 
 export function useDistributionStatus() {
   const { t } = useI18n()

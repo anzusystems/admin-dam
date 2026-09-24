@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextarea, AFormTextField, ARow } from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextField, AFormTextarea, ARow } from '@anzusystems/common-admin'
 import type { Editor } from '@tiptap/core'
-import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 import useVuelidate from '@vuelidate/core'
+
+import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 
 const props = withDefaults(
   defineProps<{

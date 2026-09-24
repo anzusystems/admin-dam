@@ -1,9 +1,10 @@
+import { useSentry } from '@anzusystems/common-admin'
+
 import {
   LinkVariant,
   LinkVariantDefault,
-  type LinkVariantType,
 } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
-import { useSentry } from '@anzusystems/common-admin'
+import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
 
 export function isValidLinkVariant(value: unknown): value is LinkVariantType {
   return typeof value === 'string' && value === LinkVariant.Link

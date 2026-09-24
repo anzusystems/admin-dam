@@ -1,11 +1,12 @@
-import type { AxiosInstance } from 'axios'
-import axios, { type AxiosRequestConfig } from 'axios'
-import { envConfig } from '@/shared/EnvConfigService'
-import { SYSTEM_ADMIN_DAM } from '@/shared/systems'
-import { userRefreshRequestInterceptor } from '@/shared/apiClients/interceptors/requestRefreshToken'
-import { logoutUserResponseInterceptor } from '@/shared/apiClients/interceptors/responseLogoutUser'
+import axios from 'axios'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
+
 import { AUTH_PATH_PREFIX } from '@/domains/system/auth/authApi'
 import { PUB_END_POINT_PREFIX } from '@/shared/apiClients/configurationApi'
+import { userRefreshRequestInterceptor } from '@/shared/apiClients/interceptors/requestRefreshToken'
+import { logoutUserResponseInterceptor } from '@/shared/apiClients/interceptors/responseLogoutUser'
+import { envConfig } from '@/shared/EnvConfigService'
+import { SYSTEM_ADMIN_DAM } from '@/shared/systems'
 
 let mainInstance: AxiosInstance | null = null
 

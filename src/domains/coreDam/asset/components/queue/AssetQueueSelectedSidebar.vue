@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import AssetCustomMetadataFormMassOperations from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue'
+import { ASystemEntityScope, DamAssetType } from '@anzusystems/common-admin'
+import type { CustomDataValue, DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import {
-  ASystemEntityScope,
-  type CustomDataValue,
-  DamAssetType,
-  type DamAssetTypeType,
-} from '@anzusystems/common-admin'
+import AssetCustomMetadataFormMassOperations from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 
 const props = withDefaults(
   defineProps<{

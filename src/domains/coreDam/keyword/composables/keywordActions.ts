@@ -1,7 +1,8 @@
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { DamKeyword, DamKeywordMinimal, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import { SortOrder, useDamCachedUsers } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   fetchKeywordListByIds,
   useFetchKeyword,

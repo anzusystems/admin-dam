@@ -1,4 +1,5 @@
-import { type ValidationScope } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+
 import type {
   DistributionUpdateDto,
   JwDistributionUpdateDto,

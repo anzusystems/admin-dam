@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { useActionbar } from '@/domains/system/composables/actionbar'
-import { type BreadcrumbItem, type Breadcrumbs } from '@anzusystems/common-admin'
+import type { BreadcrumbItem, Breadcrumbs } from '@anzusystems/common-admin'
 import type { RouteLocationRaw } from 'vue-router'
+
+import { useActionbar } from '@/domains/system/composables/actionbar'
 
 const props = withDefaults(
   defineProps<{

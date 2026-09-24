@@ -1,14 +1,9 @@
 <script lang="ts" setup>
-import {
-  ALanguageSelect,
-  AThemeSelect,
-  type DamCurrentUserDto,
-  useI18n,
-  useSentry,
-  useUnreleasedFeatures,
-} from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { ALanguageSelect, AThemeSelect, useI18n, useSentry, useUnreleasedFeatures } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+
 import { useAuth } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { SYSTEM_DAM } from '@/shared/systems'
 
 const { t } = useI18n()

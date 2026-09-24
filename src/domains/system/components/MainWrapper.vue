@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import AssetToolbarOptions from '@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
-import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
-import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import AssetFooterUploadOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
+import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
+
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
+import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
+import AssetFooterUploadOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
+import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import AssetToolbarIntegrations from '@/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
-import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
-import { envConfig } from '@/shared/EnvConfigService'
+import AssetToolbarOptions from '@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const { t } = useI18n()
 

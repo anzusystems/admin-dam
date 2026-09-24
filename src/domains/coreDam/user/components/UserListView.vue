@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import UserDatatable from '@/domains/coreDam/user/components/UserDatatable.vue'
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
+import UserDatatable from '@/domains/coreDam/user/components/UserDatatable.vue'
 import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 

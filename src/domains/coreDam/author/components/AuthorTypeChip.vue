@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { AChipNoLink, type DamAuthorTypeType, useDamAuthorType } from '@anzusystems/common-admin'
+import { AChipNoLink, useDamAuthorType } from '@anzusystems/common-admin'
+import type { DamAuthorTypeType } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes, handleHotUpdate } from 'vue-router/auto-routes'
+import { handleHotUpdate, routes } from 'vue-router/auto-routes'
+
 import { beforeEachRoute } from '@/router/beforeEachRoute'
 import { addLegacyRedirects } from '@/router/legacyRedirects'
 import { initRouteHistory } from '@/router/routeHistory'

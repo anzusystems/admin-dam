@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { DamAssetStatus, browserHistoryReplaceUrlByRouter, useDamCachedUsers } from '@anzusystems/common-admin'
+
 import { updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
-import { browserHistoryReplaceUrlByRouter, DamAssetStatus, useDamCachedUsers } from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
+import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
+import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { ACL } from '@/domains/system/auth/auth'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const emit = defineEmits<{
   (e: 'mainRouteChanged'): void

@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
 import VideoShowCreateButton from '@/domains/coreDam/videoShow/components/VideoShowCreateButton.vue'
 import VideoShowDatatable from '@/domains/coreDam/videoShow/components/VideoShowDatatable.vue'
 import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useVideoShowListActions()
 

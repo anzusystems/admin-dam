@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
 import { ref } from 'vue'
+
 import VoiceFamilyCreateButton from '@/domains/coreDam/voiceFamily/components/VoiceFamilyCreateButton.vue'
 import VoiceFamilyDatatable from '@/domains/coreDam/voiceFamily/components/VoiceFamilyDatatable.vue'
 import { useVoiceFamilyListActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useVoiceFamilyListActions()
 

@@ -1,17 +1,20 @@
 import path, { dirname } from 'path'
-import { fileURLToPath, URL } from 'url'
-import { defineConfig, type Plugin, type UserConfigExport } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import VueRouter from 'vue-router/vite'
-import vuetify from 'vite-plugin-vuetify'
+import { URL, fileURLToPath } from 'url'
+
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
+import { defineConfig } from 'vite'
+import type { Plugin, UserConfigExport } from 'vite'
+import vuetify from 'vite-plugin-vuetify'
+import VueRouter from 'vue-router/vite'
 // oxlint-disable-next-line no-restricted-imports
-import { autoImports } from './autoImports.config.mts'
-import { routerPages } from './routerPages.config.mts'
+import { anzuSentry } from '@anzusystems/common-admin/vite'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
-import { anzuSentry } from '@anzusystems/common-admin/vite'
+
+import { autoImports } from './autoImports.config.mts'
+import { routerPages } from './routerPages.config.mts'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
 

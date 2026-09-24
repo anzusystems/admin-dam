@@ -1,11 +1,12 @@
+import type { AssetFileProcessStatusType, DamDistributionServiceName } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus } from '@anzusystems/common-admin'
+
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import type { AssetFileProcessStatusType, DamDistributionServiceName } from '@anzusystems/common-admin'
-import { AssetFileProcessStatus } from '@anzusystems/common-admin'
 
 const dialogKey = ref(1)
 const dialogNew = ref(false)

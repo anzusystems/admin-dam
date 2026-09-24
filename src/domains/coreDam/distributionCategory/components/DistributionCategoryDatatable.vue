@@ -1,28 +1,29 @@
 <script lang="ts" setup>
-import { ACL, useAuth } from '@/domains/system/auth/auth'
-import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import DistributionCategoryFilter from '@/domains/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
-import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
-import DistributionCategorySelectedOptionChip from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+
+import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
+import DistributionCategoryFilter from '@/domains/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
+import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
+import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
+import DistributionCategorySelectedOptionChip from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DistributionCategory
 

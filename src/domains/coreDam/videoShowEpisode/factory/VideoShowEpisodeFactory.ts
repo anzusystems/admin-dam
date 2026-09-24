@@ -1,5 +1,5 @@
-import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useVideoShowEpisodeFactory() {

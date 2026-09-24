@@ -1,5 +1,6 @@
-import type { Job } from '@/domains/coreDam/job/types/Job'
 import { useCommonJobFactory } from '@anzusystems/common-admin'
+
+import type { Job } from '@/domains/coreDam/job/types/Job'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export const useJobOneStore = defineStore('damJobOneStore', () => {

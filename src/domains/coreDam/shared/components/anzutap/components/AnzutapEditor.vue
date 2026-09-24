@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import AnzutapToolbar from '@/domains/coreDam/shared/components/anzutap/components/AnzutapToolbar.vue'
+import { EditorContent } from '@tiptap/vue-3'
+import type { Editor } from '@tiptap/vue-3'
+
 import AnzutapDialogs from '@/domains/coreDam/shared/components/anzutap/components/AnzutapDialogs.vue'
-import { type Editor, EditorContent } from '@tiptap/vue-3'
+import AnzutapToolbar from '@/domains/coreDam/shared/components/anzutap/components/AnzutapToolbar.vue'
 
 const props = withDefaults(
   defineProps<{

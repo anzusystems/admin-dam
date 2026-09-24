@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields, dateTimePretty } from '@anzusystems/common-admin'
+
 import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'
-import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 
 const { assetLicence } = storeToRefs(useAssetLicenceOneStore())

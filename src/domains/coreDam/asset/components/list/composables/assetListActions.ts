@@ -1,25 +1,24 @@
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
-import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
-import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
-import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 import {
-  arrayItemToggle,
-  type AssetSearchListItemDto,
-  browserHistoryReplaceUrlByRouter,
   DamAssetType,
-  type DamAssetTypeType,
   SortOrder,
   UploadQueueItemType,
+  arrayItemToggle,
+  browserHistoryReplaceUrlByRouter,
   useDamCachedUsers,
-  type Pagination,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { AssetSearchListItemDto, DamAssetTypeType, Pagination } from '@anzusystems/common-admin'
+
+import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
+import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'

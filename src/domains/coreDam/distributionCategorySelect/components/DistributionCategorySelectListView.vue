@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
 import DistributionCategorySelectDatatable from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectDatatable.vue'
 import { useDistributionCategorySelectListActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'

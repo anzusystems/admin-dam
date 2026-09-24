@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import {
-  AAssetSelect,
-  type AssetSelectReturnData,
-  DamAssetType,
-  type DamAssetTypeType,
-  SortOrder,
-} from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { AAssetSelect, DamAssetType, SortOrder } from '@anzusystems/common-admin'
+import type { AssetSelectReturnData, DamAssetTypeType } from '@anzusystems/common-admin'
+
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
 import {
-  customSortOptions,
   SORT_BY_SCORE_DATE,
+  customSortOptions,
 } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 
 const props = withDefaults(
   defineProps<{

@@ -1,28 +1,29 @@
 <script lang="ts" setup>
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
-import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import type { AssetFile } from '@anzusystems/common-admin'
+import {
+  ACopyText,
+  ASystemEntityScope,
+  DamAssetType,
+  DamAssetTypeDefault,
+  assetFileIsAudioFile,
+  assetFileIsImageFile,
+  assetFileIsVideoFile,
+  dateTimePretty,
+  prettyBytes,
+} from '@anzusystems/common-admin'
+
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
-import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
-import type { AssetFile } from '@anzusystems/common-admin'
-import {
-  ACopyText,
-  assetFileIsAudioFile,
-  assetFileIsImageFile,
-  assetFileIsVideoFile,
-  ASystemEntityScope,
-  DamAssetType,
-  DamAssetTypeDefault,
-  dateTimePretty,
-  prettyBytes,
-} from '@anzusystems/common-admin'
+import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const emit = defineEmits<{
   (e: 'mainRouteChanged'): void

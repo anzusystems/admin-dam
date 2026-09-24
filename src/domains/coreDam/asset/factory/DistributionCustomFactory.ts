@@ -1,10 +1,11 @@
+import { DamDistributionStatus } from '@anzusystems/common-admin'
+
 import type {
   CustomDistributionUpdateDto,
   DistributionCustomCreateRedistributeDto,
   DistributionItem,
 } from '@/domains/coreDam/asset/types/Distribution'
 import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
-import { DamDistributionStatus } from '@anzusystems/common-admin'
 
 export function useDistributionCustomFactory() {
   const createCreateDto = (): DistributionCustomCreateRedistributeDto => {

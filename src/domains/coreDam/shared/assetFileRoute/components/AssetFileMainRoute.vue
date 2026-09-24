@@ -1,15 +1,11 @@
 <script setup lang="ts">
+import { ACopyText, useAlerts } from '@anzusystems/common-admin'
+import type { AssetFile, AssetFileMainRouteAware, DamAssetTypeType } from '@anzusystems/common-admin'
+
 import { makePrivateFile } from '@/domains/coreDam/asset/api/fileApi'
 import AssetFileRouteChangeBtn from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 import AssetFileRouteMakePublicDialog from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import AssetFileRouteStatus from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteStatus.vue'
-import {
-  ACopyText,
-  type AssetFile,
-  type AssetFileMainRouteAware,
-  type DamAssetTypeType,
-  useAlerts,
-} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

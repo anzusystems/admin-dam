@@ -1,5 +1,6 @@
-import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
 import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
+
+import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
 
 export const useAssetLicenceGroupOneStore = defineStore('assetLicenceGroupOneStore', () => {
   const { createDefault } = useAssetLicenceGroupFactory()

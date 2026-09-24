@@ -1,4 +1,4 @@
-import { type DamAssetLicenceGroup } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
 
 export function useAssetLicenceGroupValidation(assetLicenceGroup: Ref<DamAssetLicenceGroup>) {
   const { required, minLength, minValue } = useValidate()

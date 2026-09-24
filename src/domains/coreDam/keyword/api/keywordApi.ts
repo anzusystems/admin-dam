@@ -1,7 +1,8 @@
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import type { DamKeyword } from '@anzusystems/common-admin'
 import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/keyword'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'

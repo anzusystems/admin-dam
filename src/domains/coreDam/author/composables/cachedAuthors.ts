@@ -1,6 +1,7 @@
 import type { DamAuthor, DamAuthorMinimal } from '@anzusystems/common-admin'
-import { useFetchAuthorListByIds } from '@/domains/coreDam/author/api/authorApi'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useFetchAuthorListByIds } from '@/domains/coreDam/author/api/authorApi'
 
 const mapFullToMinimal = (author: DamAuthor): DamAuthorMinimal => ({
   id: author.id,

@@ -6,13 +6,14 @@ import {
   ACard,
   useI18n,
 } from '@anzusystems/common-admin'
+
+import PodcastEpisodeDetail from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetail.vue'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
 } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
-import PodcastEpisodeDetail from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()

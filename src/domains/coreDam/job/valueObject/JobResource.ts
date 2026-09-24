@@ -1,4 +1,5 @@
-import { type JobBaseResource, useJobBaseResource } from '@anzusystems/common-admin'
+import { useJobBaseResource } from '@anzusystems/common-admin'
+import type { JobBaseResource } from '@anzusystems/common-admin'
 
 export const JOB_RESOURCE_PODCAST_SYNCHRONIZER = 'jobPodcastSynchronizer'
 export const JOB_AUTHOR_CURRENT_OPTIMIZE = 'jobAuthorCurrentOptimize'

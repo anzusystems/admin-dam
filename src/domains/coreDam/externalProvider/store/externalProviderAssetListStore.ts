@@ -1,10 +1,11 @@
 import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { UploadQueueItemType } from '@anzusystems/common-admin'
+
+import type { ListLoader } from '@/domains/coreDam/asset/store/assetListStore'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
-import type { ListLoader } from '@/domains/coreDam/asset/store/assetListStore'
 
 export interface ExternalProviderAssetListItem {
   asset: AssetExternalProviderListDto

@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { AAlerts, ASystemBar } from '@anzusystems/common-admin'
-import { envConfig } from '@/shared/EnvConfigService'
-import ActionbarTeleportTarget from '@/domains/system/components/ActionbarTeleportTarget.vue'
+import { useDisplay } from 'vuetify'
+
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
-import { useDisplay } from 'vuetify'
-import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
-import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
+import ActionbarTeleportTarget from '@/domains/system/components/ActionbarTeleportTarget.vue'
 import SidebarAppendMain from '@/domains/system/components/sidebar/SidebarAppendMain.vue'
 import SidebarAppendRail from '@/domains/system/components/sidebar/SidebarAppendRail.vue'
+import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
+import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const { mobile } = useDisplay()
 

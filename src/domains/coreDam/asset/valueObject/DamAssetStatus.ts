@@ -1,4 +1,5 @@
-import { DamAssetStatus, type DamAssetStatusType } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@anzusystems/common-admin'
+import type { DamAssetStatusType } from '@anzusystems/common-admin'
 
 export function useAssetStatus() {
   const { t } = useI18n()

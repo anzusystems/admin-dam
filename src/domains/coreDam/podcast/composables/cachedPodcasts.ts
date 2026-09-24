@@ -1,6 +1,6 @@
-import type { Podcast, PodcastMinimal } from '@/domains/coreDam/podcast/types/Podcast'
-import { useFetchPodcastListByIds } from '@/domains/coreDam/podcast/api/podcastApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useFetchPodcastListByIds } from '@/domains/coreDam/podcast/api/podcastApi'
+import type { Podcast, PodcastMinimal } from '@/domains/coreDam/podcast/types/Podcast'
 
 const mapFullToMinimal = (podcast: Podcast): PodcastMinimal => ({
   id: podcast.id,

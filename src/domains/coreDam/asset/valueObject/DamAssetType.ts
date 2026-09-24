@@ -1,4 +1,5 @@
-import { DamAssetType, type DamAssetTypeType } from '@anzusystems/common-admin'
+import { DamAssetType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
 export function useAssetType() {
   const { t } = useI18n()

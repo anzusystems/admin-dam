@@ -1,5 +1,6 @@
 import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 import { assetFileIsImageFile } from '@anzusystems/common-admin'
+
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 
 const IMAGE_HEIGHT = 200

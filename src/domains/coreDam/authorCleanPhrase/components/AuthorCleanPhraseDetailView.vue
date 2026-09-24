@@ -6,13 +6,14 @@ import {
   ACard,
   useI18n,
 } from '@anzusystems/common-admin'
+
+import AuthorCleanPhraseDetail from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue'
 import {
   useAuthorCleanPhraseDetailActions,
   useAuthorCleanPhraseRemoveActions,
 } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import AuthorCleanPhraseDetail from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, authorCleanPhrase } = useAuthorCleanPhraseDetailActions()
 const { removeAuthorCleanPhrase } = useAuthorCleanPhraseRemoveActions()

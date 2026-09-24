@@ -1,19 +1,20 @@
 <script lang="ts" setup>
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
+
+import JobCreateFormAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
+import JobCreateFormAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
+import JobCreateFormDefault from '@/domains/coreDam/job/components/JobCreateFormDefault.vue'
+import JobCreateFormPodcastSynchronizer from '@/domains/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
+import JobCreateFormSynchronizeImageChanged from '@/domains/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue'
+import JobCreateFormUserDataDelete from '@/domains/coreDam/job/components/JobCreateFormUserDataDelete.vue'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
   JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
-  type JobResource,
   useJobResource,
 } from '@/domains/coreDam/job/valueObject/JobResource'
-import JobCreateFormPodcastSynchronizer from '@/domains/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
-import JobCreateFormUserDataDelete from '@/domains/coreDam/job/components/JobCreateFormUserDataDelete.vue'
-import JobCreateFormDefault from '@/domains/coreDam/job/components/JobCreateFormDefault.vue'
-import JobCreateFormAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
-import JobCreateFormAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
-import JobCreateFormSynchronizeImageChanged from '@/domains/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue'
+import type { JobResource } from '@/domains/coreDam/job/valueObject/JobResource'
 
 withDefaults(
   defineProps<{

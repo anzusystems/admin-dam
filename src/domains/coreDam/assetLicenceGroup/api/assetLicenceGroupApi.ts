@@ -1,6 +1,8 @@
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
+
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { type DamAssetLicenceGroup, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
 
 const END_POINT = '/adm/v1/asset-licence-group'
 export const ENTITY = 'assetLicenceGroup'

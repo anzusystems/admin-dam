@@ -1,9 +1,11 @@
-import { type FilterConfig, type FilterData, type Pagination, useJobApi } from '@anzusystems/common-admin'
+import { useJobApi } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { useJobOneStore } from '@/domains/coreDam/job/store/jobStore'
 import type { Job } from '@/domains/coreDam/job/types/Job'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { showErrorsDefault } = useAlerts()
 

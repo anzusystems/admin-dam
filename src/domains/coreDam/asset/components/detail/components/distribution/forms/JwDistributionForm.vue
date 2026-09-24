@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import {
-  AFormTextField,
-  AFormValueObjectOptionsSelect,
-  ARow,
-  useDamConfigStore,
-  type ValidationScope,
-} from '@anzusystems/common-admin'
-import { DistributionItemResourceName, type JwDistributionUpdateDto } from '@/domains/coreDam/asset/types/Distribution'
+import { AFormTextField, AFormValueObjectOptionsSelect, ARow, useDamConfigStore } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+
 import { useJwDistributionUpdateDtoValidations } from '@/domains/coreDam/asset/components/detail/composables/distributionValidations'
+import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
+import type { JwDistributionUpdateDto } from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(
   defineProps<{

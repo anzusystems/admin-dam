@@ -1,23 +1,4 @@
 <script lang="ts" setup>
-import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
-import {
-  createJwDistribution,
-  ENTITY,
-  prepareFormDataJwDistribution,
-  redistributeJwDistribution,
-} from '@/domains/coreDam/asset/api/distributionJwApi'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import type {
-  DistributionJwCreateRedistributeDto,
-  DistributionJwItem,
-} from '@/domains/coreDam/asset/types/Distribution'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
-import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
-import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
@@ -25,12 +6,32 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
-  AFormTextarea,
   AFormTextField,
-  AssetFileProcessStatus,
+  AFormTextarea,
   ASystemEntityScope,
+  AssetFileProcessStatus,
   usePagination,
 } from '@anzusystems/common-admin'
+
+import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
+import {
+  ENTITY,
+  createJwDistribution,
+  prepareFormDataJwDistribution,
+  redistributeJwDistribution,
+} from '@/domains/coreDam/asset/api/distributionJwApi'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
+import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
+import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import type {
+  DistributionJwCreateRedistributeDto,
+  DistributionJwItem,
+} from '@/domains/coreDam/asset/types/Distribution'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

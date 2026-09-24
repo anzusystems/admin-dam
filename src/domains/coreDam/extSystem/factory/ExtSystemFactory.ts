@@ -1,7 +1,7 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import type { ExtSystem } from '@/domains/coreDam/extSystem/types/ExtSystem'
 import { TtsActiveProviderModeDefault } from '@/domains/coreDam/ttsNarrationRequest/types/TtsActiveProviderMode'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useExtSystemFactory() {
   const createDefault = (): ExtSystem => {

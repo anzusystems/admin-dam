@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
+
 import AnzuUserDetail from '@/domains/common/anzuUser/components/AnzuUserDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

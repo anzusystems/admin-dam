@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
+
+import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 
 const props = withDefaults(
   defineProps<{

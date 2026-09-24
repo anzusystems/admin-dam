@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useDistributionCategoryDetailActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+
 import DistributionCategoryDetail from '@/domains/coreDam/distributionCategory/components/DistributionCategoryDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useDistributionCategoryDetailActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, distributionCategory } = useDistributionCategoryDetailActions()
 

@@ -1,8 +1,8 @@
-import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { PodcastModeDefault } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
+import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 import { PodcastLastImportStatusDefault } from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
+import { PodcastModeDefault } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function usePodcastFactory() {
   const createDefault = (licenceId: IntegerIdNullable = null): Podcast => {

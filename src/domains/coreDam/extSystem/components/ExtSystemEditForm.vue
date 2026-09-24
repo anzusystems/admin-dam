@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemValidation } from '@/domains/coreDam/extSystem/composables/extSystemValidation'
-import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { extSystem } = useExtSystemEditActions()
 

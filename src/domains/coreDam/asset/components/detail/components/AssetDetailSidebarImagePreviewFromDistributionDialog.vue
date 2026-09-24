@@ -1,20 +1,21 @@
 <script lang="ts" setup>
-import { setVideoFileDistributionPreview } from '@/domains/coreDam/asset/api/videoApi'
-import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
-import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
 import {
   ACard,
-  ADialogToolbar,
-  useDamConfigStore,
   ADatatablePagination,
+  ADialogToolbar,
+  DatatablePaginationKey,
   createFilter,
   createFilterStore,
-  DatatablePaginationKey,
-  type MakeFilterOption,
+  useDamConfigStore,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { setVideoFileDistributionPreview } from '@/domains/coreDam/asset/api/videoApi'
+import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
+import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

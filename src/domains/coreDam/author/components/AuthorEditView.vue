@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
+
 import AuthorEditForm from '@/domains/coreDam/author/components/AuthorEditForm.vue'
+import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()

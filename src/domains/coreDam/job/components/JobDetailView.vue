@@ -6,10 +6,14 @@ import {
   JOB_RESOURCE_USER_DATA_DELETE,
   useI18n,
 } from '@anzusystems/common-admin'
-import { useJobDetailActions } from '@/domains/coreDam/job/composables/jobActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+
+import JobAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobAuthorCurrentOptimize.vue'
+import JobDetailAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobDetailAssetFileReprocessInternalFlag.vue'
 import JobDetailPodcastSynchronizer from '@/domains/coreDam/job/components/JobDetailPodcastSynchronizer.vue'
+import JobDetailSynchronizeImageChanged from '@/domains/coreDam/job/components/JobDetailSynchronizeImageChanged.vue'
 import JobDetailUserDataDelete from '@/domains/coreDam/job/components/JobDetailUserDataDelete.vue'
+import JobImageCopy from '@/domains/coreDam/job/components/JobImageCopy.vue'
+import { useJobDetailActions } from '@/domains/coreDam/job/composables/jobActions'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
@@ -17,10 +21,7 @@ import {
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
   JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
 } from '@/domains/coreDam/job/valueObject/JobResource'
-import JobAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobAuthorCurrentOptimize.vue'
-import JobImageCopy from '@/domains/coreDam/job/components/JobImageCopy.vue'
-import JobDetailAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobDetailAssetFileReprocessInternalFlag.vue'
-import JobDetailSynchronizeImageChanged from '@/domains/coreDam/job/components/JobDetailSynchronizeImageChanged.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 

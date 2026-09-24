@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import {
   AChipNoLink,
   ADatetime,
@@ -9,11 +7,14 @@ import {
   prettyBytes,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
+
+import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'
+import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
+import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 
 const props = withDefaults(
   defineProps<{

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
+
 import { useUserSelectActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUserFilter } from '@/domains/coreDam/user/filter/UserFilter'
 

@@ -1,12 +1,13 @@
-import { damClient } from '@/shared/apiClients/damClient'
 import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import type {
   TtsNarrationRequest,
   TtsNarrationRequestDetail,
   TtsSynthesizeRequestDto,
   TtsSynthesizeResponse,
 } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/tts-narration-request'
 export const ENTITY = 'ttsNarrationRequest'

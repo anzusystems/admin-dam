@@ -1,6 +1,8 @@
+import { slovakPluralizationRule } from '@anzusystems/common-admin'
+import type { LanguageCode } from '@anzusystems/common-admin'
 import { createI18n } from 'vue-i18n'
 import type { Locale, Path } from 'vue-i18n'
-import { slovakPluralizationRule, type LanguageCode } from '@anzusystems/common-admin'
+
 import type sk from '@/locales/sk'
 
 export type MessageSchema = typeof sk

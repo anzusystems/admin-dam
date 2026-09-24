@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import {
   AActionCloseButtonHistory,
   ABooleanValue,
@@ -10,23 +7,27 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
-  type DocId,
 } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
+import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
+import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
+import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import {
   isCancellableRequest,
   useTtsNarrationRequestDetailActions,
 } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
-import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
+import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
+import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import { ACL } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
-import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
-import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
-import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
-import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
-import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
-import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
-import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 
 const route = useRoute()
 const { t } = useI18n()

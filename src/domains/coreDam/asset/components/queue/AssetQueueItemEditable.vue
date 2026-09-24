@@ -1,28 +1,27 @@
 <script lang="ts" setup>
-import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
-import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import {
+  AActionDeleteButton,
+  ASystemEntityScope,
+  ATableCopyIdButton,
+  AssetFileFailReason,
+  DamAssetStatusDefault,
+  UploadQueueItemStatus,
+  prettyBytes,
+} from '@anzusystems/common-admin'
+import type { AssetCustomData, UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
+
 import { deleteAsset, fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetLink from '@/domains/coreDam/asset/components/AssetLink.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
-import {
-  AActionDeleteButton,
-  type AssetCustomData,
-  AssetFileFailReason,
-  ASystemEntityScope,
-  ATableCopyIdButton,
-  DamAssetStatusDefault,
-  prettyBytes,
-  type UploadQueueItem,
-  UploadQueueItemStatus,
-  type UploadQueueItemStatusType,
-} from '@anzusystems/common-admin'
+import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const props = withDefaults(
   defineProps<{

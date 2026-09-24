@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
-import {
-  type AuthorCleanPhraseTypeType,
-  useAuthorCleanPhraseTypeTypes,
-} from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
+
+import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
+import type { AuthorCleanPhraseTypeType } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 
 const props = withDefaults(
   defineProps<{

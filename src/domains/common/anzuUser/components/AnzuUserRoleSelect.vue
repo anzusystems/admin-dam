@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { AxiosInstance } from 'axios'
+
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 
 const props = defineProps<{

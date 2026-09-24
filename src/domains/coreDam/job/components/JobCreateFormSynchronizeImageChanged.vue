@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AFormDatetimePicker, AFormTextField, ARow, useJobApi } from '@anzusystems/common-admin'
+
+import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
 import type { JobSynchronizeImageChanged } from '@/domains/coreDam/job/types/Job'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
 
 const emit = defineEmits<{
   (e: 'onSuccess'): void

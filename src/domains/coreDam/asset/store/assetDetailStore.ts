@@ -1,4 +1,6 @@
-import { type AssetDetailItemDto, DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
+import { DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
+import type { AssetDetailItemDto } from '@anzusystems/common-admin'
+
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 

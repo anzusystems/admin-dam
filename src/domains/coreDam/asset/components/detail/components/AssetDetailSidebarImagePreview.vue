@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type { AssetFileVideo } from '@anzusystems/common-admin'
 import { assetFileIsVideoFile } from '@anzusystems/common-admin'
+
 import { fetchVideoFile, updatePreviewImage } from '@/domains/coreDam/asset/api/videoApi'
-import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
+import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
 withDefaults(
   defineProps<{

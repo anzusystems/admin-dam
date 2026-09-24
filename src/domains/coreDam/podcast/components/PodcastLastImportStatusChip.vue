@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import {
-  type PodcastLastImportStatusType,
-  usePodcastLastImportStatus,
-} from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
 import { AChipNoLink } from '@anzusystems/common-admin'
+
+import { usePodcastLastImportStatus } from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
+import type { PodcastLastImportStatusType } from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
 
 const props = withDefaults(
   defineProps<{

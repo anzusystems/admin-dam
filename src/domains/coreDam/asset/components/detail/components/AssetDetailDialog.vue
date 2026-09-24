@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
-import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
 import {
-  assetFileIsImageFile,
-  browserHistoryReplaceUrlByRouter,
   DamAssetImageRoiSelect,
   DamAssetStatusDefault,
   DamAssetType,
   DamAssetTypeDefault,
+  assetFileIsImageFile,
+  browserHistoryReplaceUrlByRouter,
 } from '@anzusystems/common-admin'
+
+import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
+import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 
 const emit = defineEmits<{
   (e: 'nextItem'): void

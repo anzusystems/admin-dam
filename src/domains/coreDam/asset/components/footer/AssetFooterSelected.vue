@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
+import AssetQueueMassEditSimple from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
+import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueMassEditSimple from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
-import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 
 const { t } = useI18n()
 

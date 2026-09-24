@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import {
   AFormDatetimePicker,
   AFormTextField,
@@ -8,11 +6,14 @@ import {
   ASystemEntityScope,
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
-import { damClient } from '@/shared/apiClients/damClient'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetLicence } = useAssetLicenceEditActions()
 

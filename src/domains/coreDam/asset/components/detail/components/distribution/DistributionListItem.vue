@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import type {
-  DistributionCustomItem,
-  DistributionJwItem,
-  DistributionYoutubeItem,
-} from '@/domains/coreDam/asset/types/Distribution'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { DamDistributionServiceType, useDamConfigStore } from '@anzusystems/common-admin'
+
 import DistributionListItemCustom from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustom.vue'
 import DistributionListItemEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemEmpty.vue'
 import DistributionListItemJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemJw.vue'
 import DistributionListItemYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemYoutube.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { DamDistributionServiceType, useDamConfigStore } from '@anzusystems/common-admin'
+import type {
+  DistributionCustomItem,
+  DistributionJwItem,
+  DistributionYoutubeItem,
+} from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(
   defineProps<{

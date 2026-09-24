@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import AssetListItem from '@/domains/coreDam/asset/components/list/components/AssetListItem.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import { useGridView } from '@/domains/system/composables/gridView'
-import AssetListItem from '@/domains/coreDam/asset/components/list/components/AssetListItem.vue'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { sidebarRight } = useMainWrapper()
 

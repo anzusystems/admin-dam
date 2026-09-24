@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
+import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 
 const props = withDefaults(
   defineProps<{

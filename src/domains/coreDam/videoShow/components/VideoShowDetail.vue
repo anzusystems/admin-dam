@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+
 import { useVideoShowOneStore } from '@/domains/coreDam/videoShow/store/videoShowStore'
 
 const { videoShow } = storeToRefs(useVideoShowOneStore())

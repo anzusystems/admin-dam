@@ -3,26 +3,27 @@ import type { DamKeyword } from '@anzusystems/common-admin'
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
+import KeywordFilter from '@/domains/coreDam/keyword/components/KeywordFilter.vue'
 import { useKeywordListActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordListFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
-import KeywordFilter from '@/domains/coreDam/keyword/components/KeywordFilter.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DamKeyword
 

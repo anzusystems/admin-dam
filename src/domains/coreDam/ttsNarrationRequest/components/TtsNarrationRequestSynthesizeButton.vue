@@ -1,32 +1,33 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ACreateDialog,
-  AFormTextarea,
   AFormTextField,
+  AFormTextarea,
   ARow,
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
-  type IntegerIdNullable,
 } from '@anzusystems/common-admin'
-import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
-import { damClient } from '@/shared/apiClients/damClient'
+import type { IntegerIdNullable } from '@anzusystems/common-admin'
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 import { ENTITY } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
+import VoiceFamilySelect from '@/domains/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue'
 import { useTtsNarrationRequestSynthesizeActions } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import {
   TTS_SYNTHESIZE_TEXT_MAX,
   useTtsNarrationRequestSynthesizeValidation,
 } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestValidation'
-import VoiceFamilySelect from '@/domains/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue'
+import { useTtsSynthesizeRequestDtoFactory } from '@/domains/coreDam/ttsNarrationRequest/factory/TtsSynthesizeRequestDtoFactory'
 import type {
   TtsSynthesizeRequestDto,
   TtsSynthesizeResponse,
 } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
-import { useTtsSynthesizeRequestDtoFactory } from '@/domains/coreDam/ttsNarrationRequest/factory/TtsSynthesizeRequestDtoFactory'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

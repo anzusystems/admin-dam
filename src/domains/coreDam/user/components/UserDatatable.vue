@@ -1,27 +1,28 @@
 <script lang="ts" setup>
-import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import type { DamUser } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { ENTITY } from '@/domains/coreDam/user/api/userApi'
 import UserFilter from '@/domains/coreDam/user/components/UserFilter.vue'
+import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUserListFilter } from '@/domains/coreDam/user/filter/UserFilter'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DamUser
 

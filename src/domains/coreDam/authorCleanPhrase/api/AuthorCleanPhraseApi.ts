@@ -1,11 +1,12 @@
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+
 import type {
   AuthorCleanPhrase,
   AuthorCleanResultDto,
   AuthorNameDto,
 } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/author-clean-phrase'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'

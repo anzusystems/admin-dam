@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import PermissionGroupDatatable from '@/domains/common/permissionGroup/components/PermissionGroupDatatable.vue'
-import PermissionGroupCreateButton from '@/domains/common/permissionGroup/components/PermissionGroupCreateButton.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
-import { damClient } from '@/shared/apiClients/damClient'
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
+import PermissionGroupCreateButton from '@/domains/common/permissionGroup/components/PermissionGroupCreateButton.vue'
+import PermissionGroupDatatable from '@/domains/common/permissionGroup/components/PermissionGroupDatatable.vue'
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const datatable = ref<InstanceType<typeof PermissionGroupDatatable> | null>(null)
 

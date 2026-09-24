@@ -1,34 +1,33 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-  SortOrder,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
-  type Pagination,
+  SortOrder,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions, Pagination } from '@anzusystems/common-admin'
+import { onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useVoiceFamilyListActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
+
+import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 import VoiceFamilyFilter from '@/domains/coreDam/voiceFamily/components/VoiceFamilyFilter.vue'
+import { useVoiceFamilyListActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyListFilter } from '@/domains/coreDam/voiceFamily/filter/VoiceFamilyFilter'
 import type { VoiceFamily } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = VoiceFamily
 

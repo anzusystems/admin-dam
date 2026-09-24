@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields, useDamAuthorType } from '@anzusystems/common-admin'
-import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
+
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 
 const { author } = storeToRefs(useAuthorOneStore())

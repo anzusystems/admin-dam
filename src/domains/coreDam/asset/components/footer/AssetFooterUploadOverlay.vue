@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
 
 const { t } = useI18n()
 

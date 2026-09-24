@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{

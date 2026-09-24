@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import {
   ACreateDialog,
   AFormTextField,
@@ -9,11 +6,15 @@ import {
   ASystemEntityScope,
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useAssetLicenceFactory } from '@/domains/coreDam/assetLicence/factory/AssetLicenceFactory'
-import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { ENTITY, useCreateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import { useAssetLicenceFactory } from '@/domains/coreDam/assetLicence/factory/AssetLicenceFactory'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

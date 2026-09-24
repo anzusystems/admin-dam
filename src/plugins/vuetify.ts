@@ -1,9 +1,9 @@
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
+import { i18n, useCommonVuetifyConfig, useI18n } from '@anzusystems/common-admin'
 import { createVuetify } from 'vuetify'
 import { Intersect } from 'vuetify/directives'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
-import { i18n, useCommonVuetifyConfig, useI18n } from '@anzusystems/common-admin'
 
 const { commonTheme, commonAliases, commonDefaults } = useCommonVuetifyConfig()
 

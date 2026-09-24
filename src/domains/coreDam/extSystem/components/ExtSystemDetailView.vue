@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+
 import ExtSystemDetail from '@/domains/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, extSystem } = useExtSystemDetailActions()
 

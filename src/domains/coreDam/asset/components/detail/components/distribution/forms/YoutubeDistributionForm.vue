@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { AFormValueObjectOptionsSelect, ARow, useDamConfigStore, type ValidationScope } from '@anzusystems/common-admin'
-import {
-  DistributionItemResourceName,
-  type YoutubeDistributionUpdateDto,
-} from '@/domains/coreDam/asset/types/Distribution'
+import { AFormValueObjectOptionsSelect, ARow, useDamConfigStore } from '@anzusystems/common-admin'
+import type { ValidationScope } from '@anzusystems/common-admin'
+
 import { useYoutubeDistributionUpdateDtoValidations } from '@/domains/coreDam/asset/components/detail/composables/distributionValidations'
+import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
+import type { YoutubeDistributionUpdateDto } from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(
   defineProps<{

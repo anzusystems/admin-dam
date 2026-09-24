@@ -1,18 +1,20 @@
-import { Mark, markPasteRule, mergeAttributes, type PasteRuleMatch } from '@tiptap/core'
+import { Mark, markPasteRule, mergeAttributes } from '@tiptap/core'
+import type { PasteRuleMatch } from '@tiptap/core'
 import { Plugin, Transaction } from '@tiptap/pm/state'
 import { find, registerCustomProtocol, reset } from 'linkifyjs'
+
+import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
+import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 import { autolink } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/autolink'
 import { clickHandler } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/clickHandler'
-import { pasteHandler } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/pasteHandler'
-import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
-import { isValidLinkVariant } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkVariantValidation'
 import {
   getLinkMarkAttributesFromHref,
   getVariantFromHref,
 } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkAttrs'
+import { isValidLinkVariant } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkVariantValidation'
+import { pasteHandler } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/pasteHandler'
 import { MarkName } from '@/domains/coreDam/shared/components/anzutap/marks/marks'
 import { NodeName } from '@/domains/coreDam/shared/components/anzutap/nodes/nodes'
-import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 
 // source: https://github.com/ueberdosis/tiptap/tree/main/packages/extension-link
 

@@ -2,15 +2,17 @@
 import {
   AActionCloseButtonHistory,
   AActionSaveButton,
-  ACard,
   AAnzuUserForm,
+  ACard,
   useAnzuUserActions,
 } from '@anzusystems/common-admin'
+
 import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'
 import { ACL } from '@/domains/system/auth/auth'
-import { damClient } from '@/shared/apiClients/damClient'
-import { damUserSystemDescriptor, type DamUser } from '@/domains/system/descriptors/userSystemDescriptor'
+import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
+import type { DamUser } from '@/domains/system/descriptors/userSystemDescriptor'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 definePage({
   path: '/users-new/:id(\\d+)/edit',

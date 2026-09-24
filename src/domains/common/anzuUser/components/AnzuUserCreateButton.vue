@@ -1,16 +1,11 @@
 <script lang="ts" setup>
-import {
-  ADialogToolbar,
-  AFormTextField,
-  type AnzuUser,
-  ARow,
-  ASystemEntityScope,
-  useAnzuUserFactory,
-} from '@anzusystems/common-admin'
-import { ENTITY, useCreateAnzuUser } from '@/domains/common/anzuUser/api/anzuUserApi'
+import { ADialogToolbar, AFormTextField, ARow, ASystemEntityScope, useAnzuUserFactory } from '@anzusystems/common-admin'
+import type { AnzuUser } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
-import { useAnzuUserCreateValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
+
+import { ENTITY, useCreateAnzuUser } from '@/domains/common/anzuUser/api/anzuUserApi'
 import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'
+import { useAnzuUserCreateValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
 import PermissionGroupRemoteAutocomplete from '@/domains/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 
 const props = withDefaults(

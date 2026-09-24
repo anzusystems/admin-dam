@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { DamAssetType, useDamConfigStore } from '@anzusystems/common-admin'
+import type { AssetFileProperties, DamAssetTypeType } from '@anzusystems/common-admin'
+
 import {
   DIMENSIONS_CONFIG,
   ICON_LOW,
@@ -7,12 +10,6 @@ import {
   ICON_TTS,
   LOW_DIMENSION,
 } from '@/domains/coreDam/asset/components/assetImageIconsConfig'
-import {
-  type AssetFileProperties,
-  DamAssetType,
-  type DamAssetTypeType,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { Editor } from '@tiptap/vue-3'
 import type { JSONContent } from '@tiptap/core'
-import Text from '@tiptap/extension-text'
 import Bold from '@tiptap/extension-bold'
-import Italic from '@tiptap/extension-italic'
-import Underline from '@tiptap/extension-underline'
 import Document from '@tiptap/extension-document'
+import Italic from '@tiptap/extension-italic'
 import Paragraph from '@tiptap/extension-paragraph'
-import Link from '@/domains/coreDam/shared/components/anzutap/marks/link/link'
-import AnzutapEditor from '@/domains/coreDam/shared/components/anzutap/components/AnzutapEditor.vue'
+import Text from '@tiptap/extension-text'
+import Underline from '@tiptap/extension-underline'
+import { Editor } from '@tiptap/vue-3'
+
 import { checkForEmptyDocument } from '@/domains/coreDam/asset/factory/DocumentFactory'
+import AnzutapEditor from '@/domains/coreDam/shared/components/anzutap/components/AnzutapEditor.vue'
+import Link from '@/domains/coreDam/shared/components/anzutap/marks/link/link'
 
 const props = withDefaults(
   defineProps<{

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { usePublicExportOneStore } from '@/domains/coreDam/publicExport/store/publicExportStore'
-import ExportTypeChip from '@/domains/coreDam/publicExport/components/ExportTypeChip.vue'
+
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import ExportTypeChip from '@/domains/coreDam/publicExport/components/ExportTypeChip.vue'
+import { usePublicExportOneStore } from '@/domains/coreDam/publicExport/store/publicExportStore'
 
 const { publicExport } = storeToRefs(usePublicExportOneStore())
 

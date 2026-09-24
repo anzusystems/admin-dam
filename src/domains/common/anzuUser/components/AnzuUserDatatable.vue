@@ -3,29 +3,30 @@ import {
   ABooleanValue,
   AChipNoLink,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
-  type AnzuUser,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
+import type { AnzuUser } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
-import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/domains/common/anzuUser/components/AnzuUserFilter.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
+import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 import CachedPermissionGroupChip from '@/domains/common/permissionGroup/components/CachedPermissionGroupChip.vue'
-import { damClient } from '@/shared/apiClients/damClient'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
 
 type DatatableItem = AnzuUser
 

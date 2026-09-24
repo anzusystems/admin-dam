@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+
 import VideoShowEditForm from '@/domains/coreDam/videoShow/components/VideoShowEditForm.vue'
+import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()

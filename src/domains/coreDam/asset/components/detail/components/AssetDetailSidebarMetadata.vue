@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
-import { ACL } from '@/domains/system/auth/auth'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { AActionDeleteButton } from '@anzusystems/common-admin'
+
 import { deleteAsset, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDownloadButton from '@/domains/coreDam/asset/components/detail/components/AssetDownloadButton.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AActionDeleteButton } from '@anzusystems/common-admin'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { ACL } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{

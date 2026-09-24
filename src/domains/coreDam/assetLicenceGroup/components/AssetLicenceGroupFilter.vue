@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFilterString, AFilterWrapper, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
+
 import { useAssetLicenceGroupListActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 
 const emit = defineEmits<{

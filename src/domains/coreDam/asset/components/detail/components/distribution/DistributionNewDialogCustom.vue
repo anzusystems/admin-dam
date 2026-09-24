@@ -1,8 +1,18 @@
 <script lang="ts" setup>
-import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
+import {
+  AFormDatetimePicker,
+  ASystemEntityScope,
+  AssetFileProcessStatus,
+  useDamConfigState,
+  useDamConfigStore,
+  usePagination,
+} from '@anzusystems/common-admin'
+import type {
+  DamAssetTypeType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+} from '@anzusystems/common-admin'
+
 import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import {
   createCustomDistribution,
@@ -10,27 +20,20 @@ import {
   redistributeCustomDistribution,
 } from '@/domains/coreDam/asset/api/distributionCustomApi'
 import { ENTITY } from '@/domains/coreDam/asset/api/distributionJwApi'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import type {
-  DistributionCustomCreateRedistributeDto,
-  DistributionCustomItem,
-} from '@/domains/coreDam/asset/types/Distribution'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
 import DistributionCustomMetadataForm from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
-import {
-  AFormDatetimePicker,
-  AssetFileProcessStatus,
-  ASystemEntityScope,
-  type DamAssetTypeType,
-  type DamDistributionRequirementsConfig,
-  type DamDistributionServiceName,
-  useDamConfigState,
-  useDamConfigStore,
-  usePagination,
-} from '@anzusystems/common-admin'
+import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import type {
+  DistributionCustomCreateRedistributeDto,
+  DistributionCustomItem,
+} from '@/domains/coreDam/asset/types/Distribution'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{

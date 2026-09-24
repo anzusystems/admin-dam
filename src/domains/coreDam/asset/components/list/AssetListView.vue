@@ -1,28 +1,29 @@
 <script lang="ts" setup>
-import { GridView, useGridView } from '@/domains/system/composables/gridView'
+import type { DatatableOrderingOption } from '@anzusystems/common-admin'
+import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin'
+import { onKeyUp } from '@vueuse/core'
+
+import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'
+import AssetFooterSelected from '@/domains/coreDam/asset/components/footer/AssetFooterSelected.vue'
+import AssetFooterSelectedFull from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue'
+import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
+import AssetListSidebarFilter from '@/domains/coreDam/asset/components/list/components/AssetListSidebarFilter.vue'
+import AssetListSidebarMetadata from '@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue'
+import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
+import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
 import {
   customSortOptions,
   useAssetListActions,
 } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
-import MainWrapper from '@/domains/system/components/MainWrapper.vue'
-import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
-import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'
-import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import AssetListSidebarFilter from '@/domains/coreDam/asset/components/list/components/AssetListSidebarFilter.vue'
-import AssetListSidebarMetadata from '@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import AssetFooterSelected from '@/domains/coreDam/asset/components/footer/AssetFooterSelected.vue'
-import AssetFooterSelectedFull from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue'
-import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
+import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
-import { onKeyUp } from '@vueuse/core'
-import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
-import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
-import type { DatatableOrderingOption } from '@anzusystems/common-admin'
-import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin'
+import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
+import MainWrapper from '@/domains/system/components/MainWrapper.vue'
+import { GridView, useGridView } from '@/domains/system/composables/gridView'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { t } = useI18n()
 

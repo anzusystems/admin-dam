@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import { ADialogToolbar, cloneDeep } from '@anzusystems/common-admin'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, cloneDeep } from '@anzusystems/common-admin'
-import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
-import { useVoiceEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+
 import VoiceManage from '@/domains/coreDam/voiceFamily/components/VoiceManage.vue'
+import { useVoiceEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 const props = withDefaults(
   defineProps<{

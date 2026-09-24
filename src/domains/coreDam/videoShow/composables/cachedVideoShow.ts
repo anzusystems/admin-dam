@@ -1,6 +1,6 @@
-import type { VideoShow, VideoShowMinimal } from '@/domains/coreDam/videoShow/types/VideoShow'
-import { useFetchVideoShowListByIds } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useFetchVideoShowListByIds } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import type { VideoShow, VideoShowMinimal } from '@/domains/coreDam/videoShow/types/VideoShow'
 
 const mapFullToMinimal = (videoShow: VideoShow): VideoShowMinimal => ({
   id: videoShow.id,

@@ -1,5 +1,6 @@
-import type { Ref } from 'vue'
 import type { FilterConfig, FilterData, Pagination, PermissionGroup } from '@anzusystems/common-admin'
+import type { Ref } from 'vue'
+
 import {
   useCreatePermissionGroup,
   useDeletePermissionGroup,
@@ -8,8 +9,8 @@ import {
   useFetchPermissionGroupListByIds,
   useUpdatePermissionGroup,
 } from '@/domains/common/permissionGroup/api/permissionGroupApi'
-import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'
 import { useCachedPermissionGroups } from '@/domains/common/permissionGroup/composables/cachedPermissionGroups'
+import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

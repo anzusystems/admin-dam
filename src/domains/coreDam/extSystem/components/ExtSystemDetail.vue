@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ACachedChip, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
+
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
-import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
 
 const { extSystem } = storeToRefs(useExtSystemOneStore())
 

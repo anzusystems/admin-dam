@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+
 import PermissionGroupEditForm from '@/domains/common/permissionGroup/components/PermissionGroupEditForm.vue'
-import { damClient } from '@/shared/apiClients/damClient'
 import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

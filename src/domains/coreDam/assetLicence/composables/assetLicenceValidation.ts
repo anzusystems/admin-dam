@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+
 import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 const { required, minLength, minValue } = useValidate()

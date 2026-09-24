@@ -6,15 +6,16 @@ import {
   ARow,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY, useCreateAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import { ENTITY, useCreateAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+import { useAuthorCleanPhraseValidation } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { useAuthorCleanPhraseValidation } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
-import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 import { useAuthorCleanPhraseModeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
-import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

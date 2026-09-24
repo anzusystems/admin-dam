@@ -1,21 +1,21 @@
 <script lang="ts" setup generic="I extends DamKeywordMinimal">
-import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
 import {
-  useDamKeywordFactory,
-  type ValidationScope,
   AFormRemoteAutocompleteWithCached,
   FilterInnerConfigKey,
   FilterInnerDataKey,
+  useDamKeywordFactory,
 } from '@anzusystems/common-admin'
-import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
-import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import type { DamKeyword, DamKeywordMinimal, ValidationScope } from '@anzusystems/common-admin'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { createKeyword } from '@/domains/coreDam/keyword/api/keywordApi'
 import KeywordRemoteAutocompleteCachedKeywordChip from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue'
 import {
   useCachedKeywords,
   useCachedKeywordsForRemoteAutocomplete,
 } from '@/domains/coreDam/keyword/composables/cachedKeywords'
-import { createKeyword } from '@/domains/coreDam/keyword/api/keywordApi'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
+import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
 
 const props = withDefaults(
   defineProps<{

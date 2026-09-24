@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useKeywordDetailActions } from '@/domains/coreDam/keyword/composables/keywordActions'
+
 import KeywordDetail from '@/domains/coreDam/keyword/components/KeywordDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useKeywordDetailActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, keyword } = useKeywordDetailActions()
 

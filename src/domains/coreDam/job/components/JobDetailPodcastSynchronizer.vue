@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ABooleanValue, AJobDetailCommon, ARow, useI18n } from '@anzusystems/common-admin'
-import type { JobPodcastSynchronizer } from '@/domains/coreDam/job/types/Job'
+
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
+import type { JobPodcastSynchronizer } from '@/domains/coreDam/job/types/Job'
 
 withDefaults(
   defineProps<{

@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { useAnzuUserOneStore } from '@/domains/common/anzuUser/store/anzuUserStore'
 import { ABooleanValue, AChipNoLink, ACopyText } from '@anzusystems/common-admin'
-import CachedPermissionGroupChip from '@/domains/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 import type { AxiosInstance } from 'axios'
+
+import { useAnzuUserOneStore } from '@/domains/common/anzuUser/store/anzuUserStore'
 import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
+import CachedPermissionGroupChip from '@/domains/common/permissionGroup/components/CachedPermissionGroupChip.vue'
 
 const props = defineProps<{
   client: () => AxiosInstance

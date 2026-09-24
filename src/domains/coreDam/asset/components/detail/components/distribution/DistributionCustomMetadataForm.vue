@@ -1,11 +1,8 @@
 <script lang="ts" setup>
+import { ACustomDataFormElement, useDamConfigStore } from '@anzusystems/common-admin'
+import type { CustomDataValue, DamDistributionServiceName } from '@anzusystems/common-admin'
+
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
-import {
-  ACustomDataFormElement,
-  type CustomDataValue,
-  type DamDistributionServiceName,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{

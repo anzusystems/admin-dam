@@ -1,9 +1,4 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
-import { ENTITY } from '@/domains/coreDam/user/api/userApi'
-import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
-import { useUpdateUserValidation } from '@/domains/coreDam/user/composables/userValidation'
 import {
   AFormTextField,
   ARow,
@@ -11,11 +6,17 @@ import {
   DamAssetLicenceGroupRemoteAutocomplete,
   DamAssetLicenceRemoteAutocomplete,
   DamDistributionServiceSelect,
-  DamExternalProviderAssetSelect,
   DamExtSystemRemoteAutocomplete,
-  useDamConfigStore,
+  DamExternalProviderAssetSelect,
   UserAuthType,
+  useDamConfigStore,
 } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/user/api/userApi'
+import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
+import { useUpdateUserValidation } from '@/domains/coreDam/user/composables/userValidation'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { userUpdate } = useUserEditActions()
 const damConfigStore = useDamConfigStore()

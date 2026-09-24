@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import type { DamAssetLicence, DamExtSystem } from '@anzusystems/common-admin'
+
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
-import { ACL } from '@/domains/system/auth/auth'
-import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
+import { ACL } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{

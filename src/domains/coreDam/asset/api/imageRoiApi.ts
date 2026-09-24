@@ -1,14 +1,10 @@
-import { damClient } from '@/shared/apiClients/damClient'
-import {
-  type FilterConfig,
-  type FilterData,
-  type Pagination,
-  useApiFetchList,
-  useApiRequest,
-} from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
+import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export interface AssetMetadataBulkItem {
   id: DocId

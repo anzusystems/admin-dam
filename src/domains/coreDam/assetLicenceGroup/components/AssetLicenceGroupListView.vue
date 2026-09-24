@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ACard, useI18n } from '@anzusystems/common-admin'
+
+import AssetLicenceGroupCreateButton from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
 import AssetLicenceGroupDatatable from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDatatable.vue'
 import { useAssetLicenceGroupListActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import AssetLicenceGroupCreateButton from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
-
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useAssetLicenceGroupListActions()
 

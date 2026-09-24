@@ -1,4 +1,5 @@
-import { AssetFileFailReason, type AssetFileFailReasonType } from '@anzusystems/common-admin'
+import { AssetFileFailReason } from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType } from '@anzusystems/common-admin'
 
 export function useAssetFileFailReason() {
   const { t } = useI18n()

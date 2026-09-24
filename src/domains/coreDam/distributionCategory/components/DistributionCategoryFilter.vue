@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import {
   AFilterString,
   AFilterValueObjectOptionsSelect,
@@ -7,6 +6,8 @@ import {
   FilterConfigKey,
   FilterDataKey,
 } from '@anzusystems/common-admin'
+
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 
 const emit = defineEmits<{

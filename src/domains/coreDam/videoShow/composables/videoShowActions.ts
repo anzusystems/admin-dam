@@ -1,14 +1,15 @@
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   useFetchVideoShow,
   useFetchVideoShowListByExtSystem,
   useFetchVideoShowListByIds,
   useUpdateVideoShow,
 } from '@/domains/coreDam/videoShow/api/videoShowApi'
-import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { useVideoShowOneStore } from '@/domains/coreDam/videoShow/store/videoShowStore'
+import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 

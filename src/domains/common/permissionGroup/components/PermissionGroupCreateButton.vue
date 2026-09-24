@@ -4,12 +4,13 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  type PermissionGroup,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
+import type { PermissionGroup } from '@anzusystems/common-admin'
+import type { AxiosInstance } from 'axios'
+
 import { ENTITY, useCreatePermissionGroup } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 import { usePermissionGroupValidation } from '@/domains/common/permissionGroup/composables/permissionGroupValidations'
-import type { AxiosInstance } from 'axios'
 
 const props = withDefaults(
   defineProps<{

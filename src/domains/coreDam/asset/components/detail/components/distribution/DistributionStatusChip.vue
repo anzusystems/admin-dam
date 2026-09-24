@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
 import type { DamDistributionStatusType } from '@anzusystems/common-admin'
+
+import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
 
 const props = withDefaults(
   defineProps<{

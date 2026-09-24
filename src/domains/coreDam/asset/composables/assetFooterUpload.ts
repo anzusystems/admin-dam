@@ -1,5 +1,5 @@
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 export const FooterViewUpload = {
   Hidden: 'hidden',

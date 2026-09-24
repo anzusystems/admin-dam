@@ -1,4 +1,5 @@
 import Cookies from 'universal-cookie'
+
 import { envConfig } from '@/shared/EnvConfigService'
 
 /* Bare `universal-cookie`, not VueUse's `useCookies()`: both readers run outside a Vue effect scope, where it leaks

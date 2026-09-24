@@ -1,27 +1,26 @@
 <script setup lang="ts">
+import {
+  AssetFileProcessStatus,
+  DamAssetType,
+  UploadQueueItemStatus,
+  assetFileIsVideoFile,
+} from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType, DamAssetTypeType, UploadQueueItem } from '@anzusystems/common-admin'
+import { useClipboard } from '@vueuse/core'
+
 import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
-import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileDuplicateChip from '@/domains/coreDam/asset/components/AssetFileDuplicateChip.vue'
 import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import ImageFile from '@/domains/coreDam/asset/components/ImageFile.vue'
-import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import AssetSlotListItemDuplicate from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemRemove from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemSwitch from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemSwitch.vue'
+import ImageFile from '@/domains/coreDam/asset/components/ImageFile.vue'
+import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
-import {
-  type AssetFileFailReasonType,
-  assetFileIsVideoFile,
-  AssetFileProcessStatus,
-  DamAssetType,
-  type DamAssetTypeType,
-  type UploadQueueItem,
-  UploadQueueItemStatus,
-} from '@anzusystems/common-admin'
-import { useClipboard } from '@vueuse/core'
+import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 
 const props = withDefaults(
   defineProps<{

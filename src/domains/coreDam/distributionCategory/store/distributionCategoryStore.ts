@@ -1,8 +1,9 @@
+import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+
 import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 
 export const useDistributionCategoryOneStore = defineStore('distributionCategoryOneStore', () => {
   const { createDefault } = useDistributionCategoryFactory()

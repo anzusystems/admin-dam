@@ -1,7 +1,9 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-import { VoiceDiscriminator, type VoiceDiscriminatorType } from '@/domains/coreDam/voiceFamily/types/Voice'
+
+import { VoiceDiscriminator } from '@/domains/coreDam/voiceFamily/types/Voice'
+import type { VoiceDiscriminatorType } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 export function useVoiceDiscriminator() {
   const { t } = useI18n()

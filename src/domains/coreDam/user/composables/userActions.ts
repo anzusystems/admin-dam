@@ -1,17 +1,17 @@
 import {
-  type DamUser,
-  useDamCachedUsers,
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserListByIds,
   updateDamUser,
+  useDamCachedUsers,
   useFetchDamUserList,
 } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { DamUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
-import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
-import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()

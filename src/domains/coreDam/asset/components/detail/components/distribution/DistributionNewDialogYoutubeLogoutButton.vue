@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { ADialogToolbar } from '@anzusystems/common-admin'
+
 import { logoutYoutube } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 
 const props = withDefaults(

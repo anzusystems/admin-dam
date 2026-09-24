@@ -1,24 +1,24 @@
 <script setup lang="ts">
+import { DamDistributionRequirementStrategy, useDamConfigState, usePagination } from '@anzusystems/common-admin'
+import type {
+  DamAssetTypeType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+  DocIdNullable,
+} from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import type { ErrorObject } from '@vuelidate/core'
+
+import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
-import { damClient } from '@/shared/apiClients/damClient'
-import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import {
-  type DamAssetTypeType,
-  type DamDistributionRequirementsConfig,
-  DamDistributionRequirementStrategy,
-  type DamDistributionServiceName,
-  type DocIdNullable,
-  useDamConfigState,
-  usePagination,
-} from '@anzusystems/common-admin'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
+import { damClient } from '@/shared/apiClients/damClient'
 
 // now only supports strategy AtLeastOne, as BE too
 

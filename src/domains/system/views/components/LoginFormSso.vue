@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { envConfig } from '@/shared/EnvConfigService'
-import { AUTH_LOGIN_PATH } from '@/domains/system/auth/authApi'
 import { useI18n } from 'vue-i18n'
+
+import { AUTH_LOGIN_PATH } from '@/domains/system/auth/authApi'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const url = envConfig.dam.apiUrl + AUTH_LOGIN_PATH
 

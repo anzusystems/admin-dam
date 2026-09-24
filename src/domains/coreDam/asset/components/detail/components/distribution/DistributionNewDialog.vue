@@ -1,18 +1,19 @@
 <script lang="ts" setup>
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
+import {
+  ADialogToolbar,
+  DamDistributionServiceType,
+  useDamConfigState,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+
 import DistributionNewDialogCustom from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import DistributionNewDialogJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutube.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
-import {
-  ADialogToolbar,
-  type DamAssetTypeType,
-  DamDistributionServiceType,
-  useDamConfigState,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{

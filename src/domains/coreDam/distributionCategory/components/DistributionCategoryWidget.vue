@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { DamAssetTypeDefault } from '@anzusystems/common-admin'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useFetchDistributionCategory } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import { DamAssetTypeDefault } from '@anzusystems/common-admin'
-import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import DistributionCategoryWidgetDialog from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
+import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
+import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 
 const { t } = useI18n()
 const { showErrorsDefault } = useAlerts()

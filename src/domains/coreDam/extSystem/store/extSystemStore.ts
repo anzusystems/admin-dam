@@ -1,5 +1,5 @@
-import type { ExtSystem } from '@/domains/coreDam/extSystem/types/ExtSystem'
 import { useExtSystemFactory } from '@/domains/coreDam/extSystem/factory/ExtSystemFactory'
+import type { ExtSystem } from '@/domains/coreDam/extSystem/types/ExtSystem'
 
 export const useExtSystemOneStore = defineStore('extSystemOneStore', () => {
   const { createDefault } = useExtSystemFactory()

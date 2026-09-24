@@ -1,26 +1,25 @@
+import { useAlerts } from '@anzusystems/common-admin'
+import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { type DocId, useAlerts } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import type {
-  TtsNarrationRequest,
-  TtsNarrationRequestDetail,
-  TtsSynthesizeRequestDto,
-  TtsSynthesizeResponse,
-} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
-import {
-  TtsRequestStatus,
-  type TtsRequestStatusType,
-} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 import {
   useCancelTtsNarrationRequest,
   useFetchTtsNarrationRequest,
   useFetchTtsNarrationRequestListByExtSystem,
   useSynthesizeTtsNarrationRequest,
 } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { TtsRequestStatus } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import type {
+  TtsNarrationRequest,
+  TtsNarrationRequestDetail,
+  TtsRequestStatusType,
+  TtsSynthesizeRequestDto,
+  TtsSynthesizeResponse,
+} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { useCachedVoiceFamiliesById } from '@/domains/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const { showRecordWas, showErrorsDefault } = useAlerts()

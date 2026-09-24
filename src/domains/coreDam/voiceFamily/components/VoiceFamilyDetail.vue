@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+
 import { useVoiceFamilyOneStore } from '@/domains/coreDam/voiceFamily/store/voiceFamilyStore'
 
 const { voiceFamily } = storeToRefs(useVoiceFamilyOneStore())

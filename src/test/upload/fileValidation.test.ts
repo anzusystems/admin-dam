@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { checkFormats, checkSizes } from '@/domains/coreDam/shared/services/upload/fileValidation'
 
 const file = (name: string, size: number, type = 'image/jpeg') => ({ name, size, type }) as File

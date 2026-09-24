@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AAnzuUserAvatar, COMMON_CONFIG, useDamCachedUsers } from '@anzusystems/common-admin'
+
 import type { UserMinimal } from '@/domains/coreDam/user/types/User'
 
 const props = withDefaults(

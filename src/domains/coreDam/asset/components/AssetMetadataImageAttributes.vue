@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import ColorBox from '@/domains/coreDam/shared/components/ColorBox.vue'
 import type { AssetFileImage } from '@anzusystems/common-admin'
 import { ABooleanValue } from '@anzusystems/common-admin'
+
+import ColorBox from '@/domains/coreDam/shared/components/ColorBox.vue'
 
 withDefaults(
   defineProps<{

@@ -1,11 +1,12 @@
 import type { DamAssetLicenceGroup, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
+
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import {
   useFetchAssetLicenceGroup,
   useFetchAssetLicenceGroupList,
   useUpdateAssetLicenceGroup,
 } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()

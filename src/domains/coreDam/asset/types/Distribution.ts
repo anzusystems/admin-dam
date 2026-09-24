@@ -1,5 +1,3 @@
-import type { DistributionFailReasonType } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
-import type { DistributionYoutubePrivacyType } from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'
 import type {
   CustomDataValue,
   DamDistributionServiceName,
@@ -7,6 +5,9 @@ import type {
   DatetimeUTCNullable,
   DocId,
 } from '@anzusystems/common-admin'
+
+import type { DistributionFailReasonType } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
+import type { DistributionYoutubePrivacyType } from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'
 
 interface TextsJw {
   title: string

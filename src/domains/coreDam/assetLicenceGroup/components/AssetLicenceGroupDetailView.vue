@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAssetLicenceGroupDetailActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
+
 import AssetLicenceGroupDetail from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useAssetLicenceGroupDetailActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, assetLicenceGroup } = useAssetLicenceGroupDetailActions()
 

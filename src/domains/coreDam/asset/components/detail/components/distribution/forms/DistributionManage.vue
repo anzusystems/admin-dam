@@ -1,23 +1,26 @@
 <script lang="ts" setup>
+import { AListEditor } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, ListViewItem } from '@anzusystems/common-admin'
+
+import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
+import DistributionItemView from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue'
+import DistributionManageDialog from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue'
+import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
+import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
+import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AListEditor, type ListViewItem } from '@anzusystems/common-admin'
 import {
-  type DistributionItem,
+  DistributionItemResourceName,
   distributionItemIsCustomItem,
   distributionItemIsJwItem,
   distributionItemIsYoutubeItem,
-  DistributionItemResourceName,
-  type DistributionItemResourceNameType,
-  type DistributionUpdateDto,
 } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionManageDialog from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import DistributionItemView from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue'
-import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
-import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
-import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
-import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
+import type {
+  DistributionItem,
+  DistributionItemResourceNameType,
+  DistributionUpdateDto,
+} from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(
   defineProps<{
