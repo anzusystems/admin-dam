@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useAlerts, useTheme } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { bulkUpdateAssetsMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'

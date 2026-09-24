@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'

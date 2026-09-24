@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { cloneDeep } from '@anzusystems/common-admin'
 import type { JSONContent } from '@tiptap/core'
 import Bold from '@tiptap/extension-bold'
 import Document from '@tiptap/extension-document'
@@ -7,6 +8,8 @@ import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 import Underline from '@tiptap/extension-underline'
 import { Editor } from '@tiptap/vue-3'
+import { onMounted, onUnmounted, ref, shallowRef, toRaw, watch } from 'vue'
+import type { Ref } from 'vue'
 
 import { checkForEmptyDocument } from '@/domains/coreDam/asset/factory/DocumentFactory'
 import AnzutapEditor from '@/domains/coreDam/shared/components/anzutap/components/AnzutapEditor.vue'

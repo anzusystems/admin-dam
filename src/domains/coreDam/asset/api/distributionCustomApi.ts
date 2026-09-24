@@ -1,4 +1,4 @@
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DocId } from '@anzusystems/common-admin'
 import { useApiCommand, useApiRequest } from '@anzusystems/common-admin'
 
 import type {

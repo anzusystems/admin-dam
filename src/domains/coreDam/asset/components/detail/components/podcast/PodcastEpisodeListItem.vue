@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { AActionDeleteButton } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'

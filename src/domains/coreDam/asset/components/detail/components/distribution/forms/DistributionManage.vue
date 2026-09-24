@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { AListEditor } from '@anzusystems/common-admin'
-import type { DamAssetTypeType, ListViewItem } from '@anzusystems/common-admin'
+import { AListEditor, isString, useAlerts } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId, ListViewItem } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
 import DistributionItemView from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue'

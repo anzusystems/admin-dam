@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { AssetFileImage } from '@anzusystems/common-admin'
 import { ABooleanValue } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import ColorBox from '@/domains/coreDam/shared/components/ColorBox.vue'
 

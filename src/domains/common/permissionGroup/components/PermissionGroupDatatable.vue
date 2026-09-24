@@ -16,6 +16,8 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 import PermissionGroupFilter from '@/domains/common/permissionGroup/components/PermissionGroupFilter.vue'

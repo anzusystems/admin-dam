@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import PublicExportCreateButton from '@/domains/coreDam/publicExport/components/PublicExportCreateButton.vue'
 import PublicExportDatatable from '@/domains/coreDam/publicExport/components/PublicExportDatatable.vue'

@@ -10,11 +10,14 @@ import {
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  SORT_BY_ID,
   createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import AuthorCleanPhraseFilter from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue'

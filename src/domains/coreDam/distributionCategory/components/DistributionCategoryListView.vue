@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import DistributionCategoryCreateButton from '@/domains/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue'
 import DistributionCategoryDatatable from '@/domains/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue'

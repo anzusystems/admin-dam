@@ -1,6 +1,17 @@
-import type { DamAssetTypeType, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { useDamConfigState, usePagination } from '@anzusystems/common-admin'
+import type {
+  DamAssetTypeType,
+  DocId,
+  FilterConfig,
+  FilterData,
+  Pagination,
+  ValueObjectOption,
+} from '@anzusystems/common-admin'
+import { isUndefined, useAlerts, useDamConfigState, usePagination } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {

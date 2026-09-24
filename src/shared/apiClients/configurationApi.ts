@@ -1,4 +1,4 @@
-import type { DamExtSystemConfig, DamPrvConfig, DamPubConfig } from '@anzusystems/common-admin'
+import type { DamExtSystemConfig, DamPrvConfig, DamPubConfig, IntegerId } from '@anzusystems/common-admin'
 import { useApiRequest } from '@anzusystems/common-admin'
 
 import { damClient } from '@/shared/apiClients/damClient'

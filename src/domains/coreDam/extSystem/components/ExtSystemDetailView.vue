@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useI18n,
+} from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import ExtSystemDetail from '@/domains/coreDam/extSystem/components/ExtSystemDetail.vue'
 import { useExtSystemDetailActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'

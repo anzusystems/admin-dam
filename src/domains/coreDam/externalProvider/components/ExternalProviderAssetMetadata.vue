@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import ExternalProviderAssetDetailSidebarActionsWrapper from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailSidebarActionsWrapper.vue'
 import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
 import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'

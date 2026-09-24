@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import type { AssetFileProcessStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
+import type { AssetFileProcessStatusType, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { ADatatablePagination, DatatablePaginationKey, useAlerts, usePagination } from '@anzusystems/common-admin'
+import { computed, onMounted, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fetchAssetDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'

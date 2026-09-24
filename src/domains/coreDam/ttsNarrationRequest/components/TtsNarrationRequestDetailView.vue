@@ -7,9 +7,10 @@ import {
   ADatetime,
   ARow,
   AUserAndTimeTrackingFields,
+  defineBreadcrumbs,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 

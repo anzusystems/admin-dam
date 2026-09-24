@@ -3,6 +3,7 @@ import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
   DamDistributionServiceName,
+  DocId,
 } from '@anzusystems/common-admin'
 import {
   AFormDatetimePicker,
@@ -10,8 +11,13 @@ import {
   AFormTextarea,
   ASystemEntityScope,
   AssetFileProcessStatus,
+  useAlerts,
   usePagination,
+  useValidate,
 } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import {

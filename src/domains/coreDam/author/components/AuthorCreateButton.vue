@@ -6,9 +6,14 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
+  isUndefined,
+  useAlerts,
   useDamAuthorFactory,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, useCreateAuthor } from '@/domains/coreDam/author/api/authorApi'

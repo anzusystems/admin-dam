@@ -5,6 +5,7 @@ import type {
   DatetimeUTCNullable,
   DocId,
 } from '@anzusystems/common-admin'
+import { isDefined } from '@anzusystems/common-admin'
 
 import type { DistributionFailReasonType } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
 import type { DistributionYoutubePrivacyType } from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'

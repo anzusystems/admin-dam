@@ -1,3 +1,8 @@
+import { useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
+
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 
 const { required, maxLength, minLength } = useValidate()

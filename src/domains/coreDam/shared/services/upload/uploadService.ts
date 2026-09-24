@@ -4,12 +4,14 @@ import {
   axiosErrorResponseHasForbiddenOperationData,
   axiosErrorResponseHasValidationData,
   i18n,
+  isUndefined,
   useDamUploadChunkSize,
 } from '@anzusystems/common-admin'
 import type { AnzuApiValidationResponseData, UploadQueueItem } from '@anzusystems/common-admin'
 import axios, { isAxiosError } from 'axios'
 import type { CancelTokenSource } from 'axios'
 import rusha from 'rusha'
+import { ref } from 'vue'
 
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/domains/coreDam/asset/api/fileApi'
 import { envConfig } from '@/shared/EnvConfigService'

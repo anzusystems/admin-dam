@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { EditorContent } from '@tiptap/vue-3'
 import type { Editor } from '@tiptap/vue-3'
+import { computed, ref } from 'vue'
 
 import AnzutapDialogs from '@/domains/coreDam/shared/components/anzutap/components/AnzutapDialogs.vue'
 import AnzutapToolbar from '@/domains/coreDam/shared/components/anzutap/components/AnzutapToolbar.vue'

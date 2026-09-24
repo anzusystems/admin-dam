@@ -8,6 +8,9 @@ import {
   damFileTypeFix,
   getAssetTypeByMimeType,
   i18n,
+  isNull,
+  isUndefined,
+  useAlerts,
   useAssetSuggestions,
   useDamConfigState,
   useUploadQueueItemFactory,
@@ -19,11 +22,14 @@ import type {
   AssetSearchListItemDto,
   CustomDataValue,
   DamAssetTypeType,
+  DocId,
   DocIdNullable,
   UploadQueue,
   UploadQueueItem,
   UploadQueueItemStatusType,
 } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
 
 import { fetchAsset, fetchAssetListByIds } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAudioFile } from '@/domains/coreDam/asset/api/audioApi'

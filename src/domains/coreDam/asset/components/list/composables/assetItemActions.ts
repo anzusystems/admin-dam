@@ -1,5 +1,6 @@
 import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 import { assetFileIsImageFile } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 

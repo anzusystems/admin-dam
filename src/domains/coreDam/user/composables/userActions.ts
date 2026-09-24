@@ -1,13 +1,19 @@
 import {
+  cloneDeep,
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserListByIds,
   updateDamUser,
+  useAlerts,
   useDamCachedUsers,
   useFetchDamUserList,
 } from '@anzusystems/common-admin'
-import type { DamUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { DamUser, FilterConfig, FilterData, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'

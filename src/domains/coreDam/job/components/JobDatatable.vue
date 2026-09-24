@@ -10,11 +10,15 @@ import {
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  SORT_BY_ID,
   createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'

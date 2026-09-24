@@ -2,7 +2,7 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["eslint", "typescript", "unicorn", "oxc", "vue", "import"],
   "env": { "browser": true },
-  "ignorePatterns": ["dist", "dist-ssr", "coverage", "e2e", "src/typed-router.d.ts", "src/auto-imports.d.ts"],
+  "ignorePatterns": ["dist", "dist-ssr", "coverage", "e2e", "src/typed-router.d.ts"],
   "categories": { "correctness": "error" },
   "rules": {
     "no-unused-vars": ["error", { "caughtErrors": "none" }],
@@ -28,14 +28,12 @@
     // would switch it off for every SFC. Left to eslint, which does both.
     "prefer-const": "off",
 
-    // These five resolve `computed`, `watch` and the lifecycle hooks through the import
-    // statement. Auto-imports removed those imports, so oxlint's versions say nothing;
-    // eslint's still work, because they also walk the globals from auto-import.
-    "vue/no-async-in-computed-properties": "off",
-    "vue/no-side-effects-in-computed-properties": "off",
-    "vue/return-in-computed-property": "off",
-    "vue/no-lifecycle-after-await": "off",
-    "vue/no-watch-after-await": "off",
+    // Enabled here, so that eslint stops running its copies: it had to while the imports were implicit.
+    "vue/no-async-in-computed-properties": "error",
+    "vue/no-side-effects-in-computed-properties": "error",
+    "vue/return-in-computed-property": "error",
+    "vue/no-lifecycle-after-await": "error",
+    "vue/no-watch-after-await": "error",
 
     // Imports: oxfmt sorts the statements (`sortImports` in .oxfmtrc.json); these sort the names
     // inside the braces, merge two imports of one module and keep types in their own `import type`.

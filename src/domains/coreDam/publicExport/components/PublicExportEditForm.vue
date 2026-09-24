@@ -6,6 +6,7 @@ import {
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 import { ENTITY } from '@/domains/coreDam/publicExport/api/publicExportApi'

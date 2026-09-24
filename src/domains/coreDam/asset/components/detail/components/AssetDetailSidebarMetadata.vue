@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AActionDeleteButton } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { AActionDeleteButton, isNull, useAlerts } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { deleteAsset, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'

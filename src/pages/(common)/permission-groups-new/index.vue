@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { AActionCreateButton, ACard, APermissionGroupDatatable } from '@anzusystems/common-admin'
+import { AActionCreateButton, ACard, APermissionGroupDatatable, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'

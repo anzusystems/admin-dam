@@ -1,5 +1,5 @@
 import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
-import type { DamDistributionServiceName, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 
 import type {

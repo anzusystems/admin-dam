@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import type { DamAssetLicence, DamExtSystem } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'

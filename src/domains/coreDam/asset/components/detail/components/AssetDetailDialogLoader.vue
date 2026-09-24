@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useTheme } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'

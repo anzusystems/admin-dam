@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { AFilterWrapperSidebar, FilterConfigKey, FilterDataKey, FiltersSelected } from '@anzusystems/common-admin'
+import { provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetListFilterForm from '@/domains/coreDam/asset/components/list/components/AssetListFilterForm.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'

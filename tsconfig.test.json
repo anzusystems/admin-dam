@@ -5,13 +5,12 @@
   // and the program fails in `assetDetailStore.ts`, a file the tests never touch.
   "include": [
     "env.d.ts",
-    "src/auto-imports.d.ts",
     "src/plugins.d.ts",
     "src/test/**/*",
     "src/**/*.test.ts",
     "src/**/*.spec.ts"
   ],
-  "exclude": [],
+  "exclude": ["src/auto-imports.d.ts"],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",

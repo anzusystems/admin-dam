@@ -1,5 +1,16 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextField, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormTextField,
+  AFormTextarea,
+  ARow,
+  ASystemEntityScope,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'

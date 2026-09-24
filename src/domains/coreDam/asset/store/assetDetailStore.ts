@@ -1,5 +1,7 @@
 import { DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
-import type { AssetDetailItemDto } from '@anzusystems/common-admin'
+import type { AssetDetailItemDto, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'

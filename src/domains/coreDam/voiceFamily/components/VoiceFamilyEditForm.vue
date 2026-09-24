@@ -8,6 +8,7 @@ import {
   FilterInnerConfigKey,
   FilterInnerDataKey,
 } from '@anzusystems/common-admin'
+import { provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'

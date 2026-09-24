@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { assetFileIsImageFile, usePagination } from '@anzusystems/common-admin'
+import { assetFileIsImageFile, cloneDeep, usePagination } from '@anzusystems/common-admin'
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import { fetchImageRoiList, fetchRoi } from '@/domains/coreDam/asset/api/imageRoiApi'

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import VideoShowCreateButton from '@/domains/coreDam/videoShow/components/VideoShowCreateButton.vue'
 import VideoShowDatatable from '@/domains/coreDam/videoShow/components/VideoShowDatatable.vue'

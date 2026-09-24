@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+} from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'

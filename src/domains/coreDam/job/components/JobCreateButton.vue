@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import JobCreateFormAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
 import JobCreateFormAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'

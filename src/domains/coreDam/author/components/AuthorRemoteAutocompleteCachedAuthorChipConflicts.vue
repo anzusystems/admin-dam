@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
+import type { CachedItem, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
+import { isUndefined } from '@anzusystems/common-admin'
+import { computed, shallowRef, watch } from 'vue'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 import { useDistributionCategorySelectOneStore } from '@/domains/coreDam/distributionCategorySelect/store/distributionCategorySelectStore'
 

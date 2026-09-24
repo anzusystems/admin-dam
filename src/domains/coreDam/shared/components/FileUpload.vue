@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { arrayFlatten, arrayFromArgs } from '@anzusystems/common-admin'
+import { arrayFlatten, arrayFromArgs, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
 import { checkFormats, checkSizes } from '@/domains/coreDam/shared/services/upload/fileValidation'

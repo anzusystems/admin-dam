@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import VideoShowEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeListItem.vue'

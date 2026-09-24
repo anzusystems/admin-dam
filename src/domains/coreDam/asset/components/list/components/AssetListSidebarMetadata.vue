@@ -1,5 +1,15 @@
 <script lang="ts" setup>
-import { DamAssetStatus, browserHistoryReplaceUrlByRouter, useDamCachedUsers } from '@anzusystems/common-admin'
+import {
+  DamAssetStatus,
+  browserHistoryReplaceUrlByRouter,
+  isNull,
+  useAlerts,
+  useDamCachedUsers,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import { updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'

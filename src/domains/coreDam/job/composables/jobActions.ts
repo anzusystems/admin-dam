@@ -1,6 +1,8 @@
-import { useJobApi } from '@anzusystems/common-admin'
+import { useAlerts, useJobApi } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
 
 import { useJobOneStore } from '@/domains/coreDam/job/store/jobStore'
 import type { Job } from '@/domains/coreDam/job/types/Job'

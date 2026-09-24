@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import type { CachedItem, DamKeywordMinimal } from '@anzusystems/common-admin'
+import type { CachedItem, DamKeywordMinimal, DocId } from '@anzusystems/common-admin'
+import { isNull, isUndefined } from '@anzusystems/common-admin'
+import { computed, shallowRef, watch } from 'vue'
 
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
 
 import { fetchYoutubePlaylists } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { YoutubePlaylist } from '@/domains/coreDam/asset/types/Distribution'

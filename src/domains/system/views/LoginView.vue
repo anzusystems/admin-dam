@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { UserAuthType, useDamConfigStore } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import LoginFormSimple from '@/domains/system/views/components/LoginFormSimple.vue'
 import LoginFormSso from '@/domains/system/views/components/LoginFormSso.vue'

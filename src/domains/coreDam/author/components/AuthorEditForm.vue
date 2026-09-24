@@ -6,6 +6,7 @@ import {
   ASystemEntityScope,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'

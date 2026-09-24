@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
 import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'

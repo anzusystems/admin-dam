@@ -19,6 +19,8 @@ import {
 import type { DatatableOrderingOption, DatatableOrderingOptions, Pagination } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
 import type { Ref } from 'vue'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import PodcastFilter from '@/domains/coreDam/podcast/components/PodcastFilter.vue'

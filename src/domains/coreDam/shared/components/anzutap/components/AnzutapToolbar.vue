@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
+import { computed, onMounted, ref } from 'vue'
 
 import { useAnzutapToolbar } from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
 import type {

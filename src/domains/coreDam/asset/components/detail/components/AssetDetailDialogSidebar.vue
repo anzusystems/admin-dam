@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import type {
   AssetFileFailReasonType,
   AssetFileProcessStatusType,
   DamAssetStatusType,
   DamAssetTypeType,
+  DocId,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
 import AssetDetailSidebarActionsTeleportTarget from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'

@@ -2,6 +2,8 @@
 import type { DatatableOrderingOption } from '@anzusystems/common-admin'
 import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin'
 import { onKeyUp } from '@vueuse/core'
+import { computed, onMounted, onUnmounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'

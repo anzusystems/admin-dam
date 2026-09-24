@@ -16,6 +16,8 @@ import '@anzusystems/common-admin/styles'
 import * as Sentry from '@sentry/vue'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
 
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'

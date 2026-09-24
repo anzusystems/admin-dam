@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'

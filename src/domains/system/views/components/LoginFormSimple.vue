@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
 import { useSimpleLoginActions } from '@/domains/system/views/composables/loginActions'
 
 const { t } = useI18n()

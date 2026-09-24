@@ -4,8 +4,13 @@ import {
   ACard,
   AJobDetailCommon,
   JOB_RESOURCE_USER_DATA_DELETE,
+  defineBreadcrumbs,
+  isUndefined,
+  stringToInt,
   useI18n,
 } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import JobAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobAuthorCurrentOptimize.vue'
 import JobDetailAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobDetailAssetFileReprocessInternalFlag.vue'

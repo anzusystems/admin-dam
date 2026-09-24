@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import AssetLicenceGroupCreateButton from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue'
 import AssetLicenceGroupDatatable from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDatatable.vue'

@@ -2,10 +2,15 @@
 import {
   ADialogToolbar,
   DamDistributionServiceType,
+  isNull,
+  isUndefined,
   useDamConfigState,
   useDamConfigStore,
 } from '@anzusystems/common-admin'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import DistributionNewDialogCustom from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogEmpty.vue'

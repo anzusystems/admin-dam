@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { ACustomDataFormElement, useDamConfigState } from '@anzusystems/common-admin'
+import { ACustomDataFormElement, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import type { CustomDataValue, DamAssetTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'

@@ -1,5 +1,6 @@
 import { useJobBaseResource } from '@anzusystems/common-admin'
 import type { JobBaseResource } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 export const JOB_RESOURCE_PODCAST_SYNCHRONIZER = 'jobPodcastSynchronizer'
 export const JOB_AUTHOR_CURRENT_OPTIMIZE = 'jobAuthorCurrentOptimize'

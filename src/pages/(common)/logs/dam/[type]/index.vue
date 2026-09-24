@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { ALogListView, dateTimeEndOfDay, dateTimeStartOfDay } from '@anzusystems/common-admin'
+import { ALogListView, dateTimeEndOfDay, dateTimeStartOfDay, defineBreadcrumbs } from '@anzusystems/common-admin'
 import type { Log, LogTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 import { LOG_SYSTEM } from '@/domains/system/logSystems'

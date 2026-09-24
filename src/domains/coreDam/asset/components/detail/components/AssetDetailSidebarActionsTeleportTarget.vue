@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { nextTick, onBeforeUnmount, onMounted } from 'vue'
+
 import { useAssetDetailSidebarActionbar } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarActionbar'
 
 const { mounted, unMounted } = useAssetDetailSidebarActionbar()

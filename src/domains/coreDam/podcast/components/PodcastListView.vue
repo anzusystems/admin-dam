@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import PodcastCreateButton from '@/domains/coreDam/podcast/components/PodcastCreateButton.vue'
 import PodcastDatatable from '@/domains/coreDam/podcast/components/PodcastDatatable.vue'

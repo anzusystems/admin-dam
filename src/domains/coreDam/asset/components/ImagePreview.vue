@@ -5,8 +5,16 @@ import {
   AssetFileProcessStatus,
   DamAssetType as AssetTypeValue,
   SortOrder,
+  isNull,
 } from '@anzusystems/common-admin'
-import type { AssetFileImage, AssetFileImagePreviewNullable, AssetSelectReturnData } from '@anzusystems/common-admin'
+import type {
+  AssetFileImage,
+  AssetFileImagePreviewNullable,
+  AssetSelectReturnData,
+  DocId,
+} from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'

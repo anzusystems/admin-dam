@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import ExternalProviderAssetQueueItemReadonly from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueItemReadonly.vue'
 

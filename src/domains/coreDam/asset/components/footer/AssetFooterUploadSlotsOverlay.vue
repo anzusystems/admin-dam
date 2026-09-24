@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { isOneOf } from '@anzusystems/common-admin'
+import { isOneOf, useTheme } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'

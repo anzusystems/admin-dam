@@ -1,5 +1,6 @@
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { cloneDeep, useAlerts, usePagination } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 import { fetchAssetSlotList, updateAssetSlots } from '@/domains/coreDam/asset/api/assetSlotApi'
 import {

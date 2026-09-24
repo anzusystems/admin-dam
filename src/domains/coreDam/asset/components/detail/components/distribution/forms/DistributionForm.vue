@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ACard } from '@anzusystems/common-admin'
 import type { ValidationScope } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 import CustomDistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/CustomDistributionForm.vue'
 import JwDistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/JwDistributionForm.vue'

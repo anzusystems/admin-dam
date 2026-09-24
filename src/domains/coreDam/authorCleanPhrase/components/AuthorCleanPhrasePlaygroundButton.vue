@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow } from '@anzusystems/common-admin'
+import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow, useAlerts } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'

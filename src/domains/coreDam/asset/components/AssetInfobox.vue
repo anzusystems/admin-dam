@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { AssetFileProcessStatus, DamAssetStatus } from '@anzusystems/common-admin'
 import type { AssetFileFailReasonType, AssetFileProcessStatusType, DamAssetStatusType } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
 

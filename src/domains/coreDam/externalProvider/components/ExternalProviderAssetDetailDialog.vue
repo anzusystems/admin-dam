@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { DamAssetImageRoiSelect, DamAssetType } from '@anzusystems/common-admin'
+import { DamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'

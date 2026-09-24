@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'

@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+import { useAlerts } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { rotateImage } from '@/domains/coreDam/asset/api/imageApi'
 
 const props = withDefaults(

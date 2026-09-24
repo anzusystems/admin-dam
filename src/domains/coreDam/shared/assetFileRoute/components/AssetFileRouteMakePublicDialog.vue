@@ -8,6 +8,9 @@ import {
   useValidate,
 } from '@anzusystems/common-admin'
 import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { makePublicFile } from '@/domains/coreDam/asset/api/fileApi'
 

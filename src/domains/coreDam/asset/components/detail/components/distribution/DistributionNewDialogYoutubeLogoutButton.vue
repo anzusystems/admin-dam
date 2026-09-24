@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ADialogToolbar, useAlerts } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { logoutYoutube } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 

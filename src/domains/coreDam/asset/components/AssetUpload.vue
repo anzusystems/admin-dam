@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { ADialogToolbar, useDamAcceptTypeAndSizeHelper, useDamConfigState } from '@anzusystems/common-admin'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  isUndefined,
+  useDamAcceptTypeAndSizeHelper,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'

@@ -9,7 +9,9 @@ import {
   FilterInnerConfigKey,
   FilterInnerDataKey,
 } from '@anzusystems/common-admin'
-import type { AssetSelectReturnData } from '@anzusystems/common-admin'
+import type { AssetSelectReturnData, IntegerId } from '@anzusystems/common-admin'
+import { computed, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'

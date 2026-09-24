@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { LogTypeDefault } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'

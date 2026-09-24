@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { AxiosInstance } from 'axios'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 

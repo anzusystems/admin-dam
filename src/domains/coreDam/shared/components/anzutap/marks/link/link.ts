@@ -1,7 +1,10 @@
+import { isUndefined } from '@anzusystems/common-admin'
 import { Mark, markPasteRule, mergeAttributes } from '@tiptap/core'
 import type { PasteRuleMatch } from '@tiptap/core'
 import { Plugin, Transaction } from '@tiptap/pm/state'
 import { find, registerCustomProtocol, reset } from 'linkifyjs'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 
 import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
 import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'

@@ -11,6 +11,8 @@ import {
   dateTimePretty,
   prettyBytes,
 } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'

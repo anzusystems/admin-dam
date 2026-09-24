@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import PermissionGroupCreateButton from '@/domains/common/permissionGroup/components/PermissionGroupCreateButton.vue'
 import PermissionGroupDatatable from '@/domains/common/permissionGroup/components/PermissionGroupDatatable.vue'

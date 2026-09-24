@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextField, AFormValueObjectOptionsSelect, ARow } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { upsertAssetDistributions } from '@/domains/coreDam/asset/api/distributionApi'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'

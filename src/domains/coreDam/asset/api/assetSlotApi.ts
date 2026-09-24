@@ -1,5 +1,5 @@
 import { useApiCommand, useApiFetchList } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'

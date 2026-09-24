@@ -1,3 +1,4 @@
+import { HTTP_STATUS_UNAUTHORIZED } from '@anzusystems/common-admin'
 import type { AxiosError } from 'axios'
 
 import { logoutUser } from '@/domains/system/composables/currentUser'

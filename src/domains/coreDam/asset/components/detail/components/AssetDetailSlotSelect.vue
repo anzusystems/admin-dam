@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useAssetDetailSidebarSlotsActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsActions'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'

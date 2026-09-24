@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ACachedChip } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 
 import { useCachedVideoShows } from '@/domains/coreDam/videoShow/composables/cachedVideoShow'
 

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'

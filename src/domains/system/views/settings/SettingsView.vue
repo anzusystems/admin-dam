@@ -1,6 +1,14 @@
 <script lang="ts" setup>
-import { ALanguageSelect, AThemeSelect, useI18n, useSentry, useUnreleasedFeatures } from '@anzusystems/common-admin'
+import {
+  ALanguageSelect,
+  AThemeSelect,
+  defineBreadcrumbs,
+  useI18n,
+  useSentry,
+  useUnreleasedFeatures,
+} from '@anzusystems/common-admin'
 import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 import { useAuth } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'

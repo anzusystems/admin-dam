@@ -6,7 +6,14 @@ import {
   DamAssetTypeDefault,
   assetFileIsImageFile,
   browserHistoryReplaceUrlByRouter,
+  isNull,
+  useTheme,
 } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'

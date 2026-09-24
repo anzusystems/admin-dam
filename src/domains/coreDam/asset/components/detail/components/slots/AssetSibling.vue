@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { AAssetSelect, DamAssetType, SortOrder } from '@anzusystems/common-admin'
-import type { AssetSelectReturnData, DamAssetTypeType } from '@anzusystems/common-admin'
+import type { AssetSelectReturnData, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'

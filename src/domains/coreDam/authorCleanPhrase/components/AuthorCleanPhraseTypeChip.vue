@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 import type { AuthorCleanPhraseTypeType } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'

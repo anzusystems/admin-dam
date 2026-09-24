@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 import { onKeyUp } from '@vueuse/core'
+import { onMounted, onUnmounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'

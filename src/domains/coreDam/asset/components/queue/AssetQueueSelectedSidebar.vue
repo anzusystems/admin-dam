@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ASystemEntityScope, DamAssetType } from '@anzusystems/common-admin'
 import type { CustomDataValue, DamAssetTypeType } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'

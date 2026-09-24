@@ -7,7 +7,7 @@ import {
   useApiRequest,
   usePagination,
 } from '@anzusystems/common-admin'
-import type { DamDistributionServiceName, MakeFilterOption } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DocId, MakeFilterOption } from '@anzusystems/common-admin'
 
 import type {
   DistributionAuthUrl,

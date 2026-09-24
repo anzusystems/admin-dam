@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { COMMON_CONFIG } from '@anzusystems/common-admin'
+import { COMMON_CONFIG, isString } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { useRouter } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{

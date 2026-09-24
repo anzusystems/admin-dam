@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ACopyText, DamDistributionStatus, useDamConfigState } from '@anzusystems/common-admin'
+import { ACopyText, DamDistributionStatus, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
 import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
 import DistributionListItemCustomDistributionDataItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFilterValueObjectOptionsSelect, useDamConfigStore } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 defineProps<{
   name: string

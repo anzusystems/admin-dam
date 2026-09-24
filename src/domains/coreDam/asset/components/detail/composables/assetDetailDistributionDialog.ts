@@ -1,5 +1,6 @@
-import type { AssetFileProcessStatusType, DamDistributionServiceName } from '@anzusystems/common-admin'
+import type { AssetFileProcessStatusType, DamDistributionServiceName, DocIdNullable } from '@anzusystems/common-admin'
 import { AssetFileProcessStatus } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {

@@ -1,5 +1,7 @@
 import { AssetFileFailReason } from '@anzusystems/common-admin'
-import type { AssetFileFailReasonType } from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType, ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export function useAssetFileFailReason() {
   const { t } = useI18n()

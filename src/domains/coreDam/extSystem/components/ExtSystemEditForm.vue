@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'

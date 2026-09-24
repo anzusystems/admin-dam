@@ -1,4 +1,5 @@
 import { useDamConfigState, useDamConfigStore, useRouteHistory } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 import { RELOAD_VETO_GRACE } from '@/appReload'

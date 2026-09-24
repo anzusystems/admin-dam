@@ -7,6 +7,7 @@ import {
   DamExtSystemRemoteAutocomplete,
   DamExternalProviderAssetSelect,
 } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import type { DamUser } from '@/domains/system/descriptors/userSystemDescriptor'
 import { damClient } from '@/shared/apiClients/damClient'

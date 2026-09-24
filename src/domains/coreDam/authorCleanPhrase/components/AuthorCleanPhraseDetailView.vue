@@ -4,8 +4,12 @@ import {
   AActionDeleteButton,
   AActionEditButton,
   ACard,
+  defineBreadcrumbs,
+  stringToInt,
   useI18n,
 } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import AuthorCleanPhraseDetail from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue'
 import {

@@ -1,0 +1,2038 @@
+{
+  "admin": "admin-dam",
+  "inputCommit": "e99650b14b31dfdca1c6e0a8d1908a9ac92ffec8",
+  "script": {
+    "commonAdminCommit": "5ff1304f028e24a87843c4e08a2b6ce96e7cd95d",
+    "path": "scripts/codemods/explicit-imports",
+    "archiveSha256": "19d06265f9738de8cdd2c1f8ff72e6c8c970fcbaf5b16d55fb2c007f59accb84",
+    "dirty": false
+  },
+  "tools": {
+    "typescript": "6.0.3",
+    "@vue/compiler-sfc": "3.5.43",
+    "unimport": "6.5.0",
+    "unplugin-auto-import": "21.1.0"
+  },
+  "names": {
+    "values": 107,
+    "types": 26
+  },
+  "totals": {
+    "files": 511,
+    "importDeclarations": 1238,
+    "propsChanged": 31
+  },
+  "files": {
+    "src/App.vue": {
+      "setup": ["onMounted", "useRoute"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserCreateButton.vue": {
+      "setup": ["isUndefined", "ref", "useAlerts", "useI18n", "useRouter"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserEditForm.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/common/anzuUser/components/AnzuUserRoleSelect.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/common/anzuUser/composables/anzuUserActions.ts": {
+      "script": ["isInt", "ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/common/anzuUser/composables/anzuUserValidations.ts": {
+      "script": ["useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/common/anzuUser/store/anzuUserStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/common/permission/components/PermissionEditor.vue": {
+      "setup": ["cloneDeep", "computed", "isUndefined", "useI18n"]
+    },
+    "src/domains/common/permission/components/PermissionGrantEditor.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/common/permission/components/PermissionValueChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/common/permission/composables/permissionActions.ts": {
+      "script": ["isUndefined"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/common/permission/composables/permissionConfigActions.ts": {
+      "script": ["storeToRefs", "useAlerts"]
+    },
+    "src/domains/common/permissionConfig/store/permissionConfigStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/common/permissionGroup/components/CachedPermissionGroupChip.vue": {
+      "types": ["IntegerId"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupCreateButton.vue": {
+      "setup": ["isUndefined", "ref", "useAlerts", "useI18n", "useRouter"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue": {
+      "setup": ["cloneDeep", "computed", "provide"]
+    },
+    "src/domains/common/permissionGroup/components/PermissionGroupRemoteSelect.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/common/permissionGroup/composables/cachedPermissionGroups.ts": {
+      "script": ["defineCached"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/common/permissionGroup/composables/permissionGroupActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["IntegerId", "ValueObjectOption"]
+    },
+    "src/domains/common/permissionGroup/composables/permissionGroupValidations.ts": {
+      "script": ["useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/common/permissionGroup/store/permissionGroupStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/asset/api/assetApi.ts": {
+      "script": ["HTTP_STATUS_OK", "isNull", "isUndefined", "useAlerts"],
+      "types": ["DocId", "IntegerId"]
+    },
+    "src/domains/coreDam/asset/api/assetCustomFormApi.ts": {
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/asset/api/assetSlotApi.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/audioApi.ts": {
+      "script": ["HTTP_STATUS_OK"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/distributionApi.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/distributionCustomApi.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/distributionJwApi.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/distributionYoutubeApi.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/documentApi.ts": {
+      "script": ["HTTP_STATUS_OK"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/fileApi.ts": {
+      "script": ["isNull"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/imageApi.ts": {
+      "script": ["HTTP_STATUS_OK"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/imageRoiApi.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/api/videoApi.ts": {
+      "script": ["HTTP_STATUS_OK"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/AssetByImageIdLink.vue": {
+      "setup": ["computed", "ref", "useRouter", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/AssetCreateButton.vue": {
+      "setup": ["ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetFileDuplicateChip.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetFileFailReasonChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/AssetImage.vue": {
+      "setup": ["computed", "isUndefined", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetImageMetaIcons.vue": {
+      "setup": ["computed", "isDefined", "storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetInfobox.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetLink.vue": {
+      "setup": ["computed", "useRouter"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/AssetMetadata.vue": {
+      "setup": ["computed", "ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/AssetSlotsFilter.vue": {
+      "setup": ["computed", "isUndefined"]
+    },
+    "src/domains/coreDam/asset/components/AssetUpload.vue": {
+      "setup": ["computed", "isUndefined", "ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/AssetDetailView.vue": {
+      "setup": [
+        "isString",
+        "nextTick",
+        "onMounted",
+        "ref",
+        "storeToRefs",
+        "useAlerts",
+        "useI18n",
+        "useRoute",
+        "useRouter",
+        "useTheme"
+      ],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/AssetFileDetailView.vue": {
+      "setup": [
+        "isString",
+        "nextTick",
+        "onMounted",
+        "ref",
+        "storeToRefs",
+        "useAlerts",
+        "useI18n",
+        "useRoute",
+        "useTheme"
+      ],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetChip.vue": {
+      "setup": ["isString", "useRouter"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue": {
+      "setup": ["computed", "isNull", "ref", "storeToRefs", "useI18n", "useRouter", "useTheme"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue": {
+      "setup": ["computed", "useI18n", "useTheme"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue": {
+      "setup": ["computed", "isUndefined", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsTeleportTarget.vue": {
+      "setup": ["nextTick", "onBeforeUnmount", "onMounted"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreview.vue": {
+      "setup": ["onMounted", "ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue": {
+      "setup": ["computed", "isNull", "onMounted", "provide", "ref", "storeToRefs", "useAlerts", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSidebarMetadata.vue": {
+      "setup": ["isNull", "ref", "useAlerts", "useI18n", "useVuelidate"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSidebarROI.vue": {
+      "setup": ["cloneDeep", "onMounted", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue": {
+      "setup": ["computed", "onMounted", "ref", "useI18n", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDownloadButton.vue": {
+      "setup": ["ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue": {
+      "setup": ["ref", "useAlerts", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue": {
+      "setup": ["computed", "onMounted", "provide", "ref", "useAlerts", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue": {
+      "setup": ["cloneDeep", "computed", "isUndefined", "ref", "useI18n", "useValidate", "watch"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionCancelDialog.vue": {
+      "setup": ["isNull", "ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionCustomMetadataForm.vue": {
+      "setup": ["computed", "isUndefined", "storeToRefs"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue": {
+      "setup": ["computed", "storeToRefs"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustom.vue": {
+      "setup": ["computed", "isUndefined", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemJw.vue": {
+      "setup": ["computed", "isUndefined", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemYoutube.vue": {
+      "setup": ["computed", "isUndefined", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialog.vue": {
+      "setup": ["computed", "isNull", "isUndefined", "storeToRefs", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogCustom.vue": {
+      "setup": [
+        "cloneDeep",
+        "computed",
+        "isUndefined",
+        "onMounted",
+        "ref",
+        "storeToRefs",
+        "useAlerts",
+        "useI18n",
+        "useVuelidate"
+      ],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogEmpty.vue": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogJw.vue": {
+      "setup": ["computed", "onMounted", "ref", "useAlerts", "useI18n", "useValidate", "useVuelidate"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutube.vue": {
+      "setup": [
+        "computed",
+        "onMounted",
+        "onUnmounted",
+        "ref",
+        "useAlerts",
+        "useI18n",
+        "useValidate",
+        "useVuelidate",
+        "watch"
+      ],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutubeLogoutButton.vue": {
+      "setup": ["ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubeLanguageSelect.vue": {
+      "setup": ["computed", "onMounted", "ref", "useAlerts"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubePlaylistSelect.vue": {
+      "setup": ["computed", "onMounted", "ref", "useAlerts"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionForm.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue": {
+      "setup": ["computed", "isUndefined"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManage.vue": {
+      "setup": ["computed", "isString", "ref", "useAlerts", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue": {
+      "setup": ["ref", "useAlerts", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/JwDistributionForm.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/YoutubeDistributionForm.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/YoutubeLogo.vue": {
+      "setup": ["useTheme"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue": {
+      "setup": ["computed", "onMounted", "storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/podcast/AssetDetailSidebarPodcast.vue": {
+      "setup": ["computed", "onMounted", "provide", "ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeListItem.vue": {
+      "setup": ["useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeNewDialog.vue": {
+      "setup": ["computed", "isNull", "onMounted", "ref", "useAlerts", "useI18n", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetDetailSidebarSlots.vue": {
+      "setup": ["onMounted", "provide", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue": {
+      "setup": ["computed", "ref", "storeToRefs", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItem.vue": {
+      "setup": ["computed", "isUndefined", "useAlerts", "useI18n", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemDuplicate.vue": {
+      "setup": ["computed", "ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemRemove.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemSwitch.vue": {
+      "setup": ["computed", "ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/videoShow/AssetDetailSidebarVideoShow.vue": {
+      "setup": ["computed", "onMounted", "provide", "ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeListItem.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeNewDialog.vue": {
+      "setup": ["computed", "isNull", "onMounted", "ref", "useAlerts", "useI18n", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/assetDetailActions.ts": {
+      "script": ["computed", "readonly", "ref", "storeToRefs"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog.ts": {
+      "script": ["ref"],
+      "types": ["DocIdNullable"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel.ts": {
+      "script": ["ref"],
+      "types": ["DocIdNullable"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/assetDetailSidebarActionbar.ts": {
+      "script": ["readonly", "ref"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsActions.ts": {
+      "script": ["cloneDeep", "computed", "useAlerts"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions.ts": {
+      "script": ["storeToRefs", "useAlerts"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/distributionValidations.ts": {
+      "script": ["useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions.ts": {
+      "script": ["isNull", "ref", "useAlerts"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterSelected.vue": {
+      "setup": ["computed", "useI18n", "useTheme", "watch"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue": {
+      "setup": ["computed", "ref", "useAlerts", "useI18n", "useTheme", "useVuelidate", "watch"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue": {
+      "setup": ["computed", "useI18n", "useTheme", "watch"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue": {
+      "setup": ["computed", "ref", "useAlerts", "useI18n", "useTheme", "useVuelidate", "watch"]
+    },
+    "src/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue": {
+      "setup": ["computed", "useI18n", "useTheme", "watch"]
+    },
+    "src/domains/coreDam/asset/components/ImageFile.vue": {
+      "setup": ["computed", "isNull", "ref", "useI18n", "watch"],
+      "types": ["DocId", "DocIdNullable"]
+    },
+    "src/domains/coreDam/asset/components/ImagePreview.vue": {
+      "setup": ["computed", "isNull", "ref", "useI18n", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/list/AssetListView.vue": {
+      "setup": ["computed", "onMounted", "onUnmounted", "provide", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/list/components/AssetListItem.vue": {
+      "setup": ["useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/list/components/AssetListItemImage.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/list/components/AssetListSidebarFilter.vue": {
+      "setup": ["provide", "ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue": {
+      "setup": ["computed", "isNull", "ref", "useAlerts", "useI18n", "useRouter", "useVuelidate", "watch"]
+    },
+    "src/domains/coreDam/asset/components/list/components/AssetListTableView.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/asset/components/list/components/AssetTableRowItem.vue": {
+      "setup": ["onMounted", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/list/composables/assetItemActions.ts": {
+      "script": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/list/composables/assetListActions.ts": {
+      "script": ["isNull", "isUndefined", "readonly", "ref", "storeToRefs", "useAlerts", "useRouter", "watch"],
+      "types": ["DocId", "Ref"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueEditable.vue": {
+      "setup": ["computed", "onMounted", "ref", "useAlerts"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue": {
+      "setup": ["computed", "isNull", "onUnmounted", "ref", "useAlerts", "useI18n", "watch"],
+      "types": ["DocId", "Ref"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueItemList.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueSelectedItemSimple.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue": {
+      "setup": ["computed", "onMounted", "ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetSearchInput.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicence.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue": {
+      "setup": [
+        "computed",
+        "isArray",
+        "isInt",
+        "isNull",
+        "isUndefined",
+        "onMounted",
+        "ref",
+        "storeToRefs",
+        "useAlerts",
+        "useI18n",
+        "useValidate"
+      ],
+      "types": ["IntegerId", "IntegerIdNullable"],
+      "template": ["isNull"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue": {
+      "setup": ["computed", "isEmptyObject", "isUndefined", "useI18n", "useRoute", "useRouter"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue": {
+      "setup": ["computed", "onMounted", "ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/asset/composables/assetDetailTab.ts": {
+      "script": ["ref"]
+    },
+    "src/domains/coreDam/asset/composables/assetFooterSelected.ts": {
+      "script": ["computed", "readonly", "ref"]
+    },
+    "src/domains/coreDam/asset/composables/assetFooterUpload.ts": {
+      "script": ["computed", "readonly", "ref"]
+    },
+    "src/domains/coreDam/asset/composables/assetFooterUploadSlots.ts": {
+      "script": ["computed", "readonly", "ref"]
+    },
+    "src/domains/coreDam/asset/composables/currentExtSystem.ts": {
+      "script": ["isNull", "isString", "isUndefined", "readonly", "ref", "storeToRefs"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/composables/externalProviderAssetFooterSelected.ts": {
+      "script": ["computed", "readonly", "ref"]
+    },
+    "src/domains/coreDam/asset/composables/externalProviders.ts": {
+      "script": ["ref"]
+    },
+    "src/domains/coreDam/asset/composables/windowFilesDragWatcher.ts": {
+      "script": ["readonly", "ref"]
+    },
+    "src/domains/coreDam/asset/factory/DistributionCustomFactory.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/factory/DistributionJwFactory.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/factory/DistributionYoutubeFactory.ts": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/factory/DocumentFactory.ts": {
+      "script": ["isArray", "isEmpty", "isEmptyObject", "isUndefined"]
+    },
+    "src/domains/coreDam/asset/store/assetDetailStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"],
+      "types": ["DocId", "DocIdNullable"]
+    },
+    "src/domains/coreDam/asset/store/assetListStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "isNull", "ref"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/store/assetSlotsStore.ts": {
+      "script": ["acceptHMRUpdate", "cloneDeep", "computed", "defineStore", "isUndefined", "ref"]
+    },
+    "src/domains/coreDam/asset/store/distributionListStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "isNull", "ref"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/store/imageRoiStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/asset/store/uploadQueuesStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "isNull", "isUndefined", "ref", "useAlerts"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/asset/types/Distribution.ts": {
+      "script": ["isDefined"]
+    },
+    "src/domains/coreDam/asset/types/DistributionImagePreviewDto.ts": {
+      "types": ["AnzuUserAndTimeTrackingAware", "DocId", "ResourceNameSystemAware"]
+    },
+    "src/domains/coreDam/asset/valueObject/AssetFileFailReason.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/DamAssetStatus.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/DamAssetType.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/DamDistributionStatus.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/DeviceType.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/DistributionFailReason.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/ExportType.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/asset/valueObject/ImageOrientation.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue": {
+      "setup": ["cloneDeep", "computed", "isString", "provide", "watch"],
+      "types": ["IntegerId", "IntegerIdNullable"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue": {
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/assetLicence/composables/assetLicenceActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"]
+    },
+    "src/domains/coreDam/assetLicence/composables/assetLicenceValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/assetLicence/composables/cachedAssetLicences.ts": {
+      "script": ["defineCached"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/assetLicence/store/assetLicenceStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupCreateButton.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/author/components/AuthorCreateButton.vue": {
+      "setup": ["isUndefined", "ref", "useAlerts", "useI18n", "useRouter"]
+    },
+    "src/domains/coreDam/author/components/AuthorDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/author/components/AuthorDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/author/components/AuthorDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/author/components/AuthorEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/author/components/AuthorEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/author/components/AuthorFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/author/components/AuthorListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue": {
+      "setup": ["computed", "provide", "watch"],
+      "types": ["DocId", "DocIdNullable"]
+    },
+    "src/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue": {
+      "setup": ["computed", "isUndefined", "shallowRef", "useI18n", "watch"],
+      "types": ["DocId"],
+      "template": ["isNull", "isUndefined"]
+    },
+    "src/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue": {
+      "setup": ["computed", "isUndefined", "shallowRef", "watch"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue": {
+      "setup": ["cloneDeep", "computed", "isArray", "provide", "ref", "useI18n", "useValidate", "useVuelidate"],
+      "types": ["DocId", "IntegerId"]
+    },
+    "src/domains/coreDam/author/components/AuthorTypeChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/author/composables/authorActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/author/composables/authorConfig.ts": {
+      "script": ["computed", "isUndefined"]
+    },
+    "src/domains/coreDam/author/composables/authorValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/author/composables/cachedAuthors.ts": {
+      "script": ["defineCached"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/author/store/authorStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseCreateButton.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue": {
+      "setup": ["SORT_BY_ID", "onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeStatusChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhrasePlaygroundButton.vue": {
+      "setup": ["ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory.ts": {
+      "script": ["dateTimeNow"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/store/authorCleanPhraseStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryCreateButton.vue": {
+      "setup": ["computed", "ref", "useAlerts", "useI18n", "watch"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryDatatable.vue": {
+      "setup": ["computed", "onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue": {
+      "setup": ["computed", "provide", "watch"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryWidget.vue": {
+      "setup": ["computed", "isNull", "ref", "useAlerts", "useI18n", "watch"],
+      "types": ["DocId", "DocIdNullable"]
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue": {
+      "setup": ["computed", "isNull", "ref", "useAlerts", "useI18n", "watch"],
+      "types": ["DocId", "DocIdNullable"]
+    },
+    "src/domains/coreDam/distributionCategory/composables/distributionCategoryActions.ts": {
+      "script": ["isUndefined", "ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["DocId", "ValueObjectOption"]
+    },
+    "src/domains/coreDam/distributionCategory/composables/distributionCategoryValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/distributionCategory/factory/DistributionCategoryOptionFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/distributionCategory/store/distributionCategoryStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/distributionCategory/types/DistributionCategoryOption.ts": {
+      "types": ["AnzuUserAndTimeTrackingAware", "DocId", "ResourceNameSystemAware"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue": {
+      "setup": ["ref"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "nextTick", "onBeforeUnmount", "onMounted", "ref", "useRoute"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue": {
+      "setup": ["cloneDeep", "computed", "isUndefined", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions.ts": {
+      "script": ["isUndefined", "ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectValidation.ts": {
+      "script": ["computed", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/factory/DistributionCategorySelectFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/distributionCategorySelect/store/distributionCategorySelectStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialog.vue": {
+      "setup": ["computed", "isNull", "ref", "storeToRefs", "useI18n", "useTheme"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailSidebarActionsTeleportTarget.vue": {
+      "setup": ["nextTick", "onBeforeUnmount", "onMounted"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetFooterSelected.vue": {
+      "setup": ["computed", "useI18n", "useTheme", "watch"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetFooterSelectedFull.vue": {
+      "setup": ["computed", "useI18n", "useTheme", "watch"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetListItem.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetListSidebarFilter.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetListSidebarMetadata.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue": {
+      "setup": ["onMounted", "onUnmounted", "provide", "useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadata.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue": {
+      "setup": ["computed", "isArray"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueItemReadonly.vue": {
+      "setup": ["computed", "useI18n"]
+    },
+    "src/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueReadonly.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions.ts": {
+      "script": ["storeToRefs"]
+    },
+    "src/domains/coreDam/externalProvider/composables/externalProviderAssetDetailSidebarActionbar.ts": {
+      "script": ["readonly", "ref"]
+    },
+    "src/domains/coreDam/externalProvider/composables/externalProviderAssetImport.ts": {
+      "script": ["isNull", "useAlerts"]
+    },
+    "src/domains/coreDam/externalProvider/composables/externalProviderAssetListActions.ts": {
+      "script": ["isNull", "isUndefined", "ref", "storeToRefs", "useAlerts", "useRoute", "useRouter", "watch"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/externalProvider/store/externalProviderAssetListStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "isNull", "ref"]
+    },
+    "src/domains/coreDam/externalProvider/valueObject/ExternalProviderAssetType.ts": {
+      "script": ["ref", "storeToRefs"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/extSystem/components/CachedExtSystemChip.vue": {
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemDetail.vue": {
+      "setup": ["computed", "storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs"]
+    },
+    "src/domains/coreDam/extSystem/components/ExtSystemTtsSettingsForm.vue": {
+      "setup": ["computed", "provide", "useI18n"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/extSystem/components/FilterExtSystemRemoteAutocomplete.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/coreDam/extSystem/composables/cachedExtSystems.ts": {
+      "script": ["defineCached"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/extSystem/composables/extSystemActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["IntegerId", "ValueObjectOption"]
+    },
+    "src/domains/coreDam/extSystem/composables/extSystemValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/extSystem/factory/ExtSystemFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/extSystem/store/extSystemStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/job/components/JobCreateButton.vue": {
+      "setup": ["computed", "ref", "useI18n"]
+    },
+    "src/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue": {
+      "setup": ["ref", "useAlerts", "useI18n", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue": {
+      "setup": ["computed", "ref", "useAlerts", "useI18n", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue": {
+      "setup": ["ref", "useAlerts", "useI18n", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue": {
+      "setup": ["ref", "useAlerts", "useI18n", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/job/components/JobCreateFormUserDataDelete.vue": {
+      "setup": ["ref", "useAlerts", "useI18n", "useValidate", "useVuelidate"]
+    },
+    "src/domains/coreDam/job/components/JobDatatable.vue": {
+      "setup": ["SORT_BY_ID", "onMounted", "provide", "useI18n", "useRouter"]
+    },
+    "src/domains/coreDam/job/components/JobDetailView.vue": {
+      "setup": [
+        "computed",
+        "defineBreadcrumbs",
+        "isUndefined",
+        "onBeforeUnmount",
+        "onMounted",
+        "stringToInt",
+        "useRoute"
+      ]
+    },
+    "src/domains/coreDam/job/components/JobFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/job/components/JobListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/job/components/JobResourceChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/job/composables/jobActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts"]
+    },
+    "src/domains/coreDam/job/composables/jobValidations.ts": {
+      "script": ["stringToInt", "useI18n", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/job/store/jobStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/job/valueObject/JobResource.ts": {
+      "script": ["useI18n"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordCreateButton.vue": {
+      "setup": ["isUndefined", "ref", "useAlerts", "useI18n", "useRouter"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue": {
+      "setup": ["computed", "isUndefined", "shallowRef", "watch"],
+      "types": ["DocId"],
+      "template": ["isNull", "isUndefined"]
+    },
+    "src/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue": {
+      "setup": ["computed", "isArray", "provide", "ref", "useAlerts", "useValidate", "useVuelidate"],
+      "types": ["DocId", "IntegerId"]
+    },
+    "src/domains/coreDam/keyword/composables/cachedKeywords.ts": {
+      "script": ["defineCached"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/keyword/composables/keywordActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/keyword/composables/keywordConfig.ts": {
+      "script": ["computed", "isUndefined"]
+    },
+    "src/domains/coreDam/keyword/composables/keywordValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/keyword/store/keywordStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/podcast/components/CachedPodcastChip.vue": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastCreateButton.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastDetail.vue": {
+      "setup": ["computed", "storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastDetailView.vue": {
+      "setup": [
+        "computed",
+        "defineBreadcrumbs",
+        "nextTick",
+        "onBeforeUnmount",
+        "onMounted",
+        "ref",
+        "useI18n",
+        "useRoute",
+        "watch"
+      ]
+    },
+    "src/domains/coreDam/podcast/components/PodcastEditForm.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "nextTick", "onBeforeUnmount", "onMounted", "ref", "useRoute"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastExportDataBodyEditor.vue": {
+      "setup": ["cloneDeep", "onMounted", "onUnmounted", "ref", "shallowRef", "toRaw", "watch"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastExportDataManageDialog.vue": {
+      "setup": ["ref", "useAlerts", "useI18n"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastModeChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue": {
+      "setup": ["provide"],
+      "types": ["DocId", "DocIdNullable", "IntegerIdNullable"]
+    },
+    "src/domains/coreDam/podcast/composables/cachedPodcasts.ts": {
+      "script": ["defineCached"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/podcast/composables/podcastActions.ts": {
+      "script": ["isUndefined", "ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["IntegerId", "IntegerIdNullable", "ValueObjectOption"]
+    },
+    "src/domains/coreDam/podcast/composables/podcastDetailTab.ts": {
+      "script": ["ref"]
+    },
+    "src/domains/coreDam/podcast/composables/podcastExportDataValidations.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/podcast/composables/podcastValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/podcast/factory/PodcastExportDataFactory.ts": {
+      "script": ["dateTimeNow"],
+      "types": ["DocId", "DocIdNullable"]
+    },
+    "src/domains/coreDam/podcast/factory/PodcastFactory.ts": {
+      "script": ["dateTimeNow"],
+      "types": ["IntegerIdNullable"]
+    },
+    "src/domains/coreDam/podcast/store/podcastStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/podcast/valueObject/PodcastLastImportStatus.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/podcast/valueObject/PodcastMode.ts": {
+      "script": ["ref", "useI18n"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeCreateButton.vue": {
+      "setup": ["ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetail.vue": {
+      "setup": ["computed", "storeToRefs", "useI18n", "useRouter"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute", "useRouter"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory.ts": {
+      "script": ["dateTimeNow"],
+      "types": ["DocIdNullable", "IntegerId"]
+    },
+    "src/domains/coreDam/podcastEpisode/store/podcastEpisodeStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/publicExport/components/DeviceTypeChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/publicExport/components/ExportTypeChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportCreateButton.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/publicExport/components/PublicExportListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/publicExport/composables/publicExportActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["IntegerId", "Ref"]
+    },
+    "src/domains/coreDam/publicExport/composables/publicExportValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/publicExport/factory/PublicExportFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/publicExport/store/publicExportStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue": {
+      "setup": ["ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue": {
+      "setup": ["computed", "ref", "useI18n", "useVuelidate", "watch"]
+    },
+    "src/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteStatus.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/shared/components/ABtnAdvanced.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/components/AnzutapEditor.vue": {
+      "setup": ["computed", "ref"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/components/anzutapToolbar.ts": {
+      "script": ["isDefined"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/components/AnzutapToolbar.vue": {
+      "setup": ["computed", "onMounted", "ref"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/marks/link/components/LinkDialog.vue": {
+      "setup": ["computed", "ref", "useAlerts", "useI18n", "useValidate", "watch"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink.ts": {
+      "script": ["computed", "isString", "isUndefined", "reactive", "ref"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkAttrs.ts": {
+      "script": ["isString"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkVariantValidation.ts": {
+      "script": ["isUndefined"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/marks/link/link.ts": {
+      "script": ["isUndefined", "ref"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/shared/components/anzutap/types/storage.ts": {
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/shared/components/CachedDamUserChip.vue": {
+      "setup": ["computed", "isUndefined", "shallowRef", "useRouter", "watch"],
+      "types": ["IntegerId"],
+      "template": ["isNull", "isUndefined"]
+    },
+    "src/domains/coreDam/shared/components/ColorBox.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue": {
+      "setup": ["computed", "isUndefined"]
+    },
+    "src/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue": {
+      "setup": ["computed", "isUndefined", "useI18n"]
+    },
+    "src/domains/coreDam/shared/components/FileUpload.vue": {
+      "setup": ["computed", "isArray", "isUndefined", "ref", "useAlerts", "useI18n", "watch"]
+    },
+    "src/domains/coreDam/shared/components/FilterClosestColor.vue": {
+      "setup": ["cloneDeep", "computed", "inject", "isArray", "isUndefined", "storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/shared/distribution/components/DistributionServiceChip.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/shared/distribution/components/DistributionServiceNameFilter.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/coreDam/shared/services/upload/externalProviderImportService.ts": {
+      "script": ["useAlerts"]
+    },
+    "src/domains/coreDam/shared/services/upload/fileValidation.ts": {
+      "script": ["isUndefined"]
+    },
+    "src/domains/coreDam/shared/services/upload/uploadService.ts": {
+      "script": ["isUndefined", "ref"]
+    },
+    "src/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestDatatable.vue": {
+      "setup": ["onMounted", "provide"]
+    },
+    "src/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs"]
+    },
+    "src/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/ttsNarrationRequest/components/VoiceFamilySelect.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/coreDam/user/components/DamUserFields.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/user/components/UserDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/user/components/UserDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/user/components/UserDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/user/components/UserEditForm.vue": {
+      "setup": ["storeToRefs", "useI18n"],
+      "template": ["isUndefined"]
+    },
+    "src/domains/coreDam/user/components/UserEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useRoute"]
+    },
+    "src/domains/coreDam/user/components/UserFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/user/components/UserListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/user/components/UserRemoteAutocomplete.vue": {
+      "setup": ["cloneDeep", "computed", "provide"],
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/user/composables/userActions.ts": {
+      "script": ["cloneDeep", "ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/user/composables/userValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/user/factory/UserFactory.ts": {
+      "script": ["dateTimeNow"]
+    },
+    "src/domains/coreDam/user/store/userStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/user/types/User.ts": {
+      "types": ["IntegerId"]
+    },
+    "src/domains/coreDam/videoShow/components/CachedVideoShowChip.vue": {
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowCreateButton.vue": {
+      "setup": ["ref", "useI18n"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowDetail.vue": {
+      "setup": ["storeToRefs", "useI18n"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowDetailView.vue": {
+      "setup": [
+        "computed",
+        "defineBreadcrumbs",
+        "nextTick",
+        "onBeforeUnmount",
+        "onMounted",
+        "ref",
+        "useI18n",
+        "useRoute",
+        "watch"
+      ]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowListView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "ref"]
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue": {
+      "setup": ["cloneDeep", "computed", "provide"],
+      "types": ["DocIdNullable"]
+    },
+    "src/domains/coreDam/videoShow/composables/cachedVideoShow.ts": {
+      "script": ["defineCached"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/videoShow/composables/videoShowActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["ValueObjectOption"]
+    },
+    "src/domains/coreDam/videoShow/composables/videoShowDetailTab.ts": {
+      "script": ["ref"]
+    },
+    "src/domains/coreDam/videoShow/composables/videoShowValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/videoShow/factory/VideoShowFactory.ts": {
+      "script": ["dateTimeNow"],
+      "types": ["IntegerIdNullable"]
+    },
+    "src/domains/coreDam/videoShow/store/videoShowStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue": {
+      "setup": ["ref", "useI18n"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue": {
+      "setup": ["onMounted", "provide", "useRouter"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDetail.vue": {
+      "setup": ["storeToRefs", "useI18n", "useRouter"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDetailView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeEditForm.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeEditView.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "useRoute"]
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions.ts": {
+      "script": ["ref", "storeToRefs", "useAlerts", "useRouter", "useVuelidate"],
+      "types": ["DocId"]
+    },
+    "src/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation.ts": {
+      "script": ["computed", "useValidate", "useVuelidate"],
+      "types": ["Ref"]
+    },
+    "src/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory.ts": {
+      "script": ["dateTimeNow"],
+      "types": ["DocIdNullable", "IntegerId"]
+    },
+    "src/domains/coreDam/videoShowEpisode/store/videoShowEpisodeStore.ts": {
+      "script": ["acceptHMRUpdate", "defineStore", "ref"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceBindingsList.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceFamilyDatatable.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceFamilyDetailView.vue": {
+      "setup": ["defineBreadcrumbs"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceFamilyEditForm.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceFamilyEditView.vue": {
+      "setup": ["defineBreadcrumbs"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceFamilyFilter.vue": {
+      "setup": ["inject", "isUndefined"]
+    },
+    "src/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue": {
+      "setup": ["provide"]
+    },
+    "src/domains/system/auth/CurrentUser.ts": {
+      "types": ["IntegerId"]
+    },
+    "src/domains/system/components/ActionbarTeleportTarget.vue": {
+      "setup": ["nextTick", "onBeforeUnmount", "onMounted"]
+    },
+    "src/domains/system/components/CurrentUserDropdown.vue": {
+      "setup": ["computed"]
+    },
+    "src/domains/system/components/GridViewToggle.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/components/MainWrapper.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/components/sidebar/SidebarMain.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/components/sidebar/SidebarRail.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/composables/actionbar.ts": {
+      "script": ["readonly", "ref"]
+    },
+    "src/domains/system/composables/appInitialize.ts": {
+      "script": ["isDefined", "isUndefined", "ref"]
+    },
+    "src/domains/system/composables/gridView.ts": {
+      "script": ["readonly", "ref"]
+    },
+    "src/domains/system/composables/loginStatus.ts": {
+      "script": ["isNull", "readonly", "ref"]
+    },
+    "src/domains/system/composables/useMainWrapper.ts": {
+      "script": ["ref"]
+    },
+    "src/domains/system/composables/userDisplayHelper.ts": {
+      "script": ["isUndefined"]
+    },
+    "src/domains/system/views/ClosePageView.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/views/components/LoginFormSimple.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/views/composables/loginActions.ts": {
+      "script": ["ref", "useAlerts"],
+      "types": ["Ref"]
+    },
+    "src/domains/system/views/HomepageView.vue": {
+      "setup": ["onMounted", "useRouter"]
+    },
+    "src/domains/system/views/LoginView.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/domains/system/views/settings/SettingsView.vue": {
+      "setup": ["computed", "defineBreadcrumbs"]
+    },
+    "src/layouts/ActionbarWrapper.vue": {
+      "setup": ["isUndefined", "useRoute"],
+      "template": ["isUndefined"]
+    },
+    "src/layouts/AppLayout.vue": {
+      "setup": ["shallowRef", "useRoute", "watch"]
+    },
+    "src/layouts/AppLayoutDrawer.vue": {
+      "setup": ["ref", "useTheme"]
+    },
+    "src/layouts/AppLayoutFullscreen.vue": {
+      "setup": ["useTheme"]
+    },
+    "src/layouts/AppLayoutLoader.vue": {
+      "setup": ["useTheme"]
+    },
+    "src/layouts/AppLayoutMain.vue": {
+      "setup": ["useTheme"]
+    },
+    "src/loadLanguageMessages.ts": {
+      "script": ["ref"]
+    },
+    "src/main.ts": {
+      "script": ["createApp", "createPinia"]
+    },
+    "src/pages/(common)/logs/dam/[type]/[id].vue": {
+      "setup": ["computed", "defineBreadcrumbs", "useI18n", "useRoute"]
+    },
+    "src/pages/(common)/logs/dam/[type]/index.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "useI18n", "useRoute"]
+    },
+    "src/pages/(common)/permission-groups-new/[id]/edit.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useI18n", "useRoute"]
+    },
+    "src/pages/(common)/permission-groups-new/[id]/index.vue": {
+      "setup": [
+        "computed",
+        "defineBreadcrumbs",
+        "onBeforeUnmount",
+        "onMounted",
+        "stringToInt",
+        "useI18n",
+        "useRoute",
+        "useRouter"
+      ]
+    },
+    "src/pages/(common)/permission-groups-new/index.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "useI18n", "useRouter"]
+    },
+    "src/pages/(common)/permission-groups-new/new.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "isNull", "onBeforeUnmount", "onMounted", "useI18n", "useRouter"]
+    },
+    "src/pages/(coreDam)/users-new/[id]/edit.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "onBeforeUnmount", "onMounted", "stringToInt", "useI18n", "useRoute"],
+      "types": ["Ref"]
+    },
+    "src/pages/(coreDam)/users-new/[id]/index.vue": {
+      "setup": [
+        "computed",
+        "defineBreadcrumbs",
+        "onBeforeUnmount",
+        "onMounted",
+        "stringToInt",
+        "useI18n",
+        "useRoute",
+        "watch"
+      ],
+      "types": ["Ref"]
+    },
+    "src/pages/(coreDam)/users-new/index.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "useI18n", "useRouter"]
+    },
+    "src/pages/(coreDam)/users-new/new.vue": {
+      "setup": ["computed", "defineBreadcrumbs", "isNull", "onBeforeUnmount", "onMounted", "useI18n", "useRouter"]
+    },
+    "src/pages/error.vue": {
+      "setup": ["useI18n"]
+    },
+    "src/router/beforeEachRoute.ts": {
+      "script": ["storeToRefs"]
+    },
+    "src/router/checkAbility.ts": {
+      "script": ["isArray", "isDefined", "isUndefined"]
+    },
+    "src/shared/apiClients/configurationApi.ts": {
+      "types": ["IntegerId"]
+    },
+    "src/shared/apiClients/damClient.ts": {
+      "script": ["isNull"]
+    },
+    "src/shared/apiClients/interceptors/responseLogoutUser.ts": {
+      "script": ["HTTP_STATUS_UNAUTHORIZED"]
+    },
+    "src/shared/utils/BetaTestFeaturesService.ts": {
+      "script": ["ref"]
+    }
+  },
+  "props": {
+    "src/domains/coreDam/asset/components/AssetByImageIdLink.vue": {
+      "dev": {
+        "before": "{\n    imageId: { type: null, required: true }\n  }",
+        "after": "{\n    imageId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/AssetLink.vue": {
+      "dev": {
+        "before": "{\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/AssetUpload.vue": {
+      "dev": {
+        "before": "{\n    variant: { type: String, required: false, default: 'dropzone-fullscreen' },\n    type: { type: String, required: false, default: 'default' },\n    buttonText: { type: String, required: false, default: '' },\n    height: { type: Number, required: false, default: undefined },\n    queueId: { type: String, required: false, default: QUEUE_ID_UPLOAD_GLOBAL },\n    assetId: { type: null, required: false, default: undefined },\n    slotName: { type: String, required: false, default: undefined },\n    multiple: { type: Boolean, required: false, default: true },\n    assetType: { type: null, required: false, default: undefined }\n  }",
+        "after": "{\n    variant: { type: String, required: false, default: 'dropzone-fullscreen' },\n    type: { type: String, required: false, default: 'default' },\n    buttonText: { type: String, required: false, default: '' },\n    height: { type: Number, required: false, default: undefined },\n    queueId: { type: String, required: false, default: QUEUE_ID_UPLOAD_GLOBAL },\n    assetId: { type: String, required: false, default: undefined },\n    slotName: { type: String, required: false, default: undefined },\n    multiple: { type: Boolean, required: false, default: true },\n    assetType: { type: null, required: false, default: undefined }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue": {
+      "dev": {
+        "before": "{\n    assetId: { type: null, required: true },\n    isVideo: { type: Boolean, required: true },\n    isAudio: { type: Boolean, required: true },\n    isImage: { type: Boolean, required: true },\n    isDocument: { type: Boolean, required: true },\n    dataCy: { type: String, required: false, default: undefined },\n    assetStatus: { type: null, required: true },\n    assetType: { type: null, required: true },\n    assetMainFileStatus: { type: null, required: false, default: undefined },\n    assetMainFileFailReason: { type: null, required: false, default: undefined }\n  }",
+        "after": "{\n    assetId: { type: String, required: true },\n    isVideo: { type: Boolean, required: true },\n    isAudio: { type: Boolean, required: true },\n    isImage: { type: Boolean, required: true },\n    isDocument: { type: Boolean, required: true },\n    dataCy: { type: String, required: false, default: undefined },\n    assetStatus: { type: null, required: true },\n    assetType: { type: null, required: true },\n    assetMainFileStatus: { type: null, required: false, default: undefined },\n    assetMainFileFailReason: { type: null, required: false, default: undefined }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    fileId: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    fileId: { type: String, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue": {
+      "dev": {
+        "before": "{\n    imageId: { type: null, required: true },\n    dataCy: { type: String, required: false, default: undefined }\n  }",
+        "after": "{\n    imageId: { type: String, required: true },\n    dataCy: { type: String, required: false, default: undefined }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue": {
+      "dev": {
+        "before": "{\n    isActive: { type: Boolean, required: true },\n    assetType: { type: null, required: true },\n    assetId: { type: null, required: true },\n    assetMainFileStatus: { type: null, required: false, default: undefined },\n    dataCy: { type: String, required: false, default: undefined }\n  }",
+        "after": "{\n    isActive: { type: Boolean, required: true },\n    assetType: { type: null, required: true },\n    assetId: { type: String, required: true },\n    assetMainFileStatus: { type: null, required: false, default: undefined },\n    dataCy: { type: String, required: false, default: undefined }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialog.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    assetType: { type: null, required: true },\n    assetId: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    assetType: { type: null, required: true },\n    assetId: { type: String, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogCustom.vue": {
+      "dev": {
+        "before": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogEmpty.vue": {
+      "dev": {
+        "before": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogJw.vue": {
+      "dev": {
+        "before": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutube.vue": {
+      "dev": {
+        "before": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    distributionServiceName: { type: String, required: true },\n    assetType: { type: null, required: true },\n    config: { type: Object, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManage.vue": {
+      "dev": {
+        "before": "{\n    isActive: { type: Boolean, required: true },\n    assetType: { type: null, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    isActive: { type: Boolean, required: true },\n    assetType: { type: null, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    readonly: { type: Boolean, required: false, default: false },\n    isEdit: { type: Boolean, required: false, default: false },\n    assetId: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Object, ...{ required: true } },\n    \"modelModifiers\": {},\n    \"distributionManageDialog\": { type: Boolean, ...{ required: true } },\n    \"distributionManageDialogModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    readonly: { type: Boolean, required: false, default: false },\n    isEdit: { type: Boolean, required: false, default: false },\n    assetId: { type: String, required: true }\n  }, {\n    \"modelValue\": { type: Object, ...{ required: true } },\n    \"modelModifiers\": {},\n    \"distributionManageDialog\": { type: Boolean, ...{ required: true } },\n    \"distributionManageDialogModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/podcast/AssetDetailSidebarPodcast.vue": {
+      "dev": {
+        "before": "{\n    isActive: { type: Boolean, required: true },\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    isActive: { type: Boolean, required: true },\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeNewDialog.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: String, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetDetailSidebarSlots.vue": {
+      "dev": {
+        "before": "{\n    isActive: { type: Boolean, required: true },\n    assetType: { type: null, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    isActive: { type: Boolean, required: true },\n    assetType: { type: null, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue": {
+      "dev": {
+        "before": "{\n    assetType: { type: null, required: true },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    assetType: { type: null, required: true },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItem.vue": {
+      "dev": {
+        "before": "{\n    slotName: { type: String, required: true },\n    title: { type: String, required: true },\n    item: { type: [Object, null], required: true },\n    assetType: { type: null, required: true },\n    totalSlotCount: { type: Number, required: true },\n    assetId: { type: null, required: true },\n    dataCy: { type: String, required: false, default: undefined }\n  }",
+        "after": "{\n    slotName: { type: String, required: true },\n    title: { type: String, required: true },\n    item: { type: [Object, null], required: true },\n    assetType: { type: null, required: true },\n    totalSlotCount: { type: Number, required: true },\n    assetId: { type: String, required: true },\n    dataCy: { type: String, required: false, default: undefined }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/videoShow/AssetDetailSidebarVideoShow.vue": {
+      "dev": {
+        "before": "{\n    isActive: { type: Boolean, required: true },\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: null, required: true }\n  }",
+        "after": "{\n    isActive: { type: Boolean, required: true },\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeNewDialog.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    dataCy: { type: String, required: false, default: undefined },\n    assetId: { type: String, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/asset/components/ImageFile.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    width: { type: Number, required: false, default: undefined },\n    height: { type: Number, required: false, default: undefined },\n    showActions: { type: Boolean, required: false, default: false }\n  }, {\n    \"modelValue\": { type: null, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    width: { type: Number, required: false, default: undefined },\n    height: { type: Number, required: false, default: undefined },\n    showActions: { type: Boolean, required: false, default: false }\n  }, {\n    \"modelValue\": { type: [String, null], ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    clearable: { type: Boolean, required: false, default: false },\n    dataCy: { type: String, required: false, default: '' },\n    extSystemId: { type: null, required: false, default: null },\n    hideDetails: { type: Boolean, required: false, default: undefined },\n    disableInitFetch: { type: Boolean, required: false, default: false }\n  }, {\n    \"modelValue\": { type: null, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    clearable: { type: Boolean, required: false, default: false },\n    dataCy: { type: String, required: false, default: '' },\n    extSystemId: { type: [Number, null], required: false, default: null },\n    hideDetails: { type: Boolean, required: false, default: undefined },\n    disableInitFetch: { type: Boolean, required: false, default: false }\n  }, {\n    \"modelValue\": { type: [Number, null, Array], ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    disabled: { type: Boolean, required: false, default: false },\n    canBeCurrentAuthor: { type: [Boolean, null], required: false, skipCheck: true, default: null }\n  }, {\n    \"modelValue\": { type: null, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    disabled: { type: Boolean, required: false, default: false },\n    canBeCurrentAuthor: { type: [Boolean, null], required: false, skipCheck: true, default: null }\n  }, {\n    \"modelValue\": { type: [String, null, Array], ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    categoryId: { type: null, required: false, default: null },\n    assetId: { type: null, required: true },\n    assetType: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ default: false } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    categoryId: { type: [String, null], required: false, default: null },\n    assetId: { type: String, required: true },\n    assetType: { type: null, required: true }\n  }, {\n    \"modelValue\": { type: Boolean, ...{ default: false } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    clearable: { type: Boolean, required: false, default: false },\n    disabled: { type: Boolean, required: false, default: false },\n    disableInitFetch: { type: Boolean, required: false, default: false },\n    extSystemId: { type: null, required: false, default: undefined },\n    dataCy: { type: String, required: false, default: '' }\n  }, {\n    \"modelValue\": { type: null, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    clearable: { type: Boolean, required: false, default: false },\n    disabled: { type: Boolean, required: false, default: false },\n    disableInitFetch: { type: Boolean, required: false, default: false },\n    extSystemId: { type: [Number, null], required: false, default: undefined },\n    dataCy: { type: String, required: false, default: '' }\n  }, {\n    \"modelValue\": { type: [String, null, Array], ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeCreateButton.vue": {
+      "dev": {
+        "before": "{\n    podcastId: { type: null, required: true },\n    buttonClass: { type: String, required: false, default: 'ml-2' },\n    dataCy: { type: String, required: false, default: '' }\n  }",
+        "after": "{\n    podcastId: { type: String, required: true },\n    buttonClass: { type: String, required: false, default: 'ml-2' },\n    dataCy: { type: String, required: false, default: '' }\n  }"
+      }
+    },
+    "src/domains/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue": {
+      "dev": {
+        "before": "{\n    podcastId: { type: null, required: true }\n  }",
+        "after": "{\n    podcastId: { type: String, required: true }\n  }"
+      }
+    },
+    "src/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue": {
+      "dev": {
+        "before": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    clearable: { type: Boolean, required: false, default: false },\n    disableInitFetch: { type: Boolean, required: false, default: false },\n    dataCy: { type: String, required: false, default: '' }\n  }, {\n    \"modelValue\": { type: null, ...{ required: true } },\n    \"modelModifiers\": {},\n  })",
+        "after": "/*@__PURE__*/_mergeModels({\n    label: { type: null, required: false, default: undefined },\n    required: { type: Boolean, required: false, skipCheck: true, default: undefined },\n    multiple: { type: Boolean, required: false, default: false },\n    clearable: { type: Boolean, required: false, default: false },\n    disableInitFetch: { type: Boolean, required: false, default: false },\n    dataCy: { type: String, required: false, default: '' }\n  }, {\n    \"modelValue\": { type: [String, null], ...{ required: true } },\n    \"modelModifiers\": {},\n  })"
+      }
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue": {
+      "dev": {
+        "before": "{\n    videoShowId: { type: null, required: true },\n    buttonClass: { type: String, required: false, default: 'ml-2' },\n    dataCy: { type: String, required: false, default: '' }\n  }",
+        "after": "{\n    videoShowId: { type: String, required: true },\n    buttonClass: { type: String, required: false, default: 'ml-2' },\n    dataCy: { type: String, required: false, default: '' }\n  }"
+      }
+    },
+    "src/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue": {
+      "dev": {
+        "before": "{\n    videoShowId: { type: null, required: true }\n  }",
+        "after": "{\n    videoShowId: { type: String, required: true }\n  }"
+      }
+    }
+  },
+  "cycles": {
+    "before": [
+      [
+        "src/domains/coreDam/asset/api/assetApi.ts",
+        "src/domains/coreDam/asset/composables/currentExtSystem.ts",
+        "src/domains/coreDam/asset/store/assetDetailStore.ts",
+        "src/domains/coreDam/author/composables/cachedAuthors.ts",
+        "src/domains/coreDam/keyword/composables/cachedKeywords.ts"
+      ],
+      [
+        "src/domains/coreDam/asset/api/fileApi.ts",
+        "src/domains/coreDam/asset/store/uploadQueuesStore.ts",
+        "src/domains/coreDam/shared/services/upload/externalProviderImportService.ts",
+        "src/domains/coreDam/shared/services/upload/uploadService.ts"
+      ],
+      [
+        "src/domains/system/auth/authApi.ts",
+        "src/shared/apiClients/configurationApi.ts",
+        "src/shared/apiClients/damClient.ts",
+        "src/shared/apiClients/interceptors/requestRefreshToken.ts"
+      ]
+    ],
+    "after": [
+      [
+        "src/domains/coreDam/asset/api/assetApi.ts",
+        "src/domains/coreDam/asset/composables/currentExtSystem.ts",
+        "src/domains/coreDam/asset/store/assetDetailStore.ts",
+        "src/domains/coreDam/author/composables/cachedAuthors.ts",
+        "src/domains/coreDam/keyword/composables/cachedKeywords.ts"
+      ],
+      [
+        "src/domains/coreDam/asset/api/fileApi.ts",
+        "src/domains/coreDam/asset/store/uploadQueuesStore.ts",
+        "src/domains/coreDam/shared/services/upload/externalProviderImportService.ts",
+        "src/domains/coreDam/shared/services/upload/uploadService.ts"
+      ],
+      [
+        "src/domains/system/auth/authApi.ts",
+        "src/shared/apiClients/configurationApi.ts",
+        "src/shared/apiClients/damClient.ts",
+        "src/shared/apiClients/interceptors/requestRefreshToken.ts"
+      ]
+    ],
+    "newEdges": []
+  },
+  "allowlistUsed": [],
+  "violations": []
+}

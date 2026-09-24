@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, ALogDetailView } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, ALogDetailView, defineBreadcrumbs } from '@anzusystems/common-admin'
 import type { LogTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { LOG_SYSTEM } from '@/domains/system/logSystems'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'

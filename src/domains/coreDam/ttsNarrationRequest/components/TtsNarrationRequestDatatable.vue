@@ -15,7 +15,7 @@ import {
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { ref } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 

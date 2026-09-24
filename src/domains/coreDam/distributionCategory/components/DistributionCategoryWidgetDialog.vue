@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { updateAssetCategory } from '@/domains/coreDam/asset/api/assetApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'

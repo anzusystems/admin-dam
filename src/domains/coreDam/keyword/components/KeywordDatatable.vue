@@ -17,6 +17,8 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 import KeywordFilter from '@/domains/coreDam/keyword/components/KeywordFilter.vue'

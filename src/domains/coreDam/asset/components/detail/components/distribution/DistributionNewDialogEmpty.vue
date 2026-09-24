@@ -3,6 +3,7 @@ import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
   DamDistributionServiceName,
+  DocId,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 

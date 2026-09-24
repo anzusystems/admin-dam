@@ -9,6 +9,8 @@ import {
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
 import type { ListEditorHandle, ListViewItem } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
 import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'

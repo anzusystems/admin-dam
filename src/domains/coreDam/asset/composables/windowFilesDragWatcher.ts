@@ -1,3 +1,5 @@
+import { readonly, ref } from 'vue'
+
 const isInitialized = ref(false)
 const dragOverWindow = ref(false)
 let draggingTimer: ReturnType<typeof setTimeout> | undefined = undefined

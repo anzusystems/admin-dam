@@ -1,19 +1,17 @@
 import { URL, fileURLToPath } from 'url'
 
 import vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vitest/config'
 import VueRouter from 'vue-router/vite'
 // Root config files sit outside `src`, so the `@` alias does not resolve here.
 // oxlint-disable-next-line no-restricted-imports
-import { autoImports } from './autoImports.config.mts'
 import { routerPages } from './routerPages.config.mts'
 
 export default defineConfig({
   plugins: [
     // The route smoke test imports `vue-router/auto-routes`, which only exists while this plugin
-    // runs. `dts: false` for the same reason AutoImport has it: the declaration belongs to
-    // `yarn generate:dts` and the dev server.
+    // runs. `dts: false`: the declaration belongs to `yarn generate:dts` and the dev server, a test
+    // run must not rewrite it.
     VueRouter({
       ...routerPages,
       dts: false,
@@ -23,13 +21,6 @@ export default defineConfig({
       importMode: 'sync',
     }),
     vue(),
-    // `dts: false`: the declaration file belongs to `yarn dev` and `generate:dts`, and a test run
-    // must not rewrite it.
-    AutoImport({
-      imports: autoImports,
-      dts: false,
-      vueTemplate: true,
-    }),
   ],
   resolve: {
     alias: {
@@ -54,8 +45,8 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.ts'],
     server: {
       deps: {
-        // The auto-imported helpers come from the library bundle, which imports Vuetify CSS.
-        // Externalized it would reach node's ESM loader as `Unknown file extension ".css"`.
+        // The library bundle imports Vuetify CSS. Externalized it would reach node's ESM loader as
+        // `Unknown file extension ".css"`.
         inline: [/@anzusystems\/common-admin/, /vuetify/],
       },
     },

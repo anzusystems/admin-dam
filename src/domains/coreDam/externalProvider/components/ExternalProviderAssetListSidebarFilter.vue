@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AFilterString, AFilterWrapperSidebar } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'

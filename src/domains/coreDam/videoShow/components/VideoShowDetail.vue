@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 import { useVideoShowOneStore } from '@/domains/coreDam/videoShow/store/videoShowStore'
 

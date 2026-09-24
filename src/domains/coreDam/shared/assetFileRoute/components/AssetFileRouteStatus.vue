@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AssetFileMainRouteAware } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{

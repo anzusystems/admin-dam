@@ -1,12 +1,19 @@
 import {
   HTTP_STATUS_CREATED,
   HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
   UploadQueueItemType,
   damFileTypeFix,
   useApiCommand,
   useApiRequest,
 } from '@anzusystems/common-admin'
-import type { AssetFileDownloadLink, AssetFileImage, AssetFileRoute, UploadQueueItem } from '@anzusystems/common-admin'
+import type {
+  AssetFileDownloadLink,
+  AssetFileImage,
+  AssetFileRoute,
+  DocId,
+  UploadQueueItem,
+} from '@anzusystems/common-admin'
 import type { AxiosProgressEvent } from 'axios'
 
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'

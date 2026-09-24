@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useI18n,
+} from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import DistributionCategorySelectDetail from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectDetail.vue'
 import { useDistributionCategorySelectDetailActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import { AssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
 import ExternalProviderAssetDetailSidebarActionsTeleportTarget from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailSidebarActionsTeleportTarget.vue'
 import ExternalProviderAssetMetadata from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadata.vue'

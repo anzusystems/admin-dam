@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useI18n,
+} from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import PermissionGroupEditForm from '@/domains/common/permissionGroup/components/PermissionGroupEditForm.vue'
 import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'

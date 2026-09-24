@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { AAlerts, ASystemBar } from '@anzusystems/common-admin'
+import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
 
 import logoFull from '@/assets/logo-adam-full.svg'

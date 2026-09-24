@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { AFormDatetimePicker, AFormTextField, ARow, useJobApi } from '@anzusystems/common-admin'
+import { AFormDatetimePicker, AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
 import type { JobSynchronizeImageChanged } from '@/domains/coreDam/job/types/Job'

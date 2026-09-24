@@ -1,5 +1,17 @@
 <script lang="ts" setup>
-import { DamAssetImageRoiSelect, isDocId, useDamCachedUsers } from '@anzusystems/common-admin'
+import {
+  DamAssetImageRoiSelect,
+  isDocId,
+  isString,
+  useAlerts,
+  useDamCachedUsers,
+  useTheme,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { nextTick, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'

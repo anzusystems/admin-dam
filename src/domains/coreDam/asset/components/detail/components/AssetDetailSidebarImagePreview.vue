@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { AssetFileVideo } from '@anzusystems/common-admin'
-import { assetFileIsVideoFile } from '@anzusystems/common-admin'
+import { assetFileIsVideoFile, useAlerts } from '@anzusystems/common-admin'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fetchVideoFile, updatePreviewImage } from '@/domains/coreDam/asset/api/videoApi'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'

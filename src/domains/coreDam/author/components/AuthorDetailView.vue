@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useI18n,
+} from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import AuthorDetail from '@/domains/coreDam/author/components/AuthorDetail.vue'
 import { useAuthorDetailActions } from '@/domains/coreDam/author/composables/authorActions'

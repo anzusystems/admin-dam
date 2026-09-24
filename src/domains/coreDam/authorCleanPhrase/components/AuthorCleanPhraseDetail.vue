@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import AuthorCleanPhraseModeChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeChip.vue'

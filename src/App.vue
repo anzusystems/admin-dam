@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import '@/styles/main.scss'
 import { useTitle } from '@vueuse/core'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
 import AppLayout from '@/layouts/AppLayout.vue'

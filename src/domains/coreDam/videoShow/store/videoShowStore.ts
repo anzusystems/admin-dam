@@ -1,3 +1,6 @@
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
+
 import { useVideoShowFactory } from '@/domains/coreDam/videoShow/factory/VideoShowFactory'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 

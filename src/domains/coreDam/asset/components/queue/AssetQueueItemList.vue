@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { AssetFileFailReason, UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useAssetFileFailReason } from '@/domains/coreDam/asset/valueObject/AssetFileFailReason'
 

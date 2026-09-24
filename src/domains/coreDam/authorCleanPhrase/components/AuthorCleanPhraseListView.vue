@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 
 import AuthorCleanPhraseCreateButton from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseCreateButton.vue'
 import AuthorCleanPhraseDatatable from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'

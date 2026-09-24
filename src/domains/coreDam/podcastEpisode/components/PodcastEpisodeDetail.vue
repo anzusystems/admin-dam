@@ -7,6 +7,10 @@ import {
   AUserAndTimeTrackingFields,
   COMMON_CONFIG,
 } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'

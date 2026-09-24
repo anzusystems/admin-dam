@@ -16,8 +16,10 @@ import {
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
-import type { DatatableOrderingOption, DatatableOrderingOptions } from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions, DocId } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import VideoShowEpisodeFilter from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'

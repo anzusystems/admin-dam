@@ -1,3 +1,6 @@
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
+
 import { useAssetLicenceFactory } from '@/domains/coreDam/assetLicence/factory/AssetLicenceFactory'
 import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 

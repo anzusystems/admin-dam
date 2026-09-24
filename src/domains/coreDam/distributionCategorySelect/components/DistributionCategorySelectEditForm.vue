@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ASortableListEditor, ASystemEntityScope } from '@anzusystems/common-admin'
 import type { ListEditorHandle } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
 import { useDistributionCategoryOptionFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryOptionFactory'
 import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'

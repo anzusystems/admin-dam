@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { DamAssetType, useDamConfigStore } from '@anzusystems/common-admin'
+import { DamAssetType, isDefined, useDamConfigStore } from '@anzusystems/common-admin'
 import type { AssetFileProperties, DamAssetTypeType } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import {
   DIMENSIONS_CONFIG,

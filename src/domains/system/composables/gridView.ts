@@ -1,3 +1,5 @@
+import { readonly, ref } from 'vue'
+
 export const GridView = {
   Masonry: 'masonry',
   Thumbnail: 'thumbnail',

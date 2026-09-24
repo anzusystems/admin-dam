@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
+import type { CachedItem, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
+import { isNull, isUndefined } from '@anzusystems/common-admin'
+import { computed, shallowRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'

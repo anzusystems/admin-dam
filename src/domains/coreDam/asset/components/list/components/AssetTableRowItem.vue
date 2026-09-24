@@ -7,6 +7,9 @@ import {
   prettyBytes,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'

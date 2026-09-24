@@ -1,4 +1,6 @@
 import type { AssetFileImage } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
 
 import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
 

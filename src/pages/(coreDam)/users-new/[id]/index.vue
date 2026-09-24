@@ -6,9 +6,15 @@ import {
   ACard,
   ARow,
   AUserAndTimeTrackingFields,
+  defineBreadcrumbs,
+  stringToInt,
   useAnzuUserActions,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'

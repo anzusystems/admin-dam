@@ -17,6 +17,8 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import AuthorFilter from '@/domains/coreDam/author/components/AuthorFilter.vue'

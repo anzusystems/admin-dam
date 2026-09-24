@@ -1,4 +1,5 @@
 import { DamDistributionStatus } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
 
 import type {
   CustomDistributionUpdateDto,

@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import type { DocId } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'

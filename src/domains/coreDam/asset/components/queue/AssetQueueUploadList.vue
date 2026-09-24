@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'

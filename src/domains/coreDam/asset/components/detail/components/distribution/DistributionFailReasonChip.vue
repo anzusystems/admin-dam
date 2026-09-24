@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import { useDistributionFailReason } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
 import type { DistributionFailReasonType } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
 

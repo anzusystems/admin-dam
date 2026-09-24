@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useGrant } from '@anzusystems/common-admin'
 import type { GrantType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 const props = defineProps<{
   availableGrants: GrantType[]

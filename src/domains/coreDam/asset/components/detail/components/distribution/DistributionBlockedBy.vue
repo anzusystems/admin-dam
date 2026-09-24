@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { DamDistributionRequirementStrategy, useDamConfigState, usePagination } from '@anzusystems/common-admin'
+import {
+  DamDistributionRequirementStrategy,
+  cloneDeep,
+  isUndefined,
+  useDamConfigState,
+  usePagination,
+  useValidate,
+} from '@anzusystems/common-admin'
 import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
@@ -8,6 +15,8 @@ import type {
 } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { ErrorObject } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'

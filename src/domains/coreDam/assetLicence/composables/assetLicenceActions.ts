@@ -7,10 +7,15 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   fetchDamAssetLicenceListByIds,
+  useAlerts,
   useDamCachedUsers,
   useFetchDamAssetLicenceList,
 } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useFetchAssetLicence, useUpdateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'

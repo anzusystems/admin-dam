@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import type { DocId } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
 const props = withDefaults(
   defineProps<{
     assetId: DocId

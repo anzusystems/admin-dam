@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useI18n,
+} from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 import KeywordDetail from '@/domains/coreDam/keyword/components/KeywordDetail.vue'
 import { useKeywordDetailActions } from '@/domains/coreDam/keyword/composables/keywordActions'

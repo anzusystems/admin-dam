@@ -4,11 +4,20 @@ import {
   ASystemEntityScope,
   DamAssetLicenceRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
+  isArray,
+  isInt,
+  isNull,
+  isUndefined,
+  useAlerts,
   useDamConfigStore,
+  useValidate,
 } from '@anzusystems/common-admin'
-import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import type { ErrorObject } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'

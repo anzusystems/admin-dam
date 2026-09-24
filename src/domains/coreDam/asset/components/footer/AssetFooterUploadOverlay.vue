@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useTheme } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'

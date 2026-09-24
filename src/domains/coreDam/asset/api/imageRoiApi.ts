@@ -1,5 +1,5 @@
 import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 
 import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'

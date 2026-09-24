@@ -3,7 +3,6 @@ import { URL, fileURLToPath } from 'url'
 
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import type { Plugin, UserConfigExport } from 'vite'
 import vuetify from 'vite-plugin-vuetify'
@@ -13,7 +12,6 @@ import { anzuSentry } from '@anzusystems/common-admin/vite'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
 
-import { autoImports } from './autoImports.config.mts'
 import { routerPages } from './routerPages.config.mts'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
@@ -159,18 +157,12 @@ export default defineConfig({
       globalSFCScope: true,
       include: path.resolve(_dirname, './src/locales/**/*.json'),
     }),
-    AutoImport({
-      imports: autoImports,
-      dts: 'src/auto-imports.d.ts',
-      // A flat file in `src/shared` is a global; anything in a subdirectory is a normal import.
-      dirs: ['./src/shared/*'],
-      vueTemplate: true,
-      // Feeds `eslint.config.mjs`. Without these names declared as globals, eslint-plugin-vue
-      // resolves `ref` and friends through the import statement only, and several error-level
-      // rules go quiet -- `vue/no-ref-as-operand` among them. `eslint.config.mjs` lists which.
-      eslintrc: { enabled: true, filepath: './.eslintrc-auto-import.json', globalsPropValue: 'readonly' },
-    }),
   ],
+  optimizeDeps: {
+    // What unplugin-auto-import used to have pre-bundled: some of these are imported only by lazily
+    // loaded pages, and a dependency found that late reloads the page on a cold start.
+    include: ['vue', 'vue-router', 'pinia', 'vue-i18n', '@vuelidate/core', '@anzusystems/common-admin'],
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

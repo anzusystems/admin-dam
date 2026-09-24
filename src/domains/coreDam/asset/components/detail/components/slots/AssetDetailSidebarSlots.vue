@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ADatatablePagination, DamAssetType, DatatablePaginationKey } from '@anzusystems/common-admin'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { onMounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetSibling from '@/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue'

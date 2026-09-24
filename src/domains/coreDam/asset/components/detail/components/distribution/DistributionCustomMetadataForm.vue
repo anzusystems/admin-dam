@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { ACustomDataFormElement, useDamConfigStore } from '@anzusystems/common-admin'
+import { ACustomDataFormElement, isUndefined, useDamConfigStore } from '@anzusystems/common-admin'
 import type { CustomDataValue, DamDistributionServiceName } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 

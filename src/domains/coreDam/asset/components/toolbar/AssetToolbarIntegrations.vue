@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'

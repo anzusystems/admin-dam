@@ -7,7 +7,7 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import VoiceBindingCreateDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingCreateDialog.vue'

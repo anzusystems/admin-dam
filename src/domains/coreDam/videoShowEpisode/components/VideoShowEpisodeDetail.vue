@@ -7,6 +7,9 @@ import {
   AUserAndTimeTrackingFields,
   COMMON_CONFIG,
 } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import { useVideoShowEpisodeOneStore } from '@/domains/coreDam/videoShowEpisode/store/videoShowEpisodeStore'
 

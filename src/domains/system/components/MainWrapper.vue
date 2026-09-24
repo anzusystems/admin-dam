@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'

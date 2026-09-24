@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
 import type { DocIdNullable, IntegerId } from '@anzusystems/common-admin'
+import { provide } from 'vue'
 
 import { useVoiceFamilySelectActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyFilter } from '@/domains/coreDam/voiceFamily/filter/VoiceFamilyFilter'

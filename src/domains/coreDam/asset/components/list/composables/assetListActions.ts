@@ -4,11 +4,18 @@ import {
   UploadQueueItemType,
   arrayItemToggle,
   browserHistoryReplaceUrlByRouter,
+  isNull,
+  isUndefined,
+  useAlerts,
   useDamCachedUsers,
   useFilterHelpers,
   usePagination,
 } from '@anzusystems/common-admin'
-import type { AssetSearchListItemDto, DamAssetTypeType, Pagination } from '@anzusystems/common-admin'
+import type { AssetSearchListItemDto, DamAssetTypeType, DocId, Pagination } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { readonly, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'

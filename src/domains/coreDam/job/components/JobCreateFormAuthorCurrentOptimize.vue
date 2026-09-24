@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow, useJobApi } from '@anzusystems/common-admin'
+import { AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
 import type { JobAuthorCurrentOptimize } from '@/domains/coreDam/job/types/Job'

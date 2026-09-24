@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import CachedVideoShowChip from '@/domains/coreDam/videoShow/components/CachedVideoShowChip.vue'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 

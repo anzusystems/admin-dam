@@ -15,6 +15,8 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import AssetLicenceFilter from '@/domains/coreDam/assetLicence/components/AssetLicenceFilter.vue'

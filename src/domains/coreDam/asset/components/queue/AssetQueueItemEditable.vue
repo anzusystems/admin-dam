@@ -6,9 +6,14 @@ import {
   AssetFileFailReason,
   DamAssetStatusDefault,
   UploadQueueItemStatus,
+  isNull,
   prettyBytes,
+  useAlerts,
 } from '@anzusystems/common-admin'
-import type { AssetCustomData, UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
+import type { AssetCustomData, DocId, UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
+import { computed, onUnmounted, ref, watch } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { deleteAsset, fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'

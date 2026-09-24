@@ -16,6 +16,8 @@ import {
 } from '@anzusystems/common-admin'
 import type { DamUser } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/user/api/userApi'
 import UserFilter from '@/domains/coreDam/user/components/UserFilter.vue'

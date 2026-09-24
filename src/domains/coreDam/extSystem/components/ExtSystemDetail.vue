@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { ACachedChip, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'

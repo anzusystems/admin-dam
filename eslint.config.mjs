@@ -1,4 +1,4 @@
-import fs, { existsSync, readFileSync } from 'node:fs'
+import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 import { recommended as anzuRecommended } from '@anzusystems/common-admin/eslint'
@@ -11,14 +11,6 @@ import vuetify from 'eslint-plugin-vuetify'
 import validRouteName from './eslint/rules/valid-route-name.mjs'
 
 const { buildFromOxlintConfigFile } = oxlintPlugin
-
-// Written by unplugin-auto-import during `yarn generate:dts`, which `yarn ci` runs before
-// eslint. A missing file is not fatal -- a bare `npx eslint` on a fresh clone still lints,
-// it only loses the rules below.
-const autoImportGlobalsPath = new URL('./.eslintrc-auto-import.json', import.meta.url)
-const autoImportGlobals = existsSync(autoImportGlobalsPath)
-  ? JSON.parse(readFileSync(autoImportGlobalsPath, 'utf8')).globals
-  : {}
 
 const getVuetifyComponents = () => {
   try {
@@ -69,23 +61,7 @@ export default defineConfigWithVueTs(
       '.stylelintrc.js',
       '**/e2e/**',
       'src/typed-router.d.ts',
-      'src/auto-imports.d.ts',
     ],
-  },
-  {
-    // eslint-plugin-vue resolves `ref`, `computed` and friends through the import statement,
-    // and falls back to a global of the same name. Auto-imports remove the import without
-    // declaring the global, so both paths miss and five error-level rules go quiet here --
-    // no-ref-as-operand, no-side-effects-in-computed-properties, return-in-computed-property,
-    // no-async-in-computed-properties, no-ref-object-reactivity-loss -- plus
-    // no-lifecycle-after-await and no-watch-after-await, which need the same globals but only
-    // fire on an Options-API `setup()`, which this codebase does not have.
-    // (require-typed-ref had the same hole; it is oxlint's now, and oxlint does not need the
-    // import.) vue/valid-next-tick stays dead either way: it insists on a real ImportBinding.
-    name: 'app/auto-import-globals',
-    languageOptions: {
-      globals: autoImportGlobals,
-    },
   },
   pluginVue.configs['flat/essential'],
   pluginVue.configs['flat/strongly-recommended'],
@@ -209,13 +185,9 @@ export default defineConfigWithVueTs(
   // Derives the disabled-rule list from .oxlintrc.json, so a rule enabled there stops being
   // run twice. The path is resolved against this file, not the cwd: with a bare
   // '.oxlintrc.json' an eslint run started from a subdirectory prints
-  // "could not find oxlint config file" and silently re-enables all 126 rules. Six rules are switched off in that file on purpose, so that they stay eslint's.
-  // Five of them resolve the name through eslint-plugin-vue's ReferenceTracker, which also
-  // walks globals; oxlint's versions need a literal `import { computed } from 'vue'`, which
-  // auto-imports removed, so handing them over would silently switch them off. Two of those
-  // five (no-lifecycle-after-await, no-watch-after-await) only fire on an Options-API
-  // `setup()`, which this codebase does not have -- they are listed for symmetry, not effect.
-  // The sixth is prefer-const, a different hole: oxlint does not run it inside a .vue at all.
+  // "could not find oxlint config file" and silently re-enables all 126 rules. prefer-const is
+  // switched off in that file on purpose, so that it stays eslint's: oxlint does not run it inside
+  // a .vue at all.
   ...(await buildFromOxlintConfigFile(fileURLToPath(new URL('./.oxlintrc.json', import.meta.url)))),
   {
     // The only eslint rules that fight oxfmt. Measured, not assumed: with this block

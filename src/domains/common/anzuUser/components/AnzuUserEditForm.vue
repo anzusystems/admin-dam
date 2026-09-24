@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { AAvatarColorPicker, ACopyText, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
 import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'

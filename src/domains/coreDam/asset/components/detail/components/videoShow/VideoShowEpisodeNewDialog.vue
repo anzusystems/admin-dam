@@ -1,5 +1,16 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormDatetimePicker, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  AFormDatetimePicker,
+  AFormTextarea,
+  ARow,
+  ASystemEntityScope,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import VideoShowRemoteAutocomplete from '@/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'

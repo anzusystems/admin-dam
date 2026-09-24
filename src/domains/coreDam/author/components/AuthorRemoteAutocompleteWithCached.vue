@@ -1,6 +1,16 @@
 <script lang="ts" setup generic="I extends DamAuthorMinimal">
-import type { DamAuthor, DamAuthorMinimal, ValidationScope } from '@anzusystems/common-admin'
-import { AFormRemoteAutocompleteWithCached, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
+import type { DamAuthor, DamAuthorMinimal, DocId, IntegerId, ValidationScope } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocompleteWithCached,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+  cloneDeep,
+  isArray,
+  useValidate,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AuthorCreateButton from '@/domains/coreDam/author/components/AuthorCreateButton.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'

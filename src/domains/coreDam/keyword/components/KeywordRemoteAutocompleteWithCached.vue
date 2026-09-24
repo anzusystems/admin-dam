@@ -3,9 +3,14 @@ import {
   AFormRemoteAutocompleteWithCached,
   FilterInnerConfigKey,
   FilterInnerDataKey,
+  isArray,
+  useAlerts,
   useDamKeywordFactory,
+  useValidate,
 } from '@anzusystems/common-admin'
-import type { DamKeyword, DamKeywordMinimal, ValidationScope } from '@anzusystems/common-admin'
+import type { DamKeyword, DamKeywordMinimal, DocId, IntegerId, ValidationScope } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, provide, ref } from 'vue'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { createKeyword } from '@/domains/coreDam/keyword/api/keywordApi'

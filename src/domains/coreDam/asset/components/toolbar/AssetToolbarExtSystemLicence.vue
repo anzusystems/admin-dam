@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 
 withDefaults(

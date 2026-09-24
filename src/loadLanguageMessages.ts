@@ -1,5 +1,6 @@
 import { i18n as commonAdminI18n, modifyLanguageSettings } from '@anzusystems/common-admin'
 import type { LanguageCode } from '@anzusystems/common-admin'
+import { ref } from 'vue'
 
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 

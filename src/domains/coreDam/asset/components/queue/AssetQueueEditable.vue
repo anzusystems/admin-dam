@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { AssetFileProcessStatus, DamAssetStatus } from '@anzusystems/common-admin'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, DamAssetStatus, useAlerts } from '@anzusystems/common-admin'
+import type { DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
 
 import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'

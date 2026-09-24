@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ACopyText, useAlerts } from '@anzusystems/common-admin'
-import type { AssetFile, AssetFileMainRouteAware, DamAssetTypeType } from '@anzusystems/common-admin'
+import type { AssetFile, AssetFileMainRouteAware, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { makePrivateFile } from '@/domains/coreDam/asset/api/fileApi'
 import AssetFileRouteChangeBtn from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue'

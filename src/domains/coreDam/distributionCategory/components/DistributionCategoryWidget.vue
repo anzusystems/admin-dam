@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { DamAssetTypeDefault } from '@anzusystems/common-admin'
+import { DamAssetTypeDefault, isNull, useAlerts } from '@anzusystems/common-admin'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useTheme } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueMassEditSimple from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
 import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
-import { DamAssetStatus, DamAssetType, useRemainingTime } from '@anzusystems/common-admin'
+import { DamAssetStatus, DamAssetType, isUndefined, useRemainingTime } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'

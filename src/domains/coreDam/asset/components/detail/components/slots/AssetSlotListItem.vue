@@ -4,9 +4,13 @@ import {
   DamAssetType,
   UploadQueueItemStatus,
   assetFileIsVideoFile,
+  isUndefined,
+  useAlerts,
 } from '@anzusystems/common-admin'
-import type { AssetFileFailReasonType, DamAssetTypeType, UploadQueueItem } from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType, DamAssetTypeType, DocId, UploadQueueItem } from '@anzusystems/common-admin'
 import { useClipboard } from '@vueuse/core'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
 import AssetFileDuplicateChip from '@/domains/coreDam/asset/components/AssetFileDuplicateChip.vue'

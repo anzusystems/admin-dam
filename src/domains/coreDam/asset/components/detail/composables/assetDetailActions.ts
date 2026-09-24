@@ -4,6 +4,8 @@ import {
   DamAssetTypeDefault,
   assetFileIsImageFile,
 } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, readonly, ref } from 'vue'
 
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 

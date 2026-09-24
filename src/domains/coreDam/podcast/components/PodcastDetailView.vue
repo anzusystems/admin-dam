@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import PodcastDetail from '@/domains/coreDam/podcast/components/PodcastDetail.vue'
 import { usePodcastDetailActions } from '@/domains/coreDam/podcast/composables/podcastActions'

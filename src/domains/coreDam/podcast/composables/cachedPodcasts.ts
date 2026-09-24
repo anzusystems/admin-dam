@@ -1,3 +1,6 @@
+import { defineCached } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useFetchPodcastListByIds } from '@/domains/coreDam/podcast/api/podcastApi'
 import type { Podcast, PodcastMinimal } from '@/domains/coreDam/podcast/types/Podcast'

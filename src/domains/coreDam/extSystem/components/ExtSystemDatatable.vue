@@ -16,6 +16,8 @@ import {
 } from '@anzusystems/common-admin'
 import type { DamExtSystem } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import ExtSystemFilter from '@/domains/coreDam/extSystem/components/ExtSystemFilter.vue'

@@ -4,9 +4,12 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
+  useAlerts,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
 import type { AssetDetailItemDto } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { createAsset } from '@/domains/coreDam/asset/api/assetApi'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'

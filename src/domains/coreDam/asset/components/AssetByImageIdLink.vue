@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import type { AssetFileImage } from '@anzusystems/common-admin'
+import type { AssetFileImage, DocId } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 

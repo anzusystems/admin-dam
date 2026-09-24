@@ -6,8 +6,10 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
+  isUndefined,
   useJobStatus,
 } from '@anzusystems/common-admin'
+import { inject } from 'vue'
 
 import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'

@@ -17,7 +17,7 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import type { DatatableOrderingOption, DatatableOrderingOptions, Pagination } from '@anzusystems/common-admin'
-import { onMounted } from 'vue'
+import { onMounted, provide } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
