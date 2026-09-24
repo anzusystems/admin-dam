@@ -103,6 +103,7 @@ const clearEpilog = () => {
                 @click.stop="clearEpilog"
               />
               <AAssetSelect
+                v-if="currentAssetLicenceId > 0"
                 :select-licences="epilogLicenceIds"
                 :min-count="1"
                 :max-count="1"

@@ -1,4 +1,5 @@
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
 import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
@@ -58,8 +59,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { currentAssetLicenceId } = useCurrentAssetLicence()
+  const { listLicenceIds } = useCurrentListView()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -84,9 +86,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       assetListStore.showLoader('hard')
       assetListStore.setList(
-        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filterData, filterConfig),
+        await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
+      addToCachedAssetLicences(...listLicenceIds.value)
+      fetchCachedAssetLicences()
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -109,7 +113,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       assetListStore.showLoader('soft')
       assetListStore.appendList(
-        await apiFetchAssetList(currentAssetLicenceId.value, pagination, filterData, filterConfig),
+        await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
         uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
       )
     } catch (error) {

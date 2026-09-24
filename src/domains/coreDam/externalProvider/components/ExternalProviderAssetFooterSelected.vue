@@ -6,8 +6,11 @@ import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalPro
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 
 const { t } = useI18n()
+
+const { uploadAllowed } = useCurrentListView()
 
 const { toolbarColor } = useTheme()
 
@@ -81,6 +84,7 @@ const onImport = () => {
         <VSpacer />
         <div class="d-flex">
           <VBtn
+            v-if="uploadAllowed"
             color="primary"
             variant="flat"
             :height="26"

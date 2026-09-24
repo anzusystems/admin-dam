@@ -4,9 +4,12 @@
     "name": "Name",
     "extSystem": "External system",
     "extId": "External ID",
+    "badge": "Badge",
     "flags": {
       "manualUploadAllowed": "Manual upload allowed",
-      "directUseAllowed": "Direct use allowed"
+      "directUseAllowed": "Direct use allowed",
+      "singleUseEnforced": "Enforced single use",
+      "singleUseEnforcedHint": "Applies to new and updated files. Existing files of the licence are switched by the anzu-dam:asset-licence:enforce-single-use command."
     },
     "autoDelete": {
       "active": "Auto delete",
@@ -17,7 +20,8 @@
       "markAsInternalSince": "Mark as internal since"
     },
     "internalRuleAuthors": "Internal rule authors",
-    "internalRuleUsers": "Internal rule users"
+    "internalRuleUsers": "Internal rule users",
+    "defaultAuthor": "Default author"
   },
   "filter": {
     "id": "ID",

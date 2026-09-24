@@ -1,3 +1,4 @@
 export interface UpdateCurrentUserDto {
-  selectedLicence: IntegerId
+  selectedLicence: IntegerIdNullable
+  selectedListView: IntegerIdNullable
 }

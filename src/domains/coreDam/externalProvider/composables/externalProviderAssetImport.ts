@@ -7,13 +7,19 @@ import type {
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
 
 export const useExternalProviderAssetImport = () => {
   const { maxUploadItems } = useBetaTestFeatures()
-  const { showWarning } = useAlerts()
+  const { showWarning, showErrorT } = useAlerts()
+  const { uploadAllowed } = useCurrentListView()
 
   const importFromDetail = async (hideDetail = false) => {
+    if (!uploadAllowed.value) {
+      showErrorT('coreDam.asset.upload.notAllowed')
+      return
+    }
     const listStore = useExternalProviderAssetListStore()
     if (isNull(listStore.activeItemIndex) || !listStore.list[listStore.activeItemIndex]) return
     const uploadQueueStore = useUploadQueuesStore()
@@ -31,6 +37,10 @@ export const useExternalProviderAssetImport = () => {
   }
 
   const importFromSelected = async () => {
+    if (!uploadAllowed.value) {
+      showErrorT('coreDam.asset.upload.notAllowed')
+      return
+    }
     const uploadQueueStore = useUploadQueuesStore()
     const queueItemsSelected = uploadQueueStore.getQueueItems(QUEUE_ID_MASS_EDIT)
     const totalWantedItems = queueItemsSelected.length + uploadQueueStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)

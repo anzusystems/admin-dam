@@ -49,7 +49,7 @@ const CHUNK_SIZE = 10485760
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   const { createDefault } = useUploadQueueItemFactory()
-  const { showError } = useAlerts()
+  const { showError, showErrorT, showErrorsDefault } = useAlerts()
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
@@ -123,6 +123,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     const { getDamConfigExtSystem } = useDamConfigState(damClient)
     const { currentAssetLicenceId } = useCurrentAssetLicence()
     const { currentExtSystemId } = useCurrentExtSystem()
+    if (currentAssetLicenceId.value === 0) {
+      showErrorT('coreDam.asset.upload.notAllowed')
+      return
+    }
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
     if (isUndefined(configExtSystem)) {
       throw new Error('Ext system must be initialised.')
@@ -155,6 +159,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     assetType: DamAssetTypeType
   ) {
     const { currentAssetLicenceId } = useCurrentAssetLicence()
+    if (currentAssetLicenceId.value === 0) {
+      showErrorT('coreDam.asset.upload.notAllowed')
+      return
+    }
     for await (const file of files) {
       const queueItem = createDefault(
         'file_' + file.name,
@@ -177,7 +185,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   async function addByAssets(queueId: string, assets: AssetSearchListItemDto[]) {
-    const { currentAssetLicenceId } = useCurrentAssetLicence()
     const assetIds: DocId[] = []
     for await (const asset of assets) {
       assetIds.push(asset.id)
@@ -187,7 +194,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         UploadQueueItemStatus.Loading,
         asset.attributes.assetType,
         CHUNK_SIZE,
-        currentAssetLicenceId.value
+        asset.licence
       )
       queueItem.assetStatus = asset.attributes.assetStatus
       queueItem.displayTitle = asset.texts.displayTitle
@@ -200,7 +207,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       recalculateQueueCounts(queueId)
       processUpload(queueId)
     }
-    fetchLazyAdditionalMetadata(queueId, currentAssetLicenceId.value, assetIds)
+    fetchLazyAdditionalMetadata(queueId, assetIds)
   }
 
   async function addByExternalProviderAsset(
@@ -209,6 +216,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     importAsset = false
   ) {
     const { currentAssetLicenceId } = useCurrentAssetLicence()
+    if (importAsset && currentAssetLicenceId.value === 0) {
+      showErrorT('coreDam.asset.upload.notAllowed')
+      return
+    }
     const { activeExternalProvider } = useExternalProviders()
     for await (const asset of assets) {
       const queueItem = createDefault(
@@ -245,22 +256,29 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     queues.value[queueId].fileInputKey++
   }
 
-  async function fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
+  async function fetchLazyAdditionalMetadata(queueId: string, assetIds: DocId[]) {
     const { getAuthorConflicts } = useAssetSuggestions()
-    const res = await fetchAssetListByIds(assetIds, licenceId)
-    for (let i = 0; i < res.length; i++) {
-      const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
-      if (foundIndex > -1) {
-        queues.value[queueId].items[foundIndex].keywords = res[i].keywords
-        queues.value[queueId].items[foundIndex].authors = res[i].authors
-        queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
-        queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
-        queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
-        queues.value[queueId].items[foundIndex].canEditMetadata = true
-        addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    try {
+      const res = await fetchAssetListByIds(assetIds, currentExtSystemId.value)
+      for (let i = 0; i < res.length; i++) {
+        const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
+        if (foundIndex > -1) {
+          queues.value[queueId].items[foundIndex].keywords = res[i].keywords
+          queues.value[queueId].items[foundIndex].authors = res[i].authors
+          queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
+          queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
+          queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(
+            res[i].metadata.authorSuggestions
+          )
+          queues.value[queueId].items[foundIndex].canEditMetadata = true
+          addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
+        }
       }
+      fetchCachedAuthors()
+    } catch (error) {
+      showErrorsDefault(error)
     }
-    fetchCachedAuthors()
   }
 
   async function removeByAssetId(queueId: string, assetId: DocId) {

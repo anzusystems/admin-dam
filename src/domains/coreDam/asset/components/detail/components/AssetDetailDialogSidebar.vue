@@ -7,6 +7,7 @@ import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
 import AssetDetailSidebarActionsTeleportTarget from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import AssetDetailSidebarImagePreview from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreview.vue'
 import AssetDetailSidebarMetadata from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarMetadata.vue'
+import AssetFileExifPanel from '@/domains/coreDam/asset/components/detail/components/AssetFileExifPanel.vue'
 import AssetDetailSidebarROI from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarROI.vue'
 import AssetDetailSidebarDistribution from '@/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import AssetDetailSidebarPodcast from '@/domains/coreDam/asset/components/detail/components/podcast/AssetDetailSidebarPodcast.vue'
@@ -17,12 +18,15 @@ import AssetDetailSidebarSlots from '@/domains/coreDam/asset/components/detail/c
 import AssetDetailSidebarVideoShow from '@/domains/coreDam/asset/components/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
 import DistributionCategoryWidget from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
 import {
+  assetFileIsImageFile,
   type AssetFileFailReasonType,
   type AssetFileProcessStatusType,
   type DamAssetStatusType,
   type DamAssetTypeType,
   useDamConfigState,
 } from '@anzusystems/common-admin'
+import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import type { ExifData } from '@/domains/coreDam/asset/types/AssetExif'
 
 const props = withDefaults(
   defineProps<{
@@ -71,6 +75,13 @@ const typeHasDistributions = computed(() => {
 // is the stale server snapshot and is not updated after a metadata save without a refetch.
 const { ttsAudio } = storeToRefs(useAssetDetailStore())
 const isTtsAudio = computed(() => ttsAudio.value)
+
+const { assetMainFile } = useAssetDetailActions()
+
+const mainFileExifData = computed<ExifData | undefined>(() => {
+  if (!assetMainFile.value || !assetFileIsImageFile(assetMainFile.value)) return undefined
+  return assetMainFile.value.metadata?.exifData as unknown as ExifData | undefined
+})
 </script>
 
 <template>
@@ -156,6 +167,10 @@ const isTtsAudio = computed(() => ttsAudio.value)
             :asset-type="assetType"
             @post-delete="postDelete"
             @main-route-changed="emit('mainRouteChanged')"
+          />
+          <AssetFileExifPanel
+            v-if="isImage"
+            :exif-data="mainFileExifData"
           />
         </div>
         <div

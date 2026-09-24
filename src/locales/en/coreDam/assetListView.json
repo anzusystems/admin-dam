@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Name",
+    "extSystem": "External system",
+    "position": "Position",
+    "groups": "Licence groups",
+    "licences": "Licences",
+    "uploadLicence": "Upload licence"
+  },
+  "filter": {
+    "id": "ID"
+  },
+  "meta": {
+    "create": "Create list view"
+  },
+  "validation": {
+    "uploadLicence": "Upload licence must be one of the selected licences."
+  }
+}
