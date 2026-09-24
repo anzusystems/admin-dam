@@ -32,9 +32,16 @@ jobs:
 
       - name: Cache Yarn packages
         id: yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
-          path: node_modules
+          # node_modules/.cache has its own entry below. Inside this one it would ride along frozen at the
+          # last yarn.lock change and come back, through the fallback key, across a dependency change.
+          # `node_modules/*`, not `node_modules`: actions/cache globs without implicit descendants, so the bare
+          # directory would be archived whole and the exclusion never applied. `*` matches dotfiles as well,
+          # so .yarn-state.yml stays in.
+          path: |
+            node_modules/*
+            !node_modules/.cache
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock', '*/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -42,8 +49,28 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      # node_modules/.cache holds only caches that follow what a result depends on: vue-tsc's build info and vitest's
+      # test order. eslint, stylelint and vitest's transform cache stay off: they reuse a file's result without tracking
+      # everything it depends on. A new entry per passing run, restored from the latest one for the same runner, Node
+      # version, yarn.lock and tsconfigs (vue-tsc's build info does not notice a vueCompilerOptions change).
+      - name: Restore tool caches
+        id: tool-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: node_modules/.cache
+          key: tool-cache-v1-${{ runner.os }}-${{ runner.arch }}-node${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('tsconfig*.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            tool-cache-v1-${{ runner.os }}-${{ runner.arch }}-node${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('tsconfig*.json') }}-
+
       - name: Run Yarn CI
         run: yarn ci
+
+      # Only after a passing yarn ci, and before the audit, which can fail the job on its own.
+      - name: Save tool caches
+        uses: actions/cache/save@v6
+        with:
+          path: node_modules/.cache
+          key: ${{ steps.tool-cache.outputs.cache-primary-key }}
 
       - name: Run Security check
         run: yarn npm audit

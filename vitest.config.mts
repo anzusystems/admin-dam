@@ -8,6 +8,9 @@ import VueRouter from 'vue-router/vite'
 import { routerPages } from './routerPages.config.mts'
 
 export default defineConfig({
+  // Vitest keeps its test-order results in Vite's cache dir; this one sits with the other tool caches in
+  // node_modules/.cache. Only the test runner reads it, the dev server stays on node_modules/.vite.
+  cacheDir: 'node_modules/.cache/vite',
   plugins: [
     // The route smoke test imports `vue-router/auto-routes`, which only exists while this plugin
     // runs. `dts: false`: the declaration belongs to `yarn generate:dts` and the dev server, a test
@@ -38,9 +41,10 @@ export default defineConfig({
     // with it, or the hooks become the weaker link.
     testTimeout: 15000,
     hookTimeout: 15000,
-    // Transforming the module graph is the bulk of a cold run. The cache lives under
-    // `node_modules/.vitest-cache`, so a reinstall invalidates it.
-    fsModuleCache: true,
+    // No fsModuleCache: it keys a module on its own content, so a changed import (a type used in
+    // `defineProps`) or a renamed file can leave a stale transform. Set, not left out, so vitest does not
+    // suggest turning it on after every run.
+    fsModuleCache: false,
     // Scoped to `src/`: `e2e/` holds the e2e specs, which vitest's default include would collect.
     include: ['src/**/*.{test,spec}.ts'],
     server: {
