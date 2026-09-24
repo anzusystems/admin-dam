@@ -9,12 +9,11 @@ import AutoImport from 'unplugin-auto-import/vite'
 // oxlint-disable-next-line no-restricted-imports
 import { autoImports } from './autoImports.config.mts'
 import { routerPages } from './routerPages.config.mts'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
+import { anzuSentry } from '@anzusystems/common-admin/vite'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
-const shouldEnableSentry = !!process.env.APP_DEPLOY_ENV && !!process.env.SENTRY_URL
 
 function watchCommonAdmin(): Plugin {
   const triggerFile = path.resolve(_dirname, '.common-admin-updated')
@@ -42,7 +41,6 @@ function watchCommonAdmin(): Plugin {
 
 export default defineConfig({
   build: {
-    sourcemap: shouldEnableSentry ? 'hidden' : false,
     target: 'es2019',
     rolldownOptions: {
       // Advisory, and it fires on builds that are already fast -- common-admin switches it off
@@ -143,6 +141,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    ...anzuSentry({ project: 'anzu-admin-dam' }),
     watchCommonAdmin(),
     VueRouter({
       ...routerPages,
@@ -167,18 +166,6 @@ export default defineConfig({
       // resolves `ref` and friends through the import statement only, and several error-level
       // rules go quiet -- `vue/no-ref-as-operand` among them. `eslint.config.mjs` lists which.
       eslintrc: { enabled: true, filepath: './.eslintrc-auto-import.json', globalsPropValue: 'readonly' },
-    }),
-    sentryVitePlugin({
-      disable: !shouldEnableSentry,
-      url: process.env.SENTRY_URL,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: 'petitpress',
-      project: 'anzu-admin-dam',
-      release: { name: process.env.GITVAR_SHORTVERSION },
-      telemetry: false,
-      sourcemaps: {
-        filesToDeleteAfterUpload: './dist/**/*.js.map',
-      },
     }),
   ],
   resolve: {
