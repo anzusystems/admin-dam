@@ -32,7 +32,10 @@
     "browserslist:update": "npx --yes update-browserslist-db@latest",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "release:start": "npx -y --allow-git=all github:anzusystems/release-tools#main start",
+    "release:publish": "npx -y --allow-git=all github:anzusystems/release-tools#main publish",
+    "release:cleanup": "npx -y --allow-git=all github:anzusystems/release-tools#main cleanup"
   },
   "dependencies": {
     "@anzusystems/common-admin": "1.47.0-beta.dev-1790143991",
