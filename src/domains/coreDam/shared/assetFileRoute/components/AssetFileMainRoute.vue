@@ -51,11 +51,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <AssetFileRouteStatus
-    :asset-file-route="assetFile"
-    @make-private="makePrivate"
-    @open-make-public-dialog="openMakeFilePrivateDialog"
-  />
+  <AssetFileRouteStatus :asset-file-route="assetFile" />
 
   <VMenu>
     <template #activator="{ props: activatorProps }">

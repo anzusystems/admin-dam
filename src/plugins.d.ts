@@ -20,23 +20,6 @@ declare module 'vue-router' {
   }
 }
 
-declare module '@vue/runtime-core' {
-  export interface GlobalComponents {
-    ABtnPrimary: (typeof import('vuetify/components'))['VBtn']
-    ABtnSecondary: (typeof import('vuetify/components'))['VBtn']
-    ABtnTertiary: (typeof import('vuetify/components'))['VBtn']
-    ABtnIcon: (typeof import('vuetify/components'))['VBtn']
-    RouterLink: (typeof import('vue-router'))['RouterLink']
-    RouterView: (typeof import('vue-router'))['RouterView']
-  }
-}
-
-declare module '@vue/runtime-core' {
-  interface AllowedComponentProps {
-    dataCy?: string
-  }
-}
-
 declare module '@anzusystems/common-admin' {
   // `<Acl :permission>` takes these values.
   interface AclRegistry {

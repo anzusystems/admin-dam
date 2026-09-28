@@ -110,10 +110,7 @@ defineExpose({
         @click:row="onRowClick"
       >
         <template #item.extSystem="{ item }: { item: DatatableItem }">
-          <CachedExtSystemChip
-            :id="item.extSystem"
-            variant="text"
-          />
+          <CachedExtSystemChip :id="item.extSystem" />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
@@ -139,10 +136,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

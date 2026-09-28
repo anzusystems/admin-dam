@@ -145,10 +145,7 @@ onMounted(() => {
         </div>
       </template>
       <template #bottom>
-        <ADatatablePagination
-          v-model="pagination"
-          @change="fetchVoices"
-        />
+        <ADatatablePagination @change="fetchVoices" />
       </template>
     </VDataTableServer>
 

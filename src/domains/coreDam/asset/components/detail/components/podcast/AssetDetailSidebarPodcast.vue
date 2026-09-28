@@ -102,7 +102,6 @@ onMounted(async () => {
     />
     <ADatatablePagination
       v-if="showPagination"
-      v-model="pagination"
       hide-records-per-page
       @change="getList"
     />

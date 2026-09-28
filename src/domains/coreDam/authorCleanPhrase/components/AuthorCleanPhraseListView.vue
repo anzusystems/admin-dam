@@ -38,10 +38,7 @@ const breadcrumbs = defineBreadcrumbs(
         />
       </Acl>
       <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
-        <AuthorCleanPhrasePlaygroundButton
-          data-cy="button-playground"
-          disable-redirect
-        />
+        <AuthorCleanPhrasePlaygroundButton data-cy="button-playground" />
       </Acl>
     </template>
   </ActionbarWrapper>

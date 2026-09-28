@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AAssetSelect, DamAssetType, SortOrder } from '@anzusystems/common-admin'
+import { AAssetSelect, DamAssetType } from '@anzusystems/common-admin'
 import type { AssetSelectReturnData, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
@@ -7,10 +7,6 @@ import { useI18n } from 'vue-i18n'
 
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
-import {
-  SORT_BY_SCORE_DATE,
-  customSortOptions,
-} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 
@@ -87,8 +83,6 @@ const pickAssetType = computed(() => {
           :max-count="1"
           return-type="assetId"
           :asset-type="pickAssetType"
-          :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
-          :custom-sort-options="customSortOptions"
           @confirm="selectAsset"
         >
           <template #activator="{ props: assetSelectProps }">

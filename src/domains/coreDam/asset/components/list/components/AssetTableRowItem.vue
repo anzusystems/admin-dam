@@ -122,7 +122,6 @@ onMounted(() => {
         :id="podcastItem"
         :key="podcastItem"
         class="pr-1"
-        :item="podcastItem"
       />
     </td>
     <td>

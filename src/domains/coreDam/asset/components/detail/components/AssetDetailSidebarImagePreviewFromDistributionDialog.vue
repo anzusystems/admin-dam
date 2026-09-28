@@ -108,10 +108,7 @@ onMounted(async () => {
         {{ t('system.imagePreview.actions.chooseFromDistribution') }}
       </ADialogToolbar>
       <VCardText>
-        <ACard
-          :loading="listLoading"
-          inner-div-class=""
-        >
+        <ACard :loading="listLoading">
           <div
             v-if="listItems.length === 0"
             class="text-center text-body-small w-100 pa-2"
@@ -132,7 +129,6 @@ onMounted(async () => {
             />
           </div>
           <ADatatablePagination
-            v-model="pagination"
             hide-records-per-page
             @change="getList"
           />

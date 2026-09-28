@@ -1,4 +1,5 @@
 import { useRouteHistory } from '@anzusystems/common-admin'
+import type { RouteRecordName } from 'vue-router'
 
 // Routes that must never be recorded as a place to come back to.
 //
@@ -10,7 +11,14 @@ import { useRouteHistory } from '@anzusystems/common-admin'
 // `/login` and `/logout` throw the session away, `/[...pathMatch]` is the 404 page, `/error`
 // only offers a full reload and `/close-page` exists to be closed by the opener.
 // `/unauthorized` is where a failed permission check parks the user.
-export const routeHistoryBlacklist = ['/[...pathMatch]', '/close-page', '/error', '/login', '/logout', '/unauthorized']
+export const routeHistoryBlacklist = [
+  '/[...pathMatch]',
+  '/close-page',
+  '/error',
+  '/login',
+  '/logout',
+  '/unauthorized',
+] satisfies RouteRecordName[]
 
 // Registered at module scope rather than from a mounted component: the first navigation's guard
 // runs before anything is mounted, and a route recorded before the list is set stays in history.

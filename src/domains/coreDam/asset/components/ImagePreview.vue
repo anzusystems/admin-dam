@@ -4,7 +4,6 @@ import {
   ADialogToolbar,
   AssetFileProcessStatus,
   DamAssetType as AssetTypeValue,
-  SortOrder,
   isNull,
 } from '@anzusystems/common-admin'
 import type {
@@ -18,10 +17,6 @@ import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
-import {
-  SORT_BY_SCORE_DATE,
-  customSortOptions,
-} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 withDefaults(
@@ -190,8 +185,6 @@ watch(
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"
-        :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
-        :custom-sort-options="customSortOptions"
         @confirm="selectAsset"
       >
         <template #activator="{ props: assetSelectProps }">
