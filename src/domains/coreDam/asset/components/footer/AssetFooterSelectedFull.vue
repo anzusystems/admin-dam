@@ -102,7 +102,7 @@ const onSaveAndClose = async () => {
   >
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar
-        class="w-100 system-border-b pr-1"
+        class="w-100 border-b pr-1"
         :color="toolbarColor"
         density="compact"
         :height="64"

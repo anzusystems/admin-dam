@@ -54,5 +54,6 @@ const prefetch = computed(() => (props.disableInitFetch ? false : 'mounted'))
     :clearable="clearable"
     filter-by-field="email"
     :prefetch="prefetch"
+    :data-cy="dataCy"
   />
 </template>

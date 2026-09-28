@@ -58,7 +58,7 @@ const onConfirm = () => {
     scrollable
   >
     <VCard v-if="podcastExportDataManageDialog">
-      <ADialogToolbar @on-cancel="podcastExportDataManageDialog = false">
+      <ADialogToolbar @cancel="podcastExportDataManageDialog = false">
         <span v-if="podcastExportData.id">{{ t('coreDam.podcastExportData.meta.edit') }}</span>
         <span v-else>{{ t('coreDam.podcastExportData.meta.create') }}</span>
       </ADialogToolbar>

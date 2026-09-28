@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
   ACreateDialog,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -57,9 +57,9 @@ const create = async () => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.assetLicence.meta.create') }}
@@ -88,7 +88,7 @@ const create = async () => {
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
             :client="damClient"
             :label="t('coreDam.assetLicence.model.extSystem')"

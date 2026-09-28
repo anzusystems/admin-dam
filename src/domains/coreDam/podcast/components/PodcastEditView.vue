@@ -3,10 +3,12 @@ import {
   AActionCloseButtonHistory,
   AActionSaveButton,
   ACard,
+  AUnsavedConfirmDialog,
   defineBreadcrumbs,
-  useI18n,
+  useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import PodcastEditForm from '@/domains/coreDam/podcast/components/PodcastEditForm.vue'
@@ -18,6 +20,9 @@ const id = (route.params as { id: string }).id.toString()
 
 const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, podcast } =
   usePodcastEditActions()
+
+// Asks before leaving with unsaved rows in the list editor, which registers itself by its label.
+const guard = useUnsavedChangesGuard({ sources: [] })
 
 const editForm = ref<InstanceType<typeof PodcastEditForm> | null>(null)
 
@@ -83,4 +88,9 @@ const breadcrumbs = defineBreadcrumbs(
       />
     </VCardText>
   </ACard>
+  <AUnsavedConfirmDialog
+    v-model="guard.promptOpen.value"
+    :dirty-labels="guard.dirtyLabels.value"
+    @resolve="guard.resolvePrompt"
+  />
 </template>

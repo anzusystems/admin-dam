@@ -133,7 +133,7 @@ watch(
       @blur="onBlur"
     >
       <template #label>
-        {{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" />
+        {{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="a-required-mark" />
       </template>
     </VSelect>
   </div>

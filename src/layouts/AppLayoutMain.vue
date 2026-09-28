@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { AAlerts, useTheme } from '@anzusystems/common-admin'
+import { useTheme } from '@anzusystems/common-admin'
 
 const { theme } = useTheme()
 </script>
 
 <template>
-  <AAlerts />
   <VApp :theme="theme">
     <slot />
   </VApp>

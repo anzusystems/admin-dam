@@ -42,7 +42,7 @@ const onConfirm = async () => {
     @update:model-value="(val) => (modelValue = val)"
   >
     <VCard v-if="modelValue && requestId">
-      <ADialogToolbar @on-cancel="close">
+      <ADialogToolbar @cancel="close">
         {{ t('coreDam.ttsNarrationRequest.cancelRequest.title') }}
       </ADialogToolbar>
       <VCardText>

@@ -158,6 +158,7 @@ const showAdd = computed(() => {
       :fetch-items-minimal="fetchItemsMinimal"
       :multiple="multiple"
       :clearable="clearable"
+      :disabled="disabled"
       filter-by-field="text"
       :filter-sort-by="null"
       item-title="name"
@@ -224,7 +225,7 @@ const showAdd = computed(() => {
 .a-keywords-append-item {
   position: sticky;
   bottom: 0;
-  background-color: white;
+  background-color: rgb(var(--v-theme-surface));
   transform: translateY(8px);
 }
 </style>

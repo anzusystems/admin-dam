@@ -129,7 +129,7 @@ const { t } = useI18n()
       v-if="uploadDialog"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onDialogCancel">
+      <ADialogToolbar @cancel="onDialogCancel">
         {{ t('system.upload.limits.uploadWarning') }}
       </ADialogToolbar>
       <VCardText>

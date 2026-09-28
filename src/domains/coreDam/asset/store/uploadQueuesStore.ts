@@ -7,7 +7,6 @@ import {
   UploadQueueItemType,
   damFileTypeFix,
   getAssetTypeByMimeType,
-  i18n,
   isNull,
   isUndefined,
   useAlerts,
@@ -51,8 +50,8 @@ import {
   uploadStop,
   useUpload,
 } from '@/domains/coreDam/shared/services/upload/uploadService'
+import { i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'
-
 const QUEUE_MAX_PARALLEL_UPLOADS = 2
 
 // The axios cancel token reaches only a request on the wire, not the gaps between chunks.
@@ -60,7 +59,7 @@ const uploadStopHandles = new WeakMap<UploadQueueItem, () => void>()
 
 // Outside a component, so the global instance - the same way `uploadService` reaches it.
 const translate = (key: string) => {
-  const { t } = i18n.global || i18n
+  const { t } = i18n.global
 
   return t(key)
 }
@@ -409,8 +408,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     })
     if (currentItems.length > 0) {
       currentItems.forEach((item) => {
-        if (item.latestChunkCancelToken) {
-          uploadStop(item.latestChunkCancelToken)
+        if (item.latestChunkAbortController) {
+          uploadStop(item.latestChunkAbortController)
         }
       })
     }
@@ -424,8 +423,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     clearTimeout(queueItem.notificationFallbackTimer)
     uploadStopHandles.get(queueItem)?.()
     uploadStopHandles.delete(queueItem)
-    if (queueItem.latestChunkCancelToken) {
-      uploadStop(queueItem.latestChunkCancelToken)
+    if (queueItem.latestChunkAbortController) {
+      uploadStop(queueItem.latestChunkAbortController)
     }
     // By identity: an index the caller has held across an await takes out a different item.
     const currentIndex = queues.value[queueId].items.indexOf(queueItem)

@@ -102,7 +102,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
     :width="900"
   >
     <VCard v-if="distributionManageDialog">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         <span v-if="isEdit">{{ t('coreDam.distribution.meta.edit') }}</span>
         <span v-else>{{ t('coreDam.distribution.meta.create') }}</span>
       </ADialogToolbar>

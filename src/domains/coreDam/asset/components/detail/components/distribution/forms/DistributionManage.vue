@@ -136,6 +136,7 @@ const onDistributionUpsert = () => {
       :show-add-button="false"
       :on-delete="onDeleteDistributionItem"
       delete-mode="immediate"
+      disable-unsaved
       @edit="onEdit"
     >
       <template #item-compact="{ raw }: { raw: DistributionItem }">

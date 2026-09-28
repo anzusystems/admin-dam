@@ -12,7 +12,7 @@ export const AVAILABLE_LANGUAGES: Array<LanguageCode> = ['sk', 'en']
 
 const REQUIRED_LOCALES = ['sk']
 
-export const i18n = createI18n<[MessageSchema]>({
+export const i18n = createI18n<[MessageSchema], LanguageCode, false>({
   globalInjection: false,
   legacy: false,
   locale: 'sk',

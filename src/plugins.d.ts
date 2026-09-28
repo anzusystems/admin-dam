@@ -28,7 +28,6 @@ declare module '@vue/runtime-core' {
     ABtnIcon: (typeof import('vuetify/components'))['VBtn']
     RouterLink: (typeof import('vue-router'))['RouterLink']
     RouterView: (typeof import('vue-router'))['RouterView']
-    Acl: (typeof import('@anzusystems/common-admin'))['Acl']
   }
 }
 
@@ -39,8 +38,10 @@ declare module '@vue/runtime-core' {
 }
 
 declare module '@anzusystems/common-admin' {
-  export type AclValue = CustomAclValue
-  export function can(acl: CustomAclValue, subject?: object): boolean
+  // `<Acl :permission>` takes these values.
+  interface AclRegistry {
+    acl: CustomAclValue
+  }
   export interface DefineLocaleMessage extends MessageSchema {}
 
   interface AssetFileProperties {

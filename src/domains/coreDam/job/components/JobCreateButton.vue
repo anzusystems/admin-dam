@@ -83,7 +83,7 @@ const onSuccess = () => {
     :max-width="500"
   >
     <VCard>
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         {{ t('common.job.button.create') }}
       </ADialogToolbar>
       <div class="pa-6">

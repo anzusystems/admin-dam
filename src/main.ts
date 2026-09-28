@@ -1,10 +1,8 @@
 import App from '@/App.vue'
-import AppLayoutDrawer from '@/layouts/AppLayoutDrawer.vue'
-import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
-import AppLayoutLoader from '@/layouts/AppLayoutLoader.vue'
-import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
-// Vuetify's stylesheets (with the MDI icons) before common-admin's, whose rules are not in a layer:
-// the cascade depends on the order. The comment after this block keeps the import sorting out of it.
+// Vuetify's stylesheets (with the MDI icons) before common-admin's. Between Vuetify's layers and
+// common-admin's `anzu-common` the `@layer` statements in index.html decide; the order still matters for the
+// unlayered rules among them (the icons, the admin's own). The comment after this block keeps the import
+// sorting out of it.
 import { AnzuSystemsCommonAdmin, loadCommonFonts } from '@anzusystems/common-admin'
 import type { PluginOptions } from '@anzusystems/common-admin'
 
@@ -33,6 +31,7 @@ loadEnvConfig(() => {
     .use(vuetify)
     .use(router)
     .use<PluginOptions>(AnzuSystemsCommonAdmin, {
+      i18n,
       languages: {
         available: AVAILABLE_LANGUAGES,
         default: DEFAULT_LANGUAGE,
@@ -52,10 +51,6 @@ loadEnvConfig(() => {
         },
       },
     })
-    .component('AppLayoutLoader', AppLayoutLoader)
-    .component('AppLayoutMain', AppLayoutMain)
-    .component('AppLayoutDrawer', AppLayoutDrawer)
-    .component('AppLayoutFullscreen', AppLayoutFullscreen)
 
   if (envConfig.sentry.dsn) {
     Sentry.init({
@@ -73,6 +68,7 @@ loadEnvConfig(() => {
       replaysOnErrorSampleRate: 0.2,
       transport: Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport),
       integrations: [
+        Sentry.extraErrorDataIntegration({ depth: 3, captureErrorCause: false }),
         Sentry.browserTracingIntegration({ router, routeLabel: 'path' }),
         Sentry.replayIntegration({
           maskAllText: false,

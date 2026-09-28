@@ -4,39 +4,17 @@ import { URL, fileURLToPath } from 'url'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
-import type { Plugin, UserConfigExport } from 'vite'
+import type { UserConfigExport } from 'vite'
 import vuetify from 'vite-plugin-vuetify'
 import VueRouter from 'vue-router/vite'
 // oxlint-disable-next-line no-restricted-imports
-import { anzuSentry } from '@anzusystems/common-admin/vite'
+import { anzuSentry, commonAdminDevWatch } from '@anzusystems/common-admin/vite'
 import browserslist from 'browserslist'
 import { browserslistToTargets } from 'lightningcss'
 
 import { routerPages } from './routerPages.config.mts'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
-
-function watchCommonAdmin(): Plugin {
-  const triggerFile = path.resolve(_dirname, '.common-admin-updated')
-  return {
-    name: 'watch-common-admin',
-    configureServer(server) {
-      server.watcher.add(triggerFile)
-      const onTrigger = (file: string) => {
-        if (file === triggerFile) {
-          // A restart, not a reload: the new files reach the page only once the optimizer has
-          // bundled them again, and the browser keeps the old ones under an unchanged `?v=` (both
-          // measured). `true` forces that re-optimization.
-          console.log('[watch-common-admin] common-admin was replaced, restarting the server...')
-          void server.restart(true)
-        }
-      }
-      // `add` too: on a fresh checkout the file does not exist until the first copy.sh creates it
-      server.watcher.on('add', onTrigger)
-      server.watcher.on('change', onTrigger)
-    },
-  }
-}
 
 export default defineConfig({
   build: {
@@ -59,6 +37,9 @@ export default defineConfig({
               tags: ['$initial'],
               priority: 100,
               includeDependenciesRecursively: true,
+              // Split into chunks under Vite's 500 kB warning. The limit counts the modules before
+              // minification: 900 KiB of them came out at most 480 kB in admin-cms.
+              maxSize: 900 * 1024,
             },
             {
               name: (id) => {
@@ -149,7 +130,7 @@ export default defineConfig({
   },
   plugins: [
     ...anzuSentry({ project: 'anzu-admin-dam' }),
-    watchCommonAdmin(),
+    commonAdminDevWatch({ prebundle: process.env.COMMON_ADMIN_PREBUNDLE !== '0' }),
     VueRouter({
       ...routerPages,
       dts: 'src/typed-router.d.ts',

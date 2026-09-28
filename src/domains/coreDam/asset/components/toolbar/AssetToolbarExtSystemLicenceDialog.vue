@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamExtSystemRemoteAutocomplete,
   ADialogToolbar,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete,
   isArray,
   isInt,
   isNull,
@@ -196,7 +196,7 @@ onMounted(async () => {
     <VCard v-if="dialog">
       <ADialogToolbar
         data-cy="button-close"
-        @on-cancel="onCancel"
+        @cancel="onCancel"
       >
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
@@ -207,7 +207,7 @@ onMounted(async () => {
         >
           <VRow>
             <VCol class="pt-2">
-              <DamExtSystemRemoteAutocomplete
+              <ADamExtSystemRemoteAutocomplete
                 v-model="selectedExtSystemSearch"
                 :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
@@ -220,7 +220,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <DamAssetLicenceRemoteAutocomplete
+              <ADamAssetLicenceRemoteAutocomplete
                 v-model="selectedLicenceSearch"
                 :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
@@ -291,7 +291,7 @@ onMounted(async () => {
           @update:model-value="selectedLicence = null"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required" /></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="a-required-mark" /></span>
           </template>
         </VSelect>
         <VSelect
@@ -302,7 +302,7 @@ onMounted(async () => {
           @blur="validateLicence.$touch()"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="required" /></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="a-required-mark" /></span>
           </template>
         </VSelect>
       </VCardText>

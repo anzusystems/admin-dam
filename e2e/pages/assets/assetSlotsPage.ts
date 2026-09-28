@@ -241,7 +241,7 @@ export async function addFirstAssetAsTwin(page: Page): Promise<{ id: string; til
   await twinRow(page).getByRole('button', { name: 'Pridať' }).click()
   const tile = page.locator('.asset-list-tiles__item').first()
   await expect(tile).toBeVisible()
-  const tileTitle = (await tile.locator('.line-clamp-1').first().innerText()).trim()
+  const tileTitle = (await tile.locator('.text-truncate').first().innerText()).trim()
   await tile.click()
   await page.getByRole('button', { name: 'Potvrdiť' }).click()
   const chip = twinRow(page).locator('.v-chip--link')

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {
   ACreateDialog,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -63,9 +63,9 @@ const create = (): Promise<VoiceFamily> => createVoiceFamily(voiceFamily.value)
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.voiceFamily.meta.create') }}
@@ -76,7 +76,7 @@ const create = (): Promise<VoiceFamily> => createVoiceFamily(voiceFamily.value)
         :subject="ENTITY"
       >
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="voiceFamily.extSystem"
             :client="damClient"
             :label="t('coreDam.voiceFamily.model.extSystem')"

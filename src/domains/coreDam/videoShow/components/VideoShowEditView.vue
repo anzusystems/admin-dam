@@ -1,12 +1,7 @@
 <script lang="ts" setup>
-import {
-  AActionCloseButtonHistory,
-  AActionSaveButton,
-  ACard,
-  defineBreadcrumbs,
-  useI18n,
-} from '@anzusystems/common-admin'
+import { AActionCloseButtonHistory, AActionSaveButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import VideoShowEditForm from '@/domains/coreDam/videoShow/components/VideoShowEditForm.vue'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AFilterWrapperSidebar, FilterConfigKey, FilterDataKey, FiltersSelected } from '@anzusystems/common-admin'
+import { AFilterWrapperSidebar, AFiltersSelected, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
 import { provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -52,7 +52,7 @@ const resetFilter = () => {
           defer
           to="#asset-active-filters"
         >
-          <FiltersSelected />
+          <AFiltersSelected />
         </Teleport>
       </AFilterWrapperSidebar>
     </div>

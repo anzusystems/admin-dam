@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ABooleanValue, AJobDetailCommon, ARow, useI18n } from '@anzusystems/common-admin'
+import { ABooleanValue, AJobDetailCommon, ARow } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
 import type { JobAuthorCurrentOptimize } from '@/domains/coreDam/job/types/Job'

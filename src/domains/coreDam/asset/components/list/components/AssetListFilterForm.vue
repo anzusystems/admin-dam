@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import {
+  ADamAuthorFilterRemoteAutocomplete,
+  ADamKeywordFilterRemoteAutocomplete,
+  ADamUserFilterRemoteAutocomplete,
   AFilterBooleanSelect,
   AFilterInteger,
   AFilterString,
   AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
-  DamAuthorFilterRemoteAutocomplete,
-  DamKeywordFilterRemoteAutocomplete,
-  DamUserFilterRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 
 import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
@@ -38,7 +38,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <DamKeywordFilterRemoteAutocomplete
+      <ADamKeywordFilterRemoteAutocomplete
         name="keywordIds"
         :ext-system="currentExtSystemId"
       />
@@ -46,7 +46,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <DamAuthorFilterRemoteAutocomplete
+      <ADamAuthorFilterRemoteAutocomplete
         name="authorIds"
         :ext-system="currentExtSystemId"
       />
@@ -54,7 +54,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <DamUserFilterRemoteAutocomplete name="createdByIds" />
+      <ADamUserFilterRemoteAutocomplete name="createdByIds" />
     </VCol>
   </VRow>
   <VRow>

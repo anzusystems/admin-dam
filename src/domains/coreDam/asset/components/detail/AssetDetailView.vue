@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {
-  DamAssetImageRoiSelect,
+  ADamAssetImageRoiSelect,
   isDocId,
   isString,
   useAlerts,
@@ -142,7 +142,7 @@ onMounted(() => {
           :color="toolbarColor"
           density="compact"
           :height="64"
-          class="system-border-b pr-1"
+          class="border-b pr-1"
         >
           <div class="text-label-large d-flex pl-2">
             <div>{{ toolbarTitle }}</div>
@@ -191,7 +191,7 @@ onMounted(() => {
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
+              <ADamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
             <div
               v-else
@@ -208,7 +208,7 @@ onMounted(() => {
               />
             </div>
           </div>
-          <div class="h-100 d-flex dam-image-detail__sidebar system-border-l">
+          <div class="h-100 d-flex dam-image-detail__sidebar border-s">
             <AssetDetailDialogSidebar
               v-if="asset"
               :asset-id="asset.id"

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {
+  ADamAssetLicenceGroupRemoteAutocomplete,
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamDistributionServiceSelect,
+  ADamExtSystemRemoteAutocomplete,
+  ADamExternalProviderAssetSelect,
   ARow,
-  DamAssetLicenceGroupRemoteAutocomplete,
-  DamAssetLicenceRemoteAutocomplete,
-  DamDistributionServiceSelect,
-  DamExtSystemRemoteAutocomplete,
-  DamExternalProviderAssetSelect,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -32,7 +32,7 @@ const { t } = useI18n()
     written anywhere.
   -->
   <ARow>
-    <DamAssetLicenceGroupRemoteAutocomplete
+    <ADamAssetLicenceGroupRemoteAutocomplete
       v-model="user.licenceGroups"
       :client="damClient"
       :label="t('coreDam.user.model.licenceGroups')"
@@ -43,7 +43,7 @@ const { t } = useI18n()
     />
   </ARow>
   <ARow>
-    <DamAssetLicenceRemoteAutocomplete
+    <ADamAssetLicenceRemoteAutocomplete
       v-model="user.assetLicences"
       :client="damClient"
       :label="t('coreDam.user.model.assetLicences')"
@@ -54,7 +54,7 @@ const { t } = useI18n()
     />
   </ARow>
   <ARow>
-    <DamExtSystemRemoteAutocomplete
+    <ADamExtSystemRemoteAutocomplete
       v-model="user.adminToExtSystems"
       :client="damClient"
       :label="t('coreDam.user.model.adminToExtSystems')"
@@ -65,7 +65,7 @@ const { t } = useI18n()
     />
   </ARow>
   <ARow>
-    <DamExtSystemRemoteAutocomplete
+    <ADamExtSystemRemoteAutocomplete
       v-model="user.userToExtSystems"
       :client="damClient"
       :label="t('coreDam.user.model.userToExtSystems')"
@@ -76,7 +76,7 @@ const { t } = useI18n()
     />
   </ARow>
   <ARow>
-    <DamExternalProviderAssetSelect
+    <ADamExternalProviderAssetSelect
       v-model="user.allowedAssetExternalProviders"
       :client="damClient"
       :label="t('coreDam.user.model.allowedAssetExternalProviders')"
@@ -87,7 +87,7 @@ const { t } = useI18n()
     />
   </ARow>
   <ARow>
-    <DamDistributionServiceSelect
+    <ADamDistributionServiceSelect
       v-model="user.allowedDistributionServices"
       :client="damClient"
       :label="t('coreDam.user.model.allowedDistributionServices')"

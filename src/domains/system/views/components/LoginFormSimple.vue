@@ -15,7 +15,7 @@ const onSubmit = () => {
 <template>
   <div class="py-5 d-flex justify-center align-center">
     <div
-      class="login-form pa-4 system-border-a"
+      class="login-form pa-4 border"
       data-cy="login-form"
     >
       <h1 class="text-headline-large my-3">

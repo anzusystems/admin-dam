@@ -192,7 +192,7 @@ watch(
         :asset-type="AssetTypeValue.Image"
         :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
         :custom-sort-options="customSortOptions"
-        @on-confirm="selectAsset"
+        @confirm="selectAsset"
       >
         <template #activator="{ props: assetSelectProps }">
           <VBtn
@@ -215,7 +215,7 @@ watch(
         v-if="dialog"
         data-cy="delete-panel"
       >
-        <ADialogToolbar @on-cancel="onCancel">
+        <ADialogToolbar @cancel="onCancel">
           {{ t('system.imagePreview.actions.selectImage') }}
         </ADialogToolbar>
         <VCardText>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { AJobDetailCommon, ARow, dateTimePretty, useI18n } from '@anzusystems/common-admin'
+import { AJobDetailCommon, ARow, dateTimePretty } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
 import type { JobAssetFileReprocessInternalFlag } from '@/domains/coreDam/job/types/Job'

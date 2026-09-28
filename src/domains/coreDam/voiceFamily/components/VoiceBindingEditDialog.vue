@@ -59,7 +59,7 @@ const onConfirm = () => {
     @update:model-value="(val) => (modelValue = val)"
   >
     <VCard v-if="modelValue && localVoice">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.voice.meta.edit') }}
       </ADialogToolbar>
       <VCardText>

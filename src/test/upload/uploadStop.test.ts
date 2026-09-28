@@ -4,7 +4,7 @@ import { ref } from 'vue'
 const uploadChunk = vi.fn(async (): Promise<unknown> => ({}))
 const uploadFinish = vi.fn(async (): Promise<unknown> => ({}))
 const uploadStart = vi.fn(async () => ({ asset: 'asset-1', id: 'file-1' }))
-const cancel = vi.fn()
+const abort = vi.spyOn(AbortController.prototype, 'abort')
 
 // The sixth argument is the progress callback the service hands to axios.
 let onChunkProgress: ((event: { loaded: number; total: number }) => void) | undefined = undefined
@@ -26,10 +26,6 @@ vi.mock('axios', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
-    default: {
-      ...(actual.default as object),
-      CancelToken: { source: () => ({ token: {}, cancel }) },
-    },
     isAxiosError: () => false,
   }
 })
@@ -63,7 +59,7 @@ const queueItem = () => ({
   assetId: 'asset-1',
   status: 'waiting',
   currentChunkIndex: 0,
-  latestChunkCancelToken: null as null | { cancel: () => void },
+  latestChunkAbortController: null as null | AbortController,
   progress: { speed: 0, remainingTime: 0, progressPercent: 0 },
   error: { hasError: false, message: '' },
 })
@@ -172,7 +168,7 @@ describe('stopping an upload', () => {
     const { useUpload } = await load()
     const item = queueItem()
     const { upload, stop } = useUpload(item as never)
-    // The cancel token only covers the chunk in flight; a stop asked for between two of them used
+    // The abort controller only covers the chunk in flight; a stop asked for between two of them used
     // to be ignored and the file uploaded to the end anyway.
     uploadChunk.mockImplementationOnce(async () => {
       stop()
@@ -299,10 +295,11 @@ describe('stopping an upload', () => {
     uploadChunk.mockImplementation(() => new Promise(() => undefined))
 
     void upload().catch(() => undefined)
-    // The token is created after the chunk has been read, so waiting on it is the only sound cue.
-    await vi.waitFor(() => expect(item.latestChunkCancelToken).not.toBeNull())
+    // The controller is created after the chunk has been read, so waiting on it is the only sound cue.
+    await vi.waitFor(() => expect(item.latestChunkAbortController).not.toBeNull())
     stop()
 
-    expect(cancel).toHaveBeenCalledTimes(1)
+    expect(abort).toHaveBeenCalledTimes(1)
+    expect(item.latestChunkAbortController!.signal.aborted).toBe(true)
   })
 })

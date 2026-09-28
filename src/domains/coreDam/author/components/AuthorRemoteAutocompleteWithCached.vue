@@ -249,7 +249,7 @@ const showAdd = computed(() => {
 .a-authors-append-item {
   position: sticky;
   bottom: 0;
-  background-color: white;
+  background-color: rgb(var(--v-theme-surface));
   transform: translateY(8px);
 }
 </style>

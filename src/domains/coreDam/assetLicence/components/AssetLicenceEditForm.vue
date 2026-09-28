@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
+  ADamExtSystemRemoteAutocomplete,
   AFormDatetimePicker,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -50,7 +50,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
             :client="damClient"
             :label="t('coreDam.assetLicence.model.extSystem')"

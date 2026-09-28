@@ -91,7 +91,7 @@ const label = computed(() => {
       <div
         v-for="(item, key) in items"
         :key="key"
-        class="color-swatches__item pa-1 cursor-pointer position-relative system-border-a"
+        class="color-swatches__item pa-1 cursor-pointer position-relative border"
         :class="{ 'color-swatches__item--active': item.selected }"
         :style="{ backgroundColor: item.color }"
         :title="item.name"

@@ -89,7 +89,7 @@ export const uploadChunk = (
       .post(url, formData, {
         // Chunk uploads need longer than the instance default; axios merges per-request over it.
         timeout: CHUNK_UPLOAD_TIMEOUT * 1000,
-        cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
+        signal: item.latestChunkAbortController?.signal,
         headers: {
           'Content-Type': 'multipart/form-data',
         },

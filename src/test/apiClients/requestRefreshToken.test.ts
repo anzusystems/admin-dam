@@ -1,3 +1,4 @@
+import { AxiosError, AxiosHeaders } from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const executeRefresh = vi.fn(async (): Promise<unknown> => undefined)
@@ -23,6 +24,13 @@ const load = async () => {
 
 const config = { url: '/adm/v1/asset' } as never
 
+// A failed refresh as the api helpers deliver it: the axios error wrapped once.
+const failing = (status: number) => {
+  const error = new AxiosError('request failed')
+  error.response = { status, statusText: '', data: {}, headers: {}, config: { headers: new AxiosHeaders() } }
+  return Object.assign(new Error('wrapped'), { cause: error })
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
   executeRefresh.mockImplementation(async () => undefined)
@@ -34,8 +42,7 @@ describe('the refresh interceptor', () => {
   it('lets a request with a token through untouched', async () => {
     const { userRefreshRequestInterceptor } = await load()
 
-    // Returned as-is, not wrapped: the fast path stays synchronous.
-    expect(userRefreshRequestInterceptor(config)).toBe(config)
+    await expect(userRefreshRequestInterceptor(config)).resolves.toBe(config)
     expect(executeRefresh).not.toHaveBeenCalled()
   })
 
@@ -64,22 +71,22 @@ describe('the refresh interceptor', () => {
     expect(executeRefresh).toHaveBeenCalledTimes(1)
   })
 
-  it('empties the queue, so the next refresh does not release the old requests again', async () => {
+  it('does not release a later request with an earlier refresh', async () => {
     const { userRefreshRequestInterceptor } = await load()
     jwtPayload = undefined
-    const settled: string[] = []
+    await userRefreshRequestInterceptor(config)
 
-    void Promise.resolve(userRefreshRequestInterceptor(config)).then(() => settled.push('first'))
-    await Promise.resolve()
-    await Promise.resolve()
-    await Promise.resolve()
-
-    settled.length = 0
-    void Promise.resolve(userRefreshRequestInterceptor(config)).then(() => settled.push('second'))
+    let finish: () => void = () => {}
+    executeRefresh.mockImplementation(() => new Promise<undefined>((resolve) => (finish = () => resolve(undefined))))
+    let second = 'pending'
+    const request = userRefreshRequestInterceptor(config).then(() => (second = 'released'))
     await new Promise((resolve) => setTimeout(resolve, 0))
 
-    // Each flush must release its own batch and no other.
-    expect(settled).toEqual(['second'])
+    // It waits for its own refresh; the finished one is never reused.
+    expect(second).toBe('pending')
+    finish()
+    await request
+    expect(second).toBe('released')
     expect(executeRefresh).toHaveBeenCalledTimes(2)
   })
 
@@ -99,10 +106,10 @@ describe('the refresh interceptor', () => {
     expect(executeRefresh).toHaveBeenCalledTimes(2)
   })
 
-  it('signs the user out and rejects the queue when the refresh itself fails', async () => {
+  it('signs the user out and rejects the queue when the session is refused (400, no other tab refreshed)', async () => {
     const { userRefreshRequestInterceptor } = await load()
     jwtPayload = undefined
-    executeRefresh.mockRejectedValue(new Error('unable_to_refresh'))
+    executeRefresh.mockRejectedValue(failing(400))
 
     const waiting = [userRefreshRequestInterceptor(config), userRefreshRequestInterceptor(config)]
 
@@ -110,6 +117,17 @@ describe('the refresh interceptor', () => {
 
     expect(results.map((result) => result.status)).toEqual(['rejected', 'rejected'])
     expect(logoutUser).toHaveBeenCalledTimes(1)
+  })
+
+  it('rejects the queue but keeps the user signed in when the auth backend cannot answer', async () => {
+    const { userRefreshRequestInterceptor } = await load()
+    jwtPayload = undefined
+    executeRefresh.mockRejectedValue(failing(503))
+
+    const results = await Promise.allSettled([userRefreshRequestInterceptor(config)])
+
+    expect(results.map((result) => result.status)).toEqual(['rejected'])
+    expect(logoutUser).not.toHaveBeenCalled()
   })
 
   it('starts a new refresh once the previous one has settled', async () => {

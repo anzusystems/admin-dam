@@ -1,46 +1,19 @@
-<script lang="ts" setup>
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
-import type { DocIdNullable, IntegerId } from '@anzusystems/common-admin'
-import { provide } from 'vue'
+<script lang="ts">
+import { createRemoteAutocomplete } from '@anzusystems/common-admin'
+import type { DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
+import type { PropType } from 'vue'
 
 import { useVoiceFamilySelectActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyFilter } from '@/domains/coreDam/voiceFamily/filter/VoiceFamilyFilter'
 
-const props = withDefaults(
-  defineProps<{
-    extSystemId: IntegerId
-    label?: string | undefined
-    required?: boolean | undefined
-    clearable?: boolean
-    dataCy?: string
-  }>(),
-  {
-    label: undefined,
-    required: undefined,
-    clearable: false,
-    dataCy: '',
-  }
-)
+const props = { extSystemId: { type: Number as PropType<IntegerId>, required: true } } as const
 
-const modelValue = defineModel<DocIdNullable>({ required: true })
-
-const { fetchItems, fetchItemsByIds } = useVoiceFamilySelectActions(() => props.extSystemId)
-
-const { filterData, filterConfig } = useVoiceFamilyFilter()
-provide(FilterInnerConfigKey, filterConfig)
-provide(FilterInnerDataKey, filterData)
+export default createRemoteAutocomplete<DocId, DocIdNullable, typeof props>({
+  name: 'VoiceFamilyRemoteAutocomplete',
+  props,
+  useSelectActions: (props) => useVoiceFamilySelectActions(() => props.extSystemId),
+  useInnerFilter: useVoiceFamilyFilter,
+  filterByField: 'displayName',
+  defaults: { clearable: false, 'data-cy': '', minSearchText: 'coreDam.voiceFamily.filterMinChars' },
+})
 </script>
-
-<template>
-  <AFormRemoteAutocomplete
-    v-model="modelValue"
-    :required="required"
-    :label="label"
-    :fetch-items="fetchItems"
-    :fetch-items-by-ids="fetchItemsByIds"
-    :clearable="clearable"
-    filter-by-field="displayName"
-    min-search-text="coreDam.voiceFamily.filterMinChars"
-    :data-cy="dataCy"
-  />
-</template>

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import {
+  ADamAssetLicenceGroupRemoteAutocomplete,
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamDistributionServiceSelect,
+  ADamExtSystemRemoteAutocomplete,
+  ADamExternalProviderAssetSelect,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceGroupRemoteAutocomplete,
-  DamAssetLicenceRemoteAutocomplete,
-  DamDistributionServiceSelect,
-  DamExtSystemRemoteAutocomplete,
-  DamExternalProviderAssetSelect,
   UserAuthType,
   isUndefined,
   useDamConfigStore,
@@ -51,7 +51,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceGroupRemoteAutocomplete
+          <ADamAssetLicenceGroupRemoteAutocomplete
             v-model="userUpdate.licenceGroups"
             :client="damClient"
             :label="t('coreDam.user.model.licenceGroups')"
@@ -61,7 +61,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="userUpdate.assetLicences"
             :client="damClient"
             :label="t('coreDam.user.model.assetLicences')"
@@ -71,7 +71,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="userUpdate.adminToExtSystems"
             :client="damClient"
             :label="t('coreDam.user.model.adminToExtSystems')"
@@ -81,7 +81,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="userUpdate.userToExtSystems"
             :client="damClient"
             :label="t('coreDam.user.model.userToExtSystems')"
@@ -91,7 +91,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExternalProviderAssetSelect
+          <ADamExternalProviderAssetSelect
             v-model="userUpdate.allowedAssetExternalProviders"
             :client="damClient"
             :label="t('coreDam.user.model.allowedAssetExternalProviders')"
@@ -101,7 +101,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamDistributionServiceSelect
+          <ADamDistributionServiceSelect
             v-model="userUpdate.allowedDistributionServices"
             :client="damClient"
             :label="t('coreDam.user.model.allowedDistributionServices')"

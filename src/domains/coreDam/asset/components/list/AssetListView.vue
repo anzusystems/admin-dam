@@ -211,7 +211,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
-// Active-filter chips for the asset grid. FiltersSelected is rendered inside the filter sidebar
+// Active-filter chips for the asset grid. AFiltersSelected is rendered inside the filter sidebar
 // (where the selected-filters map + provides live) and teleported here, under the toolbar.
 .asset-active-filters {
   display: flex;

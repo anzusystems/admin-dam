@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { AAlerts, ASystemBar, useTheme } from '@anzusystems/common-admin'
+import { AActionbarTarget, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
 
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
-import ActionbarTeleportTarget from '@/domains/system/components/ActionbarTeleportTarget.vue'
 import SidebarAppendMain from '@/domains/system/components/sidebar/SidebarAppendMain.vue'
 import SidebarAppendRail from '@/domains/system/components/sidebar/SidebarAppendRail.vue'
 import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
@@ -31,7 +30,6 @@ const { theme } = useTheme()
 </script>
 
 <template>
-  <AAlerts />
   <VApp :theme="theme">
     <ASystemBar :current-version="envConfig.appVersion" />
     <VNavigationDrawer
@@ -55,7 +53,7 @@ const { theme } = useTheme()
     <VAppBar
       density="compact"
       elevation="0"
-      class="system-border-b"
+      class="border-b"
       :order="-1"
     >
       <div class="d-flex pr-2 w-100 justify-space-between full-width align-center">
@@ -86,7 +84,7 @@ const { theme } = useTheme()
           </RouterLink>
         </div>
         <KeepAlive>
-          <ActionbarTeleportTarget />
+          <AActionbarTarget />
         </KeepAlive>
       </div>
       <!--      <div class="d-flex justify-space-between w-100 align-center">-->
@@ -114,11 +112,11 @@ const { theme } = useTheme()
     <!--    <VAppBar-->
     <!--      :height="46"-->
     <!--      elevation="0"-->
-    <!--      class="system-border-b"-->
+    <!--      class="border-b"-->
     <!--    >-->
     <!--      <div class="d-flex flex-column w-100 px-1 align-center">-->
     <!--        <KeepAlive>-->
-    <!--          <ActionbarTeleportTarget />-->
+    <!--          <AActionbarTarget />-->
     <!--        </KeepAlive>-->
     <!--      </div>-->
     <!--    </VAppBar>-->

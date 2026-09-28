@@ -1,4 +1,4 @@
-import { i18n as commonAdminI18n, modifyLanguageSettings } from '@anzusystems/common-admin'
+import { modifyLanguageSettings } from '@anzusystems/common-admin'
 import type { LanguageCode } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 
@@ -18,8 +18,6 @@ export const initLoadLanguageMessages = async () => {
     try {
       const messages = await import(`./locales/${code}.ts`)
       addMessages(code, messages.default)
-      commonAdminI18n.global.setLocaleMessage(code, messages.default)
-      commonAdminI18n.global.locale.value = code
       initLanguageMessagesLoaded.value = true
       return true
     } catch (e) {

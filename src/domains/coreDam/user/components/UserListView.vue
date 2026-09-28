@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import UserDatatable from '@/domains/coreDam/user/components/UserDatatable.vue'
 import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'

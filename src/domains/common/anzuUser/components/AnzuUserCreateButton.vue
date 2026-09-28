@@ -101,7 +101,7 @@ const onConfirm = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('common.anzuUser.meta.create') }}
       </ADialogToolbar>
       <VCardText>

@@ -71,7 +71,7 @@ const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
     :retain-focus="false"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onClose">
+      <ADialogToolbar @cancel="onClose">
         {{ t('common.model.link') }}
       </ADialogToolbar>
       <VCardText>

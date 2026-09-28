@@ -160,7 +160,7 @@ watch(
       v-if="dialog"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('system.imagePreview.actions.selectImage') }}
       </ADialogToolbar>
       <VCardText>

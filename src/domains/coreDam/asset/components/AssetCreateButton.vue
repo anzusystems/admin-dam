@@ -91,7 +91,7 @@ const { assetTypeOptions } = useAssetType()
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         <slot name="title">
           {{ t('coreDam.asset.meta.createEmpty') }}
         </slot>

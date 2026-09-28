@@ -38,7 +38,7 @@ const totalCountText = computed(() => {
         :color="toolbarColor"
         density="compact"
         :height="64"
-        class="system-border-b"
+        class="border-b"
       >
         <div v-if="assetDetailStore.view === 'list'">
           <VBtn

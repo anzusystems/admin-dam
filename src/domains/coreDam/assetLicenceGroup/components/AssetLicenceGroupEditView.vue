@@ -5,9 +5,9 @@ import {
   ACard,
   defineBreadcrumbs,
   stringToInt,
-  useI18n,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import AssetLicenceGroupEditForm from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupEditForm.vue'

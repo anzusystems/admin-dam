@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
+  ADamAssetLicenceRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -51,7 +51,7 @@ const { exportTypeOptions } = useExportTypeTypes()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="publicExport.licences"
             :client="damClient"
             :label="t('coreDam.publicExport.model.assetLicence')"

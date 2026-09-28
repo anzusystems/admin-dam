@@ -98,7 +98,7 @@ const componentComputed = computed(() => {
     class="dialog-distribution"
   >
     <VCard v-if="value">
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         <span v-if="redistributeMode">{{ t('coreDam.distribution.common.redistributeTitle') }}</span>
         <span v-else>{{ t('coreDam.distribution.common.addTitle') }}</span>
       </ADialogToolbar>

@@ -7,9 +7,9 @@ import {
   defineBreadcrumbs,
   isUndefined,
   stringToInt,
-  useI18n,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import JobAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobAuthorCurrentOptimize.vue'

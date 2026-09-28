@@ -166,6 +166,7 @@ const onCancel = () => {
             ref="exportDataEditor"
             v-model="podcast.exportData"
             :show-add-button="false"
+            :unsaved-section-label="t('coreDam.podcast.model.exportData')"
             @edit="onEditPodcastExportData"
           >
             <template #item-compact="{ raw }: { raw: PodcastExportData }">

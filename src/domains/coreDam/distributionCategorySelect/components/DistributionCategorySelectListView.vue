@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import DistributionCategorySelectDatatable from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectDatatable.vue'
 import { useDistributionCategorySelectListActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'

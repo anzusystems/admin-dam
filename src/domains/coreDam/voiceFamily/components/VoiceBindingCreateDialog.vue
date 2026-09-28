@@ -52,9 +52,9 @@ const create = (): Promise<Voice> => createVoice(voice.value)
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="600"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.voice.meta.create') }}

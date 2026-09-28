@@ -67,7 +67,7 @@ const { t } = useI18n()
       v-if="dialog"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('system.upload.stopConfirmQuestion') }}
       </ADialogToolbar>
       <VCardActions>

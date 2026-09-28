@@ -3,7 +3,6 @@ import {
   DamAssetType,
   UploadQueueItemStatus,
   UploadQueueItemType,
-  i18n,
   isNull,
 } from '@anzusystems/common-admin'
 import type {
@@ -69,8 +68,8 @@ import {
   uploadStart as videoUploadStart,
 } from '@/domains/coreDam/asset/api/videoApi'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { i18n } from '@/plugins/i18n'
 import { envConfig } from '@/shared/EnvConfigService'
-
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
 const NOTIFICATION_FALLBACK_MAX_TRIES = 3
 
@@ -128,7 +127,7 @@ async function notificationFallbackCallback(item: UploadQueueItem) {
   if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) {
     // Said out loud rather than given up on in silence.
     item.error.hasError = true
-    const { t } = i18n.global || i18n
+    const { t } = i18n.global
     // The slot row has only Cancel, so it must not be sent looking for a refresh button.
     item.error.message = t(
       item.type === UploadQueueItemType.SlotFile

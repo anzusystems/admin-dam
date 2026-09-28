@@ -43,7 +43,9 @@ const disabledComputed = computed(() => props.disabled || props.extSystemId === 
 </script>
 
 <template>
+  <!-- Keyed by the ext system: the autocomplete keeps its fetched list and prefetches once. -->
   <AFormRemoteAutocomplete
+    :key="extSystemId ?? ''"
     v-model="modelValue"
     :label="label ?? t('coreDam.ttsNarrationRequest.model.voiceFamilySlug')"
     :fetch-items="fetchItems"

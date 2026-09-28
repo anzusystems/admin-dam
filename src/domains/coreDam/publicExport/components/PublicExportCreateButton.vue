@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {
   ACreateDialog,
+  ADamAssetLicenceRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -60,9 +60,9 @@ const { exportTypeOptions } = useExportTypeTypes()
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #button-title>
       {{ t('coreDam.publicExport.button.create') }}
@@ -92,7 +92,7 @@ const { exportTypeOptions } = useExportTypeTypes()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="publicExport.licences"
             :client="damClient"
             :label="t('coreDam.publicExport.model.assetLicence')"

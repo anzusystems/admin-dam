@@ -79,7 +79,7 @@ const onBlur = () => {
       <span>{{ select.serviceSlug }}</span>
       <span
         v-if="isRequired"
-        class="required"
+        class="a-required-mark"
       />
     </template>
   </VSelect>

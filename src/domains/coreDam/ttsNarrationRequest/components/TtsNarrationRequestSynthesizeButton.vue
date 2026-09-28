@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import {
   ACreateDialog,
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   AFormTextarea,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import type { IntegerIdNullable } from '@anzusystems/common-admin'
 import { ref, watch } from 'vue'
@@ -83,9 +83,9 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="700"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess')"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess')"
+    @close="dialog = false"
   >
     <template #button-title>
       {{ t('coreDam.ttsNarrationRequest.button.synthesize') }}
@@ -111,7 +111,7 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="extSystemId"
             :client="damClient"
             :label="t('coreDam.ttsNarrationRequest.synthesize.extSystem')"
@@ -129,7 +129,7 @@ const onSynthesize = (): Promise<TtsSynthesizeResponse> => {
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="dto.assetLicence"
             :client="damClient"
             :ext-system-id="extSystemId"

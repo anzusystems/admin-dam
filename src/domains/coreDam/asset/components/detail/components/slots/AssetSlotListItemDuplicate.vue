@@ -63,7 +63,7 @@ const onDuplicate = () => {
     :width="600"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.asset.slots.actions.duplicate') }}
       </ADialogToolbar>
       <VCardText>

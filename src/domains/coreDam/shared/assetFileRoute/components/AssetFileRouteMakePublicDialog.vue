@@ -100,7 +100,7 @@ const onConfirm = async () => {
       width="500"
       class="mt-0 mr-auto ml-auto"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.asset.assetFilePublicLink.actions.makePublic') }}
       </ADialogToolbar>
       <VCardText>

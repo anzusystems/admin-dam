@@ -86,7 +86,7 @@ const onCancel = () => {
       v-if="dialog"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('common.button.download') }}
       </ADialogToolbar>
       <VCardText>

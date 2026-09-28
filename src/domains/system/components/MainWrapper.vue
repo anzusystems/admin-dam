@@ -28,7 +28,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       density="compact"
       :order="-1"
       elevation="0"
-      class="system-border-b"
+      class="border-b"
     >
       <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2 pr-1">
         <div class="d-flex align-center">
@@ -75,7 +75,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       :order="-1"
       :height="39"
       elevation="0"
-      class="system-border-b"
+      class="border-b"
     >
       <slot name="second-bar">
         <div class="d-flex flex-column w-100 px-1 align-center">

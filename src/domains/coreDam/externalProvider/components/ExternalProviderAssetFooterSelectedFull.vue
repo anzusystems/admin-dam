@@ -56,7 +56,7 @@ const onImport = () => {
   >
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar
-        class="w-100 system-border-b"
+        class="w-100 border-b"
         :color="toolbarColor"
         density="compact"
         :height="64"

@@ -104,7 +104,7 @@ onMounted(async () => {
     :max-width="800"
   >
     <VCard>
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         {{ t('system.imagePreview.actions.chooseFromDistribution') }}
       </ADialogToolbar>
       <VCardText>

@@ -103,7 +103,7 @@ const { assetTypeOptions } = useAssetType()
       v-if="dialog"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.distributionCategory.createButton') }}
       </ADialogToolbar>
       <VCardText

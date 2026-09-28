@@ -54,7 +54,7 @@ const confirmLogout = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         {{ t('coreDam.youtubeDistribution.logout.logoutTitle') }}
       </ADialogToolbar>
       <VCardText>

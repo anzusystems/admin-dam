@@ -3,10 +3,12 @@ import {
   AActionCloseButtonHistory,
   AActionSaveButton,
   ACard,
+  AUnsavedConfirmDialog,
   defineBreadcrumbs,
-  useI18n,
+  useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import DistributionCategorySelectEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
@@ -25,6 +27,9 @@ const {
   onUpdate,
   distributionCategorySelect,
 } = useDistributionCategorySelectEditActions()
+
+// Asks before leaving with unsaved rows in the list editor, which registers itself by its label.
+const guard = useUnsavedChangesGuard({ sources: [] })
 
 const editForm = ref<InstanceType<typeof DistributionCategorySelectEditForm> | null>(null)
 
@@ -92,4 +97,9 @@ onBeforeUnmount(() => {
       />
     </VCardText>
   </ACard>
+  <AUnsavedConfirmDialog
+    v-model="guard.promptOpen.value"
+    :dirty-labels="guard.dirtyLabels.value"
+    @resolve="guard.resolvePrompt"
+  />
 </template>

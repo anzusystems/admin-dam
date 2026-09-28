@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  DamAssetImageRoiSelect,
+  ADamAssetImageRoiSelect,
   DamAssetStatusDefault,
   DamAssetType,
   DamAssetTypeDefault,
@@ -167,7 +167,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
           :color="toolbarColor"
           density="compact"
           :height="64"
-          class="system-border-b pr-1"
+          class="border-b pr-1"
         >
           <div v-if="assetDetailStore.view === 'list'">
             <VBtn
@@ -256,7 +256,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
               v-if="activeTab === AssetDetailTab.ROI"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
+              <ADamAssetImageRoiSelect :ext-system="currentExtSystemId" />
             </div>
             <div
               v-else
@@ -275,7 +275,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
               />
             </div>
           </div>
-          <div class="h-100 d-flex dam-image-detail__sidebar system-border-l">
+          <div class="h-100 d-flex dam-image-detail__sidebar border-s">
             <AssetDetailDialogSidebar
               v-if="asset"
               :key="asset.id"

@@ -113,7 +113,7 @@ const clearEpilog = () => {
                 :max-count="1"
                 return-type="assetId"
                 :asset-type="DamAssetType.Audio"
-                @on-confirm="onEpilogSelect"
+                @confirm="onEpilogSelect"
               >
                 <template #activator="{ props: assetSelectProps }">
                   <VBtn

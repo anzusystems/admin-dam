@@ -47,7 +47,7 @@ const onConfirm = async () => {
     :max-width="500"
   >
     <VCard v-if="dialogCancel">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.distribution.common.cancelDistributionButton') }}
       </ADialogToolbar>
       <VCardActions>

@@ -108,7 +108,7 @@ watch(
       v-if="dialogComputed"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.distributionCategory.manage') }}
       </ADialogToolbar>
       <VCardText>

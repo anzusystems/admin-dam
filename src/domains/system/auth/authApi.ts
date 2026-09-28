@@ -1,10 +1,11 @@
 import { useApiRequest } from '@anzusystems/common-admin'
 
+import { AUTH_PATH_PREFIX } from '@/domains/system/auth/authPath'
 import type { SimpleLoginForm } from '@/domains/system/auth/simpleLogin'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-export const AUTH_PATH_PREFIX = '/auth'
+export { AUTH_PATH_PREFIX }
 export const AUTH_LOGIN_PATH = AUTH_PATH_PREFIX + '/login'
 
 export const useLogin = () =>

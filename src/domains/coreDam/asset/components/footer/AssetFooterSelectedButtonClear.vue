@@ -81,7 +81,7 @@ const { t } = useI18n()
         v-if="dialog"
         data-cy="delete-panel"
       >
-        <ADialogToolbar @on-cancel="onCancel">
+        <ADialogToolbar @cancel="onCancel">
           {{ t('coreDam.asset.selected.clearOverlay.title') }}
         </ADialogToolbar>
         <VCardText>

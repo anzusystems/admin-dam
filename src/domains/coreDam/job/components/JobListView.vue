@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import JobCreateButton from '@/domains/coreDam/job/components/JobCreateButton.vue'
 import JobDatatable from '@/domains/coreDam/job/components/JobDatatable.vue'

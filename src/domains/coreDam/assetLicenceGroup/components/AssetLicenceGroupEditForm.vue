@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
@@ -40,7 +40,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="assetLicenceGroup.extSystem"
             :client="damClient"
             :label="t('coreDam.assetLicenceGroup.model.extSystem')"
@@ -50,7 +50,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="assetLicenceGroup.licences"
             :client="damClient"
             :label="t('coreDam.assetLicenceGroup.model.licences')"

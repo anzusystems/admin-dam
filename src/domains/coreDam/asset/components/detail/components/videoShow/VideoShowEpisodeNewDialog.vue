@@ -117,7 +117,7 @@ onMounted(async () => {
     :width="500"
   >
     <VCard v-if="value">
-      <ADialogToolbar @on-cancel="closeDialog(false)">
+      <ADialogToolbar @cancel="closeDialog(false)">
         {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
       </ADialogToolbar>
       <VCardText>

@@ -3,19 +3,17 @@ import {
   UploadQueueItemStatus,
   axiosErrorResponseHasForbiddenOperationData,
   axiosErrorResponseHasValidationData,
-  i18n,
   isUndefined,
   useDamUploadChunkSize,
 } from '@anzusystems/common-admin'
 import type { AnzuApiValidationResponseData, UploadQueueItem } from '@anzusystems/common-admin'
-import axios, { isAxiosError } from 'axios'
-import type { CancelTokenSource } from 'axios'
+import { isAxiosError } from 'axios'
 import rusha from 'rusha'
 import { ref } from 'vue'
 
 import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/domains/coreDam/asset/api/fileApi'
+import { i18n } from '@/plugins/i18n'
 import { envConfig } from '@/shared/EnvConfigService'
-
 // const CHUNK_MAX_RETRY = 6
 const CHUNK_MAX_RETRY = 4
 const SPEED_CHECK_INTERVAL = 1000
@@ -30,7 +28,7 @@ const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
 }
 
 const handleValidationErrorMessage = (error: Error) => {
-  const { t } = i18n.global || i18n
+  const { t } = i18n.global
   if (!isAxiosError(error) || !error.response || !error.response.data) {
     // @ts-ignore
     return t('system.uploadErrors.unknownError')
@@ -57,7 +55,7 @@ const handleValidationErrorMessage = (error: Error) => {
 }
 
 const handleForbiddenOperationMessage = (error: Error) => {
-  const { t, te } = i18n.global || i18n
+  const { t, te } = i18n.global
   const detail = isAxiosError(error) ? (error.response?.data as { detail?: string })?.detail : undefined
   const key = 'error.apiForbiddenOperation.' + detail
 
@@ -66,7 +64,7 @@ const handleForbiddenOperationMessage = (error: Error) => {
 
 // A rejected upload carries its reason in the response; without this the row is only a red icon.
 export const resolveUploadErrorMessage = (error: unknown) => {
-  const { t } = i18n.global || i18n
+  const { t } = i18n.global
 
   if (axiosErrorResponseHasForbiddenOperationData(error as Error)) {
     return handleForbiddenOperationMessage(error as Error)
@@ -157,8 +155,7 @@ export function useUpload(
     let chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
 
     queueItem.currentChunkIndex = offset
-    const cancelToken = axios.CancelToken
-    queueItem.latestChunkCancelToken = cancelToken.source()
+    queueItem.latestChunkAbortController = new AbortController()
 
     let sleepTime = CHUNK_RETRY_INTERVAL
     let attempt = 0
@@ -285,7 +282,7 @@ export function useUpload(
   const stop = () => {
     stopped = true
     stopSpeedCheck()
-    queueItem.latestChunkCancelToken?.cancel('axios request cancelled')
+    queueItem.latestChunkAbortController?.abort()
   }
 
   return {
@@ -295,6 +292,6 @@ export function useUpload(
   }
 }
 
-export const uploadStop = (cancelTokenSource: CancelTokenSource) => {
-  cancelTokenSource.cancel('axios request cancelled')
+export const uploadStop = (abortController: AbortController) => {
+  abortController.abort()
 }

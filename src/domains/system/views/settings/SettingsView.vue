@@ -3,12 +3,12 @@ import {
   ALanguageSelect,
   AThemeSelect,
   defineBreadcrumbs,
-  useI18n,
   useSentry,
   useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
 import type { DamCurrentUserDto } from '@anzusystems/common-admin'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useAuth } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'

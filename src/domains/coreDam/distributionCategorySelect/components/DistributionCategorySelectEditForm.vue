@@ -2,6 +2,7 @@
 import { ASortableListEditor, ASystemEntityScope } from '@anzusystems/common-admin'
 import type { ListEditorHandle } from '@anzusystems/common-admin'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useDistributionCategoryOptionFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryOptionFactory'
 import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
@@ -15,6 +16,7 @@ type OptionRowSlotProps = {
   actions: { update: (value: DistributionCategoryOption) => void }
 }
 
+const { t } = useI18n()
 const { distributionCategorySelect } = useDistributionCategorySelectEditActions()
 const { createDefault } = useDistributionCategoryOptionFactory()
 
@@ -43,6 +45,7 @@ defineExpose({
       compact-field="name"
       :factory="optionFactory"
       :validate="validateOption"
+      :unsaved-section-label="t('coreDam.distributionCategorySelect.model.options')"
     >
       <template #item="{ raw, actions }: OptionRowSlotProps">
         <DistributionCategoryOptionEditForm
