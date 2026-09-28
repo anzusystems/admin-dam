@@ -1,5 +1,14 @@
-import { DamAssetType, isDefined, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import {
+  AuthUnavailableError,
+  DamAssetType,
+  isAnzuApiTimeoutError,
+  isDefined,
+  isInCauseChain,
+  isUndefined,
+  useDamConfigState,
+} from '@anzusystems/common-admin'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import axios from 'axios'
 import { ref } from 'vue'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
@@ -22,6 +31,17 @@ const ERROR_PATH = '/error'
 // A deep link that could not be resolved to an asset; anything else goes to the page above.
 const NOT_FOUND_PATH = '/not-found'
 
+// Nothing answered the user read: the sign-in server (the token refresh), or core-dam itself. The session may
+// well be valid, and the sign-in form would only come back to the same failure after the SSO round trip.
+const isOutage = (error: unknown): boolean =>
+  isInCauseChain(
+    error,
+    (cause) =>
+      cause instanceof AuthUnavailableError ||
+      isAnzuApiTimeoutError(cause) ||
+      (axios.isAxiosError(cause) && (isUndefined(cause.response) || cause.response.status >= 500))
+  )
+
 export async function createAppInitialize(to: RouteLocationNormalized): Promise<NavigationGuardReturn> {
   const { isStatusUnauthorized } = useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements, getDamConfigExtSystem } =
@@ -39,12 +59,15 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
    * load is the only thing here that rules out a sign-in problem - `loadDamPrvConfig` rejects with
    * a bare `false`, and a failed user read says nothing either way. */
   const [userLoad, configLoad] = await Promise.allSettled([
-    fetchCurrentUser(damClient, '/adm/users/current'),
+    fetchCurrentUser(damClient, '/adm/users/current', undefined, 'user', { throwOnError: true }),
     loadDamPrvConfig(),
   ])
 
-  /* What this attempt read, not what the ref holds: `fetchCurrentUser` answers `undefined` on every failure but
-   * leaves the previous user in place, and a bailed-out start-up runs all of this again on the next navigation. */
+  /* What this attempt read, not what the ref holds: a failed read leaves the previous user in place, and a
+   * bailed-out start-up runs all of this again on the next navigation. */
+  if (userLoad.status === 'rejected' && isOutage(userLoad.reason)) {
+    return ERROR_PATH
+  }
   if (userLoad.status === 'rejected' || isUndefined(userLoad.value)) {
     return '/login'
   }

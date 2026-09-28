@@ -1,3 +1,6 @@
+import { AnzuApiAxiosError, AnzuApiTimeoutError, AnzuFatalError, AuthUnavailableError } from '@anzusystems/common-admin'
+import { AxiosError } from 'axios'
+import type { AxiosResponse } from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // What the installed one answers: the user on success, `undefined` on any failure - and a failure leaves whoever was
@@ -103,6 +106,44 @@ describe('a user the configuration knows nothing about', () => {
     // Left behind by an earlier start-up that got this far and then bailed out.
     currentUser.value = { id: 1 }
     fetchCurrentUser.mockResolvedValue(undefined)
+
+    expect(await createAppInitialize(route())).toBe('/login')
+  })
+})
+
+const responseError = (status: number) =>
+  new AnzuApiAxiosError(new AxiosError('failed', 'ERR_BAD_RESPONSE', undefined, undefined, { status } as AxiosResponse))
+
+// The user read is the one that tells a session that is gone from a backend that is not answering: a valid
+// session sent to the sign-in form only comes back to the same failure after the SSO round trip.
+describe('a user read that fails because nothing answers', () => {
+  it('asks for the failure itself, not just an empty answer', async () => {
+    const { createAppInitialize } = await load()
+    await createAppInitialize(route())
+
+    expect(fetchCurrentUser).toHaveBeenCalledWith(expect.anything(), '/adm/users/current', undefined, 'user', {
+      throwOnError: true,
+    })
+  })
+
+  it.each([
+    [
+      'the sign-in server does not answer the token refresh',
+      new AnzuFatalError(new AuthUnavailableError(new Error('503'))),
+    ],
+    ['the request times out', new AnzuApiTimeoutError()],
+    ['core-dam answers a 5xx', responseError(503)],
+    ['there is no response at all', new AnzuApiAxiosError(new AxiosError('Network Error', 'ERR_NETWORK'))],
+  ])('shows the error page when %s', async (_label, failure) => {
+    const { createAppInitialize } = await load()
+    fetchCurrentUser.mockRejectedValue(failure)
+
+    expect(await createAppInitialize(route())).toBe('/error')
+  })
+
+  it.each([401, 403, 404])('still sends a %i to sign in', async (status) => {
+    const { createAppInitialize } = await load()
+    fetchCurrentUser.mockRejectedValue(responseError(status))
 
     expect(await createAppInitialize(route())).toBe('/login')
   })

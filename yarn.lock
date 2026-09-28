@@ -1769,7 +1769,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tiptap/extension-document@npm:3.31.3":
+"@tiptap/extension-document@npm:3.31.3, @tiptap/extension-document@npm:^3.31.3":
   version: 3.31.3
   resolution: "@tiptap/extension-document@npm:3.31.3"
   peerDependencies:
@@ -1893,7 +1893,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tiptap/extension-paragraph@npm:3.31.3":
+"@tiptap/extension-paragraph@npm:3.31.3, @tiptap/extension-paragraph@npm:^3.31.3":
   version: 3.31.3
   resolution: "@tiptap/extension-paragraph@npm:3.31.3"
   peerDependencies:
@@ -1911,7 +1911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tiptap/extension-text@npm:3.31.3":
+"@tiptap/extension-text@npm:3.31.3, @tiptap/extension-text@npm:^3.31.3":
   version: 3.31.3
   resolution: "@tiptap/extension-text@npm:3.31.3"
   peerDependencies:
@@ -2870,8 +2870,11 @@ __metadata:
     "@sentry/vue": "npm:^10.75.2"
     "@tiptap/core": "npm:^3.31.3"
     "@tiptap/extension-bold": "npm:^3.31.3"
+    "@tiptap/extension-document": "npm:^3.31.3"
     "@tiptap/extension-italic": "npm:^3.31.3"
     "@tiptap/extension-link": "npm:^3.31.3"
+    "@tiptap/extension-paragraph": "npm:^3.31.3"
+    "@tiptap/extension-text": "npm:^3.31.3"
     "@tiptap/extension-underline": "npm:^3.31.3"
     "@tiptap/pm": "npm:^3.31.3"
     "@tiptap/starter-kit": "npm:^3.31.3"
@@ -2902,6 +2905,7 @@ __metadata:
     happy-dom: "npm:^20.14.5"
     jwt-decode: "npm:^4.0.0"
     lightningcss: "npm:^1.33.0"
+    linkifyjs: "npm:^4.3.3"
     npm-run-all2: "npm:^9.0.3"
     oxfmt: "npm:^0.70.0"
     oxlint: "npm:1.85.0"

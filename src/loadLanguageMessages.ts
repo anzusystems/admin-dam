@@ -14,7 +14,10 @@ const { initializeLanguage, addMessages, currentLanguageCode } = modifyLanguageS
 
 export const initLoadLanguageMessages = async () => {
   const loadMessages = async (code: LanguageCode | 'default') => {
-    if (code === 'default' || code === 'xx') return true
+    if (code === 'default' || code === 'xx') {
+      initLanguageMessagesLoaded.value = true
+      return true
+    }
     try {
       const messages = await import(`./locales/${code}.ts`)
       addMessages(code, messages.default)
