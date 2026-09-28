@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
+import { START_LOCATION } from 'vue-router'
 
 const loadDamPubConfig = vi.fn(async (): Promise<unknown> => undefined)
 const checkAbility = vi.fn(async (): Promise<unknown> => undefined)
@@ -95,6 +96,23 @@ describe('the route guard', () => {
 
     // Redirecting to the page the user is already on is a loop the router never leaves.
     expect(await beforeEachRoute(errorRoute, fromNowhere)).toBeUndefined()
+  })
+
+  // The error page says "try again"; a reload of it tried nothing until its button was used.
+  it('runs the start-up again when the error page is reloaded', async () => {
+    const { beforeEachRoute } = await load()
+    initialized.value = { damPubConfig: true }
+
+    expect(await beforeEachRoute(errorRoute, START_LOCATION)).toEqual({ path: '/' })
+  })
+
+  it('keeps the error page when the start-up that just failed sent the user there', async () => {
+    const { beforeEachRoute } = await load()
+    initialized.value = { damPubConfig: true }
+
+    expect(
+      await beforeEachRoute({ ...(errorRoute as object), redirectedFrom: protectedRoute } as never, START_LOCATION)
+    ).toBeUndefined()
   })
 
   it('leaves a public route alone', async () => {

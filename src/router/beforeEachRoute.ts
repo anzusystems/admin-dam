@@ -6,6 +6,7 @@ import {
   useRouteHistory,
 } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
+import { START_LOCATION } from 'vue-router'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
@@ -51,6 +52,11 @@ export const beforeEachRoute = async (
         return to.path === ERROR_PATH ? undefined : ERROR_PATH
       }
     }
+  }
+  // A reload of the error page runs the start-up again, as the page's button does. The start-up's own redirect
+  // here carries `redirectedFrom`, so a start-up that fails again stays on the page.
+  if (to.path === ERROR_PATH && from === START_LOCATION && !to.redirectedFrom) {
+    return { path: '/' }
   }
   if (to.meta.requiresAuth) {
     return await checkGuard(to)
