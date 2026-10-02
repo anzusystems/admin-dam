@@ -3,6 +3,7 @@ import KeywordDetailView from '@/domains/coreDam/keyword/components/KeywordDetai
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/keywords/:id([0-9a-f-]{36})',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_KEYWORD_READ],

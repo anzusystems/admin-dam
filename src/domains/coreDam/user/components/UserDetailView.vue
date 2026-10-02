@@ -5,6 +5,7 @@ import {
   ACard,
   defineBreadcrumbs,
   stringToInt,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -32,12 +33,15 @@ const breadcrumbs = defineBreadcrumbs(
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/users',
+  // Also the same person's permissions edit, the page's second edit button.
+  skipRouteNames: ['/(coreDam)/users/[id]/edit', '/(common)/anzu-users/[id]/edit'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

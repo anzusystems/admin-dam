@@ -3,6 +3,7 @@ import {
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserListByIds,
+  handleRecordLoadError,
   updateDamUser,
   useAlerts,
   useDamCachedUsers,
@@ -59,22 +60,35 @@ export const useUserDetailActions = () => {
   const { user, userAssetLicenceGroups } = storeToRefs(userOneStore)
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
+      // The DAM user requests take no signal: a page left meanwhile ignores their answers instead.
       const user = await fetchDamUser(damClient, id)
-      userAssetLicenceGroups.value = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
+      if (options.signal?.aborted) return undefined
       userOneStore.setUser(user)
+      // The user is there by now: failing to load the licence groups shows the user without them.
+      try {
+        const licenceGroups = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
+        if (options.signal?.aborted) return undefined
+        userAssetLicenceGroups.value = licenceGroups
+      } catch (error) {
+        if (options.signal?.aborted) return undefined
+        showErrorsDefault(error)
+      }
       addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
       addToCachedAssetLicences(user.assetLicences)
       addToCachedUsers(user.createdBy, user.modifiedBy)
       fetchCachedUsers()
       fetchCachedExtSystems()
       fetchCachedAssetLicences()
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      if (options.signal?.aborted) return undefined
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -92,15 +106,18 @@ export const useUserEditActions = () => {
   const userOneStore = useUserOneStore()
   const { userUpdate, user } = storeToRefs(userOneStore)
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const user = await fetchDamUser(damClient, id)
+      if (options.signal?.aborted) return undefined
       userOneStore.setUser(user)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      if (options.signal?.aborted) return undefined
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

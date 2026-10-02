@@ -7,6 +7,7 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   fetchDamAssetLicenceListByIds,
+  handleRecordLoadError,
   syncUserAndTimeTracking,
   useAlerts,
   useDamCachedUsers,
@@ -66,11 +67,11 @@ export const useAssetLicenceDetailActions = () => {
   const assetLicenceOneStore = useAssetLicenceOneStore()
   const { assetLicence } = storeToRefs(assetLicenceOneStore)
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchAssetLicence } = useFetchAssetLicence()
-      const assetLicence = await fetchAssetLicence({ urlParams: { id } })
+      const assetLicence = await fetchAssetLicence({ urlParams: { id }, signal: options.signal })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
       addToCachedAuthors(...assetLicence.internalRuleAuthors)
@@ -78,10 +79,12 @@ export const useAssetLicenceDetailActions = () => {
       fetchCachedAuthors()
       fetchCachedUsers()
       assetLicenceOneStore.assetLicence = assetLicence
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -99,11 +102,11 @@ export const useAssetLicenceEditActions = () => {
   const assetLicenceOneStore = useAssetLicenceOneStore()
   const { assetLicence } = storeToRefs(assetLicenceOneStore)
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchAssetLicence } = useFetchAssetLicence()
-      const assetLicence = await fetchAssetLicence({ urlParams: { id } })
+      const assetLicence = await fetchAssetLicence({ urlParams: { id }, signal: options.signal })
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
       addToCachedAuthors(...assetLicence.internalRuleAuthors)
@@ -111,10 +114,11 @@ export const useAssetLicenceEditActions = () => {
       fetchCachedAuthors()
       fetchCachedUsers()
       assetLicenceOneStore.assetLicence = assetLicence
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

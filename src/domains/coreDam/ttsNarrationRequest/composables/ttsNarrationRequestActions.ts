@@ -1,4 +1,4 @@
-import { useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, useAlerts } from '@anzusystems/common-admin'
 import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
@@ -107,10 +107,10 @@ export const useTtsNarrationRequestDetailActions = (getId: () => DocId) => {
   const detailLoading = ref(true)
 
   // Snapshot fetch — admin does not poll; the user reloads to see progress.
-  const fetchDetail = async () => {
+  const fetchDetail = async (options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const data = await fetchTtsNarrationRequest({ urlParams: { id: getId() } })
+      const data = await fetchTtsNarrationRequest({ urlParams: { id: getId() }, signal: options.signal })
       detail.value = data
       if (data) {
         addToCachedAssetLicences([data.assetLicence])
@@ -123,10 +123,11 @@ export const useTtsNarrationRequestDetailActions = (getId: () => DocId) => {
           fetchCachedVoiceFamilies()
         }
       }
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

@@ -5,6 +5,7 @@ import {
   ACard,
   defineBreadcrumbs,
   stringToInt,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -32,12 +33,14 @@ const breadcrumbs = defineBreadcrumbs(
   ])
 )
 
-const getData = () => {
-  fetchAnzuUser(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(common)/anzu-users',
+  skipRouteNames: ['/(common)/anzu-users/[id]'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getData()
+onMounted(async () => {
+  if ((await fetchAnzuUser(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

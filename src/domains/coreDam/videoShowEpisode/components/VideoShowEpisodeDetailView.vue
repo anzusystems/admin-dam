@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -15,12 +21,15 @@ const route = useRoute('/(coreDam)/video-shows/[id]/episodes/[episodeId]')
 const id = route.params.episodeId.toString()
 const videoShowId = route.params.id.toString()
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/video-shows/[id]',
+  fallbackRouteParams: { id: videoShowId },
+  skipRouteNames: ['/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

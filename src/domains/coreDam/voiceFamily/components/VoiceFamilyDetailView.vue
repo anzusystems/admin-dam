@@ -5,8 +5,9 @@ import {
   AActionEditButton,
   ACard,
   defineBreadcrumbs,
+  useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -37,12 +38,20 @@ const breadcrumbs = defineBreadcrumbs(
   ])
 )
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/voice-families',
+  skipRouteNames: ['/(coreDam)/voice-families/[id]/edit'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+// The voices are listed by the route's id as well: only once the family is there, or a failed load
+// would raise a second alert.
+const voiceFamilyLoaded = ref(false)
+
+onMounted(async () => {
+  const loaded = await fetchData(id, { signal })
+  if (loaded === false) await leave()
+  voiceFamilyLoaded.value = loaded === true
 })
 
 onBeforeUnmount(() => {
@@ -87,7 +96,7 @@ onBeforeUnmount(() => {
           {{ t('coreDam.voiceFamily.voices') }}
         </div>
         <VoiceBindingsList
-          v-if="!detailLoading"
+          v-if="voiceFamilyLoaded && !detailLoading"
           :voice-family-id="id"
         />
       </VCardText>

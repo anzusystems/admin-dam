@@ -5,6 +5,7 @@ import {
   ACard,
   defineBreadcrumbs,
   stringToInt,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -32,12 +33,14 @@ const breadcrumbs = defineBreadcrumbs(
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/asset-licence-groups',
+  skipRouteNames: ['/(coreDam)/asset-licence-groups/[id]/edit'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

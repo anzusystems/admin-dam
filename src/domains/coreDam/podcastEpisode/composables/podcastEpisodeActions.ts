@@ -1,5 +1,5 @@
 import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -76,15 +76,17 @@ export const usePodcastEpisodeDetailActions = () => {
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
   const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
 
-  const fetchData = async (id: DocId) => {
+  const fetchData = async (id: DocId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id } })
+      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id }, signal: options.signal })
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -104,15 +106,16 @@ export const usePodcastEpisodeEditActions = () => {
   const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
   const { execute: updatePodcastEpisode } = useUpdatePodcastEpisode()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id } })
+      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id }, signal: options.signal })
       podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

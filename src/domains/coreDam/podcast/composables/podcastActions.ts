@@ -6,7 +6,7 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { isUndefined, renumberPositions, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, isUndefined, renumberPositions, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -63,15 +63,17 @@ export const usePodcastDetailActions = () => {
   const { podcast } = storeToRefs(podcastOneStore)
   const { execute: fetchPodcast } = useFetchPodcast()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const podcast = await fetchPodcast({ urlParams: { id } })
+      const podcast = await fetchPodcast({ urlParams: { id }, signal: options.signal })
       podcastOneStore.setPodcast(podcast)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -91,15 +93,16 @@ export const usePodcastEditActions = () => {
   const { execute: fetchPodcast } = useFetchPodcast()
   const { execute: updatePodcast } = useUpdatePodcast()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const podcast = await fetchPodcast({ urlParams: { id } })
+      const podcast = await fetchPodcast({ urlParams: { id }, signal: options.signal })
       podcastOneStore.setPodcast(podcast)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

@@ -1,5 +1,5 @@
 import type { AnzuUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { isInt, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, isInt, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -43,18 +43,20 @@ export const useAnzuUserActions = () => {
   const anzuUserOneStore = useAnzuUserOneStore()
   const { anzuUser } = storeToRefs(anzuUserOneStore)
 
-  const fetchAnzuUser = async (id: number) => {
+  const fetchAnzuUser = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchAnzuUserRequest } = useFetchAnzuUser()
-      const anzuUserRes = await fetchAnzuUserRequest({ urlParams: { id } })
+      const anzuUserRes = await fetchAnzuUserRequest({ urlParams: { id }, signal: options.signal })
       anzuUserOneStore.setAnzuUser(anzuUserRes)
       addToCachedPermissionGroups(anzuUserRes.permissionGroups)
       fetchCachedPermissionGroups()
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

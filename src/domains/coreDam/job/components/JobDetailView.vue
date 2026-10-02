@@ -7,6 +7,7 @@ import {
   defineBreadcrumbs,
   isUndefined,
   stringToInt,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -33,9 +34,10 @@ const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/jobs',
+  loading: detailLoading,
+})
 
 const jobComponent = computed(() => {
   if (isUndefined(job.value)) return AJobDetailCommon
@@ -57,8 +59,8 @@ const jobComponent = computed(() => {
   }
 })
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

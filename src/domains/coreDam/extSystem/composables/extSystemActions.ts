@@ -1,4 +1,4 @@
-import { syncUserAndTimeTracking, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
 import type {
   DamExtSystem,
   FilterConfig,
@@ -91,10 +91,10 @@ export const useExtSystemDetailActions = () => {
   const { extSystem } = storeToRefs(extSystemOneStore)
   const { execute: fetchExtSystem } = useFetchExtSystem()
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const extSystem = await fetchExtSystem({ urlParams: { id } })
+      const extSystem = await fetchExtSystem({ urlParams: { id }, signal: options.signal })
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
       if (extSystem.ttsSettings.defaultVoiceFamilyId) {
@@ -106,10 +106,12 @@ export const useExtSystemDetailActions = () => {
         fetchCachedKeywords()
       }
       extSystemOneStore.extSystem = extSystem
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -129,17 +131,18 @@ export const useExtSystemEditActions = () => {
   const { execute: fetchExtSystem } = useFetchExtSystem()
   const { execute: updateExtSystem } = useUpdateExtSystem()
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const extSystem = await fetchExtSystem({ urlParams: { id } })
+      const extSystem = await fetchExtSystem({ urlParams: { id }, signal: options.signal })
       extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
       fetchCachedUsers()
       extSystemOneStore.extSystem = extSystem
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

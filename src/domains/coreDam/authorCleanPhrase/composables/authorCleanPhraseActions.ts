@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -77,20 +77,22 @@ export const useAuthorCleanPhraseDetailActions = () => {
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
   const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
-  const fetchData = async (id: IntegerId) => {
+  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
-      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
+      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal: options.signal })
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
       if (authorCleanPhrase.authorReplacement) {
         addToCachedAuthors(authorCleanPhrase.authorReplacement)
       }
       fetchCachedAuthors()
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -108,16 +110,17 @@ export const useAuthorCleanPhraseEditActions = () => {
   const authorCleanPhraseOneStore = useAuthorCleanPhraseOneStore()
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
 
-  const fetchData = async (id: IntegerId) => {
+  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
-      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
+      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal: options.signal })
       authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

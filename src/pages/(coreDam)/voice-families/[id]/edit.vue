@@ -3,6 +3,7 @@ import VoiceFamilyEditView from '@/domains/coreDam/voiceFamily/components/VoiceF
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/voice-families/:id([0-9a-f-]{36})/edit',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_TTS_VOICE_FAMILY_READ, ACL.DAM_TTS_VOICE_FAMILY_UPDATE],

@@ -3,6 +3,7 @@ import AuthorCleanPhraseEditView from '@/domains/coreDam/authorCleanPhrase/compo
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/author-clean-phrases/:id(\\d+)/edit',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_AUTHOR_CLEAN_PHRASE_READ, ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE],

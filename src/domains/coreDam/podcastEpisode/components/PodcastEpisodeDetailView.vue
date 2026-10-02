@@ -5,6 +5,7 @@ import {
   AActionEditButton,
   ACard,
   defineBreadcrumbs,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -26,9 +27,12 @@ const router = useRouter()
 const podcastId = (route.params as { id: string }).id.toString()
 const id = (route.params as { episodeId: string }).episodeId.toString()
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/podcasts/[id]',
+  fallbackRouteParams: { id: podcastId },
+  skipRouteNames: ['/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'],
+  loading: detailLoading,
+})
 
 const onSuccessfulCallback = () => {
   if (podcastEpisode.value.podcast) {
@@ -38,8 +42,8 @@ const onSuccessfulCallback = () => {
   router.push({ name: '/(coreDam)/podcasts' })
 }
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

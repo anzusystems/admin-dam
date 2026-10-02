@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -34,12 +40,24 @@ watch(
   { immediate: true }
 )
 
-const getDetail = () => {
-  fetchData(videoShowId)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/video-shows',
+  skipRouteNames: [
+    '/(coreDam)/video-shows/[id]/edit',
+    '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+    '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+// The episode list fetches by the route's id as well: only once the video show is there, or a failed
+// load would raise a second alert.
+const videoShowLoaded = ref(false)
+
+onMounted(async () => {
+  const loaded = await fetchData(videoShowId, { signal })
+  if (loaded === false) await leave()
+  videoShowLoaded.value = loaded === true
 })
 
 onBeforeUnmount(() => {
@@ -121,10 +139,10 @@ const afterVideoShowEpisodeCreate = () => {
   </VTabs>
   <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
     <div v-show="activeTab === VideoShowDetailTab.Episodes">
-      <ACard :loading="listLoading">
+      <ACard :loading="detailLoading || listLoading">
         <VCardText>
           <VideoShowEpisodeDatatable
-            v-if="loadVideoShowEpisodeDatatable"
+            v-if="videoShowLoaded && loadVideoShowEpisodeDatatable"
             :video-show-id="videoShowId"
           />
         </VCardText>

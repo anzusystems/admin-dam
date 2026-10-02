@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -56,15 +56,17 @@ export const useVideoShowDetailActions = () => {
   const { videoShow } = storeToRefs(videoShowOneStore)
   const { execute: fetchVideoShow } = useFetchVideoShow()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const videoShow = await fetchVideoShow({ urlParams: { id } })
+      const videoShow = await fetchVideoShow({ urlParams: { id }, signal: options.signal })
       videoShowOneStore.setVideoShow(videoShow)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -84,15 +86,16 @@ export const useVideoShowEditActions = () => {
   const { execute: fetchVideoShow } = useFetchVideoShow()
   const { execute: updateVideoShow } = useUpdateVideoShow()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const videoShow = await fetchVideoShow({ urlParams: { id } })
+      const videoShow = await fetchVideoShow({ urlParams: { id }, signal: options.signal })
       videoShowOneStore.setVideoShow(videoShow)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

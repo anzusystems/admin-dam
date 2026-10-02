@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -77,18 +77,20 @@ export const usePublicExportDetailActions = () => {
   const { publicExport } = storeToRefs(publicExportOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
-  const fetchData = async (id: IntegerId) => {
+  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchPublicExport } = useFetchPublicExport()
-      const res = await fetchPublicExport({ urlParams: { id } })
+      const res = await fetchPublicExport({ urlParams: { id }, signal: options.signal })
       res.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId))
       fetchCachedAssetLicences()
       publicExport.value = res
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -107,18 +109,19 @@ export const usePublicExportEditActions = () => {
   const { publicExport } = storeToRefs(publicExportOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
-  const fetchData = async (id: IntegerId) => {
+  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchPublicExport } = useFetchPublicExport()
-      const res = await fetchPublicExport({ urlParams: { id } })
+      const res = await fetchPublicExport({ urlParams: { id }, signal: options.signal })
       res.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId))
       fetchCachedAssetLicences()
       publicExport.value = res
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

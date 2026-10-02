@@ -5,6 +5,7 @@ import {
   ACard,
   AUnsavedConfirmDialog,
   defineBreadcrumbs,
+  useRecordPage,
   useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
@@ -60,12 +61,14 @@ const breadcrumbs = defineBreadcrumbs(
   ])
 )
 
-const getData = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/distribution-category-selects',
+  skipRouteNames: ['/(coreDam)/distribution-category-selects/[id]'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getData()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

@@ -7,6 +7,7 @@ import type {
   ValueObjectOption,
 } from '@anzusystems/common-admin'
 import {
+  handleRecordLoadError,
   isUndefined,
   syncUserAndTimeTracking,
   useAlerts,
@@ -77,17 +78,28 @@ export const useDistributionCategoryDetailActions = () => {
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
-      const distributionCategory = await fetchDistributionCategory({ urlParams: { id } })
-      const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
-      distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      const distributionCategory = await fetchDistributionCategory({ urlParams: { id }, signal: options.signal })
+      distributionCategoryOneStore.setDistributionCategory(distributionCategory, [])
+      // The category is there by now: failing to load the selects shows it without its selected options.
+      try {
+        // The selects request takes no signal: a page left meanwhile ignores its answer instead.
+        const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
+        if (options.signal?.aborted) return undefined
+        distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      } catch (error) {
+        if (options.signal?.aborted) return undefined
+        showErrorsDefault(error)
+      }
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -198,17 +210,25 @@ export const useDistributionCategoryEditActions = () => {
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
-      const distributionCategory = await fetchDistributionCategory({ urlParams: { id } })
-      const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
-      distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      const distributionCategory = await fetchDistributionCategory({ urlParams: { id }, signal: options.signal })
+      try {
+        // The selects request takes no signal: a page left meanwhile ignores its answer instead.
+        const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
+        if (options.signal?.aborted) return undefined
+        distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      } catch (error) {
+        // Not a category to edit without its selects: Save rebuilds the selected options from them, to none.
+        return handleRecordLoadError(error) ? false : undefined
+      }
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

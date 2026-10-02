@@ -1,6 +1,7 @@
 import {
   createFilter,
   createFilterStore,
+  handleRecordLoadError,
   syncUserAndTimeTracking,
   useAlerts,
   usePagination,
@@ -117,14 +118,16 @@ export const useVoiceFamilyDetailActions = () => {
   const { voiceFamily } = storeToRefs(voiceFamilyOneStore)
   const { execute: fetchVoiceFamily } = useFetchVoiceFamily()
 
-  const fetchData = async (id: DocId) => {
+  const fetchData = async (id: DocId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      voiceFamily.value = await fetchVoiceFamily({ urlParams: { id } })
+      voiceFamily.value = await fetchVoiceFamily({ urlParams: { id }, signal: options.signal })
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -143,14 +146,15 @@ export const useVoiceFamilyEditActions = () => {
   const { execute: fetchVoiceFamily } = useFetchVoiceFamily()
   const { execute: updateVoiceFamily } = useUpdateVoiceFamily()
 
-  const fetchData = async (id: DocId) => {
+  const fetchData = async (id: DocId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      voiceFamily.value = await fetchVoiceFamily({ urlParams: { id } })
+      voiceFamily.value = await fetchVoiceFamily({ urlParams: { id }, signal: options.signal })
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

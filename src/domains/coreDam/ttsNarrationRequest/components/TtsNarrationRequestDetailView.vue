@@ -7,6 +7,7 @@ import {
   ADatetime,
   ARow,
   defineBreadcrumbs,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { computed, onMounted, ref } from 'vue'
@@ -48,7 +49,17 @@ const breadcrumbs = defineBreadcrumbs(
   ])
 )
 
-onMounted(fetchDetail)
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/tts-narration-requests',
+  loading: detailLoading,
+})
+
+// Also the refresh after a cancel: with the page's signal, and a request gone meanwhile leaves.
+const loadDetail = async () => {
+  if ((await fetchDetail({ signal })) === false) await leave()
+}
+
+onMounted(loadDetail)
 </script>
 
 <template>
@@ -197,6 +208,6 @@ onMounted(fetchDetail)
   <TtsCancelRequestDialog
     v-model="cancelDialog"
     :request-id="detail?.id ?? null"
-    @on-success="fetchDetail"
+    @on-success="loadDetail"
   />
 </template>

@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionSaveButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -33,12 +39,14 @@ const breadcrumbs = defineBreadcrumbs(
   ])
 )
 
-const getData = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/distribution-categories',
+  skipRouteNames: ['/(coreDam)/distribution-categories/[id]'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getData()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

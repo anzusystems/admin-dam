@@ -9,6 +9,7 @@ import { LOG_SYSTEM } from '@/domains/system/logSystems'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 definePage({
+  path: '/logs/dam/:type/:id([0-9a-f]{24})',
   meta: {
     layout: 'AppLayoutDrawer',
     requiresAuth: true,
@@ -52,5 +53,7 @@ const breadcrumbs = defineBreadcrumbs(
     :system="LOG_SYSTEM.apiSystem"
     :type="type"
     :log-paths="LOG_SYSTEM.logPaths"
+    :fallback-route-name="'/(common)/logs/dam/[type]'"
+    :fallback-route-params="{ type }"
   />
 </template>

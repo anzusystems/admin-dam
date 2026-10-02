@@ -5,6 +5,7 @@ import {
   ACard,
   AUnsavedConfirmDialog,
   defineBreadcrumbs,
+  useRecordPage,
   useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
@@ -34,12 +35,18 @@ const onSave = () => {
   })
 }
 
-const getData = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/podcasts',
+  skipRouteNames: [
+    '/(coreDam)/podcasts/[id]',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getData()
+onMounted(async () => {
+  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

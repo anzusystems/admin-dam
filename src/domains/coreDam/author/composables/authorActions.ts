@@ -6,7 +6,7 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { SortOrder, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { SortOrder, handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -74,10 +74,10 @@ export const useAuthorDetailActions = () => {
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { execute: fetchAuthor } = useFetchAuthor()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const author = await fetchAuthor({ urlParams: { id } })
+      const author = await fetchAuthor({ urlParams: { id }, signal: options.signal })
 
       author.currentAuthors.forEach((item) => {
         addToCachedAuthors(item)
@@ -88,10 +88,12 @@ export const useAuthorDetailActions = () => {
       fetchCachedAuthors()
 
       authorOneStore.setAuthor(author)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -112,10 +114,10 @@ export const useAuthorEditActions = () => {
   const { execute: fetchAuthor } = useFetchAuthor()
   const { execute: updateAuthor } = useUpdateAuthor()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const author = await fetchAuthor({ urlParams: { id } })
+      const author = await fetchAuthor({ urlParams: { id }, signal: options.signal })
       author.currentAuthors.forEach((item) => {
         addToCachedAuthors(item)
       })
@@ -124,10 +126,11 @@ export const useAuthorEditActions = () => {
       })
       fetchCachedAuthors()
       authorOneStore.setAuthor(author)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

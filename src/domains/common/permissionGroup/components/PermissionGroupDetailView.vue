@@ -6,6 +6,7 @@ import {
   ACard,
   defineBreadcrumbs,
   stringToInt,
+  useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -35,12 +36,14 @@ const breadcrumbs = defineBreadcrumbs(
   ])
 )
 
-const getDetail = () => {
-  fetchPermissionGroup(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(common)/permission-groups',
+  skipRouteNames: ['/(common)/permission-groups/[id]/edit'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  if ((await fetchPermissionGroup(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(() => {

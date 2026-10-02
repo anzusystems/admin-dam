@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { AActionCloseButtonHistory, AActionEditButton, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -34,12 +40,24 @@ watch(
   { immediate: true }
 )
 
-const getDetail = () => {
-  fetchData(podcastId)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/podcasts',
+  skipRouteNames: [
+    '/(coreDam)/podcasts/[id]/edit',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+// The episode list fetches by the route's id as well: only once the podcast is there, or a failed
+// load would raise a second alert.
+const podcastLoaded = ref(false)
+
+onMounted(async () => {
+  const loaded = await fetchData(podcastId, { signal })
+  if (loaded === false) await leave()
+  podcastLoaded.value = loaded === true
 })
 
 onBeforeUnmount(() => {
@@ -121,10 +139,10 @@ const afterPodcastEpisodeCreate = () => {
   </VTabs>
   <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
     <div v-show="activeTab === PodcastDetailTab.Episodes">
-      <ACard :loading="listLoading">
+      <ACard :loading="detailLoading || listLoading">
         <VCardText>
           <PodcastEpisodeDatatable
-            v-if="loadPodcastEpisodeDatatable"
+            v-if="podcastLoaded && loadPodcastEpisodeDatatable"
             :podcast-id="podcastId"
           />
         </VCardText>
