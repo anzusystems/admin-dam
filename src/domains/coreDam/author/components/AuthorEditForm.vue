@@ -13,6 +13,7 @@ import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/Author
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { author } = useAuthorEditActions()
@@ -82,6 +83,7 @@ const { authorTypeOptions } = useDamAuthorType()
             class="pr-2"
           />
         </ARow>
+        <DamTrackingFields :data="author" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

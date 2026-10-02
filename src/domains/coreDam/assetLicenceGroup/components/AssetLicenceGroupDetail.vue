@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { assetLicenceGroup } = storeToRefs(useAssetLicenceGroupOneStore())
 
@@ -35,7 +36,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.assetLicenceGroup.model.id')">
         <ACopyText :value="assetLicenceGroup.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="assetLicenceGroup" />
+      <DamTrackingFields :data="assetLicenceGroup" />
     </VCol>
   </VRow>
 </template>

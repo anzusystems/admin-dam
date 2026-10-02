@@ -6,7 +6,13 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { isUndefined, useAlerts, useDamConfigState, usePagination } from '@anzusystems/common-admin'
+import {
+  isUndefined,
+  syncUserAndTimeTracking,
+  useAlerts,
+  useDamConfigState,
+  usePagination,
+} from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -220,10 +226,11 @@ export const useDistributionCategoryEditActions = () => {
         .map((option) => option?.id)
         .filter((id) => !!id) as string[]
       const { execute: updateDistributionCategory } = useUpdateDistributionCategory()
-      await updateDistributionCategory({
+      const res = await updateDistributionCategory({
         urlParams: { id: distributionCategoryOneStore.distributionCategory.id },
         body: distributionCategory.value,
       })
+      syncUserAndTimeTracking(distributionCategoryOneStore.distributionCategory, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/distribution-categories' })

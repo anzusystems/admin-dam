@@ -22,6 +22,7 @@ import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastE
 import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 import DeviceTypeChip from '@/domains/coreDam/publicExport/components/DeviceTypeChip.vue'
 import ExportTypeChip from '@/domains/coreDam/publicExport/components/ExportTypeChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { podcast } = usePodcastEditActions()
@@ -210,6 +211,7 @@ const onCancel = () => {
             show-actions
           />
         </ARow>
+        <DamTrackingFields :data="podcast" />
       </VCol>
     </VRow>
     <PodcastExportDataManageDialog

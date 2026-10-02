@@ -1,5 +1,5 @@
 import type { DamAssetLicenceGroup, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -115,10 +115,11 @@ export const useAssetLicenceGroupEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAssetLicenceGroup({
+      const res = await updateAssetLicenceGroup({
         urlParams: { id: assetLicenceGroupOneStore.assetLicenceGroup.id },
         body: assetLicenceGroup.value,
       })
+      syncUserAndTimeTracking(assetLicenceGroupOneStore.assetLicenceGroup, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/asset-licence-groups' })

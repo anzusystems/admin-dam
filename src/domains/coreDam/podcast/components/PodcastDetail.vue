@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ADatetime, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -8,6 +8,7 @@ import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import PodcastModeChip from '@/domains/coreDam/podcast/components/PodcastModeChip.vue'
 import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { podcast } = storeToRefs(usePodcastOneStore())
 
@@ -89,7 +90,7 @@ const altImgSrc = computed(() => {
           use-component
         />
       </ARow>
-      <AUserAndTimeTrackingFields :data="podcast" />
+      <DamTrackingFields :data="podcast" />
     </VCol>
   </VRow>
 </template>

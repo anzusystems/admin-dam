@@ -6,7 +6,7 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { SortOrder, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
+import { SortOrder, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -69,7 +69,6 @@ export const useKeywordListActions = () => {
 export const useKeywordDetailActions = () => {
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
-  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
   const fetchData = async (id: string) => {
     detailLoading.value = true
@@ -77,8 +76,6 @@ export const useKeywordDetailActions = () => {
       const { execute: fetchKeyword } = useFetchKeyword()
       const keyword = await fetchKeyword({ urlParams: { id } })
       keywordOneStore.setKeyword(keyword)
-      addToCachedUsers(keyword.createdBy, keyword.modifiedBy)
-      fetchCachedUsers()
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -124,7 +121,8 @@ export const useKeywordEditActions = () => {
         return
       }
       const { execute: updateKeyword } = useUpdateKeyword()
-      await updateKeyword({ urlParams: { id: keywordOneStore.keyword.id }, body: keyword.value })
+      const res = await updateKeyword({ urlParams: { id: keywordOneStore.keyword.id }, body: keyword.value })
+      syncUserAndTimeTracking(keywordOneStore.keyword, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/keywords' })

@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -133,10 +133,11 @@ export const usePublicExportEditActions = () => {
         return
       }
       const { execute: updatePublicExport } = useUpdatePublicExport()
-      await updatePublicExport({
+      const res = await updatePublicExport({
         urlParams: { id: publicExportOneStore.publicExport.id },
         body: publicExport.value,
       })
+      syncUserAndTimeTracking(publicExportOneStore.publicExport, res)
       showRecordWas('updated')
 
       router.push({

@@ -5,6 +5,7 @@ import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionC
 import { useDistributionCategoryEditActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryValidation } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryValidation'
 import DistributionCategorySelectOptionSelect from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
@@ -39,6 +40,7 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
             :select="distributionCategorySelect"
           />
         </ARow>
+        <DamTrackingFields :data="distributionCategory" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

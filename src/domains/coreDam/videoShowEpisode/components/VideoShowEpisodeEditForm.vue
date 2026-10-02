@@ -2,6 +2,7 @@
 import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { useVideoShowEpisodeEditActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
@@ -73,7 +74,9 @@ const { t } = useI18n()
       <VCol
         cols="12"
         md="4"
-      />
+      >
+        <DamTrackingFields :data="videoShowEpisode" />
+      </VCol>
     </VRow>
   </ASystemEntityScope>
 </template>

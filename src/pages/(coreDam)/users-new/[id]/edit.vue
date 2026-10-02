@@ -13,6 +13,7 @@ import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'
 import { ACL } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
@@ -102,6 +103,7 @@ onBeforeUnmount(() => {
           />
         </template>
       </AAnzuUserForm>
+      <DamTrackingFields :data="anzuUser" />
     </VCardText>
   </ACard>
 </template>

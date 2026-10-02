@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -132,10 +132,11 @@ export const useAuthorCleanPhraseEditActions = () => {
         return
       }
       const { execute: updateAuthorCleanPhrase } = useUpdateAuthorCleanPhrase()
-      await updateAuthorCleanPhrase({
+      const res = await updateAuthorCleanPhrase({
         urlParams: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
         body: authorCleanPhrase.value,
       })
+      syncUserAndTimeTracking(authorCleanPhraseOneStore.authorCleanPhrase, res)
       showRecordWas('updated')
 
       router.push({

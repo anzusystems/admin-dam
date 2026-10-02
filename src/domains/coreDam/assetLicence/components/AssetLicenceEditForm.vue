@@ -12,6 +12,7 @@ import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
@@ -126,6 +127,7 @@ const { t } = useI18n()
             data-cy="asset-licence-internal-rule-users"
           />
         </ARow>
+        <DamTrackingFields :data="assetLicence" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

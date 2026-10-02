@@ -7,6 +7,7 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   fetchDamAssetLicenceListByIds,
+  syncUserAndTimeTracking,
   useAlerts,
   useDamCachedUsers,
   useFetchDamAssetLicenceList,
@@ -128,10 +129,11 @@ export const useAssetLicenceEditActions = () => {
         return
       }
       const { execute: updateAssetLicence } = useUpdateAssetLicence()
-      await updateAssetLicence({
+      const res = await updateAssetLicence({
         urlParams: { id: assetLicenceOneStore.assetLicence.id },
         body: assetLicence.value,
       })
+      syncUserAndTimeTracking(assetLicenceOneStore.assetLicence, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/asset-licences' })

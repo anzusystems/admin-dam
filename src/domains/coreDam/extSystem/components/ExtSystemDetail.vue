@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ACachedChip, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACachedChip, ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -8,6 +8,7 @@ import AssetChip from '@/domains/coreDam/asset/components/detail/components/Asse
 import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
 import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
 
@@ -79,7 +80,7 @@ const activeProviderModeLabel = computed(
       <ARow :title="t('coreDam.extSystem.model.id')">
         <ACopyText :value="extSystem.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="extSystem" />
+      <DamTrackingFields :data="extSystem" />
     </VCol>
   </VRow>
 </template>

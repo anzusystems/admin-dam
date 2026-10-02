@@ -8,9 +8,7 @@
       "reviewed": "Skontrolovaný"
     },
     "currentAuthors": "Nadradení autori",
-    "childAuthors": "Podradení autori",
-    "createdBy": "Vytvoril",
-    "modifiedBy": "Upravil"
+    "childAuthors": "Podradení autori"
   },
   "filter": {
     "id": "ID",

@@ -12,6 +12,7 @@ import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { ACL } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -83,7 +84,11 @@ onBeforeUnmount(() => {
       <APermissionGroupManage
         :client="damClient"
         system="dam"
-      />
+      >
+        <template #tracking>
+          <DamTrackingFields :data="permissionGroup" />
+        </template>
+      </APermissionGroupManage>
     </VCardText>
   </ACard>
 </template>

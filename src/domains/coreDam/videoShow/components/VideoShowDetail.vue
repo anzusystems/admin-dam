@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { useVideoShowOneStore } from '@/domains/coreDam/videoShow/store/videoShowStore'
 
 const { videoShow } = storeToRefs(useVideoShowOneStore())
@@ -39,7 +40,7 @@ const { t } = useI18n()
           data-cy="video-show-id"
         />
       </ARow>
-      <AUserAndTimeTrackingFields :data="videoShow" />
+      <DamTrackingFields :data="videoShow" />
     </VCol>
   </VRow>
 </template>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 import { useKeywordOneStore } from '@/domains/coreDam/keyword/store/keywordStore'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { keyword } = storeToRefs(useKeywordOneStore())
 
@@ -29,13 +29,7 @@ const { t } = useI18n()
           :value="keyword.flags.reviewed"
         />
       </ARow>
-      <ARow :title="t('coreDam.keyword.model.createdBy')">
-        <CachedDamUserChip :id="keyword.createdBy" />
-      </ARow>
-      <ARow :title="t('coreDam.keyword.model.modifiedBy')">
-        <CachedDamUserChip :id="keyword.modifiedBy" />
-      </ARow>
-      <AUserAndTimeTrackingFields :data="keyword" />
+      <DamTrackingFields :data="keyword" />
     </VCol>
   </VRow>
 </template>

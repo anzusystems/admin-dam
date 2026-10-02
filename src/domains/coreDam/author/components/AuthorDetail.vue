@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields, useDamAuthorType } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow, useDamAuthorType } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { author } = storeToRefs(useAuthorOneStore())
 
@@ -57,13 +57,7 @@ const { getAuthorTypeOption } = useDamAuthorType()
           :value="author.flags.reviewed"
         />
       </ARow>
-      <ARow :title="t('coreDam.author.model.createdBy')">
-        <CachedDamUserChip :id="author.createdBy" />
-      </ARow>
-      <ARow :title="t('coreDam.author.model.modifiedBy')">
-        <CachedDamUserChip :id="author.modifiedBy" />
-      </ARow>
-      <AUserAndTimeTrackingFields :data="author" />
+      <DamTrackingFields :data="author" />
     </VCol>
   </VRow>
 </template>

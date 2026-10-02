@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
 import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 defineProps<{
   client: () => AxiosInstance
@@ -50,7 +51,7 @@ const { t } = useI18n()
       <ARow :title="t('common.permissionGroup.model.id')">
         <ACopyText :value="permissionGroup.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="permissionGroup" />
+      <DamTrackingFields :data="permissionGroup" />
     </VCol>
   </VRow>
 </template>

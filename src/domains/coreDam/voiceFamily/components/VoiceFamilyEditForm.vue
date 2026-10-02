@@ -13,6 +13,7 @@ import { useI18n } from 'vue-i18n'
 
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 import { useVoiceFamilyEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyValidation } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyValidation'
@@ -100,6 +101,7 @@ const { t } = useI18n()
             data-cy="voice-family-is-active"
           />
         </ARow>
+        <DamTrackingFields :data="voiceFamily" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

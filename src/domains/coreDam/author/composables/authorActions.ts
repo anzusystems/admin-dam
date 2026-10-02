@@ -6,7 +6,7 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { SortOrder, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
+import { SortOrder, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -72,7 +72,6 @@ export const useAuthorDetailActions = () => {
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
-  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { execute: fetchAuthor } = useFetchAuthor()
 
   const fetchData = async (id: string) => {
@@ -86,9 +85,7 @@ export const useAuthorDetailActions = () => {
       author.childAuthors.forEach((item) => {
         addToCachedAuthors(item)
       })
-      addToCachedUsers(author.createdBy, author.modifiedBy)
       fetchCachedAuthors()
-      fetchCachedUsers()
 
       authorOneStore.setAuthor(author)
     } catch (error) {
@@ -144,7 +141,8 @@ export const useAuthorEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAuthor({ urlParams: { id: authorOneStore.author.id }, body: author.value })
+      const res = await updateAuthor({ urlParams: { id: authorOneStore.author.id }, body: author.value })
+      syncUserAndTimeTracking(authorOneStore.author, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/authors' })

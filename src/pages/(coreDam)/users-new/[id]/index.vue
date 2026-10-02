@@ -4,19 +4,16 @@ import {
   AActionEditButton,
   AAnzuUserForm,
   ACard,
-  ARow,
-  AUserAndTimeTrackingFields,
   defineBreadcrumbs,
   stringToInt,
   useAnzuUserActions,
-  useDamCachedUsers,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
@@ -49,18 +46,6 @@ const { anzuUser, loadingAnzuUser, fetchAnzuUser, resetAnzuUserStore } = useAnzu
 const damUser = anzuUser as unknown as Ref<DamUser>
 
 const { t } = useI18n()
-
-// `CachedDamUserChip` draws from the user cache and never loads it itself: without this the two chips
-// spin for good. The old detail loaded them on every fetch.
-const { addToCachedUsers, fetchCachedUsers } = useDamCachedUsers()
-watch(
-  () => [anzuUser.value.createdBy, anzuUser.value.modifiedBy] as const,
-  ([createdBy, modifiedBy]) => {
-    addToCachedUsers(createdBy, modifiedBy)
-    void fetchCachedUsers()
-  },
-  { immediate: true }
-)
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
@@ -120,14 +105,7 @@ onBeforeUnmount(() => {
           />
         </template>
       </AAnzuUserForm>
-      <!-- Created and modified by whom, as the dam detail this replaces showed it. -->
-      <ARow :title="t('coreDam.user.model.createdBy')">
-        <CachedDamUserChip :id="anzuUser.createdBy" />
-      </ARow>
-      <ARow :title="t('coreDam.user.model.modifiedBy')">
-        <CachedDamUserChip :id="anzuUser.modifiedBy" />
-      </ARow>
-      <AUserAndTimeTrackingFields :data="anzuUser" />
+      <DamTrackingFields :data="anzuUser" />
     </VCardText>
   </ACard>
 </template>

@@ -6,7 +6,6 @@ import {
   ACopyText,
   ADatetime,
   ARow,
-  AUserAndTimeTrackingFields,
   defineBreadcrumbs,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
@@ -17,6 +16,7 @@ import { useRoute } from 'vue-router'
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
 import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
 import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
@@ -140,7 +140,7 @@ onMounted(fetchDetail)
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.startedAt')">
             <ADatetime :date-time="detail.startedAt" />
           </ARow>
-          <AUserAndTimeTrackingFields :data="detail" />
+          <DamTrackingFields :data="detail" />
         </VCol>
       </VRow>
     </VCardText>
@@ -175,15 +175,10 @@ onMounted(fetchDetail)
           />
         </VCol>
         <VCol cols="4">
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetCreatedAt')">
-            <ADatetime :date-time="detail.ttsAsset.createdAt" />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetModifiedAt')">
-            <ADatetime :date-time="detail.ttsAsset.modifiedAt" />
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.sourceTextHash')">
             <ACopyText :value="detail.ttsAsset.sourceTextHash" />
           </ARow>
+          <DamTrackingFields :data="detail.ttsAsset" />
         </VCol>
       </VRow>
     </VCardText>

@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -106,7 +106,8 @@ export const useVideoShowEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateVideoShow({ urlParams: { id: videoShowOneStore.videoShow.id }, body: videoShow.value })
+      const res = await updateVideoShow({ urlParams: { id: videoShowOneStore.videoShow.id }, body: videoShow.value })
+      syncUserAndTimeTracking(videoShowOneStore.videoShow, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/video-shows' })

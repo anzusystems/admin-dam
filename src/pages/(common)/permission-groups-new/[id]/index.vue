@@ -5,7 +5,6 @@ import {
   AActionEditButton,
   ACard,
   APermissionGroupDetail,
-  AUserAndTimeTrackingFields,
   defineBreadcrumbs,
   stringToInt,
   usePermissionGroupActions,
@@ -14,6 +13,7 @@ import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
       >
         <!-- Created and modified by whom -- what every group detail this replaces showed. -->
         <template #tracking>
-          <AUserAndTimeTrackingFields :data="permissionGroup" />
+          <DamTrackingFields :data="permissionGroup" />
         </template>
       </APermissionGroupDetail>
     </VCardText>

@@ -12,6 +12,7 @@ import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportTy
 import { ENTITY } from '@/domains/coreDam/publicExport/api/publicExportApi'
 import { usePublicExportEditActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 import { usePublicExportValidation } from '@/domains/coreDam/publicExport/composables/publicExportValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -59,6 +60,7 @@ const { exportTypeOptions } = useExportTypeTypes()
             data-cy="publicExport-licence"
           />
         </ARow>
+        <DamTrackingFields :data="publicExport" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

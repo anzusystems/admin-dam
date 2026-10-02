@@ -6,6 +6,7 @@ import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
 import { ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { usePodcastEpisodeEditActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { podcastEpisode } = usePodcastEpisodeEditActions()
@@ -147,6 +148,7 @@ const { t } = useI18n()
             data-cy="select-image-preview"
           />
         </ARow>
+        <DamTrackingFields :data="podcastEpisode" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

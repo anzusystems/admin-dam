@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n'
 import { ENTITY } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import { useAssetLicenceGroupEditActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -61,6 +62,7 @@ const { t } = useI18n()
             data-cy="asset-licence-group-licences"
           />
         </ARow>
+        <DamTrackingFields :data="assetLicenceGroup" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

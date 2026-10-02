@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { useVoiceFamilyOneStore } from '@/domains/coreDam/voiceFamily/store/voiceFamilyStore'
 
 const { voiceFamily } = storeToRefs(useVoiceFamilyOneStore())
@@ -37,7 +38,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.voiceFamily.model.id')">
         <ACopyText :value="voiceFamily.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="voiceFamily" />
+      <DamTrackingFields :data="voiceFamily" />
     </VCol>
   </VRow>
 </template>

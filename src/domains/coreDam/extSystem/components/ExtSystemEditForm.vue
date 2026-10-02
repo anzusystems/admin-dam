@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemValidation } from '@/domains/coreDam/extSystem/composables/extSystemValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -41,6 +42,7 @@ const { t } = useI18n()
             disable-init-fetch
           />
         </ARow>
+        <DamTrackingFields :data="extSystem" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

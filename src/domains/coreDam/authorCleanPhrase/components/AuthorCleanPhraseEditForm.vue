@@ -8,6 +8,7 @@ import { useAuthorCleanPhraseEditActions } from '@/domains/coreDam/authorCleanPh
 import { useAuthorCleanPhraseValidation } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
 import { useAuthorCleanPhraseModeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
 import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { authorCleanPhrase } = useAuthorCleanPhraseEditActions()
@@ -81,6 +82,7 @@ const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
             data-cy="authorCleanPhrase-authorReplacement"
           />
         </ARow>
+        <DamTrackingFields :data="authorCleanPhrase" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

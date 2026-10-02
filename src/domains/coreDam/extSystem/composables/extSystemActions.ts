@@ -1,4 +1,4 @@
-import { useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
+import { syncUserAndTimeTracking, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
 import type {
   DamExtSystem,
   FilterConfig,
@@ -153,7 +153,8 @@ export const useExtSystemEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, body: extSystem.value })
+      const res = await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, body: extSystem.value })
+      syncUserAndTimeTracking(extSystemOneStore.extSystem, res)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/ext-systems' })

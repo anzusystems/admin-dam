@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
 import { useDistributionCategorySelectOneStore } from '@/domains/coreDam/distributionCategorySelect/store/distributionCategorySelectStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { distributionCategorySelect } = storeToRefs(useDistributionCategorySelectOneStore())
 
@@ -30,7 +31,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.distributionCategorySelect.model.id')">
         <ACopyText :value="distributionCategorySelect.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="distributionCategorySelect" />
+      <DamTrackingFields :data="distributionCategorySelect" />
     </VCol>
   </VRow>
 </template>

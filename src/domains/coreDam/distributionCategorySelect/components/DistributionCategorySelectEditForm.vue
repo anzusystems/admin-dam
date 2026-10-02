@@ -9,6 +9,7 @@ import type { DistributionCategoryOption } from '@/domains/coreDam/distributionC
 import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
 import DistributionCategoryOptionEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
 import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type OptionRowSlotProps = {
@@ -54,5 +55,6 @@ defineExpose({
         />
       </template>
     </ASortableListEditor>
+    <DamTrackingFields :data="distributionCategorySelect" />
   </ASystemEntityScope>
 </template>

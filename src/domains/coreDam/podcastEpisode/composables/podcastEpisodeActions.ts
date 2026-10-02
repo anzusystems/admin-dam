@@ -1,5 +1,5 @@
 import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
+import { syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -126,10 +126,11 @@ export const usePodcastEpisodeEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updatePodcastEpisode({
+      const res = await updatePodcastEpisode({
         urlParams: { id: podcastEpisodeOneStore.podcastEpisode.id },
         body: podcastEpisode.value,
       })
+      syncUserAndTimeTracking(podcastEpisodeOneStore.podcastEpisode, res)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
       router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })

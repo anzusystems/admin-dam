@@ -1,16 +1,10 @@
 <script lang="ts" setup>
-import {
-  ABooleanValue,
-  ACopyText,
-  ADatetime,
-  ARow,
-  AUserAndTimeTrackingFields,
-  COMMON_CONFIG,
-} from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ADatetime, ARow, COMMON_CONFIG } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { useVideoShowEpisodeOneStore } from '@/domains/coreDam/videoShowEpisode/store/videoShowEpisodeStore'
 
 const { videoShowEpisode } = storeToRefs(useVideoShowEpisodeOneStore())
@@ -67,7 +61,7 @@ const onAssetChipClick = () => {
           {{ videoShowEpisode.asset }}
         </VChip>
       </ARow>
-      <AUserAndTimeTrackingFields :data="videoShowEpisode" />
+      <DamTrackingFields :data="videoShowEpisode" />
     </VCol>
   </VRow>
 </template>

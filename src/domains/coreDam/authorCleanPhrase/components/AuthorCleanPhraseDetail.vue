@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
@@ -7,6 +7,7 @@ import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/c
 import AuthorCleanPhraseModeChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeChip.vue'
 import AuthorCleanPhraseTypeChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeChip.vue'
 import { useAuthorCleanPhraseOneStore } from '@/domains/coreDam/authorCleanPhrase/store/authorCleanPhraseStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { authorCleanPhrase } = storeToRefs(useAuthorCleanPhraseOneStore())
 
@@ -45,7 +46,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.authorCleanPhrase.model.id')">
         <ACopyText :value="authorCleanPhrase.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="authorCleanPhrase" />
+      <DamTrackingFields :data="authorCleanPhrase" />
     </VCol>
   </VRow>
 </template>

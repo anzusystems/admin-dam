@@ -1,4 +1,10 @@
-import { createFilter, createFilterStore, useAlerts, usePagination } from '@anzusystems/common-admin'
+import {
+  createFilter,
+  createFilterStore,
+  syncUserAndTimeTracking,
+  useAlerts,
+  usePagination,
+} from '@anzusystems/common-admin'
 import type {
   DocId,
   FilterConfig,
@@ -165,7 +171,8 @@ export const useVoiceFamilyEditActions = () => {
         active: voiceFamily.value.active,
         keywords: voiceFamily.value.keywords,
       }
-      await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, body: payload })
+      const res = await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, body: payload })
+      syncUserAndTimeTracking(voiceFamilyOneStore.voiceFamily, res)
       showRecordWas('updated')
     } catch (error) {
       showErrorsDefault(error)
