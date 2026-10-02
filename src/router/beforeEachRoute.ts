@@ -42,9 +42,8 @@ export const beforeEachRoute = async (
     try {
       await loadDamPubConfig()
     } catch (error) {
-      /* Unhandled, this rejects the guard and the router has no `onError`: aborted navigation and a
-       * blank page. Reachable at all because the library's `loadDamPrvConfig` clears this flag on
-       * every start-up. */
+      /* Unhandled, this rejects the guard: an aborted navigation, and on the first one a blank page.
+       * Reachable at all because the library's `loadDamPrvConfig` clears this flag on every start-up. */
       console.error('beforeEachRoute: public configuration failed to load', error)
       /* Only while there is nothing to lose: answering here at all skips the guard below, and once
        * the application is up a running upload queue is worth more than a full reload. */

@@ -76,6 +76,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
+        v-if="!loadingPermissionGroup"
         :loading="loadingUpdatePermissionGroup"
         @save-record="updatePermissionGroup"
       />

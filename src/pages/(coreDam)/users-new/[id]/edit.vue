@@ -78,6 +78,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
+        v-if="!loadingAnzuUser"
         :loading="loadingUpdateAnzuUser"
         @save-record="updateAnzuUser"
       />
