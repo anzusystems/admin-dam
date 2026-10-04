@@ -1,10 +1,9 @@
 import type { DamAssetLicenceGroup, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import {
@@ -90,7 +89,7 @@ export const useAssetLicenceGroupDetailActions = () => {
 
 export const useAssetLicenceGroupEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const assetLicenceGroupOneStore = useAssetLicenceGroupOneStore()
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
   const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
@@ -125,7 +124,7 @@ export const useAssetLicenceGroupEditActions = () => {
       syncUserAndTimeTracking(assetLicenceGroupOneStore.assetLicenceGroup, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/asset-licence-groups' })
+      push({ name: '/(coreDam)/asset-licence-groups' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

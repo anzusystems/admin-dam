@@ -7,11 +7,11 @@ import {
   APermissionGroupManage,
   defineBreadcrumbs,
   isNull,
+  usePageNavigation,
   usePermissionGroupActions,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import { ACL } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
@@ -38,7 +38,7 @@ const {
   endPoint: damUserSystemDescriptor.endpoints.permissionGroup,
 })
 
-const router = useRouter()
+const { push } = usePageNavigation()
 
 // The library returns the saved record rather than navigating: it cannot know this app's typed
 // route names.
@@ -46,11 +46,11 @@ const onCreate = async (close = false) => {
   const created = await createPermissionGroup()
   if (isNull(created)) return
   if (close) {
-    router.push({ name: '/(common)/permission-groups-new' })
+    push({ name: '/(common)/permission-groups-new' })
 
     return
   }
-  router.push({ name: '/(common)/permission-groups-new/[id]', params: { id: String(created.id) } })
+  push({ name: '/(common)/permission-groups-new/[id]', params: { id: String(created.id) } })
 }
 
 const { t } = useI18n()

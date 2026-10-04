@@ -4,13 +4,13 @@ import {
   isUndefined,
   renumberPositions,
   useAlerts,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
@@ -88,7 +88,7 @@ export const useDistributionCategorySelectDetailActions = () => {
 
 export const useDistributionCategorySelectEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const distributionCategorySelectOneStore = useDistributionCategorySelectOneStore()
   const { distributionCategorySelect } = storeToRefs(distributionCategorySelectOneStore)
 
@@ -143,7 +143,7 @@ export const useDistributionCategorySelectEditActions = () => {
       showRecordWas('updated')
       if (!isUndefined(onSuccess)) onSuccess(updated)
       if (!close) return
-      router.push({ name: '/(coreDam)/distribution-category-selects' })
+      push({ name: '/(coreDam)/distribution-category-selects' })
     } catch (error) {
       if (isAnzuApiValidationError(error)) {
         const updatedErrors = new Map<string, string[]>()

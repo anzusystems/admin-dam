@@ -10,10 +10,10 @@ import {
   useAlerts,
   useDamAuthorFactory,
   useDamAuthorType,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, useCreateAuthor } from '@/domains/coreDam/author/api/authorApi'
@@ -64,7 +64,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n()
@@ -85,7 +85,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(coreDam)/authors/[id]', params: { id: res.id } })
+      push({ name: '/(coreDam)/authors/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

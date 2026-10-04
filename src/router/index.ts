@@ -1,4 +1,4 @@
-import { createNavigationErrorHandler } from '@anzusystems/common-admin'
+import { createNavigationErrorHandler, trackNavigation } from '@anzusystems/common-admin'
 import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 
@@ -12,6 +12,9 @@ const vueRouter = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+// First guard: a page skips its redirect after an async step once the user is navigating away or has left.
+trackNavigation(vueRouter)
 
 addLegacyRedirects(vueRouter)
 

@@ -5,6 +5,7 @@ import {
   isString,
   useAlerts,
   useDamCachedUsers,
+  usePageNavigation,
   useTheme,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
@@ -34,6 +35,7 @@ const { t } = useI18n()
 const { showErrorT, showErrorsDefault } = useAlerts()
 const route = useRoute()
 const router = useRouter()
+const { onPage } = usePageNavigation()
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 const { asset } = storeToRefs(assetDetailStore)
@@ -63,6 +65,11 @@ const closeDialog = () => {
   router.push({ name: '/(coreDam)/assets' })
 }
 
+const onPostDelete = () => {
+  if (!onPage()) return
+  closeDialog()
+}
+
 const getDetail = async () => {
   if (assetDetailStore.directDetailLoad) {
     assetDetailStore.setView('list')
@@ -89,7 +96,7 @@ const getDetail = async () => {
     const res = await fetchAsset(assetId.value)
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     if (currentAssetLicenceId.value !== res.licence) {
-      showErrorT('coreDam.asset.detail.licenceMismatch')
+      if (onPage()) showErrorT('coreDam.asset.detail.licenceMismatch')
       assetDetailStore.hideLoader()
       return
     }
@@ -97,7 +104,7 @@ const getDetail = async () => {
     addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
     fetchCachedUsers()
   } catch (error) {
-    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest) || !onPage()) return
     showErrorsDefault(error)
   } finally {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
@@ -220,7 +227,7 @@ onMounted(() => {
               :asset-type="assetType"
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
-              @post-delete="closeDialog"
+              @post-delete="onPostDelete"
               @main-route-changed="getDetail"
             />
           </div>

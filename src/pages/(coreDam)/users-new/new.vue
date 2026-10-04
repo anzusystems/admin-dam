@@ -8,10 +8,10 @@ import {
   defineBreadcrumbs,
   isNull,
   useAnzuUserActions,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import { ACL } from '@/domains/system/auth/auth'
 import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
@@ -33,17 +33,17 @@ const { anzuUser, loadingAnzuUser, createAnzuUser, loadingCreateAnzuUser, resetA
   endPoint: damUserSystemDescriptor.endpoints.list,
 })
 
-const router = useRouter()
+const { push } = usePageNavigation()
 
 const onCreate = async (close = false) => {
   const created = await createAnzuUser()
   if (isNull(created)) return
   if (close) {
-    router.push({ name: '/(coreDam)/users-new' })
+    push({ name: '/(coreDam)/users-new' })
 
     return
   }
-  router.push({ name: '/(coreDam)/users-new/[id]', params: { id: String(created.id) } })
+  push({ name: '/(coreDam)/users-new/[id]', params: { id: String(created.id) } })
 }
 
 const { t } = useI18n()

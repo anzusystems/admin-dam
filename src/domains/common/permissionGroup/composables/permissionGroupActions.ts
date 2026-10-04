@@ -6,12 +6,11 @@ import type {
   PermissionGroup,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { handleRecordLoadError, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import {
   useCreatePermissionGroup,
@@ -71,14 +70,14 @@ export const usePermissionGroupActions = () => {
     }
   }
 
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const deletePermissionGroup = async (id: IntegerId) => {
     detailLoading.value = true
     try {
       const { execute } = useDeletePermissionGroup()
       await execute({ urlParams: { id } })
       showRecordWas('deleted')
-      router.push({ name: '/(common)/permission-groups' })
+      push({ name: '/(common)/permission-groups' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -103,7 +102,7 @@ export const usePermissionGroupActions = () => {
       })
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(common)/permission-groups' })
+      push({ name: '/(common)/permission-groups' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -124,10 +123,10 @@ export const usePermissionGroupActions = () => {
       const permissionGroupRes = await execute({ body: permissionGroupOneStore.permissionGroup })
       showRecordWas('created')
       if (close) {
-        router.push({ name: '/(common)/permission-groups' })
+        push({ name: '/(common)/permission-groups' })
         return
       }
-      router.push({ name: '/(common)/permission-groups/[id]', params: { id: permissionGroupRes.id } })
+      push({ name: '/(common)/permission-groups/[id]', params: { id: permissionGroupRes.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

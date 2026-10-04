@@ -1,10 +1,9 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import {
@@ -52,14 +51,14 @@ export const usePublicExportListActions = () => {
 }
 
 export const usePublicExportRemoveActions = () => {
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const removePublicExport = async (id: IntegerId) => {
     detailLoading.value = true
     try {
       const { execute: deletePublicExport } = useDeletePublicExport()
       await deletePublicExport({ urlParams: { id } })
       showRecordWas('updated')
-      router.push({ name: '/(coreDam)/public-exports' })
+      push({ name: '/(coreDam)/public-exports' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -104,7 +103,7 @@ export const usePublicExportDetailActions = () => {
 
 export const usePublicExportEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const publicExportOneStore = usePublicExportOneStore()
   const { publicExport } = storeToRefs(publicExportOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
@@ -143,7 +142,7 @@ export const usePublicExportEditActions = () => {
       syncUserAndTimeTracking(publicExportOneStore.publicExport, res)
       showRecordWas('updated')
 
-      router.push({
+      push({
         name: '/(coreDam)/public-exports/[id]',
         params: { id: publicExportOneStore.publicExport.id },
       })

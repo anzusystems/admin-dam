@@ -6,12 +6,17 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { handleRecordLoadError, isUndefined, renumberPositions, useAlerts } from '@anzusystems/common-admin'
+import {
+  handleRecordLoadError,
+  isUndefined,
+  renumberPositions,
+  useAlerts,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
@@ -87,7 +92,7 @@ export const usePodcastDetailActions = () => {
 
 export const usePodcastEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const podcastOneStore = usePodcastOneStore()
   const { podcast } = storeToRefs(podcastOneStore)
   const { execute: fetchPodcast } = useFetchPodcast()
@@ -134,7 +139,7 @@ export const usePodcastEditActions = () => {
       showRecordWas('updated')
       if (!isUndefined(onSuccess)) onSuccess(updatedPodcast)
       if (!close) return
-      router.push({ name: '/(coreDam)/podcasts' })
+      push({ name: '/(coreDam)/podcasts' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

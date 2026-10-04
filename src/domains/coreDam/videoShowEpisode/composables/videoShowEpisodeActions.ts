@@ -1,10 +1,9 @@
 import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import {
   useFetchVideoShowEpisode,
@@ -79,7 +78,7 @@ export const useVideoShowEpisodeDetailActions = () => {
 
 export const useVideoShowEpisodeEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const videoShowEpisodeOneStore = useVideoShowEpisodeOneStore()
   const { videoShowEpisode } = storeToRefs(videoShowEpisodeOneStore)
 
@@ -115,7 +114,7 @@ export const useVideoShowEpisodeEditActions = () => {
       syncUserAndTimeTracking(videoShowEpisodeOneStore.videoShowEpisode, res)
       showRecordWas('updated')
       if (!close || !videoShowEpisodeOneStore.videoShowEpisode.videoShow) return
-      router.push({
+      push({
         name: '/(coreDam)/video-shows/[id]',
         params: { id: videoShowEpisodeOneStore.videoShowEpisode.videoShow },
       })

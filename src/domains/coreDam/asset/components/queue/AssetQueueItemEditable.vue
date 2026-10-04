@@ -9,6 +9,7 @@ import {
   isNull,
   prettyBytes,
   useAlerts,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import type { AssetCustomData, DocId, UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { computed, onUnmounted, ref, watch } from 'vue'
@@ -99,6 +100,8 @@ const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
+// A failure that ends after the user went elsewhere has nothing to say there.
+const { onPage } = usePageNavigation()
 
 const processing = computed(() => {
   return (
@@ -147,7 +150,7 @@ const showDetail = async () => {
     assetDetailStore.reset()
     assetListStore.keyboardNavigationEnable()
     // If it is already closed, the user has stopped waiting for this answer.
-    if (!dialogWasOpen) return
+    if (!dialogWasOpen || !onPage()) return
     showErrorsDefault(error)
   } finally {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()

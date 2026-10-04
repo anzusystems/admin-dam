@@ -12,13 +12,13 @@ import {
   syncUserAndTimeTracking,
   useAlerts,
   useDamConfigState,
+  usePageNavigation,
   usePagination,
 } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
@@ -150,7 +150,7 @@ export const useDistributionCategoryManageActions = () => {
 }
 
 export const useDistributionCategoryCreateActions = () => {
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
   const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
@@ -182,7 +182,7 @@ export const useDistributionCategoryCreateActions = () => {
       const res = await createDistributionCategory({ body: distributionCategory.value })
       showRecordWas('created')
       if (successCallbackAction) successCallbackAction() // dialog.value = false
-      router.push({ name: '/(coreDam)/distribution-categories/[id]', params: { id: res.id } })
+      push({ name: '/(coreDam)/distribution-categories/[id]', params: { id: res.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -204,7 +204,7 @@ export const useDistributionCategoryCreateActions = () => {
 
 export const useDistributionCategoryEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
   const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
@@ -253,7 +253,7 @@ export const useDistributionCategoryEditActions = () => {
       syncUserAndTimeTracking(distributionCategoryOneStore.distributionCategory, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/distribution-categories' })
+      push({ name: '/(coreDam)/distribution-categories' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

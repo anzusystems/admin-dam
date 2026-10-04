@@ -1,10 +1,9 @@
 import type { AnzuUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, isInt, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, isInt, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import {
   useCreateAnzuUser,
@@ -60,7 +59,7 @@ export const useAnzuUserActions = () => {
     }
   }
 
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const v$ = useVuelidate()
   const updateAnzuUser = async (close = false) => {
     if (!isInt(anzuUserOneStore.anzuUser.id)) return
@@ -79,7 +78,7 @@ export const useAnzuUserActions = () => {
       })
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(common)/anzu-users' })
+      push({ name: '/(common)/anzu-users' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -100,10 +99,10 @@ export const useAnzuUserActions = () => {
       const anzuUserRes = await createAnzuUserRequest({ body: anzuUserOneStore.anzuUser })
       showRecordWas('created')
       if (close) {
-        router.push({ name: '/(common)/anzu-users' })
+        push({ name: '/(common)/anzu-users' })
         return
       }
-      router.push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
+      push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

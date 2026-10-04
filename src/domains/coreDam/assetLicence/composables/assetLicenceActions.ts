@@ -12,12 +12,12 @@ import {
   useAlerts,
   useDamCachedUsers,
   useFetchDamAssetLicenceList,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useFetchAssetLicence, useUpdateAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceOneStore } from '@/domains/coreDam/assetLicence/store/assetLicenceStore'
@@ -98,7 +98,7 @@ export const useAssetLicenceDetailActions = () => {
 
 export const useAssetLicenceEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const assetLicenceOneStore = useAssetLicenceOneStore()
   const { assetLicence } = storeToRefs(assetLicenceOneStore)
 
@@ -140,7 +140,7 @@ export const useAssetLicenceEditActions = () => {
       syncUserAndTimeTracking(assetLicenceOneStore.assetLicence, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/asset-licences' })
+      push({ name: '/(coreDam)/asset-licences' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

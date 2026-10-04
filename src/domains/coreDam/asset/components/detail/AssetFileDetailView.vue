@@ -5,6 +5,7 @@ import {
   isString,
   useAlerts,
   useDamCachedUsers,
+  usePageNavigation,
   useTheme,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
@@ -32,6 +33,8 @@ defineEmits<{
 
 const { t } = useI18n()
 const { showErrorT, showErrorsDefault } = useAlerts()
+// A failure that ends after the user went elsewhere has nothing to say there.
+const { onPage } = usePageNavigation()
 const route = useRoute()
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
@@ -86,7 +89,7 @@ const getDetail = async () => {
     const res = await fetchAssetByFileId(assetFileId.value)
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     if (currentAssetLicenceId.value !== res.licence) {
-      showErrorT('coreDam.asset.detail.licenceMismatch')
+      if (onPage()) showErrorT('coreDam.asset.detail.licenceMismatch')
       assetDetailStore.hideLoader()
       return
     }
@@ -94,7 +97,7 @@ const getDetail = async () => {
     addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
     fetchCachedUsers()
   } catch (error) {
-    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest) || !onPage()) return
     showErrorsDefault(error)
   } finally {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()

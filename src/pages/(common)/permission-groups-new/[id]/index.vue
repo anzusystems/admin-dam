@@ -7,12 +7,13 @@ import {
   APermissionGroupDetail,
   defineBreadcrumbs,
   stringToInt,
+  usePageNavigation,
   usePermissionGroupActions,
   useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
@@ -46,11 +47,11 @@ const {
   endPoint: damUserSystemDescriptor.endpoints.permissionGroup,
 })
 
-const router = useRouter()
+const { push } = usePageNavigation()
 
 const onDelete = async () => {
   if (await deletePermissionGroup(id)) {
-    router.push({ name: '/(common)/permission-groups-new' })
+    push({ name: '/(common)/permission-groups-new' })
   }
 }
 

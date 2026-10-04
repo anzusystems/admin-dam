@@ -1,4 +1,10 @@
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
+import {
+  handleRecordLoadError,
+  syncUserAndTimeTracking,
+  useAlerts,
+  useDamCachedUsers,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
 import type {
   DamExtSystem,
   FilterConfig,
@@ -11,7 +17,6 @@ import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import {
   useFetchExtSystem,
@@ -125,7 +130,7 @@ export const useExtSystemDetailActions = () => {
 
 export const useExtSystemEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
   const { execute: fetchExtSystem } = useFetchExtSystem()
@@ -160,7 +165,7 @@ export const useExtSystemEditActions = () => {
       syncUserAndTimeTracking(extSystemOneStore.extSystem, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/ext-systems' })
+      push({ name: '/(coreDam)/ext-systems' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

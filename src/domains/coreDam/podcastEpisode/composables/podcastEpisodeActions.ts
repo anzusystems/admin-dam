@@ -1,10 +1,9 @@
 import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import {
   useDeletePodcastEpisode,
@@ -100,7 +99,7 @@ export const usePodcastEpisodeDetailActions = () => {
 
 export const usePodcastEpisodeEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
   const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
@@ -136,7 +135,7 @@ export const usePodcastEpisodeEditActions = () => {
       syncUserAndTimeTracking(podcastEpisodeOneStore.podcastEpisode, res)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
-      router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
+      push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

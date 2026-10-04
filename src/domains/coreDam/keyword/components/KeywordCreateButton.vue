@@ -8,10 +8,10 @@ import {
   isUndefined,
   useAlerts,
   useDamKeywordFactory,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, createKeyword } from '@/domains/coreDam/keyword/api/keywordApi'
@@ -62,7 +62,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useKeywordValidation(keyword, props.validationScope)
 const { t } = useI18n()
@@ -83,7 +83,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(coreDam)/keywords/[id]', params: { id: res.id } })
+      push({ name: '/(coreDam)/keywords/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

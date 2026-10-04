@@ -9,6 +9,7 @@ import {
   useAlerts,
   useDamCachedUsers,
   useFilterHelpers,
+  usePageNavigation,
   usePagination,
 } from '@anzusystems/common-admin'
 import type { AssetSearchListItemDto, DamAssetTypeType, DocId, Pagination } from '@anzusystems/common-admin'
@@ -72,6 +73,7 @@ let nextPageAskedInGeneration = 0
 
 export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const router = useRouter()
+  const { onPage } = usePageNavigation()
   const assetListStore = useAssetListStore()
   const assetDetailStore = useAssetDetailStore()
   const uploadQueuesStore = useUploadQueuesStore()
@@ -264,6 +266,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetDetailStore.reset()
       // The address was changed to this asset before the request, so put it back while the user is still here.
       if (!dialogWasOpen) return
+      if (!onPage()) return
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
       showErrorsDefault(error)
     } finally {
@@ -287,6 +290,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       // Called from the dialog and the sidebar alike, so it has to undo both.
       assetDetailStore.reset()
+      if (!onPage()) return
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
       showErrorsDefault(error)
     } finally {
@@ -313,6 +317,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       // The sidebar keeps its last asset, and would show it under the newly selected one.
       assetDetailStore.reset()
+      if (!onPage()) return
       showErrorsDefault(error)
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
@@ -411,6 +416,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetDetailStore.reset()
       // The address was changed to this asset before the request, so put it back while the user is still here.
       if (!dialogWasOpen) return
+      if (!onPage()) return
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
       showErrorsDefault(error)
     } finally {
@@ -445,6 +451,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetDetailStore.reset()
       // The address was changed to this asset before the request, so put it back while the user is still here.
       if (!dialogWasOpen) return
+      if (!onPage()) return
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
       showErrorsDefault(error)
     } finally {

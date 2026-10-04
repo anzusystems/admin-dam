@@ -1,6 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { nextTick, ref } from 'vue'
+import { defineComponent, nextTick, ref } from 'vue'
+import type { Router } from 'vue-router'
 
 const fetchAsset = vi.fn(async (): Promise<unknown> => undefined)
 const fetchAssetList = vi.fn<(...args: unknown[]) => Promise<unknown[]>>(async () => [])
@@ -10,13 +11,18 @@ vi.mock('@/domains/coreDam/asset/api/assetApi', async (importOriginal) => ({
   fetchAsset: (...args: unknown[]) => fetchAsset(...(args as [])),
   fetchAssetList: (...args: unknown[]) => fetchAssetList(...args),
 }))
-vi.mock('vue-router', () => ({ useRouter: () => ({}) }))
+let router: Router
+vi.mock('vue-router', async (importOriginal) => ({
+  ...((await importOriginal()) as Record<string, unknown>),
+  useRouter: () => router,
+}))
 const browserHistoryReplaceUrlByRouter = vi.fn()
+const showErrorsDefault = vi.fn()
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
   browserHistoryReplaceUrlByRouter: (...args: unknown[]) => browserHistoryReplaceUrlByRouter(...args),
   useDamCachedUsers: () => ({ fetchCachedUsers: vi.fn(), addToCachedUsers: vi.fn() }),
-  useAlerts: () => ({ showWarning: vi.fn(), showErrorsDefault: vi.fn() }),
+  useAlerts: () => ({ showWarning: vi.fn(), showErrorsDefault: (...args: unknown[]) => showErrorsDefault(...args) }),
 }))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
   useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
@@ -57,9 +63,24 @@ const detailOf = (id: string) => ({
   metadata: { customData: {}, authorSuggestions: {}, keywordSuggestions: {} },
 })
 
+const Page = defineComponent(() => () => null)
+let openElsewhere: () => void = () => undefined
+
 const load = async () => {
   vi.resetModules()
   setActivePinia(createPinia())
+  // Imported after the reset, so that the router and the library's navigation tracker share one vue-router.
+  const { createMemoryHistory, createRouter } = await import('vue-router')
+  const elsewhere = new Promise<void>((resolve) => (openElsewhere = resolve))
+  router = createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      { path: '/assets', component: Page },
+      // Fetched on its first visit, as every page is in production.
+      { path: '/elsewhere', component: () => elsewhere.then(() => Page) },
+    ],
+  })
+  await router.push('/assets')
   const { useAssetListActions } = await import('@/domains/coreDam/asset/components/list/composables/assetListActions')
   const { useAssetListStore } = await import('@/domains/coreDam/asset/store/assetListStore')
   const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
@@ -181,6 +202,38 @@ describe('a detail the user has walked away from', () => {
     // the address back to the list from wherever the user had gone.
     expect(assetDetailStore.detail).toBe(false)
     expect(browserHistoryReplaceUrlByRouter).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('a detail that fails while the user is on the way to another page', () => {
+  it('leaves the address to the page the user goes to', async () => {
+    const { actions } = await load()
+    let fail: (reason: unknown) => void = () => undefined
+    fetchAsset.mockImplementation(() => new Promise((_resolve, reject) => (fail = reject)))
+
+    const running = actions.showDetail({ assetId: 'asset-a', index: 0 })
+    const navigation = router.push('/elsewhere')
+    // Until its page has been fetched the list is still mounted, so nothing has abandoned the request.
+    await new Promise((resolve) => setTimeout(resolve))
+    fail(new Error('gone'))
+    await running
+    openElsewhere()
+
+    // The list is being left: its address is not put back, nor its error shown on the page the user goes to.
+    expect(browserHistoryReplaceUrlByRouter).toHaveBeenCalledTimes(1)
+    expect(showErrorsDefault).not.toHaveBeenCalled()
+    expect(await navigation).toBeUndefined()
+  })
+
+  it('puts the address back when the user stays', async () => {
+    const { actions } = await load()
+    fetchAsset.mockRejectedValue(new Error('gone'))
+
+    await actions.showDetail({ assetId: 'asset-a', index: 0 })
+
+    expect(browserHistoryReplaceUrlByRouter).toHaveBeenCalledTimes(2)
+    expect(browserHistoryReplaceUrlByRouter).toHaveBeenLastCalledWith(router, { name: '/(coreDam)/assets' })
+    expect(showErrorsDefault).toHaveBeenCalledTimes(1)
   })
 })
 

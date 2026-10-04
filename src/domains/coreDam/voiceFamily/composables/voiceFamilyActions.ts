@@ -4,6 +4,7 @@ import {
   handleRecordLoadError,
   syncUserAndTimeTracking,
   useAlerts,
+  usePageNavigation,
   usePagination,
 } from '@anzusystems/common-admin'
 import type {
@@ -19,7 +20,6 @@ import useVuelidate from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
@@ -91,7 +91,7 @@ export const useVoiceFamilyCreateActions = () => {
 }
 
 export const useVoiceFamilyRemoveActions = () => {
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const { execute: deleteVoiceFamily } = useDeleteVoiceFamily()
   const removeVoiceFamily = async (id: DocId) => {
     detailLoading.value = true
@@ -101,7 +101,7 @@ export const useVoiceFamilyRemoveActions = () => {
       // Keep detailLoading=true on success: it hides VoiceBindingsList (v-if="!detailLoading")
       // so it cannot remount and refetch voices for the just-deleted family (404) before the
       // redirect completes. The next detail mount resets the flag via fetchData.
-      router.push({ name: '/(coreDam)/voice-families' })
+      push({ name: '/(coreDam)/voice-families' })
     } catch (error) {
       detailLoading.value = false
       showErrorsDefault(error)

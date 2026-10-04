@@ -8,13 +8,13 @@ import {
   useAlerts,
   useDamCachedUsers,
   useFetchDamUserList,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import type { DamUser, FilterConfig, FilterData, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
@@ -102,7 +102,7 @@ export const useUserDetailActions = () => {
 
 export const useUserEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const userOneStore = useUserOneStore()
   const { userUpdate, user } = storeToRefs(userOneStore)
 
@@ -135,7 +135,7 @@ export const useUserEditActions = () => {
       await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/users' })
+      push({ name: '/(coreDam)/users' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

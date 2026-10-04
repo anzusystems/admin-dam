@@ -7,6 +7,7 @@ import {
   assetFileIsImageFile,
   browserHistoryReplaceUrlByRouter,
   isNull,
+  usePageNavigation,
   useTheme,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
@@ -34,6 +35,7 @@ const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 const router = useRouter()
+const { onPage } = usePageNavigation()
 
 const { activeTab } = useAssetDetailTab()
 
@@ -53,6 +55,7 @@ const postDelete = (data: DocId) => {
   if (asset.value?.id === data) {
     assetDetailStore.setDeleting()
   }
+  if (!onPage()) return
   closeDialog()
 }
 

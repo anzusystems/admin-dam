@@ -6,12 +6,17 @@ import type {
   Pagination,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { SortOrder, handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import {
+  SortOrder,
+  handleRecordLoadError,
+  syncUserAndTimeTracking,
+  useAlerts,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
@@ -95,7 +100,7 @@ export const useKeywordDetailActions = () => {
 
 export const useKeywordEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
 
@@ -128,7 +133,7 @@ export const useKeywordEditActions = () => {
       syncUserAndTimeTracking(keywordOneStore.keyword, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/keywords' })
+      push({ name: '/(coreDam)/keywords' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

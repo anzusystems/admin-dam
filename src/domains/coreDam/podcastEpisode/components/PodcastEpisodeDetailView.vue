@@ -5,11 +5,12 @@ import {
   AActionEditButton,
   ACard,
   defineBreadcrumbs,
+  usePageNavigation,
   useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import PodcastEpisodeDetail from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetail.vue'
 import {
@@ -23,7 +24,7 @@ const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpiso
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const route = useRoute()
-const router = useRouter()
+const { push } = usePageNavigation()
 const podcastId = (route.params as { id: string }).id.toString()
 const id = (route.params as { episodeId: string }).episodeId.toString()
 
@@ -36,10 +37,10 @@ const { signal, leave } = useRecordPage({
 
 const onSuccessfulCallback = () => {
   if (podcastEpisode.value.podcast) {
-    router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisode.value.podcast } })
+    push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisode.value.podcast } })
     return
   }
-  router.push({ name: '/(coreDam)/podcasts' })
+  push({ name: '/(coreDam)/podcasts' })
 }
 
 onMounted(async () => {

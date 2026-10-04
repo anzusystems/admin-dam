@@ -6,13 +6,13 @@ import {
   ASystemEntityScope,
   isUndefined,
   useAlerts,
+  usePageNavigation,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
 import type { PermissionGroup } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import { ENTITY, useCreatePermissionGroup } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 import { usePermissionGroupValidation } from '@/domains/common/permissionGroup/composables/permissionGroupValidations'
@@ -53,7 +53,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 const { t } = useI18n()
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -72,7 +72,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
+      push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)

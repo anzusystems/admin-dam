@@ -1,10 +1,9 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
@@ -52,14 +51,14 @@ export const useAuthorCleanPhraseListActions = () => {
 }
 
 export const useAuthorCleanPhraseRemoveActions = () => {
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const { execute: deleteAuthorCleanPhrase } = useDeleteAuthorCleanPhrase()
   const removeAuthorCleanPhrase = async (id: IntegerId) => {
     detailLoading.value = true
     try {
       await deleteAuthorCleanPhrase({ urlParams: { id } })
       showRecordWas('updated')
-      router.push({ name: '/(coreDam)/author-clean-phrases' })
+      push({ name: '/(coreDam)/author-clean-phrases' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -106,7 +105,7 @@ export const useAuthorCleanPhraseDetailActions = () => {
 
 export const useAuthorCleanPhraseEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const authorCleanPhraseOneStore = useAuthorCleanPhraseOneStore()
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
 
@@ -142,7 +141,7 @@ export const useAuthorCleanPhraseEditActions = () => {
       syncUserAndTimeTracking(authorCleanPhraseOneStore.authorCleanPhrase, res)
       showRecordWas('updated')
 
-      router.push({
+      push({
         name: '/(coreDam)/author-clean-phrases/[id]',
         params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
       })

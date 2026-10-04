@@ -7,12 +7,12 @@ import {
   isUndefined,
   useAlerts,
   useAnzuUserFactory,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
 import type { AnzuUser } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import { ENTITY, useCreateAnzuUser } from '@/domains/common/anzuUser/api/anzuUserApi'
 import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'
@@ -55,7 +55,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 const { v$ } = useAnzuUserCreateValidation(anzuUser)
 const { t } = useI18n()
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -74,7 +74,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
+      push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
     }
   } catch (error) {
     showErrorsDefault(error)
