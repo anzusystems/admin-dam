@@ -57,7 +57,7 @@ export const useAuthorCleanPhraseRemoveActions = () => {
     detailLoading.value = true
     try {
       await deleteAuthorCleanPhrase({ urlParams: { id } })
-      showRecordWas('updated')
+      showRecordWas('deleted')
       push({ name: '/(coreDam)/author-clean-phrases' })
     } catch (error) {
       showErrorsDefault(error)

@@ -57,7 +57,7 @@ export const usePublicExportRemoveActions = () => {
     try {
       const { execute: deletePublicExport } = useDeletePublicExport()
       await deletePublicExport({ urlParams: { id } })
-      showRecordWas('updated')
+      showRecordWas('deleted')
       push({ name: '/(coreDam)/public-exports' })
     } catch (error) {
       showErrorsDefault(error)
