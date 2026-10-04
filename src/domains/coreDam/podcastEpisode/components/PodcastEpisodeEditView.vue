@@ -4,6 +4,7 @@ import {
   AActionSaveButton,
   ACard,
   defineBreadcrumbs,
+  usePageNavigation,
   useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
@@ -21,6 +22,7 @@ const id = (route.params as { episodeId: string }).episodeId.toString()
 const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveAndCloseButtonLoading, podcastEpisode } =
   usePodcastEpisodeEditActions()
 
+const { replace } = usePageNavigation()
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/podcasts/[id]',
   fallbackRouteParams: { id: podcastId },
@@ -29,7 +31,13 @@ const { signal, leave } = useRecordPage({
 })
 
 onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  const loaded = await fetchData(id, { signal })
+  if (loaded === false) await leave()
+  // An address naming another podcast than the episode's: the episode's own, so the breadcrumb and the way back fit.
+  const parent = podcastEpisode.value.podcast
+  if (loaded && parent && parent !== podcastId) {
+    await replace({ name: '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit', params: { id: parent, episodeId: id } })
+  }
 })
 
 onBeforeUnmount(() => {

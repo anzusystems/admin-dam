@@ -4,6 +4,7 @@ import {
   AActionEditButton,
   ACard,
   defineBreadcrumbs,
+  usePageNavigation,
   useRecordPage,
 } from '@anzusystems/common-admin'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
@@ -21,6 +22,7 @@ const route = useRoute('/(coreDam)/video-shows/[id]/episodes/[episodeId]')
 const id = route.params.episodeId.toString()
 const videoShowId = route.params.id.toString()
 
+const { replace } = usePageNavigation()
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/video-shows/[id]',
   fallbackRouteParams: { id: videoShowId },
@@ -29,7 +31,13 @@ const { signal, leave } = useRecordPage({
 })
 
 onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  const loaded = await fetchData(id, { signal })
+  if (loaded === false) await leave()
+  // An address naming another video show than the episode's: the episode's own, so the breadcrumb and the way back fit.
+  const parent = videoShowEpisode.value.videoShow
+  if (loaded && parent && parent !== videoShowId) {
+    await replace({ name: '/(coreDam)/video-shows/[id]/episodes/[episodeId]', params: { id: parent, episodeId: id } })
+  }
 })
 
 onBeforeUnmount(() => {

@@ -24,7 +24,7 @@ const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpiso
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const route = useRoute()
-const { push } = usePageNavigation()
+const { push, replace } = usePageNavigation()
 const podcastId = (route.params as { id: string }).id.toString()
 const id = (route.params as { episodeId: string }).episodeId.toString()
 
@@ -44,7 +44,13 @@ const onSuccessfulCallback = () => {
 }
 
 onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  const loaded = await fetchData(id, { signal })
+  if (loaded === false) await leave()
+  // An address naming another podcast than the episode's: the episode's own, so the breadcrumb and the way back fit.
+  const parent = podcastEpisode.value.podcast
+  if (loaded && parent && parent !== podcastId) {
+    await replace({ name: '/(coreDam)/podcasts/[id]/episodes/[episodeId]', params: { id: parent, episodeId: id } })
+  }
 })
 
 onBeforeUnmount(() => {
