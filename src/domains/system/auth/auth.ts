@@ -86,7 +86,8 @@ export const ACL = {
   DAM_PODCAST_EPISODE_DELETE: 'dam_podcastEpisode_delete',
   // TODO(BE): undeclared in core-dam's permissions config (with DAM_AUTHOR_CLEAN_PHRASE_UI), the editor cannot grant
   // them; only a super admin passes. Create, update, delete and the playground are checked without the record, which
-  // the ext system voter denies even with a grant, so the admin offers them to a super admin only (ACL BE task 3.11).
+  // the ext system voter denies even with a grant, so the admin offers them to a super admin only
+  // (ACL BE task #86852/3.11).
   DAM_AUTHOR_CLEAN_PHRASE_CREATE: 'dam_authorCleanPhrase_create',
   DAM_AUTHOR_CLEAN_PHRASE_UPDATE: 'dam_authorCleanPhrase_update',
   DAM_AUTHOR_CLEAN_PHRASE_READ: 'dam_authorCleanPhrase_read',
@@ -94,7 +95,7 @@ export const ACL = {
   DAM_ASSET_EXTERNAL_PROVIDER_ACCESS: 'dam_assetExternalProvider_access',
   DAM_DISTRIBUTION_ACCESS: 'dam_distribution_access',
   // TODO(BE): undeclared in core-dam's permissions config (dam_distribution has access only), the editor cannot grant
-  // it; only a super admin passes (ACL BE task 3.10).
+  // it; only a super admin passes (ACL BE task #86852/3.10).
   DAM_DISTRIBUTION_DELETE: 'dam_distribution_delete',
   DAM_USER_UI: 'dam_user_ui',
   DAM_PERMISSION_GROUP_UI: 'dam_permissionGroup_ui',

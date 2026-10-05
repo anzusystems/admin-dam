@@ -40,7 +40,8 @@ const usedInSeveralSlots = computed(
 )
 const canUnset = computed(() => canForAll([ACL.DAM_ASSET_UPDATE, assetTypeAcl(props.assetType, 'update')]))
 // TODO(BE): core-dam checks dam_document_delete on DELETE /document/{id}, which no voter supports, so it is a 403 even
-// for a super admin; hidden for documents until the voter takes it, then gated on dam_document_delete (ACL BE task 2.11).
+// for a super admin; hidden for documents until the voter takes it, then gated on dam_document_delete
+// (ACL BE task #86852/2.11).
 const canRemove = computed(
   () => props.assetType !== DamAssetType.Document && can(assetTypeAcl(props.assetType, 'delete'))
 )

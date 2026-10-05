@@ -46,7 +46,8 @@ const serviceRequirements = computed(() => {
 
 const { can } = useAuth()
 // TODO(BE): core-dam deletes a custom distribution (DELETE /custom-distribution/{id}) under dam_distribution_access,
-// the general delete under dam_distribution_delete; should be dam_distribution_delete for both (ACL BE task 3.10).
+// the general delete under dam_distribution_delete; should be dam_distribution_delete for both
+// (ACL BE task #86852/3.10).
 const canCancel = computed(() => can(ACL.DAM_DISTRIBUTION_ACCESS))
 </script>
 

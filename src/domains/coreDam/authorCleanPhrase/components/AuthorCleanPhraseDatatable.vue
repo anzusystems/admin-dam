@@ -133,7 +133,7 @@ defineExpose({
               />
             </Acl>
             <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_update without the record, a 403 for all but a super
-                 admin; gate on the key once the check takes the record (ACL BE task 3.11). -->
+                 admin; gate on the key once the check takes the record (ACL BE task #86852/3.11). -->
             <ATableEditButton
               v-if="isSuperAdmin"
               :route-params="{ id: item.id }"

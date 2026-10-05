@@ -35,7 +35,7 @@ const breadcrumbs = defineBreadcrumbs(
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_create and _read (playground) without the record, a 403 for
-           all but a super admin; gate on the keys once the checks take the record (ACL BE task 3.11). -->
+           all but a super admin; gate on the keys once the checks take the record (ACL BE task #86852/3.11). -->
       <template v-if="isSuperAdmin">
         <AuthorCleanPhraseCreateButton
           data-cy="button-create"

@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_update and _delete without the record, a 403 for all but a
-           super admin; gate on the keys once the checks take the record (ACL BE task 3.11). -->
+           super admin; gate on the keys once the checks take the record (ACL BE task #86852/3.11). -->
       <template v-if="isSuperAdmin">
         <AActionEditButton
           v-if="!detailLoading"

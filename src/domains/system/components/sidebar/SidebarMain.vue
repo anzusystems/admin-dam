@@ -173,7 +173,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
       />
     </Acl>
     <!-- TODO(BE): core-dam checks dam_publicExport_read on the list without a record, which its ext system voter denies
-         to all but a super admin; should be dam_publicExport_ui and _read (ACL BE task 2.12). -->
+         to all but a super admin; should be dam_publicExport_ui and _read (ACL BE task #86852/2.12). -->
     <template v-if="isSuperAdmin">
       <VListItem
         :to="{ name: '/(coreDam)/public-exports' }"

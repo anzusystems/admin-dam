@@ -112,7 +112,8 @@ const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetT
 const { can, canForAll } = useAuth()
 
 // TODO(BE): core-dam checks dam_video_update / dam_document_update on an upload's chunk and finish requests, where image
-// and audio check _create; should be _create (ACL BE task 2.13). A slot upload of the two checks _update on its create too.
+// and audio check _create; should be _create (ACL BE task #86852/2.13). A slot upload of the two checks _update on its
+// create too.
 const canUpload = computed(() => {
   if (props.type === 'slots') {
     if (isUndefined(props.assetType)) return false

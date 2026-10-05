@@ -25,7 +25,7 @@ import {
  * this spec pins down against `assetSlotActions.spec.ts`, which covers the multi-slot audio case.
  *
  * A document's file is not offered for deletion at all: core-dam refuses `DELETE /document/{id}` to everyone, a
- * super admin included (ACL BE task 2.11), so with nothing to unlink either "Odstrániť" is not in its menu.
+ * super admin included (ACL BE task #86852/2.11), so with nothing to unlink either "Odstrániť" is not in its menu.
  */
 
 const SINGLE_SLOT_ACTIONS = ['Kopírovať ID súboru', 'Stiahnuť', 'Odstrániť']
