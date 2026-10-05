@@ -7,10 +7,14 @@ import AuthorCleanPhraseCreateButton from '@/domains/coreDam/authorCleanPhrase/c
 import AuthorCleanPhraseDatatable from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDatatable.vue'
 import AuthorCleanPhrasePlaygroundButton from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhrasePlaygroundButton.vue'
 import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import { ACL } from '@/domains/system/auth/auth'
+import { useAuth } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const { listLoading } = useAuthorCleanPhraseListActions()
+
+const { useCurrentUser } = useAuth()
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 
 const datatable = ref<InstanceType<typeof AuthorCleanPhraseDatatable> | null>(null)
 
@@ -30,16 +34,16 @@ const breadcrumbs = defineBreadcrumbs(
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_CREATE">
+      <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_create and _read (playground) without the record, a 403 for
+           all but a super admin; gate on the keys once the checks take the record (ACL BE task 3.11). -->
+      <template v-if="isSuperAdmin">
         <AuthorCleanPhraseCreateButton
           data-cy="button-create"
           disable-redirect
           @on-success="afterCreate"
         />
-      </Acl>
-      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_READ">
         <AuthorCleanPhrasePlaygroundButton data-cy="button-playground" />
-      </Acl>
+      </template>
     </template>
   </ActionbarWrapper>
 

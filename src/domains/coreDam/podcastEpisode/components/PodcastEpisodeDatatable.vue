@@ -184,7 +184,12 @@ defineExpose({
                 :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]'"
               />
             </Acl>
-            <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
+            <!-- An episode with an asset also asks the backend for the asset's update. -->
+            <Acl
+              :permission="
+                item.asset ? [ACL.DAM_PODCAST_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE] : ACL.DAM_PODCAST_EPISODE_UPDATE
+              "
+            >
               <ATableEditButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
                 :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'"

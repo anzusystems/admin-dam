@@ -110,7 +110,11 @@
   "errorPage": {
     "title": "Ups, niečo sa pokazilo.",
     "subTitle": "Aplikáciu sa nepodarilo spustiť. Skúste to prosím znova a ak to potrvá, kontaktujte administrátora.",
-    "return": "Skúsiť znova"
+    "return": "Skúsiť znova",
+    "accessDenied": {
+      "title": "Nemáte prístup k externému systému",
+      "subTitle": "Na spustenie aplikácie musíte byť používateľom alebo administrátorom externého systému (ID {extSystem}) a mať povolenia na čítanie externého systému, formulárov assetov a ich polí. Požiadajte administrátora o ich pridelenie."
+    }
   },
   "error": {
     "notificationsNotConnected": "Notifikačná služba má dočasný výpadok, niektoré funkcie sa nemusia správať korektne."

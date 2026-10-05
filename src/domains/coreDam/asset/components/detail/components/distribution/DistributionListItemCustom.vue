@@ -14,6 +14,7 @@ import type {
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
 import { isDistributionCustomItem } from '@/domains/coreDam/asset/types/Distribution'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
@@ -42,6 +43,11 @@ if (isUndefined(configExtSystem)) {
 const serviceRequirements = computed(() => {
   return configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
 })
+
+const { can } = useAuth()
+// TODO(BE): core-dam deletes a custom distribution (DELETE /custom-distribution/{id}) under dam_distribution_access,
+// the general delete under dam_distribution_delete; should be dam_distribution_delete for both (ACL BE task 3.10).
+const canCancel = computed(() => can(ACL.DAM_DISTRIBUTION_ACCESS))
 </script>
 
 <template>
@@ -69,7 +75,7 @@ const serviceRequirements = computed(() => {
           {{ t('coreDam.distribution.common.redistributeButton') }}
         </ABtnTertiary>
         <ABtnTertiary
-          v-if="item.status === DamDistributionStatus.Waiting"
+          v-if="item.status === DamDistributionStatus.Waiting && canCancel"
           class="ml-2"
           size="small"
           @click.stop="emit('openCancel')"

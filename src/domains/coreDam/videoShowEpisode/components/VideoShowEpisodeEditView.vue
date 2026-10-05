@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 
 import VideoShowEpisodeEditForm from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeEditForm.vue'
 import { useVideoShowEpisodeEditActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
+import { ACL } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute('/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit')
@@ -78,6 +79,11 @@ const breadcrumbs = defineBreadcrumbs(
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"
+        :acl="
+          videoShowEpisode.asset
+            ? [ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE]
+            : ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE
+        "
         :loading="saveButtonLoading"
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"

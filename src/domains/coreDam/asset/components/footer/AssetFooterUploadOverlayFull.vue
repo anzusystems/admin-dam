@@ -13,6 +13,7 @@ import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQu
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 
@@ -157,35 +158,37 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
-          <ABtnPrimary
-            v-if="isFinished"
-            :height="36"
-            class="mr-2"
-            rounded="pill"
-            :loading="saveAndCloseButtonLoading"
-            :disabled="saveButtonLoading"
-            @click.stop="onSaveAndClose"
-          >
-            {{ t('coreDam.asset.upload.saveAndClose') }}
-          </ABtnPrimary>
-          <VBtn
-            variant="text"
-            :height="36"
-            :width="36"
-            class="mr-2"
-            icon
-            :loading="saveButtonLoading"
-            :disabled="saveAndCloseButtonLoading"
-            @click.stop="onSave"
-          >
-            <VIcon icon="mdi-content-save" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
+          <Acl :permission="ACL.DAM_ASSET_UPDATE">
+            <ABtnPrimary
+              v-if="isFinished"
+              :height="36"
+              class="mr-2"
+              rounded="pill"
+              :loading="saveAndCloseButtonLoading"
+              :disabled="saveButtonLoading"
+              @click.stop="onSaveAndClose"
             >
-              {{ t('coreDam.asset.upload.save') }}
-            </VTooltip>
-          </VBtn>
+              {{ t('coreDam.asset.upload.saveAndClose') }}
+            </ABtnPrimary>
+            <VBtn
+              variant="text"
+              :height="36"
+              :width="36"
+              class="mr-2"
+              icon
+              :loading="saveButtonLoading"
+              :disabled="saveAndCloseButtonLoading"
+              @click.stop="onSave"
+            >
+              <VIcon icon="mdi-content-save" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.upload.save') }}
+              </VTooltip>
+            </VBtn>
+          </Acl>
           <AssetUpload
             :height="36"
             variant="icon"

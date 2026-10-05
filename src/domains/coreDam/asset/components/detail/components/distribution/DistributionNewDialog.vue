@@ -16,7 +16,10 @@ import DistributionNewDialogCustom from '@/domains/coreDam/asset/components/deta
 import DistributionNewDialogEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import DistributionNewDialogJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutube.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import {
+  useAssetDetailDistributionDialog,
+  useDistributionServiceAllowed,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
 
@@ -60,6 +63,12 @@ if (isUndefined(configExtSystem)) {
 const serviceRequirements = computed(() => {
   return configExtSystem[props.assetType]?.distribution?.distributionRequirements ?? {}
 })
+
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
+// Only the tabs: a redistribution opens on its own service.
+const offeredServiceRequirements = computed(() =>
+  Object.fromEntries(Object.entries(serviceRequirements.value).filter(([name]) => isDistributionServiceAllowed(name)))
+)
 
 const activeConfig = computed(() => {
   if (isNull(activeDistributionName.value)) return null
@@ -109,7 +118,7 @@ const componentComputed = computed(() => {
           class="sidebar-info__tabs"
         >
           <VTab
-            v-for="(requirement, key) in serviceRequirements"
+            v-for="(requirement, key) in offeredServiceRequirements"
             :key="key"
             :value="key"
           >

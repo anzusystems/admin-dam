@@ -181,6 +181,11 @@ defineExpose({
             <ATableEditButton
               :route-params="{ id: props.videoShowId, episodeId: item.id }"
               :route-name="'/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'"
+              :acl="
+                item.asset
+                  ? [ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE]
+                  : ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE
+              "
             />
           </div>
         </template>

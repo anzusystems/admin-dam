@@ -282,6 +282,7 @@
     "remove": {
       "descriptionBothOptions": "Súbor sa používa vo viacerých slotoch. Chcete zrušiť nastavenie súboru iba z vybraného slotu alebo súbor natrvalo odstrániť?",
       "descriptionOnlyRemove": "Súbor bude natrvalo odstránený zo systému. Chcete pokračovať?",
+      "descriptionOnlyUnset": "Súbor sa používa vo viacerých slotoch. Chcete zrušiť nastavenie súboru z vybraného slotu?",
       "removeFile": "Odstrániť súbor natrvalo",
       "unsetSlot": "Odstrániť len prepojenie z daného slotu"
     },

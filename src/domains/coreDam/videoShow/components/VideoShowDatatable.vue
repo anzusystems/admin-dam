@@ -165,6 +165,7 @@ defineExpose({
             <ATableEditButton
               :record-id="item.id"
               :route-name="'/(coreDam)/video-shows/[id]/edit'"
+              :acl="ACL.DAM_VIDEO_SHOW_UPDATE"
             />
           </div>
         </template>

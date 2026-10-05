@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AListEditor, isString, useAlerts } from '@anzusystems/common-admin'
+import { AListEditor, isString, useAlerts, useDamConfigStore } from '@anzusystems/common-admin'
 import type { DamAssetTypeType, DocId, ListViewItem } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
 import DistributionItemView from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue'
 import DistributionManageDialog from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue'
+import { useDistributionServiceAllowed } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
 import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
 import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
@@ -23,6 +24,7 @@ import type {
   DistributionItemResourceNameType,
   DistributionUpdateDto,
 } from '@/domains/coreDam/asset/types/Distribution'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -44,6 +46,13 @@ const distributionListStore = useDistributionListStore()
 const distributionContent = ref<DistributionUpdateDto | null>()
 const distributionManageDialog = ref(false)
 const distributionDialogEdit = ref(false)
+// core-dam checks the service on every write: one off the user's account is shown, not saved.
+const distributionDialogReadonly = ref(false)
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
+const damConfigStore = useDamConfigStore()
+const anyServiceAllowed = computed(() =>
+  Object.keys(damConfigStore.damPrvConfig.distributionServices).some(isDistributionServiceAllowed)
+)
 
 const assetFileId = computed(() => assetDetailStore.asset?.mainFile?.id)
 
@@ -70,11 +79,13 @@ const onAddDistributionItem = () => {
   }
   distributionContent.value = createDefaultUpdateDto(props.assetId, assetFileId.value)
   distributionDialogEdit.value = false
+  distributionDialogReadonly.value = false
   distributionManageDialog.value = true
 }
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 const { t } = useI18n()
+const { can } = useAuth()
 
 const onDeleteDistributionItem = async (item: DistributionItem) => {
   const distributionId = item.id ?? null
@@ -96,6 +107,7 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
 const onEdit = (vi: ListViewItem<DistributionItem>) => {
   distributionContent.value = createUpdateDto(vi.raw)
   distributionDialogEdit.value = true
+  distributionDialogReadonly.value = !isDistributionServiceAllowed(vi.raw.distributionService)
   distributionManageDialog.value = true
 }
 
@@ -134,6 +146,7 @@ const onDistributionUpsert = () => {
     <AListEditor
       v-model="distributionListStore.list"
       :show-add-button="false"
+      :show-delete-button="can(ACL.DAM_DISTRIBUTION_DELETE)"
       :on-delete="onDeleteDistributionItem"
       delete-mode="immediate"
       disable-unsaved
@@ -147,6 +160,7 @@ const onDistributionUpsert = () => {
       </template>
     </AListEditor>
     <VBtn
+      v-if="anyServiceAllowed"
       color="primary"
       variant="text"
       prepend-icon="mdi-plus"
@@ -162,6 +176,7 @@ const onDistributionUpsert = () => {
     :distribution-manage-dialog="distributionManageDialog"
     :asset-id="assetId"
     :is-edit="distributionDialogEdit"
+    :readonly="distributionDialogReadonly"
     @on-distribution-upsert="onDistributionUpsert"
     @on-cancel="closeDialog"
     @on-distribution-type-select="onDistributionTypeSelect"

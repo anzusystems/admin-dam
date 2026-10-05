@@ -9,6 +9,7 @@ import AssetChip from '@/domains/coreDam/asset/components/detail/components/Asse
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { ACL } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -61,13 +62,15 @@ const pickAssetType = computed(() => {
         </div>
         <div v-if="assetDetailStore.asset.siblingToAsset">
           <AssetChip :id="assetDetailStore.asset.siblingToAsset" />
-          <VBtn
-            icon="mdi-trash-can-outline"
-            variant="text"
-            size="small"
-            :loading="siblingLoader"
-            @click.stop="removeItem"
-          />
+          <Acl :permission="ACL.DAM_ASSET_UPDATE">
+            <VBtn
+              icon="mdi-trash-can-outline"
+              variant="text"
+              size="small"
+              :loading="siblingLoader"
+              @click.stop="removeItem"
+            />
+          </Acl>
         </div>
         <div v-else>-</div>
       </VCol>
@@ -75,28 +78,30 @@ const pickAssetType = computed(() => {
         cols="3"
         class="text-right"
       >
-        <AAssetSelect
-          v-if="pickAssetType"
-          v-model:sort="sort"
-          :select-licences="[currentAssetLicenceId]"
-          :min-count="1"
-          :max-count="1"
-          return-type="assetId"
-          :asset-type="pickAssetType"
-          @confirm="selectAsset"
-        >
-          <template #activator="{ props: assetSelectProps }">
-            <VBtn
-              variant="text"
-              class="my-2 mr-2"
-              size="small"
-              v-bind="assetSelectProps"
-              :loading="siblingLoader"
-            >
-              {{ t('coreDam.asset.sibling.select') }}
-            </VBtn>
-          </template>
-        </AAssetSelect>
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <AAssetSelect
+            v-if="pickAssetType"
+            v-model:sort="sort"
+            :select-licences="[currentAssetLicenceId]"
+            :min-count="1"
+            :max-count="1"
+            return-type="assetId"
+            :asset-type="pickAssetType"
+            @confirm="selectAsset"
+          >
+            <template #activator="{ props: assetSelectProps }">
+              <VBtn
+                variant="text"
+                class="my-2 mr-2"
+                size="small"
+                v-bind="assetSelectProps"
+                :loading="siblingLoader"
+              >
+                {{ t('coreDam.asset.sibling.select') }}
+              </VBtn>
+            </template>
+          </AAssetSelect>
+        </Acl>
       </VCol>
     </VRow>
   </div>

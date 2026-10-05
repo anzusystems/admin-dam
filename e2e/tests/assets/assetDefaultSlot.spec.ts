@@ -23,14 +23,17 @@ import {
  * With nowhere to move a file to, the actions menu drops "Spraviť ako hlavný súbor", "Duplikovať do iného
  * slotu" and "Vymeniť s iným slotom", and the remove dialog stops offering to unlink — the whole difference
  * this spec pins down against `assetSlotActions.spec.ts`, which covers the multi-slot audio case.
+ *
+ * A document's file is not offered for deletion at all: core-dam refuses `DELETE /document/{id}` to everyone, a
+ * super admin included (ACL BE task 2.11), so with nothing to unlink either "Odstrániť" is not in its menu.
  */
 
 const SINGLE_SLOT_ACTIONS = ['Kopírovať ID súboru', 'Stiahnuť', 'Odstrániť']
 
-const TYPES: { type: AssetType; file: string; fileName: string; hasFocusTab: boolean }[] = [
-  { type: 'image', file: 'image/sample.png', fileName: 'sample.png', hasFocusTab: true },
-  { type: 'video', file: 'video/sample.mp4', fileName: 'sample.mp4', hasFocusTab: false },
-  { type: 'document', file: 'document/sample.pdf', fileName: 'sample.pdf', hasFocusTab: false },
+const TYPES: { type: AssetType; file: string; fileName: string; hasFocusTab: boolean; canRemove: boolean }[] = [
+  { type: 'image', file: 'image/sample.png', fileName: 'sample.png', hasFocusTab: true, canRemove: true },
+  { type: 'video', file: 'video/sample.mp4', fileName: 'sample.mp4', hasFocusTab: false, canRemove: true },
+  { type: 'document', file: 'document/sample.pdf', fileName: 'sample.pdf', hasFocusTab: false, canRemove: false },
 ]
 
 let page: Page
@@ -48,7 +51,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset default slot`, () => {
     await page.context().close()
   })
 
-  for (const { type, file, fileName, hasFocusTab } of TYPES) {
+  for (const { type, file, fileName, hasFocusTab, canRemove } of TYPES) {
     test(`${type}: the default slot holds the main file and offers no slot moves`, async () => {
       const config = await assetTypeConfig(page, type)
       expect(config.slots, `${type} is configured with a single slot`).toEqual(['default'])
@@ -72,13 +75,17 @@ test.describe.serial(`${ADMIN_SUITE} - Asset default slot`, () => {
       expect(slots[config.defaultSlotName].main).toBe(true)
 
       // No duplicate, no switch, no "make main file": all three need a second slot to exist.
-      expect(await slotMenuLabels(page, config.defaultSlotName)).toEqual(SINGLE_SLOT_ACTIONS)
+      expect(await slotMenuLabels(page, config.defaultSlotName)).toEqual(
+        canRemove ? SINGLE_SLOT_ACTIONS : SINGLE_SLOT_ACTIONS.filter((label) => label !== 'Odstrániť')
+      )
 
-      const dialog = await openSlotRemove(page, config.defaultSlotName)
-      await expect(dialog).toContainText(REMOVE_ONLY_DESCRIPTION)
-      await expect(dialog.locator('[data-cy="button-remove"]')).toHaveText(REMOVE_FILE)
-      await expect(dialog.locator('[data-cy="button-unset"]')).toHaveCount(0)
-      await cancelSlotRemove(page, dialog)
+      if (canRemove) {
+        const dialog = await openSlotRemove(page, config.defaultSlotName)
+        await expect(dialog).toContainText(REMOVE_ONLY_DESCRIPTION)
+        await expect(dialog.locator('[data-cy="button-remove"]')).toHaveText(REMOVE_FILE)
+        await expect(dialog.locator('[data-cy="button-unset"]')).toHaveCount(0)
+        await cancelSlotRemove(page, dialog)
+      }
 
       // The "Fókus" tab is built around crop previews, so only images have one.
       await expect(visibleCy(page, 'button-focus')).toHaveCount(hasFocusTab ? 1 : 0)

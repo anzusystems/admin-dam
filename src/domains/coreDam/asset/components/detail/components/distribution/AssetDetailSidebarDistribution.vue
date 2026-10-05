@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import type { AssetFileProcessStatusType, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey, useAlerts, usePagination } from '@anzusystems/common-admin'
+import {
+  ADatatablePagination,
+  DatatablePaginationKey,
+  useAlerts,
+  useDamConfigState,
+  usePagination,
+} from '@anzusystems/common-admin'
 import { computed, onMounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -10,9 +16,14 @@ import DistributionCancelDialog from '@/domains/coreDam/asset/components/detail/
 import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
 import DistributionNewDialog from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialog.vue'
 import DistributionManage from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManage.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import {
+  useAssetDetailDistributionDialog,
+  useDistributionServiceAllowed,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -41,6 +52,15 @@ const showPagination = computed(
 )
 
 const { dialogNew, openNew, dialogKey } = useAssetDetailDistributionDialog()
+
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
+const { currentExtSystemId } = useCurrentExtSystem()
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
+const hasAllowedService = computed(() =>
+  Object.keys(
+    getDamConfigExtSystem(currentExtSystemId.value)?.[props.assetType]?.distribution?.distributionRequirements ?? {}
+  ).some(isDistributionServiceAllowed)
+)
 
 const getList = async () => {
   distributionListStore.showLoader()
@@ -74,6 +94,7 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
   <div class="d-flex flex-column w-100">
     <AssetDetailSidebarActionsWrapper v-if="isActive">
       <ABtnPrimary
+        v-if="hasAllowedService"
         :disabled="assetMainFileStatus === undefined"
         data-cy="add-new-distribution"
         @click.stop="addNew"

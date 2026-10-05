@@ -10,10 +10,13 @@ const loadDamPrvConfig = vi.fn(async (): Promise<unknown> => undefined)
 const loadDamConfigExtSystem = vi.fn(async (): Promise<unknown> => undefined)
 const loadDamConfigAssetCustomFormElements = vi.fn(async (): Promise<unknown> => undefined)
 const currentUser = { value: undefined as unknown }
+const isSuperAdmin = { value: false }
+const canSafe = vi.fn((): boolean => true)
 const checkAbility = vi.fn(async (): Promise<unknown> => undefined)
 
-vi.mock('@/domains/system/auth/auth', () => ({
-  useAuth: () => ({ useCurrentUser: () => ({ fetchCurrentUser, currentUser }) }),
+vi.mock('@/domains/system/auth/auth', async (importOriginal) => ({
+  ...((await importOriginal()) as Record<string, unknown>),
+  useAuth: () => ({ canSafe, useCurrentUser: () => ({ fetchCurrentUser, currentUser, isSuperAdmin }) }),
 }))
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
@@ -50,7 +53,11 @@ const load = async () => {
 beforeEach(() => {
   vi.clearAllMocks()
   currentUser.value = { id: 1 }
+  isSuperAdmin.value = false
+  canSafe.mockReturnValue(true)
   loadDamPrvConfig.mockResolvedValue(undefined)
+  loadDamConfigExtSystem.mockResolvedValue(undefined)
+  loadDamConfigAssetCustomFormElements.mockResolvedValue(undefined)
   fetchCurrentUser.mockResolvedValue({ id: 1 })
 })
 
@@ -146,5 +153,64 @@ describe('a user read that fails because nothing answers', () => {
     fetchCurrentUser.mockRejectedValue(responseError(status))
 
     expect(await createAppInitialize(route())).toBe('/login')
+  })
+})
+
+// The loaders reject with a bare `false` whatever the status was; the backend lets only an admin or a user of the ext
+// system read its configuration, under dam_extSystem_read, dam_customFormElement_read and dam_assetCustomForm_read.
+describe('an ext system configuration that will not load', () => {
+  const member = { id: 1, adminToExtSystems: [], userToExtSystems: [1] }
+
+  it.each([
+    ['the configuration', loadDamConfigExtSystem],
+    ['the custom form elements', loadDamConfigAssetCustomFormElements],
+  ])('names the ext system when %s fails for a user who is not on it', async (_label, loader) => {
+    const { createAppInitialize, useAppInitialize } = await load()
+    currentUser.value = { ...member, userToExtSystems: [2] }
+    loader.mockRejectedValue(false)
+
+    expect(await createAppInitialize(route())).toBe('/error')
+    expect(useAppInitialize().accessDeniedExtSystemId.value).toBe(1)
+  })
+
+  it('names the ext system when a permission to read it is missing', async () => {
+    const { createAppInitialize, useAppInitialize } = await load()
+    currentUser.value = member
+    canSafe.mockReturnValue(false)
+    loadDamConfigExtSystem.mockRejectedValue(false)
+
+    expect(await createAppInitialize(route())).toBe('/error')
+    expect(useAppInitialize().accessDeniedExtSystemId.value).toBe(1)
+    expect(canSafe).toHaveBeenCalledWith([
+      'dam_extSystem_read',
+      'dam_customFormElement_read',
+      'dam_assetCustomForm_read',
+    ])
+  })
+
+  it.each([
+    ['a member with the permissions', false],
+    ['a super admin', true],
+  ])('keeps the generic error page for %s', async (_label, superAdmin) => {
+    const { createAppInitialize, useAppInitialize } = await load()
+    currentUser.value = superAdmin ? { ...member, userToExtSystems: [] } : member
+    isSuperAdmin.value = superAdmin
+    canSafe.mockReturnValue(!superAdmin)
+    loadDamConfigExtSystem.mockRejectedValue(false)
+
+    expect(await createAppInitialize(route())).toBe('/error')
+    expect(useAppInitialize().accessDeniedExtSystemId.value).toBeUndefined()
+  })
+
+  it('forgets the verdict on the next attempt', async () => {
+    const { createAppInitialize, useAppInitialize } = await load()
+    currentUser.value = { ...member, userToExtSystems: [] }
+    loadDamConfigExtSystem.mockRejectedValueOnce(false)
+    await createAppInitialize(route())
+
+    currentUser.value = member
+    await createAppInitialize(route())
+
+    expect(useAppInitialize().accessDeniedExtSystemId.value).toBeUndefined()
   })
 })

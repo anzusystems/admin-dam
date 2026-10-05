@@ -1,4 +1,5 @@
 import { isNull, useAlerts } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
@@ -9,11 +10,17 @@ import type {
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 
 export const useExternalProviderAssetImport = () => {
   const { maxUploadItems } = useBetaTestFeatures()
   const { showWarning } = useAlerts()
+  const { canForAll } = useAuth()
+
+  // The import creates the asset on the current licence, under dam_<type>_create of each type imported.
+  const canImport = (assetTypes: DamAssetTypeType[]) =>
+    canForAll([...new Set(assetTypes.map((assetType) => assetTypeAcl(assetType, 'create')))])
 
   const importFromDetail = async (hideDetail = false) => {
     const listStore = useExternalProviderAssetListStore()
@@ -67,6 +74,7 @@ export const useExternalProviderAssetImport = () => {
   }
 
   return {
+    canImport,
     importFromDetail,
     importFromSelected,
   }

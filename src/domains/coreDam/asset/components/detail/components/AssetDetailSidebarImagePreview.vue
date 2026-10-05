@@ -11,6 +11,7 @@ import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/com
 import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{
@@ -30,6 +31,7 @@ const chooseImagePreviewFromDistributionDialog = ref(false)
 
 const assetDetailStore = useAssetDetailStore()
 const { showRecordWas, showErrorsDefault } = useAlerts()
+const { can, canForAll } = useAuth()
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
@@ -90,11 +92,12 @@ onMounted(async () => {
     <div v-else-if="videoFile">
       <ImagePreview
         v-model="videoFile.imagePreview"
-        show-actions
+        :show-actions="can(ACL.DAM_VIDEO_UPDATE)"
         @changed="onSave"
       >
         <template #actions-end>
           <VBtn
+            v-if="canForAll([ACL.DAM_VIDEO_UPDATE, ACL.DAM_DISTRIBUTION_ACCESS])"
             variant="text"
             class="my-2 mr-2"
             size="small"

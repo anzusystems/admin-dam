@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { ADialogToolbar } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import { ADialogToolbar, DamAssetType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
     item: AssetSlot | null
     fileTitle: string
+    assetType: DamAssetTypeType
     dataCy?: string | undefined
   }>(),
   {
@@ -26,13 +29,25 @@ const { t } = useI18n()
 const dialog = ref(false)
 const showUnset = ref(false)
 
+const assetSlotsStore = useAssetSlotsStore()
+const { can, canForAll } = useAuth()
+
+const usedInSeveralSlots = computed(
+  () =>
+    assetSlotsStore.list.filter(
+      (slot) => props.item?.assetFile?.id && slot.assetFile?.id && slot.assetFile?.id === props.item?.assetFile?.id
+    ).length > 1
+)
+const canUnset = computed(() => canForAll([ACL.DAM_ASSET_UPDATE, assetTypeAcl(props.assetType, 'update')]))
+// TODO(BE): core-dam checks dam_document_delete on DELETE /document/{id}, which no voter supports, so it is a 403 even
+// for a super admin; hidden for documents until the voter takes it, then gated on dam_document_delete (ACL BE task 2.11).
+const canRemove = computed(
+  () => props.assetType !== DamAssetType.Document && can(assetTypeAcl(props.assetType, 'delete'))
+)
+
 const openDialog = () => {
   if (!props.item) return
-  const assetSlotsStore = useAssetSlotsStore()
-  const sameFiles = assetSlotsStore.list.filter(
-    (slot) => props.item?.assetFile?.id && slot.assetFile?.id && slot.assetFile?.id === props.item?.assetFile?.id
-  )
-  showUnset.value = sameFiles.length > 1
+  showUnset.value = usedInSeveralSlots.value && canUnset.value
   dialog.value = true
 }
 
@@ -53,6 +68,7 @@ const onRemove = () => {
 
 <template>
   <VListItem
+    v-if="canRemove || (canUnset && usedInSeveralSlots)"
     :title="t('coreDam.asset.slots.actions.remove')"
     data-cy="button-slot-remove"
     @click.stop="openDialog"
@@ -67,10 +83,16 @@ const onRemove = () => {
       </ADialogToolbar>
       <VCardText>
         <div
-          v-if="showUnset"
+          v-if="showUnset && canRemove"
           class="mb-2"
         >
           {{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}
+        </div>
+        <div
+          v-else-if="showUnset"
+          class="mb-2"
+        >
+          {{ t('coreDam.asset.slots.remove.descriptionOnlyUnset') }}
         </div>
         <div
           v-else
@@ -107,6 +129,7 @@ const onRemove = () => {
           {{ t('coreDam.asset.slots.remove.unsetSlot') }}
         </ABtnPrimary>
         <ABtnPrimary
+          v-if="canRemove"
           color="error"
           data-cy="button-remove"
           @click.stop="onRemove"

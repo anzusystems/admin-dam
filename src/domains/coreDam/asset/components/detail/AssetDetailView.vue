@@ -26,6 +26,7 @@ import {
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -120,6 +121,7 @@ const resetAllStores = () => {
 }
 
 const { currentExtSystemId } = useCurrentExtSystem()
+const { can } = useAuth()
 
 onMounted(() => {
   resetAllStores()
@@ -195,7 +197,7 @@ onMounted(() => {
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div
-              v-if="activeTab === AssetDetailTab.ROI"
+              v-if="activeTab === AssetDetailTab.ROI && can(ACL.DAM_REGION_OF_INTEREST_UPDATE)"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
               <ADamAssetImageRoiSelect :ext-system="currentExtSystemId" />

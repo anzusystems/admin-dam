@@ -1,4 +1,5 @@
 import { defineAuth } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
 import { SYSTEM_DAM } from '@/shared/systems'
 
@@ -15,9 +16,9 @@ export const ACL = {
   DAM_AUDIO_UPDATE: 'dam_audio_update',
   DAM_AUDIO_READ: 'dam_audio_read',
   DAM_AUDIO_DELETE: 'dam_audio_delete',
-  DAM_CUSTOM_FORM_CREATE: 'dam_customForm_create',
-  DAM_CUSTOM_FORM_UPDATE: 'dam_customForm_update',
-  DAM_CUSTOM_FORM_READ: 'dam_customForm_read',
+  DAM_ASSET_CUSTOM_FORM_CREATE: 'dam_assetCustomForm_create',
+  DAM_ASSET_CUSTOM_FORM_UPDATE: 'dam_assetCustomForm_update',
+  DAM_ASSET_CUSTOM_FORM_READ: 'dam_assetCustomForm_read',
   DAM_CUSTOM_FORM_ELEMENT_READ: 'dam_customFormElement_read',
   DAM_DOCUMENT_CREATE: 'dam_document_create',
   DAM_DOCUMENT_UPDATE: 'dam_document_update',
@@ -83,12 +84,18 @@ export const ACL = {
   DAM_PODCAST_EPISODE_UPDATE: 'dam_podcastEpisode_update',
   DAM_PODCAST_EPISODE_READ: 'dam_podcastEpisode_read',
   DAM_PODCAST_EPISODE_DELETE: 'dam_podcastEpisode_delete',
+  // TODO(BE): undeclared in core-dam's permissions config (with DAM_AUTHOR_CLEAN_PHRASE_UI), the editor cannot grant
+  // them; only a super admin passes. Create, update, delete and the playground are checked without the record, which
+  // the ext system voter denies even with a grant, so the admin offers them to a super admin only (ACL BE task 3.11).
   DAM_AUTHOR_CLEAN_PHRASE_CREATE: 'dam_authorCleanPhrase_create',
   DAM_AUTHOR_CLEAN_PHRASE_UPDATE: 'dam_authorCleanPhrase_update',
   DAM_AUTHOR_CLEAN_PHRASE_READ: 'dam_authorCleanPhrase_read',
   DAM_AUTHOR_CLEAN_PHRASE_DELETE: 'dam_authorCleanPhrase_delete',
   DAM_ASSET_EXTERNAL_PROVIDER_ACCESS: 'dam_assetExternalProvider_access',
   DAM_DISTRIBUTION_ACCESS: 'dam_distribution_access',
+  // TODO(BE): undeclared in core-dam's permissions config (dam_distribution has access only), the editor cannot grant
+  // it; only a super admin passes (ACL BE task 3.10).
+  DAM_DISTRIBUTION_DELETE: 'dam_distribution_delete',
   DAM_USER_UI: 'dam_user_ui',
   DAM_PERMISSION_GROUP_UI: 'dam_permissionGroup_ui',
   DAM_EXT_SYSTEM_UI: 'dam_extSystem_ui',
@@ -131,13 +138,26 @@ export const ACL = {
 export type AclKey = keyof typeof ACL
 export type AclValue = (typeof ACL)[AclKey]
 
+type AssetTypeAction = 'create' | 'update' | 'delete'
+
+const ASSET_TYPE_ACL: Record<DamAssetTypeType, Record<AssetTypeAction, AclValue>> = {
+  image: { create: ACL.DAM_IMAGE_CREATE, update: ACL.DAM_IMAGE_UPDATE, delete: ACL.DAM_IMAGE_DELETE },
+  audio: { create: ACL.DAM_AUDIO_CREATE, update: ACL.DAM_AUDIO_UPDATE, delete: ACL.DAM_AUDIO_DELETE },
+  video: { create: ACL.DAM_VIDEO_CREATE, update: ACL.DAM_VIDEO_UPDATE, delete: ACL.DAM_VIDEO_DELETE },
+  document: { create: ACL.DAM_DOCUMENT_CREATE, update: ACL.DAM_DOCUMENT_UPDATE, delete: ACL.DAM_DOCUMENT_DELETE },
+}
+
+/** The file permission of an asset type: `dam_image_update`, `dam_video_delete`, ... */
+export const assetTypeAcl = (type: DamAssetTypeType, action: AssetTypeAction): AclValue => ASSET_TYPE_ACL[type][action]
+
 export function useAuth() {
-  const { can, canForAll, canForSome, useCurrentUser } = defineAuth<AclValue>(SYSTEM_DAM)
+  const { can, canForAll, canForSome, canSafe, useCurrentUser } = defineAuth<AclValue>(SYSTEM_DAM)
 
   return {
     useCurrentUser,
     can,
     canForAll,
     canForSome,
+    canSafe,
   }
 }

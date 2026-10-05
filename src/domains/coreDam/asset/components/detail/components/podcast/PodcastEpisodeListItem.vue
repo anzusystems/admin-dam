@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { ACL } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{
@@ -33,7 +34,10 @@ const { t } = useI18n()
       </div>
     </div>
     <div>
-      <AActionDeleteButton @delete-record="emit('deleteRecord', item.id)" />
+      <AActionDeleteButton
+        :acl="ACL.DAM_PODCAST_EPISODE_DELETE"
+        @delete-record="emit('deleteRecord', item.id)"
+      />
     </div>
   </div>
 </template>

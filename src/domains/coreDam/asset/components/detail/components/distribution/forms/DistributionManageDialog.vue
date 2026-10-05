@@ -137,6 +137,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
         </ARow>
         <DistributionForm
           v-model="distribution"
+          :readonly="readonly"
           :validation-scope="DistributionUpdateDtoValidationScopeSymbol"
         />
       </VCardText>
@@ -145,7 +146,10 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
         <ABtnTertiary @click.stop="onCancel">
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary @click.stop="onConfirm">
+        <ABtnPrimary
+          v-if="!readonly"
+          @click.stop="onConfirm"
+        >
           {{ isEdit ? t('common.button.confirm') : t('common.button.create') }}
         </ABtnPrimary>
       </VCardActions>

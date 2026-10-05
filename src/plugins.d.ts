@@ -12,7 +12,8 @@ declare module 'vue-router' {
     requiredPermissions?: Array<CustomAclValue>
     /**
      * The system whose superadmin this route is for. Logs are gated on the role, not on a
-     * permission. `definePage` needs a literal, so the value is repeated here rather than read
+     * permission, and so are, for now, the pages the backend refuses to anyone else (each says
+     * why). `definePage` needs a literal, so the value is repeated here rather than read
      * from `LOG_SYSTEM`; a route test pins the two together.
      */
     superAdminOf?: string

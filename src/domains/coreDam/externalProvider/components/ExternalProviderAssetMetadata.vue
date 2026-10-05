@@ -22,7 +22,7 @@ const panels = ref(['info', 'meta'])
 
 const { asset } = useExternalProviderAssetDetailActions()
 
-const { importFromDetail } = useExternalProviderAssetImport()
+const { canImport, importFromDetail } = useExternalProviderAssetImport()
 
 const onImport = () => {
   importFromDetail(props.detailDialog)
@@ -32,6 +32,7 @@ const onImport = () => {
 <template>
   <ExternalProviderAssetDetailSidebarActionsWrapper v-if="detailDialog && asset">
     <ABtnPrimary
+      v-if="canImport([asset.attributes.assetType])"
       type="submit"
       class="ml-2"
       @click.stop="onImport"

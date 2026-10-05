@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { AGenericView } from '@anzusystems/common-admin'
+import { AGenericView, isDefined } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { useAppInitialize } from '@/domains/system/composables/appInitialize'
 
 definePage({
   meta: {
@@ -11,6 +14,16 @@ definePage({
 })
 
 const { t } = useI18n()
+const { accessDeniedExtSystemId } = useAppInitialize()
+
+const title = computed(() =>
+  isDefined(accessDeniedExtSystemId.value) ? t('system.errorPage.accessDenied.title') : t('system.errorPage.title')
+)
+const text = computed(() =>
+  isDefined(accessDeniedExtSystemId.value)
+    ? t('system.errorPage.accessDenied.subTitle', { extSystem: accessDeniedExtSystemId.value })
+    : t('system.errorPage.subTitle')
+)
 
 // A full load, not a router push: the start-up leaves module state behind - a half-filled config
 // store, a login status that nothing clears - and only a fresh document is a clean retry.
@@ -21,8 +34,8 @@ const reload = () => {
 
 <template>
   <AGenericView
-    :title="t('system.errorPage.title')"
-    :text="t('system.errorPage.subTitle')"
+    :title="title"
+    :text="text"
     icon="mdi-alert-circle-outline"
   >
     <template #actions>

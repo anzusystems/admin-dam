@@ -51,7 +51,9 @@ const onClearConfirm = async () => {
   hideSelected()
 }
 
-const { importFromSelected } = useExternalProviderAssetImport()
+const { canImport, importFromSelected } = useExternalProviderAssetImport()
+
+const canImportSelected = computed(() => canImport(uploadQueuesStore.getQueueItemsTypes(QUEUE_ID_MASS_EDIT)))
 
 const onImport = () => {
   importFromSelected()
@@ -85,6 +87,7 @@ const onImport = () => {
         <VSpacer />
         <div class="d-flex">
           <VBtn
+            v-if="canImportSelected"
             color="primary"
             variant="flat"
             :height="26"

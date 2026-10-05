@@ -282,6 +282,7 @@
     "remove": {
       "descriptionBothOptions": "Asset file is used in several slots. Do you want to unset file only from selected slot or remove file permanently?",
       "descriptionOnlyRemove": "Do you want to permanently remove file from system?",
+      "descriptionOnlyUnset": "Asset file is used in several slots. Do you want to unset file from selected slot?",
       "removeFile": "Remove asset file permanently",
       "unsetSlot": "Unset asset slot only"
     },

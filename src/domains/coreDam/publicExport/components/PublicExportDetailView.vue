@@ -63,7 +63,7 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/public-exports/[id]/edit'"
         />
       </Acl>
-      <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
+      <Acl :permission="ACL.DAM_PUBLIC_EXPORT_DELETE">
         <AActionDeleteButton
           v-if="!detailLoading"
           data-cy="button-delete"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   ADialogToolbar,
+  DamAssetType,
   isUndefined,
   useDamAcceptTypeAndSizeHelper,
   useDamConfigState,
@@ -13,6 +14,7 @@ import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/current
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 
@@ -107,11 +109,33 @@ if (isUndefined(configExtSystem)) {
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
+const { can, canForAll } = useAuth()
+
+// TODO(BE): core-dam checks dam_video_update / dam_document_update on an upload's chunk and finish requests, where image
+// and audio check _create; should be _create (ACL BE task 2.13). A slot upload of the two checks _update on its create too.
+const canUpload = computed(() => {
+  if (props.type === 'slots') {
+    if (isUndefined(props.assetType)) return false
+    if (props.assetType === DamAssetType.Video || props.assetType === DamAssetType.Document) {
+      return can(assetTypeAcl(props.assetType, 'update'))
+    }
+    return can(assetTypeAcl(props.assetType, 'create'))
+  }
+  return (
+    (configExtSystem.image?.enabled && can(ACL.DAM_IMAGE_CREATE)) ||
+    (configExtSystem.audio?.enabled && can(ACL.DAM_AUDIO_CREATE)) ||
+    (configExtSystem.video?.enabled && canForAll([ACL.DAM_VIDEO_CREATE, ACL.DAM_VIDEO_UPDATE])) ||
+    (configExtSystem.document?.enabled && canForAll([ACL.DAM_DOCUMENT_CREATE, ACL.DAM_DOCUMENT_UPDATE])) ||
+    false
+  )
+})
+
 const { t } = useI18n()
 </script>
 
 <template>
   <FileUpload
+    v-if="canUpload"
     :variant="variant"
     :button-text="buttonText"
     :height="height"

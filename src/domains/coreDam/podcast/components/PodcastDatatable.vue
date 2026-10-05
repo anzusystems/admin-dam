@@ -28,6 +28,7 @@ import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/Po
 import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastListFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
+import { ACL } from '@/domains/system/auth/auth'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = Podcast
@@ -168,6 +169,7 @@ defineExpose({
             <ATableEditButton
               :record-id="item.id"
               :route-name="'/(coreDam)/podcasts/[id]/edit'"
+              :acl="ACL.DAM_PODCAST_UPDATE"
             />
           </div>
         </template>

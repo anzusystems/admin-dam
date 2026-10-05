@@ -17,10 +17,13 @@ import {
   useAuthorCleanPhraseDetailActions,
   useAuthorCleanPhraseRemoveActions,
 } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import { ACL } from '@/domains/system/auth/auth'
+import { useAuth } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const { detailLoading, fetchData, resetStore, authorCleanPhrase } = useAuthorCleanPhraseDetailActions()
+const { useCurrentUser } = useAuth()
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 const { removeAuthorCleanPhrase } = useAuthorCleanPhraseRemoveActions()
 
 const { t } = useI18n()
@@ -56,20 +59,20 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
+      <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_update and _delete without the record, a 403 for all but a
+           super admin; gate on the keys once the checks take the record (ACL BE task 3.11). -->
+      <template v-if="isSuperAdmin">
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: id }"
           :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
         />
-      </Acl>
-      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
         <AActionDeleteButton
           v-if="!detailLoading"
           data-cy="button-delete"
           @delete-record="removeAuthorCleanPhrase(id)"
         />
-      </Acl>
+      </template>
       <AActionCloseButtonHistory
         :fallback-route-name="'/(coreDam)/author-clean-phrases'"
         :skip-route-names="['/(coreDam)/author-clean-phrases/[id]/edit']"

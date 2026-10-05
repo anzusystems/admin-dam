@@ -11,6 +11,7 @@ import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 
@@ -114,32 +115,34 @@ const onSaveAndClose = async () => {
         </div>
         <VSpacer />
         <div class="d-flex align-center">
-          <ABtnPrimary
-            :height="36"
-            class="mr-2"
-            rounded="pill"
-            :loading="saveAndCloseButtonLoading"
-            :disabled="saveButtonLoading"
-            @click.stop="onSaveAndClose"
-          >
-            {{ t('coreDam.asset.selected.saveAndClose') }}
-          </ABtnPrimary>
-          <VBtn
-            icon
-            :height="36"
-            :width="36"
-            :loading="saveButtonLoading"
-            :disabled="saveAndCloseButtonLoading"
-            @click.stop="onSave"
-          >
-            <VIcon icon="mdi-content-save" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
+          <Acl :permission="ACL.DAM_ASSET_UPDATE">
+            <ABtnPrimary
+              :height="36"
+              class="mr-2"
+              rounded="pill"
+              :loading="saveAndCloseButtonLoading"
+              :disabled="saveButtonLoading"
+              @click.stop="onSaveAndClose"
             >
-              {{ t('coreDam.asset.selected.save') }}
-            </VTooltip>
-          </VBtn>
+              {{ t('coreDam.asset.selected.saveAndClose') }}
+            </ABtnPrimary>
+            <VBtn
+              icon
+              :height="36"
+              :width="36"
+              :loading="saveButtonLoading"
+              :disabled="saveAndCloseButtonLoading"
+              @click.stop="onSave"
+            >
+              <VIcon icon="mdi-content-save" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.selected.save') }}
+              </VTooltip>
+            </VBtn>
+          </Acl>
           <VDivider
             vertical
             class="mx-4 my-2"

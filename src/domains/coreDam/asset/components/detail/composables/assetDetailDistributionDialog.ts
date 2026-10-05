@@ -1,4 +1,9 @@
-import type { AssetFileProcessStatusType, DamDistributionServiceName, DocIdNullable } from '@anzusystems/common-admin'
+import type {
+  AssetFileProcessStatusType,
+  DamCurrentUserDto,
+  DamDistributionServiceName,
+  DocIdNullable,
+} from '@anzusystems/common-admin'
 import { AssetFileProcessStatus } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 
@@ -8,6 +13,8 @@ import type {
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
+import { useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const dialogKey = ref(1)
 const dialogNew = ref(false)
@@ -59,4 +66,13 @@ export function useAssetDetailDistributionDialog() {
     openRedistribute,
     openNew,
   }
+}
+
+/** A super admin distributes to any service, anyone else to the ones on their account, as `DistributionVoter` checks. */
+export function useDistributionServiceAllowed() {
+  const { useCurrentUser } = useAuth()
+  const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+  return (name: DamDistributionServiceName) =>
+    isSuperAdmin.value || (currentUser.value?.allowedDistributionServices.includes(name) ?? false)
 }

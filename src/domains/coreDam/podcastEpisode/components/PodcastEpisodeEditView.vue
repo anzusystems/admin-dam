@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 
 import PodcastEpisodeEditForm from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeEditForm.vue'
 import { usePodcastEpisodeEditActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
+import { ACL } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -68,6 +69,9 @@ const breadcrumbs = defineBreadcrumbs(
     <template #buttons>
       <AActionSaveButton
         v-if="!detailLoading"
+        :acl="
+          podcastEpisode.asset ? [ACL.DAM_PODCAST_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE] : ACL.DAM_PODCAST_EPISODE_UPDATE
+        "
         :loading="saveButtonLoading"
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"

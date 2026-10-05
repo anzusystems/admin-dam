@@ -9,7 +9,7 @@ const { useCurrentUser } = useAuth()
 const { showDebugFeatures } = useDebugFeatures()
 const { t } = useI18n()
 
-// Logs are gated on the role, not a permission.
+// Logs, and public exports for now, are gated on the role, not a permission.
 const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 </script>
 
@@ -56,7 +56,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         data-cy="user-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_EXT_SYSTEM_UI">
+    <Acl :permission="[ACL.DAM_EXT_SYSTEM_UI, ACL.DAM_EXT_SYSTEM_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/ext-systems' }"
         prepend-icon="mdi-television-stop"
@@ -64,7 +64,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         data-cy="ext-system-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
+    <Acl :permission="[ACL.DAM_ASSET_LICENCE_UI, ACL.DAM_ASSET_LICENCE_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/asset-licences' }"
         prepend-icon="mdi-account-key"
@@ -72,7 +72,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         data-cy="asset-licence-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
+    <Acl :permission="[ACL.DAM_ASSET_LICENCE_GROUP_UI, ACL.DAM_ASSET_LICENCE_GROUP_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/asset-licence-groups' }"
         prepend-icon="mdi-account-key"
@@ -172,14 +172,16 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         data-cy="job-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
+    <!-- TODO(BE): core-dam checks dam_publicExport_read on the list without a record, which its ext system voter denies
+         to all but a super admin; should be dam_publicExport_ui and _read (ACL BE task 2.12). -->
+    <template v-if="isSuperAdmin">
       <VListItem
         :to="{ name: '/(coreDam)/public-exports' }"
         prepend-icon="mdi-export"
         :title="t('sidebar.settings.publicExport')"
         data-cy="public-export"
       />
-    </Acl>
+    </template>
     <Acl :permission="ACL.DAM_TTS_VOICE_FAMILY_UI">
       <VListItem
         :to="{ name: '/(coreDam)/voice-families' }"

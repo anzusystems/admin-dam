@@ -10,6 +10,7 @@ import { useFetchDistributionCategory } from '@/domains/coreDam/distributionCate
 import DistributionCategoryWidgetDialog from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
 import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
+import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 const { showErrorsDefault } = useAlerts()
@@ -76,20 +77,22 @@ watch(
     <VRow v-if="!distributionCategoryId">
       <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>
       <VCol cols="auto">
-        <VBtn
-          variant="text"
-          icon
-          size="small"
-          @click.stop="dialog = true"
-        >
-          <VIcon icon="mdi-pencil" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <VBtn
+            variant="text"
+            icon
+            size="small"
+            @click.stop="dialog = true"
           >
-            {{ t('common.button.edit') }}
-          </VTooltip>
-        </VBtn>
+            <VIcon icon="mdi-pencil" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.edit') }}
+            </VTooltip>
+          </VBtn>
+        </Acl>
       </VCol>
     </VRow>
     <VRow v-else-if="loading">
@@ -116,20 +119,22 @@ watch(
         </div>
       </VCol>
       <VCol cols="auto">
-        <VBtn
-          variant="text"
-          icon
-          size="small"
-          @click.stop="dialog = true"
-        >
-          <VIcon icon="mdi-pencil" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <VBtn
+            variant="text"
+            icon
+            size="small"
+            @click.stop="dialog = true"
           >
-            {{ t('common.button.edit') }}
-          </VTooltip>
-        </VBtn>
+            <VIcon icon="mdi-pencil" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.edit') }}
+            </VTooltip>
+          </VBtn>
+        </Acl>
       </VCol>
     </VRow>
     <DistributionCategoryWidgetDialog

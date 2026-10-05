@@ -21,6 +21,7 @@ import {
 } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -124,17 +125,22 @@ const removeLastComma = (value: string) => {
   return value
 }
 
+const { can } = useAuth()
+
 const onEnterKeyup = () => {
+  if (!can(ACL.DAM_KEYWORD_CREATE)) return
   const value = removeLastComma(search.value)
   createOrSelectKeyword(value)
 }
 
 const onCommaKeyup = () => {
+  if (!can(ACL.DAM_KEYWORD_CREATE)) return
   const value = removeLastComma(search.value)
   createOrSelectKeyword(value)
 }
 
 const showAdd = computed(() => {
+  if (!can(ACL.DAM_KEYWORD_CREATE)) return false
   if (loadingLocal.value) return false
   if (search.value.length < 2 || search.value.length > 255) return false
   if (fetchedItemsMinimal.value.size === 0) return true

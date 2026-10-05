@@ -12,6 +12,7 @@ import { useImageRoiFilter } from '@/domains/coreDam/asset/filter/ImageRoiFilter
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useImageRoiStore } from '@/domains/coreDam/asset/store/imageRoiStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import { ACL } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{
@@ -128,12 +129,14 @@ onMounted(async () => {
       />
     </div>
   </div>
-  <AssetFileRotate
-    v-if="imageRoiStore.imageFile"
-    :image-id="imageRoiStore.imageFile.id"
-    class="mx-2"
-    @after-rotate="afterRotate"
-  />
+  <Acl :permission="ACL.DAM_IMAGE_UPDATE">
+    <AssetFileRotate
+      v-if="imageRoiStore.imageFile"
+      :image-id="imageRoiStore.imageFile.id"
+      class="mx-2"
+      @after-rotate="afterRotate"
+    />
+  </Acl>
 </template>
 
 <style lang="scss">

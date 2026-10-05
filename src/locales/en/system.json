@@ -110,7 +110,11 @@
   "errorPage": {
     "title": "Oops, something went wrong.",
     "subTitle": "The application could not be started. Please try again, and contact an administrator if it persists.",
-    "return": "Try again"
+    "return": "Try again",
+    "accessDenied": {
+      "title": "You have no access to the ext system",
+      "subTitle": "To start the application you have to be a user or an admin of the ext system (ID {extSystem}) and have the permissions to read the ext system, asset custom forms and their elements. Ask an administrator to grant them."
+    }
   },
   "error": {
     "notificationsNotConnected": "The notification service is temporarily unavailable; some parts of the admin may not work correctly."

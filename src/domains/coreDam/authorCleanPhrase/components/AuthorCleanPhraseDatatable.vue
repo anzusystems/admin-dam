@@ -26,12 +26,14 @@ import AuthorCleanPhraseTypeStatusChip from '@/domains/coreDam/authorCleanPhrase
 import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
 import { useAuthorCleanPhraseListFilter } from '@/domains/coreDam/authorCleanPhrase/filter/AuthorCleanPhraseFilter'
 import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { ACL } from '@/domains/system/auth/auth'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 
 type DatatableItem = AuthorCleanPhrase
 
 const router = useRouter()
+const { useCurrentUser } = useAuth()
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 
 const { filterData, filterConfig } = useAuthorCleanPhraseListFilter()
 provide(FilterConfigKey, filterConfig)
@@ -130,12 +132,13 @@ defineExpose({
                 :route-name="'/(coreDam)/author-clean-phrases/[id]'"
               />
             </Acl>
-            <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
-              <ATableEditButton
-                :route-params="{ id: item.id }"
-                :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
-              />
-            </Acl>
+            <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_update without the record, a 403 for all but a super
+                 admin; gate on the key once the check takes the record (ACL BE task 3.11). -->
+            <ATableEditButton
+              v-if="isSuperAdmin"
+              :route-params="{ id: item.id }"
+              :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
+            />
           </div>
         </template>
         <template #bottom>

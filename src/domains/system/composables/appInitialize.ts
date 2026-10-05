@@ -7,16 +7,16 @@ import {
   isUndefined,
   useDamConfigState,
 } from '@anzusystems/common-admin'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DamCurrentUserDto, IntegerId } from '@anzusystems/common-admin'
 import axios from 'axios'
-import { ref } from 'vue'
+import { readonly, ref } from 'vue'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
 import {
   initCurrentExtSystemAndLicence,
   useCurrentExtSystem,
 } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useAuth } from '@/domains/system/auth/auth'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { initAppNotificationListeners } from '@/domains/system/composables/appNotificationListeners'
 import { useLoginStatus } from '@/domains/system/composables/loginStatus'
 import { checkAbility } from '@/router/checkAbility'
@@ -25,6 +25,8 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_DAM } from '@/shared/systems'
 
 const initialized = ref(false)
+// The ext system a start-up stopped on for want of access to it; the error page says so instead of its generic text.
+const accessDeniedExtSystemId = ref<IntegerId | undefined>(undefined)
 
 // A start-up that could not be completed; nothing is known here about why.
 const ERROR_PATH = '/error'
@@ -42,12 +44,29 @@ const isOutage = (error: unknown): boolean =>
       (axios.isAxiosError(cause) && (isUndefined(cause.response) || cause.response.status >= 500))
   )
 
+/* The ext system's configuration is read under dam_extSystem_read, its asset custom form elements under
+ * dam_customFormElement_read and dam_assetCustomForm_read, and the backend lets only an admin or a user of that ext
+ * system read either. Their loaders reject with a bare `false`, so whether it was a 403 is not known here - but when
+ * one of these is missing, it was. */
+const lacksExtSystemAccess = (extSystemId: IntegerId): boolean => {
+  const { canSafe, useCurrentUser } = useAuth()
+  const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+  if (isSuperAdmin.value) return false
+  const user = currentUser.value
+  if (!user || !(user.adminToExtSystems.includes(extSystemId) || user.userToExtSystems.includes(extSystemId))) {
+    return true
+  }
+
+  return !canSafe([ACL.DAM_EXT_SYSTEM_READ, ACL.DAM_CUSTOM_FORM_ELEMENT_READ, ACL.DAM_ASSET_CUSTOM_FORM_READ])
+}
+
 export async function createAppInitialize(to: RouteLocationNormalized): Promise<NavigationGuardReturn> {
   const { isStatusUnauthorized } = useLoginStatus(to)
   const { loadDamPrvConfig, loadDamConfigExtSystem, loadDamConfigAssetCustomFormElements, getDamConfigExtSystem } =
     useDamConfigState(damClient)
   const { useCurrentUser } = useAuth()
   const { fetchCurrentUser } = useCurrentUser(SYSTEM_DAM)
+  accessDeniedExtSystemId.value = undefined
 
   /* Before anything is fetched: the private config is protected, so for a user the SSO has just
    * refused it is the request most likely to fail, and it answered before this verdict was read. */
@@ -90,8 +109,8 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     return isUndefined(extSystemConfig) ? ERROR_PATH : NOT_FOUND_PATH
   }
 
+  const { currentExtSystemId } = useCurrentExtSystem()
   try {
-    const { currentExtSystemId } = useCurrentExtSystem()
     await loadDamConfigExtSystem(currentExtSystemId.value)
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
     if (isUndefined(configExtSystem)) {
@@ -104,6 +123,10 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     if (configExtSystem.document?.enabled) enabledAssetTypes.push(DamAssetType.Document)
     await loadDamConfigAssetCustomFormElements(currentExtSystemId.value, enabledAssetTypes)
   } catch (error) {
+    if (lacksExtSystemAccess(currentExtSystemId.value)) {
+      accessDeniedExtSystemId.value = currentExtSystemId.value
+    }
+
     return ERROR_PATH
   }
 
@@ -135,6 +158,7 @@ export function useAppInitialize() {
   return {
     isAppInitialized,
     hasAppAuthCookie,
+    accessDeniedExtSystemId: readonly(accessDeniedExtSystemId),
   }
 }
 

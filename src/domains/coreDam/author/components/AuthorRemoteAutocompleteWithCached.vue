@@ -21,6 +21,7 @@ import {
   useCachedAuthorsForRemoteAutocomplete,
 } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -113,6 +114,8 @@ const itemSlotIsSelected = (item: DocId) => {
   return false
 }
 
+const { can } = useAuth()
+
 const authorCreateButton = ref<InstanceType<typeof AuthorCreateButton> | null>(null)
 
 const removeLastComma = (value: string) => {
@@ -121,16 +124,19 @@ const removeLastComma = (value: string) => {
 }
 
 const onEnterKeyup = () => {
+  if (!can(ACL.DAM_AUTHOR_CREATE)) return
   const value = removeLastComma(search.value)
   authorCreateButton.value?.open(value)
 }
 
 const onCommaKeyup = () => {
+  if (!can(ACL.DAM_AUTHOR_CREATE)) return
   const value = removeLastComma(search.value)
   authorCreateButton.value?.open(value)
 }
 
 const showAdd = computed(() => {
+  if (!can(ACL.DAM_AUTHOR_CREATE)) return false
   if (loadingLocal.value) return false
   if (search.value.length < 2 || search.value.length > 255) return false
   if (fetchedItemsMinimal.value.size === 0) return true
@@ -216,6 +222,7 @@ const showAdd = computed(() => {
     </AFormRemoteAutocompleteWithCached>
     <div>
       <AuthorCreateButton
+        v-if="can(ACL.DAM_AUTHOR_CREATE)"
         ref="authorCreateButton"
         variant="icon"
         data-cy="add-author"

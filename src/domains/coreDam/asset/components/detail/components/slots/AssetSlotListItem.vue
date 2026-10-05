@@ -25,6 +25,7 @@ import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueues
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -52,6 +53,9 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const uploadQueuesStore = useUploadQueuesStore()
+const { can, canForAll } = useAuth()
+
+const canUpdateAssetAndFile = computed(() => canForAll([ACL.DAM_ASSET_UPDATE, assetTypeAcl(props.assetType, 'update')]))
 
 const itemHasFile = computed(() => {
   return props.item && props.item.assetFile
@@ -227,24 +231,25 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                   @click.stop="downloadFile"
                 />
                 <VListItem
-                  v-if="totalSlotCount > 1 && item && !item.main"
+                  v-if="totalSlotCount > 1 && item && !item.main && canUpdateAssetAndFile"
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
                   @click.stop="makeMainFile"
                 />
                 <AssetSlotListItemDuplicate
-                  v-if="totalSlotCount > 1"
+                  v-if="totalSlotCount > 1 && canUpdateAssetAndFile"
                   :item="item"
                   :file-title="fileTitle"
                   @duplicate-slot="duplicateSlot"
                 />
                 <AssetSlotListItemSwitch
-                  v-if="totalSlotCount > 1"
+                  v-if="totalSlotCount > 1 && can(ACL.DAM_ASSET_UPDATE)"
                   :item="item"
                   :file-title="fileTitle"
                   @switch-slot="switchSlot"
                 />
                 <AssetSlotListItemRemove
                   :item="item"
+                  :asset-type="assetType"
                   :file-title="fileTitle"
                   @remove-file="removeAssetFile"
                   @unset-slot="unsetSlot"

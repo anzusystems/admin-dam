@@ -28,6 +28,7 @@ import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/compo
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
 import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { ACL } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -406,6 +407,7 @@ onUnmounted(() => {
                 </VBtn>
                 <AActionDeleteButton
                   variant="icon"
+                  :acl="ACL.DAM_ASSET_DELETE"
                   :disabled="!item.canEditMetadata && !item.isDuplicate"
                   button-class=""
                   @delete-record="remove"

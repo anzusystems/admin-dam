@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const { t } = useI18n()
 
@@ -31,8 +34,23 @@ const externalProviders = computed(() => {
   return configExtSystem.assetExternalProviders ?? {}
 })
 
+const { useCurrentUser, can } = useAuth()
+const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+// A super admin may open any provider, anyone else the ones on their account (`AssetExternalProviderVoter`), and
+// only with the access grant the provider's list asks for.
+const offeredExternalProviders = computed(() => {
+  if (isSuperAdmin.value) return externalProviders.value
+  if (!can(ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS)) return {}
+  return Object.fromEntries(
+    Object.entries(externalProviders.value).filter(
+      ([provider]) => currentUser.value?.allowedAssetExternalProviders.includes(provider) ?? false
+    )
+  )
+})
+
 const show = computed(() => {
-  return !isEmptyObject(externalProviders.value)
+  return !isEmptyObject(offeredExternalProviders.value)
 })
 
 const activeDisplayText = computed(() => {
@@ -75,7 +93,7 @@ const activeDisplayText = computed(() => {
         @click="backToDam"
       />
       <VListItem
-        v-for="(value, key) in externalProviders"
+        v-for="(value, key) in offeredExternalProviders"
         :key="key"
         :title="value.title"
         @click.stop="goToExternalProvider(key)"

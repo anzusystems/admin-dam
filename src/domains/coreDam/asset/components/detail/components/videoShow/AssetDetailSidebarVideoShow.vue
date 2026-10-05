@@ -11,6 +11,7 @@ import { useCachedVideoShows } from '@/domains/coreDam/videoShow/composables/cac
 import { useFetchVideoShowEpisodeListByAsset } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+import { ACL } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -65,12 +66,14 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary
-      data-cy="button-add-new-vs-episode"
-      @click.stop="addNew"
-    >
-      {{ t('coreDam.videoShowEpisode.common.addAssetToNewVideoShowEpisode') }}
-    </ABtnPrimary>
+    <Acl :permission="[ACL.DAM_VIDEO_SHOW_EPISODE_CREATE, ACL.DAM_ASSET_UPDATE]">
+      <ABtnPrimary
+        data-cy="button-add-new-vs-episode"
+        @click.stop="addNew"
+      >
+        {{ t('coreDam.videoShowEpisode.common.addAssetToNewVideoShowEpisode') }}
+      </ABtnPrimary>
+    </Acl>
   </AssetDetailSidebarActionsWrapper>
   <div
     v-if="loading"

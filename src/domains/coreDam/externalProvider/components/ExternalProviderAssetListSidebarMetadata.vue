@@ -18,7 +18,7 @@ const assetDetailStore = useExternalProviderAssetDetailStore()
 const onEditMore = async () => {
   assetDetailStore.showDetail()
 }
-const { importFromDetail } = useExternalProviderAssetImport()
+const { canImport, importFromDetail } = useExternalProviderAssetImport()
 
 const onImport = () => {
   importFromDetail()
@@ -56,6 +56,7 @@ const onImport = () => {
     >
       <div class="pa-2 d-flex align-center justify-center">
         <ABtnPrimary
+          v-if="canImport([asset.attributes.assetType])"
           class="mr-2"
           size="small"
           @click.stop="onImport"

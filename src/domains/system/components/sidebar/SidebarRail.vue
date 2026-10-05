@@ -84,7 +84,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         </VTooltip>
       </VListItem>
     </Acl>
-    <Acl :permission="ACL.DAM_EXT_SYSTEM_UI">
+    <Acl :permission="[ACL.DAM_EXT_SYSTEM_UI, ACL.DAM_EXT_SYSTEM_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/ext-systems' }"
         prepend-icon="mdi-television-stop"
@@ -98,7 +98,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         </VTooltip>
       </VListItem>
     </Acl>
-    <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
+    <Acl :permission="[ACL.DAM_ASSET_LICENCE_UI, ACL.DAM_ASSET_LICENCE_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/asset-licences' }"
         prepend-icon="mdi-account-key"
@@ -112,7 +112,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         </VTooltip>
       </VListItem>
     </Acl>
-    <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
+    <Acl :permission="[ACL.DAM_ASSET_LICENCE_GROUP_UI, ACL.DAM_ASSET_LICENCE_GROUP_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/asset-licence-groups' }"
         prepend-icon="mdi-account-key"

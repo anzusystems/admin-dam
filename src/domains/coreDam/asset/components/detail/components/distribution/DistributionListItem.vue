@@ -8,7 +8,10 @@ import DistributionListItemCustom from '@/domains/coreDam/asset/components/detai
 import DistributionListItemEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemEmpty.vue'
 import DistributionListItemJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemJw.vue'
 import DistributionListItemYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemYoutube.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import {
+  useAssetDetailDistributionDialog,
+  useDistributionServiceAllowed,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
 import type {
   DistributionCustomItem,
@@ -34,9 +37,13 @@ const distributionType = computed(() => {
   return null
 })
 
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
 const showRedistribute = computed(() => {
-  return damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
-    props.item.status
+  return (
+    isDistributionServiceAllowed(props.item.distributionService) &&
+    damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
+      props.item.status
+    )
   )
 })
 

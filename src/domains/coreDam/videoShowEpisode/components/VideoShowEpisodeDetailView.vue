@@ -66,7 +66,13 @@ const breadcrumbs = defineBreadcrumbs(
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="ACL.DAM_VIDEO_SHOW_UPDATE">
+      <Acl
+        :permission="
+          videoShowEpisode.asset
+            ? [ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE]
+            : ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE
+        "
+      >
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: videoShowId, episodeId: id }"

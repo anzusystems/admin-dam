@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ACopyText, useAlerts } from '@anzusystems/common-admin'
 import type { AssetFile, AssetFileMainRouteAware, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { makePrivateFile } from '@/domains/coreDam/asset/api/fileApi'
 import AssetFileRouteChangeBtn from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 import AssetFileRouteMakePublicDialog from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import AssetFileRouteStatus from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteStatus.vue'
+import { assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -30,6 +31,9 @@ const loading = ref(false)
 const makeFilePrivateDialogFileId = ref<DocId>('')
 
 const { showErrorsDefault } = useAlerts()
+const { can } = useAuth()
+
+const canChangeRoute = computed(() => can(assetTypeAcl(props.assetType, 'update')))
 
 const openMakeFilePrivateDialog = (fileId: DocId) => {
   makeFilePrivateDialogFileId.value = fileId
@@ -53,7 +57,7 @@ const { t } = useI18n()
 <template>
   <AssetFileRouteStatus :asset-file-route="assetFile" />
 
-  <VMenu>
+  <VMenu v-if="assetFile.mainRoute || canChangeRoute">
     <template #activator="{ props: activatorProps }">
       <VBtn
         variant="text"
@@ -77,6 +81,7 @@ const { t } = useI18n()
           </template>
         </ACopyText>
         <AssetFileRouteChangeBtn
+          v-if="canChangeRoute"
           variant="listItem"
           button-t="coreDam.asset.assetFilePublicLink.actions.makePrivate"
           icon="mdi-lock"
@@ -85,7 +90,7 @@ const { t } = useI18n()
         />
       </template>
       <AssetFileRouteChangeBtn
-        v-else
+        v-else-if="canChangeRoute"
         variant="listItem"
         @click.stop="openMakeFilePrivateDialog"
       />

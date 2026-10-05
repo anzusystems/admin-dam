@@ -12,6 +12,7 @@ import { useFetchPodcastEpisodeListByAsset } from '@/domains/coreDam/podcastEpis
 import { usePodcastEpisodeRemoveActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/domains/coreDam/podcastEpisode/filter/PodcastEpisodeFilter'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { ACL } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -71,12 +72,14 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary
-      data-cy="button-add-new-podcast-episode"
-      @click.stop="addNew"
-    >
-      {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
-    </ABtnPrimary>
+    <Acl :permission="[ACL.DAM_PODCAST_EPISODE_CREATE, ACL.DAM_ASSET_UPDATE]">
+      <ABtnPrimary
+        data-cy="button-add-new-podcast-episode"
+        @click.stop="addNew"
+      >
+        {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
+      </ABtnPrimary>
+    </Acl>
   </AssetDetailSidebarActionsWrapper>
   <div
     v-if="loading"
