@@ -23,19 +23,22 @@ vi.mock('@/domains/coreDam/shared/services/upload/externalProviderImportService'
   externalProviderImport: vi.fn(),
 }))
 const startedUploads = vi.fn()
+const runningUpload = vi.hoisted(() => ({ fail: undefined as undefined | ((error: Error) => void) }))
 vi.mock('@/domains/coreDam/shared/services/upload/uploadService', () => ({
-  // Never settling: an upload that resolves at once sends `processUpload` straight back into the
-  // waiting item it just started, and the loop never ends.
+  // Never settling, unless a test fails it while it sends: an upload that resolves at once sends `processUpload`
+  // straight back into the waiting item it just started, and the loop never ends.
   useUpload: () => {
     startedUploads()
 
     return {
-      upload: () => new Promise(() => undefined),
-      uploadInit: () => new Promise(() => undefined),
+      // The chunks and the finish request.
+      upload: () => new Promise((_resolve, reject) => (runningUpload.fail = reject)),
+      uploadInit: () => Promise.resolve(),
       stop: vi.fn(),
     }
   },
   uploadStop: vi.fn(),
+  resolveUploadErrorMessage: () => 'the upload failed',
 }))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
   useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
@@ -357,7 +360,7 @@ describe('settling one item', () => {
     })
     await store.queueItemMetadataProcessed('asset-1')
 
-    // Refresh does exactly this, and it is the only way out of that warning.
+    // Refresh does exactly this, and so does the fallback when it finds the file processed.
     expect(item.canEditMetadata).toBe(true)
     expect(item.error.hasError).toBe(false)
   })
@@ -529,5 +532,193 @@ describe('the slot lookup', () => {
     seed(store as never, [slotItem({ fileId: 'file-1' })])
 
     expect(store.getQueueItemForSlotItem(QUEUE, 'image_9', 'asset-1')).toBeUndefined()
+  })
+})
+
+describe('the metadata of an upload', () => {
+  const upload = (over: Record<string, unknown> = {}) =>
+    slotItem({ fileId: 'file-1', type: UploadQueueItemType.File, slotName: null, ...over })
+  const metadataFromServer = () => ({
+    id: 'asset-1',
+    keywords: ['from the server'],
+    authors: ['from the server'],
+    mainFileSingleUse: true,
+    metadata: { customData: { title: 'from the server' }, authorSuggestions: {}, keywordSuggestions: {} },
+  })
+
+  it('does not make a duplicate editable when its event comes after the duplicate one', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const duplicate = upload({ isDuplicate: true, status: UploadQueueItemStatus.Uploaded, mainFileSingleUse: false })
+    seed(store as never, [duplicate])
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+
+    await store.queueItemMetadataProcessed('asset-1')
+
+    // Its form is disabled for good; editable, it was validated and saved all the same.
+    expect(duplicate.canEditMetadata).toBe(false)
+    expect(duplicate.keywords).toEqual([])
+    // What the duplicate handler took from the original file stays.
+    expect(duplicate.mainFileSingleUse).toBe(false)
+
+    fetchAsset.mockRejectedValueOnce(new Error('the asset service is down'))
+    await store.queueItemMetadataProcessed('asset-1')
+
+    // And it misses nothing when that metadata cannot be read.
+    expect(duplicate.error.hasError).toBe(false)
+  })
+
+  // Whoever asks: the notification, the fallback or the refresh button. Their answers can come in either order.
+  it('is loaded once: a row that has it keeps what the user has typed since', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const edited = upload({ canEditMetadata: true, keywords: ['typed'], customData: { title: 'typed' } })
+    const waiting = upload({ key: 'waiting' })
+    seed(store as never, [edited, waiting])
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+
+    await store.queueItemMetadataProcessed('asset-1')
+
+    expect(edited.keywords).toEqual(['typed'])
+    expect(edited.customData).toEqual({ title: 'typed' })
+    expect(waiting.canEditMetadata).toBe(true)
+    expect(waiting.keywords).toEqual(['from the server'])
+  })
+
+  it('does not make a failed upload editable again when its event comes after the failure', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const failed = upload({
+      status: UploadQueueItemStatus.Failed,
+      error: { hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' },
+    })
+    seed(store as never, [failed])
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+
+    await store.queueItemMetadataProcessed('asset-1')
+
+    // Editable, it was validated and saved with the rest of the queue.
+    expect(failed.canEditMetadata).toBe(false)
+    expect(failed.keywords).toEqual([])
+
+    fetchAsset.mockRejectedValueOnce(new Error('the asset service is down'))
+    await store.queueItemMetadataProcessed('asset-1')
+
+    // And its fail reason is not replaced by a message about metadata.
+    expect(failed.error.message).toBe('')
+  })
+
+  // The other order: the server reads the metadata off the first chunk, so its event comes while the file sends.
+  it('stops being editable when its upload fails after its metadata had come', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const sending = upload({ status: UploadQueueItemStatus.Uploading })
+    seed(store as never, [sending])
+    runningUpload.fail = undefined
+    void store.queueItemUploadStart(sending as never, QUEUE)
+    await vi.waitFor(() => expect(runningUpload.fail).toBeDefined())
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+    await store.queueItemMetadataProcessed('asset-1')
+    expect(sending.canEditMetadata).toBe(true)
+
+    runningUpload.fail!(new Error('a chunk was refused'))
+    await vi.waitFor(() => expect(sending.status).toBe(UploadQueueItemStatus.Failed))
+
+    // Editable, it was validated and saved with the rest of the queue.
+    expect(sending.canEditMetadata).toBe(false)
+  })
+
+  it('does not come back to an upload that failed after its metadata could not be read', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const sending = upload({ status: UploadQueueItemStatus.Uploading })
+    seed(store as never, [sending])
+    runningUpload.fail = undefined
+    void store.queueItemUploadStart(sending as never, QUEUE)
+    await vi.waitFor(() => expect(runningUpload.fail).toBeDefined())
+    fetchAsset.mockRejectedValueOnce(new Error('the asset service is down'))
+    await store.queueItemMetadataProcessed('asset-1')
+    runningUpload.fail!(new Error('a chunk was refused'))
+    await vi.waitFor(() => expect(sending.status).toBe(UploadQueueItemStatus.Failed))
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+
+    await store.queueItemMetadataProcessed('asset-1')
+
+    // What is wrong with the row now is its file, and the message says so.
+    expect(sending.canEditMetadata).toBe(false)
+    expect(sending.error.message).toBe('the upload failed')
+  })
+
+  // The processed notification can beat the answer to the finish request.
+  it('stays uploaded when the request fails after the notification has settled the row', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const sending = upload({ status: UploadQueueItemStatus.Uploading })
+    seed(store as never, [sending])
+    runningUpload.fail = undefined
+    void store.queueItemUploadStart(sending as never, QUEUE)
+    await vi.waitFor(() => expect(runningUpload.fail).toBeDefined())
+    await store.queueItemProcessed('asset-1', 'file-1')
+    expect(sending.status).toBe(UploadQueueItemStatus.Uploaded)
+
+    runningUpload.fail!(new Error('the answer to the finish request was lost'))
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(sending.status).toBe(UploadQueueItemStatus.Uploaded)
+    expect(sending.error.hasError).toBe(false)
+  })
+
+  // The one failed row it still reaches: it failed for want of this very metadata.
+  it('still reaches a mass-edit row that failed because its batch load left it out', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    // The mocked batch load answers with no asset at all.
+    await store.addByAssets(QUEUE, [
+      { id: 'asset-1', attributes: { assetType: 'image', assetStatus: 'with_file' }, texts: {}, mainFile: null },
+    ] as never)
+    const picked = store.getQueueItems(QUEUE)[0]
+    await vi.waitFor(() => expect(picked.status).toBe(UploadQueueItemStatus.Failed))
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+
+    await store.queueItemMetadataProcessed('asset-1')
+
+    expect(picked.canEditMetadata).toBe(true)
+    expect(picked.keywords).toEqual(['from the server'])
+  })
+
+  it('does not reach a mass-edit row whose file failed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const picked = upload({
+      type: UploadQueueItemType.Asset,
+      status: UploadQueueItemStatus.Failed,
+      error: { hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' },
+    })
+    seed(store as never, [picked])
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+
+    await store.queueItemMetadataProcessed('asset-1')
+
+    expect(picked.canEditMetadata).toBe(false)
+  })
+
+  // The form can be enabled before the file is processed, and the switch is one of its fields.
+  it('leaves the single-use switch of a row that has its metadata to the user when the file is processed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const edited = upload({ canEditMetadata: true, mainFileSingleUse: false })
+    const waiting = upload({ key: 'waiting', mainFileSingleUse: null })
+    seed(store as never, [edited, waiting])
+    fetchAsset.mockResolvedValueOnce({
+      id: 'asset-1',
+      attributes: { assetStatus: 'with_file' },
+      mainFile: { id: 'file-1', links: {} },
+      mainFileSingleUse: true,
+    })
+
+    await store.queueItemProcessed('asset-1', 'file-1')
+
+    expect(edited.mainFileSingleUse).toBe(false)
+    expect(waiting.mainFileSingleUse).toBe(true)
   })
 })

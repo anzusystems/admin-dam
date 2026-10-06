@@ -4,7 +4,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { bulkUpdateAssetsMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import { bulkUpdateAssetsMetadata, hasMetadataToSave } from '@/domains/coreDam/asset/api/assetApi'
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
@@ -47,6 +47,9 @@ const massOperations = ref(true)
 const list = computed(() => {
   return uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
 })
+
+// Assets whose metadata has not loaded, or could not be: the save would send nothing and say it failed.
+const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
 
 const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
@@ -121,7 +124,7 @@ const onSaveAndClose = async () => {
               class="mr-2"
               rounded="pill"
               :loading="saveAndCloseButtonLoading"
-              :disabled="saveButtonLoading"
+              :disabled="saveButtonLoading || nothingToSave"
               @click.stop="onSaveAndClose"
             >
               {{ t('coreDam.asset.selected.saveAndClose') }}
@@ -131,7 +134,7 @@ const onSaveAndClose = async () => {
               :height="36"
               :width="36"
               :loading="saveButtonLoading"
-              :disabled="saveAndCloseButtonLoading"
+              :disabled="saveAndCloseButtonLoading || nothingToSave"
               @click.stop="onSave"
             >
               <VIcon icon="mdi-content-save" />

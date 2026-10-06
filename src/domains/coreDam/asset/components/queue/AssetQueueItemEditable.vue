@@ -97,6 +97,13 @@ const mainFileSingleUse = computed({
 
 const { t } = useI18n()
 
+// The bulk save skips an item whose metadata cannot be edited (a failed upload, a duplicate, one still waiting for
+// its metadata), so nothing in its row is validated: it could not be put right. A scope is read once, when a field
+// is set up - hence the key on the form.
+const metadataValidationScope = computed(() => {
+  return props.item.canEditMetadata ? AssetMetadataValidationScopeSymbol : false
+})
+
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 
@@ -224,7 +231,7 @@ watch(
       return
     }
     if (newValue === UploadQueueItemStatus.Uploaded) {
-      // A failure has already been reported; the button is the only thing that can undo it.
+      // A failure has already been reported; the button is what the user can undo it with.
       if (props.item.error.hasError) {
         showRefresh.value = true
 
@@ -233,8 +240,8 @@ watch(
       showRefresh.value = false
       // A duplicate is not given metadata to edit, so there is nothing for refresh to fetch.
       if (props.item.canEditMetadata || props.item.isDuplicate) return
-      /* Without its metadata notification the form stays disabled and the bulk save skips the row; refresh is the
-       * only way back. */
+      /* Without its metadata the form stays disabled and the bulk save skips the row; refresh is the way back
+       * the user has. */
       refreshTimer.value = setTimeout(() => {
         if (props.item.status !== UploadQueueItemStatus.Uploaded) return
         if (props.item.canEditMetadata || props.item.isDuplicate) return
@@ -243,7 +250,8 @@ watch(
 
       return
     }
-    // Failed or stopped: there is nothing left for a refresh to find.
+    // Failed or stopped: no refresh. A failed row whose file the server did finish comes back with its processed
+    // notification.
     showRefresh.value = false
   },
   { immediate: true }
@@ -429,8 +437,10 @@ onUnmounted(() => {
         <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
           <AssetCustomMetadataForm
             v-if="item"
+            :key="item.canEditMetadata ? 'validated' : 'skipped'"
             v-model="customData"
             :asset-type="assetType"
+            :validation-scope="metadataValidationScope"
           >
             <template #after-pinned>
               <VRow
@@ -450,7 +460,7 @@ onUnmounted(() => {
                       clearable
                       multiple
                       :required="keywordRequired"
-                      :validation-scope="AssetMetadataValidationScopeSymbol"
+                      :validation-scope="metadataValidationScope"
                       :disabled="!item.canEditMetadata"
                     />
                   </ASystemEntityScope>
@@ -474,7 +484,7 @@ onUnmounted(() => {
                       clearable
                       multiple
                       :required="authorRequired"
-                      :validation-scope="AssetMetadataValidationScopeSymbol"
+                      :validation-scope="metadataValidationScope"
                       :disabled="!item.canEditMetadata"
                     />
                   </ASystemEntityScope>

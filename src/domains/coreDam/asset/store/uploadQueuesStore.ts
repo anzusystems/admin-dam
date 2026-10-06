@@ -458,6 +458,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         // Cancelled by the user — the item is already gone from the queue, nothing to report.
         return
       }
+      // The processed notification can beat the answer to the finish request: a row it has settled stays
+      // uploaded, whatever became of that request.
+      if (item.status === UploadQueueItemStatus.Uploaded) return
       const message = resolveUploadErrorMessage(e)
       // One alert per reason: a licence that refuses uploads fails every file in the batch.
       const alreadyReported = getQueueItemsByStatus(queueId, UploadQueueItemStatus.Failed).some(
@@ -467,6 +470,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       item.error.hasError = true
       item.error.message = message
       item.status = UploadQueueItemStatus.Failed
+      // Its metadata event comes while the file still sends, and had enabled the form - or could not be read,
+      // which is no longer what is wrong with the row.
+      item.canEditMetadata = false
+      metadataFailures.delete(metadataFailureKey(queueId, item))
       if (!alreadyReported) {
         showError(message)
       }
@@ -539,8 +546,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           if (mainFile.links?.image_detail) {
             item.imagePreview = mainFile.links.image_detail
           }
-          // Not on a mass-edit row, where that flag is a form field the user may have just set.
-          if (item.type !== UploadQueueItemType.Asset) {
+          // Not on a mass-edit row, nor on one that has its metadata: there the flag is a form field the user may
+          // have just set.
+          if (item.type !== UploadQueueItemType.Asset && !item.canEditMetadata) {
             item.mainFileSingleUse = asset.mainFileSingleUse
           }
         }
@@ -571,8 +579,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   async function queueItemMetadataProcessed(assetId: DocId) {
     const { updateNewNames, getAuthorConflicts } = useAssetSuggestions()
     const assetDetailStore = useAssetDetailStore()
-    /* The only place an ordinary upload is granted `canEditMetadata`, and the notification comes
-     * once - so a single failure disabled the form for good and the bulk save skipped the item. */
+    /* The only place an ordinary upload is granted `canEditMetadata`, and its notification comes once - so a
+     * failure here leaves the form disabled and the item skipped by the bulk save, until the fallback or the
+     * refresh button asks again. */
     let asset: Awaited<ReturnType<typeof fetchAsset>>
     try {
       asset = await fetchAsset(assetId)
@@ -586,6 +595,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           if (item.type === UploadQueueItemType.SlotFile) return
           // A mass-edit row already has its metadata, and could not take such a warning back.
           if (item.canEditMetadata) return
+          // A duplicate is settled, and has no metadata of its own to miss. Nor has a row whose file failed.
+          if (item.isDuplicate) return
+          if (item.status === UploadQueueItemStatus.Failed && !metadataFailures.has(metadataFailureKey(queueId, item)))
+            return
           metadataFailures.add(metadataFailureKey(queueId, item))
           item.error.hasError = true
           item.error.message = translate('system.uploadErrors.metadataFailed')
@@ -597,6 +610,17 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     for (const queueId in queues.value) {
       queues.value[queueId].items.forEach((item) => {
         if (item.assetId === asset.id && item.type !== UploadQueueItemType.SlotFile) {
+          /* A duplicate was settled as not editable. Its metadata event can come after the duplicate one, and made
+           * the row a disabled form that was validated and saved. */
+          if (item.isDuplicate) return
+          /* So was a row whose file failed: this event can come after the failure, and made the row editable again.
+           * The one failed row it still reaches failed for want of this very metadata - a mass-edit row its batch
+           * load left out. */
+          if (item.status === UploadQueueItemStatus.Failed && !metadataFailures.has(metadataFailureKey(queueId, item)))
+            return
+          /* Loaded once, whoever asks - the notification, the fallback or the refresh button: a row that has its
+           * metadata keeps what the user has typed since. */
+          if (item.canEditMetadata) return
           item.keywords = asset.keywords
           item.authors = asset.authors
           item.customData = asset.metadata.customData
@@ -724,20 +748,32 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
       if (item.assetType !== data.assetType) continue
-      if (
-        forceReplace ||
-        isUndefined(item.customData[data.elementProperty]) ||
-        item.customData[data.elementProperty] === ''
-      ) {
+      const current = item.customData[data.elementProperty]
+      // `null` is how a value saved empty comes back; a field of several values is empty as an empty list.
+      const empty =
+        isUndefined(current) || isNull(current) || current === '' || (Array.isArray(current) && !current.length)
+      if (forceReplace || empty) {
         item.customData[data.elementProperty] = data.value
       }
     }
   }
 
+  /* Keywords and authors go only into the items whose asset type has them enabled, as a custom value goes only
+   * into the items of its type: the row of another item has no input for them, and the bulk save would send them. */
+  function assetTypeHas(feature: 'keywords' | 'authors') {
+    const { getDamConfigExtSystem } = useDamConfigState(damClient)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
+
+    return (assetType: DamAssetTypeType) => !!configExtSystem?.[assetType]?.[feature]?.enabled
+  }
+
   function queueItemsReplaceEmptyKeywords(queueId: string, value: string[], forceReplace = false) {
+    const enabled = assetTypeHas('keywords')
     const items = queues.value[queueId].items
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
+      if (!enabled(item.assetType)) continue
       if (forceReplace || isUndefined(item.keywords) || item.keywords.length === 0) {
         item.keywords = value
       }
@@ -745,9 +781,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   function queueItemsReplaceEmptyAuthors(queueId: string, value: string[], forceReplace = false) {
+    const enabled = assetTypeHas('authors')
     const items = queues.value[queueId].items
     for (let i = 0; i < items.length; i++) {
       const item = items[i]
+      if (!enabled(item.assetType)) continue
       if (forceReplace || isUndefined(item.authors) || item.authors.length === 0) {
         item.authors = value
       }

@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import { ACustomDataForm, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
-import type { CustomDataValue, DamAssetTypeType } from '@anzusystems/common-admin'
+import type { CustomDataValue, DamAssetTypeType, ValidationScope } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
     assetType: DamAssetTypeType
     dataCy?: string
+    validationScope?: ValidationScope
   }>(),
   {
     dataCy: undefined,
+    validationScope: AssetMetadataValidationScopeSymbol,
   }
 )
 const emit = defineEmits<{
@@ -44,10 +47,13 @@ const pinnedCount = computed(() => {
 </script>
 
 <template>
+  <!-- By default the scope of what saves asset metadata: without it the form keeps its fields, and the keyword and
+       author inputs in its slots, to itself, and a sidebar that saves through that scope validates nothing. -->
   <ACustomDataForm
     :model-value="modelValue"
     :pinned-count="pinnedCount"
     :elements="elements"
+    :validation-scope="validationScope"
     @any-change="emit('anyChange')"
     @update:model-value="modelValue = $event"
   >

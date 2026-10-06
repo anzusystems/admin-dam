@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ASystemEntityScope, DamAssetType } from '@anzusystems/common-admin'
+import { ASystemEntityScope, DamAssetType, useDamConfigState } from '@anzusystems/common-admin'
 import type { CustomDataValue, DamAssetTypeType } from '@anzusystems/common-admin'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import AssetCustomMetadataFormMassOperations from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -94,13 +96,14 @@ const fillAll = (forceReplace = false) => {
       forceReplace
     )
   }
-  if (forceReplace) {
-    replaceAuthors()
-    replaceKeywords()
-    return
+  if (authorEnabled.value) {
+    if (forceReplace) replaceAuthors()
+    else fillEmptyAuthors()
   }
-  fillEmptyAuthors()
-  fillEmptyKeywords()
+  if (keywordEnabled.value) {
+    if (forceReplace) replaceKeywords()
+    else fillEmptyKeywords()
+  }
 }
 const clearForm = () => {
   massOperationsData.value = { image: {}, video: {}, audio: {}, document: {} }
@@ -110,6 +113,21 @@ const clearForm = () => {
 
 const assetTypes = computed(() => {
   return uploadQueuesStore.getQueueItemsTypes(props.queueId)
+})
+
+// Offered where the ext system has them on for a type in the queue. The store writes them only into the items
+// of such a type.
+const { getDamConfigExtSystem } = useDamConfigState(damClient)
+const { currentExtSystemId } = useCurrentExtSystem()
+const keywordEnabled = computed(() => {
+  const config = getDamConfigExtSystem(currentExtSystemId.value)
+  if (!config) return false
+  return assetTypes.value.some((type) => !!config[type]?.keywords?.enabled)
+})
+const authorEnabled = computed(() => {
+  const config = getDamConfigExtSystem(currentExtSystemId.value)
+  if (!config) return false
+  return assetTypes.value.some((type) => !!config[type]?.authors?.enabled)
 })
 
 onMounted(() => {
@@ -135,12 +153,14 @@ onMounted(() => {
           class="v-expansion-panels--compact"
         >
           <VExpansionPanel
+            v-if="keywordEnabled || authorEnabled"
             elevation="0"
             :title="t('coreDam.asset.massOperations.general')"
             value="general"
           >
             <VExpansionPanelText>
               <VRow
+                v-if="keywordEnabled"
                 density="compact"
                 class="my-2"
               >
@@ -193,6 +213,7 @@ onMounted(() => {
                 </VCol>
               </VRow>
               <VRow
+                v-if="authorEnabled"
                 density="compact"
                 class="my-2"
               >

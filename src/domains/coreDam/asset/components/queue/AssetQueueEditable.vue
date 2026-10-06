@@ -32,8 +32,8 @@ const refreshItem = async (data: { index: number; assetId: DocId }) => {
     const asset = await fetchAsset(data.assetId)
     if (asset.attributes.assetStatus === DamAssetStatus.WithFile) {
       await uploadQueuesStore.queueItemProcessed(asset.id)
-      /* And the metadata, but only while the item has none: refetching what did load would throw away whatever the
-       * user has typed. */
+      // And the metadata, while the item has none: the store leaves a row that has it alone, so asking again is
+      // a request for nothing.
       const refreshed = list.value.find((item) => item.assetId === data.assetId)
       if (refreshed && !refreshed.canEditMetadata) {
         await uploadQueuesStore.queueItemMetadataProcessed(asset.id)

@@ -9,6 +9,12 @@ vi.mock('@/domains/coreDam/asset/api/assetApi', () => ({
   fetchAssetListByIds: () => fetchAssetListByIds(),
 }))
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: vi.fn() }))
+// Which asset types have keywords and authors, for the mass operations at the end.
+const extSystem = vi.hoisted(() => ({ config: {} as Record<string, unknown> }))
+vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
+  ...((await importOriginal()) as Record<string, unknown>),
+  useDamConfigState: () => ({ getDamConfigExtSystem: () => extSystem.config }),
+}))
 vi.mock('@/domains/coreDam/asset/api/audioApi', () => ({ fetchAudioFile: vi.fn() }))
 vi.mock('@/domains/coreDam/asset/api/documentApi', () => ({ fetchDocumentFile: vi.fn() }))
 vi.mock('@/domains/coreDam/asset/api/imageApi', () => ({ fetchImageFile: vi.fn() }))
@@ -124,5 +130,74 @@ describe('assets picked for mass edit', () => {
     // Fire-and-forget: a rejection here used to leave every item it was fetching on `Loading`.
     const statuses = itemsOf(store as never).map((item) => item.status)
     expect(statuses).toEqual([UploadQueueItemStatus.Failed, UploadQueueItemStatus.Failed])
+  })
+})
+
+describe('mass operations: filling a custom value into the queue', () => {
+  const fill = async (customData: Record<string, unknown>[], forceReplace = false) => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const items = customData.map((one) => ({ assetType: 'image', customData: one }))
+    ;(store.queues as Record<string, unknown>)[QUEUE] = { items }
+    store.queueItemsReplaceEmptyCustomDataValue(
+      QUEUE,
+      { assetType: 'image', elementProperty: 'title', value: 'filled' } as never,
+      forceReplace
+    )
+
+    return (store.queues[QUEUE].items as unknown as typeof items).map((item) => item.customData.title)
+  }
+
+  // `null` is a value that was emptied, as a cleared number and as the API returns it.
+  it('fills what is empty: never set, an empty text, null, or an empty list', async () => {
+    expect(await fill([{}, { title: '' }, { title: null }, { title: [] }])).toEqual([
+      'filled',
+      'filled',
+      'filled',
+      'filled',
+    ])
+  })
+
+  it('keeps a value that is there, zero and false included, unless told to replace', async () => {
+    expect(await fill([{ title: 'kept' }, { title: 0 }, { title: false }, { title: ['kept'] }])).toEqual([
+      'kept',
+      0,
+      false,
+      ['kept'],
+    ])
+    expect(await fill([{ title: 'kept' }], true)).toEqual(['filled'])
+  })
+})
+
+// The rows show keywords and authors only where the ext system has them on for the asset type.
+describe('mass operations: filling keywords and authors into the queue', () => {
+  const fill = async (forceReplace = false) => {
+    extSystem.config = {
+      image: { keywords: { enabled: true }, authors: { enabled: false } },
+      document: { keywords: { enabled: false }, authors: { enabled: true } },
+    }
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const items = ['image', 'document', 'video'].map((assetType) => ({
+      assetType,
+      keywords: [] as string[],
+      authors: [] as string[],
+    }))
+    ;(store.queues as Record<string, unknown>)[QUEUE] = { items }
+    store.queueItemsReplaceEmptyKeywords(QUEUE, ['keyword'], forceReplace)
+    store.queueItemsReplaceEmptyAuthors(QUEUE, ['author'], forceReplace)
+
+    return (store.queues[QUEUE].items as unknown as typeof items).map((item) => [item.keywords, item.authors])
+  }
+
+  // A document got the keywords typed for the images: its row has no input for them, and the bulk save sent them.
+  it('writes them only into the items whose asset type has them enabled', async () => {
+    const written = [
+      [['keyword'], []],
+      [[], ['author']],
+      [[], []],
+    ]
+    expect(await fill()).toEqual(written)
+    expect(await fill(true)).toEqual(written)
   })
 })

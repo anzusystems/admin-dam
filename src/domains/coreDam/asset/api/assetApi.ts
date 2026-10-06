@@ -164,10 +164,14 @@ export const fetchAssetMetadata = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
+/** What the bulk save sends: an item with an asset whose metadata the user may edit. */
+export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueItem & { assetId: DocId } =>
+  !isNull(item.assetId) && item.canEditMetadata
+
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   const dtoItems: AssetMetadataBulkItem[] = []
   items.forEach((item) => {
-    if (!isNull(item.assetId) && item.canEditMetadata) {
+    if (hasMetadataToSave(item)) {
       const dtoItem: AssetMetadataBulkItem = {
         id: item.assetId,
         keywords: item.keywords,

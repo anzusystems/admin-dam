@@ -9,6 +9,7 @@ const finishMocks = {
   [DamAssetType.Document]: vi.fn(async (): Promise<unknown> => ({ id: 'file-1' })),
 }
 const queueItemProcessed = vi.fn()
+const queueItemMetadataProcessed = vi.fn()
 const queueItemFailed = vi.fn()
 const queueItemDuplicate = vi.fn()
 
@@ -26,7 +27,12 @@ vi.mock('@/domains/coreDam/asset/api/documentApi', () => ({
   uploadFinish: () => finishMocks.document(),
 }))
 vi.mock('@/domains/coreDam/asset/store/uploadQueuesStore', () => ({
-  useUploadQueuesStore: () => ({ queueItemProcessed, queueItemFailed, queueItemDuplicate }),
+  useUploadQueuesStore: () => ({
+    queueItemProcessed,
+    queueItemMetadataProcessed,
+    queueItemFailed,
+    queueItemDuplicate,
+  }),
 }))
 
 const queueItem = (over: Record<string, unknown> = {}) => ({
@@ -209,7 +215,11 @@ describe('the notification fallback', () => {
     fetchAsset.mockResolvedValue(processedAsset('file-main'))
 
     await uploadFinish(item as never, 'sha')
+    // Read at 10, 50, 140 and 300 seconds; the next timer, at 550, is the one that gives up.
     await vi.advanceTimersByTimeAsync(300_000)
+    expect(fetchAsset).toHaveBeenCalledTimes(4)
+    expect(item.error.hasError).toBe(false)
+    await vi.advanceTimersByTimeAsync(250_000)
     vi.useRealTimers()
 
     // Returning without a word left the row spinning with nothing to explain it. A slot row has
@@ -236,5 +246,52 @@ describe('the notification fallback', () => {
 
     // Checking only for `Uploaded` kept it polling for an item the user had already stopped.
     expect(fetchAsset.mock.calls.length).toBe(callsBeforeStop)
+  })
+})
+
+// With no notification there is no metadata one either, and the poll is all an item will hear.
+describe('what the notification fallback settles an item with', () => {
+  const settle = async (item: ReturnType<typeof queueItem>, asset: unknown) => {
+    vi.useFakeTimers()
+    const { armNotificationFallback } = await load()
+    fetchAsset.mockResolvedValue(asset)
+
+    armNotificationFallback(item as never)
+    await vi.advanceTimersByTimeAsync(20_000)
+    vi.useRealTimers()
+  }
+  const processing = (over: Record<string, unknown> = {}) =>
+    queueItem({ type: 'file', status: UploadQueueItemStatus.Processing, canEditMetadata: false, ...over })
+
+  it('loads the metadata of a processed upload, which is what enables its form', async () => {
+    await settle(processing(), processedAsset('file-main'))
+
+    expect(queueItemProcessed).toHaveBeenCalledWith('asset-1', 'file-main')
+    expect(queueItemMetadataProcessed).toHaveBeenCalledWith('asset-1')
+  })
+
+  it('asks for no metadata where the item already has it, nor on a slot upload', async () => {
+    // Nothing to load: the store leaves a row that has its metadata alone.
+    await settle(processing({ canEditMetadata: true }), processedAsset('file-main'))
+    // A slot row has no metadata form.
+    await settle(processing({ type: 'slotFile' }), processedAsset('file-main'))
+
+    expect(queueItemProcessed).toHaveBeenCalledTimes(2)
+    expect(queueItemMetadataProcessed).not.toHaveBeenCalled()
+  })
+
+  it('tells a duplicate which file it duplicates', async () => {
+    await settle(processing(), {
+      id: 'asset-1',
+      attributes: { assetType: 'image' },
+      mainFile: {
+        id: 'file-main',
+        originAssetFile: 'file-origin',
+        fileAttributes: { status: 'duplicate', failReason: 'none' },
+      },
+    })
+
+    // Without it the row says "duplicate" and has no link to the original, and nothing adds one later.
+    expect(queueItemDuplicate).toHaveBeenCalledWith('asset-1', 'file-origin', 'image', 'file-main')
   })
 })

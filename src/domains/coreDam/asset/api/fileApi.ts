@@ -71,7 +71,7 @@ import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueues
 import { i18n } from '@/plugins/i18n'
 import { envConfig } from '@/shared/EnvConfigService'
 const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
-const NOTIFICATION_FALLBACK_MAX_TRIES = 3
+const NOTIFICATION_FALLBACK_MAX_TRIES = 4
 
 // Every switch below rejects on a type it does not cover: the promise would otherwise never settle.
 export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
@@ -151,9 +151,20 @@ async function notificationFallbackCallback(item: UploadQueueItem) {
     const uploadQueuesStore = useUploadQueuesStore()
     if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Processed) {
       uploadQueuesStore.queueItemProcessed(asset.id, item.fileId)
+      // The metadata notification may be lost as the file one was, and the form stays disabled until its handler
+      // has run.
+      if (item.type !== UploadQueueItemType.SlotFile && !item.canEditMetadata) {
+        uploadQueuesStore.queueItemMetadataProcessed(asset.id)
+      }
       return
     } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
-      uploadQueuesStore.queueItemDuplicate(asset.id, null, null, item.fileId)
+      // With the file it duplicates, as the notification and the refresh button pass it: the link to the original.
+      uploadQueuesStore.queueItemDuplicate(
+        asset.id,
+        asset.mainFile.originAssetFile,
+        asset.attributes.assetType,
+        item.fileId
+      )
       return
     } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Failed) {
       uploadQueuesStore.queueItemFailed(asset.id, asset.mainFile.fileAttributes.failReason, item.fileId)

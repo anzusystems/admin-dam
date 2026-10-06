@@ -5,7 +5,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDisplay } from 'vuetify'
 
-import { bulkUpdateAssetsMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import { bulkUpdateAssetsMetadata, hasMetadataToSave } from '@/domains/coreDam/asset/api/assetApi'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
@@ -59,6 +59,9 @@ const onStopConfirm = async () => {
   uploadQueuesStore.stopUpload(QUEUE_ID_UPLOAD_GLOBAL)
   hideUpload()
 }
+
+// Failed uploads, duplicates, items still waiting for their metadata: the save would send nothing and say it failed.
+const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
 
 const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
@@ -165,7 +168,7 @@ const onSaveAndClose = async () => {
               class="mr-2"
               rounded="pill"
               :loading="saveAndCloseButtonLoading"
-              :disabled="saveButtonLoading"
+              :disabled="saveButtonLoading || nothingToSave"
               @click.stop="onSaveAndClose"
             >
               {{ t('coreDam.asset.upload.saveAndClose') }}
@@ -177,7 +180,7 @@ const onSaveAndClose = async () => {
               class="mr-2"
               icon
               :loading="saveButtonLoading"
-              :disabled="saveAndCloseButtonLoading"
+              :disabled="saveAndCloseButtonLoading || nothingToSave"
               @click.stop="onSave"
             >
               <VIcon icon="mdi-content-save" />
