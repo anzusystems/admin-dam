@@ -28,7 +28,7 @@ import type {
   UploadQueueItemStatusType,
 } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 
 import { fetchAsset, fetchAssetListByIds } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAudioFile } from '@/domains/coreDam/asset/api/audioApi'
@@ -73,6 +73,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   // Items whose metadata could not be read - not by message, which changes with the language.
   const metadataFailures = new Set<string>()
   const metadataFailureKey = (queueId: string, item: UploadQueueItem) => queueId + '/' + item.key
+  /* The rows `queueItemMetadataProcessed` has given their metadata. A failure takes the form of such a row away,
+   * not what the user has typed into it. */
+  const metadataLoaded = new WeakSet<UploadQueueItem>()
 
   const { createDefault } = useUploadQueueItemFactory()
   const { showError } = useAlerts()
@@ -514,6 +517,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         clearTimeout(item.notificationFallbackTimer)
         // The batch load owns a mass-edit row's status; the event only decorates it, below.
         if (item.type !== UploadQueueItemType.Asset) item.status = UploadQueueItemStatus.Uploaded
+        /* A row the client gave up on, whose file the server finished all the same: it lost its form with the
+         * failure, and when it had its metadata by then, gets the form back as the user left it. */
+        if (item.status === UploadQueueItemStatus.Uploaded && !item.isDuplicate && metadataLoaded.has(toRaw(item))) {
+          item.canEditMetadata = true
+        }
         /* Nothing else clears the fallback's "press refresh" warning, and refresh comes back through
          * here. Not the missing-metadata one: it is still true, and cleared where it stops being. */
         if (!metadataFailures.has(metadataFailureKey(queueId, item))) {
@@ -579,7 +587,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   async function queueItemMetadataProcessed(assetId: DocId) {
     const { updateNewNames, getAuthorConflicts } = useAssetSuggestions()
     const assetDetailStore = useAssetDetailStore()
-    /* The only place an ordinary upload is granted `canEditMetadata`, and its notification comes once - so a
+    /* The only place an ordinary upload is given its metadata, and its notification comes once - so a
      * failure here leaves the form disabled and the item skipped by the bulk save, until the fallback or the
      * refresh button asks again. */
     let asset: Awaited<ReturnType<typeof fetchAsset>>
@@ -628,6 +636,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           updateNewNames(asset.metadata.authorSuggestions, queues.value[queueId].suggestions.newAuthorNames)
           updateNewNames(asset.metadata.keywordSuggestions, queues.value[queueId].suggestions.newKeywordNames)
           item.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
+          metadataLoaded.add(toRaw(item))
           item.canEditMetadata = true
           // And the warning an earlier attempt left behind: the metadata is here now.
           if (metadataFailures.delete(metadataFailureKey(queueId, item))) {

@@ -649,6 +649,79 @@ describe('the metadata of an upload', () => {
     expect(sending.error.message).toBe('the upload failed')
   })
 
+  // The client gave up on a request the server finished: the row comes back with its processed notification.
+  it('gets its form back as the user left it when its file turns out to be processed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const sending = upload({ status: UploadQueueItemStatus.Uploading })
+    seed(store as never, [sending])
+    runningUpload.fail = undefined
+    void store.queueItemUploadStart(sending as never, QUEUE)
+    await vi.waitFor(() => expect(runningUpload.fail).toBeDefined())
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+    await store.queueItemMetadataProcessed('asset-1')
+    sending.customData = { title: 'typed' }
+    runningUpload.fail!(new Error('the answer to the finish request was lost'))
+    await vi.waitFor(() => expect(sending.status).toBe(UploadQueueItemStatus.Failed))
+    expect(sending.canEditMetadata).toBe(false)
+
+    await store.queueItemProcessed('asset-1', 'file-1')
+
+    expect([sending.status, sending.canEditMetadata]).toEqual([UploadQueueItemStatus.Uploaded, true])
+    // And a refresh after it is a request for nothing: the metadata is loaded once.
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+    await store.queueItemMetadataProcessed('asset-1')
+    expect(sending.customData).toEqual({ title: 'typed' })
+  })
+
+  // One that had no metadata yet has no form to get back: refresh, or the fallback, loads it.
+  it('stays without its form when it had no metadata before the failure, until that is loaded', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const sending = upload({ status: UploadQueueItemStatus.Uploading })
+    seed(store as never, [sending])
+    runningUpload.fail = undefined
+    void store.queueItemUploadStart(sending as never, QUEUE)
+    await vi.waitFor(() => expect(runningUpload.fail).toBeDefined())
+    runningUpload.fail!(new Error('the answer to the finish request was lost'))
+    await vi.waitFor(() => expect(sending.status).toBe(UploadQueueItemStatus.Failed))
+
+    await store.queueItemProcessed('asset-1', 'file-1')
+    expect([sending.status, sending.canEditMetadata]).toEqual([UploadQueueItemStatus.Uploaded, false])
+
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+    await store.queueItemMetadataProcessed('asset-1')
+    expect(sending.canEditMetadata).toBe(true)
+    expect(sending.customData).toEqual({ title: 'from the server' })
+  })
+
+  // Nor does a duplicate get it back, whose form is disabled for good, or a mass-edit row whose file failed: the
+  // processed notification leaves the status of such a row alone, and a failed row has no form.
+  it('does not give the form back to a duplicate, nor to a mass-edit row whose file failed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    const duplicate = upload({ key: 'duplicate', status: UploadQueueItemStatus.Processing })
+    const picked = upload({
+      key: 'picked',
+      fileId: 'file-2',
+      type: UploadQueueItemType.Asset,
+      status: UploadQueueItemStatus.Uploaded,
+    })
+    seed(store as never, [duplicate, picked])
+    fetchAsset.mockResolvedValueOnce(metadataFromServer())
+    await store.queueItemMetadataProcessed('asset-1')
+    expect([duplicate.canEditMetadata, picked.canEditMetadata]).toEqual([true, true])
+    await store.queueItemDuplicate('asset-1', null, null, 'file-1')
+    store.queueItemFailed('asset-1', AssetFileFailReason.Unknown, 'file-2')
+    expect([duplicate.canEditMetadata, picked.canEditMetadata]).toEqual([false, false])
+
+    await store.queueItemProcessed('asset-1', 'file-1')
+    await store.queueItemProcessed('asset-1', 'file-2')
+
+    expect([duplicate.status, picked.status]).toEqual([UploadQueueItemStatus.Uploaded, UploadQueueItemStatus.Failed])
+    expect([duplicate.canEditMetadata, picked.canEditMetadata]).toEqual([false, false])
+  })
+
   // The processed notification can beat the answer to the finish request.
   it('stays uploaded when the request fails after the notification has settled the row', async () => {
     const { useUploadQueuesStore } = await load()
