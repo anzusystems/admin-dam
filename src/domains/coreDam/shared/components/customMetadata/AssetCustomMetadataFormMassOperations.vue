@@ -70,6 +70,7 @@ const elements = computed(() => {
             @update:model-value="updateModelValue"
           />
           <VBtn
+            :aria-label="t('coreDam.asset.massOperations.fillOneEmpty')"
             icon
             size="small"
             variant="text"
@@ -85,6 +86,7 @@ const elements = computed(() => {
             </VTooltip>
           </VBtn>
           <VBtn
+            :aria-label="t('coreDam.asset.massOperations.replaceOne')"
             icon
             size="small"
             variant="text"

@@ -27,6 +27,7 @@ vi.mock('@/domains/coreDam/shared/services/upload/uploadService', () => ({
     upload: () => new Promise(() => undefined),
     uploadInit: () => new Promise(() => undefined),
     stop: vi.fn(),
+    finishAttempted: () => false,
   }),
   uploadStop: vi.fn(),
   resolveUploadErrorMessage: () => '',

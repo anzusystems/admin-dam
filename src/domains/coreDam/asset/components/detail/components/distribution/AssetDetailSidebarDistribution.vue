@@ -7,7 +7,7 @@ import {
   useDamConfigState,
   usePagination,
 } from '@anzusystems/common-admin'
-import { computed, onMounted, provide, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { fetchAssetDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
@@ -21,6 +21,7 @@ import {
   useDistributionServiceAllowed,
 } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useDistributionListPoll } from '@/domains/coreDam/asset/composables/distributionListPoll'
 import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 import { damClient } from '@/shared/apiClients/damClient'
@@ -62,17 +63,27 @@ const hasAllowedService = computed(() =>
   ).some(isDistributionServiceAllowed)
 )
 
-const getList = async () => {
+// A read still on its way when the tab closes is given up. The list and its loader are shared with the tab of
+// the next asset: the late answer would put this asset's distributions there and turn that tab's loader off.
+const closed = new AbortController()
+onBeforeUnmount(() => closed.abort())
+
+const readList = async () => {
   distributionListStore.showLoader()
   try {
-    const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig)
-    distributionListStore.setList(items)
+    const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, closed.signal)
+    if (!closed.signal.aborted) distributionListStore.setList(items)
   } catch (error) {
-    showErrorsDefault(error)
+    if (!closed.signal.aborted) showErrorsDefault(error)
   } finally {
-    distributionListStore.hideLoader()
+    if (!closed.signal.aborted) distributionListStore.hideLoader()
   }
 }
+
+const { duringOwnRead } = useDistributionListPoll((signal) =>
+  fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, signal)
+)
+const getList = () => duringOwnRead(readList)
 
 const reloadList = () => {
   getList()

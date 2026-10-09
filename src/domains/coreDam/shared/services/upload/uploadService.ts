@@ -111,6 +111,8 @@ export function useUpload(
   let speedCheckTimerId: ReturnType<typeof setTimeout> | undefined = undefined
   // Checked wherever the chunk loop can be interrupted; the token covers only the chunk in flight.
   let stopped = false
+  // Once the finish request has gone out the server may complete the file, whatever becomes of the answer.
+  let finishRequested = false
   const sha = rusha.createHash()
   const { updateChunkSize, lastChunkSize } = useDamUploadChunkSize(envConfig.dam.apiTimeout)
 
@@ -236,6 +238,13 @@ export function useUpload(
       // todo
       uploadStart(queueItem)
         .then((res) => {
+          // Everything that follows is addressed by these two: without them the chunks would be sent to
+          // `…/undefined/chunk`, and retried there. An answer that lacks one is a start that was refused.
+          if (!res?.id || !res?.asset) {
+            reject(new Error('uploadService: the start answer names no file or no asset'))
+
+            return
+          }
           queueItem.assetId = res.asset
           queueItem.fileId = res.id
           // A stop asked for while this was on the wire; the asset it created stays on the server.
@@ -273,6 +282,8 @@ export function useUpload(
       // The last chunk can land after the stop.
       if (stopped) return Promise.reject(UPLOAD_STOPPED)
 
+      finishRequested = true
+
       return await finishUpload(queueItem, sha.digest('hex'))
     } finally {
       stopSpeedCheck()
@@ -285,10 +296,13 @@ export function useUpload(
     queueItem.latestChunkAbortController?.abort()
   }
 
+  const finishAttempted = () => finishRequested
+
   return {
     uploadInit,
     upload,
     stop,
+    finishAttempted,
   }
 }
 

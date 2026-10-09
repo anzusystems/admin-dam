@@ -44,6 +44,7 @@ const { t } = useI18n()
 
 <template>
   <VBtn
+    :aria-label="t('system.upload.stop')"
     variant="flat"
     :data-cy="dataCy"
     icon
@@ -62,6 +63,7 @@ const { t } = useI18n()
   <VDialog
     v-model="dialog"
     :width="500"
+    @keydown.esc="onCancel"
   >
     <VCard
       v-if="dialog"

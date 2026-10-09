@@ -1,10 +1,4 @@
-import {
-  AssetFileProcessStatus,
-  DamAssetType,
-  UploadQueueItemStatus,
-  UploadQueueItemType,
-  isNull,
-} from '@anzusystems/common-admin'
+import { DamAssetType, UploadQueueItemStatus } from '@anzusystems/common-admin'
 import type {
   AssetFileDownloadLink,
   AssetFileRoute,
@@ -12,11 +6,9 @@ import type {
   DamUploadStartResponse,
   DocId,
   UploadQueueItem,
-  UploadQueueItemStatusType,
 } from '@anzusystems/common-admin'
 import type { AxiosProgressEvent } from 'axios'
 
-import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import {
   downloadLink as audioDownloadLink,
   externalProviderUpload as audioExternalProviderUpload,
@@ -67,11 +59,6 @@ import {
   uploadFinish as videoUploadFinish,
   uploadStart as videoUploadStart,
 } from '@/domains/coreDam/asset/api/videoApi'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { i18n } from '@/plugins/i18n'
-import { envConfig } from '@/shared/EnvConfigService'
-const NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS = 10
-const NOTIFICATION_FALLBACK_MAX_TRIES = 4
 
 // Every switch below rejects on a type it does not cover: the promise would otherwise never settle.
 export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
@@ -111,92 +98,11 @@ export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartRespo
   })
 }
 
-function calculateFallbackTime(item: UploadQueueItem) {
-  return NOTIFICATION_FALLBACK_TIMER_CHECK_SECONDS * 1000 * item.notificationFallbackTry * item.notificationFallbackTry
-}
-
-// Stopped and failed too: checking only `Uploaded` kept polling for a cancelled item.
-const isSettled = (status: UploadQueueItemStatusType) =>
-  status === UploadQueueItemStatus.Uploaded ||
-  status === UploadQueueItemStatus.Stop ||
-  status === UploadQueueItemStatus.Failed
-
-async function notificationFallbackCallback(item: UploadQueueItem) {
-  clearTimeout(item.notificationFallbackTimer)
-  if (isSettled(item.status)) return
-  if (item.notificationFallbackTry > NOTIFICATION_FALLBACK_MAX_TRIES) {
-    // Said out loud rather than given up on in silence.
-    item.error.hasError = true
-    const { t } = i18n.global
-    // The slot row has only Cancel, so it must not be sent looking for a refresh button.
-    item.error.message = t(
-      item.type === UploadQueueItemType.SlotFile
-        ? 'system.uploadErrors.processingTooLongSlot'
-        : 'system.uploadErrors.processingTooLong'
-    )
-
-    return
-  }
-  if (!item.assetId) return
-  let asset: Awaited<ReturnType<typeof fetchAsset>> | undefined = undefined
-  try {
-    asset = await fetchAsset(item.assetId)
-  } catch (error) {
-    // One failed request must not end the chain: the rejection skipped the reschedule below.
-    console.error('notificationFallback: asset fetch failed', error)
-  }
-  // Only when the main file is this item's: a slot posts to its own and would read the wrong one.
-  const isOurFile = asset?.mainFile && (isNull(item.fileId) || asset.mainFile.id === item.fileId)
-  if (asset && asset.mainFile && isOurFile && asset.mainFile.fileAttributes) {
-    const uploadQueuesStore = useUploadQueuesStore()
-    if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Processed) {
-      uploadQueuesStore.queueItemProcessed(asset.id, item.fileId)
-      // The metadata notification may be lost as the file one was, and the form stays disabled until its handler
-      // has run.
-      if (item.type !== UploadQueueItemType.SlotFile && !item.canEditMetadata) {
-        uploadQueuesStore.queueItemMetadataProcessed(asset.id)
-      }
-      return
-    } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
-      // With the file it duplicates, as the notification and the refresh button pass it: the link to the original.
-      uploadQueuesStore.queueItemDuplicate(
-        asset.id,
-        asset.mainFile.originAssetFile,
-        asset.attributes.assetType,
-        item.fileId
-      )
-      return
-    } else if (asset.mainFile.fileAttributes.status === AssetFileProcessStatus.Failed) {
-      uploadQueuesStore.queueItemFailed(asset.id, asset.mainFile.fileAttributes.failReason, item.fileId)
-      return
-    }
-  }
-  // Again after the fetch: a stop during it used to schedule the next attempt anyway.
-  if (isSettled(item.status)) return
-  item.notificationFallbackTry++
-  item.notificationFallbackTimer = setTimeout(function () {
-    notificationFallbackCallback(item)
-  }, calculateFallbackTime(item))
-}
-
-/* Exported for the external-provider import: its item carries no ids until the import responds, so
- * a notification that wins that race matches nothing and is gone, and nothing else would settle it -
- * hence not behind `uploadStatusFallback`, unlike the one `startProcessing` arms. */
-export const armNotificationFallback = (item: UploadQueueItem) => {
-  if (item.status !== UploadQueueItemStatus.Processing) return
-  clearTimeout(item.notificationFallbackTimer)
-  item.notificationFallbackTimer = setTimeout(function () {
-    notificationFallbackCallback(item)
-  }, calculateFallbackTime(item))
-}
-
-/* Only if nothing has settled the item meanwhile: the notification can beat the finish response,
- * and `Processing` written over `Uploaded` waits for a notification that has already been - where
- * no fallback is armed, or it cannot identify the file, for good. */
+/* Only if nothing has settled the item meanwhile: the notification can beat the finish response, and
+ * `Processing` written over `Uploaded` would put a settled row back among the waiting ones. */
 function startProcessing(item: UploadQueueItem) {
   if (item.status !== UploadQueueItemStatus.Uploading) return
   item.status = UploadQueueItemStatus.Processing
-  if (envConfig.uploadStatusFallback) armNotificationFallback(item)
 }
 
 export const uploadFinish = (item: UploadQueueItem, sha: string) => {

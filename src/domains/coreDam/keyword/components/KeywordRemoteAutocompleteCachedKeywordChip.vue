@@ -2,6 +2,7 @@
 import type { CachedItem, DamKeywordMinimal, DocId } from '@anzusystems/common-admin'
 import { isNull, isUndefined } from '@anzusystems/common-admin'
 import { computed, shallowRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
@@ -36,6 +37,9 @@ const item = computed(() => {
   return getCachedKeyword(props.id)
 })
 
+// The server did not return it: its id is all there is to show.
+const unresolved = computed(() => !loaded.value && props.title.length === 0 && item.value?._unresolved === true)
+
 const displayNewIcon = computed(() => {
   if (!props.queueId) return undefined
   const queue = uploadQueuesStore.getQueue(props.queueId)
@@ -49,6 +53,7 @@ const displayTitle = computed(() => {
   if (cached.value) {
     return cached.value.name
   }
+  if (unresolved.value) return '#' + props.id
   return ''
 })
 
@@ -62,6 +67,8 @@ watch(
   },
   { immediate: true }
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -69,10 +76,13 @@ watch(
     <template v-if="isNull(id) || isUndefined(id)">
       <slot name="empty"> - </slot>
     </template>
-    <div v-else-if="textOnly">
+    <div
+      v-else-if="textOnly"
+      :title="unresolved ? t('common.model.cachedUnavailable') : undefined"
+    >
       {{ displayTitle }}
       <VProgressCircular
-        v-if="!loaded && title.length === 0"
+        v-if="!loaded && !unresolved && title.length === 0"
         :size="12"
         :width="2"
         indeterminate
@@ -84,10 +94,11 @@ watch(
       :size="size"
       :append-icon="displayNewIcon"
       :label="forceRounded ? undefined : true"
+      :title="unresolved ? t('common.model.cachedUnavailable') : undefined"
     >
       {{ displayTitle }}
       <VProgressCircular
-        v-if="!loaded && title.length === 0"
+        v-if="!loaded && !unresolved && title.length === 0"
         :size="12"
         :width="2"
         indeterminate

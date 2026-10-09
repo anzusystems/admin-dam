@@ -43,10 +43,11 @@ export const fetchAssetDistributionList = <T = DistributionJwItem | Distribution
   assetId: DocId,
   pagination: Ref<Pagination>,
   filterData: FilterData,
-  filterConfig: FilterConfig
+  filterConfig: FilterConfig,
+  signal?: AbortSignal
 ) => {
   const { execute } = useFetchAssetDistributionList<T>()
-  return execute(pagination, filterData, filterConfig, { urlParams: { assetId } })
+  return execute(pagination, filterData, filterConfig, { urlParams: { assetId }, signal })
 }
 
 export const useFetchAssetFileDistributionList = <
@@ -80,9 +81,9 @@ export const useDistributionIsAuthorized = () =>
     urlTemplate: END_POINT + '/:distributionServiceName/authorized',
   })
 
-export const distributionIsAuthorized = (distributionServiceName: DamDistributionServiceName) => {
+export const distributionIsAuthorized = (distributionServiceName: DamDistributionServiceName, signal?: AbortSignal) => {
   const { execute } = useDistributionIsAuthorized()
-  return execute({ urlParams: { distributionServiceName } })
+  return execute({ urlParams: { distributionServiceName }, signal })
 }
 
 export const useUpsertAssetDistributions = <T extends NonNullable<unknown> = DistributionUpdateDto>() =>

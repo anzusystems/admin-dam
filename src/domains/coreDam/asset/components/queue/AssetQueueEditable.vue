@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { AssetFileProcessStatus, DamAssetStatus, useAlerts } from '@anzusystems/common-admin'
+import { UploadQueueItemStatus, useAlerts } from '@anzusystems/common-admin'
 import type { DocId, UploadQueueItem } from '@anzusystems/common-admin'
 import { computed, onMounted, ref } from 'vue'
 
-import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
 import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
@@ -26,27 +25,25 @@ const refreshDisabled = ref(false)
 
 const { showWarningT } = useAlerts()
 
-const refreshItem = async (data: { index: number; assetId: DocId }) => {
+const refreshItem = async (data: { index: number; assetId: DocId; item: UploadQueueItem }) => {
+  /* The row itself, not its position nor its asset: the list can have moved under the click, and rows can share
+   * an asset. A row that has left the queue meanwhile is not asked about. */
+  const item = data.item
+  if (!list.value.includes(item)) return
   refreshDisabled.value = true
   try {
-    const asset = await fetchAsset(data.assetId)
-    if (asset.attributes.assetStatus === DamAssetStatus.WithFile) {
-      await uploadQueuesStore.queueItemProcessed(asset.id)
-      // And the metadata, while the item has none: the store leaves a row that has it alone, so asking again is
-      // a request for nothing.
-      const refreshed = list.value.find((item) => item.assetId === data.assetId)
-      if (refreshed && !refreshed.canEditMetadata) {
-        await uploadQueuesStore.queueItemMetadataProcessed(asset.id)
-      }
-    } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
-      await uploadQueuesStore.queueItemDuplicate(asset.id, asset.mainFile.originAssetFile, asset.attributes.assetType)
-    } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed) {
-      await uploadQueuesStore.queueItemFailed(data.assetId, asset.mainFile.fileAttributes.failReason)
-    } else {
-      showWarningT('common.damImage.queueItem.stillUploadingOrProcessing')
-    }
-  } catch (e) {
-    //
+    const statusBefore = item.status
+    const outcome = await uploadQueuesStore.refreshQueueItem(item)
+    if (outcome === 'pending') showWarningT('common.damImage.queueItem.stillUploadingOrProcessing')
+    /* The read failed, or the asset is gone, and the user is told why - unless the row has come to its end
+     * meanwhile, settled by a notification or stopped by the user: it says what became of it. A file that was
+     * being sent and is processing now has not: nothing is known of it yet, and asking again may tell. */
+    const ended =
+      item.status !== statusBefore &&
+      (item.status === UploadQueueItemStatus.Failed ||
+        item.status === UploadQueueItemStatus.Uploaded ||
+        item.status === UploadQueueItemStatus.Stop)
+    if (outcome === 'error' && !ended) showWarningT('common.damImage.queueItem.refreshFailed')
   } finally {
     refreshDisabled.value = false
   }

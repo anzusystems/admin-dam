@@ -58,7 +58,7 @@ export interface AssetMetadataBulkItem {
 const BULK_METADATA_LIMIT = 10
 const END_POINT = '/adm/v1/asset'
 export const ENTITY = 'asset'
-const FETCH_BY_IDS_MAX_LIMIT = 25
+const FETCH_BY_IDS_MAX_LIMIT = 50
 
 export const useFetchAssetList = () =>
   useApiFetchList<AssetSearchListItemDto>({
@@ -103,7 +103,8 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
           reject(responses)
         } else if (
           responses.every((res) => {
-            return res.status === HTTP_STATUS_OK
+            // An answer without its list is not "none of these assets exist".
+            return res.status === HTTP_STATUS_OK && Array.isArray(res.data?.data)
           })
         ) {
           const final = []
@@ -122,6 +123,40 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
   })
 }
 
+// The answer is taken as it comes and checked by its reader below.
+const useFetchWaitingAssets = () =>
+  useApiRequest<{ data?: unknown }, null>({
+    client: damClient,
+    method: 'GET',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+  })
+
+/* Several assets of a licence by their ids, for the poll of the upload queue: the requests of `fetchAssetListByIds`,
+ * in the same groups of fifty.
+ *
+ * The poll asks again and again, and says of each request whether a failure of it is to be written down:
+ * `report: false` keeps this one call from the api error logger, the failure is thrown as ever. That is why it
+ * is not `useApiFetchItems`, a single call of which cannot be kept quiet, and why the list is checked here. An
+ * answer without its list is refused whether it is reported or not: it must never read as "none of these assets
+ * exist". */
+export const fetchWaitingAssets = async (ids: DocId[], licenceId: number, options?: { report?: boolean }) => {
+  const { execute } = useFetchWaitingAssets()
+  const found: AssetDetailItemDto[] = []
+  for (let offset = 0; offset < ids.length; offset += FETCH_BY_IDS_MAX_LIMIT) {
+    const batch = ids.slice(offset, offset + FETCH_BY_IDS_MAX_LIMIT)
+    const body = await execute({
+      // The address whole, not a template with parameters: a parameter would be encoded, its commas with it.
+      urlTemplate: END_POINT + `/licence/${licenceId}/ids/${batch.join(',')}`,
+      report: options?.report,
+    })
+    if (!Array.isArray(body?.data)) throw new Error('assetApi: unexpected asset list')
+    found.push(...(body.data as AssetDetailItemDto[]))
+  }
+
+  return found
+}
+
 export const useFetchAsset = () =>
   useApiRequest<AssetDetailItemDto, null>({
     client: damClient,
@@ -131,9 +166,11 @@ export const useFetchAsset = () =>
     urlTemplate: END_POINT + '/:id',
   })
 
-export const fetchAsset = (id: DocId) => {
+/* `report: false` keeps a failure of this one call from the api error logger; it is thrown as ever. For the poll
+ * of the upload queue, which has reported the first failure of a streak already. */
+export const fetchAsset = (id: DocId, options?: { report?: boolean }) => {
   const { execute } = useFetchAsset()
-  return execute({ urlParams: { id } })
+  return execute({ urlParams: { id }, report: options?.report })
 }
 
 export const useFetchAssetByFileId = () =>

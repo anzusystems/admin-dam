@@ -1,7 +1,7 @@
 import { UploadQueueItemStatus, axiosErrorResponseHasValidationData, useAlerts } from '@anzusystems/common-admin'
 import type { AnzuApiValidationResponseData, UploadQueueItem } from '@anzusystems/common-admin'
 
-import { armNotificationFallback, externalProviderUpload } from '@/domains/coreDam/asset/api/fileApi'
+import { externalProviderUpload } from '@/domains/coreDam/asset/api/fileApi'
 
 export function externalProviderImport(queueItem: UploadQueueItem) {
   const importInit = async () => {
@@ -9,12 +9,24 @@ export function externalProviderImport(queueItem: UploadQueueItem) {
       queueItem.status = UploadQueueItemStatus.Uploading
       externalProviderUpload(queueItem)
         .then((res) => {
+          // Stopped or cleared while the request was on the wire: the row is discarded and takes nothing of the
+          // answer, whatever it says.
+          if (queueItem.status === UploadQueueItemStatus.Stop) {
+            resolve(queueItem)
+
+            return
+          }
+          // As with the start of an upload: without both, the poll would ask about an asset it has no id of.
+          // Thrown, to end where a refused import ends.
+          if (!res?.id || !res?.asset) {
+            throw new Error('externalProviderImportService: the import answer names no file or no asset')
+          }
           queueItem.assetId = res.asset
           queueItem.fileId = res.id
-          // Until this response the item had no ids, so an early notification matched nothing.
+          // Until this response the item had no ids, so an early notification matched nothing: from here the poll
+          // of its queue asks about it.
           if (queueItem.status === UploadQueueItemStatus.Uploading) {
             queueItem.status = UploadQueueItemStatus.Processing
-            armNotificationFallback(queueItem)
           }
           resolve(queueItem)
         })

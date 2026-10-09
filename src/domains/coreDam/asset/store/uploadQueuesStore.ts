@@ -5,6 +5,9 @@ import {
   DamAssetType,
   UploadQueueItemStatus,
   UploadQueueItemType,
+  UploadRowRole,
+  apiErrorStatus,
+  createUploadSettlement,
   damFileTypeFix,
   getAssetTypeByMimeType,
   isNull,
@@ -12,6 +15,7 @@ import {
   useAlerts,
   useAssetSuggestions,
   useDamConfigState,
+  useDamNotificationsConnection,
   useUploadQueueItemFactory,
 } from '@anzusystems/common-admin'
 import type {
@@ -26,11 +30,17 @@ import type {
   UploadQueue,
   UploadQueueItem,
   UploadQueueItemStatusType,
+  UploadReadOptions,
+  UploadRefreshOutcome,
+  UploadRowRoleType,
+  UploadSettlePolicy,
 } from '@anzusystems/common-admin'
+import { isAxiosError } from 'axios'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref, toRaw } from 'vue'
+import { getCurrentScope, onScopeDispose, ref, toRaw } from 'vue'
 
-import { fetchAsset, fetchAssetListByIds } from '@/domains/coreDam/asset/api/assetApi'
+import { fetchAsset, fetchAssetListByIds, fetchWaitingAssets } from '@/domains/coreDam/asset/api/assetApi'
+import { fetchAssetSlotFiles } from '@/domains/coreDam/asset/api/assetSlotApi'
 import { fetchAudioFile } from '@/domains/coreDam/asset/api/audioApi'
 import { fetchDocumentFile } from '@/domains/coreDam/asset/api/documentApi'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
@@ -69,13 +79,92 @@ let queueItemSequence = 0
 const uniqueQueueItemKey = (prefix: string) => `${prefix}_${++queueItemSequence}`
 const CHUNK_SIZE = 10485760
 
+const roleOf = (item: UploadQueueItem): UploadRowRoleType => {
+  switch (item.type) {
+    case UploadQueueItemType.SlotFile:
+      return UploadRowRole.Slot
+    case UploadQueueItemType.Asset:
+      return UploadRowRole.MassEdit
+    case UploadQueueItemType.ExternalProviderAsset:
+      return UploadRowRole.ExternalImport
+    default:
+      return UploadRowRole.Upload
+  }
+}
+
+/* What the settlement does with a row, by its role. The state of a processed file is written from its notification
+ * at once, and the read after it completes the row; a duplicate stays the row it was, marked. */
+const policyFor = (role: UploadRowRoleType): UploadSettlePolicy => {
+  switch (role) {
+    // The asset speaks only of its main file, so a slot is read from the list of the slots; it has no form.
+    case UploadRowRole.Slot:
+      return { reader: 'slots', settleOn: 'event', duplicate: 'markDuplicate', metadata: 'none' }
+    // Never asked about: the batch load owns its status, and a processed file only completes the row.
+    case UploadRowRole.MassEdit:
+      return { reader: 'none', settleOn: 'never', duplicate: 'markDuplicate', metadata: 'load' }
+    default:
+      return { reader: 'asset', settleOn: 'event', duplicate: 'markDuplicate', metadata: 'load' }
+  }
+}
+
+/* The poll asks for as long as a row waits. The settlement says of each of its requests whether a failure of it is
+ * the first of a streak, and only that one is handed to the api error logger: `report` of the three readers. */
+
+// An asset that does not exist is an answer, which the settlement counts; anything else is a read that failed.
+const readAsset = async (assetId: DocId, options?: UploadReadOptions) => {
+  try {
+    // Called as ever unless it is to be quiet.
+    return options?.report === false ? await fetchAsset(assetId, { report: false }) : await fetchAsset(assetId)
+  } catch (error) {
+    if (apiErrorStatus(error) === 404) return null
+    throw error
+  }
+}
+
+// The read of several assets, and the read of the slots below, report only where they are told to.
+const readAssets = (licenceId: number, assetIds: DocId[], options?: UploadReadOptions) =>
+  fetchWaitingAssets(assetIds, licenceId, { report: options?.report === true })
+
+/* The server answered the request, and refused it (a 4xx): nothing more will come of that request. A request that
+ * got no answer, or the answer of a server in trouble, may have been carried out all the same. The requests of an
+ * upload go to the client itself, so their failure is the client's own error; one made through the api helpers
+ * carries its status otherwise. */
+const isRefusal = (error: unknown) => {
+  const status = isAxiosError(error) ? error.response?.status : apiErrorStatus(error)
+
+  return status !== undefined && status >= 400 && status < 500
+}
+
+// Waiting for its turn, being sent, or with the server: not settled yet, one way or the other.
+const isUnderWay = (status: UploadQueueItemStatusType) =>
+  status === UploadQueueItemStatus.Waiting ||
+  status === UploadQueueItemStatus.Uploading ||
+  status === UploadQueueItemStatus.Processing
+
+// @todo product question what to do with duplicate file display
+const fetchDuplicateOriginFile = async (
+  originFileId: DocId,
+  assetType: DamAssetTypeType
+): Promise<AssetFileNullable> => {
+  switch (assetType) {
+    case DamAssetType.Image:
+      return await fetchImageFile(originFileId)
+    case DamAssetType.Audio:
+      return await fetchAudioFile(originFileId)
+    case DamAssetType.Video:
+      return await fetchVideoFile(originFileId)
+    case DamAssetType.Document:
+      return await fetchDocumentFile(originFileId)
+  }
+
+  return null
+}
+
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
-  // Items whose metadata could not be read - not by message, which changes with the language.
+  // The mass-edit rows whose batch load could not give them their metadata - not by message, which changes with the
+  // language.
   const metadataFailures = new Set<string>()
   const metadataFailureKey = (queueId: string, item: UploadQueueItem) => queueId + '/' + item.key
-  /* The rows `queueItemMetadataProcessed` has given their metadata. A failure takes the form of such a row away,
-   * not what the user has typed into it. */
-  const metadataLoaded = new WeakSet<UploadQueueItem>()
 
   const { createDefault } = useUploadQueueItemFactory()
   const { showError } = useAlerts()
@@ -83,6 +172,126 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
   const queues = ref<{ [queueId: string]: UploadQueue }>({})
+
+  // The rows handed to the settlement to be asked about: `track` below.
+  const handedOver = new WeakSet<UploadQueueItem>()
+
+  /* The slot rows for which a 404 of the list of the slots of their asset was written down. The settlement asks
+   * three times before it gives such a row up, and knows "already written down" only of an asset its own read found
+   * missing: here the 404 is turned into an answer, so this is where it is remembered. By the row and not by the
+   * asset: what was written down for one upload says nothing of the next one into that slot, and the memory goes
+   * with the row. Forgotten with the next read of the slots that answers. */
+  const goneAssetWrittenDown = new WeakSet<UploadQueueItem>()
+
+  // Only the rows a read of the slots is made for: one that still waits or is still being sent has not been asked
+  // about, and what is written down before it is has nothing to do with it.
+  const slotRowsOf = (assetId: DocId) =>
+    Object.values(queues.value).flatMap((queue) =>
+      queue.items
+        .map((item) => toRaw(item))
+        .filter(
+          (item) => item.type === UploadQueueItemType.SlotFile && item.assetId === assetId && handedOver.has(item)
+        )
+    )
+
+  // An asset that is gone has no slots: the file of the row is then missing from a list that was read, which the
+  // settlement counts as it counts an asset that does not exist. Anything else is a read that failed.
+  const readSlotFiles = async (assetId: DocId, options?: UploadReadOptions) => {
+    // The rows as they are when the request goes out.
+    const rows = slotRowsOf(assetId)
+    const writtenDown = rows.length > 0 && rows.every((row) => goneAssetWrittenDown.has(row))
+    const report = options?.report === true && !writtenDown
+    try {
+      const files = await fetchAssetSlotFiles(assetId, { report })
+      rows.forEach((row) => goneAssetWrittenDown.delete(row))
+
+      return files
+    } catch (error) {
+      if (apiErrorStatus(error) !== 404) throw error
+      if (report) rows.forEach((row) => goneAssetWrittenDown.add(row))
+
+      return []
+    }
+  }
+
+  /* What becomes of a row once its file is with the server. The poll of its queue, the notifications and the
+   * refresh button all go through here; the notifications only bring the news sooner. */
+  const settlement = createUploadSettlement({
+    queues: () => Object.entries(queues.value),
+    roleOf,
+    policyFor,
+    matches: (item, target, purpose) =>
+      // The metadata notification names no file: by the asset alone.
+      purpose === 'metadata'
+        ? item.assetId === target.assetId
+        : notificationMatches(item, target.assetId, target.fileId, purpose === 'decorate'),
+    readers: {
+      asset: readAsset,
+      assets: readAssets,
+      slotFiles: readSlotFiles,
+      duplicateOriginFile: fetchDuplicateOriginFile,
+    },
+    caches: {
+      addAuthors: addToCachedAuthors,
+      addKeywords: addToCachedKeywords,
+      fetchAuthors: fetchCachedAuthors,
+      fetchKeywords: fetchCachedKeywords,
+    },
+    messages: {
+      // The slot row has only Cancel, so it must not be sent looking for a refresh button.
+      processingTooLong: (item) =>
+        translate(
+          item.type === UploadQueueItemType.SlotFile
+            ? 'system.uploadErrors.processingTooLongSlot'
+            : 'system.uploadErrors.processingTooLong'
+        ),
+      readFailed: () => translate('system.uploadErrors.metadataFailed'),
+      assetMissing: () => translate('system.uploadErrors.unknownError'),
+    },
+    // The one failed row the metadata notification still reaches: it failed for want of this very metadata.
+    metadataGate: (queueId, item) => (metadataFailures.has(metadataFailureKey(queueId, item)) ? 'load' : undefined),
+    hooks: {
+      onRowFinal: (queueId, item) => {
+        // Its file failed: that is what is wrong with the row now, not the metadata its batch load left out.
+        if (item.status === UploadQueueItemStatus.Failed) metadataFailures.delete(metadataFailureKey(queueId, item))
+        recalculateQueueCounts(queueId)
+        processUpload(queueId)
+      },
+      // An asset created empty gets its first file through a slot: the open detail of it learns its main file.
+      onAssetRead: (asset) => {
+        const assetDetailStore = useAssetDetailStore()
+        if (assetDetailStore.asset?.id === asset.id && assetDetailStore.asset.mainFile === null && asset.mainFile) {
+          assetDetailStore.asset.mainFile = asset.mainFile
+        }
+      },
+      /* The status of a mass-edit row is its batch load's, so a processed file leaves it alone and only takes the
+       * error of the row away. Not the missing-metadata one: it is still true, and cleared where it stops being. */
+      onProcessedSeen: (queueId, item) => {
+        if (metadataFailures.has(metadataFailureKey(queueId, item))) return
+        item.error.hasError = false
+        item.error.message = ''
+        // The reason goes with the error: some rows print it in place of the message.
+        item.error.assetFileFailReason = AssetFileFailReason.None
+      },
+      // And the warning its batch load left behind: the metadata is here now.
+      afterMetadataLoaded: (queueId, item) => {
+        if (metadataFailures.delete(metadataFailureKey(queueId, item))) {
+          item.error.hasError = false
+          item.error.message = ''
+        }
+      },
+    },
+    connection: useDamNotificationsConnection(),
+  })
+
+  // A store disposed of leaves nothing behind: no timer of a poll, no listener for the tab or for the socket.
+  if (getCurrentScope()) onScopeDispose(() => settlement.dispose())
+
+  // From here the poll of the queue asks about the row.
+  const track = (queueId: string, item: UploadQueueItem, options?: { clientFailed?: boolean }) => {
+    handedOver.add(toRaw(item))
+    settlement.track(queueId, item, options)
+  }
 
   // Getters (parameterized - plain functions)
   function getQueueFileInputKey(queueId: string) {
@@ -348,8 +557,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       const item = queues.value[queueId].items[index]
       // Removal can land mid-upload, and after a delete the asset is already gone server-side.
       item.status = UploadQueueItemStatus.Stop
-      // The fallback reschedules itself, so a removed item would poll fetchAsset for minutes.
-      clearTimeout(item.notificationFallbackTimer)
+      // The poll of the queue no longer asks about it, nor does a read a notification asked for on its behalf.
+      settlement.untrack(item)
       uploadStopHandles.get(item)?.()
       uploadStopHandles.delete(item)
       metadataFailures.delete(metadataFailureKey(queueId, item))
@@ -401,11 +610,16 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   function stopUpload(queueId: string) {
-    if (!queues.value[queueId] || queues.value[queueId].items.length === 0) return
+    if (!queues.value[queueId]) return
+    if (queues.value[queueId].items.length === 0) {
+      // Emptied row by row, the queue still has its idle poll: it goes with the queue.
+      settlement.dropQueue(queueId)
+
+      return
+    }
     const currentItems = getQueueItemsByStatus(queueId, UploadQueueItemStatus.Uploading)
     queues.value[queueId].items.forEach((item) => {
       item.status = UploadQueueItemStatus.Stop
-      clearTimeout(item.notificationFallbackTimer)
       uploadStopHandles.get(item)?.()
       uploadStopHandles.delete(item)
     })
@@ -423,7 +637,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   async function stopItemUpload(queueId: string, queueItem: UploadQueueItem) {
     if (!queues.value[queueId] || queues.value[queueId].items.length === 0) return
     queueItem.status = UploadQueueItemStatus.Stop
-    clearTimeout(queueItem.notificationFallbackTimer)
+    settlement.untrack(queueItem)
     uploadStopHandles.get(queueItem)?.()
     uploadStopHandles.delete(queueItem)
     if (queueItem.latestChunkAbortController) {
@@ -440,20 +654,27 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     if (item.type === UploadQueueItemType.ExternalProviderAsset) {
       const { importInit } = externalProviderImport(item)
       await importInit()
+      // It has its ids only from that answer on, and no upload whose finish would hand it over.
+      if (item.status === UploadQueueItemStatus.Processing) track(queueId, item)
       recalculateQueueCounts(queueId)
       processUpload(queueId)
       return
     }
 
     // standard + slot upload
-    const { upload, uploadInit, stop } = useUpload(item, (progress: number, speed: number, estimate: number) => {
-      setUploadSpeed(item, progress, speed, estimate)
-    })
+    const { upload, uploadInit, stop, finishAttempted } = useUpload(
+      item,
+      (progress: number, speed: number, estimate: number) => {
+        setUploadSpeed(item, progress, speed, estimate)
+      }
+    )
     uploadStopHandles.set(item, stop)
     try {
       await uploadInit()
       await upload()
       uploadStopHandles.delete(item)
+      // Not a row its notification has settled meanwhile, nor a stopped one.
+      if (item.status === UploadQueueItemStatus.Processing) track(queueId, item)
       processUpload(queueId)
     } catch (e) {
       uploadStopHandles.delete(item)
@@ -464,6 +685,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       // The processed notification can beat the answer to the finish request: a row it has settled stays
       // uploaded, whatever became of that request.
       if (item.status === UploadQueueItemStatus.Uploaded) return
+      // So can the failed one, and only the settlement fails a row before this: the server has said its last word
+      // about that file.
+      const failedByServer = item.status === UploadQueueItemStatus.Failed
       const message = resolveUploadErrorMessage(e)
       // One alert per reason: a licence that refuses uploads fails every file in the batch.
       const alreadyReported = getQueueItemsByStatus(queueId, UploadQueueItemStatus.Failed).some(
@@ -473,21 +697,24 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       item.error.hasError = true
       item.error.message = message
       item.status = UploadQueueItemStatus.Failed
-      // Its metadata event comes while the file still sends, and had enabled the form - or could not be read,
-      // which is no longer what is wrong with the row.
+      // Its metadata event comes while the file still sends, and had enabled the form.
       item.canEditMetadata = false
-      metadataFailures.delete(metadataFailureKey(queueId, item))
       if (!alreadyReported) {
         showError(message)
+      }
+      // The finish request went out, so the server may complete the file all the same: the row is asked about for
+      // as long as it stays in the queue. Not when the server has refused that request: it will not finish the file.
+      if (finishAttempted() && !failedByServer && !isRefusal(e)) {
+        track(queueId, item, { clientFailed: true })
       }
       recalculateQueueCounts(queueId)
       processUpload(queueId)
     }
   }
 
-  /* Slot uploads of one asset differ only in the file, so an event naming the asset alone settled
-   * all of them. A mass-edit row without a file id cannot be told from one either, so only the
-   * processed handler passes `matchAssetWithoutFile` - it merely decorates such a row, while a
+  /* Slot uploads of one asset differ only in the file, so news naming the asset alone settled
+   * all of them. A mass-edit row without a file id cannot be told from one either, so only a
+   * processed file is matched with `matchAssetWithoutFile` - it merely completes such a row, while a
    * failure or a duplicate would give it a terminal state it has not earned. */
   function notificationMatches(
     item: UploadQueueItem,
@@ -499,226 +726,43 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     /* Never while the batch load owns the row: off `Loading` its own failure handler passes it by,
      * and the row is left looking finished with no metadata, which the bulk save skips. */
     if (item.status === UploadQueueItemStatus.Loading) return false
-    /* A slot answers only to an event naming its own file, so without notifications it stays
-     * unfinished - the fallback reaches this far only for the main file. */
+    /* A slot answers only to news naming its own file: its notification, or the list of the slots of its asset
+     * the poll reads. A read of the asset speaks of the main file alone. */
     if (item.type === UploadQueueItemType.SlotFile) return !isNull(fileId) && item.fileId === fileId
     if (item.type === UploadQueueItemType.Asset && isNull(item.fileId)) return matchAssetWithoutFile
 
     return isNull(fileId) || item.fileId === fileId
   }
 
-  async function queueItemProcessed(assetId: DocId, fileId: DocIdNullable = null) {
-    /* Settled first, decorated from the fetch below: gating the transition on that fetch left the
-     * item running whenever it failed, or whenever the asset had no main file. Called by the
-     * notification, the fallback and the refresh button alike. */
-    for (const queueId in queues.value) {
-      queues.value[queueId].items.forEach((item) => {
-        if (!notificationMatches(item, assetId, fileId, true)) return
-        clearTimeout(item.notificationFallbackTimer)
-        // The batch load owns a mass-edit row's status; the event only decorates it, below.
-        if (item.type !== UploadQueueItemType.Asset) item.status = UploadQueueItemStatus.Uploaded
-        /* A row the client gave up on, whose file the server finished all the same: it lost its form with the
-         * failure, and when it had its metadata by then, gets the form back as the user left it. */
-        if (item.status === UploadQueueItemStatus.Uploaded && !item.isDuplicate && metadataLoaded.has(toRaw(item))) {
-          item.canEditMetadata = true
-        }
-        /* Nothing else clears the fallback's "press refresh" warning, and refresh comes back through
-         * here. Not the missing-metadata one: it is still true, and cleared where it stops being. */
-        if (!metadataFailures.has(metadataFailureKey(queueId, item))) {
-          item.error.hasError = false
-          item.error.message = ''
-          // The reason goes with the error: some rows print it in place of the message.
-          item.error.assetFileFailReason = AssetFileFailReason.None
-        }
-        processUpload(queueId)
-      })
-      recalculateQueueCounts(queueId)
-    }
+  // The names of before the settlement, kept for their callers: the notification listeners of the application.
 
-    let asset: Awaited<ReturnType<typeof fetchAsset>>
-    try {
-      asset = await fetchAsset(assetId)
-    } catch (error) {
-      console.error('uploadQueue: the processed asset could not be read', error)
-
-      return
-    }
-    if (!asset.mainFile) return
-    const mainFile = asset.mainFile
-    for (const queueId in queues.value) {
-      queues.value[queueId].items.forEach((item) => {
-        if (!notificationMatches(item, asset.id, fileId, true)) return
-        item.assetStatus = asset.attributes.assetStatus
-        // Only when the item is the main file: a slot would take a thumbnail describing another.
-        if (isNull(item.fileId) || item.fileId === mainFile.id) {
-          if (mainFile.links?.image_detail) {
-            item.imagePreview = mainFile.links.image_detail
-          }
-          // Not on a mass-edit row, nor on one that has its metadata: there the flag is a form field the user may
-          // have just set.
-          if (item.type !== UploadQueueItemType.Asset && !item.canEditMetadata) {
-            item.mainFileSingleUse = asset.mainFileSingleUse
-          }
-        }
-      })
-    }
+  function queueItemProcessed(assetId: DocId, fileId: DocIdNullable = null) {
+    return settlement.notify({ kind: 'processed', assetId, fileId })
   }
 
   function queueItemFailed(assetId: DocId, failReason: AssetFileFailReasonType, fileId: DocIdNullable = null) {
-    // No fetch: the caller carries everything, and a failed one left the item looking alive.
-    for (const queueId in queues.value) {
-      queues.value[queueId].items.forEach((item) => {
-        if (notificationMatches(item, assetId, fileId)) {
-          clearTimeout(item.notificationFallbackTimer)
-          item.error.hasError = true
-          // The row prints the message over the fail reason chip, and the old one is not why.
-          item.error.message = ''
-          metadataFailures.delete(metadataFailureKey(queueId, item))
-          item.status = UploadQueueItemStatus.Failed
-          item.error.assetFileFailReason = failReason
-          item.canEditMetadata = false
-          processUpload(queueId)
-        }
-      })
-      recalculateQueueCounts(queueId)
-    }
+    settlement.settleKnownFailed({ assetId, fileId }, failReason)
   }
 
-  async function queueItemMetadataProcessed(assetId: DocId) {
-    const { updateNewNames, getAuthorConflicts } = useAssetSuggestions()
-    const assetDetailStore = useAssetDetailStore()
-    /* The only place an ordinary upload is given its metadata, and its notification comes once - so a
-     * failure here leaves the form disabled and the item skipped by the bulk save, until the fallback or the
-     * refresh button asks again. */
-    let asset: Awaited<ReturnType<typeof fetchAsset>>
-    try {
-      asset = await fetchAsset(assetId)
-    } catch (error) {
-      // Said on the item: the form stays disabled and the bulk save skips it, silently otherwise.
-      console.error('uploadQueue: the asset metadata could not be read', error)
-      for (const queueId in queues.value) {
-        queues.value[queueId].items.forEach((item) => {
-          if (item.assetId !== assetId) return
-          // A slot upload of the same asset has its own branch below and may still be running.
-          if (item.type === UploadQueueItemType.SlotFile) return
-          // A mass-edit row already has its metadata, and could not take such a warning back.
-          if (item.canEditMetadata) return
-          // A duplicate is settled, and has no metadata of its own to miss. Nor has a row whose file failed.
-          if (item.isDuplicate) return
-          if (item.status === UploadQueueItemStatus.Failed && !metadataFailures.has(metadataFailureKey(queueId, item)))
-            return
-          metadataFailures.add(metadataFailureKey(queueId, item))
-          item.error.hasError = true
-          item.error.message = translate('system.uploadErrors.metadataFailed')
-        })
-      }
-
-      return
-    }
-    for (const queueId in queues.value) {
-      queues.value[queueId].items.forEach((item) => {
-        if (item.assetId === asset.id && item.type !== UploadQueueItemType.SlotFile) {
-          /* A duplicate was settled as not editable. Its metadata event can come after the duplicate one, and made
-           * the row a disabled form that was validated and saved. */
-          if (item.isDuplicate) return
-          /* So was a row whose file failed: this event can come after the failure, and made the row editable again.
-           * The one failed row it still reaches failed for want of this very metadata - a mass-edit row its batch
-           * load left out. */
-          if (item.status === UploadQueueItemStatus.Failed && !metadataFailures.has(metadataFailureKey(queueId, item)))
-            return
-          /* Loaded once, whoever asks - the notification, the fallback or the refresh button: a row that has its
-           * metadata keeps what the user has typed since. */
-          if (item.canEditMetadata) return
-          item.keywords = asset.keywords
-          item.authors = asset.authors
-          item.customData = asset.metadata.customData
-          item.mainFileSingleUse = asset.mainFileSingleUse
-          updateNewNames(asset.metadata.authorSuggestions, queues.value[queueId].suggestions.newAuthorNames)
-          updateNewNames(asset.metadata.keywordSuggestions, queues.value[queueId].suggestions.newKeywordNames)
-          item.authorConflicts = getAuthorConflicts(asset.metadata.authorSuggestions)
-          metadataLoaded.add(toRaw(item))
-          item.canEditMetadata = true
-          // And the warning an earlier attempt left behind: the metadata is here now.
-          if (metadataFailures.delete(metadataFailureKey(queueId, item))) {
-            item.error.hasError = false
-            item.error.message = ''
-          }
-          addToCachedKeywords(item.keywords)
-          addToCachedAuthors(item.authors)
-          addToCachedAuthors(item.authorConflicts)
-        } else if (
-          item.assetId === asset.id &&
-          item.type === UploadQueueItemType.SlotFile &&
-          assetDetailStore.asset?.id === assetId &&
-          assetDetailStore.asset.mainFile === null
-        ) {
-          assetDetailStore.asset.mainFile = asset.mainFile
-        }
-      })
-      recalculateQueueCounts(queueId)
-    }
-    fetchCachedAuthors()
-    fetchCachedKeywords()
+  function queueItemMetadataProcessed(assetId: DocId) {
+    return settlement.notify({ kind: 'metadata', assetId, fileId: null })
   }
 
-  async function queueItemDuplicate(
+  function queueItemDuplicate(
     assetId: DocId,
     originAssetFile: DocIdNullable = null,
     assetType: DamAssetTypeType | null = null,
     fileId: DocIdNullable = null
   ) {
-    // Settled first, decorated afterwards: waiting for the origin file held an upload slot.
-    for (const queueId in queues.value) {
-      queues.value[queueId].items.forEach((item) => {
-        if (!notificationMatches(item, assetId, fileId)) return
-        clearTimeout(item.notificationFallbackTimer)
-        item.isDuplicate = true
-        item.status = UploadQueueItemStatus.Uploaded
-        item.canEditMetadata = false // todo check with product
-        // Same as above: a duplicate is a settled item, not a failed one.
-        item.error.hasError = false
-        item.error.message = ''
-        item.error.assetFileFailReason = AssetFileFailReason.None
-        processUpload(queueId)
-      })
-      recalculateQueueCounts(queueId)
-    }
+    return settlement.settleKnownDuplicate({ assetId, fileId }, originAssetFile, assetType)
+  }
 
-    // @todo product question what to do with duplicate file display
-    let file: null | AssetFileNullable = null
-    if (originAssetFile && assetType) {
-      try {
-        switch (assetType) {
-          case DamAssetType.Image:
-            file = await fetchImageFile(originAssetFile)
-            break
-          case DamAssetType.Audio:
-            file = await fetchAudioFile(originAssetFile)
-            break
-          case DamAssetType.Video:
-            file = await fetchVideoFile(originAssetFile)
-            break
-          case DamAssetType.Document:
-            file = await fetchDocumentFile(originAssetFile)
-            break
-        }
-      } catch (error) {
-        console.error('uploadQueue: the duplicated file could not be read', error)
-      }
-    }
-    if (isNull(file)) return
-    const duplicate = file
-    for (const queueId in queues.value) {
-      queues.value[queueId].items.forEach((item) => {
-        if (!notificationMatches(item, assetId, fileId)) return
-        item.fileId = duplicate.id
-        item.duplicateAssetId = duplicate.asset
-        item.mainFileSingleUse = duplicate.flags.singleUse
-        if (duplicate.links?.image_detail) {
-          item.imagePreview = duplicate.links.image_detail
-        }
-      })
-    }
+  /* The refresh button of a row: asks what became of the file now, and settles by it the rows of the asset that
+   * hold the file of this row. Never a slot upload: the asset says nothing about which of its slots finished. */
+  function refreshQueueItem(item: UploadQueueItem): Promise<UploadRefreshOutcome> {
+    if (isNull(item.assetId)) return Promise.resolve('error')
+
+    return settlement.refreshAsset({ assetId: item.assetId, fileId: item.fileId })
   }
 
   function setUploadSpeed(item: UploadQueueItem, progress: number, speed: number, estimate: number) {
@@ -736,9 +780,18 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
   function clearQueue(queueId: string) {
     queues.value[queueId]?.items.forEach((item) => {
-      clearTimeout(item.notificationFallbackTimer)
       metadataFailures.delete(metadataFailureKey(queueId, item))
+      /* A file that is still on its way is stopped as `stopUpload` stops it: left going, it was sent to its end
+       * behind the emptied queue, and the asset it made stayed. A settled row is left as it is - unless its file
+       * is still being sent: a notification can fail the row, or settle it, before the upload has ended. */
+      if (!isUnderWay(item.status) && !uploadStopHandles.has(item)) return
+      item.status = UploadQueueItemStatus.Stop
+      uploadStopHandles.get(item)?.()
+      uploadStopHandles.delete(item)
+      if (item.latestChunkAbortController) uploadStop(item.latestChunkAbortController)
     })
+    // Before the queue is replaced: its rows are no longer asked about.
+    settlement.dropQueue(queueId)
     queues.value[queueId] = {
       items: [],
       totalCount: 0,
@@ -815,6 +868,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   function reset() {
+    Object.keys(queues.value).forEach((queueId) => settlement.dropQueue(queueId))
     queues.value = {}
   }
 
@@ -847,6 +901,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     queueItemFailed,
     queueItemMetadataProcessed,
     queueItemDuplicate,
+    refreshQueueItem,
     setUploadSpeed,
     recalculateQueueCounts,
     clearQueue,

@@ -2,6 +2,7 @@
 import type { CachedItem, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
 import { isUndefined } from '@anzusystems/common-admin'
 import { computed, shallowRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 
@@ -31,10 +32,14 @@ const item = computed(() => {
   return getCachedAuthor(props.id)
 })
 
+// The server did not return it: its id is all there is to show.
+const unresolved = computed(() => !loaded.value && item.value?._unresolved === true)
+
 const displayTitle = computed(() => {
   if (cached.value) {
     return cached.value.name + (cached.value.identifier?.length > 0 ? ` (${cached.value.identifier})` : '')
   }
+  if (unresolved.value) return '#' + props.id
   return ''
 })
 
@@ -48,6 +53,8 @@ watch(
   },
   { immediate: true }
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -55,11 +62,12 @@ watch(
     size="small"
     closable
     close-icon="mdi-plus"
+    :title="unresolved ? t('common.model.cachedUnavailable') : undefined"
     @click:close="clickClose"
   >
     {{ displayTitle }}
     <VProgressCircular
-      v-if="!loaded"
+      v-if="!loaded && !unresolved"
       :size="12"
       :width="2"
       indeterminate

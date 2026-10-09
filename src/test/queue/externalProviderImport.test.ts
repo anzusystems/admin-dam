@@ -2,12 +2,10 @@ import { UploadQueueItemStatus } from '@anzusystems/common-admin'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const externalProviderUpload = vi.fn(async (): Promise<unknown> => ({ asset: 'asset-1', id: 'file-1' }))
-const armNotificationFallback = vi.fn()
 const showUnknownError = vi.fn()
 
 vi.mock('@/domains/coreDam/asset/api/fileApi', () => ({
   externalProviderUpload: () => externalProviderUpload(),
-  armNotificationFallback: (item: unknown) => armNotificationFallback(item),
 }))
 // The library decides what counts as validation data; this is about what the service does with it.
 let hasValidationData = false
@@ -44,7 +42,7 @@ beforeEach(() => {
 })
 
 describe('importing from an external provider', () => {
-  it('carries the ids over when it succeeds, and arms the fallback behind them', async () => {
+  it('carries the ids over when it succeeds, and hands the item over to processing', async () => {
     const { externalProviderImport } = await load()
     const item = queueItem()
 
@@ -53,9 +51,8 @@ describe('importing from an external provider', () => {
     expect(item.assetId).toBe('asset-1')
     expect(item.fileId).toBe('file-1')
     // Until this response the item had no ids at all, so a notification that arrived first matched nothing and was
-    // gone - and there is no upload here whose finish would arm a fallback.
+    // gone - and there is no upload here whose finish would hand it over: from here the poll of its queue asks.
     expect(item.status).toBe(UploadQueueItemStatus.Processing)
-    expect(armNotificationFallback).toHaveBeenCalledWith(item)
   })
 
   it('leaves an item the notification has already settled alone', async () => {
@@ -72,7 +69,6 @@ describe('importing from an external provider', () => {
     await externalProviderImport(item as never).importInit()
 
     expect(item.status).toBe(UploadQueueItemStatus.Uploaded)
-    expect(armNotificationFallback).not.toHaveBeenCalled()
   })
 
   it('marks the item failed when the provider refuses', async () => {

@@ -82,9 +82,9 @@ export const useGetYoutubeAuthUrl = () =>
     urlTemplate: END_POINT + '/:distributionServiceName/auth-url',
   })
 
-export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName) => {
+export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName, signal?: AbortSignal) => {
   const { execute } = useGetYoutubeAuthUrl()
-  return execute({ urlParams: { distributionServiceName } })
+  return execute({ urlParams: { distributionServiceName }, signal })
 }
 
 export const useFetchYoutubeLanguages = () =>

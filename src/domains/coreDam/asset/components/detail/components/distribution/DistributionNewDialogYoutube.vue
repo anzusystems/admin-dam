@@ -170,18 +170,51 @@ const rules = computed(() => ({
 }))
 const v$ = useVuelidate(rules, { distribution })
 
+// What the dialog is still asking when it closes is given up: the sign-in state is shared, and a late answer
+// would land in a dialog opened next.
+const closed = new AbortController()
+
 const checkAuthorized = async () => {
   if (props.config.requiredAuth) {
-    const resIsAuthorized = await distributionIsAuthorized(props.distributionServiceName)
-    if (resIsAuthorized.authorized) {
-      distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
-      return
+    try {
+      const resIsAuthorized = await distributionIsAuthorized(props.distributionServiceName, closed.signal)
+      if (closed.signal.aborted) return
+      if (resIsAuthorized.authorized) {
+        distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
+        return
+      }
+      const resAuthUrl = await getYoutubeAuthUrl(props.distributionServiceName, closed.signal)
+      if (closed.signal.aborted) return
+      authUrl.value = resAuthUrl.url
+      distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.WaitingForLogin)
+    } catch (error) {
+      if (!closed.signal.aborted) throw error
     }
-    const resAuthUrl = await getYoutubeAuthUrl(props.distributionServiceName)
-    authUrl.value = resAuthUrl.url
-    distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.WaitingForLogin)
   }
   // YouTube always requires auth for now
+}
+
+const isWaitingForLogin = () =>
+  distributionListStore.getDistributionAuth(props.distributionServiceName)?.status ===
+  DistributionAuthStatus.WaitingForLogin
+
+// The user signs in in another tab. The notification that it happened may never arrive, so the server is asked
+// again when they come back. Only whether they are signed in: every login link asked for is one more pending
+// sign-in on the server.
+let recheckingAuthorized = false
+const recheckAuthorized = async () => {
+  if (recheckingAuthorized || document.visibilityState === 'hidden' || !isWaitingForLogin()) return
+  recheckingAuthorized = true
+  try {
+    const resIsAuthorized = await distributionIsAuthorized(props.distributionServiceName, closed.signal)
+    if (resIsAuthorized.authorized && !closed.signal.aborted && isWaitingForLogin()) {
+      distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
+    }
+  } catch {
+    // Asked again the next time the user comes back.
+  } finally {
+    recheckingAuthorized = false
+  }
 }
 
 const submitRedistribute = async () => {
@@ -257,11 +290,16 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 }
 
 onMounted(async () => {
+  window.addEventListener('focus', recheckAuthorized)
+  document.addEventListener('visibilitychange', recheckAuthorized)
   distributionListStore.setAuthStatus(props.distributionServiceName)
   await checkAuthorized()
 })
 
 onUnmounted(async () => {
+  window.removeEventListener('focus', recheckAuthorized)
+  document.removeEventListener('visibilitychange', recheckAuthorized)
+  closed.abort()
   distributionListStore.resetAuth(props.distributionServiceName)
 })
 </script>

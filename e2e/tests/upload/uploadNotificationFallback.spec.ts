@@ -8,10 +8,9 @@ import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
 /**
  * What the upload overlay does when the realtime notification it waits for never arrives.
  *
- * The queue marks an item done from a websocket notification, and the app carries a fallback for the
- * case where that notification is lost — `notificationFallbackCallback` re-reads the asset a few times
- * and resolves the item from its stored status. This spec is the only place that fallback is exercised,
- * because with the websocket healthy it never runs.
+ * A notification only brings the news sooner: the upload queue asks the server itself about every row whose
+ * file the server still works on, and settles the row from what it reads. This spec is the only place that is
+ * exercised with the notifications silent — with the websocket healthy the notification gets there first.
  */
 
 let page: Page
@@ -29,10 +28,9 @@ test.describe.serial(`${ADMIN_SUITE} - Upload notification fallback`, () => {
     await page.context().close()
   })
 
-  test('the overlay still finishes when the notification never arrives', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B11: the fallback is never armed, so the overlay hangs for good — see KNOWN-BUGS.md
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B11' })
-
+  // Was DAM-B11 (the overlay hung for good: the per-row fallback was never armed). The queue polls now,
+  // whatever the config says.
+  test('the overlay still finishes when the notification never arrives', async () => {
     // Standing in for the notification server and staying silent is exactly what a dropped
     // notification looks like to the app — the connection is up, the message simply never comes.
     await page.routeWebSocket(/notification-server/, () => {})
@@ -45,8 +43,9 @@ test.describe.serial(`${ADMIN_SUITE} - Upload notification fallback`, () => {
     // the app catching up with a file it has already stored.
     await waitForAssetProcessed(page, id)
 
-    // The fallback's first check is ~10s after the upload finishes, by which time the asset has long
-    // been processed, so the default budget is already generous — no need to sit out all three checks.
+    // With the socket open the queue first asks 10s after the upload finishes, then at 30s and 60s and
+    // every minute after; without a socket at 5s and more often. The asset is processed by now, so the
+    // next of those reads settles the row: at most a minute away, inside the default budget of 90s.
     await waitForUpload(page)
     expect(await page.locator('[data-cy="upload-overlay-title"]').innerText()).toContain(ALERT_UPLOAD)
   })

@@ -180,6 +180,7 @@ onMounted(() => {
                         />
                       </div>
                       <VBtn
+                        :aria-label="t('coreDam.asset.massOperations.fillOneEmpty')"
                         icon
                         size="small"
                         variant="text"
@@ -195,6 +196,7 @@ onMounted(() => {
                         </VTooltip>
                       </VBtn>
                       <VBtn
+                        :aria-label="t('coreDam.asset.massOperations.replaceOne')"
                         icon
                         size="small"
                         variant="text"
@@ -233,6 +235,7 @@ onMounted(() => {
                         />
                       </div>
                       <VBtn
+                        :aria-label="t('coreDam.asset.massOperations.fillOneEmpty')"
                         icon
                         size="small"
                         variant="text"
@@ -248,6 +251,7 @@ onMounted(() => {
                         </VTooltip>
                       </VBtn>
                       <VBtn
+                        :aria-label="t('coreDam.asset.massOperations.replaceOne')"
                         icon
                         size="small"
                         variant="text"

@@ -50,23 +50,28 @@ const uploadDialogLoader = ref(false)
 const uploadQueuesStore = useUploadQueuesStore()
 const { maxUploadItems } = useBetaTestFeatures()
 
+// Where the files of this entry go: into the slot of the asset, or into the queue as new assets. The files picked
+// at once and the ones confirmed in the limit dialog alike.
+const addToQueue = async (files: File[]) => {
+  if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
+    // todo add check by type for slot uploads
+    await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)
+    return true
+  } else if (props.type === 'default') {
+    await uploadQueuesStore.addByFiles(props.queueId, files)
+    return true
+  }
+  console.error('Unsupported upload setup.')
+  return false
+}
+
 const assetUpload = async (files: File[]) => {
   fileCache.value = files
   if (files.length + uploadQueueTotalCount.value > maxUploadItems.value) {
     openDialog()
     return
   }
-  if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
-    // todo add check by type for slot uploads
-    await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)
-    fileCache.value = []
-    return
-  } else if (props.type === 'default') {
-    await uploadQueuesStore.addByFiles(props.queueId, files)
-    fileCache.value = []
-    return
-  }
-  console.error('Unsupported upload setup.')
+  if (await addToQueue(files)) fileCache.value = []
 }
 
 const fileInputKey = computed(() => {
@@ -94,7 +99,7 @@ const onDialogCancel = () => {
 const onDialogConfirm = async () => {
   uploadDialogLoader.value = true
   const files = fileCache.value.slice(0, maxUploadItems.value - uploadQueueTotalCount.value)
-  await uploadQueuesStore.addByFiles(props.queueId, files)
+  await addToQueue(files)
   fileCache.value = []
   uploadDialogLoader.value = false
   uploadDialog.value = false

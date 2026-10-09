@@ -54,7 +54,7 @@ const emit = defineEmits<{
   (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', assetId: DocId): void
-  (e: 'refreshItem', data: { index: number; assetId: DocId }): void
+  (e: 'refreshItem', data: { index: number; assetId: DocId; item: UploadQueueItem }): void
 }>()
 
 const IMAGE_ASPECT_RATIO = 16 / 9
@@ -135,7 +135,7 @@ const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefin
 
 const refresh = () => {
   if (props.item.assetId) {
-    emit('refreshItem', { index: props.index, assetId: props.item.assetId })
+    emit('refreshItem', { index: props.index, assetId: props.item.assetId, item: props.item })
   }
 }
 
@@ -206,7 +206,7 @@ const showCancel = computed(() => {
       UploadQueueItemStatus.Loading,
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
-      // Processing too: with no notification and no fallback it stays here until refresh or cancel.
+      // Processing too: the server may take long over a file, and the row is asked about for as long as it stays.
       UploadQueueItemStatus.Processing,
       // And `Failed`: delete is no answer there - a refused import never created an asset.
       UploadQueueItemStatus.Failed,
@@ -384,6 +384,7 @@ onUnmounted(() => {
                 />
                 <VBtn
                   v-if="showRefresh"
+                  :aria-label="t('common.button.refresh')"
                   icon
                   size="small"
                   variant="text"
@@ -400,6 +401,7 @@ onUnmounted(() => {
                 </VBtn>
                 <VBtn
                   v-if="showCancel"
+                  :aria-label="t('common.button.cancel')"
                   icon
                   size="small"
                   variant="text"
