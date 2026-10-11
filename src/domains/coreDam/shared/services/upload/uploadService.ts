@@ -1,57 +1,27 @@
 import {
-  NEW_LINE_MARK,
-  UploadQueueItemStatus,
+  adminDamUploadPreset,
   axiosErrorResponseHasForbiddenOperationData,
   axiosErrorResponseHasValidationData,
-  isUndefined,
-  useDamUploadChunkSize,
+  uploadStop,
+  uploadValidationMessage,
+  useDamUpload,
 } from '@anzusystems/common-admin'
-import type { AnzuApiValidationResponseData, UploadQueueItem } from '@anzusystems/common-admin'
+import type { UploadMessages, UploadProgressCallback, UploadQueueItem } from '@anzusystems/common-admin'
 import { isAxiosError } from 'axios'
 import rusha from 'rusha'
-import { ref } from 'vue'
 
-import { uploadChunk as apiUploadChunk, uploadFinish, uploadStart } from '@/domains/coreDam/asset/api/fileApi'
+import { uploadChunk, uploadFinish, uploadStart } from '@/domains/coreDam/asset/api/fileApi'
 import { i18n } from '@/plugins/i18n'
 import { envConfig } from '@/shared/EnvConfigService'
-// const CHUNK_MAX_RETRY = 6
-const CHUNK_MAX_RETRY = 4
-const SPEED_CHECK_INTERVAL = 1000
-const CHUNK_RETRY_INTERVAL = 1000
-const CHUNK_RETRY_MULTIPLY = 3
 
-// Not exported: a stop during a request surfaces as a cancel error, so the store reads the status.
-const UPLOAD_STOPPED = 'upload stopped'
-
-const finishUpload = async (queueItem: UploadQueueItem, sha: string) => {
-  return await uploadFinish(queueItem, sha)
-}
-
-const handleValidationErrorMessage = (error: Error) => {
-  const { t } = i18n.global
-  if (!isAxiosError(error) || !error.response || !error.response.data) {
-    // @ts-ignore
-    return t('system.uploadErrors.unknownError')
-  }
-  const data = error.response.data as AnzuApiValidationResponseData
-  const errorMessages: string[] = []
-  for (const [key, values] of Object.entries(data.fields)) {
-    switch (key) {
-      case 'size':
-        errorMessages.push(t('system.uploadErrors.size'))
-        break
-      case 'offset':
-        errorMessages.push(t('system.uploadErrors.offset'))
-        break
-      case 'mimeType':
-        errorMessages.push(t('system.uploadErrors.mimeType'))
-        break
-      default:
-        // @ts-ignore
-        errorMessages.push(t('system.uploadErrors.systemError') + ': ' + key + ' - ' + values.join(','))
-    }
-  }
-  return errorMessages.length > 0 ? errorMessages.join(NEW_LINE_MARK) : t('system.uploadErrors.unknownError')
+const messages: UploadMessages = {
+  unknownError: () => i18n.global.t('system.uploadErrors.unknownError'),
+  size: () => i18n.global.t('system.uploadErrors.size'),
+  offset: () => i18n.global.t('system.uploadErrors.offset'),
+  mimeType: () => i18n.global.t('system.uploadErrors.mimeType'),
+  systemError: () => i18n.global.t('system.uploadErrors.systemError'),
+  // The store writes its own text over it, as it does today: the text a user sees does not change.
+  chunkValidationFailed: () => i18n.global.t('system.uploadErrors.unknownError'),
 }
 
 const handleForbiddenOperationMessage = (error: Error) => {
@@ -64,248 +34,29 @@ const handleForbiddenOperationMessage = (error: Error) => {
 
 // A rejected upload carries its reason in the response; without this the row is only a red icon.
 export const resolveUploadErrorMessage = (error: unknown) => {
-  const { t } = i18n.global
-
   if (axiosErrorResponseHasForbiddenOperationData(error as Error)) {
     return handleForbiddenOperationMessage(error as Error)
   }
   if (axiosErrorResponseHasValidationData(error as Error)) {
-    return handleValidationErrorMessage(error as Error)
+    return uploadValidationMessage(error, messages)
   }
 
-  return t('system.uploadErrors.unknownError')
+  return messages.unknownError()
 }
 
-const readFile = async (offset: number, size: number, file: File): Promise<{ data: string; offset: number }> => {
-  return new Promise((resolve, reject) => {
-    const partial = file.slice(offset, offset + size)
-    const reader = new FileReader()
-    reader.onload = function (e) {
-      if (e.target?.readyState === FileReader.DONE) {
-        resolve({ data: e.target.result as string, offset: offset })
-      }
-    }
-    reader.onerror = function (e) {
-      reject(e)
-    }
-    reader.readAsArrayBuffer(partial)
-  })
-}
-
-const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-export function useUpload(
-  queueItem: UploadQueueItem,
-  uploadCallback: ((progress: number, speed: number, estimate: number) => void) | undefined = undefined
-) {
-  const fileSize = ref(0)
-
-  const progress = ref(0)
-
-  let speedStack: number[] = []
-  let lastTimestamp = 0
-  let endTimestamp = 0
-  let lastLoaded = 0
-  let speedCheckTimerId: ReturnType<typeof setTimeout> | undefined = undefined
-  // Checked wherever the chunk loop can be interrupted; the token covers only the chunk in flight.
-  let stopped = false
-  // Once the finish request has gone out the server may complete the file, whatever becomes of the answer.
-  let finishRequested = false
-  const sha = rusha.createHash()
-  const { updateChunkSize, lastChunkSize } = useDamUploadChunkSize(envConfig.dam.apiTimeout)
-
-  const getCurrentTimestamp = () => {
-    return Date.now() / 1000
-  }
-
-  // @ts-ignore
-  function progressCallback(progressEvent) {
-    const currentStamp = getCurrentTimestamp()
-    if (lastTimestamp === 0) {
-      lastTimestamp = currentStamp
-
-      return
-    }
-
-    const dataSent = lastLoaded > 0 ? progressEvent.loaded - lastLoaded : progressEvent.loaded
-    lastLoaded = progressEvent.total === progressEvent.loaded ? 0 : progressEvent.loaded
-    speedStack.push(dataSent / (currentStamp - lastTimestamp))
-
-    lastTimestamp = currentStamp
-  }
-
-  const uploadChunk = async (chunkFile: File, offset: number) => {
-    return new Promise((resolve, reject) => {
-      // @ts-ignore
-      apiUploadChunk(queueItem, queueItem.fileId, chunkFile, chunkFile.size, offset, progressCallback)
-        .then((result) => {
-          resolve(result)
-        })
-        .catch((exception) => {
-          reject(exception)
-        })
+/* The run of the library with admin-dam's set: its requests for the four asset types, its texts, its timeout and
+ * its own `rusha`. Made for each run, so the timeout is the one the configuration holds by then. */
+export const useUpload = (queueItem: UploadQueueItem, uploadCallback?: UploadProgressCallback) =>
+  useDamUpload(
+    queueItem,
+    uploadCallback,
+    adminDamUploadPreset({
+      requests: { start: uploadStart, chunk: uploadChunk, finish: uploadFinish },
+      messages,
+      apiTimeout: envConfig.dam.apiTimeout,
+      // Already settled: no wait on the way of an upload (the hash is ready before the start goes out).
+      loadHash: () => Promise.resolve(rusha.createHash()),
     })
-  }
+  )
 
-  const processAndUploadChunk = async (offset: number): Promise<File> => {
-    if (stopped) return Promise.reject(UPLOAD_STOPPED)
-    updateChunkSize(queueItem.progress.speed)
-    let arrayBuffer = await readFile(offset, lastChunkSize.value, queueItem.file!)
-    if (stopped) return Promise.reject(UPLOAD_STOPPED)
-    let chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
-
-    queueItem.currentChunkIndex = offset
-    queueItem.latestChunkAbortController = new AbortController()
-
-    let sleepTime = CHUNK_RETRY_INTERVAL
-    let attempt = 0
-    do {
-      attempt++
-      /* Axios starts `loaded` from zero on each attempt, so the previous baseline makes the retry's
-       * first sample hugely negative - which collapses the adaptive chunk size. */
-      lastLoaded = 0
-      lastTimestamp = 0
-      try {
-        await uploadChunk(chunkFile, offset)
-        sha.update(arrayBuffer.data)
-
-        return chunkFile
-      } catch (error) {
-        // in error recompute
-        if (axiosErrorResponseHasValidationData(error as Error)) {
-          attempt = CHUNK_MAX_RETRY
-          queueItem.error.message = handleValidationErrorMessage(error as Error)
-          return Promise.reject(error)
-        }
-
-        // Before the work for an attempt that never happens: the loop ends here.
-        if (attempt >= CHUNK_MAX_RETRY) break
-
-        if (updateChunkSize(queueItem.progress.speed)) {
-          arrayBuffer = await readFile(offset, lastChunkSize.value, queueItem.file!)
-          chunkFile = new File([arrayBuffer.data], queueItem.file!.name)
-        }
-        await sleep(sleepTime)
-        if (stopped) return Promise.reject(UPLOAD_STOPPED)
-        sleepTime *= CHUNK_RETRY_MULTIPLY
-      }
-    } while (attempt < CHUNK_MAX_RETRY)
-    return Promise.reject('Unable to upload chunk, max tries exceeded')
-  }
-
-  function speedCheck() {
-    function speedCheckRun() {
-      speedStack = speedStack.slice(-15)
-      if (speedStack.length > 0) {
-        const avgSpeed = Math.ceil(speedStack.reduce((sum, current) => sum + current) / speedStack.length)
-        const remainingBytes = Math.ceil(fileSize.value * ((100 - progress.value) / 100))
-
-        if (!isUndefined(uploadCallback)) {
-          uploadCallback(progress.value, avgSpeed, Math.ceil(remainingBytes / avgSpeed))
-        }
-      }
-
-      if (endTimestamp === 0) {
-        speedCheckTimerId = setTimeout(function () {
-          speedCheckRun()
-        }, SPEED_CHECK_INTERVAL)
-      }
-    }
-
-    speedCheckRun()
-  }
-
-  const stopSpeedCheck = () => {
-    endTimestamp = getCurrentTimestamp()
-    if (speedCheckTimerId !== undefined) {
-      clearTimeout(speedCheckTimerId)
-      speedCheckTimerId = undefined
-    }
-  }
-
-  const uploadInit = async () => {
-    return new Promise((resolve, reject) => {
-      if (!queueItem.file) {
-        // Rejected, not left hanging: the outer promise would never settle, holding a slot.
-        reject(new Error('uploadService: the queue item has no file'))
-
-        return
-      }
-      fileSize.value = queueItem.file ? queueItem.file.size : 0
-      queueItem.status = UploadQueueItemStatus.Uploading
-      // todo
-      uploadStart(queueItem)
-        .then((res) => {
-          // Everything that follows is addressed by these two: without them the chunks would be sent to
-          // `…/undefined/chunk`, and retried there. An answer that lacks one is a start that was refused.
-          if (!res?.id || !res?.asset) {
-            reject(new Error('uploadService: the start answer names no file or no asset'))
-
-            return
-          }
-          queueItem.assetId = res.asset
-          queueItem.fileId = res.id
-          // A stop asked for while this was on the wire; the asset it created stays on the server.
-          if (stopped) {
-            reject(UPLOAD_STOPPED)
-
-            return
-          }
-          resolve(queueItem)
-        })
-        .catch((err) => {
-          reject(err)
-        })
-    })
-  }
-
-  const upload = async () => {
-    if (uploadCallback) {
-      speedCheck()
-    }
-
-    const filesize = queueItem.file?.size
-    if (isUndefined(filesize)) return Promise.reject()
-
-    // On every exit of the loop: `endTimestamp` was set only on success, so a failure left it going.
-    try {
-      let i = 0
-      while (i < filesize) {
-        if (stopped) return Promise.reject(UPLOAD_STOPPED)
-        const uploadedChunk = await processAndUploadChunk(i)
-        i += uploadedChunk.size
-        progress.value = (i / filesize) * 100
-      }
-
-      // The last chunk can land after the stop.
-      if (stopped) return Promise.reject(UPLOAD_STOPPED)
-
-      finishRequested = true
-
-      return await finishUpload(queueItem, sha.digest('hex'))
-    } finally {
-      stopSpeedCheck()
-    }
-  }
-
-  const stop = () => {
-    stopped = true
-    stopSpeedCheck()
-    queueItem.latestChunkAbortController?.abort()
-  }
-
-  const finishAttempted = () => finishRequested
-
-  return {
-    uploadInit,
-    upload,
-    stop,
-    finishAttempted,
-  }
-}
-
-export const uploadStop = (abortController: AbortController) => {
-  abortController.abort()
-}
+export { uploadStop }

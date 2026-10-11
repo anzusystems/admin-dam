@@ -17,8 +17,8 @@ import Duration from 'dayjs/plugin/duration'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
+import { coreDamDefaultConfig } from '@/plugins/commonAdminCoreDam'
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
-import { damClient } from '@/shared/apiClients/damClient'
 
 dayjs.extend(Duration)
 
@@ -38,9 +38,7 @@ loadEnvConfig(() => {
       },
       coreDam: {
         configs: {
-          default: {
-            damClient: damClient,
-          },
+          default: coreDamDefaultConfig,
         },
         apiTimeout: envConfig.dam.apiTimeout,
         adminDomain: envConfig.dam.adminUrl,

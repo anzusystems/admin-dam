@@ -1,48 +1,6 @@
-import type { DamAuthor, DamAuthorMinimal, DocId } from '@anzusystems/common-admin'
-import { defineCached } from '@anzusystems/common-admin'
+import { useDamCachedAuthors } from '@anzusystems/common-admin'
 
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useFetchAuthorListByIds } from '@/domains/coreDam/author/api/authorApi'
-
-const mapFullToMinimal = (author: DamAuthor): DamAuthorMinimal => ({
-  id: author.id,
-  name: author.name,
-  identifier: author.identifier,
-  reviewed: author.flags.reviewed,
-})
-
-const mapIdToMinimal = (id: DocId): DamAuthorMinimal => {
-  return { id: id, name: '', identifier: '', reviewed: false }
-}
-
-const { cache, toFetch, fetch, add, addManual, addManualMinimal, has, get, isLoaded } = defineCached<
-  DocId,
-  DamAuthor,
-  DamAuthorMinimal
->(mapFullToMinimal, mapIdToMinimal, (ids) => {
-  const { currentExtSystemId } = useCurrentExtSystem()
-  const { execute } = useFetchAuthorListByIds()
-  return execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
-})
-
-export const useCachedAuthors = () => {
-  return {
-    addManualToCachedAuthors: addManual,
-    addManualMinimalToCachedAuthors: addManualMinimal,
-    addToCachedAuthors: add,
-    fetchCachedAuthors: fetch,
-    toFetchCachedAuthors: toFetch,
-    cachedAuthors: cache,
-    hasCachedAuthor: has,
-    getCachedAuthor: get,
-    isLoadedCachedAuthor: isLoaded,
-  }
-}
-
-export const useCachedAuthorsForRemoteAutocomplete = () => {
-  return {
-    fetch,
-    add,
-    addManualMinimal,
-  }
-}
+/* The names of the authors are the library's cache: one for the page, asked under the ext system
+ * `initCurrentExtSystemAndLicence` writes into it. Kept under its names for its callers. A widget of the library
+ * that admin-dam mounted would write that ext system too. */
+export const useCachedAuthors = () => useDamCachedAuthors()

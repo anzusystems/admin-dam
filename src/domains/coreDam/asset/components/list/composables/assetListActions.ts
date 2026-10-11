@@ -94,6 +94,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const checkQuickDetailReFetch = (assetId: DocId) => {
     return (
+      // The detail has to hold that asset still: the edit of a queue row writes another without the stamp.
+      assetDetailStore.asset?.id === assetId &&
       assetDetailStore.lastFetchedId === assetId &&
       Date.now() - assetDetailStore.lastFetched <= DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME
     )

@@ -1,12 +1,7 @@
 import {
-  AnzuApiForbiddenError,
-  AnzuApiForbiddenOperationError,
   AnzuApiValidationError,
-  AnzuFatalError,
   HTTP_STATUS_OK,
-  axiosErrorResponseHasForbiddenOperationData,
-  axiosErrorResponseHasValidationData,
-  axiosErrorResponseIsForbidden,
+  isAnzuApiValidationError,
   isNull,
   isUndefined,
   useAlerts,
@@ -32,10 +27,12 @@ import type {
   ValidationError,
 } from '@anzusystems/common-admin'
 import { isAxiosError } from 'axios'
+import type { AxiosError } from 'axios'
 import type { Ref } from 'vue'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
+import { i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -225,117 +222,119 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   return dtoItems
 }
 
-async function updateMetadataSequence(items: UploadQueueItem[]) {
-  const bulkItems = listItemsToMetadataBulkItems(items)
-  // From the filtered array: counting the input sent trailing PATCHes with an empty body.
-  const totalCalls = Math.ceil(bulkItems.length / BULK_METADATA_LIMIT)
-  const responses = []
-  if (bulkItems.length === 0) return Promise.resolve([])
-
-  for (let i = 0; i < totalCalls; i++) {
-    const offset = i * BULK_METADATA_LIMIT
-    const reduced = bulkItems.slice(offset, offset + BULK_METADATA_LIMIT)
-    const res = await damClient().patch(END_POINT + '/metadata-bulk-update', JSON.stringify(reduced))
-    responses.push(res)
-  }
-  return responses
-}
-
-export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
-  return new Promise((resolve, reject) => {
-    updateMetadataSequence(items)
-      .then((responses) => {
-        if (responses.length === 0) {
-          reject(responses)
-        } else if (
-          responses.every((res) => {
-            return res.status === HTTP_STATUS_OK
-          })
-        ) {
-          resolve(responses)
-        } else {
-          reject(responses)
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
+// Only a 200 is a save: any other answer is a save that failed, as before. Nothing is read from the answer.
+const useUpdateMetadataBulk = () =>
+  useApiCommand<AssetMetadataBulkItem[]>({
+    client: damClient,
+    method: 'PATCH',
+    system: SYSTEM_CORE_DAM,
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/metadata-bulk-update',
+    options: { validateStatus: (status) => status === HTTP_STATUS_OK },
   })
+
+/* A save of metadata refused by validation. `fields` are as the library makes them, from the keys of the request
+ * such as `[0].customData.title` - the index is the place of the asset in its batch, not a row on the screen;
+ * `named` holds the same fields as the forms name them, which is what the user is told. */
+class AssetMetadataValidationError extends AnzuApiValidationError {
+  named: ValidationError[]
+
+  constructor(axiosError: AxiosError, named: ValidationError[]) {
+    super(axiosError, SYSTEM_CORE_DAM, ENTITY, axiosError)
+    this.named = named
+  }
 }
 
-const { showUnknownError, showApiValidationError } = useAlerts()
-
-const handleMetadataValidationError = (error: Error, assetType: DamAssetTypeType) => {
-  const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
-  const { currentExtSystemId } = useCurrentExtSystem()
-  const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
-  if (isUndefined(configAssetCustomFormElements)) {
-    throw new Error('Custom form elements must be initialised.')
+const metadataFieldName = (key: string, assetTypeAt: (index: number) => DamAssetTypeType | undefined) => {
+  const { t } = i18n.global
+  const indexed = key.match(/^\[(\d+)\]\.(.+)$/)
+  const path = indexed ? indexed[2] : key
+  if (path === 'keywords') return t('coreDam.asset.model.keywords')
+  if (path === 'authors') return t('coreDam.asset.model.authors')
+  const property = path.split('.').at(-1) ?? path
+  const assetType = indexed ? assetTypeAt(Number(indexed[1])) : undefined
+  if (path.startsWith('customData.') && !isUndefined(assetType)) {
+    const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    const found = getDamConfigAssetCustomFormElements(currentExtSystemId.value)?.[assetType].find(
+      (element) => element.property === property
+    )
+    if (found) return found.name
   }
-  if (!isAxiosError(error) || !error.response || !error.response.data) return
-  const data = error.response.data as AnzuApiValidationResponseData
-  const items = [] as ValidationError[]
-  for (const [key, values] of Object.entries(data.fields)) {
-    const field = key.split('.').pop()
-    const found = configAssetCustomFormElements[assetType].find((item) => item.property === field)
-    if (found) {
-      items.push({
-        field: found.name,
-        errors: values,
-      })
+
+  return property
+}
+
+/* The failure of a save as the user is to be told it: a refusal by validation gets the names of its fields, a field
+ * refused in several assets of the batch once. Any other failure is handed on as it came. */
+const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAssetTypeType | undefined) => {
+  if (!isAnzuApiValidationError(error) || !isAxiosError(error.cause)) return error
+  const data = error.cause.response?.data as AnzuApiValidationResponseData
+  const named = new Map<string, Set<string>>()
+  for (const [key, errors] of Object.entries(data.fields)) {
+    const name = metadataFieldName(key, assetTypeAt)
+    named.set(name, new Set([...(named.get(name) ?? []), ...errors]))
+  }
+
+  return new AssetMetadataValidationError(
+    error.cause,
+    Array.from(named, ([field, errors]) => ({ field, errors: [...errors] }))
+  )
+}
+
+/* Ten at a time, one batch after the other. The server saves a batch whole or not at all; a batch that fails stops
+ * those after it, the ones before it stay saved, and saving again is safe. */
+export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
+  const sent = items.filter(hasMetadataToSave)
+  const bulkItems = listItemsToMetadataBulkItems(sent)
+  // Refused as before; the buttons are off while there is nothing to send (`nothingToSave`).
+  if (bulkItems.length === 0) throw new Error('assetApi: no metadata to save')
+  const { execute } = useUpdateMetadataBulk()
+  // From the filtered array: counting the input sent trailing PATCHes with an empty body.
+  for (let offset = 0; offset < bulkItems.length; offset += BULK_METADATA_LIMIT) {
+    try {
+      await execute({ body: bulkItems.slice(offset, offset + BULK_METADATA_LIMIT) })
+    } catch (error) {
+      throw withNamedFields(error, (index) => sent[offset + index]?.assetType)
     }
   }
-  if (items.length) {
-    showApiValidationError(items, -1, true)
-    return
-  }
-  showUnknownError()
 }
 
-export const updateAssetMetadata = (
+const { showErrorsDefault, showUnknownError, showApiValidationError } = useAlerts()
+
+/** What a failed save of metadata tells the user, by the kind of the failure; the one place that says it. */
+export const showMetadataSaveError = (error: unknown) => {
+  if (error instanceof AssetMetadataValidationError) {
+    showApiValidationError(error.named, -1, true)
+    return
+  }
+  if (!showErrorsDefault(error)) showUnknownError()
+}
+
+export const updateAssetMetadata = async (
   asset: AssetDetailItemDto,
   mainFileSingleUse: boolean | null,
   mainFileOverrideInternal: boolean,
   mainFileInternal: boolean,
   ttsAudio: boolean
 ) => {
-  return new Promise((resolve, reject) => {
-    const data: AssetMetadataBulkItem = {
-      id: asset.id,
-      keywords: asset.keywords,
-      authors: asset.authors,
-      described: true,
-      customData: asset.metadata.customData,
-      mainFileSingleUse: mainFileSingleUse,
-      mainFileOverrideInternal: mainFileOverrideInternal,
-      mainFileInternal: mainFileInternal,
-      ttsAudio: ttsAudio,
-    }
-    damClient()
-      .patch(END_POINT + '/metadata-bulk-update', JSON.stringify([data]))
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        if (axiosErrorResponseIsForbidden(err)) {
-          return reject(new AnzuApiForbiddenError(err))
-        }
-        if (axiosErrorResponseHasValidationData(err)) {
-          handleMetadataValidationError(err, asset.attributes.assetType)
-          return reject(new AnzuApiValidationError(err, SYSTEM_CORE_DAM, ENTITY, err))
-        }
-        if (axiosErrorResponseHasForbiddenOperationData(err)) {
-          return reject(new AnzuApiForbiddenOperationError(err, err))
-        }
-        return reject(new AnzuFatalError(err))
-      })
-  })
+  const data: AssetMetadataBulkItem = {
+    id: asset.id,
+    keywords: asset.keywords,
+    authors: asset.authors,
+    described: true,
+    customData: asset.metadata.customData,
+    mainFileSingleUse: mainFileSingleUse,
+    mainFileOverrideInternal: mainFileOverrideInternal,
+    mainFileInternal: mainFileInternal,
+    ttsAudio: ttsAudio,
+  }
+  const { execute } = useUpdateMetadataBulk()
+  try {
+    await execute({ body: [data] })
+  } catch (error) {
+    throw withNamedFields(error, () => asset.attributes.assetType)
+  }
 }
 
 export const useDeleteAsset = () =>

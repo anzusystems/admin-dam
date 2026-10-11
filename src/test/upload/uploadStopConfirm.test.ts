@@ -1,3 +1,4 @@
+import { ADamUploadQueueStopButton } from '@anzusystems/common-admin'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp, nextTick } from 'vue'
 import type { App } from 'vue'
@@ -5,24 +6,11 @@ import { createI18n } from 'vue-i18n'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 
-/* The button that stops the uploads of a queue. While something is uploading it asks first, and the question can
- * be dismissed from the keyboard: the app's dialogs are persistent, so Esc closes one only where the dialog says
- * so itself. */
+/* The library's button that stops the uploads of a queue, as both overlays of the uploads draw it. While something
+ * is uploading it asks first, and the question can be dismissed from the keyboard: the app's dialogs are
+ * persistent, so Esc closes one only where the dialog says so itself. */
 
-vi.mock('@anzusystems/common-admin', async (importOriginal) => {
-  const { h } = await import('vue')
-
-  return {
-    ...((await importOriginal()) as Record<string, unknown>),
-    ADialogToolbar: { render: () => h('div') },
-  }
-})
-
-const AssetFooterUploadButtonStop = (
-  await import('@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue')
-).default
-
-const STOP = 'system.upload.stop'
+const STOP = 'common.damImage.upload.stop'
 
 let app: App | undefined
 
@@ -30,7 +18,7 @@ const mountButton = async (isUploading: boolean) => {
   const confirmed = vi.fn()
   const root = document.createElement('div')
   document.body.appendChild(root)
-  app = createApp(AssetFooterUploadButtonStop, { isUploading, onConfirm: confirmed })
+  app = createApp(ADamUploadQueueStopButton, { isUploading, onConfirm: confirmed })
   app.use(
     createVuetify({
       components,

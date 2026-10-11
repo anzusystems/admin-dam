@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  ADamAssetImage,
   ADamAssetImageRoiSelect,
   isDocId,
   isString,
@@ -15,7 +16,6 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import {
@@ -206,7 +206,7 @@ onMounted(() => {
               v-else
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <AssetImage
+              <ADamAssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"
                 :src="imageProperties.url"

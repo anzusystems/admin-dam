@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp, nextTick } from 'vue'
-import type { App, Component } from 'vue'
+import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -8,92 +8,55 @@ import * as components from 'vuetify/components'
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The chips that show a keyword or an author by its id, over the real caches and a fake server. An id the server
- * does not return used to leave the chip spinning for good; now it shows the id. */
+/* The chip that shows an author by its id - the library's, as the pages of admin-dam draw it - over the real cache
+ * and a fake server. An id the server does not return used to leave the chip spinning for good; now it shows the id.
+ * The chips of a keyword and of an author conflict are inside the inputs of the library, which guards them itself
+ * (`damNameChipsUnresolved.test.ts` there).
+ *
+ * The cache is the library's, which asks through the client of its plugin and under the ext system written for
+ * it: the plugin is installed with the client of the application, and the ext system written as the start of the
+ * application writes it. */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
-vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
-  useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
-}))
-// The chips ask the queue only whether a name is new, and only when they are given a queue.
-vi.mock('@/domains/coreDam/asset/store/uploadQueuesStore', () => ({
-  useUploadQueuesStore: () => ({ getQueue: () => undefined }),
-}))
 
-const KeywordChip = (
-  await import('@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteCachedKeywordChip.vue')
-).default
-const AuthorChip = (await import('@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'))
-  .default
-const AuthorConflictsChip = (
-  await import('@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChipConflicts.vue')
-).default
-const { useCachedKeywords } = await import('@/domains/coreDam/keyword/composables/cachedKeywords')
 const { useCachedAuthors } = await import('@/domains/coreDam/author/composables/cachedAuthors')
+const { ADamAuthorCachedChip, AnzuSystemsCommonAdmin, useExtSystemIdForCached } =
+  await import('@anzusystems/common-admin')
+const { damClient } = await import('@/shared/apiClients/damClient')
 
-const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
+useExtSystemIdForCached().cachedExtSystemId.value = 1
+
 const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
-const KEYWORDS = /^\/adm\/v1\/keyword\/ext-system\/1\/search$/
 const AUTHORS = /^\/adm\/v1\/author\/ext-system\/1\/search$/
 const UNAVAILABLE = 'common.model.cachedUnavailable'
+// What the chip shows for the record below.
+const NAME = 'Jane Roe (TASR)'
 
-const keyword = (id: string) => ({ id, name: 'Bratislava' })
 const author = (id: string) => ({ id, name: 'Jane Roe', identifier: 'TASR', flags: { reviewed: false } })
 
-interface Kind {
-  chip: Component
-  url: RegExp
-  record: (id: string) => unknown
-  /** What the chip shows for the record above. */
-  name: string
-  add: (id: string) => void
-  fetch: () => unknown
-}
-
-const kinds: Record<string, Kind> = {
-  'the keyword chip': {
-    chip: KeywordChip,
-    url: KEYWORDS,
-    record: keyword,
-    name: 'Bratislava',
-    add: addToCachedKeywords,
-    fetch: fetchCachedKeywords,
-  },
-  'the author chip': {
-    chip: AuthorChip,
-    url: AUTHORS,
-    record: author,
-    name: 'Jane Roe (TASR)',
-    add: addToCachedAuthors,
-    fetch: fetchCachedAuthors,
-  },
-  'the chip of an author conflict': {
-    chip: AuthorConflictsChip,
-    url: AUTHORS,
-    record: author,
-    name: 'Jane Roe (TASR)',
-    add: addToCachedAuthors,
-    fetch: fetchCachedAuthors,
-  },
-}
-
 let app: App | undefined
-// The caches live as long as the module: every case asks for an id of its own.
+// The cache lives as long as the module: every case asks for an id of its own.
 let serial = 0
 let asked = ''
 
-const mountChip = async (kind: Kind, props: Record<string, unknown> = {}) => {
+const mountChip = async (props: Record<string, unknown> = {}) => {
   const id = 'id-' + ++serial
   asked = id
-  kind.add(id)
+  addToCachedAuthors(id)
   const root = document.createElement('div')
   document.body.appendChild(root)
-  app = createApp(kind.chip, { id, ...props })
+  app = createApp(ADamAuthorCachedChip, { id, ...props })
+  const i18n = createI18n({ legacy: false, locale: 'en', missingWarn: false, fallbackWarn: false })
   app.use(createVuetify({ components }))
-  app.use(createI18n({ legacy: false, locale: 'en', missingWarn: false, fallbackWarn: false }))
+  app.use(i18n)
+  app.use(AnzuSystemsCommonAdmin, {
+    i18n: i18n as never,
+    languages: { available: ['en'], default: 'en' },
+    coreDam: { configs: { default: { damClient } }, apiTimeout: 30, adminDomain: 'https://dam.test' },
+  })
   app.mount(root)
   await nextTick()
 
@@ -101,10 +64,18 @@ const mountChip = async (kind: Kind, props: Record<string, unknown> = {}) => {
     id,
     text: () => root.textContent?.trim(),
     spinning: () => root.querySelector('.v-progress-circular') !== null,
-    explained: () => root.querySelector(`[title="${UNAVAILABLE}"]`) !== null,
+    /** What the chip says of itself when the pointer is over it: the tooltip of the application. */
+    tooltip: async () => {
+      root.querySelector('.v-chip')?.dispatchEvent(new MouseEvent('mouseenter'))
+      await vi.advanceTimersByTimeAsync(1000)
+
+      return document.body.querySelector('.v-tooltip .v-overlay__content')?.textContent?.trim()
+    },
+    /** The same of the plain text, which has no tooltip: the title of the browser. */
+    title: () => root.querySelector('[title]')?.getAttribute('title'),
     /** The cache asks the server for what it was told to; the answer is in when this resolves. */
     answered: async () => {
-      kind.fetch()
+      fetchCachedAuthors()
       await vi.advanceTimersByTimeAsync(10_000)
       await nextTick()
     },
@@ -112,11 +83,13 @@ const mountChip = async (kind: Kind, props: Record<string, unknown> = {}) => {
 }
 
 /** The server has the record the case asks for, or it has not. */
-const answerWith = (kind: Kind, found: () => boolean) =>
-  server.on('GET', kind.url, () => ({ status: 200, data: { data: found() ? [kind.record(asked)] : [] } }))
+const answerWith = (found: () => boolean) =>
+  server.on('GET', AUTHORS, () => ({ status: 200, data: { data: found() ? [author(asked)] : [] } }))
 
 beforeEach(() => {
   vi.useFakeTimers()
+  // happy-dom has none, and an open tooltip listens on it for the size of the window.
+  vi.stubGlobal('visualViewport', new EventTarget())
   server = createFakeDam()
 })
 
@@ -125,12 +98,13 @@ afterEach(() => {
   app = undefined
   document.body.innerHTML = ''
   vi.useRealTimers()
+  vi.unstubAllGlobals()
 })
 
-describe.each(Object.entries(kinds))('%s', (_name, kind) => {
+describe('the author chip', () => {
   it('spins while the record is on its way', async () => {
-    server.on('GET', kind.url, () => new Promise(() => undefined))
-    const chip = await mountChip(kind)
+    server.on('GET', AUTHORS, () => new Promise(() => undefined))
+    const chip = await mountChip()
 
     expect(chip.spinning()).toBe(true)
     expect(chip.text()).toBe('')
@@ -139,36 +113,38 @@ describe.each(Object.entries(kinds))('%s', (_name, kind) => {
 
     expect(chip.spinning()).toBe(true)
     expect(chip.text()).toBe('')
-    expect(chip.explained()).toBe(false)
+    expect(await chip.tooltip()).toBeUndefined()
   })
 
   it('shows the name once the server returned the record', async () => {
-    answerWith(kind, () => true)
-    const chip = await mountChip(kind)
+    answerWith(() => true)
+    const chip = await mountChip()
 
     await chip.answered()
 
-    expect(chip.text()).toBe(kind.name)
+    expect(chip.text()).toBe(NAME)
     expect(chip.spinning()).toBe(false)
-    expect(chip.explained()).toBe(false)
+    expect(await chip.tooltip()).toBeUndefined()
   })
 
+  // In the tooltip of the application, as the other tooltips are: the chip of admin-dam said it in the title of
+  // the browser.
   it('shows the id, and says why, when the server does not return the record', async () => {
-    answerWith(kind, () => false)
-    const chip = await mountChip(kind)
+    answerWith(() => false)
+    const chip = await mountChip()
 
     await chip.answered()
 
     expect(chip.text()).toBe('#' + chip.id)
     expect(chip.spinning()).toBe(false)
-    expect(chip.explained()).toBe(true)
+    expect(await chip.tooltip()).toBe(UNAVAILABLE)
   })
 
   it('shows the id when the records cannot be read at all', async () => {
-    server.on('GET', kind.url, () => {
+    server.on('GET', AUTHORS, () => {
       throw new Error('the server is down')
     })
-    const chip = await mountChip(kind)
+    const chip = await mountChip()
 
     await chip.answered()
 
@@ -178,49 +154,46 @@ describe.each(Object.entries(kinds))('%s', (_name, kind) => {
 
   it('shows the name after all when the record is asked for again and is there', async () => {
     let created = false
-    answerWith(kind, () => created)
-    const chip = await mountChip(kind)
+    answerWith(() => created)
+    const chip = await mountChip()
     await chip.answered()
     expect(chip.text()).toBe('#' + chip.id)
 
     created = true
-    kind.add(chip.id)
+    addToCachedAuthors(chip.id)
     await nextTick()
     expect(chip.spinning()).toBe(true)
     expect(chip.text()).toBe('')
 
     await chip.answered()
 
-    expect(chip.text()).toBe(kind.name)
+    expect(chip.text()).toBe(NAME)
     expect(chip.spinning()).toBe(false)
-    expect(chip.explained()).toBe(false)
+    expect(await chip.tooltip()).toBeUndefined()
   })
-})
 
-describe.each([
-  ['the keyword chip', kinds['the keyword chip']],
-  ['the author chip', kinds['the author chip']],
-])('%s', (_name, kind) => {
   it('shows the id as plain text too', async () => {
-    answerWith(kind, () => false)
-    const chip = await mountChip(kind, { textOnly: true })
+    answerWith(() => false)
+    const chip = await mountChip({ textOnly: true })
 
     await chip.answered()
 
     expect(chip.text()).toBe('#' + chip.id)
     expect(chip.spinning()).toBe(false)
-    expect(chip.explained()).toBe(true)
+    expect(chip.title()).toBe(UNAVAILABLE)
   })
 
+  // The chip of the library says that the record could not be loaded also under a title it was handed; the chip of
+  // admin-dam said nothing there.
   it('keeps a title it was handed, whatever the server returns', async () => {
-    answerWith(kind, () => false)
-    const chip = await mountChip(kind, { title: 'Handed in' })
+    answerWith(() => false)
+    const chip = await mountChip({ title: 'Handed in' })
     expect(chip.text()).toBe('Handed in')
     expect(chip.spinning()).toBe(false)
 
     await chip.answered()
 
     expect(chip.text()).toBe('Handed in')
-    expect(chip.explained()).toBe(false)
+    expect(await chip.tooltip()).toBe(UNAVAILABLE)
   })
 })

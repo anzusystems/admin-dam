@@ -53,7 +53,6 @@ vi.mock('@/domains/coreDam/asset/components/AssetUpload.vue', () => part('upload
 vi.mock('@/domains/coreDam/asset/components/ImageFile.vue', () => part('file'))
 vi.mock('@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue', () => part('route'))
 vi.mock('@/domains/coreDam/asset/components/AssetFileDuplicateChip.vue', () => part('duplicate-chip'))
-vi.mock('@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue', () => part('fail-chip'))
 vi.mock('@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemDuplicate.vue', () =>
   part('action')
 )
@@ -80,7 +79,7 @@ const slotUpload = (over: Partial<UploadQueueItem> = {}) =>
 let app: App | undefined
 
 /** Mounts the slot `extra` of `asset-1` over a slots queue holding the rows. */
-const mountSlot = async (rows: UploadQueueItem[], slotHasFile = false) => {
+const mountSlot = async (rows: UploadQueueItem[], slotHasFile = false, file = assetFile('file-old')) => {
   const pinia = createPinia()
   setActivePinia(pinia)
   const store = useUploadQueuesStore()
@@ -91,9 +90,7 @@ const mountSlot = async (rows: UploadQueueItem[], slotHasFile = false) => {
   app = createApp(AssetSlotListItem, {
     slotName: 'extra',
     title: 'the asset',
-    item: slotHasFile
-      ? { id: 'slot-1', slotName: 'extra', default: false, main: false, assetFile: assetFile('file-old') }
-      : null,
+    item: slotHasFile ? { id: 'slot-1', slotName: 'extra', default: false, main: false, assetFile: file } : null,
     assetType: 'image',
     totalSlotCount: 2,
     assetId: 'asset-1',
@@ -248,5 +245,16 @@ describe('the upload into a slot leaving', () => {
 
     expect(shows().upload).toBe(false)
     expect(cancel()).toBeNull()
+  })
+})
+
+describe('a slot whose file failed', () => {
+  it('says why with the chip of the library', async () => {
+    const failed = assetFile('file-old', 'failed')
+    failed.fileAttributes.failReason = 'invalid_mime_type'
+    const { root } = await mountSlot([], true, failed)
+
+    // No messages are loaded here, so the chip shows the key of the library's text for the reason.
+    expect(root.textContent).toContain('common.damImage.asset.assetFileFailReason.invalidMimeType')
   })
 })

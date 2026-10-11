@@ -1,4 +1,12 @@
-import { DamAssetType, UploadQueueItemStatus } from '@anzusystems/common-admin'
+import {
+  DamAssetType,
+  HTTP_STATUS_CREATED,
+  UploadQueueItemStatus,
+  damFileUploadChunk,
+  damFileUploadFinish,
+  damFileUploadStart,
+  isUndefined,
+} from '@anzusystems/common-admin'
 import type {
   AssetFileDownloadLink,
   AssetFileRoute,
@@ -11,92 +19,57 @@ import type { AxiosProgressEvent } from 'axios'
 
 import {
   downloadLink as audioDownloadLink,
-  externalProviderUpload as audioExternalProviderUpload,
   makeMainFile as audioMakeMainFile,
   makePrivate as audioMakePrivate,
   makePublic as audioMakePublic,
   unsetSlot as audioUnsetSlot,
-  uploadChunk as audioUploadChunk,
-  uploadFinish as audioUploadFinish,
-  uploadStart as audioUploadStart,
   deleteAudio,
   existingAudioToSlot,
 } from '@/domains/coreDam/asset/api/audioApi'
 import {
   deleteDocument,
   downloadLink as documentDownloadLink,
-  externalProviderUpload as documentExternalProviderUpload,
   makeMainFile as documentMakeMainFile,
   makePrivate as documentMakePrivate,
   makePublic as documentMakePublic,
   unsetSlot as documentUnsetSlot,
-  uploadChunk as documentUploadChunk,
-  uploadFinish as documentUploadFinish,
-  uploadStart as documentUploadStart,
   existingDocumentToSlot,
 } from '@/domains/coreDam/asset/api/documentApi'
 import {
   deleteImage,
   existingImageToSlot,
   downloadLink as imageDownloadLink,
-  externalProviderUpload as imageExternalProviderUpload,
   makeMainFile as imageMakeMainFile,
   makePrivate as imageMakePrivate,
   makePublic as imageMakePublic,
   unsetSlot as imageUnsetSlot,
-  uploadChunk as imageUploadChunk,
-  uploadFinish as imageUploadFinish,
-  uploadStart as imageUploadStart,
 } from '@/domains/coreDam/asset/api/imageApi'
 import {
   deleteVideo,
   existingVideoToSlot,
   downloadLink as videoDownloadLink,
-  externalProviderUpload as videoExternalProviderUpload,
   makeMainFile as videoMakeMainFile,
   unsetSlot as videoUnsetSlot,
-  uploadChunk as videoUploadChunk,
-  uploadFinish as videoUploadFinish,
-  uploadStart as videoUploadStart,
 } from '@/domains/coreDam/asset/api/videoApi'
+import { damClient } from '@/shared/apiClients/damClient'
 
-// Every switch below rejects on a type it does not cover: the promise would otherwise never settle.
-export const uploadStart: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (item: UploadQueueItem) => {
-  return new Promise((resolve, reject) => {
-    switch (item.assetType) {
-      case DamAssetType.Image:
-        imageUploadStart(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Audio:
-        audioUploadStart(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Video:
-        videoUploadStart(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Document:
-        documentUploadStart(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      default:
-        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
-    }
-  })
+const UPLOAD_END_POINT: Partial<Record<DamAssetTypeType, string>> = {
+  [DamAssetType.Image]: '/adm/v1/image',
+  [DamAssetType.Audio]: '/adm/v1/audio',
+  [DamAssetType.Video]: '/adm/v1/video',
+  [DamAssetType.Document]: '/adm/v1/document',
 }
+
+// Every request below rejects on a type it does not cover: the promise would otherwise never settle.
+const toEndPoint = <T>(item: UploadQueueItem, send: (endPoint: string) => Promise<T>) => {
+  const endPoint = UPLOAD_END_POINT[item.assetType]
+  if (isUndefined(endPoint)) return Promise.reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
+
+  return send(endPoint)
+}
+
+export const uploadStart = (item: UploadQueueItem) =>
+  toEndPoint(item, (endPoint) => damFileUploadStart(damClient, endPoint, item) as Promise<DamUploadStartResponse>)
 
 /* Only if nothing has settled the item meanwhile: the notification can beat the finish response, and
  * `Processing` written over `Uploaded` would put a settled row back among the waiting ones. */
@@ -105,139 +78,43 @@ function startProcessing(item: UploadQueueItem) {
   item.status = UploadQueueItemStatus.Processing
 }
 
-export const uploadFinish = (item: UploadQueueItem, sha: string) => {
-  return new Promise((resolve, reject) => {
-    switch (item.assetType) {
-      case DamAssetType.Image:
-        imageUploadFinish(item, sha)
-          .then((res) => {
-            startProcessing(item)
-            resolve(res)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Audio:
-        audioUploadFinish(item, sha)
-          .then((res) => {
-            startProcessing(item)
-            resolve(res)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Video:
-        videoUploadFinish(item, sha)
-          .then((res) => {
-            startProcessing(item)
-            resolve(res)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Document:
-        documentUploadFinish(item, sha)
-          .then((res) => {
-            startProcessing(item)
-            resolve(res)
-          })
-          .catch((err) => reject(err))
-        break
-      default:
-        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
-    }
-  })
-}
+export const uploadFinish = (item: UploadQueueItem, sha: string) =>
+  toEndPoint(item, async (endPoint) => {
+    const res = await damFileUploadFinish(damClient, endPoint, item, sha)
+    startProcessing(item)
 
+    return res
+  })
+
+// Sent as the library sends it: checked first, reported to Sentry, and with no type named, so the browser sets it.
 export const uploadChunk = (
   item: UploadQueueItem,
-  imageId: DocId,
-  buffer: string,
+  fileId: DocId,
+  buffer: Blob,
   size: number,
   offset: number,
   onUploadProgressCallback: ((progressEvent: AxiosProgressEvent) => void) | undefined
-) => {
-  return new Promise((resolve, reject) => {
-    switch (item.assetType) {
-      case DamAssetType.Image:
-        imageUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
-          .then((res) => {
-            resolve(res)
-          })
-          .catch((err) => {
-            reject(err)
-          })
-        break
-      case DamAssetType.Audio:
-        audioUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
-          .then((res) => {
-            resolve(res)
-          })
-          .catch((err) => {
-            reject(err)
-          })
-        break
-      case DamAssetType.Video:
-        videoUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
-          .then((res) => {
-            resolve(res)
-          })
-          .catch((err) => {
-            reject(err)
-          })
-        break
-      case DamAssetType.Document:
-        documentUploadChunk(item, imageId, buffer, size, offset, onUploadProgressCallback)
-          .then((res) => {
-            resolve(res)
-          })
-          .catch((err) => {
-            reject(err)
-          })
-        break
-      default:
-        // An uncovered type would hang the chunk loop, and with it one of the two slots.
-        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
-    }
-  })
-}
+) =>
+  toEndPoint(item, (endPoint) =>
+    damFileUploadChunk(damClient, endPoint, item, fileId, buffer, size, offset, onUploadProgressCallback)
+  )
 
-export const externalProviderUpload: (item: UploadQueueItem) => Promise<DamUploadStartResponse> = (
-  item: UploadQueueItem
-) => {
-  return new Promise((resolve, reject) => {
-    switch (item.assetType) {
-      case DamAssetType.Image:
-        imageExternalProviderUpload(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Audio:
-        audioExternalProviderUpload(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
+export const externalProviderUpload = (item: UploadQueueItem) =>
+  toEndPoint(item, (endPoint) =>
+    damClient()
+      .post(
+        endPoint + '/licence/' + item.licenceId + '/external-provider',
+        JSON.stringify({
+          id: item.externalProviderAssetId,
+          externalProvider: item.externalProviderName,
+        })
+      )
+      .then((res) => {
+        if (res.status !== HTTP_STATUS_CREATED) return Promise.reject()
 
-        break
-      case DamAssetType.Video:
-        videoExternalProviderUpload(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      case DamAssetType.Document:
-        documentExternalProviderUpload(item)
-          .then((res) => {
-            resolve(res as DamUploadStartResponse)
-          })
-          .catch((err) => reject(err))
-        break
-      default:
-        reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
-    }
-  })
-}
+        return res.data as DamUploadStartResponse
+      })
+  )
 
 export const unsetAssetSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) => {
   return new Promise((resolve, reject) => {

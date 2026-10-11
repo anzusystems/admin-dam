@@ -44,10 +44,11 @@ export const fetchAssetDistributionList = <T = DistributionJwItem | Distribution
   pagination: Ref<Pagination>,
   filterData: FilterData,
   filterConfig: FilterConfig,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  report?: boolean
 ) => {
   const { execute } = useFetchAssetDistributionList<T>()
-  return execute(pagination, filterData, filterConfig, { urlParams: { assetId }, signal })
+  return execute(pagination, filterData, filterConfig, { urlParams: { assetId }, signal, report })
 }
 
 export const useFetchAssetFileDistributionList = <

@@ -23,11 +23,5 @@
     "external": "Externý",
     "agency": "Agentúra"
   },
-  "meta": {
-    "create": "Vytvorenie autora"
-  },
-  "button": {
-    "add": "Pridať nového autora"
-  },
   "conflicts": "Konflikt autorov"
 }

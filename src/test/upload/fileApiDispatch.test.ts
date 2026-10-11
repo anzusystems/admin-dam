@@ -21,7 +21,7 @@ type FileApi = Awaited<ReturnType<typeof load>>
 
 const requests: Array<[string, (api: FileApi, row: UploadQueueItem) => Promise<unknown>]> = [
   ['the start', (api, row) => api.uploadStart(row)],
-  ['a chunk', (api, row) => api.uploadChunk(row, 'file-1', 'bytes', 5, 0, undefined)],
+  ['a chunk', (api, row) => api.uploadChunk(row, 'file-1', new Blob(['bytes']), 5, 0, undefined)],
   ['the finish', (api, row) => api.uploadFinish(row, 'checksum')],
   ['the import', (api, row) => api.externalProviderUpload(row)],
 ]

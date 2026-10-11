@@ -1,32 +1,22 @@
 <script lang="ts" setup>
 import {
   AActionDeleteButton,
-  ASystemEntityScope,
-  ATableCopyIdButton,
-  AssetFileFailReason,
-  DamAssetStatusDefault,
+  ADamUploadQueueItem,
   UploadQueueItemStatus,
   isNull,
-  prettyBytes,
   useAlerts,
   usePageNavigation,
 } from '@anzusystems/common-admin'
 import type { AssetCustomData, DocId, UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { deleteAsset, fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
-import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetLink from '@/domains/coreDam/asset/components/AssetLink.vue'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
-import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
-import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
-import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -53,56 +43,12 @@ const emit = defineEmits<{
   (e: 'update:authors', data: DocId[]): void
   (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
-  (e: 'removeItem', assetId: DocId): void
+  (e: 'removeItem', item: UploadQueueItem): void
   (e: 'refreshItem', data: { index: number; assetId: DocId; item: UploadQueueItem }): void
 }>()
 
-const IMAGE_ASPECT_RATIO = 16 / 9
-
-const customData = computed({
-  get() {
-    return props.customData
-  },
-  set(newValue) {
-    emit('update:customData', { ...props.customData, ...newValue })
-  },
-})
-
-const keywords = computed({
-  get() {
-    return props.keywords
-  },
-  set(newValue) {
-    emit('update:keywords', [...newValue])
-  },
-})
-
-const authors = computed({
-  get() {
-    return props.authors
-  },
-  set(newValue) {
-    emit('update:authors', [...newValue])
-  },
-})
-
-const mainFileSingleUse = computed({
-  get() {
-    return props.mainFileSingleUse
-  },
-  set(newValue) {
-    emit('update:mainFileSingleUse', newValue)
-  },
-})
-
 const { t } = useI18n()
-
-// The bulk save skips an item whose metadata cannot be edited (a failed upload, a duplicate, one still waiting for
-// its metadata), so nothing in its row is validated: it could not be put right. A scope is read once, when a field
-// is set up - hence the key on the form.
-const metadataValidationScope = computed(() => {
-  return props.item.canEditMetadata ? AssetMetadataValidationScopeSymbol : false
-})
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
@@ -111,33 +57,19 @@ const { showRecordWas, showErrorsDefault } = useAlerts()
 // A failure that ends after the user went elsewhere has nothing to say there.
 const { onPage } = usePageNavigation()
 
-const processing = computed(() => {
-  return (
-    [UploadQueueItemStatus.Processing, UploadQueueItemStatus.Loading] as unknown as UploadQueueItemStatusType
-  ).includes(props.item.status)
-})
-const waiting = computed(() => {
-  return props.item.status === UploadQueueItemStatus.Waiting
-})
-const done = computed(() => {
-  return !props.disableDoneAnimation && props.item.status === UploadQueueItemStatus.Uploaded
-})
-const uploading = computed(() => {
-  return props.item.status === UploadQueueItemStatus.Uploading
-})
-const uploadProgress = computed(() => {
-  return props.item.progress.progressPercent
-})
+// Processing too: the server may take long over a file, and the row is asked about for as long as it stays. And
+// `Failed`: delete is no answer there - a refused import never created an asset.
+const CANCEL_STATUSES: readonly UploadQueueItemStatusType[] = [
+  UploadQueueItemStatus.Loading,
+  UploadQueueItemStatus.Waiting,
+  UploadQueueItemStatus.Uploading,
+  UploadQueueItemStatus.Processing,
+  UploadQueueItemStatus.Failed,
+]
 
 const SHOW_REFRESH_AFTER_SECONDS = 20
 const showRefresh = ref(false)
 const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefined)
-
-const refresh = () => {
-  if (props.item.assetId) {
-    emit('refreshItem', { index: props.index, assetId: props.item.assetId, item: props.item })
-  }
-}
 
 const showDetail = async () => {
   if (isNull(props.item.assetId)) return
@@ -168,55 +100,19 @@ const remove = async () => {
   if (!props.item.assetId) return
   try {
     await deleteAsset(props.item.assetId)
-    // By asset: the delete is awaited, and the index can shift onto another row meanwhile.
-    emit('removeItem', props.item.assetId)
+    // The row itself: the delete is awaited, the index can shift onto another row meanwhile, and rows can share an
+    // asset.
+    emit('removeItem', props.item)
     showRecordWas('deleted')
   } catch (error) {
     showErrorsDefault(error)
   }
 }
-const imageSrc = computed(() => {
-  return props.item.imagePreview ? props.item.imagePreview.url : undefined
-})
-const assetType = computed(() => {
-  return props.item.assetType
-})
-const status = computed(() => {
-  if (!props.item) return DamAssetStatusDefault
-  return props.item.assetStatus
-})
-
-// useKeywordAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
-// forced by its signature. Making the config reactive means changing that composable.
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
-const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
-
-// useAuthorAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
-// forced by its signature. Making the config reactive means changing that composable.
-// eslint-disable-next-line vue/no-ref-object-reactivity-loss
-const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
-
-const cancelItem = () => {
-  emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
-}
-
-const showCancel = computed(() => {
-  return (
-    [
-      UploadQueueItemStatus.Loading,
-      UploadQueueItemStatus.Waiting,
-      UploadQueueItemStatus.Uploading,
-      // Processing too: the server may take long over a file, and the row is asked about for as long as it stays.
-      UploadQueueItemStatus.Processing,
-      // And `Failed`: delete is no answer there - a refused import never created an asset.
-      UploadQueueItemStatus.Failed,
-    ] as unknown as UploadQueueItemStatusType
-  ).includes(props.item.status)
-})
 
 const stillRunning = (status: UploadQueueItemStatusType) =>
   status === UploadQueueItemStatus.Uploading || status === UploadQueueItemStatus.Processing
 
+// When the row offers refresh is admin-dam's own rule, handed to the row of the library.
 watch(
   () => props.item.status,
   async (newValue) => {
@@ -276,237 +172,76 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <VCol
-    xxl="2"
-    xl="3"
-    md="4"
-    sm="6"
-    cols="12"
+  <ADamUploadQueueItem
+    :index="index"
+    :queue-key="queueId"
+    :ext-system="currentExtSystemId"
+    :custom-data="customData"
+    :keywords="keywords"
+    :authors="authors"
+    :main-file-single-use="mainFileSingleUse"
+    :item="item"
+    :refresh-disabled="refreshDisabled"
+    :disable-done-animation="disableDoneAnimation"
+    :cancel-statuses="CANCEL_STATUSES"
+    :duplicate-notice="false"
+    disable-form-on-duplicate
+    :validation-scope="AssetMetadataValidationScopeSymbol"
+    disabled-fields-as="input"
+    hide-edit-on-duplicate
+    :refresh-offered="showRefresh"
+    @update:custom-data="emit('update:customData', $event)"
+    @update:keywords="emit('update:keywords', $event)"
+    @update:authors="emit('update:authors', $event)"
+    @update:main-file-single-use="emit('update:mainFileSingleUse', $event)"
+    @cancel-item="emit('cancelItem', { index: $event.index, item: $event.item, queueId: $event.queueKey })"
+    @refresh-item="emit('refreshItem', { ...$event, item })"
   >
-    <div class="dam-upload-queue__item">
-      <div class="dam-upload-queue__item-card">
-        <div class="position-relative">
-          <AssetImage
-            :asset-type="assetType"
-            :asset-status="status"
-            :src="imageSrc"
-            background-color="#ccc"
-            :show-uploading="uploading"
-            :show-processing="processing"
-            :show-waiting="waiting"
-            :show-done="done"
-            :uploading-progress="uploadProgress"
-            :remaining-time="item.progress.remainingTime"
-            use-component
-            cover
-            :aspect-ratio="IMAGE_ASPECT_RATIO"
-          />
-          <div
-            v-if="item.isDuplicate"
-            :class="
-              'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
-              ' d-flex align-center justify-center flex-column'
-            "
-          >
-            <VIcon
-              icon="mdi-alert"
-              class="ma-1"
-              size="x-small"
-              color="warning"
-            />
-            <div class="text-warning">
-              {{ t('coreDam.asset.queueItem.duplicate') }}
-            </div>
-            <AssetLink
-              v-if="item.duplicateAssetId"
-              :asset-id="item.duplicateAssetId"
-              variant="text"
-              size="small"
-            >
-              {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
-            </AssetLink>
-          </div>
-          <div
-            v-if="item.error.hasError"
-            :class="
-              'dam-upload-queue__overlay dam-upload-queue__overlay--error' +
-              ' d-flex align-center justify-center flex-column'
-            "
-          >
-            <VIcon
-              icon="mdi-alert"
-              class="ma-1"
-              size="x-small"
-              color="error"
-            />
-            <div class="text-error">
-              {{ t('coreDam.asset.queueItem.error') }}
-            </div>
-            <div
-              v-if="item.error.message.length"
-              class="text-body-small"
-              v-text="item.error.message"
-            />
-            <div v-else-if="item.error.assetFileFailReason !== AssetFileFailReason.None">
-              <AssetFileFailReasonChip :reason="item.error.assetFileFailReason" />
-            </div>
-            <div
-              v-else
-              class="text-body-small"
-            >
-              {{ t('system.uploadErrors.unknownError') }}
-            </div>
-          </div>
+    <template #image-overlay>
+      <div
+        v-if="item.isDuplicate"
+        :class="
+          'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
+          ' d-flex align-center justify-center flex-column'
+        "
+      >
+        <VIcon
+          icon="mdi-alert"
+          class="ma-1"
+          size="x-small"
+          color="warning"
+        />
+        <div class="text-warning">
+          {{ t('coreDam.asset.queueItem.duplicate') }}
         </div>
-        <VRow
-          density="compact"
-          class="my-2"
+        <AssetLink
+          v-if="item.duplicateAssetId"
+          :asset-id="item.duplicateAssetId"
+          variant="text"
+          size="small"
         >
-          <VCol>
-            <div class="w-100 d-flex justify-space-between align-center">
-              <div>
-                <VBtn
-                  v-if="!item.isDuplicate"
-                  size="small"
-                  variant="text"
-                  :disabled="!item.canEditMetadata"
-                  @click.stop="showDetail"
-                >
-                  {{ t('coreDam.asset.queueItem.edit') }}
-                </VBtn>
-              </div>
-              <div>
-                <ATableCopyIdButton
-                  v-if="item.assetId"
-                  :id="item.assetId"
-                  button-t="coreDam.asset.queueItem.copyAssetId"
-                  size="small"
-                />
-                <VBtn
-                  v-if="showRefresh"
-                  :aria-label="t('common.button.refresh')"
-                  icon
-                  size="small"
-                  variant="text"
-                  :disabled="refreshDisabled"
-                  @click.stop="refresh"
-                >
-                  <VIcon icon="mdi-refresh" />
-                  <VTooltip
-                    activator="parent"
-                    location="bottom"
-                  >
-                    {{ t('common.button.refresh') }}
-                  </VTooltip>
-                </VBtn>
-                <VBtn
-                  v-if="showCancel"
-                  :aria-label="t('common.button.cancel')"
-                  icon
-                  size="small"
-                  variant="text"
-                  @click.stop="cancelItem"
-                >
-                  <VIcon icon="mdi-close-circle-outline" />
-                  <VTooltip
-                    activator="parent"
-                    location="bottom"
-                  >
-                    {{ t('common.button.cancel') }}
-                  </VTooltip>
-                </VBtn>
-                <AActionDeleteButton
-                  variant="icon"
-                  :acl="ACL.DAM_ASSET_DELETE"
-                  :disabled="!item.canEditMetadata && !item.isDuplicate"
-                  button-class=""
-                  @delete-record="remove"
-                />
-              </div>
-            </div>
-          </VCol>
-        </VRow>
-        <VRow
-          v-if="item.displayTitle"
-          density="compact"
-          class="my-2 mb-3 mt-0 text-body-small"
-        >
-          <VCol class="pt-0">
-            {{ t('coreDam.asset.queueItem.displayTitle') }}: {{ item.displayTitle }}
-            <span v-if="item.file?.size">&nbsp;({{ prettyBytes(item.file.size) }})</span>
-          </VCol>
-        </VRow>
-        <VForm :disabled="!item.canEditMetadata || item.isDuplicate">
-          <AssetCustomMetadataForm
-            v-if="item"
-            :key="item.canEditMetadata ? 'validated' : 'skipped'"
-            v-model="customData"
-            :asset-type="assetType"
-            :validation-scope="metadataValidationScope"
-          >
-            <template #after-pinned>
-              <VRow
-                v-if="keywordEnabled"
-                density="compact"
-                class="my-2"
-              >
-                <VCol>
-                  <ASystemEntityScope
-                    subject="keyword"
-                    system="dam"
-                  >
-                    <KeywordRemoteAutocompleteWithCached
-                      v-model="keywords"
-                      :queue-id="queueId"
-                      :label="t('coreDam.asset.model.keywords')"
-                      clearable
-                      multiple
-                      :required="keywordRequired"
-                      :validation-scope="metadataValidationScope"
-                      :disabled="!item.canEditMetadata"
-                    />
-                  </ASystemEntityScope>
-                </VCol>
-              </VRow>
-              <VRow
-                v-if="authorEnabled"
-                density="compact"
-                class="my-2"
-              >
-                <VCol>
-                  <ASystemEntityScope
-                    subject="author"
-                    system="dam"
-                  >
-                    <AuthorRemoteAutocompleteWithCached
-                      v-model="authors"
-                      :queue-id="queueId"
-                      :label="t('coreDam.asset.model.authors')"
-                      :author-conflicts="item.authorConflicts"
-                      clearable
-                      multiple
-                      :required="authorRequired"
-                      :validation-scope="metadataValidationScope"
-                      :disabled="!item.canEditMetadata"
-                    />
-                  </ASystemEntityScope>
-                </VCol>
-              </VRow>
-              <VRow
-                density="compact"
-                class="my-2"
-              >
-                <VCol>
-                  <VSwitch
-                    v-model="mainFileSingleUse"
-                    :label="t('common.damImage.asset.model.mainFileSingleUse')"
-                  />
-                </VCol>
-              </VRow>
-            </template>
-          </AssetCustomMetadataForm>
-        </VForm>
+          {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
+        </AssetLink>
       </div>
-    </div>
-  </VCol>
+    </template>
+    <template #edit>
+      <VBtn
+        size="small"
+        variant="text"
+        :disabled="!item.canEditMetadata"
+        @click.stop="showDetail"
+      >
+        {{ t('coreDam.asset.queueItem.edit') }}
+      </VBtn>
+    </template>
+    <template #remove>
+      <AActionDeleteButton
+        variant="icon"
+        :acl="ACL.DAM_ASSET_DELETE"
+        :disabled="!item.canEditMetadata && !item.isDuplicate"
+        button-class=""
+        @delete-record="remove"
+      />
+    </template>
+  </ADamUploadQueueItem>
 </template>

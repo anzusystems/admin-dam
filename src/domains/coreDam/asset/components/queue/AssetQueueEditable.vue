@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { UploadQueueItemStatus, useAlerts } from '@anzusystems/common-admin'
-import type { DocId, UploadQueueItem } from '@anzusystems/common-admin'
-import { computed, onMounted, ref } from 'vue'
+import { ADamUploadQueueList, UploadQueueSuggestionsKey, useAlerts } from '@anzusystems/common-admin'
+import type { UploadQueueItem, UploadQueueListBinding } from '@anzusystems/common-admin'
+import { provide } from 'vue'
 
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
 import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
@@ -21,94 +22,70 @@ const props = withDefaults(
 )
 
 const uploadQueuesStore = useUploadQueuesStore()
-const refreshDisabled = ref(false)
-
+const { currentExtSystemId } = useCurrentExtSystem()
 const { showWarningT } = useAlerts()
-
-const refreshItem = async (data: { index: number; assetId: DocId; item: UploadQueueItem }) => {
-  /* The row itself, not its position nor its asset: the list can have moved under the click, and rows can share
-   * an asset. A row that has left the queue meanwhile is not asked about. */
-  const item = data.item
-  if (!list.value.includes(item)) return
-  refreshDisabled.value = true
-  try {
-    const statusBefore = item.status
-    const outcome = await uploadQueuesStore.refreshQueueItem(item)
-    if (outcome === 'pending') showWarningT('common.damImage.queueItem.stillUploadingOrProcessing')
-    /* The read failed, or the asset is gone, and the user is told why - unless the row has come to its end
-     * meanwhile, settled by a notification or stopped by the user: it says what became of it. A file that was
-     * being sent and is processing now has not: nothing is known of it yet, and asking again may tell. */
-    const ended =
-      item.status !== statusBefore &&
-      (item.status === UploadQueueItemStatus.Failed ||
-        item.status === UploadQueueItemStatus.Uploaded ||
-        item.status === UploadQueueItemStatus.Stop)
-    if (outcome === 'error' && !ended) showWarningT('common.damImage.queueItem.refreshFailed')
-  } finally {
-    refreshDisabled.value = false
-  }
-}
-
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(props.queueId)
-})
-
-const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item)
-}
-
-const removeItem = (assetId: DocId) => {
-  uploadQueuesStore.removeByAssetId(props.queueId, assetId)
-}
-
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
-onMounted(() => {
-  list.value.forEach((item) => {
-    addToCachedKeywords(item.keywords)
-    addToCachedAuthors(item.authors)
-    // objectGetValues(item.authorSuggestions)
-    //   .filter((ids) => ids.length > 1)
-    //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
-  })
-  fetchCachedKeywords()
-  fetchCachedAuthors()
-})
+// The list of the library over the store, the alerts and the name caches of admin-dam.
+const queue: UploadQueueListBinding = {
+  items: () => uploadQueuesStore.getQueueItems(props.queueId),
+  // In the queue the row's event names, as before.
+  cancel: (item, _index, queueId) => uploadQueuesStore.stopItemUpload(queueId, item),
+  // A row is taken out by its own delete: `removeItem` below.
+  remove: () => undefined,
+  refresh: (item) => uploadQueuesStore.refreshQueueItem(item),
+  refreshMayHelp: () => false,
+  warn: (key) => showWarningT(key),
+  prime: (items) => {
+    items.forEach((item) => {
+      addToCachedKeywords(item.keywords)
+      addToCachedAuthors(item.authors)
+    })
+    fetchCachedKeywords()
+    fetchCachedAuthors()
+  },
+  mainFileSingleUseEnabled: true,
+}
+
+// The name chips mark what the queue suggested as new: the queues are those of admin-dam's store.
+provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queueKey)?.suggestions)
+
+// The row whose asset was deleted, where it is by now; not the first row of that asset.
+const removeItem = (item: UploadQueueItem) => {
+  const index = queue.items().indexOf(item)
+  if (index !== -1) uploadQueuesStore.removeByIndex(props.queueId, index)
+}
 </script>
 
 <template>
-  <div
-    class="asset-queue-editable"
-    :class="{ 'asset-queue-editable--sidebar-active': massOperations }"
+  <ADamUploadQueueList
+    :queue-key="queueId"
+    :ext-system="currentExtSystemId"
+    :mass-operations="massOperations"
+    :disable-done-animation="disableDoneAnimation"
+    :queue="queue"
+    :mass-operations-from="2"
+    :keyboard-scroll="false"
   >
-    <div class="asset-queue-editable__left">
-      <div class="overflow-y-auto overflow-x-hidden h-100">
-        <VRow class="dam-upload-queue dam-upload-queue--editable pa-2 mb-5">
-          <AssetQueueItemEditable
-            v-for="(item, index) in list"
-            :key="item.key"
-            v-model:custom-data="item.customData"
-            v-model:keywords="item.keywords"
-            v-model:authors="item.authors"
-            v-model:main-file-single-use="item.mainFileSingleUse"
-            :refresh-disabled="refreshDisabled"
-            :item="item"
-            :index="index"
-            :queue-id="queueId"
-            :disable-done-animation="disableDoneAnimation"
-            @refresh-item="refreshItem"
-            @cancel-item="cancelItem"
-            @remove-item="removeItem"
-          />
-        </VRow>
-      </div>
-    </div>
-    <div
-      v-if="list.length > 1"
-      class="asset-queue-editable__sidebar border-s"
-    >
+    <template #item="{ item, index, refreshDisabled, refresh }">
+      <AssetQueueItemEditable
+        v-model:custom-data="item.customData"
+        v-model:keywords="item.keywords"
+        v-model:authors="item.authors"
+        v-model:main-file-single-use="item.mainFileSingleUse"
+        :refresh-disabled="refreshDisabled"
+        :item="item"
+        :index="index"
+        :queue-id="queueId"
+        :disable-done-animation="disableDoneAnimation"
+        @refresh-item="refresh()"
+        @cancel-item="queue.cancel($event.item, $event.index, $event.queueId)"
+        @remove-item="removeItem"
+      />
+    </template>
+    <template #sidebar>
       <AssetQueueSelectedSidebar :queue-id="queueId" />
-    </div>
-  </div>
+    </template>
+  </ADamUploadQueueList>
 </template>

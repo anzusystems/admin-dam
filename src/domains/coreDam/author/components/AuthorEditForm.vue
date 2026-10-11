@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  ADamAuthorCachedChip,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
@@ -10,7 +11,6 @@ import { useI18n } from 'vue-i18n'
 
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
 import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
@@ -76,7 +76,7 @@ const { authorTypeOptions } = useDamAuthorType()
           />
         </ARow>
         <ARow :title="t('coreDam.author.model.childAuthors')">
-          <AuthorRemoteAutocompleteCachedAuthorChip
+          <ADamAuthorCachedChip
             v-for="authorId in author.childAuthors"
             :id="authorId"
             :key="authorId"

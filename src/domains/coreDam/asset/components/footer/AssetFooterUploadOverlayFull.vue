@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { useAlerts, useTheme } from '@anzusystems/common-admin'
+import { ADamUploadQueueStopButton, useAlerts, useTheme } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDisplay } from 'vuetify'
 
-import { bulkUpdateAssetsMetadata, hasMetadataToSave } from '@/domains/coreDam/asset/api/assetApi'
+import {
+  bulkUpdateAssetsMetadata,
+  hasMetadataToSave,
+  showMetadataSaveError,
+} from '@/domains/coreDam/asset/api/assetApi'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
@@ -67,7 +70,7 @@ const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
 
-const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
+const { showRecordWas, showValidationError } = useAlerts()
 
 const v$ = useVuelidate()
 
@@ -85,7 +88,7 @@ const onSave = async () => {
     fetchAssetList()
     showRecordWas('updated')
   } catch (error) {
-    showErrorsDefault(error)
+    showMetadataSaveError(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -106,7 +109,7 @@ const onSaveAndClose = async () => {
     await onStopConfirm()
     fetchAssetList()
   } catch (error) {
-    showErrorsDefault(error)
+    showMetadataSaveError(error)
   } finally {
     saveAndCloseButtonLoading.value = false
   }
@@ -236,7 +239,7 @@ const onSaveAndClose = async () => {
               {{ t('common.system.modal.hide') }}
             </VTooltip>
           </VBtn>
-          <AssetFooterUploadButtonStop
+          <ADamUploadQueueStopButton
             data-cy="button-close"
             :button-size="36"
             :is-uploading="isUploading"

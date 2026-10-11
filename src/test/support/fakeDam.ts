@@ -298,6 +298,7 @@ export const queueRow = (over: Partial<UploadQueueItem> = {}): UploadQueueItem =
   status: 'uploading',
   isDuplicate: false,
   duplicateAssetId: null,
+  uploadedAssetId: null,
   assetType: 'image',
   assetStatus: 'draft',
   displayTitle: '',

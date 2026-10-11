@@ -227,15 +227,17 @@ describe('clearing a queue', () => {
     expect(showError).not.toHaveBeenCalled()
   })
 
-  // A notification can fail a row before its file has been sent whole: the upload goes on whatever the row says.
+  // A notification can fail a row before its file has been sent whole: its upload is stopped then and there, and
+  // clearing the queue finds only the others to stop.
   it('stops an upload whose row a notification has failed while its file is still being sent', async () => {
     const store = await load()
     const { rows, chunksOnTheWire, answerChunks } = await uploadsUnderWay(store)
     store.queueItemFailed('asset-1', AssetFileFailReason.Unknown, 'file-1')
     await vi.advanceTimersByTimeAsync(0)
-    // The failed row no longer counts as uploading, so the third file has started beside the two being sent.
+    // The chunk of the failed row is aborted at once, and the third file has started in its place.
     expect(rows.map((row) => row.status)).toEqual(['failed', 'uploading', 'uploading'])
     expect(chunksOnTheWire).toHaveLength(3)
+    expect(aborted(chunksOnTheWire)).toEqual([true, false, false])
     const requestsBefore = server.requests.length
 
     store.clearQueue(QUEUE)
@@ -243,7 +245,8 @@ describe('clearing a queue', () => {
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
     expect(aborted(chunksOnTheWire)).toEqual([true, true, true])
-    expect(rows.map((row) => row.status)).toEqual(['stop', 'stop', 'stop'])
+    // The failed row stays as the server left it: it had no upload left to stop.
+    expect(rows.map((row) => row.status)).toEqual(['failed', 'stop', 'stop'])
     // No second chunk of the failed row's file, and no finish.
     expect(server.requests).toHaveLength(requestsBefore)
   })
@@ -331,6 +334,38 @@ describe('an import whose answer comes after its queue was stopped or cleared', 
       expect(server.requests).toHaveLength(1)
     }
   )
+
+  // Nor when the server refuses it: the row was discarded before the refusal came, and nobody sees it any more.
+  const refusals: Array<[string, () => Error]> = [
+    ['an error of the server', () => httpError(500)],
+    ['the provider asset is in the licence already', () => validationError({ id: ['error_field_not_unique'] })],
+  ]
+  const refusedCases = ways.flatMap((way) => refusals.map(([name, refusal]) => [way, name, refusal] as const))
+
+  it.each(refusedCases)(
+    'leaves the discarded row as it is and says nothing: %s, a refusal: %s',
+    async (way, _name, refusal) => {
+      const store = await load()
+      const [imported] = seedQueue(store, QUEUE, [waitingImport('photo-9')])
+      let refuseImport: () => void = () => undefined
+      server.on('POST', /\/external-provider$/, async () => {
+        await new Promise<void>((resolve) => (refuseImport = resolve))
+
+        throw refusal()
+      })
+      store.processUpload(QUEUE)
+      await vi.advanceTimersByTimeAsync(0)
+      expect(imported.status).toBe('uploading')
+
+      store[way](QUEUE)
+      refuseImport()
+      await vi.advanceTimersByTimeAsync(A_LONG_TIME)
+
+      expect([imported.status, imported.error.hasError, imported.isDuplicate]).toEqual(['stop', false, false])
+      expect(showUnknownError).not.toHaveBeenCalled()
+      expect(server.requests).toHaveLength(1)
+    }
+  )
 })
 
 describe('stopping one row', () => {
@@ -357,6 +392,30 @@ describe('stopping one row', () => {
     expect(rows.map((row) => row.status)).toEqual(['stop', 'processing', 'processing'])
     expect(server.sent('PATCH', /\/uploaded$/)).toHaveLength(2)
     expect(showError).not.toHaveBeenCalled()
+  })
+
+  // Its Cancel, while its request is on the wire: the row is gone, and the refusal that comes after says nothing.
+  it('takes out an import whose request is on the wire, and says nothing of a refusal that comes after', async () => {
+    const store = await load()
+    const [imported] = seedQueue(store, QUEUE, [waitingImport('photo-9')])
+    let refuseImport: () => void = () => undefined
+    server.on('POST', /\/external-provider$/, async () => {
+      await new Promise<void>((resolve) => (refuseImport = resolve))
+
+      throw httpError(500)
+    })
+    store.processUpload(QUEUE)
+    await vi.advanceTimersByTimeAsync(0)
+    expect(imported.status).toBe('uploading')
+
+    await store.stopItemUpload(QUEUE, imported)
+    refuseImport()
+    await vi.advanceTimersByTimeAsync(A_LONG_TIME)
+
+    expect(store.getQueueItems(QUEUE)).toEqual([])
+    expect([imported.status, imported.error.hasError]).toEqual(['stop', false])
+    expect(showUnknownError).not.toHaveBeenCalled()
+    expect(server.requests).toHaveLength(1)
   })
 
   it('takes out a row that was only waiting, which is then never started', async () => {

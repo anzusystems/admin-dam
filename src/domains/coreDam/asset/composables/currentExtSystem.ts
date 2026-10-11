@@ -6,6 +6,7 @@ import {
   isString,
   isUndefined,
   useDamConfigStore,
+  useExtSystemIdForCached,
 } from '@anzusystems/common-admin'
 import type { DamCurrentUserDto, DocId } from '@anzusystems/common-admin'
 import { isAxiosError } from 'axios'
@@ -21,6 +22,9 @@ import { SYSTEM_DAM } from '@/shared/systems'
 const currentExtSystemId = ref(0)
 
 const currentAssetLicenceId = ref(0)
+
+// The name caches of the library ask under their own ext system: the current one, written with it wherever it is.
+const { cachedExtSystemId } = useExtSystemIdForCached()
 
 export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
@@ -43,15 +47,18 @@ export const initCurrentExtSystemAndLicence = async (
     if (damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId) {
       if (currentUser.value.selectedLicenceDto) {
         currentExtSystemId.value = currentUser.value.selectedLicenceDto.extSystem
+        cachedExtSystemId.value = currentExtSystemId.value
         currentAssetLicenceId.value = currentUser.value.selectedLicenceDto.id
         return true
       } else if (currentUser.value.assetLicencesDto[0]) {
         currentExtSystemId.value = currentUser.value.assetLicencesDto[0].extSystem
+        cachedExtSystemId.value = currentExtSystemId.value
         currentAssetLicenceId.value = currentUser.value.assetLicencesDto[0].id
         return true
       }
     }
     currentExtSystemId.value = damPrvConfig.value.settings.defaultExtSystemId
+    cachedExtSystemId.value = currentExtSystemId.value
     currentAssetLicenceId.value = damPrvConfig.value.settings.defaultAssetLicenceId
     return true
   } else if (isString(loadConfig.id) && isDocId(loadConfig.id)) {
@@ -90,6 +97,7 @@ export const initCurrentExtSystemAndLicence = async (
       assetDetailStore.setAsset(assetRes)
       currentAssetLicenceId.value = licenceRes.id
       currentExtSystemId.value = licenceRes.extSystem
+      cachedExtSystemId.value = currentExtSystemId.value
       return true
     }
   }

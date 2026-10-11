@@ -14,6 +14,8 @@ import type { DistributionAuth, DistributionAuthStatusType } from '@/domains/cor
 
 export const useDistributionListStore = defineStore('damDistributionListStore', () => {
   const list = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
+  // The asset the list is of: the store is one for the tabs of all assets.
+  const listAssetId = ref<DocId | null>(null)
   const loader = ref(false)
   const auth = ref<Array<DistributionAuth>>([])
 
@@ -87,6 +89,13 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     list.value = []
   }
 
+  /** Empties the list unless it is that asset's already: a read that fails must not leave another asset's there. */
+  function listOfAsset(assetId: DocId) {
+    if (listAssetId.value === assetId) return
+    listAssetId.value = assetId
+    list.value = []
+  }
+
   function resetAuth(distributionService: DamDistributionServiceName | null = null) {
     if (isNull(distributionService)) {
       auth.value = []
@@ -100,12 +109,14 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
 
   function reset() {
     list.value = []
+    listAssetId.value = null
     loader.value = false
     auth.value = []
   }
 
   return {
     list,
+    listAssetId,
     loader,
     auth,
     getDistributionAuth,
@@ -116,6 +127,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     listItemMessageUpdate,
     setAuthStatus,
     resetList,
+    listOfAsset,
     resetAuth,
     reset,
   }

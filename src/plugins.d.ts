@@ -27,10 +27,6 @@ declare module '@anzusystems/common-admin' {
     acl: CustomAclValue
   }
   export interface DefineLocaleMessage extends MessageSchema {}
-
-  interface AssetFileProperties {
-    ttsAudio: boolean
-  }
 }
 
 declare module 'vue-i18n' {

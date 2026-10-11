@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ADamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { ADamAssetImage, ADamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
 import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
@@ -214,7 +213,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
                   color="white"
                 />
               </div>
-              <AssetImage
+              <ADamAssetImage
                 :src="imageSrc"
                 use-component
                 @load="onImageLoad"

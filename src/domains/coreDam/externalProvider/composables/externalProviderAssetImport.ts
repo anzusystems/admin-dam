@@ -64,7 +64,7 @@ export const useExternalProviderAssetImport = () => {
           assetType: item.assetType,
         },
         url: item.imagePreview?.url ? item.imagePreview.url : '',
-        metadata: {},
+        metadata: item.externalProviderMetadata ?? {},
       }
     })
     const { hideSelected } = useExternalProviderAssetFooterSelectedView()

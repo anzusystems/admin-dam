@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ARow, useDamAuthorType } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ADamAuthorCachedChip, ARow, useDamAuthorType } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
@@ -31,7 +30,7 @@ const { getAuthorTypeOption } = useDamAuthorType()
         </VChip>
       </ARow>
       <ARow :title="t('coreDam.author.model.currentAuthors')">
-        <AuthorRemoteAutocompleteCachedAuthorChip
+        <ADamAuthorCachedChip
           v-for="authorId in author.currentAuthors"
           :id="authorId"
           :key="authorId"
@@ -39,7 +38,7 @@ const { getAuthorTypeOption } = useDamAuthorType()
         />
       </ARow>
       <ARow :title="t('coreDam.author.model.childAuthors')">
-        <AuthorRemoteAutocompleteCachedAuthorChip
+        <ADamAuthorCachedChip
           v-for="authorId in author.childAuthors"
           :id="authorId"
           :key="authorId"

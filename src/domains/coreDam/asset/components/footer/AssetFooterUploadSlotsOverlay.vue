@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { isOneOf, useTheme } from '@anzusystems/common-admin'
+import { ADamUploadQueueStopButton, isOneOf, useTheme } from '@anzusystems/common-admin'
 import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
 import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useAssetFooterUploadSlotsView } from '@/domains/coreDam/asset/composables/assetFooterUploadSlots'
@@ -137,7 +136,7 @@ const classComputed = computed(() => {
               {{ t('common.system.modal.show') }}
             </VTooltip>
           </VBtn>
-          <AssetFooterUploadButtonStop
+          <ADamUploadQueueStopButton
             :is-uploading="isUploading"
             @confirm="onStopConfirm"
           />

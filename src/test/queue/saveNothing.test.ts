@@ -39,9 +39,6 @@ vi.mock('@/domains/coreDam/asset/components/AssetUpload.vue', () => ({ default: 
 vi.mock('@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue', () => ({
   default: { render: () => null },
 }))
-vi.mock('@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue', () => ({
-  default: { render: () => null },
-}))
 vi.mock('@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue', () => ({
   default: { render: () => null },
 }))

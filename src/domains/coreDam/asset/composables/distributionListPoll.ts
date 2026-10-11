@@ -51,9 +51,12 @@ export const distributionListPollDelay = (age: number, failures = 0) => {
  * notifications, where they arrive, change the rows as before.
  *
  * @param read The request of the list as the tab shows it. It is handed a signal: a read of the tab's own
- * stops the one made here.
+ * stops the one made here. And whether its failure is to be written down: the first of a row of failures is, the
+ * ones after it would only say the same again.
  */
-export function useDistributionListPoll(read: (signal: AbortSignal) => Promise<DistributionListItems>) {
+export function useDistributionListPoll(
+  read: (signal: AbortSignal, report: boolean) => Promise<DistributionListItems>
+) {
   const distributionListStore = useDistributionListStore()
   const underWay = computed(() =>
     distributionListStore.list.some((item) => DISTRIBUTION_STATUSES_UNDER_WAY.includes(item.status))
@@ -99,7 +102,7 @@ export function useDistributionListPoll(read: (signal: AbortSignal) => Promise<D
     reading = current
     const listWritesBefore = listWrites
     try {
-      const items = await read(current.signal)
+      const items = await read(current.signal, failures === 0)
       if (current.signal.aborted) return
       failures = 0
       if (listWrites === listWritesBefore) distributionListStore.setList(items)

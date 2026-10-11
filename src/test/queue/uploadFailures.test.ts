@@ -300,6 +300,40 @@ describe('a chunk the server refuses', () => {
     expect(server.sent('PATCH', /\/uploaded$/)).toEqual([])
   })
 
+  // The library gives this answer a text of its own; here the row says what any failure without a reason says.
+  it('is given up on after four "bad request" answers that name no field, with the unknown error said once', async () => {
+    const store = await load()
+    const [row] = seedQueue(store, QUEUE, [waitingUpload()])
+    // Every text the row is given on the way, not only the last: one written before the store's would be shown too.
+    const { watch } = await import('vue')
+    const texts: Array<string | undefined> = []
+    const stopWatching = watch(
+      () => store.getQueueItems(QUEUE)[0]?.error.message,
+      (message) => texts.push(message),
+      { flush: 'sync' }
+    )
+    let chunks = 0
+    server.on('POST', /\/image\/file-1\/chunk$/, () => {
+      chunks++
+      throw httpError(400, { error: 'bad_request' })
+    })
+
+    store.processUpload(QUEUE)
+    await vi.advanceTimersByTimeAsync(EVERY_RETRY)
+    stopWatching()
+
+    expect(texts).toEqual(['system.uploadErrors.unknownError'])
+    expect(chunks).toBe(4)
+    expect(row.status).toBe('failed')
+    expect(row.error).toEqual({
+      hasError: true,
+      message: 'system.uploadErrors.unknownError',
+      assetFileFailReason: 'none',
+    })
+    expect(showError.mock.calls).toEqual([['system.uploadErrors.unknownError']])
+    expect(server.sent('PATCH', /\/uploaded$/)).toEqual([])
+  })
+
   it('goes through after all when a later attempt is answered', async () => {
     const store = await load()
     const [row] = seedQueue(store, QUEUE, [waitingUpload()])

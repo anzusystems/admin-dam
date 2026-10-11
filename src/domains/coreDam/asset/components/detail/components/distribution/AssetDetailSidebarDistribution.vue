@@ -70,6 +70,9 @@ onBeforeUnmount(() => closed.abort())
 
 const readList = async () => {
   distributionListStore.showLoader()
+  // The list is shared with the tab of the asset before: left there, it would show under a read that failed here.
+  // The list of this asset stays, for a reload or another page that fails.
+  distributionListStore.listOfAsset(props.assetId)
   try {
     const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, closed.signal)
     if (!closed.signal.aborted) distributionListStore.setList(items)
@@ -80,8 +83,8 @@ const readList = async () => {
   }
 }
 
-const { duringOwnRead } = useDistributionListPoll((signal) =>
-  fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, signal)
+const { duringOwnRead } = useDistributionListPoll((signal, report) =>
+  fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, signal, report)
 )
 const getList = () => duringOwnRead(readList)
 

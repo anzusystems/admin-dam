@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ADatetime, ARow } from '@anzusystems/common-admin'
+import { ABooleanValue, ACopyText, ADamAssetImage, ADatetime, ARow } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import PodcastModeChip from '@/domains/coreDam/podcast/components/PodcastModeChip.vue'
 import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
@@ -76,7 +75,7 @@ const altImgSrc = computed(() => {
         v-if="imageSrc"
         :title="t('coreDam.podcast.model.imagePreview')"
       >
-        <AssetImage
+        <ADamAssetImage
           :src="imageSrc"
           use-component
         />
@@ -85,7 +84,7 @@ const altImgSrc = computed(() => {
         v-if="altImgSrc"
         :title="t('coreDam.podcast.model.altImage')"
       >
-        <AssetImage
+        <ADamAssetImage
           :src="altImgSrc"
           use-component
         />

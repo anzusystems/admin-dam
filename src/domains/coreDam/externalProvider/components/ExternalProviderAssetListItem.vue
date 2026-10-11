@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+import { ADamAssetImage } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
@@ -90,7 +90,7 @@ const imageSrc = computed(() => {
           size="x-small"
         />
       </div>
-      <AssetImage
+      <ADamAssetImage
         :src="imageSrc"
         :background-color="backgroundColor"
         :width="imageWidth"

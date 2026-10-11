@@ -216,8 +216,8 @@ describe('a notification that the file is processed', () => {
     expect(server.assetReads('asset-1')).toBe(readsToSettle)
   })
 
-  // Its status belongs to the batch that loaded it: the notification only brings the row up to date.
-  it('clears the error of a mass-edit row whose file had failed, and leaves it failed', async () => {
+  // Its status belongs to the batch that loaded it: the processed file gives back what the failure took, as it was.
+  it('gives a mass-edit row whose file had failed its status and its form back when the file is processed after all, with what was typed', async () => {
     const { store } = await load()
     const [picked] = seedQueue(store, EDIT, [
       queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, keywords: ['typed'] }),
@@ -229,9 +229,64 @@ describe('a notification that the file is processed', () => {
     server.asset(assetDetail('asset-1'))
     await processed()
 
-    expect(picked.status).toBe('failed')
+    expect([picked.status, picked.canEditMetadata]).toEqual(['uploaded', true])
     expect(picked.error).toEqual(NO_ERROR)
+    expect(picked.keywords).toEqual(['typed'])
     expect(picked.assetStatus).toBe('with_file')
+  })
+})
+
+// Kept from its form by its batch, the file still with the server: its file then fails, and is processed after all.
+describe('a mass-edit row whose file was still being processed when its batch answered', () => {
+  it('goes back to the text about its metadata, not to an empty form, when its failed file is processed after all', async () => {
+    const { store } = await load()
+    server.asset(
+      assetDetail('asset-1', {
+        flags: { described: false },
+        mainFile: assetFile('file-1', 'stored', { asset: 'asset-1' }),
+      })
+    )
+    await store.addByAssets(EDIT, [
+      {
+        id: 'asset-1',
+        attributes: { assetType: 'image', assetStatus: 'draft' },
+        texts: { displayTitle: 'picked' },
+        mainFile: { id: 'file-1', links: {} },
+        mainFileSingleUse: null,
+      },
+    ] as never)
+    await vi.advanceTimersByTimeAsync(0)
+    const [picked] = store.getQueueItems(EDIT)
+    expect([picked.status, picked.error.message]).toEqual(['failed', 'system.uploadErrors.assetFileStillProcessing'])
+    server.asset(draft(failedFile('invalid_mime_type')))
+    await failed('invalid_mime_type')
+
+    server.asset(assetDetail('asset-1'))
+    await processed()
+
+    // Not in the bulk save: an empty form would have been saved over the metadata of the asset.
+    expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual(['failed', false, []])
+    expect(picked.error).toEqual({
+      hasError: true,
+      message: 'system.uploadErrors.metadataUnavailable',
+      assetFileFailReason: 'none',
+    })
+  })
+})
+
+describe('a mass-edit row of a duplicate whose file had failed', () => {
+  it('is given its status back when the file is processed after all, and stays without a form', async () => {
+    const { store } = await load()
+    const [picked] = seedQueue(store, EDIT, [queueRow({ type: 'asset', status: 'uploaded', isDuplicate: true })])
+    server.asset(draft(failedFile('invalid_mime_type')))
+    await failed('invalid_mime_type')
+    expect(picked.status).toBe('failed')
+
+    server.asset(assetDetail('asset-1'))
+    await processed()
+
+    expect([picked.status, picked.canEditMetadata]).toEqual(['uploaded', false])
+    expect(picked.error).toEqual(NO_ERROR)
   })
 })
 
@@ -609,6 +664,7 @@ describe('a mass-edit row its batch load left out', () => {
 
     expect([picked.canEditMetadata, picked.keywords]).toEqual([true, ['keyword-server']])
     expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
+    expect(picked.status).toBe('uploaded')
   })
 
   // The text is still true: the metadata is what the row misses, whatever became of its file.
@@ -635,6 +691,29 @@ describe('a mass-edit row its batch load left out', () => {
 
     expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual(['failed', false, []])
     expect(picked.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' })
+  })
+
+  // Not an empty form, which the bulk save would send over the metadata of the asset.
+  it('goes back to the text about its metadata when its failed file is processed after all, and the metadata notification still brings them', async () => {
+    const { store } = await load()
+    const picked = await leftOut(store)
+    server.asset(draft(failedFile('invalid_mime_type')))
+    await failed('invalid_mime_type')
+
+    server.asset(assetDetail('asset-1'))
+    await processed()
+
+    expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual(['failed', false, []])
+    expect(picked.error).toEqual({
+      hasError: true,
+      message: 'system.uploadErrors.metadataUnavailable',
+      assetFileFailReason: 'none',
+    })
+
+    await metadata()
+
+    expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual(['uploaded', true, ['keyword-server']])
+    expect(picked.error).toEqual(NO_ERROR)
   })
 })
 

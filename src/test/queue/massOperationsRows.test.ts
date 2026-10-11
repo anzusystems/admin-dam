@@ -13,18 +13,21 @@ import type { UploadUiSetup } from '@/test/support/uploadUi'
  * button is pressed, and the rows of the store are read. The server is a fake that knows two keywords and an author.
  *
  * Which of keywords and authors the sidebar offers at all is in `massOperationsSidebar.test.ts`; that its fields
- * are not validated, in `asset/assetMetadataValidation.test.ts`. */
+ * are not validated, in the library's `massOperationsValidation.test.ts`. */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
 const QUEUE = 'global'
-const FILL = 'Fill empty'
-const REPLACE = 'Replace in all assets'
-const FILL_ALL = 'Fill all empty'
+// The two buttons beside a field are named by what they do and by the field.
+const fillOf = (field: string) => 'Fill empty field: ' + field
+const replaceOf = (field: string) => 'Replace everywhere: ' + field
+const FILL_ALL = 'Fill only empty'
 const REPLACE_ALL = 'Replace all'
-const CLEAR_FORM = 'Clear form'
+const CLEAR_FORM = 'Clear'
+const GENERAL = 'Main'
+const SHOW_MORE = 'Show more details'
 
 const KEYWORDS = [
   { id: 'keyword-bratislava', name: 'Bratislava' },
@@ -79,9 +82,9 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
     )
     if (!input) throw new Error(`the "${panelTitle}" panel has no "${label}" field`)
     let line: HTMLElement = input
-    while (buttonsNamed(line, FILL).length === 0) line = line.parentElement!
+    while (buttonsNamed(line, fillOf(label)).length === 0) line = line.parentElement!
 
-    return { input, fill: buttonsNamed(line, FILL)[0], replace: buttonsNamed(line, REPLACE)[0] }
+    return { input, fill: buttonsNamed(line, fillOf(label))[0], replace: buttonsNamed(line, replaceOf(label))[0] }
   }
   const type = async (panelTitle: string, label: string, value: string) => {
     await open(panelTitle)
@@ -92,7 +95,7 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
   }
   /** Searches the keyword or author input of the general panel for the name, and picks what the server found. */
   const pick = async (label: string, name: string) => {
-    const input = field('General', label).input.querySelector<HTMLInputElement>('input[type="text"]')!
+    const input = field(GENERAL, label).input.querySelector<HTMLInputElement>('input[type="text"]')!
     input.focus()
     input.value = name
     input.dispatchEvent(new Event('input', { bubbles: true }))
@@ -133,7 +136,7 @@ describe('the panels of the mass operations', () => {
       row('asset-3', { assetType: 'audio' }),
     ])
 
-    expect(panels().map(titleOf)).toEqual(['General', 'Image', 'Audio'])
+    expect(panels().map(titleOf)).toEqual([GENERAL, 'Image', 'Audio'])
     // Open: the general one and the type of the first row.
     expect(panels().map((panel) => panel.classList.contains('v-expansion-panel--active'))).toEqual([true, false, true])
   })
@@ -141,6 +144,8 @@ describe('the panels of the mass operations', () => {
   it('hold a scratch field, with its two buttons, for each custom field of the type that can be written', async () => {
     const { panel, field } = await mountQueue([row('asset-1'), row('asset-2')], {
       customForm: { image: [customField('title'), customField('locked', { readonly: true }), customField('note')] },
+      // Fewer than the form has: the scratch form shows them all the same.
+      extSystem: { image: { customMetadataPinnedAmount: 1 } },
     })
 
     const labels = Array.from(panel('Image').querySelectorAll('.v-input label.v-field-label--floating')).map((label) =>
@@ -148,7 +153,15 @@ describe('the panels of the mass operations', () => {
     )
     expect(labels).toEqual(['title', 'note'])
     expect([field('Image', 'title').fill, field('Image', 'title').replace].every(Boolean)).toBe(true)
-    expect(buttonsNamed(panel('Image'), 'Fill empty')).toHaveLength(2)
+    const names = Array.from(panel('Image').querySelectorAll('.v-expansion-panel-text button')).map((button) =>
+      button.getAttribute('aria-label')
+    )
+    expect(names).toEqual([fillOf('title'), replaceOf('title'), fillOf('note'), replaceOf('note')])
+    // All of them at once, with nothing behind "show more details".
+    const hidden = Array.from(panel('Image').querySelectorAll('.v-input')).filter((input) =>
+      input.closest('[style*="display: none"]')
+    )
+    expect([hidden, buttonsNamed(panel('Image'), SHOW_MORE)]).toEqual([[], []])
   })
 })
 
@@ -197,6 +210,31 @@ describe('a custom field of the mass operations', () => {
     expect(titles(rows)).toEqual([undefined, undefined, ''])
   })
 
+  it('keeps what was typed into it while another field is typed into, each written by its own buttons', async () => {
+    const { rows, type, press, field } = await mountQueue(queue())
+    await type('Image', 'title', 'a title')
+    await type('Image', 'note', 'a note')
+
+    await press(field('Image', 'title').fill)
+    await press(field('Image', 'note').replace)
+
+    expect(titles(rows)).toEqual(['a title', 'kept', ''])
+    expect(rows.map((one) => one.customData.note)).toEqual(['a note', 'a note', undefined])
+  })
+
+  it('asks for no value to be filled in when nothing was typed into it', async () => {
+    const { rows, press, field, store } = await mountQueue(queue())
+    const asked = vi.spyOn(store, 'queueItemsReplaceEmptyCustomDataValue')
+
+    await press(field('Image', 'title').fill)
+
+    expect(asked.mock.calls).toEqual([
+      [QUEUE, { assetType: 'image', elementProperty: 'title', value: undefined }, undefined],
+    ])
+    // The rows that had a value keep it.
+    expect(titles(rows)).toEqual([undefined, 'kept', ''])
+  })
+
   it('shows in the form of the row what it wrote there', async () => {
     const { type, press, field, list } = await mountQueue(queue())
     await type('Image', 'title', 'filled')
@@ -228,13 +266,13 @@ describe('the keywords and the authors of the mass operations', () => {
     await pick('Keywords', 'Bratislava')
     await pick('Authors', 'Jane Roe')
 
-    await press(field('General', 'Keywords').fill)
+    await press(field(GENERAL, 'Keywords').fill)
 
     expect(rows.map((one) => one.keywords)).toEqual([['keyword-bratislava'], ['keyword-kosice'], []])
     // Each button writes its own field.
     expect(rows.map((one) => one.authors)).toEqual([[], ['author-other'], []])
 
-    await press(field('General', 'Authors').fill)
+    await press(field(GENERAL, 'Authors').fill)
 
     expect(rows.map((one) => one.authors)).toEqual([['author-jane'], ['author-other'], []])
   })
@@ -244,8 +282,8 @@ describe('the keywords and the authors of the mass operations', () => {
     await pick('Keywords', 'Bratislava')
     await pick('Authors', 'Jane Roe')
 
-    await press(field('General', 'Keywords').replace)
-    await press(field('General', 'Authors').replace)
+    await press(field(GENERAL, 'Keywords').replace)
+    await press(field(GENERAL, 'Authors').replace)
 
     // Never into a row whose asset type has them off.
     expect(rows.map((one) => one.keywords)).toEqual([['keyword-bratislava'], ['keyword-bratislava'], []])
@@ -256,7 +294,7 @@ describe('the keywords and the authors of the mass operations', () => {
     const { pick, press, field, list } = await mountQueue(queue(), noneForDocuments)
     await pick('Keywords', 'Bratislava')
 
-    await press(field('General', 'Keywords').replace)
+    await press(field(GENERAL, 'Keywords').replace)
     await vi.advanceTimersByTimeAsync(1000)
 
     const chips = Array.from(list.querySelectorAll<HTMLElement>('.dam-upload-queue__item')).map((card) =>
@@ -336,7 +374,7 @@ describe('the buttons under the mass operations', () => {
     await press(all(CLEAR_FORM))
 
     expect(field('Image', 'title').input.querySelector('textarea')?.value).toBe('')
-    expect(field('General', 'Keywords').input.querySelectorAll('.v-chip')).toHaveLength(0)
+    expect(field(GENERAL, 'Keywords').input.querySelectorAll('.v-chip')).toHaveLength(0)
     expect(titles(rows)).toEqual(['', 'kept', undefined])
 
     await press(all(FILL_ALL))

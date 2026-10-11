@@ -7,16 +7,16 @@ import sk from '@/locales/sk'
 import { i18n } from '@/plugins/i18n'
 
 /* The icon-only buttons of the upload queue have an accessible name. A tooltip is not one: it gives
- * `aria-describedby`, is rendered only on hover and is hidden on touch devices. The library guards its own copies
- * of these components the same way (`src/test/a11y/iconButtonNames.test.ts` there); the rest of this app is not
- * covered yet. */
+ * `aria-describedby`, is rendered only on hover and is hidden on touch devices. The row, the list and the mass
+ * operations of the queue are the library's, which guards them the same way (`src/test/a11y/iconButtonNames.test.ts`
+ * there); what admin-dam wraps them in is read here, and has no icon-only button of its own today: the delete of a
+ * row is the library's `AActionDeleteButton`. The rest of this app is not covered yet. */
 
 const sources = import.meta.glob(
   [
     '/src/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue',
+    '/src/domains/coreDam/asset/components/queue/AssetQueueEditable.vue',
     '/src/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue',
-    '/src/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue',
-    '/src/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue',
   ],
   { query: '?raw', import: 'default', eager: true }
 ) as Record<string, string>
@@ -90,9 +90,9 @@ const text = (key: string, locale: 'sk' | 'en') =>
   i18n.global.te(key, locale) ? i18n.global.t(key, {}, { locale }) : undefined
 
 describe('icon-only buttons of the upload queue', () => {
-  it('are all found: refresh and cancel of a row, fill and replace of the mass operations, stop', () => {
-    expect(Object.keys(sources)).toHaveLength(4)
-    expect(buttons).toHaveLength(9)
+  it('are looked for in the three wrappers of the queue, which have none of their own', () => {
+    expect(Object.keys(sources)).toHaveLength(3)
+    expect(buttons).toHaveLength(0)
   })
 
   it('tells an unnamed one from a named one, and a button with a text from both', () => {
@@ -146,7 +146,7 @@ describe('icon-only buttons of the upload queue', () => {
       return pairs
     })
 
-    expect(tooltips).toHaveLength(9)
+    expect(tooltips).toHaveLength(0)
     expect(tooltips.filter((pair) => !pair.label || !pair.tooltip.includes(`{{ ${pair.label} }}`))).toEqual([])
   })
 })

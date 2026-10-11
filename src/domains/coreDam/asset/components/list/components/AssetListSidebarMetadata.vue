@@ -2,6 +2,7 @@
 import {
   DamAssetStatus,
   browserHistoryReplaceUrlByRouter,
+  cloneDeep,
   isNull,
   useAlerts,
   useDamCachedUsers,
@@ -11,11 +12,12 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
-import { updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import { showMetadataSaveError, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
@@ -45,8 +47,12 @@ const {
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
+const uploadQueueStore = useUploadQueuesStore()
 
-const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
+// Saved before the server has processed the file, the form would overwrite what it fills in from the file.
+const saveBlocked = computed(() => !isNull(asset.value) && metadataMayStillChange(asset.value))
+
+const { showRecordWas, showValidationError } = useAlerts()
 
 const onEditMore = async () => {
   assetDetailStore.showDetail()
@@ -68,18 +74,23 @@ const onSave = async () => {
     saveButtonLoading.value = false
     return
   }
+  // What this save sends, taken as it starts: another asset can be opened, or this one typed into, while it is on the
+  // wire. The switch is the panel's own, not the value the asset was opened with.
+  const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
   try {
     metadataUnTouch()
     await updateAssetMetadata(
-      asset.value,
+      saved,
       mainFileSingleUse.value,
       mainFileOverrideInternal.value,
       mainFileInternal.value,
       ttsAudio.value
     )
+    // Into a row of the asset in a queue too: a later bulk save sends that row.
+    uploadQueueStore.updateAssetMetadata(saved)
     showRecordWas('updated')
   } catch (error) {
-    showErrorsDefault(error)
+    showMetadataSaveError(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -140,6 +151,14 @@ watch(
       v-if="!loader && asset"
       #append
     >
+      <Acl :permission="ACL.DAM_ASSET_UPDATE">
+        <div
+          v-if="saveBlocked"
+          class="px-2 pt-2 text-body-small text-center"
+        >
+          {{ t('coreDam.asset.detail.fileStillProcessing') }}
+        </div>
+      </Acl>
       <div class="pa-2 d-flex align-center justify-center">
         <ABtnSecondary
           class="mr-2"
@@ -154,6 +173,7 @@ watch(
             size="small"
             :variant="metadataAreTouched ? 'flat' : 'text'"
             :loading="saveButtonLoading"
+            :disabled="saveBlocked"
             @click.stop="onSave"
           >
             {{ t('common.button.save') }}

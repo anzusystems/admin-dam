@@ -10,12 +10,6 @@
     "add": "Pridať do nahrávania",
     "dragAndDrop": "Sem presuňte nahrávané súbory",
     "incorrectFormatSize": "Nesprávny formát alebo veľkosť",
-    "stop": "Zatvoriť",
-    "stopConfirmQuestion": "Chcete ukončiť nahrávanie?",
-    "waiting": "Čakanie",
-    "processing": "Spracováva sa",
-    "uploading": "Nahrávanie",
-    "done": "Hotovo",
     "limits": {
       "uploadWarning": "Varovanie pri nahrávaní",
       "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova.",
@@ -101,6 +95,7 @@
     "mimeType": "Nesprávny formát súboru",
     "metadataFailed": "Metadáta sa nepodarilo načítať. Použite tlačidlo obnoviť alebo položku odstráňte a skúste to znova.",
     "metadataUnavailable": "Metadáta sa nepodarilo načítať. Odstráňte položku a označte ju znova.",
+    "assetFileStillProcessing": "Súbor assetu sa ešte spracúva. Odstráňte položku a označte ju znova, keď bude spracovaný.",
     "processingTooLong": "Spracovanie trvá príliš dlho. Použite tlačidlo obnoviť alebo položku odstráňte a skúste to neskôr.",
     "processingTooLongSlot": "Spracovanie trvá príliš dlho. Zrušte položku a skúste to neskôr."
   },

@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { arrayFlatten, arrayFromArgs, isArray, isUndefined, useAlerts } from '@anzusystems/common-admin'
-import { computed, ref, watch } from 'vue'
+import {
+  arrayFlatten,
+  arrayFromArgs,
+  isArray,
+  useAlerts,
+  useDropzoneGlobalDragState,
+  useFormatAndSizeCheck,
+} from '@anzusystems/common-admin'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
-import { checkFormats, checkSizes } from '@/domains/coreDam/shared/services/upload/fileValidation'
 
 type InputRef = null | HTMLInputElement
 
@@ -213,35 +217,24 @@ const onFileChange = (event: Event) => {
   }
 }
 
-const { dragOverWindow, hideDragOverWindow } = useWindowFilesDragWatcher()
+const { isDraggingFile: dragOverWindow } = useDropzoneGlobalDragState()
+const hideDragOverWindow = () => {
+  dragOverWindow.value = false
+}
 
 const onReset = () => {
   selectedFiles.value = props.multiple ? [] : null
 }
 
-const acceptKeys = computed(() => {
-  if (isUndefined(props.accept)) {
-    return []
-  }
-  return props.accept.split(',')
-})
+const { checkFormatsAndSizes: keepCorrectFiles } = useFormatAndSizeCheck(
+  () => props.accept,
+  () => props.maxSizes
+)
 
-const maxSizeKeys = computed(() => {
-  if (isUndefined(props.maxSizes)) {
-    return []
-  }
-  return Object.keys(props.maxSizes)
-})
-
+// The library's check with its warning off: the warning stays admin-dam's own text.
 const checkFormatsAndSizes = (files: File[]) => {
-  const incorrectFileNames: string[] = []
-  const validFiles = files.filter((file) => {
-    const isFileValid = checkFormats(file, acceptKeys.value) && checkSizes(file, maxSizeKeys.value, props.maxSizes)
-    if (!isFileValid) {
-      incorrectFileNames.push(file.name)
-    }
-    return isFileValid
-  })
+  const validFiles = keepCorrectFiles(files, true)
+  const incorrectFileNames = files.filter((file) => !validFiles.includes(file)).map((file) => file.name)
   if (incorrectFileNames.length) {
     const { showWarning } = useAlerts()
     showWarning(t('system.upload.incorrectFormatSize') + ':' + incorrectFileNames.join(', '))

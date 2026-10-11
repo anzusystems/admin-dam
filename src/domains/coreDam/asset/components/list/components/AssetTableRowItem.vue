@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import {
   AChipNoLink,
+  ADamAssetImage,
+  ADamAssetImageMetaIcons,
   ADatetime,
   ATableCopyIdButton,
   ATableEditButton,
@@ -11,8 +13,6 @@ import type { DocId } from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
@@ -92,7 +92,7 @@ onMounted(() => {
     </td>
     <td>
       <div class="d-flex align-center">
-        <AssetImage
+        <ADamAssetImage
           :asset-type="assetType"
           :asset-status="assetStatus"
           :src="tableImageProperties.url"
@@ -112,10 +112,11 @@ onMounted(() => {
       <ADatetime :date-time="item.asset.createdAt" />
     </td>
     <td>
-      <AssetImageMetaIcons
+      <ADamAssetImageMetaIcons
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
         disable-absolute
+        show-tts
       />
       <CachedPodcastChip
         v-for="podcastItem in item.asset.podcasts"

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ACard, ADamAuthorCreateButton, defineBreadcrumbs } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type AssetLicenceDatatable from '@/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
-import AuthorCreateButton from '@/domains/coreDam/author/components/AuthorCreateButton.vue'
 import AuthorDatatable from '@/domains/coreDam/author/components/AuthorDatatable.vue'
 import { useAuthorListActions } from '@/domains/coreDam/author/composables/authorActions'
 import { ACL } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useAuthorListActions()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 
@@ -29,10 +30,10 @@ const breadcrumbs = defineBreadcrumbs(
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_CREATE">
-        <AuthorCreateButton
+        <ADamAuthorCreateButton
+          :ext-system="currentExtSystemId"
           data-cy="button-create"
-          disable-redirect
-          @on-success="afterCreate"
+          @success="afterCreate"
         />
       </Acl>
     </template>

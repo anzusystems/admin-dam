@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  ADamAuthorRemoteAutocompleteWithCached,
   ADamExtSystemRemoteAutocomplete,
   AFormDatetimePicker,
   AFormTextField,
@@ -8,16 +9,18 @@ import {
 } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
-import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetLicence } = useAssetLicenceEditActions()
+// The authors are searched and created in the current ext system, as before; the licence's own would change both.
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const { v$ } = useAssetLicenceValidation(assetLicence)
 
@@ -110,8 +113,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AuthorRemoteAutocompleteWithCached
+          <ADamAuthorRemoteAutocompleteWithCached
             v-model="assetLicence.internalRuleAuthors"
+            :ext-system="currentExtSystemId"
             :label="t('coreDam.assetLicence.model.internalRuleAuthors')"
             :validation-scope="false"
             multiple

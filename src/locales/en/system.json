@@ -10,12 +10,6 @@
     "add": "Add to upload",
     "dragAndDrop": "Drag and drop files for upload",
     "incorrectFormatSize": "Incorrect format or size",
-    "stop": "Close",
-    "stopConfirmQuestion": "Are you sure you want to stop the upload?",
-    "waiting": "Waiting",
-    "processing": "Processing",
-    "uploading": "Uploading",
-    "done": "Done",
     "limits": {
       "uploadWarning": "Upload warning",
       "onUploadLimit": "You have reached the upload limit ({limit}). Finish the current upload, then try again.",
@@ -101,6 +95,7 @@
     "mimeType": "Incorrect file format",
     "metadataFailed": "Metadata could not be loaded. Use the item refresh button, or remove the item and try again.",
     "metadataUnavailable": "Metadata could not be loaded. Remove the item and select it again.",
+    "assetFileStillProcessing": "The asset file is still being processed. Remove the item and select it again once it is processed.",
     "processingTooLong": "Processing is taking too long. Use item refresh button or remove item and retry later.",
     "processingTooLongSlot": "Processing is taking too long. Cancel the item and try again later."
   },

@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
+import { ADamAssetImage, DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
 
 const props = withDefaults(
@@ -69,7 +68,7 @@ onMounted(async () => {
           size="x-small"
         />
       </div>
-      <AssetImage
+      <ADamAssetImage
         :asset-status="item.url.length > 0 ? DamAssetStatus.WithFile : DamAssetStatus.Draft"
         :src="item.invalidImage ? '' : item.url"
         :background-color="IMAGE_BG_COLOR"

@@ -1,5 +1,7 @@
+import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ref } from 'vue'
+
+import { seedDamConfig } from '@/test/support/fakeDam'
 
 const uploadChunk = vi.fn(async (): Promise<unknown> => ({}))
 const uploadFinish = vi.fn(async (): Promise<unknown> => ({}))
@@ -17,18 +19,6 @@ vi.mock('@/domains/coreDam/asset/api/fileApi', () => ({
   uploadFinish: (...args: unknown[]) => uploadFinish(...(args as [])),
   uploadStart: (...args: unknown[]) => uploadStart(...(args as [])),
 }))
-vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
-  ...((await importOriginal()) as Record<string, unknown>),
-  // One chunk per read, so the loop below runs exactly as many times as the file has chunks.
-  useDamUploadChunkSize: () => ({ updateChunkSize: () => false, lastChunkSize: ref(4) }),
-}))
-vi.mock('axios', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>
-  return {
-    ...actual,
-    isAxiosError: () => false,
-  }
-})
 
 // happy-dom's FileReader never fires its `onload` here, and `readFile` is module-private, so the chunk loop would
 // hang on the very first read.
@@ -66,6 +56,11 @@ const queueItem = () => ({
 
 const load = async () => {
   vi.resetModules()
+  setActivePinia(createPinia())
+  const { useDamConfigStore } = await import('@anzusystems/common-admin')
+  // Chunks of 4 bytes and no other size, so the loop below runs exactly as many times as the file has chunks. The
+  // run is the library's, which reads the size from the DAM config.
+  seedDamConfig(useDamConfigStore(), 4)
 
   return await import('@/domains/coreDam/shared/services/upload/uploadService')
 }
@@ -87,15 +82,16 @@ describe('measuring the speed', () => {
     const { useUpload } = await load()
     const item = queueItem()
     const speeds: number[] = []
-    const { upload } = useUpload(item as never, (_progress: number, speed: number) => {
+    const { upload, uploadInit } = useUpload(item as never, (_progress: number, speed: number) => {
       speeds.push(speed)
     })
+    await uploadInit()
     // Held open, or the upload finishes and stops the speed check before the retry is ever reported.
     uploadFinish.mockImplementation(() => new Promise(() => undefined))
     let attempt = 0
     uploadChunk.mockImplementation(async () => {
       attempt++
-      // Two events per attempt: the first only sets the baseline, the second is the first sample.
+      // Two events per attempt, a long time apart in the one that fails.
       onChunkProgress?.({ loaded: 1, total: 1_000_000 })
       vi.setSystemTime(Date.now() + (attempt === 1 ? 100_000 : 1_000))
       onChunkProgress?.({ loaded: attempt === 1 ? 999_999 : 2, total: 1_000_000 })
@@ -109,7 +105,9 @@ describe('measuring the speed', () => {
     vi.useRealTimers()
 
     expect(attempt).toBeGreaterThan(1)
-    expect(speeds.length).toBeGreaterThan(1)
+    // The meter reports once, and only after the retry: the attempt that failed threw its measure away without a
+    // word, and the chunks after it went by with no tick of its timer between them.
+    expect(speeds.length).toBeGreaterThan(0)
     expect(speeds.every((speed) => speed >= 0)).toBe(true)
   })
 })
@@ -120,9 +118,10 @@ describe('measuring a retry', () => {
     const { useUpload } = await load()
     const item = queueItem()
     const speeds: number[] = []
-    const { upload } = useUpload(item as never, (_progress: number, speed: number) => {
+    const { upload, uploadInit } = useUpload(item as never, (_progress: number, speed: number) => {
       speeds.push(speed)
     })
+    await uploadInit()
     uploadFinish.mockImplementation(() => new Promise(() => undefined))
     let attempt = 0
     uploadChunk.mockImplementation(async () => {
@@ -144,10 +143,10 @@ describe('measuring a retry', () => {
     await vi.advanceTimersByTimeAsync(10_000)
     vi.useRealTimers()
 
-    // The retry's own second: its first event only sets the baseline, so the one sample taken is the 3000 bytes that
-    // followed it.
+    // The file from its retry on, not the minute and a half of the attempt that failed: its four chunks of 4 bytes
+    // over the four seconds they took.
     expect(attempt).toBeGreaterThan(1)
-    expect(speeds.at(-1)).toBe(3_000)
+    expect(speeds.at(-1)).toBe(4)
   })
 })
 
@@ -155,7 +154,8 @@ describe('stopping an upload', () => {
   it('uploads every chunk when nothing stops it', async () => {
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload } = useUpload(item as never)
+    const { upload, uploadInit } = useUpload(item as never)
+    await uploadInit()
 
     await upload()
 
@@ -167,7 +167,8 @@ describe('stopping an upload', () => {
   it('stops between two chunks, and never finishes the upload', async () => {
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload, stop } = useUpload(item as never)
+    const { upload, uploadInit, stop } = useUpload(item as never)
+    await uploadInit()
     // The abort controller only covers the chunk in flight; a stop asked for between two of them used
     // to be ignored and the file uploaded to the end anyway.
     uploadChunk.mockImplementationOnce(async () => {
@@ -186,7 +187,8 @@ describe('stopping an upload', () => {
     vi.useFakeTimers()
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload, stop } = useUpload(item as never)
+    const { upload, uploadInit, stop } = useUpload(item as never)
+    await uploadInit()
     uploadChunk.mockRejectedValue(new Error('network'))
 
     // Settled through handlers attached in this tick: awaited later, the rejection is reported as
@@ -211,7 +213,8 @@ describe('stopping an upload', () => {
   it('stops while a chunk is still being read off disk', async () => {
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload, stop } = useUpload(item as never)
+    const { upload, uploadInit, stop } = useUpload(item as never)
+    await uploadInit()
     // Hold the read open: for a large chunk on a slow disk this window is not theoretical.
     holdReads = true
     const settled: string[] = []
@@ -251,7 +254,8 @@ describe('stopping an upload', () => {
   it('stops while the last chunk is on the wire', async () => {
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload, stop } = useUpload(item as never)
+    const { upload, uploadInit, stop } = useUpload(item as never)
+    await uploadInit()
     // The check at the top of the loop runs before a chunk, so a stop during the last one is only ever caught by the
     // one in front of the finish request.
     uploadChunk.mockImplementation(async () => {
@@ -270,7 +274,8 @@ describe('stopping an upload', () => {
     vi.useFakeTimers()
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload } = useUpload(item as never)
+    const { upload, uploadInit } = useUpload(item as never)
+    await uploadInit()
     uploadChunk.mockRejectedValue(new Error('network'))
 
     const settled: string[] = []
@@ -291,7 +296,8 @@ describe('stopping an upload', () => {
   it('cancels the chunk that is on the wire', async () => {
     const { useUpload } = await load()
     const item = queueItem()
-    const { upload, stop } = useUpload(item as never)
+    const { upload, uploadInit, stop } = useUpload(item as never)
+    await uploadInit()
     uploadChunk.mockImplementation(() => new Promise(() => undefined))
 
     void upload().catch(() => undefined)

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  ADamAssetImage,
   ADamAssetImageRoiSelect,
   DamAssetStatusDefault,
   DamAssetType,
@@ -16,7 +17,6 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
@@ -267,7 +267,7 @@ const { can } = useAuth()
               v-else
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <AssetImage
+              <ADamAssetImage
                 :asset-type="assetType"
                 :asset-status="assetStatus"
                 :src="imageProperties.url"

@@ -73,8 +73,11 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
   }
   const chips = (label: string) =>
     Array.from(field(label).querySelectorAll('.v-chip')).map((chip) => chip.textContent?.trim())
+  /** Whether each chip of the input carries the mark of a new name. */
+  const chipIcons = (label: string) =>
+    Array.from(field(label).querySelectorAll('.v-chip')).map((chip) => !!chip.querySelector('.mdi-new-box'))
 
-  return { ...ui, rows: ui.rows[queueId], list, card, field, search, offered, chips }
+  return { ...ui, rows: ui.rows[queueId], list, card, field, search, offered, chips, chipIcons }
 }
 
 beforeEach(() => {
@@ -143,6 +146,23 @@ describe('the keyword input of a row', () => {
   })
 })
 
+describe('a name the upload suggested as new', () => {
+  // The queue of the store of admin-dam knows the names its uploads brought as new; the chips are the library's.
+  it('is marked so on its chip in the row, for a keyword and for an author', async () => {
+    const { store, chipIcons } = await mountQueue([
+      editable({ keywords: ['keyword-bratislava'], authors: ['author-jane', 'author-john'] }),
+    ])
+    await vi.advanceTimersByTimeAsync(NAMES_READ)
+    expect([chipIcons('Keywords'), chipIcons('Authors')]).toEqual([[false], [false, false]])
+
+    store.queues[QUEUE].suggestions.newKeywordNames.add('Bratislava')
+    store.queues[QUEUE].suggestions.newAuthorNames.add('John Doe')
+    await nextTick()
+
+    expect([chipIcons('Keywords'), chipIcons('Authors')]).toEqual([[true], [false, true]])
+  })
+})
+
 describe('the author input of a row', () => {
   const addAuthor = (card: HTMLElement) => card.querySelector<HTMLButtonElement>('[data-cy="add-author"]')
 
@@ -174,6 +194,9 @@ describe('the author input of a row', () => {
   it('has that button disabled while the metadata of the row cannot be edited', async () => {
     const { card, rows } = await mountQueue([queueRow({ status: 'uploaded' })])
     expect(addAuthor(card)?.disabled).toBe(true)
+    // Switched off, and there: the inputs of both are drawn as inputs, not as the chips of what they hold.
+    expect(addAuthor(card)?.closest('[style*="display: none"]')).toBeNull()
+    expect(card.querySelectorAll('.v-autocomplete.v-input--disabled')).toHaveLength(2)
 
     rows[0].canEditMetadata = true
     await nextTick()
@@ -209,7 +232,8 @@ describe('the author input of a row', () => {
     expect(rows[0].authorConflicts).toEqual(['author-john', 'author-jane'])
 
     expect(card.textContent).toContain('Author conflicts')
-    expect(conflicts(card).map((chip) => chip.textContent?.trim())).toEqual(['John Doe', 'Jane Roe (TASR)'])
+    // One the row has already is not offered again.
+    expect(conflicts(card).map((chip) => chip.textContent?.trim())).toEqual(['John Doe'])
 
     conflicts(card)[0].querySelector<HTMLElement>('.v-chip__close')?.click()
     await vi.advanceTimersByTimeAsync(NAMES_READ)
@@ -217,20 +241,14 @@ describe('the author input of a row', () => {
     expect(rows[0].authors).toEqual(['author-jane', 'author-john'])
     expect(chips('Authors')).toEqual(['Jane Roe (TASR)', 'John Doe'])
 
-    // The chip that was pressed is gone; the row still knows of the conflict.
-    expect(conflicts(card).map((chip) => chip.textContent?.trim())).toEqual(['Jane Roe (TASR)'])
-    expect(rows[0].authorConflicts).toEqual(['author-john', 'author-jane'])
-
-    // One the row has already is not added twice.
-    conflicts(card)[0].querySelector<HTMLElement>('.v-chip__close')?.click()
-    await nextTick()
-
-    expect(rows[0].authors).toEqual(['author-jane', 'author-john'])
+    // Nothing is left to offer, and the heading goes with the last chip; the row still knows of the conflict.
     expect(conflicts(card)).toEqual([])
+    expect(card.textContent).not.toContain('Author conflicts')
+    expect(rows[0].authorConflicts).toEqual(['author-john', 'author-jane'])
   })
 
-  // As it is today: the batch load of the assets picked for mass edit asks for the names of their authors only.
-  it('offers the author conflicts of an asset picked for mass edit without their names: the chips go on spinning', async () => {
+  // The batch load of the assets picked for mass edit asks for the names of their author conflicts too, as the detail.
+  it('offers the author conflicts of an asset picked for mass edit by name', async () => {
     const asset = withConflicts('asset-1', [])
     server.asset(asset)
     const { store, list, asked } = await mountQueue([], {}, 'edit')
@@ -245,10 +263,10 @@ describe('the author input of a row', () => {
     expect(
       conflicts(card).map((chip) => [chip.textContent?.trim(), !!chip.querySelector('.v-progress-circular')])
     ).toEqual([
-      ['', true],
-      ['', true],
+      ['John Doe', false],
+      ['Jane Roe (TASR)', false],
     ])
-    expect(asked.filter((url) => url.startsWith('/adm/v1/author/'))).toEqual([])
+    expect(asked.filter((url) => url.startsWith('/adm/v1/author/'))).toHaveLength(1)
   })
 
   it('offers no author conflicts while the metadata of the row cannot be edited', async () => {

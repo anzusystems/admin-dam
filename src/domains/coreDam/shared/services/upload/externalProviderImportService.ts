@@ -31,6 +31,8 @@ export function externalProviderImport(queueItem: UploadQueueItem) {
           resolve(queueItem)
         })
         .catch((error) => {
+          // Stopped or cleared meanwhile: a refusal of the discarded row is not written into it, nor said.
+          if (queueItem.status === UploadQueueItemStatus.Stop) return resolve(queueItem)
           const { showUnknownError } = useAlerts()
           if (axiosErrorResponseHasValidationData(error)) {
             const data = error.response.data as AnzuApiValidationResponseData

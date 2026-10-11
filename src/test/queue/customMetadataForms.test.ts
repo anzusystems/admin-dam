@@ -4,15 +4,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import type { Component, Ref } from 'vue'
 
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* The two forms that draw the custom fields DAM is configured with: the one of an asset - in a row of the queue, in
- * the detail and in the sidebar of the list - and the scratch form of the mass operations. Which fields each shows,
- * what "show more details" does, and what they give back when typed into. The real forms over the config store of
- * the library, each under a parent that holds its value as a row of the queue does.
+/* The form that draws the custom fields DAM is configured with, the one of an asset in a row of the queue, in the
+ * detail and in the sidebar of the list: which fields it shows, what "show more details" does, and what it gives back
+ * when typed into. The form of the library over its config store, under a parent that holds its value as a row of
+ * the queue does. The scratch form of the mass operations, the library's too, is inside its sidebar: it is in
+ * `massOperationsRows.test.ts`.
  *
  * What they validate, and for whom, is in `asset/assetMetadataValidation.test.ts` and `queueRowValidation.test.ts`. */
 
@@ -68,8 +70,7 @@ describe('the custom metadata form of an asset', () => {
     const changes = vi.fn()
     let validateAll: () => void = () => undefined
     const page = await ui.mount(async () => {
-      const Form = (await import('@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'))
-        .default as Component
+      const Form = ui.library.ADamAssetCustomMetadataForm as Component
 
       return {
         default: defineComponent({
@@ -86,6 +87,9 @@ describe('the custom metadata form of an asset', () => {
                       modelValue: value.value,
                       'onUpdate:modelValue': (updated: Record<string, unknown>) => (value.value = updated),
                       assetType: assetType.value,
+                      // As the row of the queue hands them in: the ext system of the application, the scope of admin-dam.
+                      extSystem: 1,
+                      validationScope: AssetMetadataValidationScopeSymbol,
                       onAnyChange: changes,
                     },
                     {
@@ -126,13 +130,15 @@ describe('the custom metadata form of an asset', () => {
       expect(form().querySelectorAll('button')).toHaveLength(0)
     })
 
-    it('is no field at all, only the button, where the ext system says nothing of pinning', async () => {
+    // What the form of the library falls back on; the form of admin-dam pinned none there. The backend always
+    // says a number, so only a configuration left incomplete comes here.
+    it('is two fields, and the rest behind the button, where the ext system says nothing of pinning', async () => {
       const { form } = await mountForm({
         customForm: { image: three },
         extSystem: { image: { customMetadataPinnedAmount: undefined } },
       })
 
-      expect(shown(form())).toEqual([])
+      expect(shown(form())).toEqual(['title', 'description'])
       expect(all(form())).toEqual(['title', 'description', 'note'])
       expect(buttonsNamed(form(), SHOW)).toHaveLength(1)
     })
@@ -241,80 +247,5 @@ describe('the custom metadata form of an asset', () => {
       expect(changes).toHaveBeenCalledTimes(1)
       expect(fields(form()).map((field) => field.textarea.value)).toEqual(['new', 'kept', ''])
     })
-  })
-})
-
-describe('the custom metadata form of the mass operations', () => {
-  const mountScratch = async (setup: Partial<UploadUiSetup>, assetType: DamAssetTypeType = 'image') => {
-    const ui = await startUploadUi({ server, ...setup })
-    const value = ref<Record<string, unknown>>({})
-    const asked: Array<[string, unknown]> = []
-    const form = await ui.mount(async () => {
-      const Form = (
-        await import('@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue')
-      ).default as Component
-
-      return {
-        default: defineComponent({
-          setup: () => () =>
-            h(Form, {
-              modelValue: value.value,
-              'onUpdate:modelValue': (updated: Record<string, unknown>) => (value.value = updated),
-              assetType,
-              onFillEmptyField: (data: unknown) => asked.push(['fill', data]),
-              onReplaceField: (data: unknown) => asked.push(['replace', data]),
-            }),
-        }),
-      }
-    })
-
-    return { ...ui, form, value, asked }
-  }
-
-  it('shows every field of the asset type at once, whatever the ext system pins, with no button to show more', async () => {
-    const { form } = await mountScratch({
-      customForm: { image: three, audio: [customField('album')] },
-      extSystem: { image: { customMetadataPinnedAmount: 1 } },
-    })
-
-    expect(shown(form)).toEqual(['title', 'description', 'note'])
-    expect(buttonsNamed(form, SHOW)).toEqual([])
-  })
-
-  it('has no input and no buttons for a field that cannot be written', async () => {
-    const { form } = await mountScratch({
-      customForm: { image: [customField('title'), customField('locked', { readonly: true })] },
-    })
-
-    expect(all(form)).toEqual(['title'])
-    expect(form.querySelectorAll('button')).toHaveLength(2)
-  })
-
-  it('keeps what is typed into its fields, one beside the other', async () => {
-    const { form, value } = await mountScratch({ customForm: { image: three } })
-
-    await typeInto(form, 'title', 'a title')
-    await typeInto(form, 'note', 'a note')
-
-    expect(value.value).toEqual({ title: 'a title', note: 'a note' })
-  })
-
-  it('asks, by the buttons of a field, for the value of that field to be filled in or written over', async () => {
-    const { form, asked } = await mountScratch(
-      { customForm: { audio: [customField('album'), customField('track')] } },
-      'audio'
-    )
-    await typeInto(form, 'track', 'the second')
-
-    buttonsNamed(form, 'Fill empty')[1].click()
-    buttonsNamed(form, 'Replace in all assets')[1].click()
-    // And for a field nothing was typed into: with no value.
-    buttonsNamed(form, 'Fill empty')[0].click()
-
-    expect(asked).toEqual([
-      ['fill', { assetType: 'audio', elementProperty: 'track', value: 'the second' }],
-      ['replace', { assetType: 'audio', elementProperty: 'track', value: 'the second' }],
-      ['fill', { assetType: 'audio', elementProperty: 'album', value: undefined }],
-    ])
   })
 })

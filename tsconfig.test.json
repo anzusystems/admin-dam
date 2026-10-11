@@ -1,8 +1,8 @@
 {
   "extends": "./tsconfig.app.json",
-  // `plugins.d.ts` is not decoration: it augments common-admin's `AssetFileProperties` with
-  // `ttsAudio`, and nothing imports it by name. Reached-by-import alone leaves the augmentation out
-  // and the program fails in `assetDetailStore.ts`, a file the tests never touch.
+  // `plugins.d.ts` is not decoration: it augments common-admin (`AclRegistry`), vue-i18n
+  // (`DefineLocaleMessage`, the app's messages) and vue-router (`RouteMeta`), and nothing imports it
+  // by name. Reached-by-import alone would leave the augmentations out of the test program.
   "include": [
     "env.d.ts",
     "src/plugins.d.ts",

@@ -7,7 +7,7 @@ import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
 /* The chip that says why the server failed a file: one text for each reason the server knows, in both languages of
  * the application. A row of the editable queue shows it over its picture, the slot of an asset and the info box of
- * the detail beside the file. The real chip, with the messages of the application. */
+ * the detail beside the file. The chip of the library, with the messages of the application. */
 
 let server: FakeDam
 
@@ -18,7 +18,7 @@ const reasons: Array<[string, string, string]> = [
   ['none', 'None', 'Žiadny'],
   ['unknown', 'Unknown', 'Neznámy'],
   ['invalid_checksum', 'Invalid checksum', 'Neplatný kontrolný súčet'],
-  ['invalid_mime_type', 'Invalid mime type', 'Neplatný typ súboru'],
+  ['invalid_mime_type', 'Invalid file type', 'Neplatný typ súboru'],
   ['download_failed', 'Download failed', 'Sťahovanie zlyhalo'],
   ['invalid_size', 'Invalid size', 'Neplatná veľkosť'],
 ]
@@ -30,9 +30,7 @@ const mountChip = async (reason: string, locale: 'en' | 'sk' = 'en') => {
     i18n.global.setLocaleMessage('sk', (await import('@/locales/sk')).default)
     i18n.global.locale.value = 'sk'
   }
-  const page = await ui.mount(() => import('@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'), {
-    reason,
-  })
+  const page = await ui.mount(async () => ({ default: ui.library.ADamAssetFileFailReasonChip }), { reason })
 
   return { ...ui, chip: () => page.querySelector('.v-chip') }
 }

@@ -770,9 +770,9 @@ describe('the metadata of an upload', () => {
     expect(sending.error.hasError).toBe(false)
   })
 
-  // Nor does a duplicate get it back, whose form is disabled for good, or a mass-edit row whose file failed: the
-  // processed notification leaves the status of such a row alone, and a failed row has no form.
-  it('does not give the form back to a duplicate, nor to a mass-edit row whose file failed', async () => {
+  // Nor does a duplicate get it back, whose form is disabled for good. A mass-edit row whose file failed does: its
+  // status is its batch load's, and the processed file gives back what the failure took.
+  it('does not give the form back to a duplicate, and gives it back to a mass-edit row whose file failed', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
     const duplicate = upload({ key: 'duplicate', status: UploadQueueItemStatus.Processing })
@@ -793,8 +793,8 @@ describe('the metadata of an upload', () => {
     await store.queueItemProcessed('asset-1', 'file-1')
     await store.queueItemProcessed('asset-1', 'file-2')
 
-    expect([duplicate.status, picked.status]).toEqual([UploadQueueItemStatus.Uploaded, UploadQueueItemStatus.Failed])
-    expect([duplicate.canEditMetadata, picked.canEditMetadata]).toEqual([false, false])
+    expect([duplicate.status, picked.status]).toEqual([UploadQueueItemStatus.Uploaded, UploadQueueItemStatus.Uploaded])
+    expect([duplicate.canEditMetadata, picked.canEditMetadata]).toEqual([false, true])
   })
 
   // The processed notification can beat the answer to the finish request.

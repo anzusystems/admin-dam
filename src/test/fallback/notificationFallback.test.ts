@@ -284,7 +284,11 @@ describe('an application without the notification service', () => {
       mainFileSingleUse: null,
     })
     server.asset(assetDetail('asset-a', { mainFile: assetFile('file-of-asset-a') }))
-    server.asset(assetDetail('asset-b', { mainFile: assetFile('file-of-asset-b', 'stored') }))
+    // Described: what this pins is that the rows are read once and never polled, not the state of the file. A file
+    // still with the server on an asset nobody described is what the batch load keeps the form from (F-A).
+    server.asset(
+      assetDetail('asset-b', { flags: { described: true }, mainFile: assetFile('file-of-asset-b', 'stored') })
+    )
     // An upload waits in the very same queue, so the queue is asked about all the time.
     const [upload] = await sent(store, EDIT, [waitingUpload()])
 

@@ -33,6 +33,27 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * altogether, because a request coming back after that moved the address from wherever they went. */
   const abandonDetailRequests = () => detailRequests++
 
+  /* A read to run once the read of the detail that is current now has landed, with the counter it was current at.
+   * Its answer may be from before something that changed the asset meanwhile (a bulk save); an answer of a newer
+   * read is not, and drops it. */
+  let afterCurrentRead: { request: number; read: () => void } | null = null
+  /** Runs `read` now when nothing is on its way, or once the read current now has landed. */
+  function readAfterCurrentRead(read: () => void) {
+    if (!loader.value) {
+      read()
+      return
+    }
+    // One waiting for an older read is dropped: that read is no longer current, and its answer will not be written.
+    const before = afterCurrentRead?.request === detailRequests ? afterCurrentRead.read : undefined
+    afterCurrentRead = {
+      request: detailRequests,
+      read: () => {
+        before?.()
+        read()
+      },
+    }
+  }
+
   function updateLastFetched(id: DocId) {
     lastFetchedId.value = id
     lastFetched.value = Date.now()
@@ -53,6 +74,17 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
 
   function hideLoader() {
     loader.value = false
+    // Every read of the detail that is current when it ends comes here.
+    const pending = afterCurrentRead
+    afterCurrentRead = null
+    if (pending?.request === detailRequests) pending.read()
+  }
+
+  /** The shortcut that skips a read of the asset fetched last is not taken for one of these: it is not as it was. */
+  function forgetLastFetched(assetIds: DocId[]) {
+    if (!assetIds.includes(lastFetchedId.value)) return
+    lastFetchedId.value = ''
+    lastFetched.value = 0
   }
 
   function setAsset(newAsset: AssetDetailItemDto) {
@@ -130,6 +162,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     startDetailRequest,
     isCurrentDetailRequest,
     abandonDetailRequests,
+    readAfterCurrentRead,
+    forgetLastFetched,
     updateLastFetched,
     showDetail,
     hideDetail,

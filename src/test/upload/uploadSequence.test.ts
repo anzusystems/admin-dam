@@ -156,21 +156,24 @@ describe('the progress of an upload on its row', () => {
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(1500)
 
-    // The first chunk is still on the wire: nothing of the file is counted as sent yet.
+    // The first chunk is still on the wire: what it has sent of itself counts already.
     expect(row.status).toBe('uploading')
-    expect(row.progress.progressPercent).toBe(0)
-    // Its two reports are a second and 500 bytes apart. The speed is everything sent by the second one over that
-    // second: the byte the first report had already counted is in it too.
-    expect(row.progress.speed).toBe(501)
-    expect(row.progress.remainingTime).toBe(5)
+    expect(row.progress.progressPercent).toBeCloseTo((501 / 2500) * 100)
+    // Its 501 bytes over the two seconds since the chunk was sent: the second of its two reports, and the second
+    // that has passed since with nothing more.
+    expect(row.progress.speed).toBe(251)
+    expect(row.progress.remainingTime).toBe(8)
 
     chunks.release()
     chunks.holdChunks()
     await vi.advanceTimersByTimeAsync(1500)
 
-    expect(row.progress.progressPercent).toBeCloseTo((1024 / 2500) * 100)
-    // Measured afresh for the second chunk, and averaged with the first.
-    expect(row.progress.speed).toBe(501)
+    // The first chunk whole and what the second has sent of itself.
+    expect(row.progress.progressPercent).toBeCloseTo(((1024 + 501) / 2500) * 100)
+    // One measure across the chunks: those 1525 bytes over the four seconds from the request of the first chunk to
+    // the second that saw the last of them, the time the server took to answer the first chunk among them. The
+    // second after it has nothing new of a chunk that is half on its way and says nothing: the row keeps its values.
+    expect(row.progress.speed).toBe(382)
     expect(row.progress.remainingTime).toBe(3)
   })
 
@@ -189,7 +192,8 @@ describe('the progress of an upload on its row', () => {
     expect(row.progress.speed).toBeGreaterThan(0)
   })
 
-  it('says nothing about speed where the server reports none', async () => {
+  // The chunks of the fake server are answered in the millisecond they are sent in: a measure needs time to pass.
+  it('says nothing about speed where no time passes', async () => {
     const store = await load()
     const [row] = seedQueue(store, QUEUE, [waitingUpload(bytesOf(2500))])
     server.on('PATCH', /\/uploaded$/, () => new Promise(() => undefined))

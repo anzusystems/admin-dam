@@ -242,6 +242,46 @@ describe('the delete button of a row', () => {
     expect(held()).toEqual(['third.jpg'])
   })
 
+  it('takes out no other row when its own has left the queue before the delete was answered', async () => {
+    let deleted: () => void = () => undefined
+    server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, async () => {
+      await new Promise<void>((resolve) => (deleted = resolve))
+
+      return { status: 204 }
+    })
+    const { press, held, cards, store } = await mountQueue([
+      editable({ displayTitle: 'first.jpg' }),
+      editable({ displayTitle: 'second.jpg', assetId: 'asset-2', fileId: 'file-2' }),
+      editable({ displayTitle: 'third.jpg', assetId: 'asset-3', fileId: 'file-3' }),
+    ])
+
+    await press(1, DELETE)
+    dialogButton(DELETE)?.click()
+    await eventually(() => expect(server.sent('DELETE')).toHaveLength(1))
+    await store.removeByIndex(QUEUE, 1)
+    await eventually(() => expect(cards()).toHaveLength(2))
+    deleted()
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect(held()).toEqual(['first.jpg', 'third.jpg'])
+  })
+
+  // Rows can share an asset: the one whose delete was pressed goes, not the first of that asset.
+  it('takes out its own row where two rows are of one asset', async () => {
+    server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, () => ({ status: 204 }))
+    const { press, held, cards } = await mountQueue([
+      editable({ displayTitle: 'first.jpg' }),
+      editable({ displayTitle: 'second.jpg' }),
+    ])
+
+    await press(1, DELETE)
+    dialogButton(DELETE)?.click()
+    await eventually(() => expect(cards()).toHaveLength(1))
+
+    expect(sentTo(server.sent('DELETE'))).toEqual(['DELETE /adm/v1/asset/asset-1'])
+    expect(held()).toEqual(['first.jpg'])
+  })
+
   it('leaves the row in the queue and shows the error when the server refuses', async () => {
     server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, () => {
       throw httpError(500)
@@ -269,6 +309,8 @@ describe('the delete button of a row', () => {
     await eventually(() => expect(rows[0].isDuplicate).toBe(true))
     await nextTick()
     expect([rows[0].assetId, rows[0].duplicateAssetId]).toEqual(['asset-1', 'asset-original'])
+    // The library notes the asset the upload made on every duplicate; here the row keeps it as its asset too.
+    expect(rows[0].uploadedAssetId).toBe('asset-1')
     expect(button(0, DELETE)?.disabled).toBe(false)
 
     await press(0, DELETE)
@@ -343,7 +385,7 @@ describe('the editable list of a queue', () => {
     })
     const titles = () =>
       Array.from(list.querySelectorAll('.dam-upload-queue__item')).map(
-        (card) => card.textContent?.match(/Original name: (\S+)/)?.[1]
+        (card) => card.textContent?.match(/Original Name: (\S+)/)?.[1]
       )
 
     expect(titles()).toEqual(['first.jpg', 'second.jpg'])
@@ -372,6 +414,16 @@ describe('the editable list of a queue', () => {
     const { list } = await mountQueue([queueRow({ status: 'processing' })])
 
     expect(sidebar(list)).toBeNull()
+  })
+
+  // The list of the library can scroll by them; in admin-dam they walk the assets behind the overlay.
+  it.each(['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'])('leaves the %s key alone', async (key) => {
+    await mountQueue([queueRow({ status: 'processing' })])
+    const pressed = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
+
+    document.dispatchEvent(pressed)
+
+    expect(pressed.defaultPrevented).toBe(false)
   })
 
   // The names behind the ids: the rows draw them as chips.

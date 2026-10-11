@@ -52,17 +52,6 @@
   "meta": {
     "createEmpty": "Vytvoriť prázdny asset"
   },
-  "metaIcons": {
-    "low": "Nízka kvalita",
-    "slots": "Sloty",
-    "rss": "RSS",
-    "tts": "Syntetické (TTS)",
-    "fullHd": "FullHD",
-    "2k": "2K",
-    "qhd": "QHD",
-    "4k": "4K",
-    "8k": "8K"
-  },
   "filterTitle": "Filter",
   "noItemsFound": "Žiadne nájdené assety",
   "sibling": {
@@ -80,14 +69,6 @@
     "draft": "Koncept",
     "withFile": "Obsahuje súbor",
     "deleting": "Vymazávaný"
-  },
-  "assetFileFailReason": {
-    "none": "Žiadny",
-    "unknown": "Neznámy",
-    "invalidChecksum": "Neplatný kontrolný súčet",
-    "invalidMimeType": "Neplatný typ súboru",
-    "downloadFailed": "Sťahovanie zlyhalo",
-    "invalidSize": "Neplatná veľkosť"
   },
   "imageOrientation": {
     "landscape": "šírkový",
@@ -133,6 +114,7 @@
       "hide": "Zobraziť viac detailov"
     },
     "noAssetSelected": "Žiadne vybrané assety",
+    "fileStillProcessing": "Súbor sa ešte spracúva. Uložiť pôjde po spracovaní; asset potom otvorte znova.",
     "tabs": {
       "info": "Info",
       "roi": "Fókus",
@@ -223,14 +205,7 @@
     "saveAndClose": "Uložiť a ukončiť"
   },
   "massOperations": {
-    "title": "Hromadné operácie",
-    "description": "Hromadná úprava metaúdajov. Ak chcete upravovať metaúdaje po riadkoch, použite tlačidlo vedľa riadka. Ak chcete upraviť všetky riadky naraz, použite tlačidlá úplne dole.",
-    "fillOneEmpty": "Vyplňte prázdne pole",
-    "fillAllEmpty": "Vyplniť len prázdne",
-    "replaceOne": "Nahradiť všade",
-    "replaceAll": "Nahradiť všetko",
-    "clearForm": "Vyčistiť",
-    "general": "Hlavné"
+    "title": "Hromadné operácie"
   },
   "externalProvider": {
     "importToDam": "Nahrať do ADAM",
@@ -241,10 +216,7 @@
   "queueItem": {
     "edit": "Upraviť",
     "duplicate": "Duplikát",
-    "viewOriginal": "Zobraziť originál",
-    "displayTitle": "Názov originálu",
-    "error": "Chyba",
-    "copyAssetId": "Kopírovať asset ID"
+    "viewOriginal": "Zobraziť originál"
   },
   "assetFilePublicLink": {
     "model": {

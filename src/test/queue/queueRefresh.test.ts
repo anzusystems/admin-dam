@@ -372,6 +372,31 @@ describe('the refresh pressed while the list moves under it', () => {
     expect(showWarningT).not.toHaveBeenCalled()
     expect(button(rows[1]).disabled).toBe(false)
   })
+
+  /* Taken out while its read is on the wire - the trash comes on with its form, which a metadata read queued before
+   * the refresh can bring. The row keeps its state when it leaves, so nothing about it has ended; but it is no longer
+   * there, and a word about a refresh it no longer offers would be about nothing. */
+  it.each(['uploaded', 'failed'] as const)(
+    'says nothing of a read that failed for a row taken out of the queue while it was asked about: %s',
+    async (status) => {
+      const { store, rows, button } = await mountQueue([
+        queueRow({ status, assetStatus: 'with_file' }),
+        // Its button is the list's: enabled again once the refresh has ended.
+        queueRow({ status: 'processing', assetId: 'asset-2', fileId: 'file-2' }),
+      ])
+      let failRead: () => void = () => undefined
+      server.assetBy('asset-1', () => new Promise((_resolve, reject) => (failRead = () => reject(httpError(500)))))
+
+      button(rows[0]).click()
+      await vi.waitFor(() => expect(server.assetReads('asset-1')).toBe(1))
+      await store.removeByAssetId(QUEUE, 'asset-1')
+      expect(store.getQueueItems(QUEUE)).toEqual([rows[1]])
+      failRead()
+      await vi.waitFor(() => expect(button(rows[1]).disabled).toBe(false))
+
+      expect(showWarningT).not.toHaveBeenCalled()
+    }
+  )
 })
 
 describe('the refresh button of the queue', () => {

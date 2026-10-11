@@ -134,6 +134,168 @@ describe('assets picked for mass edit', () => {
   })
 })
 
+/* An asset that is not described yet, whose file the server is still processing: the processing may fill in its
+ * metadata, which a form loaded now would overwrite when saved. Decided by the read of the batch, fresh. */
+describe('an asset picked for mass edit whose file the server may still be processing', () => {
+  const withFile = (id: string, status: string, described = false) => ({
+    ...detail(id),
+    keywords: ['keyword-server'],
+    flags: { described },
+    mainFile: { id: 'file-of-' + id, fileAttributes: { status } },
+  })
+
+  it.each(['uploading', 'uploaded', 'stored'])(
+    'gets no form, and is told its file is still being processed: %s',
+    async (status) => {
+      const { useUploadQueuesStore } = await load()
+      const store = useUploadQueuesStore()
+      fetchAssetListByIds.mockResolvedValue([withFile('asset-1', status)])
+
+      await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+      await vi.waitFor(() => expect(itemsOf(store as never)[0].status).not.toBe(UploadQueueItemStatus.Loading))
+
+      const [picked] = itemsOf(store as never)
+      expect([picked.status, picked.canEditMetadata]).toEqual([UploadQueueItemStatus.Failed, false])
+      expect(picked.error).toEqual(
+        expect.objectContaining({ hasError: true, message: 'system.uploadErrors.assetFileStillProcessing' })
+      )
+    }
+  )
+
+  it('gets its form when the asset is described already, whatever its file', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    fetchAssetListByIds.mockResolvedValue([withFile('asset-1', 'stored', true)])
+
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    await vi.waitFor(() => expect(itemsOf(store as never)[0].status).not.toBe(UploadQueueItemStatus.Loading))
+
+    expect([itemsOf(store as never)[0].status, itemsOf(store as never)[0].canEditMetadata]).toEqual([
+      UploadQueueItemStatus.Uploaded,
+      true,
+    ])
+  })
+
+  it.each(['processed', 'failed', 'duplicate'])(
+    'gets its form when the server is done with its file: %s',
+    async (status) => {
+      const { useUploadQueuesStore } = await load()
+      const store = useUploadQueuesStore()
+      fetchAssetListByIds.mockResolvedValue([withFile('asset-1', status)])
+
+      await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+      await vi.waitFor(() => expect(itemsOf(store as never)[0].status).not.toBe(UploadQueueItemStatus.Loading))
+
+      expect([itemsOf(store as never)[0].status, itemsOf(store as never)[0].canEditMetadata]).toEqual([
+        UploadQueueItemStatus.Uploaded,
+        true,
+      ])
+    }
+  )
+
+  // The metadata notification reaches the row while its batch is on the wire, and its read answers first.
+  it('keeps the form the metadata notification gave it before its batch answered that the file is still processed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    let answerBatch: (assets: unknown[]) => void = () => undefined
+    fetchAssetListByIds.mockImplementationOnce(() => new Promise((resolve) => (answerBatch = resolve)))
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    expect(itemsOf(store as never)[0].status).toBe(UploadQueueItemStatus.Loading)
+    const { fetchAsset } = await import('@/domains/coreDam/asset/api/assetApi')
+    vi.mocked(fetchAsset).mockResolvedValue({
+      ...withFile('asset-1', 'processed'),
+      keywords: ['keyword-notified'],
+      attributes: { assetType: 'image', assetStatus: 'with_file' },
+    } as never)
+
+    vi.useFakeTimers()
+    const notified = store.queueItemMetadataProcessed('asset-1')
+    await vi.advanceTimersByTimeAsync(5000)
+    await notified
+    vi.useRealTimers()
+    expect(itemsOf(store as never)[0].canEditMetadata).toBe(true)
+    // What the batch read before the notification came is older: it does not overwrite what the row has now.
+    answerBatch([{ ...withFile('asset-1', 'stored'), keywords: ['keyword-of-the-batch'] }])
+    await vi.waitFor(() => expect(itemsOf(store as never)[0].status).not.toBe(UploadQueueItemStatus.Loading))
+
+    const [picked] = itemsOf(store as never) as Array<QueueRow & { keywords: string[] }>
+    expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual([
+      UploadQueueItemStatus.Uploaded,
+      true,
+      ['keyword-notified'],
+    ])
+    expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
+  })
+
+  // Taken out and picked again while the first batch is on the wire: the second batch answers first, and stands.
+  it('keeps what a newer batch gave it when an older one answers after, that the file is still processed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    let answerOlder: (assets: unknown[]) => void = () => undefined
+    fetchAssetListByIds.mockImplementationOnce(() => new Promise((resolve) => (answerOlder = resolve)))
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    await store.removeByAssetId(QUEUE, 'asset-1')
+    fetchAssetListByIds.mockResolvedValueOnce([withFile('asset-1', 'processed')])
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    await vi.waitFor(() => expect(itemsOf(store as never)[0].status).toBe(UploadQueueItemStatus.Uploaded))
+
+    answerOlder([withFile('asset-1', 'stored')])
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    const [picked] = itemsOf(store as never)
+    expect([picked.status, picked.canEditMetadata]).toEqual([UploadQueueItemStatus.Uploaded, true])
+    expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
+  })
+
+  // The newer batch left it out: the row has its text and no form, and the older answer says nothing new of it.
+  it('keeps what a newer batch that left it out said when an older one answers after, that the file is still processed', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    let answerOlder: (assets: unknown[]) => void = () => undefined
+    fetchAssetListByIds.mockImplementationOnce(() => new Promise((resolve) => (answerOlder = resolve)))
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    await store.removeByAssetId(QUEUE, 'asset-1')
+    fetchAssetListByIds.mockResolvedValueOnce([])
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    await vi.waitFor(() => expect(itemsOf(store as never)[0].status).toBe(UploadQueueItemStatus.Failed))
+
+    answerOlder([withFile('asset-1', 'stored')])
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    const [picked] = itemsOf(store as never)
+    expect([picked.status, picked.canEditMetadata]).toEqual([UploadQueueItemStatus.Failed, false])
+    expect(picked.error.message).toBe('system.uploadErrors.metadataUnavailable')
+  })
+
+  // The one who uploaded the asset is told when its metadata is processed, and the row comes alive.
+  it('gets its metadata and its form from the metadata notification, and loses the text', async () => {
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    fetchAssetListByIds.mockResolvedValue([withFile('asset-1', 'stored')])
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    await vi.waitFor(() => expect(itemsOf(store as never)[0].status).toBe(UploadQueueItemStatus.Failed))
+    const { fetchAsset } = await import('@/domains/coreDam/asset/api/assetApi')
+    vi.mocked(fetchAsset).mockResolvedValue({
+      ...withFile('asset-1', 'processed'),
+      attributes: { assetType: 'image', assetStatus: 'with_file' },
+    } as never)
+
+    vi.useFakeTimers()
+    const notified = store.queueItemMetadataProcessed('asset-1')
+    await vi.advanceTimersByTimeAsync(5000)
+    await notified
+    vi.useRealTimers()
+
+    const [picked] = itemsOf(store as never) as Array<QueueRow & { keywords: string[] }>
+    expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual([
+      UploadQueueItemStatus.Uploaded,
+      true,
+      ['keyword-server'],
+    ])
+    expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
+  })
+})
+
 describe('mass operations: filling a custom value into the queue', () => {
   const fill = async (customData: Record<string, unknown>[], forceReplace = false) => {
     const { useUploadQueuesStore } = await load()

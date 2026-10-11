@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
+import { ADamAssetImage, DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -43,7 +41,7 @@ const status = computed(() => {
   <div class="dam-upload-queue__item dam-upload-queue__item--simple d-flex flex-column">
     <div class="dam-upload-queue__item-card">
       <div class="position-relative">
-        <AssetImage
+        <ADamAssetImage
           :asset-type="assetType"
           :asset-status="status"
           :src="imageSrc"

@@ -1,30 +1,30 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
-import type { Component } from 'vue'
 
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
 /* The question the stop button of the uploads asks while something is uploading: what it says, and the ways to
- * answer it with "no". The button and its dialog as the application draws them, with the dialog toolbar of the
- * library; that the button stops at once when nothing is uploading, stops on "yes" and takes Esc for "no" is in
+ * answer it with "no". The library's button, which both overlays of the uploads draw, under the application as it
+ * starts; that the button stops at once when nothing is uploading, stops on "yes" and takes Esc for "no" is in
  * `uploadStopConfirm.test.ts`. */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const STOP = 'Close'
-const QUESTION = 'Are you sure you want to stop the upload?'
+// The button that asks, and the answer "yes" of its question.
+const CLOSE = 'Close'
+const STOP = 'Stop'
+const QUESTION = 'Do you want to stop the upload?'
 
 const mountButton = async (props: Record<string, unknown> = {}) => {
   const ui = await startUploadUi({ server })
   const isUploading = ref(true)
   const confirmed = vi.fn()
   const page = await ui.mount(async () => {
-    const Button = (await import('@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'))
-      .default as Component
+    const { ADamUploadQueueStopButton: Button } = await import('@anzusystems/common-admin')
 
     return {
       default: defineComponent({
@@ -51,9 +51,9 @@ afterEach(() => {
 })
 
 describe('the question of the button that stops the uploads', () => {
-  it('asks whether to stop the upload, and offers "cancel" and the name of the button itself', async () => {
+  it('asks whether to stop the upload, and offers "cancel" and "stop"', async () => {
     const { button, question, press } = await mountButton()
-    expect(button.getAttribute('aria-label')).toBe(STOP)
+    expect(button.getAttribute('aria-label')).toBe(CLOSE)
 
     await press()
 

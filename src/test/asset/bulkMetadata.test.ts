@@ -1,16 +1,32 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AxiosError } from 'axios'
+import { createPinia, setActivePinia } from 'pinia'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { defineComponent, h } from 'vue'
+import type { Component } from 'vue'
+import { VLayout } from 'vuetify/components'
 
-const patch = vi.fn<(url: string, body: string) => Promise<{ status: number; data: unknown[] }>>(async () => ({
-  status: 200,
-  data: [],
-}))
+import { assetDetail, assetFile, createFakeDam, httpError, queueRow, validationError } from '@/test/support/fakeDam'
+import type { FakeAssetFile, FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
+import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
+import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => ({ patch }) }))
-vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
-  ...((await importOriginal()) as Record<string, unknown>),
-  useApiFetchList: () => ({ fetchList: vi.fn() }),
-  useApiRequest: () => ({ execute: vi.fn() }),
-}))
+/* The save of asset metadata, both ways the app makes it: the bulk save of a queue, ten assets a request, and the
+ * save of one asset from its detail or from the panel on the right of the list. Both go to the same endpoint, and
+ * a save that fails says why, as any other request of the app does.
+ *
+ * What the two overlays of the queue tell the user is in `queue/overlaySave.test.ts`. */
+
+let server: FakeDam
+
+vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
+
+const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
+const saved = () => server.sent('PATCH', BULK).map((request) => JSON.parse(request.data as string))
+
+const SYSTEM_ERROR = 'System error, try again later or contact administrator'
+const ACCESS_DENIED = "Access denied, you don't have correct rights for this action"
+const FIX = 'Please, fix these errors'
+const UPDATED = 'Record was updated'
 
 const queueItem = (over: Record<string, unknown> = {}) => ({
   assetId: 'asset-1',
@@ -25,71 +41,368 @@ const queueItem = (over: Record<string, unknown> = {}) => ({
 
 const load = async () => {
   vi.resetModules()
+  setActivePinia(createPinia())
 
-  return await import('@/domains/coreDam/asset/api/assetApi')
+  return {
+    library: await import('@anzusystems/common-admin'),
+    api: await import('@/domains/coreDam/asset/api/assetApi'),
+  }
 }
 
-const bodyOf = (call: number) => JSON.parse(patch.mock.calls[call][1])
+type Library = Awaited<ReturnType<typeof load>>['library']
+
+const answerWith = (answer: FakeDamAnswer) => () => answer
+const failWith = (error: () => Error) => () => {
+  throw error()
+}
+
+const timedOut = () => new AxiosError('timeout of 30000ms exceeded', AxiosError.ECONNABORTED)
+const unreachable = () => new AxiosError('Network Error', AxiosError.ERR_NETWORK)
 
 beforeEach(() => {
-  vi.clearAllMocks()
-  patch.mockResolvedValue({ status: 200, data: [] })
+  server = createFakeDam()
+  // As axios settles an answer: one the `validateStatus` of the request does not take is thrown, the answer on it.
+  const { request } = server.client
+  server.client.request = async (config) => {
+    const answer = await request(config)
+    if (config.validateStatus && !config.validateStatus(answer.status)) throw httpError(answer.status, answer.data)
+
+    return answer
+  }
+  server.on('PATCH', BULK, (request) => ({ status: 200, data: JSON.parse(request.data as string) }))
+})
+
+afterEach(() => {
+  stopUploadUi()
 })
 
 describe('bulk metadata update', () => {
   it('sends only the fields this form edits', async () => {
-    const { bulkUpdateAssetsMetadata } = await load()
+    const { api } = await load()
 
-    await bulkUpdateAssetsMetadata([queueItem()] as never)
+    await api.bulkUpdateAssetsMetadata([queueItem()] as never)
 
     // A field the payload leaves out is one this save does not write; the rules still run after.
-    expect(bodyOf(0)).toEqual([
-      {
-        id: 'asset-1',
-        keywords: ['keyword-1'],
-        authors: ['author-1'],
-        described: true,
-        customData: { headline: 'x' },
-      },
+    expect(saved()).toEqual([
+      [
+        {
+          id: 'asset-1',
+          keywords: ['keyword-1'],
+          authors: ['author-1'],
+          described: true,
+          customData: { headline: 'x' },
+        },
+      ],
     ])
   })
 
   it('sends the one flag it does edit, once it is known', async () => {
-    const { bulkUpdateAssetsMetadata } = await load()
+    const { api } = await load()
 
-    await bulkUpdateAssetsMetadata([queueItem({ mainFileSingleUse: true })] as never)
+    await api.bulkUpdateAssetsMetadata([queueItem({ mainFileSingleUse: true })] as never)
 
-    expect(bodyOf(0)[0].mainFileSingleUse).toBe(true)
+    expect(saved()[0][0].mainFileSingleUse).toBe(true)
   })
 
   it('leaves that flag out while it is still unknown', async () => {
-    const { bulkUpdateAssetsMetadata } = await load()
+    const { api } = await load()
 
     // `null` is the factory default, not a value the user chose.
-    await bulkUpdateAssetsMetadata([queueItem({ mainFileSingleUse: null })] as never)
+    await api.bulkUpdateAssetsMetadata([queueItem({ mainFileSingleUse: null })] as never)
 
-    expect('mainFileSingleUse' in bodyOf(0)[0]).toBe(false)
+    expect('mainFileSingleUse' in saved()[0][0]).toBe(false)
   })
 
   it('counts its batches from the items it is going to send', async () => {
-    const { bulkUpdateAssetsMetadata } = await load()
+    const { api } = await load()
     // Eleven selected, one of them editable: duplicates and failures are dropped by the mapping.
     const items = [queueItem(), ...Array.from({ length: 10 }, () => queueItem({ canEditMetadata: false }))]
 
-    await bulkUpdateAssetsMetadata(items as never)
+    await api.bulkUpdateAssetsMetadata(items as never)
 
     // Counted from the input, this sent a second PATCH with an empty body.
-    expect(patch).toHaveBeenCalledTimes(1)
-    expect(bodyOf(0)).toHaveLength(1)
+    expect(saved()).toHaveLength(1)
+    expect(saved()[0]).toHaveLength(1)
   })
 
   it('splits a batch larger than the limit', async () => {
-    const { bulkUpdateAssetsMetadata } = await load()
+    const { api } = await load()
     const items = Array.from({ length: 23 }, (_, index) => queueItem({ assetId: `asset-${index}` }))
 
-    await bulkUpdateAssetsMetadata(items as never)
+    await api.bulkUpdateAssetsMetadata(items as never)
 
-    expect(patch).toHaveBeenCalledTimes(3)
-    expect([bodyOf(0).length, bodyOf(1).length, bodyOf(2).length]).toEqual([10, 10, 3])
+    expect(saved().map((batch) => batch.length)).toEqual([10, 10, 3])
+  })
+
+  it('stops at the batch that fails: the ones before it are sent, the ones after it are not', async () => {
+    const { api } = await load()
+    let batches = 0
+    server.on('PATCH', BULK, (request) => {
+      if (++batches === 2) throw httpError(500)
+
+      return { status: 200, data: JSON.parse(request.data as string) }
+    })
+    const items = Array.from({ length: 23 }, (_, index) => queueItem({ assetId: `asset-${index}` }))
+
+    await expect(api.bulkUpdateAssetsMetadata(items as never)).rejects.toThrow()
+
+    expect(saved().map((batch) => batch.length)).toEqual([10, 10])
+  })
+})
+
+/* What each save fails with, by what the server did: the kind of error the alerts know, as every request made
+ * through the library's helpers fails. A 200 is the one answer that carries the saved metadata; an answer other
+ * than that is a failed save, a 2xx as much as any. */
+const failures: Array<[string, () => FakeDamAnswer, (library: Library, error: unknown) => boolean]> = [
+  ['no access (403)', failWith(() => httpError(403)), (library, error) => library.isAnzuApiForbiddenError(error)],
+  [
+    'a validation error (422)',
+    failWith(() => validationError({ '[0].keywords': ['error_field_empty'] })),
+    (library, error) => library.isAnzuApiValidationError(error),
+  ],
+  ['a server error (500)', failWith(() => httpError(500)), (library, error) => library.isAnzuApiAxiosError(error)],
+  ['no content (204)', answerWith({ status: 204 }), (library, error) => library.isAnzuApiAxiosError(error)],
+  [
+    'an answer other than 200, with a body (201)',
+    answerWith({ status: 201, data: [] }),
+    (library, error) => library.isAnzuApiAxiosError(error),
+  ],
+  ['no network', failWith(unreachable), (library, error) => library.isAnzuApiAxiosError(error)],
+  ['no answer in time', failWith(timedOut), (library, error) => library.isAnzuApiTimeoutError(error)],
+]
+
+// What is written down for the api error logger, as for the other requests: not a refusal of the user's rights or
+// of what the user typed.
+const reported: Array<[string, () => FakeDamAnswer, boolean]> = [
+  ['a server error (500)', failWith(() => httpError(500)), true],
+  ['not signed in (401)', failWith(() => httpError(401)), false],
+  ['no access (403)', failWith(() => httpError(403)), false],
+  ['a validation error (422)', failWith(() => validationError({ '[0].keywords': ['error_field_empty'] })), false],
+]
+
+const saves: Array<[string, (api: Awaited<ReturnType<typeof load>>['api']) => Promise<unknown>]> = [
+  ['the bulk save', (api) => api.bulkUpdateAssetsMetadata([queueItem()] as never)],
+  [
+    'the save of one asset',
+    (api) => api.updateAssetMetadata(assetDetail('asset-1') as never, null, false, false, false),
+  ],
+]
+
+describe.each(saves)('%s', (_name, save) => {
+  it.each(failures)('fails with the error the alerts know: %s', async (_failure, refuse, isKind) => {
+    const { library, api } = await load()
+    server.on('PATCH', BULK, refuse)
+
+    const failed = await save(api).then(
+      () => undefined,
+      (error: unknown) => error
+    )
+
+    expect(isKind(library, failed)).toBe(true)
+  })
+
+  it.each(reported)('writes the failure down, or not, as the other requests do: %s', async (_failure, refuse, kept) => {
+    const { library, api } = await load()
+    const logged: Array<number | undefined> = []
+    library.setApiErrorLogger((_error, context) => {
+      logged.push(context.status)
+    })
+    server.on('PATCH', BULK, refuse)
+
+    await expect(save(api)).rejects.toBeDefined()
+
+    expect(logged.length).toBe(kept ? 1 : 0)
+  })
+
+  it('is done once the server saved it', async () => {
+    const { api } = await load()
+
+    await save(api)
+
+    expect(saved()).toHaveLength(1)
+  })
+})
+
+describe('the save of one asset', () => {
+  const titled = (name: string) => ({ ...customField('title'), name })
+  const namedTitle: Partial<UploadUiSetup> = { customForm: { image: [titled('Title of the photo')] } }
+
+  /* The two panels that save the asset the detail store holds: the one of the detail, its buttons in the bar the
+   * detail puts them in, and the one on the right of the list. */
+  const panels: Array<[string, () => Promise<Component>]> = [
+    [
+      'from its detail',
+      async () => {
+        const Sidebar = (
+          await import('@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarMetadata.vue')
+        ).default
+        const { useAssetDetailSidebarActionbar } =
+          await import('@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarActionbar')
+
+        return defineComponent({
+          setup() {
+            useAssetDetailSidebarActionbar().mounted()
+
+            return () => [
+              h('div', { id: 'anzu-asset-detail-sidebar-actions' }),
+              h(Sidebar, { isActive: true, assetType: 'image' }),
+            ]
+          },
+        })
+      },
+    ],
+    [
+      'from the panel on the right of the list',
+      async () => {
+        const Sidebar = (
+          await import('@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue')
+        ).default
+
+        return defineComponent({ setup: () => () => h(VLayout, null, () => h(Sidebar)) })
+      },
+    ],
+  ]
+
+  const mountPanel = async (
+    panel: () => Promise<Component>,
+    setup: Partial<UploadUiSetup> = {},
+    asset: ReturnType<typeof assetDetail> = assetDetail('asset-1')
+  ) => {
+    server.on('GET', /^\/adm\/v1\/(keyword|author)\//, () => ({ status: 200, data: { data: [] } }))
+    const ui = await startUploadUi({ server, ...setup })
+    const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+    useAssetDetailStore().setAsset(asset as never)
+    const root = await ui.mount(async () => ({ default: await panel() }))
+
+    return { ...ui, root, save: () => buttonsNamed(root, 'Save')[0] }
+  }
+
+  const STILL_PROCESSING =
+    'The file is still being processed. You can save once it is processed; then open the asset again.'
+  const notDescribed = (status: FakeAssetFile['fileAttributes']['status'], described = false) =>
+    assetDetail('asset-1', { flags: { described }, mainFile: assetFile('file-1', status, { asset: 'asset-1' }) })
+
+  describe.each(panels)('%s', (_where, panel) => {
+    // The server may yet fill in the metadata of the asset from its file: a save now would overwrite that.
+    it.each(['uploading', 'uploaded', 'stored'] as const)(
+      'keeps Save off, and says why, while the file of an asset nobody described is with the server: %s',
+      async (status) => {
+        const { save, root } = await mountPanel(panel, namedTitle, notDescribed(status))
+
+        expect(save().disabled).toBe(true)
+        expect(root.textContent).toContain(STILL_PROCESSING)
+        // Not in the bar of the actions of the detail, which has a fixed height.
+        expect(root.querySelector('#anzu-asset-detail-sidebar-actions')?.textContent ?? '').not.toContain(
+          STILL_PROCESSING
+        )
+      }
+    )
+
+    it.each([
+      ['its file is processed', notDescribed('processed')],
+      ['its file has failed', notDescribed('failed')],
+      ['the asset is described', notDescribed('stored', true)],
+    ])('lets Save be pressed, and says nothing of it, when %s', async (_state, asset) => {
+      const { save, root } = await mountPanel(panel, namedTitle, asset)
+
+      expect(save().disabled).toBe(false)
+      expect(root.textContent).not.toContain(STILL_PROCESSING)
+    })
+
+    // Finding 50: whatever the detail was opened from, a later bulk save would send the row as it was before.
+    it('writes what it saved into the row of the asset in the mass-edit queue', async () => {
+      const picked = queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, keywords: ['old'] })
+      const { save, alerts, store } = await mountPanel(panel, { ...namedTitle, queues: { edit: [picked] } })
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      const [row] = store.getQueueItems('edit')
+      expect([row.keywords, row.authors, row.customData]).toEqual([
+        ['keyword-server'],
+        ['author-server'],
+        { title: 'from the server' },
+      ])
+    })
+
+    // Another asset opened while the save is on the wire: the row of the saved one gets what was saved.
+    it('writes into the row of the asset it saved, though another asset was opened while it was on the wire', async () => {
+      const first = queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, keywords: ['old-1'] })
+      const second = queueRow({
+        type: 'asset',
+        status: 'uploaded',
+        canEditMetadata: true,
+        assetId: 'asset-2',
+        keywords: ['old-2'],
+      })
+      let answer: () => void = () => undefined
+      server.on('PATCH', BULK, () => new Promise((resolve) => (answer = () => resolve({ status: 200, data: [] }))))
+      const { save, alerts, store } = await mountPanel(panel, { ...namedTitle, queues: { edit: [first, second] } })
+
+      save().click()
+      await eventually(() => expect(saved()).toHaveLength(1))
+      const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+      useAssetDetailStore().setAsset(assetDetail('asset-2', { keywords: ['keyword-of-asset-2'] }) as never)
+      answer()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      const [row1, row2] = store.getQueueItems('edit')
+      expect([row1.keywords, row2.keywords]).toEqual([['keyword-server'], ['old-2']])
+    })
+
+    // The switch is the panel's own: the asset carries the value it was opened with.
+    it('writes the single-use switch it saved into the row, not the one the asset was opened with', async () => {
+      const picked = queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, mainFileSingleUse: false })
+      const { save, alerts, store } = await mountPanel(panel, { ...namedTitle, queues: { edit: [picked] } })
+      const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+      useAssetDetailStore().mainFileSingleUse = true
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(saved()[0][0].mainFileSingleUse).toBe(true)
+      expect(store.getQueueItems('edit')[0].mainFileSingleUse).toBe(true)
+    })
+
+    it('says so when it is saved', async () => {
+      const { save, alerts } = await mountPanel(panel, namedTitle)
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(saved()).toHaveLength(1)
+    })
+
+    // The server names a field by its key in the list it was sent; the user is told it once, as the form names it.
+    it.each([
+      ['a custom field', '[0].customData.title', 'Title of the photo'],
+      ['the keywords', '[0].keywords', 'Keywords'],
+    ])('says once which field to fix when the server refuses %s', async (_field, key, name) => {
+      server.on(
+        'PATCH',
+        BULK,
+        failWith(() => validationError({ [key]: ['error_field_empty'] }))
+      )
+      const { save, alerts } = await mountPanel(panel, namedTitle)
+
+      save().click()
+      await eventually(() => expect(alerts()).not.toEqual([]))
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(alerts()).toEqual([FIX + '\n' + name + ': Required field is empty.'])
+    })
+
+    it.each([
+      ['a server error (500)', failWith(() => httpError(500)), SYSTEM_ERROR],
+      ['no access (403)', failWith(() => httpError(403)), ACCESS_DENIED],
+      ['an answer other than 200 (201)', answerWith({ status: 201, data: [] }), SYSTEM_ERROR],
+      ['no content (204)', answerWith({ status: 204 }), SYSTEM_ERROR],
+    ])('says why when the save fails: %s', async (_failure, refuse, alert) => {
+      server.on('PATCH', BULK, refuse)
+      const { save, alerts } = await mountPanel(panel, namedTitle)
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([alert]))
+    })
   })
 })

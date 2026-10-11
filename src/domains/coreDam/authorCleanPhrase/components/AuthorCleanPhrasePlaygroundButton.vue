@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow, useAlerts } from '@anzusystems/common-admin'
+import {
+  AChipNoLink,
+  ADamAuthorCachedChip,
+  ADialogToolbar,
+  AFormTextarea,
+  ARow,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { usePlaygroundAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
@@ -103,7 +109,7 @@ const onConfirm = async () => {
           </AChipNoLink>
         </ARow>
         <ARow :title="t('coreDam.authorCleanPhrase.dto.authors')">
-          <AuthorRemoteAutocompleteCachedAuthorChip
+          <ADamAuthorCachedChip
             v-for="authorId in authorCleanPhraseRes.authors"
             :id="authorId"
             :key="authorId"

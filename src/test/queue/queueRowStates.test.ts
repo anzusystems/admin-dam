@@ -2,7 +2,7 @@ import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 
-import { createFakeDam, queueRow } from '@/test/support/fakeDam'
+import { assetDetail, createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
@@ -24,7 +24,7 @@ const REFRESH = 'Refresh'
 const CANCEL = 'Cancel'
 const DELETE = 'Delete'
 const EDIT = 'Edit more'
-const UNKNOWN_ERROR = 'System error. Try again later or contact an administrator.'
+const UNKNOWN_ERROR = 'System error. Please try again later or contact the administrator.'
 
 const NO_ERROR: UploadQueueItem['error'] = { hasError: false, message: '', assetFileFailReason: 'none' }
 const error = (message: string, assetFileFailReason = 'none') =>
@@ -32,13 +32,16 @@ const error = (message: string, assetFileFailReason = 'none') =>
 
 const text = (element: Element | null | undefined) => element?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
 
-/** The texts under the element, piece by piece as they are drawn. */
-const texts = (element: Element | null | undefined) => {
+/** Whether the element is drawn and not hidden, by itself or by what holds it. */
+const visible = (element: Element | null) => !!element && !element.closest('[style*="display: none"]')
+
+/** The texts under the element, piece by piece as they are drawn; with `seen`, only the pieces that are not hidden. */
+const texts = (element: Element | null | undefined, seen = false) => {
   const found: string[] = []
   const walk = (node: Node) => {
     if (node.nodeType === Node.TEXT_NODE) {
       const piece = node.textContent?.replace(/\s+/g, ' ').trim()
-      if (piece) found.push(piece)
+      if (piece && (!seen || visible(node.parentElement))) found.push(piece)
     }
     node.childNodes.forEach(walk)
   }
@@ -46,6 +49,12 @@ const texts = (element: Element | null | undefined) => {
 
   return found
 }
+
+/** What can be pressed under the element - a button, a link, anything that says it is a button - by its name. */
+const controls = (element: Element | null) =>
+  Array.from(element?.querySelectorAll<HTMLElement>('button, a, [role="button"]') ?? []).map(
+    (control) => text(control) || control.getAttribute('aria-label') || ''
+  )
 
 /** Mounts the editable list of the queue over the rows and answers what the card of each row shows. */
 const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup> = {}, props: object = {}) => {
@@ -71,6 +80,8 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
     return {
       element,
       button,
+      // The left of the line of buttons, where the edit button of a row is.
+      editPlace: () => element.querySelector('.justify-space-between')?.firstElementChild ?? null,
       offers: () => [REFRESH, CANCEL].filter((name) => button(name)),
       picture: () => texts(element.querySelector('.asset-image')),
       duplicate: () => element.querySelector<HTMLElement>('.dam-upload-queue__overlay--warning'),
@@ -209,6 +220,66 @@ describe('the refresh button of a row that is uploaded', () => {
     expect(card().offers()).toEqual([REFRESH])
   })
 
+  // The error is read when the status changes: a warning that reaches a row already uploaded brings the button no
+  // sooner than the twenty seconds the row was given when it was settled.
+  it('comes twenty seconds after a row without metadata was settled, not when a warning reaches it later', async () => {
+    const { card, rows } = await mountQueue([queueRow({ status: 'processing' })])
+    await after(10 * SECOND)
+    rows[0].status = 'uploaded'
+    await after(5 * SECOND)
+
+    rows[0].error = error('Metadata could not be loaded.')
+    await nextTick()
+    // The warning itself is shown at once, every line of it.
+    expect(texts(card().error(), true)).toEqual(['Error', 'Metadata could not be loaded.'])
+    expect(visible(card().error())).toBe(true)
+    expect(card().button(REFRESH)).toBeNull()
+
+    await after(15 * SECOND - 1)
+    expect(card().button(REFRESH)).toBeNull()
+
+    await after(1)
+    expect(card().button(REFRESH)).not.toBeNull()
+  })
+
+  it('comes twenty seconds after a row without metadata joined the list uploaded, a warning reaching it meanwhile', async () => {
+    const { card, rows } = await mountQueue([queueRow({ status: 'uploaded' })])
+    await after(5 * SECOND)
+
+    rows[0].error = error('Metadata could not be loaded.')
+    await nextTick()
+    expect(texts(card().error(), true)).toEqual(['Error', 'Metadata could not be loaded.'])
+    expect(visible(card().error())).toBe(true)
+    expect(card().button(REFRESH)).toBeNull()
+
+    await after(15 * SECOND - 1)
+    expect(card().button(REFRESH)).toBeNull()
+
+    await after(1)
+    expect(card().button(REFRESH)).not.toBeNull()
+  })
+
+  // The twenty seconds end on a row that has its metadata by then, and the arrival of the metadata ends nothing on a
+  // row with an error: such a row is never offered refresh.
+  it('never comes for a row without metadata whose warning reaches it first and its metadata after, within the twenty seconds', async () => {
+    const { card, rows } = await mountQueue([queueRow({ status: 'uploaded' })])
+    await after(5 * SECOND)
+    rows[0].error = error('Metadata could not be loaded.')
+    await after(5 * SECOND)
+
+    rows[0].canEditMetadata = true
+    await nextTick()
+    expect(card().button(REFRESH)).toBeNull()
+
+    // Just before and at the end of the twenty seconds of the row, and long after.
+    await after(10 * SECOND - 1)
+    expect(card().button(REFRESH)).toBeNull()
+    await after(1)
+    expect(card().button(REFRESH)).toBeNull()
+    await after(50 * SECOND)
+    expect(card().button(REFRESH)).toBeNull()
+  })
+
   it('comes after twenty seconds for a row that still has no metadata', async () => {
     const { card } = await mountQueue([queueRow({ status: 'uploaded' })])
     expect(card().button(REFRESH)).toBeNull()
@@ -308,16 +379,48 @@ describe('the delete button of a row', () => {
   })
 })
 
+// Of the list of the assets picked for mass edit, which says nothing of "done".
+describe('a mass-edit row whose file failed and was then processed after all', () => {
+  it('is a loaded row again: no cancel, its edit and delete buttons and its form on, and no refresh, however long', async () => {
+    const { card, rows, store } = await mountQueue(
+      [queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, keywords: ['typed'] })],
+      {},
+      { disableDoneAnimation: true }
+    )
+    server.asset(assetDetail('asset-1'))
+    store.queueItemFailed('asset-1', 'unknown', 'file-1')
+    await nextTick()
+    expect([rows[0].status, card().button(EDIT)?.disabled, card().button(CANCEL)]).toEqual([
+      'failed',
+      true,
+      expect.anything(),
+    ])
+
+    // Its read of the asset waits on the clock, which the case moves.
+    void store.queueItemProcessed('asset-1', 'file-1')
+    await after(SECOND)
+
+    expect([rows[0].status, rows[0].canEditMetadata, rows[0].keywords]).toEqual(['uploaded', true, ['typed']])
+    expect(card().button(CANCEL)).toBeNull()
+    expect(card().button(EDIT)?.disabled).toBe(false)
+    expect(card().button(DELETE)?.disabled).toBe(false)
+    expect(card().error()).toBeNull()
+    // The twenty seconds of the refresh button do not start for a row that has its metadata.
+    await after(60 * SECOND)
+    expect(card().offers()).toEqual([])
+  })
+})
+
 describe('the button of a row that copies the id of its asset', () => {
   it('is there once the row has an asset, not before', async () => {
     const { card, rows } = await mountQueue([queueRow({ status: 'waiting', assetId: null, fileId: null })])
-    expect(card().button('Copy Asset ID')).toBeNull()
+    expect(card().button('Copy asset ID')).toBeNull()
 
     // The answer to the start request of the upload names the asset.
     rows[0].assetId = 'asset-1'
     await nextTick()
 
-    expect(card().button('Copy Asset ID')).not.toBeNull()
+    expect(card().button('Copy asset ID')).not.toBeNull()
   })
 })
 
@@ -336,6 +439,18 @@ describe('the edit button of a row', () => {
     const { card } = await mountQueue([queueRow({ status: 'uploaded', isDuplicate: true })])
 
     expect(card().button(EDIT)).toBeNull()
+  })
+
+  // Not only "Edit more": the row of the library has an edit button of its own, which a duplicate must not get either.
+  it('leaves no button of any name where the edit button of a duplicate would be', async () => {
+    const { card } = await mountQueue([
+      queueRow({ status: 'uploaded', isDuplicate: true }),
+      queueRow({ status: 'uploaded', assetId: 'asset-2' }),
+    ])
+
+    expect(controls(card(0).editPlace())).toEqual([])
+    // The same place of a row that is no duplicate holds its edit button.
+    expect(controls(card(1).editPlace())).toEqual([EDIT])
   })
 })
 
@@ -388,7 +503,9 @@ describe('a row that is a duplicate', () => {
       queueRow({ status: 'uploaded', isDuplicate: true, duplicateAssetId: 'asset-original' }),
     ])
 
-    expect(texts(card().duplicate())).toEqual(['Duplicate', 'View original'])
+    expect(texts(card().duplicate(), true)).toEqual(['Duplicate', 'View original'])
+    // Over the picture only: the line the row of the library can say under its title is not drawn.
+    expect(card().element.textContent).not.toContain('The main file is a duplicate.')
     const link = card().duplicate()?.querySelector('a')
     expect([link?.getAttribute('href'), link?.getAttribute('target')]).toEqual(['/assets/asset-original', '_blank'])
   })
@@ -411,13 +528,13 @@ describe('a row with an error', () => {
   it('shows the message of the row', async () => {
     const { card } = await mountQueue([queueRow({ status: 'failed', error: error('Incorrect file format') })])
 
-    expect(texts(card().error())).toEqual(['Error', 'Incorrect file format'])
+    expect(texts(card().error(), true)).toEqual(['Error', 'Incorrect file format'])
   })
 
   const reasons: Array<[string, string]> = [
     ['unknown', 'Unknown'],
     ['invalid_checksum', 'Invalid checksum'],
-    ['invalid_mime_type', 'Invalid mime type'],
+    ['invalid_mime_type', 'Invalid file type'],
     ['download_failed', 'Download failed'],
     ['invalid_size', 'Invalid size'],
   ]
@@ -577,9 +694,9 @@ describe('the form of a row', () => {
       queueRow({ status: 'uploaded', displayTitle: '', assetId: 'asset-3' }),
     ])
 
-    const named = (index: number) => texts(card(index).element).filter((piece) => /Original name|\(/.test(piece))
-    expect(named(0)).toEqual(['Original name: photo.jpg', '(2 KB)'])
-    expect(named(1)).toEqual(['Original name: An asset'])
+    const named = (index: number) => texts(card(index).element).filter((piece) => /Original Name|\(/.test(piece))
+    expect(named(0)).toEqual(['Original Name: photo.jpg', '(2 KB)'])
+    expect(named(1)).toEqual(['Original Name: An asset'])
     expect(named(2)).toEqual([])
   })
 })

@@ -54,7 +54,6 @@ const { maxUploadItems } = useBetaTestFeatures()
 // at once and the ones confirmed in the limit dialog alike.
 const addToQueue = async (files: File[]) => {
   if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
-    // todo add check by type for slot uploads
     await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)
     return true
   } else if (props.type === 'default') {

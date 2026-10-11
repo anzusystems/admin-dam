@@ -1,124 +1,110 @@
-import { createPinia } from 'pinia'
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createApp, nextTick } from 'vue'
-import type { App, Component } from 'vue'
-import { createI18n } from 'vue-i18n'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const queue = vi.hoisted(() => ({ types: [] as string[], written: [] as string[] }))
-const extSystem = vi.hoisted(() => ({ config: {} as Record<string, unknown> }))
+import { createFakeDam, queueRow } from '@/test/support/fakeDam'
+import type { FakeDam } from '@/test/support/fakeDam'
+import { buttonsNamed, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
+import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-vi.mock('@/domains/coreDam/asset/store/uploadQueuesStore', () => ({
-  useUploadQueuesStore: () => ({
-    getQueueItemsTypes: () => queue.types,
-    queueItemsReplaceEmptyCustomDataValue: () => undefined,
-    queueItemsReplaceEmptyKeywords: (_queueId: string, _value: unknown, forceReplace = false) =>
-      queue.written.push(forceReplace ? 'keywords replaced' : 'keywords filled'),
-    queueItemsReplaceEmptyAuthors: (_queueId: string, _value: unknown, forceReplace = false) =>
-      queue.written.push(forceReplace ? 'authors replaced' : 'authors filled'),
-  }),
-}))
-vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
-  ...((await importOriginal()) as Record<string, unknown>),
-  useDamConfigState: () => ({ getDamConfigExtSystem: () => extSystem.config }),
-}))
-vi.mock('@/shared/apiClients/damClient', () => ({ damClient: vi.fn() }))
-vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
-  useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
-}))
-vi.mock('@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue', async () => {
-  const { h } = await import('vue')
+/* Which of keywords and authors the mass operations offer, and which of them "fill all empty" and "replace all" ask
+ * the store to write: those that a type in the queue has on. The library's sidebar in the real list over the real
+ * store, with the application around it as it starts; the server is a fake. Which rows the store then writes them
+ * into is in `massOperationsRows.test.ts` and `lazyMetadata.test.ts`. */
 
-  return { default: { render: () => h('div', { 'data-input': 'keywords' }) } }
-})
-vi.mock('@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue', async () => {
-  const { h } = await import('vue')
+let server: FakeDam
 
-  return { default: { render: () => h('div', { 'data-input': 'authors' }) } }
-})
-vi.mock('@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue', () => ({
-  default: { render: () => null },
-}))
+vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const AssetQueueSelectedSidebar = (
-  await import('@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue')
-).default
+const QUEUE = 'global'
+const GENERAL = 'Main'
 
-let app: App | undefined
-afterEach(() => {
-  app?.unmount()
-  app = undefined
-  document.body.innerHTML = ''
-})
+const on = (enabled: boolean) => ({ enabled, required: false })
 
-/** Mounts the sidebar over a queue of the given asset types and answers what it offers and what it writes. */
-const sidebar = async (types: string[]) => {
-  queue.types = types
-  queue.written = []
-  const root = document.createElement('div')
-  document.body.appendChild(root)
-  app = createApp(AssetQueueSelectedSidebar as Component, { queueId: 'queue' })
-  app.use(createPinia())
-  app.use(createVuetify({ components }))
-  app.use(createI18n({ legacy: false, locale: 'en', missingWarn: false, fallbackWarn: false }))
-  app.mount(root)
-  await nextTick()
-  await nextTick()
-  const [fillAll, replaceAll] = Array.from(root.querySelectorAll<HTMLButtonElement>('.sidebar-info__actions button'))
+/** Mounts the list over a queue of rows of the given asset types and answers what its sidebar offers and asks for. */
+const sidebar = async (types: DamAssetTypeType[], extSystem: UploadUiSetup['extSystem']) => {
+  const rows = types.map((assetType, index) =>
+    queueRow({ status: 'uploaded', canEditMetadata: true, assetId: 'asset-' + index, assetType })
+  )
+  const ui = await startUploadUi({ server, queues: { [QUEUE]: rows }, extSystem })
+  const list = await ui.mount(() => import('@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'), {
+    queueId: QUEUE,
+    massOperations: true,
+  })
+  const root = list.querySelector<HTMLElement>('.asset-queue-editable__sidebar')!
+  // What the sidebar asks of the store, in place of the writing itself.
+  const asked: string[] = []
+  vi.spyOn(ui.store, 'queueItemsReplaceEmptyKeywords').mockImplementation((_queueId, _value, forceReplace) => {
+    asked.push(forceReplace ? 'keywords replaced' : 'keywords filled')
+  })
+  vi.spyOn(ui.store, 'queueItemsReplaceEmptyAuthors').mockImplementation((_queueId, _value, forceReplace) => {
+    asked.push(forceReplace ? 'authors replaced' : 'authors filled')
+  })
+  const titleOf = (panel: Element) => panel.querySelector('.v-expansion-panel-title')?.textContent?.trim()
+  const panels = () => Array.from(root.querySelectorAll('.v-expansion-panel')).map(titleOf)
+  const inputs = () => {
+    const general = Array.from(root.querySelectorAll('.v-expansion-panel')).find((panel) => titleOf(panel) === GENERAL)
 
-  return {
-    inputs: Array.from(root.querySelectorAll('[data-input]')).map((input) => input.getAttribute('data-input')),
-    fillAll: () => {
-      fillAll.click()
-      return queue.written.splice(0)
-    },
-    replaceAll: () => {
-      replaceAll.click()
-      return queue.written.splice(0)
-    },
+    return Array.from(general?.querySelectorAll('.v-input label.v-field-label--floating') ?? []).map((label) =>
+      label.textContent?.trim()
+    )
   }
+  const press = (name: string) => {
+    buttonsNamed(root, name)[0].click()
+
+    return asked.splice(0)
+  }
+
+  return { panels, inputs, fillAll: () => press('Fill only empty'), replaceAll: () => press('Replace all') }
 }
+
+beforeEach(() => {
+  server = createFakeDam()
+  server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, () => ({ status: 200, data: { data: [] } }))
+})
+
+afterEach(() => {
+  stopUploadUi()
+})
 
 // The rows of the queue show keywords and authors only where the ext system has them on for the asset type.
 describe('mass operations of the queue: keywords and authors', () => {
-  it('are offered and written only when a type in the queue has them enabled', async () => {
-    extSystem.config = {
-      image: { keywords: { enabled: true }, authors: { enabled: false } },
-      document: { keywords: { enabled: false }, authors: { enabled: true } },
-    }
+  const imagesKeywordsDocumentsAuthors = {
+    image: { keywords: on(true), authors: on(false) },
+    document: { keywords: on(false), authors: on(true) },
+  }
 
-    const images = await sidebar(['image'])
-    expect(images.inputs).toEqual(['keywords'])
+  it('are offered and written only when a type in the queue has them enabled', async () => {
+    const images = await sidebar(['image', 'image'], imagesKeywordsDocumentsAuthors)
+    expect(images.inputs()).toEqual(['Keywords'])
     expect(images.fillAll()).toEqual(['keywords filled'])
     expect(images.replaceAll()).toEqual(['keywords replaced'])
-    app?.unmount()
+    stopUploadUi()
 
     // Documents have authors and no keywords: "fill all" used to write both, whatever the types of the queue.
-    const documents = await sidebar(['document'])
-    expect(documents.inputs).toEqual(['authors'])
+    const documents = await sidebar(['document', 'document'], imagesKeywordsDocumentsAuthors)
+    expect(documents.inputs()).toEqual(['Authors'])
     expect(documents.fillAll()).toEqual(['authors filled'])
     expect(documents.replaceAll()).toEqual(['authors replaced'])
   })
 
-  it('are left out altogether where no type in the queue has them', async () => {
-    extSystem.config = { image: { keywords: { enabled: false }, authors: { enabled: false } }, video: {} }
+  // Images have both; a queue without images is asked of its own types, and their general panel is not there.
+  it('are left out altogether, with the general panel, where no type in the queue has them', async () => {
+    const neither = await sidebar(['video', 'audio'], {
+      image: { keywords: on(true), authors: on(true) },
+      video: { keywords: on(false), authors: on(false) },
+      audio: { keywords: on(false), authors: on(false) },
+    })
 
-    const neither = await sidebar(['image', 'video'])
-    expect(neither.inputs).toEqual([])
+    expect(neither.panels()).toEqual(['Video', 'Audio'])
     expect(neither.fillAll()).toEqual([])
     expect(neither.replaceAll()).toEqual([])
   })
 
   // Which items they are written into is the store's part (`lazyMetadata.test.ts`): only those of such a type.
   it('are both offered for a queue of types that have one each', async () => {
-    extSystem.config = {
-      image: { keywords: { enabled: true }, authors: { enabled: false } },
-      document: { keywords: { enabled: false }, authors: { enabled: true } },
-    }
+    const mixed = await sidebar(['image', 'document'], imagesKeywordsDocumentsAuthors)
 
-    const mixed = await sidebar(['image', 'document'])
-    expect(mixed.inputs).toEqual(['keywords', 'authors'])
+    expect(mixed.inputs()).toEqual(['Keywords', 'Authors'])
     expect(mixed.fillAll()).toEqual(['authors filled', 'keywords filled'])
   })
 })

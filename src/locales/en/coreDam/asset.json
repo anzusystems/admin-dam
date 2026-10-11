@@ -52,17 +52,6 @@
   "meta": {
     "createEmpty": "Create empty asset"
   },
-  "metaIcons": {
-    "low": "Low quality",
-    "slots": "Slots",
-    "rss": "RSS",
-    "tts": "Synthesized (TTS)",
-    "fullHd": "FullHD",
-    "2k": "2K",
-    "qhd": "QHD",
-    "4k": "4K",
-    "8k": "8K"
-  },
   "filterTitle": "Filter",
   "noItemsFound": "No matching assets found",
   "sibling": {
@@ -80,14 +69,6 @@
     "draft": "Draft",
     "withFile": "With File",
     "deleting": "Deleting"
-  },
-  "assetFileFailReason": {
-    "none": "None",
-    "unknown": "Unknown",
-    "invalidChecksum": "Invalid checksum",
-    "invalidMimeType": "Invalid mime type",
-    "downloadFailed": "Download failed",
-    "invalidSize": "Invalid size"
   },
   "imageOrientation": {
     "landscape": "landscape",
@@ -133,6 +114,7 @@
       "hide": "Show more metadata"
     },
     "noAssetSelected": "No asset selected",
+    "fileStillProcessing": "The file is still being processed. You can save once it is processed; then open the asset again.",
     "tabs": {
       "info": "Info",
       "roi": "Focus",
@@ -223,14 +205,7 @@
     "saveAndClose": "Save and finish"
   },
   "massOperations": {
-    "title": "Mass operations",
-    "description": "Bulk edit of all content data or selected fields.",
-    "fillOneEmpty": "Fill empty",
-    "fillAllEmpty": "Fill all empty",
-    "replaceOne": "Replace in all assets",
-    "replaceAll": "Replace all",
-    "clearForm": "Clear form",
-    "general": "General"
+    "title": "Mass operations"
   },
   "externalProvider": {
     "importToDam": "Import to ADAM",
@@ -241,10 +216,7 @@
   "queueItem": {
     "edit": "Edit more",
     "duplicate": "Duplicate",
-    "viewOriginal": "View original",
-    "displayTitle": "Original name",
-    "error": "Error",
-    "copyAssetId": "Copy Asset ID"
+    "viewOriginal": "View original"
   },
   "assetFilePublicLink": {
     "model": {

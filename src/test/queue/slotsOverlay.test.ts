@@ -17,7 +17,9 @@ vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client
 const SLOTS = 'slots'
 const CLEAR = 'Clear'
 const CLOSE = 'Close'
-const QUESTION = 'Are you sure you want to stop the upload?'
+// The answer "yes" of the question the close button asks while something uploads.
+const STOP = 'Stop'
+const QUESTION = 'Do you want to stop the upload?'
 
 const slotUpload = (status: UploadQueueItem['status'], over: Partial<UploadQueueItem> = {}) =>
   queueRow({ type: 'slotFile', status, slotName: 'extra', fileId: 'file-2', displayTitle: 'photo.jpg', ...over })
@@ -128,7 +130,7 @@ describe('the "clear" button of the panel', () => {
     await nextTick()
 
     expect([held(), view.footerViewUploadSlots.value]).toEqual([0, 'hidden'])
-    expect(dialogButton(CLOSE)).toBeNull()
+    expect(dialogButton(STOP)).toBeNull()
     // The other queues are not its business.
     expect(store.getQueueItems('global')).toHaveLength(1)
     expect(server.requests).toEqual([])
@@ -144,7 +146,7 @@ describe('the close button of the panel', () => {
     await nextTick()
 
     expect([held(), view.footerViewUploadSlots.value]).toEqual([0, 'hidden'])
-    expect(dialogButton(CLOSE)).toBeNull()
+    expect(dialogButton(STOP)).toBeNull()
   })
 
   it('asks first while an upload is under way, and stops the uploads into the slots when the answer is yes', async () => {
@@ -175,7 +177,7 @@ describe('the close button of the panel', () => {
     expect(document.body.querySelector('.v-dialog')?.textContent).toContain(QUESTION)
     expect([held(), view.footerViewUploadSlots.value, chunks[0].config.signal?.aborted]).toEqual([1, 'compact', false])
 
-    dialogButton(CLOSE)?.click()
+    dialogButton(STOP)?.click()
     await vi.advanceTimersByTimeAsync(0)
 
     expect([held(), view.footerViewUploadSlots.value, chunks[0].config.signal?.aborted]).toEqual([0, 'hidden', true])

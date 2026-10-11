@@ -119,6 +119,8 @@ describe('the import of the provider asset open in the detail', () => {
       { id: 'photo-2', externalProvider: 'unsplash' },
     ])
     expect([row.status, row.assetId, row.fileId]).toEqual(['processing', 'asset-1', 'file-1'])
+    // What the provider said about the asset is written into the row, as the list holds it.
+    expect(row.externalProviderMetadata).toEqual({ width: 800 })
     expect(detailStore.detail).toBe(false)
     expect(showWarning).not.toHaveBeenCalled()
   })
@@ -169,8 +171,8 @@ describe('the import of the selected provider assets', () => {
       'https://provider.test/photo-1.jpg',
       'https://provider.test/photo-2.jpg',
     ])
-    // What the provider said about the asset is not carried over from the selection.
-    expect(added.map((row) => row.externalProviderMetadata)).toEqual([{}, {}])
+    // What the provider said about the asset comes along from the selection, as an import from the detail brings it.
+    expect(added.map((row) => row.externalProviderMetadata)).toEqual([{ width: 800 }, { width: 800 }])
     expect(imports().map((request) => JSON.parse(request.data as string))).toEqual([
       { id: 'photo-1', externalProvider: 'unsplash' },
       { id: 'photo-2', externalProvider: 'unsplash' },
@@ -179,6 +181,28 @@ describe('the import of the selected provider assets', () => {
     expect(store.getQueueItems(EDIT)).toEqual([])
     expect(store.getQueueFileInputKey(EDIT)).toBe(selectionKeyBefore + 1)
     expect(showWarning).not.toHaveBeenCalled()
+  })
+
+  it('gives each imported row the provider metadata of its own selected row, and none to a row that had none', async () => {
+    const { store, actions } = await load()
+    seedQueue(store, EDIT, [
+      queueRow({ ...selectedRow('photo-1'), externalProviderMetadata: { width: 800, author: 'Ann' } }),
+      queueRow({ ...selectedRow('photo-2'), externalProviderMetadata: { width: 1200, tags: ['sea', 'boat'] } }),
+      queueRow({ ...selectedRow('photo-3'), externalProviderMetadata: undefined as never }),
+    ])
+
+    await actions.importFromSelected()
+
+    // Written into the row of the upload queue (the store), as an import from the detail writes them. Nothing shows
+    // them there - only the panel of the selection does (`ExternalProviderAssetQueueItemReadonly.vue`) - and none is
+    // sent to DAM.
+    expect(
+      store.getQueueItems(GLOBAL).map((row) => [row.externalProviderAssetId, row.externalProviderMetadata])
+    ).toEqual([
+      ['photo-1', { width: 800, author: 'Ann' }],
+      ['photo-2', { width: 1200, tags: ['sea', 'boat'] }],
+      ['photo-3', {}],
+    ])
   })
 
   it('is refused with a warning when it does not fit, and the selection stays', async () => {

@@ -23,11 +23,5 @@
     "external": "External",
     "agency": "Agency"
   },
-  "meta": {
-    "create": "Create author"
-  },
-  "button": {
-    "add": "Add new author"
-  },
   "conflicts": "Author conflicts"
 }

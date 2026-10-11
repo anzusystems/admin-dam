@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { useAlerts, useTheme } from '@anzusystems/common-admin'
+import { isNull, useAlerts, useTheme } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { bulkUpdateAssetsMetadata, hasMetadataToSave } from '@/domains/coreDam/asset/api/assetApi'
+import {
+  bulkUpdateAssetsMetadata,
+  fetchAsset,
+  hasMetadataToSave,
+  showMetadataSaveError,
+} from '@/domains/coreDam/asset/api/assetApi'
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -51,11 +57,44 @@ const list = computed(() => {
 // Assets whose metadata has not loaded, or could not be: the save would send nothing and say it failed.
 const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
 
+const assetDetailStore = useAssetDetailStore()
+
+/* The asset of the detail store still has what it had before the save: it is read again, by its id, when it was among
+ * the saved - also under a closed panel, whose toggle opens it on the store without a read. Not the active row of
+ * the list, which the panel need not show. */
+const readAgainIfSaved = async (savedAssetIds: string[]) => {
+  assetDetailStore.forgetLastFetched(savedAssetIds)
+  const shown = assetDetailStore.asset
+  if (isNull(shown) || !savedAssetIds.includes(shown.id)) return
+  assetDetailStore.showLoader()
+  const detailRequest = assetDetailStore.startDetailRequest()
+  try {
+    const res = await fetchAsset(shown.id)
+    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.setAsset(res)
+  } catch (error) {
+    // The save itself went through: the detail keeps what it had, as before.
+    console.error('assetFooterSelected: the asset of the detail could not be read again', error)
+  } finally {
+    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
+  }
+}
+
+/* A read of the detail on its way when the save answers may bring an asset as it was before the save: the read again
+ * waits for it to land, so that it neither throws that answer away nor leaves its loader up. A read that starts
+ * later is answered after the save, and the shortcut that would skip the read of a saved asset is not taken. */
+const refreshDetailAsset = (savedAssetIds: string[]) => {
+  assetDetailStore.forgetLastFetched(savedAssetIds)
+  assetDetailStore.readAfterCurrentRead(() => void readAgainIfSaved(savedAssetIds))
+}
+
+// What the bulk save sends, taken before it: the queue can change while it is on the wire.
+const assetIdsToSave = () => list.value.filter(hasMetadataToSave).map((item) => item.assetId)
+
 const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
 
-const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
+const { showRecordWas, showValidationError } = useAlerts()
 
 const v$ = useVuelidate()
 
@@ -68,11 +107,13 @@ const onSave = async () => {
     saveButtonLoading.value = false
     return
   }
+  const savedAssetIds = assetIdsToSave()
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
+    refreshDetailAsset(savedAssetIds)
   } catch (error) {
-    showErrorsDefault(error)
+    showMetadataSaveError(error)
   } finally {
     saveButtonLoading.value = false
   }
@@ -87,12 +128,14 @@ const onSaveAndClose = async () => {
     saveAndCloseButtonLoading.value = false
     return
   }
+  const savedAssetIds = assetIdsToSave()
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
+    refreshDetailAsset(savedAssetIds)
     await onClearConfirm()
   } catch (error) {
-    showErrorsDefault(error)
+    showMetadataSaveError(error)
   } finally {
     saveAndCloseButtonLoading.value = false
   }

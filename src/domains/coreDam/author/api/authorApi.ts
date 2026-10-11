@@ -25,15 +25,6 @@ export const useFetchAuthorList = () =>
     urlTemplate: END_POINT_LIST,
   })
 
-export const useCreateAuthor = () =>
-  useApiRequest<DamAuthor, DamAuthor>({
-    client: damClient,
-    method: 'POST',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT,
-  })
-
 export const useUpdateAuthor = () =>
   useApiRequest<DamAuthor, DamAuthor>({
     client: damClient,

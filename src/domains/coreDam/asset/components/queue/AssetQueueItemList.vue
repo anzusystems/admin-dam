@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { AssetFileFailReason, UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
+import {
+  AssetFileFailReason,
+  UploadQueueItemStatus,
+  useDamAssetFileFailReason,
+  useRemainingTime,
+} from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-import { useAssetFileFailReason } from '@/domains/coreDam/asset/valueObject/AssetFileFailReason'
 
 const props = withDefaults(
   defineProps<{
@@ -20,7 +23,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { getAssetFileFailReasonOption } = useAssetFileFailReason()
+const { getAssetFileFailReasonOption } = useDamAssetFileFailReason()
 
 /* This row has no chip and no room for a message, so whatever there is to say hangs off the icon:
  * the reason for a failure, the message for the fallback giving up. */

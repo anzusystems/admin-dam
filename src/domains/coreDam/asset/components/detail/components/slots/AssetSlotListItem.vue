@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  ADamAssetFileFailReasonChip,
   AssetFileProcessStatus,
   DamAssetType,
   UploadQueueItemStatus,
@@ -14,7 +15,6 @@ import { useI18n } from 'vue-i18n'
 
 import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
 import AssetFileDuplicateChip from '@/domains/coreDam/asset/components/AssetFileDuplicateChip.vue'
-import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetSlotListItemDuplicate from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemRemove from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemRemove.vue'
@@ -164,7 +164,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           />
           <div v-if="statusComputed === AssetFileProcessStatus.Failed">
             {{ t('coreDam.distribution.common.failReason') }}:
-            <AssetFileFailReasonChip
+            <ADamAssetFileFailReasonChip
               class="ml-2"
               :reason="item?.assetFile?.fileAttributes.failReason as AssetFileFailReasonType"
             />

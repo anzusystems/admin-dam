@@ -111,7 +111,8 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
   const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } = await import('@/plugins/i18n')
   i18n.global.setLocaleMessage('en', (await import('@/locales/en')).default as never)
   i18n.global.locale.value = 'en'
-  const { damClient } = await import('@/shared/apiClients/damClient')
+  // What the application gives the plugin, the grants of creating a keyword and an author with it.
+  const { coreDamDefaultConfig } = await import('@/plugins/commonAdminCoreDam')
 
   const config = library.useDamConfigStore()
   seedDamConfig(config, 1024, EXT_SYSTEM)
@@ -182,7 +183,7 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
       .use(library.AnzuSystemsCommonAdmin, {
         i18n,
         languages: { available: AVAILABLE_LANGUAGES, default: DEFAULT_LANGUAGE },
-        coreDam: { configs: { default: { damClient } }, apiTimeout: 30, adminDomain: 'https://dam.test' },
+        coreDam: { configs: { default: coreDamDefaultConfig }, apiTimeout: 30, adminDomain: 'https://dam.test' },
       })
     // The build registers the Vuetify components a template uses; here all of them are.
     for (const [name, vuetifyComponent] of Object.entries(vuetifyComponents)) {

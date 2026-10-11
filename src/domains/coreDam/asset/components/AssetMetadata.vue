@@ -2,6 +2,9 @@
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
   ACopyText,
+  ADamAssetCustomMetadataForm,
+  ADamAuthorRemoteAutocompleteWithCached,
+  ADamKeywordRemoteAutocompleteWithCached,
   ASystemEntityScope,
   DamAssetType,
   DamAssetTypeDefault,
@@ -10,6 +13,8 @@ import {
   assetFileIsVideoFile,
   dateTimePretty,
   prettyBytes,
+  useDamAuthorAssetTypeConfig,
+  useDamKeywordAssetTypeConfig,
 } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -18,13 +23,9 @@ import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/Ass
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
-import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
-import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
-import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const emit = defineEmits<{
@@ -33,6 +34,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const panels = ref(['metadata', 'file'])
 
@@ -71,15 +73,15 @@ const routableAssetFile = computed(() => {
   return null
 })
 
-// useKeywordAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
+// useDamKeywordAssetTypeConfig takes a plain DamAssetTypeType and ext system, not refs, so the read is
 // forced by its signature. Making the config reactive means changing that composable.
 // eslint-disable-next-line vue/no-ref-object-reactivity-loss
-const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
+const { keywordEnabled, keywordRequired } = useDamKeywordAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
-// useAuthorAssetTypeConfig takes a plain DamAssetTypeType, not a ref, so the read is
+// useDamAuthorAssetTypeConfig takes a plain DamAssetTypeType and ext system, not refs, so the read is
 // forced by its signature. Making the config reactive means changing that composable.
 // eslint-disable-next-line vue/no-ref-object-reactivity-loss
-const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
+const { authorEnabled, authorRequired } = useDamAuthorAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
 const onAnyMetadataChange = () => {
   metadataTouch()
@@ -99,10 +101,12 @@ const onAnyMetadataChange = () => {
       value="metadata"
     >
       <VExpansionPanelText>
-        <AssetCustomMetadataForm
+        <ADamAssetCustomMetadataForm
           v-if="asset"
           v-model="asset.metadata.customData"
           :asset-type="assetType"
+          :ext-system="currentExtSystemId"
+          :validation-scope="AssetMetadataValidationScopeSymbol"
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
@@ -116,8 +120,9 @@ const onAnyMetadataChange = () => {
                   subject="keyword"
                   system="dam"
                 >
-                  <KeywordRemoteAutocompleteWithCached
+                  <ADamKeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
+                    :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.keywords')"
                     data-cy="custom-field-keywords"
                     clearable
@@ -139,8 +144,9 @@ const onAnyMetadataChange = () => {
                   subject="author"
                   system="dam"
                 >
-                  <AuthorRemoteAutocompleteWithCached
+                  <ADamAuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
+                    :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
@@ -202,7 +208,7 @@ const onAnyMetadataChange = () => {
               </VCol>
             </VRow>
           </template>
-        </AssetCustomMetadataForm>
+        </ADamAssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
     <VExpansionPanel

@@ -104,7 +104,9 @@ describe.each(types)('the upload requests of the type %s', (assetType, mimeType)
     expect(config.timeout).toBe(420_000)
     // The signal that Stop aborts.
     expect(config.signal).toBe(row.latestChunkAbortController?.signal)
-    expect(config.headers).toEqual({ 'Content-Type': 'multipart/form-data' })
+    // No type named: over the client's JSON default, axios leaves the type and its boundary to the browser.
+    // Strict: `toEqual` takes a missing key for an `undefined` one, and with the key missing the JSON default wins.
+    expect(config.headers).toStrictEqual({ 'Content-Type': undefined })
     expect(config.onUploadProgress).toBe(onProgress)
     expect(answer).toEqual({})
   })
@@ -113,7 +115,9 @@ describe.each(types)('the upload requests of the type %s', (assetType, mimeType)
     const { uploadChunk } = await load()
     server.on('POST', /\/chunk$/, () => ({ status: 200, data: {} }))
 
-    expect(await refused(uploadChunk(queueRow({ assetType }), 'file-1', 'bytes', 5, 0, undefined))).toBe(true)
+    expect(await refused(uploadChunk(queueRow({ assetType }), 'file-1', new Blob(['bytes']), 5, 0, undefined))).toBe(
+      true
+    )
   })
 
   it('finishes the upload of the file with the checksum of what was sent', async () => {

@@ -109,6 +109,7 @@ const AssetDetailSidebarDistribution = (
   await import('@/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue')
 ).default
 const { useDistributionListStore } = await import('@/domains/coreDam/asset/store/distributionListStore')
+const { defaultApiErrorLogger, setApiErrorLogger } = await import('@anzusystems/common-admin')
 const { DISTRIBUTION_LIST_POLL, distributionListPollDelay } =
   await import('@/domains/coreDam/asset/composables/distributionListPoll')
 
@@ -256,6 +257,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  setApiErrorLogger(defaultApiErrorLogger)
   app?.unmount()
   app = undefined
   document.body.innerHTML = ''
@@ -399,6 +401,36 @@ describe('the distribution tab, while a listed distribution is under way', () =>
 
     expect(alerts.showErrorsDefault).not.toHaveBeenCalled()
     expect(rows()).toEqual(['dist-1:waiting'])
+  })
+
+  // The reads that fail after the first say the same again: the poll asks for them not to be written down.
+  it('has the first of its reads that fail in a row written down, and none after it until one succeeds', async () => {
+    const written = vi.fn()
+    setApiErrorLogger(written)
+    listed = [distribution('dist-1', 'waiting')]
+    await mountTab()
+    const down = () => {
+      throw new Error('the server is down')
+    }
+    server.on('GET', LIST, down)
+
+    await untilNextRead()
+    await settle()
+    expect(written).toHaveBeenCalledTimes(1)
+
+    await untilNextRead()
+    await untilNextRead()
+    await settle()
+    expect(written).toHaveBeenCalledTimes(1)
+
+    server.on('GET', LIST, listAnswer)
+    await untilNextRead()
+    server.on('GET', LIST, down)
+    await untilNextRead()
+    await settle()
+
+    expect(written).toHaveBeenCalledTimes(2)
+    expect(alerts.showErrorsDefault).not.toHaveBeenCalled()
   })
 
   it('is back in its rhythm after a read that succeeded', async () => {
@@ -634,6 +666,55 @@ describe('the distribution tab, once it is closed', () => {
     await becomes('hidden')
     await becomes('visible')
     expect(reads()).toHaveLength(1)
+  })
+})
+
+describe('the distribution tab, when a read the user asked for fails', () => {
+  // The list is this asset's own: emptied, it would also end the reading behind it, for good.
+  it.each([
+    ['a reload', (tab: Awaited<ReturnType<typeof mountTab>>) => tab.reload()],
+    ['the next page', (tab: Awaited<ReturnType<typeof mountTab>>) => tab.nextPage()],
+  ])('shows the error and keeps the list it had, and goes on reading behind it: %s', async (_name, ask) => {
+    // A full page with one after it, so that the tab offers the next.
+    const page = (status: string) =>
+      Array.from({ length: 25 }, (_value, index) => distribution('dist-' + index, status))
+    listed = page('distributing')
+    server.on('GET', LIST, () => ({ status: 200, data: { data: listed, hasNextPage: true } }))
+    const tab = await mountTab()
+    server.on('GET', LIST, () => {
+      throw new Error('the server is down')
+    })
+
+    ask(tab)
+    await settle()
+
+    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
+    expect([tab.rows().length, tab.rows()[0], tab.spinning()]).toEqual([25, 'dist-0:distributing', false])
+
+    listed = page('distributed')
+    server.on('GET', LIST, listAnswer)
+    await untilNextRead()
+
+    expect(tab.rows()[0]).toBe('dist-0:distributed')
+  })
+})
+
+describe('the distribution tab of the next asset, when the read of its opening fails', () => {
+  // The store of the list is shared: what the tab before left there is not this asset's.
+  it('shows the error and nothing of the asset before', async () => {
+    listed = [distribution('dist-1', 'distributed')]
+    const before = await mountTab()
+    expect(before.rows()).toEqual(['dist-1:distributed'])
+    app?.unmount()
+    app = undefined
+    server.on('GET', LIST_OF_THE_NEXT_ASSET, () => {
+      throw new Error('the server is down')
+    })
+
+    const next = await mountTab('asset-2', before.pinia)
+
+    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
+    expect([next.rows(), next.store.list, next.spinning()]).toEqual([[], [], false])
   })
 })
 
