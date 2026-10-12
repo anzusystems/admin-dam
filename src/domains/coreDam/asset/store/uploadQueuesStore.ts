@@ -11,6 +11,7 @@ import {
   adminDamImportRun,
   adminDamQueuePreset,
   apiErrorStatus,
+  cloneDeep,
   createUploadQueueCore,
   damFileTypeFix,
   getAssetTypeByMimeType,
@@ -61,6 +62,13 @@ import type {
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 import { externalProviderImport } from '@/domains/coreDam/shared/services/upload/externalProviderImportService'
+import {
+  baselineOfAsset,
+  nextMetadataOrder,
+  queueRowGivenSince,
+  queueRowTakesAnswer,
+  setQueueRowBaseline,
+} from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { resolveUploadErrorMessage, useUpload } from '@/domains/coreDam/shared/services/upload/uploadService'
 import { i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'
@@ -168,6 +176,12 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   // The rows handed to the settlement to be asked about: `rowTracked` below.
   const handedOver = new WeakSet<UploadQueueItem>()
 
+  /* The settlement writes the metadata of the server into a row once, and `afterMetadataLoaded` tells of it without
+   * saying what the server sent; `onAssetRead` of the same read does. The rows it has written into, and those of
+   * them whose read is not over yet. */
+  const loadedBySettlement = new WeakSet<UploadQueueItem>()
+  let loadedInThisRead: UploadQueueItem[] = []
+
   /* The slot rows for which a 404 of the list of the slots of their asset was written down. The settlement asks
    * three times before it gives such a row up, and knows "already written down" only of an asset its own read found
    * missing: here the 404 is turned into an answer, so this is where it is remembered. By the row and not by the
@@ -254,6 +268,13 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           },
           // An asset created empty gets its first file through a slot: the open detail of it learns its main file.
           onAssetRead: (asset) => {
+            // What the server has of the rows this read loaded: the bulk save sends what differs from it. Placed
+            // where the read lands, when it was sent not being known here.
+            const landedAt = nextMetadataOrder()
+            loadedInThisRead.forEach((item) => {
+              if (item.assetId === asset.id) setQueueRowBaseline(item, baselineOfAsset(asset), landedAt)
+            })
+            loadedInThisRead = []
             const assetDetailStore = useAssetDetailStore()
             if (assetDetailStore.asset?.id === asset.id && assetDetailStore.asset.mainFile === null && asset.mainFile) {
               assetDetailStore.asset.mainFile = asset.mainFile
@@ -283,6 +304,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           },
           // And the warning its batch load left behind: the metadata is here now, and the row is a loaded one.
           afterMetadataLoaded: (queueId, item) => {
+            // Called for a row that had its metadata already as well: that one kept what it held.
+            if (!loadedBySettlement.has(toRaw(item))) {
+              loadedBySettlement.add(toRaw(item))
+              loadedInThisRead.push(item)
+            }
             leftOutByBatch.delete(toRaw(item))
             if (metadataFailures.delete(metadataFailureKey(queueId, item))) {
               item.error.hasError = false
@@ -409,6 +435,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     queues.value[queueId].items.forEach((item) => {
       if (item.status !== UploadQueueItemStatus.Loading) return
       if (isNull(item.assetId) || !assetIds.includes(item.assetId)) return
+      // Given its metadata and its form by the notification meanwhile: it has what this batch did not bring.
+      if (item.canEditMetadata) {
+        item.status = UploadQueueItemStatus.Uploaded
+        return
+      }
       metadataFailures.add(metadataFailureKey(queueId, item))
       leftOutByBatch.add(toRaw(item))
       item.status = UploadQueueItemStatus.Failed
@@ -455,6 +486,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
   async function fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
     const { getAuthorConflicts } = useAssetSuggestions()
+    // Its place among the reads and the saves of metadata, taken as it is sent: what a row is given from here on
+    // is newer than the answer of this read.
+    const sentAt = nextMetadataOrder()
     const res = await fetchAssetListByIds(assetIds, licenceId)
     for (let i = 0; i < res.length; i++) {
       const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
@@ -476,13 +510,31 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         item.error.hasError = true
         item.error.message = translate('system.uploadErrors.assetFileStillProcessing')
       } else if (foundIndex > -1) {
+        // Its form is there already, from the notification, a save or another batch. It takes this answer only when
+        // that is newer than what it was last given and nobody changed the row since; otherwise it keeps what it
+        // holds, and so does a row of which that is not known.
+        if (
+          queues.value[queueId].items[foundIndex].canEditMetadata &&
+          !queueRowTakesAnswer(queues.value[queueId].items[foundIndex], sentAt)
+        ) {
+          queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
+          continue
+        }
         leftOutByBatch.delete(toRaw(queues.value[queueId].items[foundIndex]))
-        queues.value[queueId].items[foundIndex].keywords = res[i].keywords
-        queues.value[queueId].items[foundIndex].authors = res[i].authors
-        queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
-        queues.value[queueId].items[foundIndex].mainFileSingleUse = res[i].mainFileSingleUse
+        // A row still without its form can hold what a save from the detail or the panel wrote into it after this
+        // read was sent: that is newer than this answer, which may be from before the save. It keeps it, and is
+        // only given its form.
+        if (!queueRowGivenSince(queues.value[queueId].items[foundIndex], sentAt)) {
+          queues.value[queueId].items[foundIndex].keywords = res[i].keywords
+          queues.value[queueId].items[foundIndex].authors = res[i].authors
+          queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
+          queues.value[queueId].items[foundIndex].mainFileSingleUse = res[i].mainFileSingleUse
+          setQueueRowBaseline(queues.value[queueId].items[foundIndex], baselineOfAsset(res[i]), sentAt)
+          queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(
+            res[i].metadata.authorSuggestions
+          )
+        }
         queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
-        queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
         queues.value[queueId].items[foundIndex].canEditMetadata = true
         // And the warning an earlier batch left behind: the metadata it complained about is here.
         if (metadataFailures.delete(metadataFailureKey(queueId, queues.value[queueId].items[foundIndex]))) {
@@ -607,13 +659,21 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   function updateAssetMetadata(asset: AssetDetailItemDto) {
+    // Placed where the save of the detail or the panel is answered, which is when this is called.
+    const savedAt = nextMetadataOrder()
     for (const queueId in queues.value) {
       queues.value[queueId].items.forEach((item) => {
         if (item.assetId === asset.id) {
-          item.keywords = asset.keywords
-          item.authors = asset.authors
-          item.customData = asset.metadata.customData
-          item.mainFileSingleUse = asset.mainFileSingleUse
+          // Copies of its own for each row: a mass operation writes into the custom data of the rows of its queue in
+          // place, and would write into the row of another queue with them.
+          const saved = cloneDeep(baselineOfAsset(asset))
+          item.keywords = saved.keywords
+          item.authors = saved.authors
+          item.customData = saved.customData
+          item.mainFileSingleUse = saved.mainFileSingleUse
+          // What the server has of the row now. That save marks the asset described; the flag on the asset here is
+          // from before it.
+          setQueueRowBaseline(item, { ...saved, described: true }, savedAt)
         }
       })
     }

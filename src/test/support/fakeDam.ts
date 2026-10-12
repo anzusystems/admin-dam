@@ -33,6 +33,11 @@ const FILE_TYPES = '(image|audio|video|document)'
 
 const answerOf = async (stored: Stored) => (typeof stored === 'function' ? await (stored as () => unknown)() : stored)
 
+/* An asset, a file and the slots of an asset are answered as a copy, anew for every read, as a server answers: the
+ * application writes into what it was handed - the detail into its asset, a mass operation into the custom data of a
+ * row - and handed the stored object itself, it would be writing into what every later read answers. */
+const copyOf = async (stored: Stored) => structuredClone(await answerOf(stored))
+
 export const httpError = (status: number, data: unknown = {}) => {
   const config = { headers: {} } as InternalAxiosRequestConfig
   const response = { status, data, statusText: String(status), headers: {}, config } as AxiosResponse
@@ -135,13 +140,13 @@ export const createFakeDam = () => {
   on('GET', /^\/adm\/v1\/asset\/([^/]+)$/, async (_request, match) => {
     if (!assets.has(match[1])) throw httpError(404)
 
-    return { status: 200, data: await answerOf(assets.get(match[1])) }
+    return { status: 200, data: await copyOf(assets.get(match[1])) }
   })
   // Several by their ids: one the licence does not hold is simply not in the answer.
   on('GET', /^\/adm\/v1\/asset\/licence\/(\d+)\/ids\/(.+)$/, async (_request, match) => {
     const found: unknown[] = []
     for (const id of match[2].split(',')) {
-      if (assets.has(id)) found.push(await answerOf(assets.get(id)))
+      if (assets.has(id)) found.push(await copyOf(assets.get(id)))
     }
 
     return { status: 200, data: { data: found } }
@@ -150,19 +155,19 @@ export const createFakeDam = () => {
     const key = match[1] + '/' + match[2]
     if (!files.has(key)) throw httpError(404)
 
-    return { status: 200, data: await answerOf(files.get(key)) }
+    return { status: 200, data: await copyOf(files.get(key)) }
   })
   // The slots of an asset, each with its file: all of them in one answer.
   on('GET', /^\/adm\/v1\/asset-slot\/asset\/([^/]+)$/, async (_request, match) => {
     const known = slots.get(match[1])
-    if (typeof known === 'function') return { status: 200, data: await known() }
+    if (typeof known === 'function') return { status: 200, data: await copyOf(known) }
     if (!known && !assets.has(match[1])) throw httpError(404)
     const data = [...(known ?? [])].map(([slotName, file]) => ({
       id: 'slot-' + slotName,
       slotName,
       default: false,
       main: false,
-      assetFile: file,
+      assetFile: structuredClone(file),
     }))
 
     return { status: 200, data: { data, totalCount: data.length } }

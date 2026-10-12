@@ -51,11 +51,19 @@ const imageSrc = computed(() => {
           <div class="w-100 d-flex justify-space-between align-center">
             <div />
             <VBtn
-              icon="mdi-trash-can-outline"
+              icon
               variant="text"
               size="small"
               @click.stop="remove"
-            />
+            >
+              <VIcon icon="mdi-trash-can-outline" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.selected.remove') }}
+              </VTooltip>
+            </VBtn>
           </div>
         </VCol>
       </VRow>

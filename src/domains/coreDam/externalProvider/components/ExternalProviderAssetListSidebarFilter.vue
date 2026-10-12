@@ -60,6 +60,12 @@ const resetFilter = () => {
           @click.stop="resetFilter"
         >
           <VIcon icon="mdi-filter-remove-outline" />
+          <VTooltip
+            activator="parent"
+            location="bottom"
+          >
+            {{ t('common.button.resetFilter') }}
+          </VTooltip>
         </VBtn>
       </div>
     </template>

@@ -26,7 +26,6 @@ declare module '@anzusystems/common-admin' {
   interface AclRegistry {
     acl: CustomAclValue
   }
-  export interface DefineLocaleMessage extends MessageSchema {}
 }
 
 declare module 'vue-i18n' {

@@ -62,9 +62,17 @@ const { t } = useI18n()
       <VBtn
         variant="text"
         size="x-small"
-        icon="mdi-dots-vertical"
+        icon
         v-bind="activatorProps"
-      />
+      >
+        <VIcon icon="mdi-dots-vertical" />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('common.button.moreOptions') }}
+        </VTooltip>
+      </VBtn>
     </template>
     <VList density="compact">
       <template v-if="assetFile.mainRoute">

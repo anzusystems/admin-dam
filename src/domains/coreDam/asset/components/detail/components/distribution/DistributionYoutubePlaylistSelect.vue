@@ -2,6 +2,7 @@
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
 import { useAlerts } from '@anzusystems/common-admin'
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { fetchYoutubePlaylists } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { YoutubePlaylist } from '@/domains/coreDam/asset/types/Distribution'
@@ -25,6 +26,7 @@ const modelValueComputed = computed({
   },
 })
 
+const { t } = useI18n()
 const { showErrorsDefault } = useAlerts()
 
 const items = ref<YoutubePlaylist[]>([])
@@ -61,11 +63,19 @@ onMounted(() => {
     <template #append>
       <VBtn
         class="ml-2"
-        icon="mdi-refresh"
+        icon
         size="small"
         variant="text"
         @click.stop="fetchItems(true)"
-      />
+      >
+        <VIcon icon="mdi-refresh" />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('common.button.refresh') }}
+        </VTooltip>
+      </VBtn>
     </template>
   </VSelect>
 </template>

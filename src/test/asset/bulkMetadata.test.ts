@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, nextTick } from 'vue'
 import type { Component } from 'vue'
 import { VLayout } from 'vuetify/components'
 
@@ -403,6 +403,174 @@ describe('the save of one asset', () => {
 
       save().click()
       await eventually(() => expect(alerts()).toEqual([alert]))
+    })
+  })
+
+  /* The Save of the panel on the right of the list stands out while its form holds something that is not saved. It
+   * stops standing out as the save is sent, so that what is typed while it is on the wire shows; a save that fails
+   * has saved nothing. */
+  describe('from the panel on the right of the list: its Save stands out while something is not saved', () => {
+    const panel = panels[1][1]
+    const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-btn--variant-flat')
+    const typeTitle = async (root: HTMLElement, value: string) => {
+      const title = root.querySelector<HTMLTextAreaElement>('textarea')!
+      title.value = value
+      title.dispatchEvent(new Event('input'))
+      await nextTick()
+    }
+    /** The save is held on the wire until the case answers it, or fails it. */
+    const heldSave = () => {
+      const held = { answer: () => undefined as void, fail: () => undefined as void }
+      server.on(
+        'PATCH',
+        BULK,
+        () =>
+          new Promise((resolve, reject) => {
+            held.answer = () => resolve({ status: 200, data: [] })
+            held.fail = () => reject(httpError(500))
+          })
+      )
+
+      return held
+    }
+    const openAsset = async (asset: ReturnType<typeof assetDetail>) => {
+      const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+      useAssetDetailStore().setAsset(asset as never)
+      await nextTick()
+    }
+
+    it('stands out once the form is typed into, and no longer after a save that went through', async () => {
+      const { save, alerts, root } = await mountPanel(panel, namedTitle)
+      expect(standsOut(save())).toBe(false)
+
+      await typeTitle(root, 'typed')
+      expect(standsOut(save())).toBe(true)
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(standsOut(save())).toBe(false)
+    })
+
+    // Finding 56: it looked as if nothing was left to save.
+    it('stands out again after a save that failed', async () => {
+      server.on(
+        'PATCH',
+        BULK,
+        failWith(() => httpError(500))
+      )
+      const { save, alerts, root } = await mountPanel(panel, namedTitle)
+      await typeTitle(root, 'typed')
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([SYSTEM_ERROR]))
+
+      expect(standsOut(save())).toBe(true)
+    })
+
+    it('does not stand out after a failed save of a form nothing was typed into', async () => {
+      server.on(
+        'PATCH',
+        BULK,
+        failWith(() => httpError(500))
+      )
+      const { save, alerts } = await mountPanel(panel, namedTitle)
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([SYSTEM_ERROR]))
+
+      expect(standsOut(save())).toBe(false)
+    })
+
+    it('stands out after a save that went through, for what was typed while it was on the wire', async () => {
+      const held = heldSave()
+      const { save, alerts, root } = await mountPanel(panel, namedTitle)
+      await typeTitle(root, 'typed')
+      save().click()
+      await eventually(() => expect(saved()).toHaveLength(1))
+      expect(standsOut(save())).toBe(false)
+
+      await typeTitle(root, 'typed while the save was on the wire')
+      held.answer()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(standsOut(save())).toBe(true)
+    })
+
+    /* The button only spins while a save is on the wire, so a second one can be started. Each is held until the
+     * case ends it, in the order given. */
+    const twoSaves = async (between: () => Promise<void> = async () => undefined) => {
+      const ends: Array<{ answer: () => void; fail: () => void }> = []
+      server.on(
+        'PATCH',
+        BULK,
+        () =>
+          new Promise((resolve, reject) => {
+            ends.push({ answer: () => resolve({ status: 200, data: [] }), fail: () => reject(httpError(500)) })
+          })
+      )
+      const mounted = await mountPanel(panel, namedTitle)
+      await typeTitle(mounted.root, 'typed')
+      mounted.save().click()
+      await eventually(() => expect(ends).toHaveLength(1))
+      await between()
+      mounted.save().click()
+      await eventually(() => expect(ends).toHaveLength(2))
+
+      return { ...mounted, first: ends[0], second: ends[1] }
+    }
+
+    // The later save sent what the form held, and it went through: the failure before it says nothing of the form.
+    it('does not stand out after a save that failed when a save started after it had gone through', async () => {
+      const { save, alerts, first, second } = await twoSaves()
+
+      second.answer()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+      first.fail()
+      await eventually(() => expect(alerts()).toEqual([UPDATED, SYSTEM_ERROR]))
+
+      expect(standsOut(save())).toBe(false)
+    })
+
+    it.each([
+      ['the earlier one first', ['first', 'second']],
+      ['the later one first', ['second', 'first']],
+    ] as const)('stands out when both of two saves on the wire at once failed, %s', async (_order, order) => {
+      const saves = await twoSaves()
+
+      saves[order[0]].fail()
+      await eventually(() => expect(saves.alerts()).toEqual([SYSTEM_ERROR]))
+      saves[order[1]].fail()
+      await eventually(() => expect(saves.alerts()).toEqual([SYSTEM_ERROR, SYSTEM_ERROR]))
+
+      expect(standsOut(saves.save())).toBe(true)
+    })
+
+    // What the save still on the wire took off was of the asset before: it is not this one's to put back.
+    it('does not stand out after a failed save of an asset opened while the save of another was on the wire', async () => {
+      const { save, alerts, second } = await twoSaves(() => openAsset(assetDetail('asset-2')))
+
+      second.fail()
+      await eventually(() => expect(alerts()).toEqual([SYSTEM_ERROR]))
+
+      expect(standsOut(save())).toBe(false)
+    })
+
+    // The form the failed save was of is gone: the one in the panel now came from the server as it is.
+    it.each([
+      ['another asset was opened', assetDetail('asset-2')],
+      ['the same asset was read again', assetDetail('asset-1')],
+    ])('does not stand out after a save that failed when %s while it was on the wire', async (_what, opened) => {
+      const held = heldSave()
+      const { save, alerts, root } = await mountPanel(panel, namedTitle)
+      await typeTitle(root, 'typed')
+      save().click()
+      await eventually(() => expect(saved()).toHaveLength(1))
+
+      await openAsset(opened)
+      held.fail()
+      await eventually(() => expect(alerts()).toEqual([SYSTEM_ERROR]))
+
+      expect(standsOut(save())).toBe(false)
     })
   })
 })

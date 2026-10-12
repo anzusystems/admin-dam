@@ -116,6 +116,12 @@ const onImport = () => {
             @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.hide') }}
+            </VTooltip>
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
@@ -128,6 +134,12 @@ const onImport = () => {
             @click.stop="setCompactSelected"
           >
             <VIcon icon="mdi-chevron-up" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.show') }}
+            </VTooltip>
           </VBtn>
           <AssetFooterSelectedButtonClear
             v-show="showFullSelected"

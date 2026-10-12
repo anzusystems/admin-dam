@@ -36,6 +36,7 @@ const { t } = useI18n()
 const {
   asset,
   loader,
+  metadataTouch,
   metadataUnTouch,
   metadataAreTouched,
   mainFileSingleUse,
@@ -65,6 +66,12 @@ const onEditMore = async () => {
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
+/* The save of this panel that started last: the button only spins meanwhile, so another can start. A save that fails
+ * puts "touched" back only while it is still that one - a later save sent what the form held by then, and its end
+ * is the one that counts. A save started while another of the same asset is on the wire takes over the "touched"
+ * that one took off. */
+let latestSave: { opened: object; touched: boolean; pending: boolean } | undefined
+
 const onSave = async () => {
   if (isNull(asset.value)) return
   saveButtonLoading.value = true
@@ -77,7 +84,15 @@ const onSave = async () => {
   // What this save sends, taken as it starts: another asset can be opened, or this one typed into, while it is on the
   // wire. The switch is the panel's own, not the value the asset was opened with.
   const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
+  const opened = asset.value
+  const save = {
+    opened,
+    touched: metadataAreTouched.value || (!!latestSave?.pending && latestSave.opened === opened && latestSave.touched),
+    pending: true,
+  }
+  latestSave = save
   try {
+    // Before the request, not after it: what is typed while it is on the wire is not in it.
     metadataUnTouch()
     await updateAssetMetadata(
       saved,
@@ -90,8 +105,12 @@ const onSave = async () => {
     uploadQueueStore.updateAssetMetadata(saved)
     showRecordWas('updated')
   } catch (error) {
+    // Nothing was saved, so the form is as unsaved as it was - unless the panel holds another asset by now, or this
+    // one read again.
+    if (save.touched && asset.value === opened && latestSave === save) metadataTouch()
     showMetadataSaveError(error)
   } finally {
+    save.pending = false
     saveButtonLoading.value = false
   }
 }

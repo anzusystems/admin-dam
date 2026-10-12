@@ -171,8 +171,16 @@ const mountTab = async (assetId = 'asset-1', pinia = createPinia()) => {
     /** What the tab does after a distribution was created, cancelled or managed. */
     reload: () => root.querySelector<HTMLButtonElement>('[data-reload]')?.click(),
     nextPage: () => root.querySelector<HTMLButtonElement>('[data-next-page]')?.click(),
+    text: () => root.textContent ?? '',
+    /** The button under the line that says the list could not be loaded. */
+    tryAgain: () => root.querySelector<HTMLButtonElement>('[data-cy="distribution-list-retry"]'),
   }
 }
+
+// The tab is mounted without texts, so each shows as its key.
+const NOTHING_TO_SHOW = 'coreDam.distribution.common.noEntries'
+const NOT_LOADED = 'coreDam.distribution.common.loadFailed'
+const TRY_AGAIN = 'common.button.retry'
 
 const reads = () => asked.filter((request) => LIST.test(request.url.split('?')[0]))
 /** When the list was read, in seconds since the tab was mounted. */
@@ -690,12 +698,129 @@ describe('the distribution tab, when a read the user asked for fails', () => {
 
     expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
     expect([tab.rows().length, tab.rows()[0], tab.spinning()]).toEqual([25, 'dist-0:distributing', false])
+    expect(tab.tryAgain()).toBeNull()
 
     listed = page('distributed')
     server.on('GET', LIST, listAnswer)
     await untilNextRead()
 
     expect(tab.rows()[0]).toBe('dist-0:distributed')
+  })
+
+  // Two reads of the tab's own on the wire at once: how the older one ends says nothing of what the newer one read.
+  it('says nothing of a read that failed after a read started later had answered with an empty list', async () => {
+    listed = [distribution('dist-1', 'distributed')]
+    const tab = await mountTab()
+    let failOlder: () => void = () => undefined
+    let asks = 0
+    server.on('GET', LIST, () => {
+      if (++asks > 1) return { status: 200, data: { data: [] } }
+
+      return new Promise<FakeDamAnswer>((_resolve, reject) => {
+        failOlder = () => reject(new Error('the server is down'))
+      })
+    })
+
+    tab.reload()
+    await settle()
+    tab.reload()
+    await settle()
+    expect([tab.rows(), tab.text().includes(NOTHING_TO_SHOW)]).toEqual([[], true])
+    failOlder()
+    await settle()
+
+    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
+    expect(tab.text()).toContain(NOTHING_TO_SHOW)
+    expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
+  })
+
+  // The reading behind the list answers after it, and its answer is the newer word: the asset has none any more.
+  it('says there is nothing to show when the reading behind the list it kept then finds it empty', async () => {
+    listed = [distribution('dist-1', 'distributing')]
+    const tab = await mountTab()
+    server.on('GET', LIST, () => {
+      throw new Error('the server is down')
+    })
+    tab.reload()
+    await settle()
+    expect(tab.rows()).toEqual(['dist-1:distributing'])
+
+    listed = []
+    server.on('GET', LIST, listAnswer)
+    await untilNextRead()
+
+    expect(tab.rows()).toEqual([])
+    expect(tab.text()).toContain(NOTHING_TO_SHOW)
+    expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
+  })
+})
+
+/* An empty list after a read that failed says nothing of the asset, and nothing reads it again by itself: no
+ * distribution under way is listed, so the tab does not read behind it. */
+describe('the distribution tab, when the read of its opening fails', () => {
+  const opened = async () => {
+    server.on('GET', LIST, () => {
+      throw new Error('the server is down')
+    })
+    const tab = await mountTab()
+    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
+
+    return tab
+  }
+
+  it('says the list could not be loaded, not that there is nothing to show, and offers to try again', async () => {
+    const tab = await opened()
+
+    expect([tab.rows(), tab.spinning()]).toEqual([[], false])
+    expect(tab.text()).toContain(NOT_LOADED)
+    expect(tab.text()).not.toContain(NOTHING_TO_SHOW)
+    expect(tab.tryAgain()?.textContent).toContain(TRY_AGAIN)
+    // Nothing else reads it.
+    await vi.advanceTimersByTimeAsync(LONG)
+    expect(reads()).toHaveLength(1)
+  })
+
+  it('reads the list again when asked to, and shows it', async () => {
+    const tab = await opened()
+    listed = [distribution('dist-1', 'distributed')]
+    server.on('GET', LIST, listAnswer)
+
+    tab.tryAgain()?.click()
+    await settle()
+
+    expect(reads()).toHaveLength(2)
+    expect(tab.rows()).toEqual(['dist-1:distributed'])
+    expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
+  })
+
+  it('says there is nothing to show once the read it was asked for answers with an empty list', async () => {
+    const tab = await opened()
+    server.on('GET', LIST, listAnswer)
+
+    tab.tryAgain()?.click()
+    await settle()
+
+    expect(tab.text()).toContain(NOTHING_TO_SHOW)
+    expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
+  })
+
+  it('goes on saying so, with the error, when the read it was asked for fails too', async () => {
+    const tab = await opened()
+
+    tab.tryAgain()?.click()
+    await settle()
+
+    expect(reads()).toHaveLength(2)
+    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(2)
+    expect(tab.text()).toContain(NOT_LOADED)
+    expect(tab.tryAgain()).not.toBeNull()
+  })
+
+  it('says there is nothing to show, and offers nothing, for an asset whose list was read and is empty', async () => {
+    const tab = await mountTab()
+
+    expect(tab.text()).toContain(NOTHING_TO_SHOW)
+    expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
   })
 })
 
@@ -715,6 +840,11 @@ describe('the distribution tab of the next asset, when the read of its opening f
 
     expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
     expect([next.rows(), next.store.list, next.spinning()]).toEqual([[], [], false])
+    // The empty list is not what the server said of this asset: the tab says the read failed and offers another.
+    // It said "nothing to show" before, which this case did not look at.
+    expect(next.text()).toContain(NOT_LOADED)
+    expect(next.text()).not.toContain(NOTHING_TO_SHOW)
+    expect(next.tryAgain()).not.toBeNull()
   })
 })
 

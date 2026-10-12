@@ -85,10 +85,6 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     auth.value.push({ distributionService, status: status })
   }
 
-  function resetList() {
-    list.value = []
-  }
-
   /** Empties the list unless it is that asset's already: a read that fails must not leave another asset's there. */
   function listOfAsset(assetId: DocId) {
     if (listAssetId.value === assetId) return
@@ -107,13 +103,6 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     }
   }
 
-  function reset() {
-    list.value = []
-    listAssetId.value = null
-    loader.value = false
-    auth.value = []
-  }
-
   return {
     list,
     listAssetId,
@@ -126,10 +115,8 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     authorizationMessage,
     listItemMessageUpdate,
     setAuthStatus,
-    resetList,
     listOfAsset,
     resetAuth,
-    reset,
   }
 })
 

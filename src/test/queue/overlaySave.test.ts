@@ -43,6 +43,8 @@ const FIX = 'Please, fix these errors'
 const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 const LIST = /^\/adm\/v1\/asset\/licence\/1\/search$/
 
+// Put into its queue as it is: nothing is known of what the server has of it, and the save sends such a row whole.
+// What the save sends of a row that got its metadata from the server is in `bulkSaveChanges.test.ts`.
 const editable = (assetId: string, over: Partial<UploadQueueItem> = {}) =>
   queueRow({ status: 'uploaded', canEditMetadata: true, assetId, fileId: 'file-of-' + assetId, ...over })
 
@@ -236,6 +238,22 @@ describe('the overlay of the uploads', () => {
       expect([held(), shown()]).toEqual([5, 'full'])
     })
 
+    /* Rows that hold what the server has of them, of assets that are described: nothing is to be written. To the
+     * user the save is as any other that went through. */
+    it('says so and reads the asset list again, with no request, when no row has anything to send', async () => {
+      const { save, alerts, held, shown, store } = await mountOverlay([editable('asset-1'), editable('asset-2')])
+      // As after a save of each from its detail.
+      store.updateAssetMetadata(assetDetail('asset-1') as never)
+      store.updateAssetMetadata(assetDetail('asset-2') as never)
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(server.sent('PATCH')).toEqual([])
+      expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search'])
+      expect([held(), shown()]).toEqual([2, 'full'])
+    })
+
     it('sends nothing, and says what to do, while a row that would be saved has a required field empty', async () => {
       const { save, alerts, overlay } = await mountOverlay(
         [editable('asset-1', { customData: { title: 'filled' } }), editable('asset-2')],
@@ -360,6 +378,19 @@ describe('the overlay of the uploads', () => {
       await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search']))
     })
 
+    it('empties the queue, hides the overlay and reads the asset list, with no request, when no row has anything to send', async () => {
+      const { saveAndFinish, alerts, held, shown, store } = await mountOverlay([editable('asset-1')])
+      store.updateAssetMetadata(assetDetail('asset-1') as never)
+
+      saveAndFinish()?.click()
+      await eventually(() => expect(shown()).toBe('hidden'))
+
+      expect(server.sent('PATCH')).toEqual([])
+      expect(alerts()).toEqual([UPDATED])
+      expect(held()).toBe(0)
+      await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search']))
+    })
+
     it('sends nothing and keeps the queue and the overlay while a row that would be saved is invalid', async () => {
       const { saveAndFinish, alerts, held, shown } = await mountOverlay([editable('asset-1')], requiredTitle)
 
@@ -480,6 +511,27 @@ describe('the overlay of the assets picked for mass edit', () => {
     }
   }
 
+  /** Picks the assets as the list picks them: their metadata are read from the server, and they are ticked in it. */
+  const pick = async (ui: Awaited<ReturnType<typeof mountOverlay>>, assets: Array<ReturnType<typeof assetDetail>>) => {
+    assets.forEach((asset) => server.asset(asset))
+    await ui.store.addByAssets(
+      QUEUE,
+      assets.map(({ id }) => ({
+        id,
+        attributes: { assetType: 'image', assetStatus: 'with_file' },
+        texts: { displayTitle: id },
+        mainFile: { id: 'file-of-' + id, links: {} },
+        mainFileSingleUse: null,
+      })) as never
+    )
+    await eventually(() =>
+      expect(ui.store.getQueueItems(QUEUE).map((row) => row.status)).toEqual(assets.map(() => 'uploaded'))
+    )
+    const { useAssetListStore } = await import('@/domains/coreDam/asset/store/assetListStore')
+    useAssetListStore().setList([...assets, assetDetail('asset-not-picked')] as never, ui.store.getQueueItems(QUEUE))
+  }
+  const described = (assetId: string, yes = true) => assetDetail(assetId, { flags: { described: yes } })
+
   it('says how many assets are picked', async () => {
     const { toolbar } = await mountOverlay([picked('asset-1'), picked('asset-2')])
 
@@ -496,30 +548,45 @@ describe('the overlay of the assets picked for mass edit', () => {
   })
 
   describe('its save button', () => {
-    it('sends the metadata of the picked assets and says so; the list is not read again, the selection stays', async () => {
-      const { save, alerts, held, shown, ticked } = await mountOverlay([
-        picked('asset-1', { keywords: ['keyword-1'], customData: { title: 'typed' }, mainFileSingleUse: false }),
-        picked('asset-2'),
-      ])
+    /* Rewritten with finding 49. It pinned that every picked asset is sent whole, typed into or not, which put the
+     * values it was loaded with over whatever another editor had saved meanwhile. The assets are picked here as the
+     * list picks them, their metadata read from the server. The save sends of each what was changed in it; of one
+     * nobody changed only that it is described now, and nothing when it was described already. */
+    it('sends of the picked assets what was changed in them and says so; the list is not read again, the selection stays', async () => {
+      const ui = await mountOverlay([], { customForm: { image: [customField('title')] } })
+      const { save, alerts, held, shown, ticked, overlay } = ui
+      await pick(ui, [described('asset-1'), described('asset-2', false), described('asset-3')])
+      const title = overlay
+        .querySelectorAll<HTMLElement>('.dam-upload-queue__item')[0]
+        .querySelector<HTMLTextAreaElement>('textarea')!
+      expect(title.value).toBe('from the server')
 
+      title.value = 'typed'
+      title.dispatchEvent(new Event('input'))
+      await nextTick()
       save().click()
       await eventually(() => expect(alerts()).toEqual([UPDATED]))
 
       expect(saved()).toEqual([
         [
-          {
-            id: 'asset-1',
-            keywords: ['keyword-1'],
-            authors: [],
-            described: true,
-            customData: { title: 'typed' },
-            mainFileSingleUse: false,
-          },
-          { id: 'asset-2', keywords: [], authors: [], described: true, customData: {} },
+          { id: 'asset-1', described: true, customData: { title: 'typed' } },
+          { id: 'asset-2', described: true },
         ],
       ])
       expect(server.sent('GET', LIST)).toEqual([])
-      expect([held(), shown(), ticked()]).toEqual([2, 'full', ['asset-1', 'asset-2']])
+      expect([held(), shown(), ticked()]).toEqual([3, 'full', ['asset-1', 'asset-2', 'asset-3']])
+    })
+
+    // Nothing is to be written of them. To the user the save is as any other that went through.
+    it('says so, with no request, when nothing was changed in picked assets that are described; the selection stays', async () => {
+      const ui = await mountOverlay([])
+      await pick(ui, [described('asset-1'), described('asset-2')])
+
+      ui.save().click()
+      await eventually(() => expect(ui.alerts()).toEqual([UPDATED]))
+
+      expect(server.sent('PATCH')).toEqual([])
+      expect([ui.held(), ui.shown(), ui.ticked()]).toEqual([2, 'full', ['asset-1', 'asset-2']])
     })
 
     /* Finding 50: the panel of the list showed its asset as it was before the save. The asset of the detail store is
@@ -955,6 +1022,18 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(alerts()).toEqual([UPDATED])
       expect([held(), ticked()]).toEqual([0, []])
       expect(server.sent('GET', LIST)).toEqual([])
+    })
+
+    it('empties the queue, unticks the assets and hides the overlay, with no request, when nothing was changed in picked assets that are described', async () => {
+      const ui = await mountOverlay([])
+      await pick(ui, [described('asset-1'), described('asset-2')])
+
+      ui.saveAndFinish().click()
+      await eventually(() => expect(ui.shown()).toBe('hidden'))
+
+      expect(server.sent('PATCH')).toEqual([])
+      expect(ui.alerts()).toEqual([UPDATED])
+      expect([ui.held(), ui.ticked()]).toEqual([0, []])
     })
 
     it('sends nothing and keeps the queue, the selection and the overlay while a picked asset is invalid', async () => {

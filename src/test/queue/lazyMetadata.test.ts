@@ -1,6 +1,6 @@
 import { UploadQueueItemStatus } from '@anzusystems/common-admin'
 import { createPinia, setActivePinia } from 'pinia'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest'
 
 const fetchAssetListByIds = vi.fn(async (): Promise<unknown[]> => [])
 
@@ -225,6 +225,88 @@ describe('an asset picked for mass edit whose file the server may still be proce
       ['keyword-notified'],
     ])
     expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
+  })
+
+  /* The same race, and the batch then says the file is processed, leaves the asset out or fails: the row has its form
+   * from the notification, and what the user typed into it since. */
+  it.each<[string, (answer: (assets: unknown[]) => void, fail: (error: Error) => void) => void]>([
+    [
+      'answered with the asset',
+      (answer) => answer([{ ...withFile('asset-1', 'processed'), keywords: ['keyword-of-the-batch'] }]),
+    ],
+    ['answered without the asset', (answer) => answer([])],
+    ['failed', (_answer, fail) => fail(new Error('the asset service is down'))],
+  ])(
+    'keeps the form the metadata notification gave it, and what was typed into it, when its batch then %s',
+    async (_how, endBatch) => {
+      vi.useFakeTimers()
+      onTestFinished(() => void vi.useRealTimers())
+      const { useUploadQueuesStore } = await load()
+      const store = useUploadQueuesStore()
+      let answerBatch: (assets: unknown[]) => void = () => undefined
+      let failBatch: (error: Error) => void = () => undefined
+      fetchAssetListByIds.mockImplementationOnce(
+        () =>
+          new Promise((resolve, reject) => {
+            answerBatch = resolve
+            failBatch = reject
+          })
+      )
+      await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+      const { fetchAsset } = await import('@/domains/coreDam/asset/api/assetApi')
+      vi.mocked(fetchAsset).mockResolvedValue({
+        ...withFile('asset-1', 'processed'),
+        keywords: ['keyword-notified'],
+        attributes: { assetType: 'image', assetStatus: 'with_file' },
+      } as never)
+      const notified = store.queueItemMetadataProcessed('asset-1')
+      await vi.advanceTimersByTimeAsync(5000)
+      await notified
+      const [row] = itemsOf(store as never) as Array<QueueRow & { keywords: string[] }>
+      expect([row.status, row.canEditMetadata]).toEqual([UploadQueueItemStatus.Loading, true])
+      row.keywords = ['keyword-typed']
+
+      endBatch(answerBatch, failBatch)
+      await vi.advanceTimersByTimeAsync(0)
+
+      expect([row.status, row.canEditMetadata, row.keywords]).toEqual([
+        UploadQueueItemStatus.Uploaded,
+        true,
+        ['keyword-typed'],
+      ])
+      expect([row.error.hasError, row.error.message]).toEqual([false, ''])
+    }
+  )
+
+  // Nothing typed into it either: the batch was sent before the read of the notification, so its answer is the older.
+  it('keeps what the metadata notification read when its batch, sent before that, answers with the asset after it', async () => {
+    vi.useFakeTimers()
+    onTestFinished(() => void vi.useRealTimers())
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    let answerBatch: (assets: unknown[]) => void = () => undefined
+    fetchAssetListByIds.mockImplementationOnce(() => new Promise((resolve) => (answerBatch = resolve)))
+    await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
+    const { fetchAsset } = await import('@/domains/coreDam/asset/api/assetApi')
+    vi.mocked(fetchAsset).mockResolvedValue({
+      ...withFile('asset-1', 'processed'),
+      keywords: ['keyword-notified'],
+      attributes: { assetType: 'image', assetStatus: 'with_file' },
+    } as never)
+    const notified = store.queueItemMetadataProcessed('asset-1')
+    await vi.advanceTimersByTimeAsync(5000)
+    await notified
+    const [row] = itemsOf(store as never) as Array<QueueRow & { keywords: string[] }>
+    expect([row.canEditMetadata, row.keywords]).toEqual([true, ['keyword-notified']])
+
+    answerBatch([{ ...withFile('asset-1', 'processed'), keywords: ['keyword-of-the-batch'] }])
+    await vi.advanceTimersByTimeAsync(0)
+
+    expect([row.status, row.canEditMetadata, row.keywords]).toEqual([
+      UploadQueueItemStatus.Uploaded,
+      true,
+      ['keyword-notified'],
+    ])
   })
 
   // Taken out and picked again while the first batch is on the wire: the second batch answers first, and stands.

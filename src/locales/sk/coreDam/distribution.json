@@ -33,6 +33,7 @@
     "addTitle": "Pridať novú distribúciu",
     "redistributeTitle": "Znovu distribuovať",
     "noEntries": "Nie je čo zobraziť",
+    "loadFailed": "Distribúcie sa nepodarilo načítať.",
     "status": "Stav",
     "error": "Nastala chyba",
     "blockedByDistribution": "Blokované distribúciou",

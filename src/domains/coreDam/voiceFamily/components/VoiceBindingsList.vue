@@ -131,6 +131,12 @@ onMounted(() => {
             class="mx-1"
           >
             <VIcon icon="mdi-dots-horizontal" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.moreOptions') }}
+            </VTooltip>
             <VMenu activator="parent">
               <VCard min-width="200">
                 <VList>

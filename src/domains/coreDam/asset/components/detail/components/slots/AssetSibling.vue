@@ -64,12 +64,20 @@ const pickAssetType = computed(() => {
           <AssetChip :id="assetDetailStore.asset.siblingToAsset" />
           <Acl :permission="ACL.DAM_ASSET_UPDATE">
             <VBtn
-              icon="mdi-trash-can-outline"
+              icon
               variant="text"
               size="small"
               :loading="siblingLoader"
               @click.stop="removeItem"
-            />
+            >
+              <VIcon icon="mdi-trash-can-outline" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.slots.actions.remove') }}
+              </VTooltip>
+            </VBtn>
           </Acl>
         </div>
         <div v-else>-</div>

@@ -191,6 +191,7 @@
   },
   "selected": {
     "selectedFiles": "Selected files",
+    "remove": "Remove from selection",
     "edit": "Edit",
     "clear": "Clear",
     "more": "View more",

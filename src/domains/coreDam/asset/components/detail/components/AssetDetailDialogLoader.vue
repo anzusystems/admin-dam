@@ -93,6 +93,12 @@ const totalCountText = computed(() => {
             @click.stop="closeDialog"
           >
             <VIcon icon="mdi-close" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.close') }}
+            </VTooltip>
           </VBtn>
         </div>
       </VToolbar>

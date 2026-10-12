@@ -112,12 +112,20 @@ const label = computed(() => {
       </div>
       <VBtn
         v-show="showClear"
-        icon="mdi-close-circle"
+        icon
         variant="text"
         :width="24"
         :height="24"
         @click.stop="clear"
-      />
+      >
+        <VIcon icon="mdi-close-circle" />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('common.button.clear') }}
+        </VTooltip>
+      </VBtn>
     </div>
   </div>
 </template>

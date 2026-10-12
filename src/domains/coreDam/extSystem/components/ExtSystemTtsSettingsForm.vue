@@ -100,13 +100,21 @@ const clearEpilog = () => {
               <span v-else>—</span>
               <VBtn
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
-                icon="mdi-trash-can-outline"
+                icon
                 variant="text"
                 size="small"
                 class="ml-2"
                 data-cy="ext-system-tts-free-audio-epilog-asset-clear"
                 @click.stop="clearEpilog"
-              />
+              >
+                <VIcon icon="mdi-trash-can-outline" />
+                <VTooltip
+                  activator="parent"
+                  location="bottom"
+                >
+                  {{ t('common.button.clear') }}
+                </VTooltip>
+              </VBtn>
               <AAssetSelect
                 :select-licences="epilogLicenceIds"
                 :min-count="1"

@@ -68,16 +68,30 @@ const hasAllowedService = computed(() =>
 const closed = new AbortController()
 onBeforeUnmount(() => closed.abort())
 
+// A read of this tab failed and left it an empty list: that says nothing of the asset, and nothing reads it again
+// by itself. Of this tab only: the store is shared with the tabs of the other assets.
+const readFailed = ref(false)
+// The reads of the tab's own, counted: one that fails says so only while none was started after it, which may have
+// read the list meanwhile.
+let ownReads = 0
+
 const readList = async () => {
+  const read = ++ownReads
   distributionListStore.showLoader()
   // The list is shared with the tab of the asset before: left there, it would show under a read that failed here.
   // The list of this asset stays, for a reload or another page that fails.
   distributionListStore.listOfAsset(props.assetId)
   try {
     const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, closed.signal)
-    if (!closed.signal.aborted) distributionListStore.setList(items)
+    if (!closed.signal.aborted) {
+      distributionListStore.setList(items)
+      readFailed.value = false
+    }
   } catch (error) {
-    if (!closed.signal.aborted) showErrorsDefault(error)
+    if (!closed.signal.aborted) {
+      if (read === ownReads) readFailed.value = distributionListStore.list.length === 0
+      showErrorsDefault(error)
+    }
   } finally {
     if (!closed.signal.aborted) distributionListStore.hideLoader()
   }
@@ -125,6 +139,20 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
         indeterminate
         color="primary"
       />
+    </div>
+    <div
+      v-else-if="readFailed && distributionListStore.list.length === 0"
+      class="pa-4 text-body-small"
+    >
+      <div class="text-error">{{ t('coreDam.distribution.common.loadFailed') }}</div>
+      <ABtnTertiary
+        density="compact"
+        class="mt-2"
+        data-cy="distribution-list-retry"
+        @click.stop="reloadList"
+      >
+        {{ t('common.button.retry') }}
+      </ABtnTertiary>
     </div>
     <div
       v-else-if="distributionListStore.list.length === 0"

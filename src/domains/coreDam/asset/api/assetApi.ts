@@ -32,20 +32,28 @@ import type { Ref } from 'vue'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
+import {
+  metadataOfQueueRow,
+  nextMetadataOrder,
+  queueRowBaseline,
+  sameMetadataValue,
+  setQueueRowBaseline,
+} from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import type { QueueRowMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export interface AssetMetadataBulkItem {
   id: DocId
-  keywords: DocId[]
-  authors: DocId[]
   described: boolean
-  customData: AssetCustomData
   /* Optional on purpose: `AssetMetadataBulkManager` guards each of these with `isXUndefined()`, so
    * a field left out is one this save does not write - the only way to edit metadata without also
-   * writing flags the form never showed. The backend still runs its internal rules afterwards,
-   * which can move `internal` on their own. */
+   * writing flags the form never showed, and to save a row without writing what nobody changed in it.
+   * The backend still runs its internal rules afterwards, which can move `internal` on their own. */
+  keywords?: DocId[]
+  authors?: DocId[]
+  customData?: AssetCustomData
   mainFileSingleUse?: boolean | null
   mainFileOverrideInternal?: boolean
   mainFileInternal?: boolean
@@ -202,20 +210,36 @@ export const fetchAssetMetadata = (id: DocId) => {
 export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueItem & { assetId: DocId } =>
   !isNull(item.assetId) && item.canEditMetadata
 
+/* What the bulk save sends, row by row, each with the metadata the server has of it once that is saved. Of a row goes
+ * out what differs from what it last got from the server, or last saved: a field nobody touched here would overwrite
+ * what another editor saved meanwhile. A row that goes out is marked described. A row of which it is not known what
+ * the server has, or whether its asset is described there, is sent whole. */
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
-  const dtoItems: AssetMetadataBulkItem[] = []
+  const dtoItems: Array<{
+    item: UploadQueueItem
+    dtoItem: AssetMetadataBulkItem
+    metadata: QueueRowMetadata
+    changed: Partial<QueueRowMetadata>
+  }> = []
   items.forEach((item) => {
     if (hasMetadataToSave(item)) {
-      const dtoItem: AssetMetadataBulkItem = {
-        id: item.assetId,
-        keywords: item.keywords,
-        authors: item.authors,
-        described: true,
-        customData: item.customData,
-      }
+      // A copy, taken as the save begins: the row can be typed into while its batch waits for the ones before it.
+      const metadata = metadataOfQueueRow(item)
+      const known = queueRowBaseline(item)
+      const whole = !known || isUndefined(known.described)
+      const changed: Partial<QueueRowMetadata> = {}
+      if (whole || !sameMetadataValue(metadata.keywords, known.keywords)) changed.keywords = metadata.keywords
+      if (whole || !sameMetadataValue(metadata.authors, known.authors)) changed.authors = metadata.authors
+      // All of it when any of it differs: the server takes a field of the form that is left out as one emptied.
+      if (whole || !sameMetadataValue(metadata.customData, known.customData)) changed.customData = metadata.customData
       // Only what this form edits.
-      if (!isNull(item.mainFileSingleUse)) dtoItem.mainFileSingleUse = item.mainFileSingleUse
-      dtoItems.push(dtoItem)
+      if (!isNull(metadata.mainFileSingleUse) && (whole || metadata.mainFileSingleUse !== known.mainFileSingleUse)) {
+        changed.mainFileSingleUse = metadata.mainFileSingleUse
+      }
+      /* Nothing to write: the asset is described and the row holds what the server has. Sent all the same, core-dam
+       * would take the fields left out for a change of the asset and tell everyone who listens for one. */
+      if (!whole && known.described && Object.keys(changed).length === 0) return
+      dtoItems.push({ item, dtoItem: { id: item.assetId, described: true, ...changed }, metadata, changed })
     }
   })
 
@@ -283,20 +307,29 @@ const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAsse
 }
 
 /* Ten at a time, one batch after the other. The server saves a batch whole or not at all; a batch that fails stops
- * those after it, the ones before it stay saved, and saving again is safe. */
+ * those after it, the ones before it stay saved, and saving again is safe. Only the rows there is something to write
+ * of go out: with none of them no request is made, and the save is done all the same. */
 export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
-  const sent = items.filter(hasMetadataToSave)
-  const bulkItems = listItemsToMetadataBulkItems(sent)
-  // Refused as before; the buttons are off while there is nothing to send (`nothingToSave`).
-  if (bulkItems.length === 0) throw new Error('assetApi: no metadata to save')
+  // Refused as before; the buttons are off while no row could be sent (`nothingToSave`).
+  if (!items.some(hasMetadataToSave)) throw new Error('assetApi: no metadata to save')
+  const bulkItems = listItemsToMetadataBulkItems(items)
   const { execute } = useUpdateMetadataBulk()
   // From the filtered array: counting the input sent trailing PATCHes with an empty body.
   for (let offset = 0; offset < bulkItems.length; offset += BULK_METADATA_LIMIT) {
+    const batch = bulkItems.slice(offset, offset + BULK_METADATA_LIMIT)
     try {
-      await execute({ body: bulkItems.slice(offset, offset + BULK_METADATA_LIMIT) })
+      await execute({ body: batch.map(({ dtoItem }) => dtoItem) })
     } catch (error) {
-      throw withNamedFields(error, (index) => sent[offset + index]?.assetType)
+      throw withNamedFields(error, (index) => batch[index]?.item.assetType)
     }
+    /* Saved: the server has what was sent, and a save after this one sends what differs from it. Only the fields that
+     * went out are written, over what is known of the row by now: a read or another save may have moved that while
+     * this one was on the wire, and the copy of the click would put it back. Placed where the save is answered: a
+     * read sent before that may have been answered from before the save. */
+    const savedAt = nextMetadataOrder()
+    batch.forEach(({ item, metadata, changed }) =>
+      setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
+    )
   }
 }
 

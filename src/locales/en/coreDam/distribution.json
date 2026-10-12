@@ -33,6 +33,7 @@
     "addTitle": "Add new distribution",
     "redistributeTitle": "Redistribute",
     "noEntries": "Nothing to show",
+    "loadFailed": "The distributions could not be loaded.",
     "status": "Status",
     "error": "An error occurred",
     "blockedByDistribution": "Blocked by distribution",
