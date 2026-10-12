@@ -49,6 +49,9 @@ const { t } = useI18n()
 const saveButtonLoading = ref(false)
 
 const onCancel = () => {
+  // The save goes through all the same, and a dialog closed under it is unmounted: nobody would hear that it was
+  // saved, and the list would not be read again.
+  if (saveButtonLoading.value) return
   distributionManageDialog.value = false
   emit('onCancel')
 }
@@ -145,7 +148,10 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="onCancel">
+        <ABtnTertiary
+          :disabled="saveButtonLoading"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

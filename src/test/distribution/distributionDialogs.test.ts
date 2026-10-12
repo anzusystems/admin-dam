@@ -235,16 +235,24 @@ describe('the dialog of the advanced settings that edits the record of a distrib
     listed = [distribution('dist-1'), distribution('dist-2')]
     const ui = await openTab()
     buttonsNamed(ui.tab, SHOW_SETTINGS)[0].click()
-    const edit = await eventually(() => {
-      const button = ui.tab.querySelector<HTMLButtonElement>('.a-le-row .a-le-action--edit')
-      expect(button).not.toBeNull()
+    /** The pencil of the first row of the settings, once they draw their rows; answers "Confirm" of the dialog. */
+    const edit = async () => {
+      const pencil = await eventually(() => {
+        const button = ui.tab.querySelector<HTMLButtonElement>('.a-le-row .a-le-action--edit')
+        expect(button).not.toBeNull()
 
-      return button!
-    })
-    edit.click()
+        return button!
+      })
+      pencil.click()
 
-    return { ...ui, confirm: await ui.confirm() }
+      return ui.confirm()
+    }
+
+    return { ...ui, edit, confirm: await edit() }
   }
+
+  /** The X of the toolbar of the open dialog. */
+  const close = () => document.body.querySelector<HTMLButtonElement>('.v-dialog [data-cy="button-close"]')
 
   it('spins "Confirm" while the save is on its way and sends it once, however often it is pressed', async () => {
     let answer: () => void = () => undefined
@@ -274,6 +282,67 @@ describe('the dialog of the advanced settings that edits the record of a distrib
     await eventually(() => expect(server.sent('GET', LIST)).toHaveLength(2))
     await vi.advanceTimersByTimeAsync(100)
     expect([saved().length, ui.alerts(), server.sent('GET', LIST).length]).toEqual([1, [UPDATED], 2])
+  })
+
+  /* Closed under the save, the dialog would be unmounted: the save goes through and is said, but nobody hears of it,
+   * the list is not read again and the next pencil fills the form from the row as it was. */
+  it('cannot be closed by "Cancel" or by the X while the save is on its way: the list is read once it is saved', async () => {
+    let answer: () => void = () => undefined
+    server.on(
+      'PATCH',
+      SAVE,
+      (request) =>
+        new Promise<FakeDamAnswer>((resolve) => {
+          answer = () => resolve({ status: 200, data: JSON.parse(request.data as string) })
+        })
+    )
+    const ui = await editing()
+    const cancel = dialogButton(CANCEL)
+    expect(cancel?.disabled).toBe(false)
+
+    ui.confirm.click()
+    await eventually(() => expect(ui.confirm.classList.contains('v-btn--loading')).toBe(true))
+    expect([cancel?.disabled, close() === null]).toEqual([true, false])
+    cancel?.click()
+    close()?.click()
+    await vi.advanceTimersByTimeAsync(100)
+
+    expect([dialogButton(CONFIRM), dialogButton(CANCEL), saved().length]).toEqual([ui.confirm, cancel, 1])
+    expect(server.sent('GET', LIST)).toHaveLength(1)
+
+    listed = [{ ...distribution('dist-1'), extId: 'remote-dist-1-saved' }, distribution('dist-2')]
+    answer()
+
+    await eventually(() => expect(ui.alerts()).toEqual([UPDATED]))
+    expect(dialogButton(CONFIRM)).toBeNull()
+    await eventually(() => expect(ui.shown()).toEqual(['remote-dist-1-saved', 'remote-dist-2']))
+    expect(server.sent('GET', LIST)).toHaveLength(2)
+
+    await ui.edit()
+    const typed = Array.from(document.body.querySelectorAll<HTMLInputElement>('.v-dialog input')).map(
+      (input) => input.value
+    )
+    expect(typed).toContain('remote-dist-1-saved')
+  })
+
+  it('closes by "Cancel" and by the X while nothing is being saved, also after a save the server refused', async () => {
+    server.on('PATCH', SAVE, () => {
+      throw httpError(500)
+    })
+    const ui = await editing()
+
+    dialogButton(CANCEL)?.click()
+    await eventually(() => expect(dialogButton(CONFIRM)).toBeNull())
+    expect(saved()).toHaveLength(0)
+
+    ;(await ui.edit()).click()
+    await eventually(() => expect(ui.alerts()).toEqual([SYSTEM_ERROR]))
+    expect(dialogButton(CANCEL)?.disabled).toBe(false)
+    close()?.click()
+
+    await eventually(() => expect(dialogButton(CONFIRM)).toBeNull())
+    // Nothing was saved, so nothing is read again.
+    expect([saved().length, server.sent('GET', LIST).length]).toEqual([1, 1])
   })
 
   it('can be confirmed again after a save the server refused: the button no longer spins', async () => {

@@ -100,8 +100,12 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
   distributionListStore.showLoader()
   try {
     await deleteDistribution(distributionId)
+    // Out of the list at once: the read asked for below can fail, or be asked of nobody, and the list would keep
+    // what is deleted. The editor does not drop the row either: it is unmounted under the loader.
+    const listedIndex = distributionListStore.list.findIndex((listed) => listed.id === distributionId)
+    if (listedIndex > -1) distributionListStore.list.splice(listedIndex, 1)
     // The loader stays on: the list is read again by the tab, whose read turns it off. Turned off here, the list
-    // would show the deleted distribution until that read answers.
+    // would show, and could be clicked, before that read answers.
     emit('onDistributionDelete')
     showRecordWas('deleted')
     // Nobody heard of the delete, so nobody reads the list: the loader would stay on for good.
