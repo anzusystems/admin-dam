@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 
 import { useAnzutapToolbar } from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
-import type {
-  ToolbarItemButton,
-  ToolbarItemSeparator,
-} from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
 import AnzutapToolbarItem from '@/domains/coreDam/shared/components/anzutap/components/AnzutapToolbarItem.vue'
 
 const props = withDefaults(
@@ -22,24 +18,12 @@ const props = withDefaults(
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { itemsRow1 } = useAnzutapToolbar(props.editor)
 
-const enabledItems = ref<Array<ToolbarItemButton | ToolbarItemSeparator>>([])
-
+// Asked again whenever the state of the editor changes: an item may be shown only where the cursor stands, as the
+// removal of a link is.
 const items = computed(() => {
   return {
-    row1Visible: enabledItems.value,
+    row1Visible: itemsRow1.filter((item) => item.type === 'separator' || item.show()),
   }
-})
-
-onMounted(async () => {
-  const items: Array<ToolbarItemButton | ToolbarItemSeparator> = []
-  itemsRow1.forEach((item) => {
-    if (item.type === 'separator') {
-      items.push(item)
-    } else if (item.show()) {
-      items.push(item)
-    }
-  })
-  enabledItems.value = items
 })
 </script>
 

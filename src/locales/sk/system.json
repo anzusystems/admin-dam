@@ -39,6 +39,13 @@
       "chooseFromDistribution": "Vybrať z distribúcie"
     }
   },
+  "editor": {
+    "bold": "Tučné",
+    "italic": "Kurzíva",
+    "underline": "Podčiarknuté",
+    "link": "Odkaz",
+    "removeLink": "Odstrániť odkaz"
+  },
   "mainBar": {
     "upload": "Nahrať",
     "search": "Vyhľadať",

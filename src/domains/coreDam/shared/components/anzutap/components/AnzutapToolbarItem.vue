@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import type {
   ToolbarItemButton,
   ToolbarItemSeparator,
@@ -10,6 +12,8 @@ withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -34,7 +38,7 @@ withDefaults(
       <VTooltip
         anchor="bottom"
         activator="parent"
-        :text="item.titleT"
+        :text="t(item.titleT)"
       />
     </VBtn>
   </template>

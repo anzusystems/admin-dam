@@ -58,6 +58,8 @@ const { v$ } = useDistributionUpdateDtoValidations(distribution)
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
+  // The keyboard reaches a button that spins.
+  if (saveButtonLoading.value) return
   saveButtonLoading.value = true
   try {
     v$.value.$touch()
@@ -148,6 +150,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
         </ABtnTertiary>
         <ABtnPrimary
           v-if="!readonly"
+          :loading="saveButtonLoading"
           @click.stop="onConfirm"
         >
           {{ isEdit ? t('common.button.confirm') : t('common.button.create') }}

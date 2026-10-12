@@ -171,6 +171,8 @@ const mountTab = async (assetId = 'asset-1', pinia = createPinia()) => {
     /** What the tab does after a distribution was created, cancelled or managed. */
     reload: () => root.querySelector<HTMLButtonElement>('[data-reload]')?.click(),
     nextPage: () => root.querySelector<HTMLButtonElement>('[data-next-page]')?.click(),
+    /** Whether the tab draws its paging under the list. */
+    offersNextPage: () => root.querySelector('[data-next-page]') !== null,
     text: () => root.textContent ?? '',
     /** The button under the line that says the list could not be loaded. */
     tryAgain: () => root.querySelector<HTMLButtonElement>('[data-cy="distribution-list-retry"]'),
@@ -708,31 +710,38 @@ describe('the distribution tab, when a read the user asked for fails', () => {
   })
 
   // Two reads of the tab's own on the wire at once: how the older one ends says nothing of what the newer one read.
-  it('says nothing of a read that failed after a read started later had answered with an empty list', async () => {
-    listed = [distribution('dist-1', 'distributed')]
-    const tab = await mountTab()
-    let failOlder: () => void = () => undefined
-    let asks = 0
-    server.on('GET', LIST, () => {
-      if (++asks > 1) return { status: 200, data: { data: [] } }
+  // The older one is given up as the newer one starts, so its failure is not even shown: it raised an alert before.
+  it.each(GIVEN_UP)(
+    'says nothing of a read that failed after a read started later had answered with an empty list (it %s)',
+    async (_how, answered) => {
+      // A failure that comes although the read was given up is written down by the library, as any other.
+      setApiErrorLogger(vi.fn())
+      listed = [distribution('dist-1', 'distributed')]
+      const tab = await mountTab()
+      let failOlder: () => void = () => undefined
+      let asks = 0
+      server.on('GET', LIST, () => {
+        if (++asks > 1) return { status: 200, data: { data: [] } }
 
-      return new Promise<FakeDamAnswer>((_resolve, reject) => {
-        failOlder = () => reject(new Error('the server is down'))
+        return new Promise<FakeDamAnswer>((_resolve, reject) => {
+          failOlder = () => reject(new Error('the server is down'))
+        })
       })
-    })
 
-    tab.reload()
-    await settle()
-    tab.reload()
-    await settle()
-    expect([tab.rows(), tab.text().includes(NOTHING_TO_SHOW)]).toEqual([[], true])
-    failOlder()
-    await settle()
+      nextAnswersAfterAbort = answered
+      tab.reload()
+      await settle()
+      tab.reload()
+      await settle()
+      expect([tab.rows(), tab.text().includes(NOTHING_TO_SHOW)]).toEqual([[], true])
+      failOlder()
+      await settle()
 
-    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
-    expect(tab.text()).toContain(NOTHING_TO_SHOW)
-    expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
-  })
+      expect(alerts.showErrorsDefault).not.toHaveBeenCalled()
+      expect(tab.text()).toContain(NOTHING_TO_SHOW)
+      expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
+    }
+  )
 
   // The reading behind the list answers after it, and its answer is the newer word: the asset has none any more.
   it('says there is nothing to show when the reading behind the list it kept then finds it empty', async () => {
@@ -752,6 +761,173 @@ describe('the distribution tab, when a read the user asked for fails', () => {
     expect(tab.rows()).toEqual([])
     expect(tab.text()).toContain(NOTHING_TO_SHOW)
     expect([tab.text().includes(NOT_LOADED), tab.tryAgain()]).toEqual([false, null])
+  })
+})
+
+/* Two reads of the tab's own can be on the wire at once: one after a distribution was added, deleted or edited,
+ * one for another page. What the tab shows is the answer of the one it started last; the one before it is given
+ * up, and whatever becomes of it changes nothing. */
+describe('the distribution tab, when it reads its list while a read of its own is still on its way', () => {
+  const two = [distribution('dist-1', 'distributed'), distribution('dist-2', 'distributed')]
+
+  it('gives the older read up, and not the one it has just started', async () => {
+    listed = two
+    const tab = await mountTab()
+    const older = holdNextRead()
+    tab.reload()
+    await settle()
+    expect(reads()[1].signal?.aborted).toBe(false)
+
+    tab.reload()
+    await settle()
+
+    expect(reads()).toHaveLength(3)
+    expect([reads()[1].signal?.aborted, reads()[2].signal?.aborted]).toEqual([true, false])
+    await older.release()
+  })
+
+  it.each(GIVEN_UP)(
+    'shows what the later read answered, also once the older one, which %s, is answered after it',
+    async (_how, answered) => {
+      listed = two
+      const tab = await mountTab()
+      const older = holdNextRead(answered)
+      tab.reload()
+      await settle()
+      // A distribution is deleted meanwhile, and the tab reads again.
+      listed = [two[1]]
+      tab.reload()
+      await settle()
+      expect([tab.rows(), tab.spinning()]).toEqual([['dist-2:distributed'], false])
+
+      // Read off the server before the delete.
+      await older.release({ status: 200, data: { data: two } })
+
+      expect([tab.rows(), tab.spinning()]).toEqual([['dist-2:distributed'], false])
+      expect(tab.store.list.map((item) => item.id)).toEqual(['dist-2'])
+      expect(alerts.showErrorsDefault).not.toHaveBeenCalled()
+    }
+  )
+
+  it.each(GIVEN_UP)(
+    'keeps its loader on until the later read answers, whatever becomes of the older one, which %s',
+    async (_how, answered) => {
+      listed = two
+      const tab = await mountTab()
+      const older = holdNextRead(answered)
+      tab.reload()
+      await settle()
+      const later = holdNextRead()
+      tab.reload()
+      await settle()
+      expect(reads()).toHaveLength(3)
+
+      await older.release()
+
+      expect([tab.store.loader, tab.spinning(), tab.rows()]).toEqual([true, true, []])
+
+      listed = [two[1]]
+      await later.release()
+
+      expect([tab.spinning(), tab.rows()]).toEqual([false, ['dist-2:distributed']])
+    }
+  )
+
+  // The library writes what a read answered of its page into the pagination the tab handed it, by itself.
+  it('keeps the paging of the later read when the answer of the older one comes all the same', async () => {
+    const page = Array.from({ length: 25 }, (_value, index) => distribution('dist-' + index, 'distributed'))
+    const full: FakeDamAnswer = { status: 200, data: { data: page, hasNextPage: true } }
+    server.on('GET', LIST, () => full)
+    const tab = await mountTab()
+    expect(tab.offersNextPage()).toBe(true)
+
+    const older = holdNextRead(true)
+    tab.reload()
+    await settle()
+    // All but one are deleted meanwhile: one page is left.
+    server.on('GET', LIST, () => ({ status: 200, data: { data: [page[0]], hasNextPage: false } }))
+    tab.reload()
+    await settle()
+    expect([tab.rows(), tab.offersNextPage()]).toEqual([['dist-0:distributed'], false])
+
+    await older.release(full)
+
+    expect([tab.rows(), tab.offersNextPage()]).toEqual([['dist-0:distributed'], false])
+  })
+
+  // The read given up is silent; the one the tab shows is not.
+  it.each(GIVEN_UP)(
+    'says that the later read failed, once, and keeps its list, when the older one %s',
+    async (_how, answered) => {
+      listed = two
+      const tab = await mountTab()
+      const older = holdNextRead(answered)
+      tab.reload()
+      await settle()
+      server.on('GET', LIST, () => {
+        throw new Error('the server is down')
+      })
+      tab.reload()
+      await settle()
+
+      const shown = () => [alerts.showErrorsDefault.mock.calls.length, tab.rows(), tab.spinning(), tab.tryAgain()]
+      const failedOnce = [1, ['dist-1:distributed', 'dist-2:distributed'], false, null]
+      expect(shown()).toEqual(failedOnce)
+
+      await older.release({ status: 200, data: { data: [two[0]] } })
+
+      expect(shown()).toEqual(failedOnce)
+    }
+  )
+
+  it.each(GIVEN_UP)(
+    'says the list could not be loaded when the read that overtook the read of its opening fails, also once that one %s',
+    async (_how, answered) => {
+      const opening = holdNextRead(answered)
+      const tab = await mountTab()
+      server.on('GET', LIST, () => {
+        throw new Error('the server is down')
+      })
+      tab.reload()
+      await settle()
+
+      const shown = () => [
+        alerts.showErrorsDefault.mock.calls.length,
+        tab.rows(),
+        tab.spinning(),
+        tab.text().includes(NOT_LOADED),
+        tab.tryAgain() !== null,
+      ]
+      const notLoaded = [1, [], false, true, true]
+      expect(shown()).toEqual(notLoaded)
+
+      // What the opening would have read: it is not what the tab asked for last.
+      await opening.release({ status: 200, data: { data: two } })
+
+      expect(shown()).toEqual(notLoaded)
+    }
+  )
+
+  it('reads behind its list again once the later read has answered, in the rhythm from its beginning', async () => {
+    listed = [distribution('dist-1', 'distributing')]
+    const tab = await mountTab()
+    const older = holdNextRead()
+    tab.reload()
+    await settle()
+    const later = holdNextRead()
+    tab.reload()
+    await settle()
+
+    // Nothing is read behind the list while the later read is on its way, though the older one is over.
+    await vi.advanceTimersByTimeAsync(LONG)
+    expect(reads()).toHaveLength(3)
+
+    await later.release()
+    const answeredAt = now()
+    await untilNextRead()
+
+    expect(now() - answeredAt).toBe(FIRST_STEP)
+    await older.release()
   })
 })
 
@@ -845,6 +1021,75 @@ describe('the distribution tab of the next asset, when the read of its opening f
     expect(next.text()).toContain(NOT_LOADED)
     expect(next.text()).not.toContain(NOTHING_TO_SHOW)
     expect(next.tryAgain()).not.toBeNull()
+  })
+})
+
+/* The tab of an asset is closed and opened again: the user went to another tab of the detail and back, or closed
+ * the detail and opened it anew. The store still holds the list the opening before read. */
+describe('the distribution tab of the same asset opened again', () => {
+  const openedBefore = async () => {
+    listed = [distribution('dist-1', 'distributed')]
+    const before = await mountTab()
+    expect(before.rows()).toEqual(['dist-1:distributed'])
+    app?.unmount()
+    app = undefined
+
+    return before.pinia
+  }
+
+  // What the opening before read is not what the server says of the asset now: it said nothing.
+  it('says the list could not be loaded and offers to try again when the read of its opening fails', async () => {
+    const pinia = await openedBefore()
+    server.on('GET', LIST, () => {
+      throw new Error('the server is down')
+    })
+
+    const again = await mountTab('asset-1', pinia)
+
+    expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
+    expect([again.rows(), again.store.list, again.spinning()]).toEqual([[], [], false])
+    expect(again.text()).toContain(NOT_LOADED)
+    expect(again.text()).not.toContain(NOTHING_TO_SHOW)
+
+    listed = [distribution('dist-1', 'distributed'), distribution('dist-2', 'distributed')]
+    server.on('GET', LIST, listAnswer)
+    again.tryAgain()?.click()
+    await settle()
+
+    expect(again.rows()).toEqual(['dist-1:distributed', 'dist-2:distributed'])
+    expect([again.text().includes(NOT_LOADED), again.tryAgain()]).toEqual([false, null])
+  })
+
+  it('shows its loader and nothing else while the read of its opening is on its way, then what it answered', async () => {
+    const pinia = await openedBefore()
+    const read = holdNextRead()
+
+    const again = await mountTab('asset-1', pinia)
+
+    expect([again.spinning(), again.rows()]).toEqual([true, []])
+    expect([again.text().includes(NOTHING_TO_SHOW), again.text().includes(NOT_LOADED)]).toEqual([false, false])
+
+    listed = [distribution('dist-1', 'distributed'), distribution('dist-2', 'waiting')]
+    await read.release()
+
+    expect([again.spinning(), again.rows()]).toEqual([false, ['dist-1:distributed', 'dist-2:waiting']])
+  })
+
+  // Nothing listed is under way after the opening that failed, as far as the tab knows.
+  it('reads nothing behind the list its opening before left, once the read of its opening failed', async () => {
+    listed = [distribution('dist-1', 'distributing')]
+    const before = await mountTab()
+    app?.unmount()
+    app = undefined
+    server.on('GET', LIST, () => {
+      throw new Error('the server is down')
+    })
+
+    await mountTab('asset-1', before.pinia)
+    const opened = reads().length
+    await vi.advanceTimersByTimeAsync(LONG)
+
+    expect(reads()).toHaveLength(opened)
   })
 })
 

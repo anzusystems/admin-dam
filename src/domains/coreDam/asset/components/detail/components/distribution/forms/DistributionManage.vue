@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { AListEditor, isString, useAlerts, useDamConfigStore } from '@anzusystems/common-admin'
 import type { DamAssetTypeType, DocId, ListViewItem } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
@@ -87,6 +87,12 @@ const { showRecordWas, showErrorsDefault } = useAlerts()
 const { t } = useI18n()
 const { can } = useAuth()
 
+// The settings can be hidden while a delete is on its way: what they emit after that reaches nobody.
+let closed = false
+onBeforeUnmount(() => {
+  closed = true
+})
+
 const onDeleteDistributionItem = async (item: DistributionItem) => {
   const distributionId = item.id ?? null
   if (!isString(distributionId)) return
@@ -94,13 +100,16 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
   distributionListStore.showLoader()
   try {
     await deleteDistribution(distributionId)
+    // The loader stays on: the list is read again by the tab, whose read turns it off. Turned off here, the list
+    // would show the deleted distribution until that read answers.
     emit('onDistributionDelete')
     showRecordWas('deleted')
+    // Nobody heard of the delete, so nobody reads the list: the loader would stay on for good.
+    if (closed) distributionListStore.hideLoader()
   } catch (error) {
+    distributionListStore.hideLoader()
     showErrorsDefault(error)
     throw error // :on-delete — re-throw so the editor keeps the row instead of dropping it while it still exists on the server
-  } finally {
-    distributionListStore.hideLoader()
   }
 }
 

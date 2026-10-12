@@ -63,37 +63,43 @@ const hasAllowedService = computed(() =>
   ).some(isDistributionServiceAllowed)
 )
 
-// A read still on its way when the tab closes is given up. The list and its loader are shared with the tab of
-// the next asset: the late answer would put this asset's distributions there and turn that tab's loader off.
-const closed = new AbortController()
-onBeforeUnmount(() => closed.abort())
+// The read of the tab's own that is on its way. It is given up when the tab closes: the list and its loader are
+// shared with the tab of the next asset, and the late answer would put this asset's distributions there and turn
+// that tab's loader off. And when the tab starts another read: answered after it, the older one would put its list
+// and its page over the newer ones, and whichever ended first would turn the loader off under the other.
+let reading: AbortController | undefined = undefined
+onBeforeUnmount(() => reading?.abort())
 
 // A read of this tab failed and left it an empty list: that says nothing of the asset, and nothing reads it again
 // by itself. Of this tab only: the store is shared with the tabs of the other assets.
 const readFailed = ref(false)
-// The reads of the tab's own, counted: one that fails says so only while none was started after it, which may have
-// read the list meanwhile.
-let ownReads = 0
+// Until this tab has read the list, the list is what a tab opened before it left there.
+let opened = false
 
 const readList = async () => {
-  const read = ++ownReads
+  reading?.abort()
+  const current = new AbortController()
+  reading = current
   distributionListStore.showLoader()
-  // The list is shared with the tab of the asset before: left there, it would show under a read that failed here.
-  // The list of this asset stays, for a reload or another page that fails.
+  // The list is shared with the tabs opened before, of another asset or of this one: left there, it would show
+  // under a read of the opening that failed here. What this tab has read stays, for a reload or another page that
+  // fails.
+  if (!opened) distributionListStore.setList([])
+  opened = true
   distributionListStore.listOfAsset(props.assetId)
   try {
-    const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, closed.signal)
-    if (!closed.signal.aborted) {
+    const items = await fetchAssetDistributionList(props.assetId, pagination, filterData, filterConfig, current.signal)
+    if (!current.signal.aborted) {
       distributionListStore.setList(items)
       readFailed.value = false
     }
   } catch (error) {
-    if (!closed.signal.aborted) {
-      if (read === ownReads) readFailed.value = distributionListStore.list.length === 0
+    if (!current.signal.aborted) {
+      readFailed.value = distributionListStore.list.length === 0
       showErrorsDefault(error)
     }
   } finally {
-    if (!closed.signal.aborted) distributionListStore.hideLoader()
+    if (!current.signal.aborted) distributionListStore.hideLoader()
   }
 }
 

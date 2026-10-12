@@ -39,6 +39,13 @@
       "chooseFromDistribution": "Choose from distribution"
     }
   },
+  "editor": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "link": "Link",
+    "removeLink": "Remove link"
+  },
   "mainBar": {
     "upload": "Upload",
     "search": "Search",

@@ -19,9 +19,11 @@ const buttonLoading = ref(false)
 const onCancel = () => {
   dialogCancel.value = false
 }
-const { showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
+  // The keyboard reaches a button that spins.
+  if (buttonLoading.value) return
   if (
     isNull(distributionIdToCancel.value) ||
     isNull(distributionTypeToCancel.value) ||
@@ -29,8 +31,13 @@ const onConfirm = async () => {
   )
     return
   buttonLoading.value = true
+  const distributionId = distributionIdToCancel.value
   try {
-    await cancelCustomDistribution(distributionIdToCancel.value)
+    await cancelCustomDistribution(distributionId)
+    // The dialog is one for every distribution, and can be closed while the server is asked and opened for another:
+    // that one was not stopped.
+    if (distributionIdToCancel.value === distributionId) dialogCancel.value = false
+    showRecordWas('deleted')
     emit('reloadList')
   } catch (e) {
     showErrorsDefault(e)
