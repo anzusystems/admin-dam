@@ -25,6 +25,8 @@ const CANCEL = 'Cancel'
 const REMOVED = 'Record was removed'
 const UPDATED = 'Record was updated'
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'
+const LOAD_FAILED = 'The distributions could not be loaded.'
+const NOTHING_TO_SHOW = 'Nothing to show'
 
 /** A distribution as the list of an asset answers it; the tab and its settings both show its remote id. */
 const distribution = (id: string, status = 'distributed') => ({
@@ -94,6 +96,10 @@ const openTab = async () => {
     ...ui,
     tab,
     shown,
+    /** Whether the tab says that. */
+    says: (text: string) => tab.textContent?.includes(text) ?? false,
+    /** The button under the line that says the list could not be loaded. */
+    tryAgain: () => tab.querySelector<HTMLButtonElement>('[data-cy="distribution-list-retry"]'),
     /** "Confirm" of the open dialog, once the dialog has it. */
     confirm: () =>
       eventually(() => {
@@ -115,8 +121,8 @@ afterEach(() => {
 })
 
 describe('the dialog that stops a waiting distribution', () => {
-  const asked = async () => {
-    listed = [distribution('dist-1', 'waiting'), distribution('dist-2')]
+  const asked = async (distributions = [distribution('dist-1', 'waiting'), distribution('dist-2')]) => {
+    listed = distributions
     const ui = await openTab()
     buttonsNamed(ui.tab, STOP_DISTRIBUTION)[0].click()
 
@@ -138,6 +144,51 @@ describe('the dialog that stops a waiting distribution', () => {
     // after its last read.
     await vi.advanceTimersByTimeAsync(100)
     expect([ui.shown(), server.sent('GET', LIST).length]).toEqual([['remote-dist-2'], 2])
+  })
+
+  /* The stopped distribution is out of the list before the tab reads it again, whatever becomes of that read: left
+   * there by a read that failed, it would wait with the button that stops it, for the server to be asked to stop
+   * what is gone. */
+  it('is gone from the list when the read after the stop fails, and the other distribution stays', async () => {
+    server.on('DELETE', STOP, () => ({ status: 204 }))
+    const ui = await asked()
+    server.on('GET', LIST, () => {
+      throw httpError(500)
+    })
+
+    ui.confirm.click()
+
+    await eventually(() => expect(ui.alerts()).toEqual([REMOVED, SYSTEM_ERROR]))
+    await vi.advanceTimersByTimeAsync(100)
+    expect([ui.shown(), buttonsNamed(ui.tab, STOP_DISTRIBUTION).length]).toEqual([['remote-dist-2'], 0])
+    // The list is not empty: it is the one the tab has, less what was stopped, and not a list that failed to load.
+    expect([ui.says(LOAD_FAILED), ui.tryAgain(), server.sent('GET', LIST).length]).toEqual([false, null, 2])
+    expect(dialogButton(CONFIRM)).toBeNull()
+  })
+
+  it('leaves the tab saying its list could not be loaded when it was the last one and the read after fails', async () => {
+    server.on('DELETE', STOP, () => ({ status: 204 }))
+    const ui = await asked([distribution('dist-1', 'waiting')])
+    let down = true
+    server.on('GET', LIST, () => {
+      if (down) throw httpError(500)
+
+      return listAnswer()
+    })
+    listed = []
+
+    ui.confirm.click()
+
+    await eventually(() => expect(ui.alerts()).toEqual([REMOVED, SYSTEM_ERROR]))
+    await vi.advanceTimersByTimeAsync(100)
+    expect([ui.shown(), buttonsNamed(ui.tab, STOP_DISTRIBUTION).length]).toEqual([[], 0])
+    expect([ui.says(LOAD_FAILED), ui.says(NOTHING_TO_SHOW)]).toEqual([true, false])
+
+    down = false
+    ui.tryAgain()?.click()
+
+    await eventually(() => expect(ui.says(NOTHING_TO_SHOW)).toBe(true))
+    expect([ui.says(LOAD_FAILED), ui.tryAgain(), server.sent('GET', LIST).length]).toEqual([false, null, 3])
   })
 
   /* A press of Enter or of the space bar on a button reaches it as a click, and the spinning button takes it: only

@@ -451,6 +451,18 @@ describe('the save of one asset', () => {
       expect(standsOut(save())).toBe(false)
     })
 
+    // The switches of the form go out with the same save as its fields; the asset here is read with one of them on.
+    it('stands out once a switch of the form is changed, not for a switch the asset was read with', async () => {
+      const { save, root } = await mountPanel(panel, namedTitle, assetDetail('asset-1', { mainFileSingleUse: true }))
+      const singleUse = root.querySelector<HTMLInputElement>('.v-switch input')!
+      expect([singleUse.checked, standsOut(save())]).toEqual([true, false])
+
+      singleUse.click()
+      await nextTick()
+
+      expect([singleUse.checked, standsOut(save())]).toEqual([false, true])
+    })
+
     // Finding 56: it looked as if nothing was left to save.
     it('stands out again after a save that failed', async () => {
       server.on(

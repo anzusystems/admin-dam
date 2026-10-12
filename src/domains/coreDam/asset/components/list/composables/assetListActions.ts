@@ -26,11 +26,13 @@ import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
-import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
+import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'
 export const SORT_BY_SCORE_BEST = 'score_best'
+/** Marks the dialog of the detail among the open ones: every other one is open over it. */
+export const ASSET_DETAIL_DIALOG_CLASS = 'dam-image-detail-dialog'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 
@@ -392,6 +394,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const nextItem = async () => {
+    // The read of the next asset replaces what the detail holds: metadata that were not saved go only when told to.
+    if (assetDetailStore.showsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
     assetListStore.setActiveNext()
     if (isNull(assetListStore.activeItemIndex)) return
     // Before the loader goes up: the active index outlives the list, and this threw with it up.
@@ -427,6 +431,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const prevItem = async () => {
+    // The same as `nextItem`: asked first.
+    if (assetDetailStore.showsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
     assetListStore.setActivePrev()
     if (isNull(assetListStore.activeItemIndex)) return
     // The same as `nextItem`: the index outlives the list it points into.
@@ -475,13 +481,21 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.abandonDetailRequests()
   }
 
+  /* The keys are heard on the whole window, so also with a dialog or a menu open over the detail. The read of the
+   * next asset puts the detail behind its loader, and what is open over it is unmounted with it: a form half filled
+   * in is gone. */
+  const detailIsUnderDialogOrMenu = () =>
+    assetDetailStore.detail && anotherDialogOrMenuIsOpen('.' + ASSET_DETAIL_DIALOG_CLASS)
+
   const onArrowRight = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
+    if (detailIsUnderDialogOrMenu()) return
     await nextItem()
   }
 
   const onArrowLeft = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
+    if (detailIsUnderDialogOrMenu()) return
     await prevItem()
   }
 

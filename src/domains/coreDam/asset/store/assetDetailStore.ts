@@ -1,7 +1,7 @@
 import { DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
 import type { AssetDetailItemDto, DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
@@ -54,6 +54,28 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     }
   }
 
+  /* The question asked before metadata that were not saved are thrown away by leaving the asset, and what waits for
+   * its answer. */
+  const leaveUnsavedQuestion = ref(false)
+  let leaveUnsavedAnswer: ((leave: boolean) => void) | null = null
+  /** Not under the loader: the form is not shown then, and the asset it was of has been left already. */
+  const showsUnsavedMetadata = computed(() => detail.value && !loader.value && metadataAreTouched.value)
+
+  /** Asks whether to leave the metadata that were not saved; one question at a time, another ask meanwhile stays. */
+  function askToLeaveUnsaved() {
+    if (leaveUnsavedQuestion.value) return Promise.resolve(false)
+    leaveUnsavedQuestion.value = true
+
+    return new Promise<boolean>((resolve) => (leaveUnsavedAnswer = resolve))
+  }
+
+  function answerLeaveUnsaved(leave: boolean) {
+    leaveUnsavedQuestion.value = false
+    const answer = leaveUnsavedAnswer
+    leaveUnsavedAnswer = null
+    answer?.(leave)
+  }
+
   function updateLastFetched(id: DocId) {
     lastFetchedId.value = id
     lastFetched.value = Date.now()
@@ -66,10 +88,14 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function hideDetail() {
     // Only the dialog: the requests stay, because the panel on the right reads this same store.
     detail.value = false
+    // The question is drawn in the dialog: nobody could answer it any more.
+    answerLeaveUnsaved(false)
   }
 
   function showLoader() {
     loader.value = true
+    // A read of the detail begins: the form an open question is about goes behind the loader, and is replaced.
+    answerLeaveUnsaved(false)
   }
 
   function hideLoader() {
@@ -94,6 +120,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileInternal.value = newAsset?.mainFile?.flags.internal || false
     ttsAudio.value = newAsset?.assetFileProperties?.ttsAudio || false
     metadataAreTouched.value = false // todo check
+    // What was typed is replaced: an open question has nothing left to keep.
+    answerLeaveUnsaved(false)
     authorConflicts.value = getAuthorConflicts(newAsset.metadata.authorSuggestions)
     prefetchLazyData(newAsset) // todo check
     asset.value = newAsset
@@ -142,6 +170,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileOverrideInternal.value = false
     mainFileInternal.value = false
     ttsAudio.value = false
+    answerLeaveUnsaved(false)
   }
 
   return {
@@ -159,6 +188,10 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileOverrideInternal,
     mainFileInternal,
     ttsAudio,
+    leaveUnsavedQuestion,
+    showsUnsavedMetadata,
+    askToLeaveUnsaved,
+    answerLeaveUnsaved,
     startDetailRequest,
     isCurrentDetailRequest,
     abandonDetailRequests,

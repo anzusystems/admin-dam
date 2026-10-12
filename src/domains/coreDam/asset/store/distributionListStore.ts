@@ -37,6 +37,14 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     list.value = items
   }
 
+  /** Takes the distribution out of the list, if it is listed: the list may be another asset's by now. */
+  function removeListItem(distributionId: DocId) {
+    const foundIndex = list.value.findIndex((item) => item.id === distributionId)
+    if (foundIndex > -1) {
+      list.value.splice(foundIndex, 1)
+    }
+  }
+
   function authorizationMessage(distributionService: DamDistributionServiceName, success: boolean) {
     const found = getDistributionAuth(distributionService)
     if (found) {
@@ -112,6 +120,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     showLoader,
     hideLoader,
     setList,
+    removeListItem,
     authorizationMessage,
     listItemMessageUpdate,
     setAuthStatus,

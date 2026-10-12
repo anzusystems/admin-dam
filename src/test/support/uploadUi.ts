@@ -200,7 +200,7 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
   const alerts = () =>
     Array.from(document.body.querySelectorAll('.a-alerts .v-alert')).map((alert) => alert.textContent?.trim() ?? '')
 
-  return { store, rows, mount, alerts, asked, pinia, library }
+  return { store, rows, mount, alerts, asked, pinia, library, router }
 }
 
 export type UploadUi = Awaited<ReturnType<typeof startUploadUi>>

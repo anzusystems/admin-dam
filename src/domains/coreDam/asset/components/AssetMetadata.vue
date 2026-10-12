@@ -167,6 +167,7 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileSingleUse"
                   :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -179,6 +180,7 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="ttsAudio"
                   :label="t('coreDam.asset.model.ttsAudio')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -191,6 +193,7 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -204,6 +207,7 @@ const onAnyMetadataChange = () => {
                   v-model="mainFileInternal"
                   :disabled="!mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.internal')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>

@@ -2,6 +2,7 @@
 import {
   ADamAssetImage,
   ADamAssetImageRoiSelect,
+  AUnsavedConfirmDialog,
   DamAssetStatusDefault,
   DamAssetType,
   DamAssetTypeDefault,
@@ -19,7 +20,10 @@ import { useRouter } from 'vue-router'
 
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
-import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import {
+  ASSET_DETAIL_DIALOG_CLASS,
+  useAssetListActions,
+} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
@@ -157,7 +161,12 @@ const { can } = useAuth()
   <VDialog
     v-model="assetDetailStore.detail"
     fullscreen
+    :class="ASSET_DETAIL_DIALOG_CLASS"
   >
+    <AUnsavedConfirmDialog
+      :model-value="assetDetailStore.leaveUnsavedQuestion"
+      @resolve="assetDetailStore.answerLeaveUnsaved"
+    />
     <AssetDetailDialogLoader
       v-if="assetDetailStore.loader"
       @close-dialog="closeDialog"

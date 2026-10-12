@@ -31,7 +31,16 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const { asset, mainFileSingleUse, mainFileOverrideInternal, mainFileInternal, ttsAudio } = useAssetDetailActions()
+const {
+  asset,
+  metadataTouch,
+  metadataUnTouch,
+  metadataAreTouched,
+  mainFileSingleUse,
+  mainFileOverrideInternal,
+  mainFileInternal,
+  ttsAudio,
+} = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
@@ -41,6 +50,12 @@ const saveBlocked = computed(() => !isNull(asset.value) && metadataMayStillChang
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
+
+/* The save of this detail that started last, as in the panel on the right of the list: the button only spins
+ * meanwhile, so another can start. What is saved is no longer "touched", or leaving the asset would ask about it; a
+ * save that fails puts "touched" back only while it is still that one, and one started while another of the same
+ * asset is on the wire takes over the "touched" that one took off. */
+let latestSave: { opened: object; touched: boolean; pending: boolean } | undefined
 
 const onSave = async () => {
   if (isNull(asset.value)) return
@@ -54,7 +69,16 @@ const onSave = async () => {
   // What this save sends, taken as it starts: another asset can be opened, or this one typed into, while it is on the
   // wire. The switch is the detail's own, not the value the asset was opened with.
   const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
+  const opened = asset.value
+  const save = {
+    opened,
+    touched: metadataAreTouched.value || (!!latestSave?.pending && latestSave.opened === opened && latestSave.touched),
+    pending: true,
+  }
+  latestSave = save
   try {
+    // Before the request, not after it: what is typed while it is on the wire is not in it.
+    metadataUnTouch()
     await updateAssetMetadata(
       saved,
       mainFileSingleUse.value,
@@ -66,8 +90,12 @@ const onSave = async () => {
     uploadQueueStore.updateAssetMetadata(saved)
     showRecordWas('updated')
   } catch (error) {
+    // Nothing was saved, so the form is as unsaved as it was - unless the detail holds another asset by now, or this
+    // one read again.
+    if (save.touched && asset.value === opened && latestSave === save) metadataTouch()
     showMetadataSaveError(error)
   } finally {
+    save.pending = false
     saveButtonLoading.value = false
   }
 }

@@ -5,12 +5,14 @@ import { useI18n } from 'vue-i18n'
 
 import { cancelCustomDistribution } from '@/domains/coreDam/asset/api/distributionCustomApi'
 import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
+import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 
 const emit = defineEmits<{
   (e: 'reloadList'): void
 }>()
 
 const { dialogCancel, distributionIdToCancel, distributionTypeToCancel } = useAssetDetailDistributionDialogCancel()
+const distributionListStore = useDistributionListStore()
 
 const { t } = useI18n()
 
@@ -34,6 +36,9 @@ const onConfirm = async () => {
   const distributionId = distributionIdToCancel.value
   try {
     await cancelCustomDistribution(distributionId)
+    // Out of the list at once: the read asked for below can fail, and the list would keep what is stopped, with the
+    // button that stops it.
+    distributionListStore.removeListItem(distributionId)
     // The dialog is one for every distribution, and can be closed while the server is asked and opened for another:
     // that one was not stopped.
     if (distributionIdToCancel.value === distributionId) dialogCancel.value = false
