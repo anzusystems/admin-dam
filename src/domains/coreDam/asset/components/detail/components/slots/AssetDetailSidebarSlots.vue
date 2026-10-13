@@ -27,6 +27,7 @@ const assetDetailStore = useAssetDetailStore()
 
 const {
   getList,
+  getListAfterChange,
   pagination,
   showPagination,
   unsetSlot,
@@ -89,7 +90,7 @@ onMounted(async () => {
       @make-main-file="makeMainFile"
       @duplicate-slot="duplicateSlot"
       @switch-slot="switchSlot"
-      @refresh-list="getList"
+      @refresh-list="getListAfterChange"
     />
     <ADatatablePagination
       v-if="showPagination"

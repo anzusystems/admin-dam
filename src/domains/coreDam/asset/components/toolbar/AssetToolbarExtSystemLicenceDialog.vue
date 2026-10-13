@@ -20,6 +20,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import AssetLicenceByExtIdRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
@@ -55,6 +56,7 @@ const showAdvanced = ref(false)
 
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const assetDetailStore = useAssetDetailStore()
 const { useCurrentUser } = useAuth()
 const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
@@ -133,11 +135,20 @@ const onConfirm = async () => {
     saving.value = false
     return
   }
+  /* The change ends in a reload of the page: metadata typed into the panel beside the list and not saved go with it,
+   * only when told to. Asked about before anything is sent. */
+  const leavesUnsaved = assetDetailStore.panelHoldsUnsavedMetadata
+  if (leavesUnsaved && !(await assetDetailStore.askToLeaveUnsaved())) {
+    saving.value = false
+    return
+  }
   try {
     await fetchAssetLicence(selectedLicence.value)
     await updateCurrentUser({ selectedLicence: selectedLicence.value })
     dialog.value = false
     showRecordWas('updated')
+    // Given up above: the page that is reloaded holds them no more, or the browser would ask about them once again.
+    if (leavesUnsaved) assetDetailStore.reset()
     window.location.reload()
   } catch (error) {
     showErrorsDefault(error)

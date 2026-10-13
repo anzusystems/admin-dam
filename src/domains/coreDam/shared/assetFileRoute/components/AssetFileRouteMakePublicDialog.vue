@@ -9,6 +9,7 @@ import {
 } from '@anzusystems/common-admin'
 import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
+import { helpers } from '@vuelidate/validators'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -19,12 +20,12 @@ const props = withDefaults(
     fileId: DocId
     assetType: DamAssetTypeType
     title: string
+    /* Called once the file was made public. A function, not an event: the answer can find the dialog unmounted
+     * with what drew it, and what an unmounted component emits Vue drops. */
+    madePublic: () => void
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'afterUpdate'): void
-}>()
 
 const modelValue = defineModel<boolean>({ required: true })
 
@@ -51,6 +52,16 @@ watch(modelValueComputed, (newValue) => {
 
 const { required, minLength, maxLength } = useValidate()
 
+/* What is sent is the slug made of what was typed, and that is what the server checks: three characters typed can
+ * make a slug of two, and letters it has no use for make none at all. Checked as it will be sent, by the rules of
+ * the server (`AssetFileRouteAdmCreateDto` of core-dam: 3 to 128 characters of this pattern); the field keeps what
+ * was typed. */
+const slugToSend = computed(() => stringToSlug(slug.value))
+const slugFormat = helpers.withMessage(
+  () => t('error.jsValidation.slug'),
+  (value: string) => !helpers.req(value) || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)
+)
+
 const rules = computed(() => {
   if (props.assetType === DamAssetType.Image) {
     return {
@@ -62,11 +73,12 @@ const rules = computed(() => {
       required,
       minLength: minLength(3),
       maxLength: maxLength(128),
+      slugFormat,
     },
   }
 })
 
-const v$ = useVuelidate(rules, { slug })
+const v$ = useVuelidate(rules, { slug: slugToSend })
 
 const onConfirm = async () => {
   // One at a time: the button only spins meanwhile, and a key pressed on it, still in focus, is a click again.
@@ -79,19 +91,20 @@ const onConfirm = async () => {
     return
   }
   try {
-    await makePublicFile(props.assetType, props.fileId, stringToSlug(slug.value))
+    await makePublicFile(props.assetType, props.fileId, slugToSend.value)
 
     showRecordWas('updated')
   } catch (e) {
     // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
     if (!showErrorsDefault(e)) showUnknownError()
+    // The dialog stays, with what was typed into it, for another try.
     return
   } finally {
     buttonLoading.value = false
-    onCancel()
   }
   // Only once it went through: after a change that failed there is nothing new to read.
-  emit('afterUpdate')
+  onCancel()
+  props.madePublic()
 }
 </script>
 

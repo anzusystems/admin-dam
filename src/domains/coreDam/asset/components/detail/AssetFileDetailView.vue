@@ -15,9 +15,13 @@ import { nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
-import { fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
+import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import {
+  provideAssetFileChanged,
+  useAssetDetailFileChange,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
 import {
   AssetDetailTab,
   AssetDetailTabDefault,
@@ -27,10 +31,6 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/a
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
-
-defineEmits<{
-  (e: 'mainRouteChanged'): void
-}>()
 
 const { t } = useI18n()
 const { showErrorT, showErrorsDefault } = useAlerts()
@@ -44,6 +44,7 @@ const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { readAfterFileChange } = useAssetDetailFileChange()
 const {
   toggleSidebar,
   sidebar,
@@ -64,6 +65,32 @@ const afterDelete = () => {
   asset.value = null
 }
 
+// The asset read whole, behind the loader of the detail.
+const readAsset = async (read: () => ReturnType<typeof fetchAsset>) => {
+  assetDetailStore.setView('list')
+  assetDetailStore.showLoader()
+  assetDetailStore.showDetail()
+  // Counted with every other fetch that writes to this store.
+  const detailRequest = assetDetailStore.startDetailRequest()
+  try {
+    const res = await read()
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
+    if (currentAssetLicenceId.value !== res.licence) {
+      if (onPage()) showErrorT('coreDam.asset.detail.licenceMismatch')
+      assetDetailStore.hideLoader()
+      return
+    }
+    assetDetailStore.setAsset(res)
+    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
+    fetchCachedUsers()
+  } catch (error) {
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest) || !onPage()) return
+    showErrorsDefault(error)
+  } finally {
+    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
+  }
+}
+
 const getDetail = async () => {
   if (assetDetailStore.directDetailLoad) {
     assetDetailStore.setView('list')
@@ -81,29 +108,19 @@ const getDetail = async () => {
     showErrorT('coreDam.asset.detail.incorrectId')
     return
   }
-  assetDetailStore.setView('list')
-  assetDetailStore.showLoader()
-  assetDetailStore.showDetail()
-  // Counted with every other fetch that writes to this store.
-  const detailRequest = assetDetailStore.startDetailRequest()
-  try {
-    const res = await fetchAssetByFileId(assetFileId.value)
-    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-    if (currentAssetLicenceId.value !== res.licence) {
-      if (onPage()) showErrorT('coreDam.asset.detail.licenceMismatch')
-      assetDetailStore.hideLoader()
-      return
-    }
-    assetDetailStore.setAsset(res)
-    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
-    fetchCachedUsers()
-  } catch (error) {
-    if (!assetDetailStore.isCurrentDetailRequest(detailRequest) || !onPage()) return
-    showErrorsDefault(error)
-  } finally {
-    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
-  }
+  await readAsset(() => fetchAssetByFileId(assetFileId.value))
 }
+
+/* The detail tells of a change of the file of its asset: it is read again, by its own id - the file the address of
+ * the page names can be the very one that was deleted, and is not found any more. Not once the page is left, which
+ * the answer of the change can outlast. */
+provideAssetFileChanged(() => {
+  if (!onPage()) return
+  readAfterFileChange(async () => {
+    const held = assetDetailStore.asset
+    if (held) await readAsset(() => fetchAsset(held.id))
+  })
+})
 
 const resetAllStores = () => {
   assetDetailStore.hideDetail()
@@ -207,7 +224,6 @@ onMounted(() => {
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="afterDelete"
-              @main-route-changed="getDetail"
             />
           </div>
         </div>

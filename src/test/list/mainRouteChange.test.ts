@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, nextTick } from 'vue'
+import { RouterView } from 'vue-router'
 
 import {
   assetDetail,
@@ -170,11 +171,13 @@ const openList = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // The two pages the bar of the list links to.
-  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: { render: () => null } })
+  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
+   * other page the bar of the list links to. */
+  const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
+  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
-
-  const page = await ui.mount(() => import('@/domains/coreDam/asset/components/list/AssetListView.vue'))
+  await ui.router.push(LIST)
+  const page = await ui.mount(async () => ({ default: RouterView }))
   /** The tiles as they are drawn now: a list read anew draws new ones. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
   await eventually(() => expect(tiles()).toHaveLength(3))
@@ -441,7 +444,7 @@ describe('the asset read again once the address of its file has changed', () => 
     expect(list.active()).toEqual([false, true, false])
   })
 
-  // "Make public" asks in a dialog first; the dialog closes whatever the server answers.
+  // "Make public" asks in a dialog first; the dialog stays open after a refusal, for another try.
   it('is not read after a "Make public" the server refused, and is after one that went through', async () => {
     published.delete('file-2')
     let refuse = true
@@ -455,13 +458,25 @@ describe('the asset read again once the address of its file has changed', () => 
     await inDetail.open(list)
     const typedInto = await typeTitle(inDetail, TYPED)
 
-    await makePublic(inDetail)
+    await fileMenu(inDetail, 'Make public')
+    const confirm = await eventually(() => {
+      const button = dialogButton('Confirm')
+      expect(button).not.toBeNull()
+
+      return button!
+    })
+    confirm.click()
+    await settled()
 
     expect([server.sent('PATCH', MAKE_PUBLIC).length, reads(), route(inDetail)]).toEqual([1, [0, 1, 0], PRIVATE])
     expect(list.alerts()).toEqual([SYSTEM_ERROR])
+    // The very dialog, its button no longer spinning.
+    expect([dialogButton('Confirm') === confirm, confirm.classList.contains('v-btn--loading')]).toEqual([true, false])
 
     refuse = false
-    await makePublic(inDetail)
+    confirm.click()
+    await eventually(() => expect(dialogButton('Confirm')).toBeNull())
+    await settled()
     await menuIsClosed()
 
     expect([server.sent('PATCH', MAKE_PUBLIC).length, reads(), route(inDetail)]).toEqual([2, [0, 2, 0], PUBLIC])

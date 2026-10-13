@@ -93,8 +93,15 @@ const totalCountText = computed(() => {
     v-model="externalProviderAssetDetailStore.detail"
     fullscreen
   >
+    <!-- The bar of the loaded detail below: its two buttons are there always, and never disabled. -->
     <AssetDetailDialogLoader
       v-if="externalProviderAssetDetailStore.loader"
+      walks-list
+      :prev-disabled="false"
+      :next-disabled="false"
+      :total-count-text="totalCountText"
+      @prev-item="prevItem"
+      @next-item="nextItem"
       @close-dialog="closeDialog"
     />
     <VCard

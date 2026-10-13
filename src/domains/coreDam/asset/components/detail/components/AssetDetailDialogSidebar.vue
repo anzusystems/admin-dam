@@ -49,7 +49,6 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'postDelete', data: DocId): void
-  (e: 'mainRouteChanged'): void
 }>()
 
 const postDelete = (data: DocId) => {
@@ -159,7 +158,6 @@ const isTtsAudio = computed(() => ttsAudio.value)
             :is-active="activeTab === AssetDetailTab.Info"
             :asset-type="assetType"
             @post-delete="postDelete"
-            @main-route-changed="emit('mainRouteChanged')"
           />
         </div>
         <div

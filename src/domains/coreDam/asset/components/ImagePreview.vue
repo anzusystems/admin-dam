@@ -42,11 +42,25 @@ const { t } = useI18n()
 const loading = ref(false)
 const dialog = ref(false)
 const newFileId = ref<DocId>('')
+/* The image read last. It stays when the card is left with no image: it is the one that comes back when what
+ * holds the card puts the image back, as after a save of "none" that failed. */
 const imageFile = ref<null | AssetFileImage>(null)
+// The reads of an image, counted: the answer for an image the card holds no more is dropped.
+let latestImageRead = 0
 
 const fetchImage = async (id: DocId) => {
+  const asked = ++latestImageRead
+  /* Put back, the image the card has read last needs no read: with the server away that read would not end. One
+   * read as processed, that is: of an image that was still being processed, a read says how far it has got. */
+  if (imageFile.value?.id === id && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) {
+    loading.value = false
+
+    return
+  }
   loading.value = true
-  imageFile.value = await fetchImageFile(id)
+  const read = await fetchImageFile(id)
+  if (asked !== latestImageRead) return
+  imageFile.value = read
   loading.value = false
 }
 
@@ -61,23 +75,26 @@ const imagePreviewModel = computed({
   },
 })
 
+// What the card shows of it: nothing while it holds no image, whoever took the image away.
+const shownFile = computed(() => (isNull(imagePreviewModel.value) ? null : imageFile.value))
+
 const src = computed(() => {
-  if (imageFile.value && imageFile.value.links?.image_detail) return imageFile.value.links.image_detail.url
+  if (shownFile.value && shownFile.value.links?.image_detail) return shownFile.value.links.image_detail.url
   return placeholder16x9
 })
 
 const isDuplicate = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Duplicate) return true
+  if (shownFile.value && shownFile.value.fileAttributes?.status === AssetFileProcessStatus.Duplicate) return true
   return false
 })
 
 const isFailed = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Failed) return true
+  if (shownFile.value && shownFile.value.fileAttributes?.status === AssetFileProcessStatus.Failed) return true
   return false
 })
 
 const isProcessed = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) return true
+  if (shownFile.value && shownFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) return true
   return false
 })
 
@@ -89,7 +106,6 @@ const isProcessing = computed(() => {
 
 const unassignImage = () => {
   imagePreviewModel.value = null
-  imageFile.value = null
   emit('changed', null)
 }
 

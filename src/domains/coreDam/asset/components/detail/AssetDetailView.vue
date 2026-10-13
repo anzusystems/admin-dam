@@ -19,6 +19,10 @@ import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import {
+  provideAssetFileChanged,
+  useAssetDetailFileChange,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
+import {
   AssetDetailTab,
   AssetDetailTabDefault,
   useAssetDetailTab,
@@ -27,10 +31,6 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/a
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
-
-defineEmits<{
-  (e: 'mainRouteChanged'): void
-}>()
 
 const { t } = useI18n()
 const { showErrorT, showErrorsDefault } = useAlerts()
@@ -44,6 +44,7 @@ const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { readAfterFileChange } = useAssetDetailFileChange()
 const {
   toggleSidebar,
   sidebar,
@@ -111,6 +112,12 @@ const getDetail = async () => {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
   }
 }
+
+/* The detail tells of a change of the file of its asset: it is read again. Not once the page is left, which the
+ * answer of the change can outlast: the whole read goes by the address of the page. */
+provideAssetFileChanged(() => {
+  if (onPage()) readAfterFileChange(getDetail)
+})
 
 const resetAllStores = () => {
   assetDetailStore.hideDetail()
@@ -230,7 +237,6 @@ onMounted(() => {
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="onPostDelete"
-              @main-route-changed="getDetail"
             />
           </div>
         </div>

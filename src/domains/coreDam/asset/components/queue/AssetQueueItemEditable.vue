@@ -72,7 +72,15 @@ const showRefresh = ref(false)
 const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefined)
 
 const showDetail = async () => {
-  if (isNull(props.item.assetId)) return
+  const assetId = props.item.assetId
+  if (isNull(assetId)) return
+  /* The read below replaces what the panel beside the list holds, also when that is the asset of this row: metadata
+   * typed into the panel and not saved go only when told to. Asked before anything changes; by the answer the row can
+   * be of another asset. */
+  if (assetDetailStore.panelHoldsUnsavedMetadata) {
+    if (!(await assetDetailStore.askToLeaveUnsaved())) return
+    if (props.item.assetId !== assetId) return
+  }
   assetDetailStore.setView('queue')
   assetListStore.keyboardNavigationDisable()
   assetDetailStore.showLoader()
@@ -80,7 +88,7 @@ const showDetail = async () => {
   // Counted in the store: this dialog and the list write to one detail.
   const detailRequest = assetDetailStore.startDetailRequest()
   try {
-    const asset = await fetchAsset(props.item.assetId)
+    const asset = await fetchAsset(assetId)
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     assetDetailStore.setAsset(asset)
   } catch (error) {

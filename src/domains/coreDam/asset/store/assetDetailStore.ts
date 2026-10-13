@@ -21,6 +21,10 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const mainFileOverrideInternal = ref(false)
   const mainFileInternal = ref(false)
   const ttsAudio = ref(false)
+  /* "Save" is held back while the server may still fill in the metadata of the asset from its main file, and the
+   * form is as old as the read of the asset. Once another main file was taken under what was typed, the status of
+   * that file says nothing of the form: held back then, "Save" stays so until the asset is read whole. */
+  const saveHeldBack = ref(false)
 
   /* Clicks, held-down arrow keys, the queue's edit button and the deep-link view put several detail
    * fetches on the wire at once and they do not come back in order; only the newest may write here.
@@ -115,18 +119,35 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     lastFetched.value = 0
   }
 
+  /** The three switches of the form that are the main file's own: off for an asset that has none. */
+  function readMainFileSwitches(read: AssetDetailItemDto) {
+    mainFileSingleUse.value = read?.mainFileSingleUse || false
+    mainFileOverrideInternal.value = read?.mainFile?.flags.overrideInternal || false
+    mainFileInternal.value = read?.mainFile?.flags.internal || false
+  }
+
   function setAsset(newAsset: AssetDetailItemDto) {
     const { getAuthorConflicts } = useAssetSuggestions()
-    mainFileSingleUse.value = newAsset?.mainFileSingleUse || false
-    mainFileOverrideInternal.value = newAsset?.mainFile?.flags.overrideInternal || false
-    mainFileInternal.value = newAsset?.mainFile?.flags.internal || false
+    readMainFileSwitches(newAsset)
     ttsAudio.value = newAsset?.assetFileProperties?.ttsAudio || false
     metadataAreTouched.value = false // todo check
+    saveHeldBack.value = false
     // What was typed is replaced: an open question has nothing left to keep.
     answerLeaveUnsaved(false)
     authorConflicts.value = getAuthorConflicts(newAsset.metadata.authorSuggestions)
     prefetchLazyData(newAsset) // todo check
     asset.value = newAsset
+  }
+
+  /* The asset has another main file than the form was read with, or none any more, and what was typed into the
+   * form stays. Of what the server has (`read`) the file is taken, and its three switches with it: "Save" sends
+   * them for the main file the asset has by then, and those of the file before it would be written over this one's.
+   * A switch flipped and not saved goes with the file it was flipped for. `saveWasHeldBack`: so it stays. */
+  function setMainFile(read: AssetDetailItemDto, saveWasHeldBack: boolean) {
+    if (!asset.value) return
+    if (saveWasHeldBack) saveHeldBack.value = true
+    asset.value.mainFile = read.mainFile
+    readMainFileSwitches(read)
   }
 
   function prefetchLazyData(assetData: AssetDetailItemDto) {
@@ -174,6 +195,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileOverrideInternal.value = false
     mainFileInternal.value = false
     ttsAudio.value = false
+    saveHeldBack.value = false
     answerLeaveUnsaved(false)
   }
 
@@ -192,6 +214,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileOverrideInternal,
     mainFileInternal,
     ttsAudio,
+    saveHeldBack,
     leaveUnsavedQuestion,
     showsUnsavedMetadata,
     panelHoldsUnsavedMetadata,
@@ -208,6 +231,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     showLoader,
     hideLoader,
     setAsset,
+    setMainFile,
     prefetchLazyData,
     setView,
     setDistributionCategory,

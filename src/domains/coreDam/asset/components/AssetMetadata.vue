@@ -28,11 +28,6 @@ import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/componen
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
-const emit = defineEmits<{
-  (e: 'mainRouteChanged'): void
-  (e: 'mainRouteChanged'): void
-}>()
-
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -273,7 +268,7 @@ const onAnyMetadataChange = () => {
                 :asset-file="routableAssetFile"
                 :asset-type="assetType"
                 :title="asset.texts.displayTitle"
-                @main-route-changed="emit('mainRouteChanged')"
+                is-main-file
               />
             </VCol>
           </VRow>

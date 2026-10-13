@@ -23,10 +23,6 @@ import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/val
 import { ACL } from '@/domains/system/auth/auth'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
-const emit = defineEmits<{
-  (e: 'mainRouteChanged'): void
-}>()
-
 const { sidebarRight } = useMainWrapper()
 const router = useRouter()
 
@@ -44,6 +40,7 @@ const {
   mainFileOverrideInternal,
   mainFileInternal,
   ttsAudio,
+  saveHeldBack,
 } = useAssetDetailActions()
 
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
@@ -52,8 +49,9 @@ const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 const uploadQueueStore = useUploadQueuesStore()
 
-// Saved before the server has processed the file, the form would overwrite what it fills in from the file.
-const saveBlocked = computed(() => !isNull(asset.value) && metadataMayStillChange(asset.value))
+/* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
+ * the asset got another main file under what was typed: the form is still the one read before that. */
+const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
 
 const { showRecordWas, showValidationError } = useAlerts()
 
@@ -172,7 +170,7 @@ watch(
         :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
         :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
       />
-      <AssetMetadata @main-route-changed="emit('mainRouteChanged')" />
+      <AssetMetadata />
     </div>
     <template
       v-if="!loader && asset"

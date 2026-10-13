@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
+import { RouterView } from 'vue-router'
 
 import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
@@ -129,11 +130,13 @@ const openList = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // The two pages the bar of the list links to.
-  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: { render: () => null } })
+  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
+   * other page the bar of the list links to. */
+  const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
+  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
-
-  const page = await ui.mount(() => import('@/domains/coreDam/asset/components/list/AssetListView.vue'))
+  await ui.router.push(LIST)
+  const page = await ui.mount(async () => ({ default: RouterView }))
   const tiles = await eventually(() => {
     const found = page.querySelectorAll('.dam-image-grid__item')
     expect(found).toHaveLength(3)
@@ -797,5 +800,99 @@ describe('the detail of the asset at an end of the list', () => {
 
     answer()
     await eventually(() => expect(shown()).toBe(`${index + 1} / 3 ${id}`))
+  })
+})
+
+/* The read of the neighbour fails when its asset was deleted meanwhile, when the user may not read it, when the server
+ * is down. The panel and the detail then hold no asset, and the user is told why: with a detail open and with none. */
+describe('the read of the neighbour that fails', () => {
+  const NO_ASSET = 'No asset selected'
+  const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
+  type Opened = Awaited<ReturnType<typeof openList>>
+  const active = (list: Opened) =>
+    Array.from(list.tiles).map((tile) => tile.classList.contains('dam-image-grid__item--active'))
+  /** The second tile picked, with no detail open: the keys go from it to the first and to the third. */
+  const pickedSecond = async () => {
+    const list = await openList()
+    ;(list.tiles[1] as HTMLElement).click()
+    await settled()
+
+    return list
+  }
+  const fails = (assetId: string) =>
+    server.assetBy(assetId, () => {
+      throw httpError(500)
+    })
+
+  // A click on the tile always said so; the keys said nothing, beside a tile picked and a panel with no asset.
+  it.each<[string, typeof RIGHT | typeof LEFT, string, boolean[]]>([
+    ['the right arrow key', RIGHT, 'asset-3', [false, false, true]],
+    ['the left arrow key', LEFT, 'asset-1', [true, false, false]],
+  ])('is told with no detail open, after %s: the address is the one of the list still', async (_way, key, id, tile) => {
+    const list = await pickedSecond()
+    fails(id)
+
+    await arrow(key)
+
+    expect(list.alerts()).toEqual([SYSTEM_ERROR])
+    expect([panel().textContent, active(list), address()]).toEqual([NO_ASSET, tile, LIST])
+  })
+
+  // The guard: with the detail open it was told already, and the address goes back from the asset to the list.
+  it.each<[string, typeof RIGHT | typeof LEFT, string]>([
+    ['the right arrow key', RIGHT, 'asset-3'],
+    ['the left arrow key', LEFT, 'asset-1'],
+  ])(
+    'is told with the detail open, after %s: the detail closes and the address is the one of the list',
+    async (_way, key, id) => {
+      const detail = await openDetail()
+      expect(address()).toBe('/assets/asset-2')
+      fails(id)
+
+      await arrow(key)
+
+      await eventually(() => expect(detail.alerts()).toEqual([SYSTEM_ERROR]))
+      expect([document.body.querySelector('.dam-image-detail-dialog.v-overlay--active'), address()]).toEqual([
+        null,
+        LIST,
+      ])
+      expect(panel().textContent).toBe(NO_ASSET)
+    }
+  )
+
+  // Held keys put several reads on the wire: only the one asked for last has anything to say.
+  it('is not told when another asset was asked for since: the panel holds that one', async () => {
+    const list = await pickedSecond()
+    let fail: () => void = () => undefined
+    server.assetBy('asset-3', () => new Promise((_resolve, reject) => (fail = () => reject(httpError(500)))))
+
+    await arrow(RIGHT)
+    await arrow(LEFT)
+    fail()
+    await settled()
+
+    expect([list.alerts(), active(list), reads('asset-2', 'asset-3')]).toEqual([[], [false, true, false], [1, 1]])
+    expect(panel().querySelector('.anzu-copy-text > span')?.textContent).toBe('asset-2')
+  })
+
+  // The page the user is on the way to has nothing to do with it; the page of the list is still drawn until that one loads.
+  it('is not told once the user is on the way to another page', async () => {
+    const list = await pickedSecond()
+    let fail: () => void = () => undefined
+    server.assetBy('asset-3', () => new Promise((_resolve, reject) => (fail = () => reject(httpError(500)))))
+    let arrive: () => void = () => undefined
+    list.router.beforeEach(() => new Promise<void>((resolve) => (arrive = resolve)))
+
+    await arrow(RIGHT)
+    void list.router.push('/settings')
+    await settled()
+    expect(list.tiles[0].isConnected).toBe(true)
+    fail()
+    await settled()
+
+    expect([list.alerts(), address()]).toEqual([[], LIST])
+    arrive()
+    await settled()
+    expect([list.alerts(), list.router.currentRoute.value.path]).toEqual([[], '/settings'])
   })
 })

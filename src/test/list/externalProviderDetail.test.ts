@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h, nextTick, ref } from 'vue'
+import { RouterView } from 'vue-router'
 
 import { assetDetail, assetFile, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
@@ -55,13 +55,16 @@ const drawn = () => {
   return { picture: !!place?.querySelector('.asset-image'), frame: !!place?.querySelector('.a-cropper') }
 }
 
+/** The images the list of the provider holds, in its order. */
+let providedIds: string[] = []
+
 /** What the bar of the open detail says: the place of the asset in its list and its title. */
 const shown = () =>
   Array.from(detail()?.querySelectorAll('.v-toolbar .text-label-large > div') ?? [])
     .map((part) => part.textContent?.trim())
     .join(' ')
 
-/** The page of the list of DAM, under a host that can put the page of the list of the provider in its place. */
+/** The page of the list of DAM, as the router draws it: the page of the list of the provider is one address away. */
 const openLists = async () => {
   const ui = await startUploadUi({
     server,
@@ -88,32 +91,29 @@ const openLists = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // The pages the bars of the two lists link to, and the two lists themselves.
-  ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
+  // The two lists as the router draws them, each at its own address, and the pages their bars link to.
+  const Assets = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
+  const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
+    .default
+  ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: Assets })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
   ui.router.addRoute({ path: '/not-found', component: { render: () => null } })
   ui.router.addRoute({
     path: '/external-providers/:provider',
     name: '/(coreDam)/external-providers/[provider]',
-    component: { render: () => null },
+    component: Provided,
   })
+  await ui.router.push('/assets')
 
-  const Assets = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
-  const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
-    .default
-  const on = ref<'assets' | 'provider'>('assets')
-  const page = await ui.mount(async () => ({
-    default: defineComponent({ setup: () => () => (on.value === 'assets' ? h(Assets) : h(Provided)) }),
-  }))
+  const page = await ui.mount(async () => ({ default: RouterView }))
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
-  /** The user goes to the other list, as the menu of the integrations takes them: its one tile is drawn. */
-  const goTo = async (list: 'assets' | 'provider', title: string) => {
+  /** The user goes to the other list, as the menu of the integrations takes them: its tiles are drawn. */
+  const goTo = async (list: 'assets' | 'provider', ...titles: string[]) => {
+    // Not awaited before the clock moves: an open dialog or menu of Vuetify holds every navigation back by a timer.
     void ui.router.push(list === 'assets' ? '/assets' : '/external-providers/' + PROVIDER)
     await settled()
-    on.value = list
-    await nextTick()
     await eventually(() =>
-      expect(tiles().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim())).toEqual([title])
+      expect(tiles().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim())).toEqual(titles)
     )
   }
   await eventually(() => expect(tiles()).toHaveLength(1))
@@ -121,6 +121,7 @@ const openLists = async () => {
   return {
     ...ui,
     goTo,
+    tiles,
     /** The detail of the one asset of the list, opened by the pencil of its tile. */
     openDetail: async (title: string) => {
       tiles()[0].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
@@ -135,6 +136,7 @@ const openLists = async () => {
 
 beforeEach(() => {
   server = createFakeDam()
+  providedIds = ['provided-1']
   server.asset(image('asset-1'))
   const empty = (): FakeDamAnswer => ({ status: 200, data: { data: [] } })
   server.on('GET', SEARCH, () => ({ status: 200, data: { data: [image('asset-1')], hasNextPage: false } }))
@@ -159,7 +161,7 @@ beforeEach(() => {
   server.on('GET', PROVIDER_ASSET, (_request, match) => ({ status: 200, data: provided(match[1]) }))
   server.on('GET', PROVIDER_LIST, () => ({
     status: 200,
-    data: { data: [provided('provided-1')], hasNextPage: false },
+    data: { data: providedIds.map(provided), hasNextPage: false },
   }))
 })
 
@@ -197,5 +199,56 @@ describe('the detail of an asset of an external provider', () => {
     await lists.goTo('assets', 'asset-1')
     await lists.openDetail('asset-1')
     await eventually(() => expect(drawn()).toEqual({ picture: false, frame: true }))
+  })
+
+  /* While its asset is read the detail draws the bar of the loader it shares with the detail of DAM. That bar
+   * counted the list of DAM - whatever place the last visit of that list left behind - and its two buttons did
+   * nothing. It is the bar of the detail of the provider: its own place, and its own buttons. */
+  it('says its place in the list of the provider while its asset is being read, and walks that list', async () => {
+    providedIds = ['provided-1', 'provided-2', 'provided-3']
+    const lists = await openLists()
+    // The list of DAM is left with its one asset at place one of one.
+    await lists.openDetail('asset-1')
+    await lists.closeDetail()
+    await lists.goTo('provider', ...providedIds)
+    /** The read of every asset of the provider is held from now on: answered one by one. */
+    const ONE = /^\/adm\/v1\/asset-external-provider\/provider-1\/(provided-\d)$/
+    const answers = new Map<string, () => void>()
+    server.on(
+      'GET',
+      ONE,
+      (_request, match) =>
+        new Promise<FakeDamAnswer>((resolve) => {
+          answers.set(match[1], () => resolve({ status: 200, data: provided(match[1]) }))
+        })
+    )
+    const asked = () => server.sent('GET', ONE).map((request) => request.url.split('/').pop())
+    /** The two buttons of the bar that walk the list, of whichever bar is drawn. */
+    const walk = () => {
+      const [previous, next] = Array.from(detail()!.querySelectorAll<HTMLButtonElement>('.v-toolbar button'))
+
+      return { previous, next }
+    }
+
+    lists.tiles()[1].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
+    await settled()
+
+    expect([shown(), asked()]).toEqual(['2 / 3', ['provided-2']])
+    // As in the loaded detail of the provider: both there, neither disabled.
+    expect([walk().previous.disabled, walk().next.disabled]).toEqual([false, false])
+
+    walk().next.click()
+    await settled()
+    expect([shown(), asked()]).toEqual(['3 / 3', ['provided-2', 'provided-3']])
+
+    walk().previous.click()
+    await settled()
+    walk().previous.click()
+    await settled()
+    expect([shown(), asked()]).toEqual(['1 / 3', ['provided-2', 'provided-3', 'provided-2', 'provided-1']])
+
+    answers.get('provided-1')!()
+    await eventually(() => expect(shown()).toBe('1 / 3 provided-1'))
+    expect(drawn()).toEqual({ picture: true, frame: false })
   })
 })

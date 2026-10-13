@@ -19,7 +19,7 @@ const emit = defineEmits<{
   (e: 'afterRotate'): void
 }>()
 
-const { showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault, showUnknownError } = useAlerts()
 
 const loading = ref(false)
 
@@ -30,7 +30,8 @@ const rotate = async (angle: 90 | 270) => {
     showRecordWas('updated')
     emit('afterRotate')
   } catch (e) {
-    showErrorsDefault(e)
+    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    if (!showErrorsDefault(e)) showUnknownError()
   } finally {
     loading.value = false
   }

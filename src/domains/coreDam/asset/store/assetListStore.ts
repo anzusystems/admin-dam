@@ -14,6 +14,13 @@ export interface AssetListItem {
 export const useAssetListStore = defineStore('damAssetListStore', () => {
   const list = ref<AssetListItem[]>([])
   const activeItemIndex = ref<null | number>(null)
+  /* The asset of the active tile. The tile is active for its asset, not for its place: in a list read anew the place
+   * is another asset's. Not the asset the panel beside the list holds, which can be one of a queue row, or the one
+   * before while a read is on its way. */
+  let activeAssetId: DocId | null = null
+  /* Of that asset, once a list came without it: no tile is active then, and the asset is only waited for, in a
+   * further page or in the list read next. */
+  let activeAssetIsAwaited = false
   const keyboardNavigation = ref(false)
   const loader = ref<{ soft: boolean; hard: boolean }>({
     soft: false,
@@ -28,7 +35,24 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     loader.value[type] = false
   }
 
-  function appendList(assets: AssetSearchListItemDto[], selectedItems: UploadQueueItem[] = []) {
+  /* With no tile active: the tile of the asset that was active is the active one again, at the place it has now. An
+   * asset waited for is waited for only while the panel beside the list still shows it (`shownAssetId`): the panel
+   * can lose it or take another meanwhile, and a tile made active for it then would be one nobody picked. */
+  function restoreActive(shownAssetId: DocId | null) {
+    if (!isNull(activeItemIndex.value) || isNull(activeAssetId)) return
+    if (activeAssetIsAwaited && shownAssetId !== activeAssetId) {
+      activeAssetId = null
+
+      return
+    }
+    setActiveByIndex(list.value.findIndex((item) => item.asset.id === activeAssetId))
+  }
+
+  function appendList(
+    assets: AssetSearchListItemDto[],
+    selectedItems: UploadQueueItem[] = [],
+    shownAssetId: DocId | null = null
+  ) {
     const selectedIds: Array<DocId> = []
     for (let i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].type === UploadQueueItemType.Asset && selectedItems[i].assetId) {
@@ -43,9 +67,15 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
       }
     })
     list.value = list.value.concat(items)
+    // The asset the first page of a list read anew did not bring can be in a further one.
+    restoreActive(shownAssetId)
   }
 
-  function setList(assets: AssetSearchListItemDto[], selectedItems: UploadQueueItem[] = []) {
+  function setList(
+    assets: AssetSearchListItemDto[],
+    selectedItems: UploadQueueItem[] = [],
+    shownAssetId: DocId | null = null
+  ) {
     const selectedIds: Array<DocId> = []
     for (let i = 0; i < selectedItems.length; i++) {
       if (selectedItems[i].type === UploadQueueItemType.Asset && selectedItems[i].assetId) {
@@ -59,6 +89,10 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
         selected: selectedIds.includes(asset.id),
       }
     })
+    // The place the active tile had is another asset's in these rows, or nobody's.
+    activeItemIndex.value = null
+    restoreActive(shownAssetId)
+    activeAssetIsAwaited = isNull(activeItemIndex.value) && !isNull(activeAssetId)
   }
 
   function setDeletingById(id: DocId) {
@@ -95,6 +129,8 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     if (!list.value[index]) return
     list.value[index].active = true
     activeItemIndex.value = index
+    activeAssetId = list.value[index].asset.id
+    activeAssetIsAwaited = false
     if (isNull(oldActiveIndex)) return
     if (!(oldActiveIndex in list.value)) return
     list.value[oldActiveIndex].active = false
@@ -142,8 +178,10 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     keyboardNavigation.value = false
   }
 
+  /** The list is emptied to be read anew: no tile is left to be active, and the asset that was is remembered. */
   function resetList() {
     list.value = []
+    activeItemIndex.value = null
     loader.value.soft = false
     loader.value.hard = true
   }
@@ -151,6 +189,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
   function reset() {
     list.value = []
     activeItemIndex.value = null
+    activeAssetId = null
     keyboardNavigation.value = false
     loader.value.soft = false
     loader.value.hard = true

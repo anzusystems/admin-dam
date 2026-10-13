@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
+import { RouterView } from 'vue-router'
 
 import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
@@ -88,19 +89,20 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // The two pages the bar of the list links to.
-  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: { render: () => null } })
-  ui.router.addRoute({ path: '/settings', component: { render: () => null } })
   if (view === 'table') {
     const { GridView, useGridView } = await import('@/domains/system/composables/gridView')
     useGridView().setGridView(GridView.Table)
   }
 
-  // Under a host that can take it down, as the router does when the user goes to another page.
-  const onThePage = ref(true)
+  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
+   * other page the bar of the list links to. Under a host that can take the page down whatever the router says. */
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
+  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
+  ui.router.addRoute({ path: '/settings', component: { render: () => null } })
+  await ui.router.push(LIST)
+  const onThePage = ref(true)
   const page = await ui.mount(async () => ({
-    default: defineComponent({ setup: () => () => (onThePage.value ? h(View) : null) }),
+    default: defineComponent({ setup: () => () => (onThePage.value ? h(RouterView) : null) }),
   }))
   const TILE = view === 'table' ? '.a-table__row' : '.dam-image-grid__item'
   const ACTIVE = view === 'table' ? 'a-table__row--active' : 'dam-image-grid__item--active'
@@ -131,7 +133,7 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
     order: () => drawn().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim()),
     /** Which of the three are picked for the mass edit. */
     selected: () => tiles.map((tile) => tile.classList.contains('dam-image-grid__item--selected')),
-    /** The user goes to another page: the page of the list is taken down. */
+    /** The page of the list is taken down under whatever is open, with no way out of it asked about. */
     leavePage: async () => {
       onThePage.value = false
       await nextTick()
@@ -750,9 +752,10 @@ describe('the question about metadata typed into the panel and not saved', () =>
 
       await list.answer(LEAVE)
 
+      // The active tile is still the one of the asset that was typed into, where that is in the new list.
       expect([list.questions(), list.active(), list.detail(), list.address(), reads()]).toEqual([
         [],
-        [false, false],
+        [false, true],
         null,
         LIST,
         [0, 1, 0],
@@ -826,16 +829,126 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, false, true], [0, 1, 1]])
   })
 
-  /* The edit button of a row is a link to the page of the detail as well: its plain click leaves the list, which no
-   * answer could hold back. It is not asked about, and goes on as it always did. */
-  it('do not ask for a plain click on the edit button of a row, a link that leaves the list', async () => {
+  /* The edit button of a row is a link to the page of the detail, and its plain click is the router's alone: the
+   * list opens no detail of its own for it and reads nothing. Seen while the page it leads to is still on its way. */
+  it('do nothing of their own for a plain click on the edit button of a row: its link is followed', async () => {
     const list = await openList('table')
-    await typedIntoTheSecond(list)
+    let arrive: () => void = () => undefined
+    list.router.beforeEach(() => new Promise<void>((resolve) => (arrive = resolve)))
 
     list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!.click()
     await settled()
 
-    expect([list.questions(), list.router.currentRoute.value.path, reads()]).toEqual([[], '/assets/asset-3', [0, 1, 1]])
+    expect([list.active(), list.detail(), list.address(), reads()]).toEqual([
+      [false, false, false],
+      null,
+      LIST,
+      [0, 0, 0],
+    ])
+    expect(list.panel().textContent).toContain('No asset selected')
+    arrive()
+    await settled()
+    expect([list.router.currentRoute.value.path, reads()]).toEqual(['/assets/asset-3', [0, 0, 0]])
+  })
+
+  // That click is a way out of the page: asked about as every other, and it reads nothing whatever the answer.
+  it('ask for a plain click on the edit button of a row, a link that leaves the list', async () => {
+    const list = await openList('table')
+    const typedInto = await typedIntoTheSecond(list)
+    const edit = list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!
+
+    edit.click()
+    await settled()
+
+    expect([list.questions().length, list.router.currentRoute.value.path, list.active(), reads()]).toEqual([
+      1,
+      LIST,
+      [false, true, false],
+      [0, 1, 0],
+    ])
+    await list.answer(STAY)
+    expect([list.questions(), list.router.currentRoute.value.path, list.detail(), reads()]).toEqual([
+      [],
+      LIST,
+      null,
+      [0, 1, 0],
+    ])
+    expect([list.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([true, true, TYPED])
+    expect(standsOut(list.save())).toBe(true)
+
+    edit.click()
+    await settled()
+    await list.answer(LEAVE)
+    expect([list.questions(), list.router.currentRoute.value.path, reads()]).toEqual([[], '/assets/asset-3', [0, 1, 0]])
+  })
+
+  /* A double click on the edit button is two of its clicks, and nothing of the double click of the row it is in,
+   * which opens the detail of the list. */
+  const doubleClick = (on: HTMLElement, held: MouseEventInit = {}) => {
+    on.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 1, ...held }))
+    on.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 2, ...held }))
+    on.dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true, detail: 2, ...held }))
+  }
+
+  it('do nothing of their own for a double click on the edit button of a row: its link is followed', async () => {
+    const list = await openList('table')
+    const arrive: Array<() => void> = []
+    list.router.beforeEach(() => new Promise<void>((resolve) => arrive.push(resolve)))
+
+    doubleClick(list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!)
+    await settled()
+
+    expect([list.active(), list.detail(), list.address(), reads()]).toEqual([
+      [false, false, false],
+      null,
+      LIST,
+      [0, 0, 0],
+    ])
+    arrive.forEach((go) => go())
+    await settled()
+    expect([list.router.currentRoute.value.path, reads()]).toEqual(['/assets/asset-3', [0, 0, 0]])
+  })
+
+  it('ask once for a double click on the edit button of a row, and "Leave anyway" follows its link', async () => {
+    const list = await openList('table')
+    await typedIntoTheSecond(list)
+
+    doubleClick(list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!)
+    await settled()
+
+    expect([list.questions().length, list.router.currentRoute.value.path, list.active(), reads()]).toEqual([
+      1,
+      LIST,
+      [false, true, false],
+      [0, 1, 0],
+    ])
+    await list.answer(LEAVE)
+    // The page of the detail, not the detail of the list: nothing is read by the list.
+    expect([list.questions(), list.router.currentRoute.value.path, reads()]).toEqual([[], '/assets/asset-3', [0, 1, 0]])
+  })
+
+  // With a key held each of the two clicks opens the detail of the list, as one such click does; no more than that.
+  it('open the detail of the list for a double click on the edit button of a row with Ctrl held', async () => {
+    const list = await openList('table')
+
+    doubleClick(list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!, { ctrlKey: true })
+    await settled()
+
+    expect([list.detail(), list.router.currentRoute.value.path, reads()]).toEqual(['3 / 3 asset-3', LIST, [0, 0, 2]])
+  })
+
+  // The guard: a double click on the row itself is the one that opens the detail of the list.
+  it('open the detail of the list for a double click on a row, as they always did', async () => {
+    const list = await openList('table')
+
+    doubleClick(list.tiles[2])
+    await settled()
+
+    expect([list.detail(), list.active(), list.router.currentRoute.value.path]).toEqual([
+      '3 / 3 asset-3',
+      [false, false, true],
+      LIST,
+    ])
   })
 
   /* With a key held, or another button, the router leaves the link to the browser, which opens it elsewhere: the
@@ -856,7 +969,7 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
 
     expect([list.questions().length, list.router.currentRoute.value.path, list.detail(), reads()]).toEqual([
       1,
-      '/',
+      LIST,
       null,
       [0, 1, 0],
     ])

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { AssetFileVideo } from '@anzusystems/common-admin'
+import type { AssetFileImagePreviewNullable, AssetFileVideo, DocId } from '@anzusystems/common-admin'
 import { assetFileIsVideoFile, useAlerts } from '@anzusystems/common-admin'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -25,18 +25,30 @@ withDefaults(
 
 const { t } = useI18n()
 const loading = ref(true)
-const saving = ref(false)
 const videoFile = ref<AssetFileVideo | null>(null)
 const chooseImagePreviewFromDistributionDialog = ref(false)
 
 const assetDetailStore = useAssetDetailStore()
-const { showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault, showUnknownError } = useAlerts()
 const { can, canForAll } = useAuth()
+
+/* The image the server holds for the file the card shows. The card shows an image as soon as it is picked, before
+ * it is saved: this is what it goes back to when the save fails. */
+let savedImagePreview: AssetFileImagePreviewNullable = null
+// The changes made in the card, counted: a save that failed puts the saved image back only under its own change.
+let changes = 0
+// One save after the other: an image can be picked in the card again while the one before it is being saved.
+let saves: Promise<void> = Promise.resolve()
+
+const showVideoFile = (file: AssetFileVideo) => {
+  videoFile.value = file
+  savedImagePreview = file.imagePreview
+}
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   if (!slot || !slot.assetFile) return
   loading.value = true
-  videoFile.value = await fetchVideoFile(slot.assetFile.id)
+  showVideoFile(await fetchVideoFile(slot.assetFile.id))
   loading.value = false
 }
 
@@ -46,7 +58,7 @@ const initLoad = async () => {
     assetDetailStore.asset.mainFile &&
     assetFileIsVideoFile(assetDetailStore.asset.mainFile)
   ) {
-    videoFile.value = await fetchVideoFile(assetDetailStore.asset.mainFile.id)
+    showVideoFile(await fetchVideoFile(assetDetailStore.asset.mainFile.id))
   }
   loading.value = false
 }
@@ -55,17 +67,26 @@ const afterSuccessfulConfirmFromDistribution = () => {
   initLoad()
 }
 
-const onSave = async () => {
-  if (!videoFile.value) return
-  saving.value = true
+const save = async (fileId: DocId, picked: AssetFileImagePreviewNullable, change: number) => {
   try {
-    await updatePreviewImage(videoFile.value.id, videoFile.value.imagePreview)
+    await updatePreviewImage(fileId, picked)
+    if (videoFile.value?.id === fileId) savedImagePreview = picked
     showRecordWas('updated')
   } catch (e) {
-    showErrorsDefault(e)
-  } finally {
-    saving.value = false
+    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    if (!showErrorsDefault(e)) showUnknownError()
+    // Unless the card shows another file by now, or was changed again meanwhile: that change is saved next.
+    if (videoFile.value?.id === fileId && change === changes) videoFile.value.imagePreview = savedImagePreview
   }
+}
+
+/* A save goes out for the file and with the image it was asked for, whatever the card shows by the time its turn
+ * comes. */
+const onSave = (picked: AssetFileImagePreviewNullable) => {
+  const fileId = videoFile.value?.id
+  if (!fileId) return
+  const change = ++changes
+  saves = saves.then(() => save(fileId, picked, change))
 }
 
 onMounted(async () => {

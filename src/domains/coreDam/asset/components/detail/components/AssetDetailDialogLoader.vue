@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { isNull, useTheme } from '@anzusystems/common-admin'
-import { computed } from 'vue'
+import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
-import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-
+/* The bar of a detail while its asset is read. It knows no list: whoever draws it says what its own bar has - whether
+ * it walks a list by two buttons, which of them leads nowhere, and the place of the asset in that list - and is told
+ * of a press as that bar would be. */
+defineProps<{
+  walksList: boolean
+  prevDisabled: boolean
+  nextDisabled: boolean
+  totalCountText: string
+}>()
 const emit = defineEmits<{
   (e: 'closeDialog'): void
+  (e: 'prevItem'): void
+  (e: 'nextItem'): void
 }>()
 
 const { t } = useI18n()
@@ -18,17 +24,6 @@ const { toolbarColor } = useTheme()
 const closeDialog = () => {
   emit('closeDialog')
 }
-
-const assetListStore = useAssetListStore()
-const assetDetailStore = useAssetDetailStore()
-const { pagination } = useAssetListActions() // todo
-
-const totalCountText = computed(() => {
-  if (isNull(assetListStore.activeItemIndex)) return ''
-  return (
-    assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.value.hasNextPage ? '+' : '')
-  )
-})
 </script>
 
 <template>
@@ -40,14 +35,15 @@ const totalCountText = computed(() => {
         :height="64"
         class="border-b"
       >
-        <div v-if="assetDetailStore.view === 'list'">
+        <div v-if="walksList">
           <VBtn
             variant="text"
             icon
             class="mx-1"
             :width="36"
             :height="36"
-            @click.stop=""
+            :disabled="prevDisabled"
+            @click.stop="emit('prevItem')"
           >
             <VIcon icon="mdi-chevron-left" />
             <VTooltip
@@ -63,7 +59,8 @@ const totalCountText = computed(() => {
             class="mr-2"
             :width="36"
             :height="36"
-            @click.stop=""
+            :disabled="nextDisabled"
+            @click.stop="emit('nextItem')"
           >
             <VIcon icon="mdi-chevron-right" />
             <VTooltip
@@ -75,7 +72,7 @@ const totalCountText = computed(() => {
           </VBtn>
         </div>
         <div
-          v-if="assetDetailStore.view === 'list'"
+          v-if="walksList"
           class="text-label-large d-flex"
         >
           <div class="pr-4">

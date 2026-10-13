@@ -96,14 +96,19 @@ const removeAssetFile = () => {
   emit('removeFile', props.item.assetFile.id)
 }
 
+const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
+const { showSuccess, showErrorsDefault, showUnknownError } = useAlerts()
+
 const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
-  const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
-  window.open(res.link)
+  try {
+    const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
+    window.open(res.link)
+  } catch (e) {
+    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    if (!showErrorsDefault(e)) showUnknownError()
+  }
 }
-
-const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
-const { showSuccess } = useAlerts()
 
 const copyFileId = async () => {
   if (!props.item || !props.item.assetFile) return
@@ -176,6 +181,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :asset-file="routableAssetFile"
           :asset-type="assetType"
           :title="title"
+          :is-main-file="item.main"
           @main-route-changed="emit('refreshList')"
         />
         <ImageFile

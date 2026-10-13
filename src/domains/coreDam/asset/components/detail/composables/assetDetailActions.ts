@@ -23,6 +23,7 @@ export function useAssetDetailActions() {
     mainFileOverrideInternal,
     mainFileInternal,
     ttsAudio,
+    saveHeldBack,
   } = storeToRefs(assetDetailStore)
 
   const toggleSidebar = () => {
@@ -127,5 +128,6 @@ export function useAssetDetailActions() {
     mainFileOverrideInternal,
     mainFileInternal,
     ttsAudio,
+    saveHeldBack: readonly(saveHeldBack),
   }
 }

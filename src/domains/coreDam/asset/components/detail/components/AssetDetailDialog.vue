@@ -33,7 +33,6 @@ import { ACL, useAuth } from '@/domains/system/auth/auth'
 const emit = defineEmits<{
   (e: 'nextItem'): void
   (e: 'prevItem'): void
-  (e: 'mainRouteChanged'): void
 }>()
 
 const { t } = useI18n()
@@ -167,8 +166,15 @@ const { can } = useAuth()
       :model-value="assetDetailStore.leaveUnsavedQuestion && assetDetailStore.detail"
       @resolve="assetDetailStore.answerLeaveUnsaved"
     />
+    <!-- The bar of the loaded detail below, as far as it is known while its asset is read. -->
     <AssetDetailDialogLoader
       v-if="assetDetailStore.loader"
+      :walks-list="assetDetailStore.view === 'list'"
+      :prev-disabled="!neighbourOfActive(-1)"
+      :next-disabled="!neighbourOfActive(1)"
+      :total-count-text="totalCountText"
+      @prev-item="prevItem"
+      @next-item="nextItem"
       @close-dialog="closeDialog"
     />
     <VCard
@@ -219,11 +225,15 @@ const { can } = useAuth()
               </VTooltip>
             </VBtn>
           </div>
+          <!-- The name in every detail; the place in the list only in a detail of the list. -->
           <div
-            v-if="assetDetailStore.view === 'list'"
             class="text-label-large d-flex"
+            :class="{ 'pl-2': assetDetailStore.view !== 'list' }"
           >
-            <div class="pr-4">
+            <div
+              v-if="assetDetailStore.view === 'list'"
+              class="pr-4"
+            >
               {{ totalCountText }}
             </div>
             <div>{{ toolbarTitle }}</div>
@@ -305,7 +315,6 @@ const { can } = useAuth()
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
               @post-delete="postDelete"
-              @main-route-changed="emit('mainRouteChanged')"
             />
           </div>
         </div>

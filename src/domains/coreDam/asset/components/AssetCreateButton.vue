@@ -60,6 +60,9 @@ const showDetail = async (asset: AssetDetailItemDto) => {
 }
 
 const onConfirm = async () => {
+  /* The asset made here is written into the detail the panel beside the list reads from: metadata typed into the
+   * panel and not saved go only when told to, asked about before anything is sent. */
+  if (assetDetailStore.panelHoldsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
   try {
     buttonLoading.value = true
     const res = await createAsset(currentAssetLicenceId.value, asset.value)

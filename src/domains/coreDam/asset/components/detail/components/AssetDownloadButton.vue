@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
+import { ADialogToolbar, eventClickBlur, useAlerts } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import { useFileDownloadUnload } from '@/domains/coreDam/asset/composables/fileDownloadUnload'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
@@ -26,6 +27,8 @@ const loading = ref(false)
 const link = ref<string | null>(null)
 
 const assetDetailStore = useAssetDetailStore()
+const { downloadPressed } = useFileDownloadUnload()
+const { showErrorsDefault, showUnknownError } = useAlerts()
 
 const initData = async () => {
   if (assetDetailStore.asset && assetDetailStore.asset.mainFile) {
@@ -43,9 +46,23 @@ const onClick = async (event: Event) => {
 const updateLink = async (fileId: DocId) => {
   loading.value = true
   link.value = null
-  const res = await fileDownloadLink(props.assetType, fileId)
-  link.value = res.link
-  loading.value = false
+  try {
+    const res = await fileDownloadLink(props.assetType, fileId)
+    link.value = res.link
+  } catch (e) {
+    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    if (!showErrorsDefault(e)) showUnknownError()
+  } finally {
+    loading.value = false
+  }
+}
+
+/* The browser announces an unload only for the press it follows in this tab: with a modifier key held, or by
+ * another button, the link opens elsewhere or is saved, and the page hears nothing of it. The conditions are the
+ * router's own, as for the edit link of a row of the table. */
+const onLinkPress = (event: MouseEvent) => {
+  if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+  downloadPressed()
 }
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
@@ -109,6 +126,7 @@ const onCancel = () => {
             prepend-icon="mdi-download"
             :href="link"
             data-cy="button-download-file"
+            @click="onLinkPress"
           >
             {{ t('system.download.downloadOriginalFile') }}
           </VBtn>

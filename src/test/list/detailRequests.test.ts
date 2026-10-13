@@ -315,9 +315,10 @@ describe('a detail the user closed', () => {
     fail(new Error('gone'))
     await running
 
-    // Leaving the page is not closing the dialog, and it used to leave the request answering.
+    // The request used to go on answering. And the detail goes with its list: the page that comes next has none open.
     expect(browserHistoryReplaceUrlByRouter).toHaveBeenCalledTimes(1)
-    expect(assetDetailStore.detail).toBe(true)
+    expect(showErrorsDefault).not.toHaveBeenCalled()
+    expect(assetDetailStore.detail).toBe(false)
   })
 })
 
@@ -560,13 +561,15 @@ describe('stepping to the next asset', () => {
     assetListStore.setActiveByIndex(0)
     assetListStore.resetList()
 
-    // The active index outlives the list it points into, so this used to throw on `undefined.asset` with the spinner
+    // The active index used to outlive the list it points into, and this threw on `undefined.asset` with the spinner
     // already up and no `finally` yet to take it down.
     await actions.nextItem()
     await actions.prevItem()
 
     expect(assetDetailStore.loader).toBe(false)
     expect(fetchAsset).not.toHaveBeenCalled()
+    // And the list that is gone has no active place any more.
+    expect(assetListStore.activeItemIndex).toBeNull()
   })
 })
 

@@ -1,16 +1,18 @@
 import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { nextTick } from 'vue'
+import { RouterView } from 'vue-router'
 
-import { assetDetail, assetFile, createFakeDam, queueRow } from '@/test/support/fakeDam'
+import { assetDetail, assetFile, createFakeDam, httpError, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
 /* The detail of an asset is opened from the list - the pencil of a tile, a double click, "Edit more" of the panel
  * beside the list - and from elsewhere: for an asset just created, and by the edit of a row of the upload queue.
  * Opened from the list it walks the list, with two buttons, a counter and the arrow keys; opened from elsewhere it is
- * of no tile, and has none of them. The real page of the list with its real detail, panel and upload queue, the
- * application around it as it starts; the server is a fake, and so is the address the page asks about a new version
- * of the application. */
+ * of no tile, and has none of them: it is drawn whatever rows the list draws, and the keys of the list are not its
+ * own. The name of its asset is in the bar of either. The real page of the list with its real detail, panel, upload queue and mass edit, the application around it
+ * as it starts; the server is a fake, and so is the address the page asks about a new version of the application. */
 
 let server: FakeDam
 
@@ -22,6 +24,8 @@ const CREATE = /^\/adm\/v1\/asset\/licence\/1$/
 const RIGHT = 'ArrowRight'
 const LEFT = 'ArrowLeft'
 const EDIT = 'Edit more'
+const NO_ROWS = 'No matching assets found'
+const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 
 const LIST = '/assets'
 /** The asset of the row of the upload queue: an image the list does not hold. */
@@ -53,7 +57,7 @@ const address = () => window.location.pathname
 /** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** What the bar of the open detail says: the place of the asset in the list and its title, nothing when not of the list. */
+/** What the bar of the open detail says: the place of the asset in the list, in a detail of the list, and its title. */
 const shown = () =>
   Array.from(detail()?.querySelectorAll('.v-toolbar .text-label-large > div') ?? [])
     .map((part) => part.textContent?.trim())
@@ -77,7 +81,24 @@ const closeDetail = async () => {
   await eventually(() => expect(detail()).toBeNull())
 }
 
-/** The page of the list with its three assets, none of them picked, and one uploaded asset in the upload queue. */
+/** Watches the page from now on: answers whether an element of the selector was drawn in it at any moment since. */
+const watchFor = (selector: string) => {
+  let drawn = false
+  const look = (records: MutationRecord[]) => {
+    const added = records.flatMap((record) => Array.from(record.addedNodes)) as Array<Partial<Element>>
+    drawn ||= added.some((node) => node.matches?.(selector) || !!node.querySelector?.(selector))
+  }
+  const observer = new MutationObserver(look)
+  observer.observe(document.body, { childList: true, subtree: true })
+
+  return () => {
+    look(observer.takeRecords())
+
+    return drawn
+  }
+}
+
+/** The page of the list with the assets the server has, none of them picked, and one uploaded asset in the upload queue. */
 const openList = async () => {
   const uploaded: UploadQueueItem[] = [
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: UPLOADED, fileId: 'file-9' }),
@@ -103,20 +124,40 @@ const openList = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // The two pages the bar of the list links to.
-  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: { render: () => null } })
+  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
+   * other page the bar of the list links to. */
+  const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
+  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
-
-  const page = await ui.mount(() => import('@/domains/coreDam/asset/components/list/AssetListView.vue'))
+  await ui.router.push(LIST)
+  const page = await ui.mount(async () => ({ default: RouterView }))
   /** The tiles as they are drawn now: a list read anew draws new ones. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
-  await eventually(() => expect(tiles()).toHaveLength(3))
+  // The list has answered: its tiles are drawn, or it says that it has none.
+  await eventually(() =>
+    assets.length ? expect(tiles()).toHaveLength(assets.length) : expect(page.textContent).toContain(NO_ROWS)
+  )
   const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
+  /** The queue drawn over the whole page, or null while none is. */
+  const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
+  /** The edit of the first row of the queue drawn over the whole page, once the row can be edited: pressed. */
+  const editRow = async () => {
+    const edit = await eventually(() => {
+      const button = queue() ? buttonsNamed(queue()!, EDIT)[0] : undefined
+      expect(button?.disabled).toBe(false)
+
+      return button!
+    })
+    edit.click()
+  }
 
   return {
     ...ui,
     page,
     panel,
+    tiles,
+    queue,
+    editRow,
     /** Which of the tiles is the active one. */
     active: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--active')),
     /** A click on the tile, and the read it starts answered. */
@@ -156,27 +197,41 @@ const openList = async () => {
       into.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       await eventually(() => expect(document.body.querySelector('.v-menu.v-overlay--active')).toBeNull())
     },
+    /** The upload queue drawn over the whole page, as its "Add description" button draws it. */
+    openUploadQueue: () => {
+      document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
+
+      return eventually(() => expect(queue()).not.toBeNull())
+    },
     /** The edit of the one row of the upload queue, from the queue drawn over the whole page. */
     editUploaded: async () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
-      const edit = await eventually(() => {
-        const queue = document.body.querySelector('.overlay--sidebar')
-        expect(queue).not.toBeNull()
-
-        return buttonsNamed(queue!, EDIT)[0]
-      })
-      edit.click()
+      await editRow()
       await eventually(() => expect(held()).toBe(UPLOADED))
     },
-    /** The queue is put away again, as its "hide" button puts it. */
+    /** The mass edit of the tile drawn over the whole page: the tile is picked for it, and its queue opened. */
+    openMassEdit: async (index: number) => {
+      tiles()[index].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
+      const open = await eventually(() => {
+        const footer = document.body.querySelector('.asset-footer__selected')
+        const button = footer ? buttonsNamed(footer, 'Edit')[0] : undefined
+        expect(button).toBeTruthy()
+
+        return button!
+      })
+      open.click()
+      await eventually(() => expect(queue()).not.toBeNull())
+    },
+    /** The queue drawn over the whole page is put away again, as its "hide" button puts it. */
     hideUploadQueue: async () => {
-      document.body.querySelector('.overlay--sidebar .mdi-chevron-down')!.closest('button')!.click()
-      await eventually(() => expect(document.body.querySelector('.overlay--sidebar')).toBeNull())
+      queue()!.querySelector('.mdi-chevron-down')!.closest('button')!.click()
+      await eventually(() => expect(queue()).toBeNull())
     },
     /** The list is read anew, with the assets in this order. */
     readAnew: async (order: string[]) => {
       assets = order.map((id) => onServer(id))
       page.querySelector('.mdi-refresh')!.closest('button')!.click()
+      await settled()
       await eventually(() =>
         expect(
           Array.from(page.querySelectorAll('.dam-image-grid__item .text-truncate')).map((title) =>
@@ -257,12 +312,13 @@ describe('the arrow keys of the list while a detail that is not of the list is o
       const list = await openList()
       await list.pick(1)
       await open(list)
-      expect([held(), shown()]).toEqual([id, ''])
+      // The name of the asset alone: no place in the list is its own.
+      expect([held(), shown()]).toEqual([id, id])
 
       await arrow(RIGHT)
       await arrow(LEFT)
 
-      expect([held(), shown(), address()]).toEqual([id, '', LIST])
+      expect([held(), shown(), address()]).toEqual([id, id, LIST])
       expect([list.active(), reads()]).toEqual([
         [false, true, false],
         [0, 1, 0],
@@ -306,6 +362,51 @@ describe('the arrow keys of the list while a detail that is not of the list is o
   )
 })
 
+/* The bar of the detail says which asset it is of. The place of the asset in the list stood in one block with its
+ * name, and a detail that is not of the list has no such place: the bar said nothing at all. */
+describe('the bar of a detail that is not of the list', () => {
+  const NAMED = 'A photo with a name of its own'
+
+  it('says the name of its asset, and no place in the list', async () => {
+    server.asset(
+      onServer(UPLOADED, {
+        attributes: { assetType: 'image', assetStatus: 'with_file' },
+        texts: { displayTitle: NAMED },
+        mainFile: assetFile('file-9', 'processed', { asset: UPLOADED }),
+      })
+    )
+    const list = await openList()
+    await list.pick(1)
+
+    await list.editUploaded()
+
+    expect([shown(), held(), bar().previous, bar().next]).toEqual([NAMED, UPLOADED, null, null])
+
+    // A detail of the list says both: the place counts the tiles, and the name is its asset's.
+    await closeDetail()
+    await list.hideUploadQueue()
+    list.pencil(1).click()
+    await eventually(() => expect(shown()).toBe('2 / 3 asset-2'))
+  })
+
+  // An asset just created has no name until it is given one: there is nothing to say.
+  it('says nothing for an asset that has no name', async () => {
+    server.on('POST', CREATE, () => ({
+      status: 201,
+      data: onServer('asset-new', {
+        attributes: { assetType: 'image', assetStatus: 'draft' },
+        texts: { displayTitle: '' },
+        mainFile: null,
+      }),
+    }))
+    const list = await openList()
+
+    await list.createEmpty()
+
+    expect([shown(), held(), bar().previous, bar().next]).toEqual(['', 'asset-new', null, null])
+  })
+})
+
 describe('"Edit more" of the panel beside the list', () => {
   /* The detail opened last leaves its view behind, and closing it does not put the view back: without one of its
    * own the detail of the panel had no buttons, no counter and no name after a detail that was not of the list. */
@@ -340,25 +441,47 @@ describe('"Edit more" of the panel beside the list', () => {
 
       await list.editMore()
 
-      expect([shown(), held(), bar().previous, bar().next]).toEqual(['', id, null, null])
+      expect([shown(), held(), bar().previous, bar().next]).toEqual([id, id, null, null])
       await arrow(RIGHT)
       await arrow(LEFT)
       expect([held(), list.active(), reads()]).toEqual([id, [false, true, false], [0, 1, 0]])
     }
   )
 
-  /* The same after a detail that was of the list: the place of the active tile outlives a list read anew, and is
-   * then the place of another asset. The detail would count from that one, and walk the list from it. */
-  it('opens a detail that is not of the list while the tile at the active place is of another asset', async () => {
+  /* The active tile is the tile of its asset: in a list read anew it is where the asset is by then, and the detail
+   * counts and walks the list from there. */
+  it('opens a detail of the list at the place the asset of the active tile has in a list read anew', async () => {
     const list = await openList()
     list.pencil(1).click()
     await eventually(() => expect(shown()).toBe('2 / 3 asset-2'))
     await closeDetail()
     await list.readAnew(['asset-1', 'asset-3', 'asset-2'])
+    expect(list.active()).toEqual([false, false, true])
 
     await list.editMore()
 
-    expect([shown(), held(), bar().previous, bar().next]).toEqual(['', 'asset-2', null, null])
+    expect([shown(), held(), bar().previous?.disabled, bar().next?.disabled]).toEqual([
+      '3 / 3 asset-2',
+      'asset-2',
+      false,
+      true,
+    ])
+    await arrow(LEFT)
+    expect([shown(), held(), reads()]).toEqual(['2 / 3 asset-3', 'asset-3', [0, 1, 1]])
+  })
+
+  // The asset the panel holds is in the list no more: no tile is its own, and neither is a place in the list.
+  it('opens a detail that is not of the list while the list read anew holds its asset no more', async () => {
+    const list = await openList()
+    list.pencil(1).click()
+    await eventually(() => expect(shown()).toBe('2 / 3 asset-2'))
+    await closeDetail()
+    await list.readAnew(['asset-1', 'asset-3'])
+    expect(list.active()).toEqual([false, false])
+
+    await list.editMore()
+
+    expect([shown(), held(), bar().previous, bar().next]).toEqual(['asset-2', 'asset-2', null, null])
     await arrow(RIGHT)
     expect([held(), reads()]).toEqual(['asset-2', [0, 1, 0]])
   })
@@ -374,5 +497,208 @@ describe('"Edit more" of the panel beside the list', () => {
     expect([shown(), held()]).toEqual(['2 / 3 asset-2', 'asset-2'])
     await arrow(RIGHT)
     expect(shown()).toBe('3 / 3 asset-1')
+  })
+})
+
+/* The detail is drawn by the page, not by the rows of its list: a list with no rows - a new licence, a search with no
+ * result - and a list that is being read draw no rows at all. */
+describe('the detail of an asset while the list draws no rows', () => {
+  it.each(notOfList)('opens over a list with no rows for %s', async (_of, open, id) => {
+    assets = []
+    const list = await openList()
+
+    await open(list)
+
+    expect([held(), shown(), address(), list.tiles()]).toEqual([id, id, LIST, []])
+  })
+
+  it('opens over a list with no rows by "Edit more" of the panel, for the asset the panel holds', async () => {
+    assets = []
+    const list = await openList()
+    await list.createEmpty()
+    await closeDetail()
+    expect(list.panel().querySelector('.anzu-copy-text > span')?.textContent).toBe('asset-new')
+
+    await list.editMore()
+
+    expect([held(), shown()]).toEqual(['asset-new', 'asset-new'])
+  })
+
+  // The search that finds nothing leaves the panel holding the asset picked before it.
+  it('opens by "Edit more" of the panel after a list read anew came with no rows', async () => {
+    const list = await openList()
+    await list.pick(1)
+    await list.readAnew([])
+    expect(list.page.textContent).toContain(NO_ROWS)
+
+    await list.editMore()
+
+    expect([held(), shown(), bar().previous, bar().next]).toEqual(['asset-2', 'asset-2', null, null])
+  })
+
+  /* The list is read anew under an open detail when the save of the upload queue answers; here by its own "Refresh".
+   * A loader stands in the place of the rows meanwhile. */
+  it('stays as it is while the list is read anew under it, and once the list is there again', async () => {
+    const list = await openList()
+    list.pencil(1).click()
+    await eventually(() => expect(shown()).toBe('2 / 3 asset-2'))
+    const title = detail()!.querySelector<HTMLTextAreaElement>('textarea')!
+    title.value = 'typed and not saved'
+    title.dispatchEvent(new Event('input'))
+    await nextTick()
+    let answer: () => void = () => undefined
+    server.on(
+      'GET',
+      SEARCH,
+      () =>
+        new Promise<FakeDamAnswer>((resolve) => {
+          answer = () => resolve({ status: 200, data: { data: assets.map((asset) => structuredClone(asset)) } })
+        })
+    )
+
+    list.page.querySelector('.mdi-refresh')!.closest('button')!.click()
+    await settled()
+
+    // The very detail that was open, with what was typed into it.
+    expect([list.tiles(), shown(), title.isConnected, title.value]).toEqual([
+      [],
+      '2 / 3 asset-2',
+      true,
+      'typed and not saved',
+    ])
+    answer()
+    await settled()
+    expect([list.tiles().length, shown(), title.isConnected, title.value]).toEqual([
+      3,
+      '2 / 3 asset-2',
+      true,
+      'typed and not saved',
+    ])
+  })
+})
+
+/* The store the detail is drawn from outlives the page of the list, and other pages write into it: the page of the
+ * detail of an asset, which the edit button of a table row and the link of a duplicate lead to, opens its asset there
+ * and leaves it open when it is left by the back button of the browser. */
+describe('the detail of an asset on the way into the page of the list', () => {
+  const ELSEWHERE = '11111111-2222-4333-8444-555555555555'
+
+  it('is not drawn from what the page of the detail of an asset left open', async () => {
+    server.asset(onServer(ELSEWHERE, { licence: 1 }))
+    const list = await openList()
+    const Standalone = (await import('@/domains/coreDam/asset/components/detail/AssetDetailView.vue')).default
+    list.router.addRoute({ path: '/assets/:id', name: '/(coreDam)/assets/[id]', component: Standalone })
+    void list.router.push('/assets/' + ELSEWHERE)
+    await eventually(() => expect(list.page.querySelector('.dam-image-detail .anzu-copy-text > span')).not.toBeNull())
+    const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+    expect([useAssetDetailStore().detail, useAssetDetailStore().asset?.id]).toEqual([true, ELSEWHERE])
+    const wasDrawn = watchFor('.dam-image-detail-dialog')
+
+    list.router.back()
+    await settled()
+    await eventually(() => expect(list.tiles()).toHaveLength(3))
+
+    expect([wasDrawn(), detail(), list.panel().textContent]).toEqual([false, null, 'No asset selected'])
+    // And the detail of the page is its own again.
+    list.pencil(1).click()
+    await eventually(() => expect(shown()).toBe('2 / 3 asset-2'))
+    expect(wasDrawn()).toBe(true)
+  })
+})
+
+/* The upload queue and the mass edit are drawn over the whole page, list and all, and turn the keys of the list off.
+ * The detail of one of their rows turns the keys on again as it closes, and so does a read of a row that failed: the
+ * queue is still there, over the list. */
+describe('the arrow keys of the list under a queue drawn over the whole page', () => {
+  /** The server was asked for an asset of the list by itself, as the panel and the detail ask. */
+  const readAlone = () =>
+    server.sent('GET', /^\/adm\/v1\/asset\/asset-\d$/).map((request) => request.url.split('/').pop())
+
+  it('do nothing once the detail of a row of the upload queue is closed, until the queue is put away', async () => {
+    const list = await openList()
+    await list.pick(0)
+    await list.editUploaded()
+    await closeDetail()
+    expect(list.queue()).not.toBeNull()
+
+    await arrow(RIGHT)
+    await arrow(LEFT)
+
+    expect([list.active(), reads(), address()]).toEqual([[true, false, false], [1, 0, 0], LIST])
+    expect(list.panel().querySelector('.anzu-copy-text > span')?.textContent).toBe(UPLOADED)
+
+    // Put away, it covers the list no more: the keys walk it as they always did.
+    await list.hideUploadQueue()
+    await arrow(RIGHT)
+    expect([list.active(), reads(), address()]).toEqual([[false, true, false], [1, 1, 0], LIST])
+  })
+
+  it('do nothing once the read of a row of the upload queue failed, until the queue is put away', async () => {
+    server.assetBy(UPLOADED, () => {
+      throw httpError(500)
+    })
+    const list = await openList()
+    await list.pick(0)
+    await list.openUploadQueue()
+    await list.editRow()
+    await eventually(() => expect(list.alerts()).toEqual([SYSTEM_ERROR]))
+    expect([detail(), list.queue() === null]).toEqual([null, false])
+
+    await arrow(RIGHT)
+    await arrow(LEFT)
+
+    expect([list.active(), reads()]).toEqual([
+      [true, false, false],
+      [1, 0, 0],
+    ])
+
+    await list.hideUploadQueue()
+    await arrow(RIGHT)
+    expect([list.active(), reads()]).toEqual([
+      [false, true, false],
+      [1, 1, 0],
+    ])
+  })
+
+  it('do nothing once the detail of a row of the mass edit is closed, until the queue is put away', async () => {
+    const list = await openList()
+    await list.pick(0)
+    await list.openMassEdit(2)
+    await list.editRow()
+    await eventually(() => expect(held()).toBe('asset-3'))
+    await closeDetail()
+    expect([list.queue() === null, readAlone()]).toEqual([false, ['asset-1', 'asset-3']])
+
+    await arrow(RIGHT)
+    await arrow(LEFT)
+
+    expect([list.active(), readAlone()]).toEqual([
+      [true, false, false],
+      ['asset-1', 'asset-3'],
+    ])
+
+    await list.hideUploadQueue()
+    await arrow(RIGHT)
+    expect([list.active(), readAlone()]).toEqual([
+      [false, true, false],
+      ['asset-1', 'asset-3', 'asset-2'],
+    ])
+  })
+
+  // The guard: with no queue over the list the keys are the list's, whatever was open over it before.
+  it('walk the list while a queue is drawn small, under the list', async () => {
+    const list = await openList()
+    await list.pick(0)
+    expect([list.queue(), document.body.querySelector('[data-cy="button-add-description"]') === null]).toEqual([
+      null,
+      false,
+    ])
+
+    await arrow(RIGHT)
+
+    expect([list.active(), reads()]).toEqual([
+      [false, true, false],
+      [1, 1, 0],
+    ])
   })
 })

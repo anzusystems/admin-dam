@@ -5,6 +5,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { makePrivateFile } from '@/domains/coreDam/asset/api/fileApi'
+import { useAssetFileChanged } from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
 import AssetFileRouteChangeBtn from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 import AssetFileRouteMakePublicDialog from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import AssetFileRouteStatus from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteStatus.vue'
@@ -15,9 +16,12 @@ const props = withDefaults(
     assetType: DamAssetTypeType
     assetFile: AssetFile & AssetFileMainRouteAware
     title: string
+    // The file is the main one of its asset: the Info tab of a detail of the asset shows it, with its route.
+    isMainFile?: boolean
     dataCy?: string
   }>(),
   {
+    isMainFile: false,
     dataCy: undefined,
   }
 )
@@ -36,16 +40,22 @@ const { can } = useAuth()
 
 const canChangeRoute = computed(() => can(assetTypeAcl(props.assetType, 'update')))
 
+const fileChanged = useAssetFileChanged()
+
 const openMakeFilePrivateDialog = (fileId: DocId) => {
   makeFilePrivateDialogFileId.value = fileId
   makeFilePrivateDialog.value = true
 }
 
-/* Told only once the change went through: after one that failed there is nothing new to read. The menu goes with
- * it: the form stays mounted over a read that keeps metadata that were not saved, and the menu stayed open in it,
- * by then offering the opposite action. */
+/* Told only once the change went through: after one that failed there is nothing new to read. The page that draws
+ * the detail of the asset is told first, when the file is the main one: with nothing typed it puts the detail behind
+ * its loader, and what hears the event - the Slots tab - reads the slots only when it stays drawn. The answer can
+ * find this component unmounted: its props are then as they were last, and the event is dropped. The menu goes
+ * with it: the form stays mounted over a read that keeps metadata that were not saved, and the menu stayed open in
+ * it, by then offering the opposite action. */
 const routeChanged = () => {
   menu.value = false
+  if (props.isMainFile) fileChanged(props.assetFile.asset)
   emit('mainRouteChanged')
 }
 
@@ -126,6 +136,6 @@ const { t } = useI18n()
     :asset-type="assetType"
     :file-id="assetFile.id"
     :title="title"
-    @after-update="routeChanged"
+    :made-public="routeChanged"
   />
 </template>

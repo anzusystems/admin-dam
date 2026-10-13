@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { DatatableOrderingOption } from '@anzusystems/common-admin'
 import { ADatatableOrdering, AUnsavedConfirmDialog, DatatablePaginationKey } from '@anzusystems/common-admin'
-import { onKeyUp } from '@vueuse/core'
-import { computed, onMounted, onUnmounted, provide } from 'vue'
+import { onKeyUp, useEventListener } from '@vueuse/core'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'
+import { provideAssetFileChanged } from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
 import AssetFooterSelected from '@/domains/coreDam/asset/components/footer/AssetFooterSelected.vue'
 import AssetFooterSelectedFull from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue'
 import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
@@ -22,6 +24,7 @@ import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/Asset
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { useFileDownloadUnload } from '@/domains/coreDam/asset/composables/fileDownloadUnload'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import MainWrapper from '@/domains/system/components/MainWrapper.vue'
@@ -35,6 +38,9 @@ const loadOnScroll = true
 const { gridView } = useGridView()
 const { sidebarRight } = useMainWrapper()
 const assetDetailStore = useAssetDetailStore()
+/* Before the first render, not once mounted: the detail is drawn with the page, and another page can have left one
+ * open in the store - the page of the detail of an asset, left by the back button of the browser. */
+assetDetailStore.reset()
 
 const {
   loader,
@@ -52,6 +58,16 @@ const {
 } = useAssetListActions(sidebarRight)
 
 provide(DatatablePaginationKey, pagination)
+/* The detail and the panel beside the list tell of a change of the file of their asset: it is read again. Not once
+ * the page is left, which the answer of the change can outlast: the asset the detail holds by then is the next
+ * page's to read. Left, not being left: while the page asks whether to leave what was typed, it is still there. */
+let pageLeft = false
+onBeforeUnmount(() => {
+  pageLeft = true
+})
+provideAssetFileChanged(() => {
+  if (!pageLeft) refreshActiveItem()
+})
 
 const { footerViewSelected } = useAssetFooterSelectedView()
 const { footerViewUpload } = useAssetFooterUploadView()
@@ -68,6 +84,34 @@ onKeyUp('ArrowRight', async (e) => {
 
 onKeyUp('ArrowLeft', async (e) => {
   await onArrowLeft(e)
+})
+
+/* Metadata typed into the detail or into the panel beside the list and not saved go with the page: asked about
+ * before it is left. The address of an open detail is written over the address of this page, which is no way out of
+ * it and is not asked about. */
+const holdsUnsavedMetadata = () => assetDetailStore.showsUnsavedMetadata || assetDetailStore.panelHoldsUnsavedMetadata
+
+/* Asked as the last thing before a navigation is settled, not as the page's leave guard, which is the first: a
+ * guard after that one can still call the navigation off. Vuetify has such a guard for every dialog and menu - the
+ * back button of the browser over an open one only closes it - and that is then no way out of the page. */
+const router = useRouter()
+const pageOfTheList = useRoute().matched.at(-1)
+const stopAskingOnTheWayOut = router.beforeResolve((to) => {
+  // Another query or hash of the list is the same page still.
+  if (to.matched.some((record) => record === pageOfTheList)) return true
+
+  return !holdsUnsavedMetadata() || assetDetailStore.askToLeaveUnsaved()
+})
+onUnmounted(stopAskingOnTheWayOut)
+
+/* A reload and a closed window are not ways the page could ask about: the browser asks its own question. Not for
+ * the download of a file from the detail: the browser announces it the same way, though the page stays. */
+const { unloadIsOfDownload } = useFileDownloadUnload()
+useEventListener(window, 'beforeunload', (event) => {
+  if (unloadIsOfDownload() || !holdsUnsavedMetadata()) return
+  event.preventDefault()
+  // Older browsers ask only when this is set.
+  event.returnValue = ''
 })
 
 onMounted(async () => {
@@ -131,11 +175,6 @@ onUnmounted(() => {
             class="w-100"
           />
         </div>
-        <AssetDetailDialog
-          @prev-item="prevItem"
-          @next-item="nextItem"
-          @main-route-changed="refreshActiveItem"
-        />
       </div>
       <div
         v-else
@@ -143,6 +182,11 @@ onUnmounted(() => {
       >
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
+      <!-- Not of the rows: the detail is also of an asset the list does not hold, and stays while the list is read. -->
+      <AssetDetailDialog
+        @prev-item="prevItem"
+        @next-item="nextItem"
+      />
       <!-- Of the panel beside the list: with the detail open the question is the detail's, a dialog over it. -->
       <AUnsavedConfirmDialog
         :model-value="assetDetailStore.leaveUnsavedQuestion && !assetDetailStore.detail"
@@ -203,7 +247,7 @@ onUnmounted(() => {
       <AssetListSidebarFilter />
     </template>
     <template #sidebar-right>
-      <AssetListSidebarMetadata @main-route-changed="refreshActiveItem" />
+      <AssetListSidebarMetadata />
     </template>
     <template #custom-footer>
       <AssetFooterSelected />

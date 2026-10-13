@@ -26,7 +26,6 @@ withDefaults(
 )
 const emit = defineEmits<{
   (e: 'postDelete', data: DocId): void
-  (e: 'mainRouteChanged'): void
 }>()
 
 const { t } = useI18n()
@@ -40,12 +39,14 @@ const {
   mainFileOverrideInternal,
   mainFileInternal,
   ttsAudio,
+  saveHeldBack,
 } = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
-// Saved before the server has processed the file, the form would overwrite what it fills in from the file.
-const saveBlocked = computed(() => !isNull(asset.value) && metadataMayStillChange(asset.value))
+/* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
+ * the asset got another main file under what was typed: the form is still the one read before that. */
+const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
 
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
@@ -140,5 +141,5 @@ const onDelete = async () => {
       {{ t('coreDam.asset.detail.fileStillProcessing') }}
     </div>
   </Acl>
-  <AssetMetadata @main-route-changed="emit('mainRouteChanged')" />
+  <AssetMetadata />
 </template>
