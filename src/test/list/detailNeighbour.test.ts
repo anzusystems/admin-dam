@@ -38,6 +38,8 @@ const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const RIGHT = 'ArrowRight'
 const LEFT = 'ArrowLeft'
 
+const LIST = '/assets'
+
 /** An asset the server has, in the list and in its detail: a video unless told otherwise, its title is its id. */
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' }, ...over }),
@@ -57,6 +59,17 @@ const ofType = (assetType: string) => ({ attributes: { assetType, assetStatus: '
 const onServerCopy = (asset: ReturnType<typeof onServer>) => structuredClone(asset)
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
+
+/** Past the few seconds in which an asset read a moment ago is not read again. */
+const later = () => vi.advanceTimersByTimeAsync(6_000)
+
+const address = () => window.location.pathname
+
+/** What the bar of the detail says: the place of the asset in the list and its title, the place alone under the loader. */
+const shown = () =>
+  Array.from(document.body.querySelectorAll('.dam-image-detail .v-toolbar .text-label-large > div'))
+    .map((part) => part.textContent?.trim())
+    .join(' ')
 
 /** An arrow key let go over the element, as the window hears it: over the page itself unless told otherwise. */
 const arrow = async (key: typeof RIGHT | typeof LEFT, over: Element = document.body) => {
@@ -117,7 +130,7 @@ const openList = async () => {
     json: async () => ({ appVersion: '' }),
   }))
   // The two pages the bar of the list links to.
-  ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
+  ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: { render: () => null } })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
 
   const page = await ui.mount(() => import('@/domains/coreDam/asset/components/list/AssetListView.vue'))
@@ -131,16 +144,11 @@ const openList = async () => {
   return { ...ui, page, tiles }
 }
 
-/** The detail of the second of the three assets, opened by the pencil of its tile. */
-const openDetail = async () => {
+/** The detail of one of the three assets, opened by the pencil of its tile: of the second unless told otherwise. */
+const openDetail = async (index = 1) => {
   const ui = await openList()
-  /** What the bar of the detail says: the place of the asset in the list and its title. */
-  const shown = () =>
-    Array.from(document.body.querySelectorAll('.dam-image-detail .v-toolbar .text-label-large > div'))
-      .map((part) => part.textContent?.trim())
-      .join(' ')
-  ui.tiles[1].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
-  await eventually(() => expect(shown()).toBe('2 / 3 asset-2'))
+  ui.tiles[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
+  await eventually(() => expect(shown()).toBe(`${index + 1} / 3 asset-${index + 1}`))
 
   /** The buttons of the bar of the detail: previous, next, the panel of the detail and close. */
   const bar = () => {
@@ -199,6 +207,8 @@ beforeEach(() => {
     data: { customData: {}, blockedBy: [], publishAt: null },
   }))
   server.on('PATCH', BULK, (request) => ({ status: 200, data: JSON.parse(request.data as string) }))
+  // The window is one for the whole file, and so is its address.
+  window.history.replaceState(null, '', LIST)
 })
 
 afterEach(() => {
@@ -208,21 +218,31 @@ afterEach(() => {
 describe('the arrow keys of the list while the detail of an asset is open', () => {
   it('switch the detail to the neighbour when nothing is open over it, as its two buttons do', async () => {
     const detail = await openDetail()
+    expect([detail.bar().previous.disabled, detail.bar().next.disabled, address()]).toEqual([
+      false,
+      false,
+      '/assets/asset-2',
+    ])
 
+    // The address is the one of the asset the detail shows.
     await arrow(RIGHT)
-    expect([detail.shown(), reads('asset-1', 'asset-3')]).toEqual(['3 / 3 asset-3', [0, 1]])
+    expect([detail.shown(), reads('asset-1', 'asset-3'), address()]).toEqual([
+      '3 / 3 asset-3',
+      [0, 1],
+      '/assets/asset-3',
+    ])
 
     // Over a button of the detail as over the page: the key is heard on the window.
     await arrow(LEFT, detail.bar().info)
-    expect(detail.shown()).toBe('2 / 3 asset-2')
+    expect([detail.shown(), address()]).toEqual(['2 / 3 asset-2', '/assets/asset-2'])
 
     detail.bar().previous.click()
     await settled()
-    expect(detail.shown()).toBe('1 / 3 asset-1')
+    expect([detail.shown(), address()]).toEqual(['1 / 3 asset-1', '/assets/asset-1'])
 
     detail.bar().next.click()
     await settled()
-    expect([detail.shown(), detail.question()]).toEqual(['2 / 3 asset-2', null])
+    expect([detail.shown(), detail.question(), address()]).toEqual(['2 / 3 asset-2', null, '/assets/asset-2'])
   })
 
   /* The dialog that adds a distribution, its form half filled in and the focus on one of its buttons: neither an
@@ -491,16 +511,27 @@ describe('metadata typed into the detail and not saved, when the detail is switc
 
   /* The detail reads its asset anew when the address of its file changes. The answer that tells it so can come
    * while the question is open: the request was sent before the question, here the one that makes the file of an
-   * image private. The form the question is about goes behind the loader, and what was typed is replaced. */
-  it('are asked about by a question that goes when the detail reads its asset anew under it: nothing moves', async () => {
+   * image private. Of that read only the file is taken while what was typed is not saved: the form the question is
+   * about stays as it is, and so does the question. */
+  it('are asked about by a question that stays while the detail takes the file of its asset read anew under it', async () => {
     const published = { id: 'route-1', publicUrl: 'https://dam.test/public/file-1' }
-    const file = { ...assetFile('file-1', 'processed', { asset: 'asset-2' }), mainRoute: published }
-    inThePlaceOfItsVideo(onServer('asset-2', { ...ofType('image'), mainFile: file }))
+    const image = (mainRoute: typeof published | null) =>
+      onServer('asset-2', {
+        ...ofType('image'),
+        mainFile: { ...assetFile('file-1', 'processed', { asset: 'asset-2' }), mainRoute },
+      })
+    /** What the card of the file in the detail says of it. */
+    const route = () =>
+      Array.from(document.body.querySelectorAll('.dam-image-detail .v-chip'))
+        .map((chip) => chip.textContent?.trim())
+        .filter((text) => text?.startsWith('File is'))
+    inThePlaceOfItsVideo(image(published))
     let madePrivate: () => void = () => undefined
     server.on(
       'PATCH',
       MAKE_PRIVATE,
-      () => new Promise<FakeDamAnswer>((resolve) => (madePrivate = () => resolve({ status: 200, data: {} })))
+      // As core-dam answers it for an image: 204, with no body.
+      () => new Promise<FakeDamAnswer>((resolve) => (madePrivate = () => resolve({ status: 204 })))
     )
     const detail = await openDetail()
     const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
@@ -519,25 +550,62 @@ describe('metadata typed into the detail and not saved, when the detail is switc
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await eventually(() => expect(menu()).toBeNull())
     await detail.typeTitle('typed and not saved')
+    const typedInto = detail.title()
     await arrow(RIGHT)
     expect(detail.question()).not.toBeNull()
     let answerRead: () => void = () => undefined
-    server.assetBy('asset-2', () => new Promise((resolve) => (answerRead = () => resolve(onServer('asset-2')))))
+    server.assetBy('asset-2', () => new Promise((resolve) => (answerRead = () => resolve(image(null)))))
 
     madePrivate()
     await settled()
 
-    // The read has begun: the question is gone before it answers, and "Leave anyway" is not there to be pressed.
-    expect([detail.question(), reads('asset-2', 'asset-3')]).toEqual([null, [2, 0]])
+    // The read has begun, with no loader over the form: the question is still there, about the same field.
+    expect([detail.question() === null, reads('asset-2', 'asset-3'), route()]).toEqual([
+      false,
+      [2, 0],
+      ['File is public'],
+    ])
+    expect([detail.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([
+      true,
+      true,
+      'typed and not saved',
+    ])
 
     answerRead()
     await settled()
 
-    expect([detail.question(), detail.shown(), reads('asset-2', 'asset-3')]).toEqual([null, '2 / 3 asset-2', [2, 0]])
-    expect(detail.title().value).toBe('from the server')
-    // Nothing is left to ask about.
+    expect([detail.question() === null, detail.shown(), reads('asset-2', 'asset-3'), route()]).toEqual([
+      false,
+      '2 / 3 asset-2',
+      [2, 0],
+      ['File is private'],
+    ])
+    expect([detail.title() === typedInto, typedInto.value]).toEqual([true, 'typed and not saved'])
+    // And it is answered as it was asked: "Stay" keeps what was typed, "Leave anyway" takes the step.
+    await detail.answer(STAY)
+    expect([detail.question(), detail.shown(), typedInto.isConnected, reads('asset-3')]).toEqual([
+      null,
+      '2 / 3 asset-2',
+      true,
+      [0],
+    ])
     await arrow(RIGHT)
-    expect([detail.question(), detail.shown()]).toEqual([null, '3 / 3 asset-3'])
+    await detail.answer(LEAVE)
+    expect([detail.question(), detail.shown(), reads('asset-2', 'asset-3')]).toEqual([null, '3 / 3 asset-3', [2, 1]])
+  })
+
+  // A read of the detail that begins under the question, as the read of its asset after a bulk save begins.
+  it('are asked about by a question that goes when the detail goes behind its loader under it', async () => {
+    const detail = await openDetail()
+    const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+    await detail.typeTitle('typed and not saved')
+    await arrow(RIGHT)
+    expect(detail.question()).not.toBeNull()
+
+    useAssetDetailStore().showLoader()
+    await settled()
+
+    expect([detail.question(), shown(), reads('asset-3')]).toEqual([null, '2 / 3', [0]])
   })
 
   // An asset written into the detail without its loader, as the start of the application writes one.
@@ -558,19 +626,23 @@ describe('metadata typed into the detail and not saved, when the detail is switc
   /* Nothing in the page reaches the X of the detail under the open question; the detail is closed the same way
    * when its asset is deleted meanwhile, and emptied when a read of it fails or the list is mounted anew. The
    * question is drawn in the detail and goes with it, answered "stay": left open, it would be there again the next
-   * time a detail opens, about nothing. */
-  it.each<[string, (detail: Detail) => Promise<void>]>([
-    ['closed', async (detail) => detail.bar().close.click()],
+   * time a detail opens, about nothing.
+   *
+   * A closed detail leaves what was typed in the panel beside the list, an emptied one leaves nothing: after the
+   * first the pencil of another tile asks a question of its own, which is the page's. */
+  it.each<[string, (detail: Detail) => Promise<void>, boolean]>([
+    ['closed', async (detail) => detail.bar().close.click(), true],
     [
       'emptied',
       async () => {
         const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
         useAssetDetailStore().reset()
       },
+      false,
     ],
   ])(
     'are asked about by a question that goes with the detail %s under it: the next detail opens without it',
-    async (_how, gone) => {
+    async (_how, gone, typedIsKept) => {
       const detail = await openDetail()
       await detail.typeTitle('typed and not saved')
       await arrow(RIGHT)
@@ -583,8 +655,14 @@ describe('metadata typed into the detail and not saved, when the detail is switc
       expect(document.body.querySelectorAll('.v-dialog.v-overlay--active')).toHaveLength(0)
 
       detail.tiles[2].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
+      if (typedIsKept) {
+        await settled()
+        // A question of its own: the old one was answered as the detail closed, and its step is not taken.
+        expect([detail.question() === null, reads('asset-3')]).toEqual([false, [0]])
+        await detail.answer(LEAVE)
+      }
       await eventually(() => expect(detail.shown()).toBe('3 / 3 asset-3'))
-      expect(detail.question()).toBeNull()
+      expect([detail.question(), reads('asset-3')]).toEqual([null, [1]])
       // And the ways to the neighbour are open.
       await arrow(LEFT)
       expect([detail.question(), detail.shown()]).toEqual([null, '2 / 3 asset-2'])
@@ -656,5 +734,68 @@ describe('a switch of the form of the detail changed and not saved, when the det
     await arrow(LEFT)
 
     expect([detail.question(), detail.shown()]).toEqual([null, '2 / 3 asset-2'])
+  })
+})
+
+/* The list is walked from the active tile to its neighbour: at the last asset that was read there is none to the
+ * right, at the first none to the left. Further pages of the list are not read from the detail. */
+describe('the detail of the asset at an end of the list', () => {
+  it.each<[string, number, typeof RIGHT | typeof LEFT, 'next' | 'previous', 'next' | 'previous']>([
+    ['the last', 2, RIGHT, 'next', 'previous'],
+    ['the first', 0, LEFT, 'previous', 'next'],
+  ])(
+    'has nowhere to go from %s: the key and the button do nothing, and ask nothing',
+    async (_end, index, key, out, back) => {
+      const detail = await openDetail(index)
+      const id = `asset-${index + 1}`
+      const here = [`${index + 1} / 3 ${id}`, '/assets/' + id]
+      const untouched = detail.title()
+      expect([detail.bar()[out].disabled, detail.bar()[back].disabled]).toEqual([true, false])
+
+      // However long after the read of the asset: it is not read again, and the detail does not go behind its loader.
+      await later()
+      await arrow(key)
+      detail.bar()[out].click()
+      await settled()
+
+      expect([detail.shown(), address(), reads(id), detail.question()]).toEqual([...here, [1], null])
+      expect([detail.title() === untouched, untouched.isConnected]).toEqual([true, true])
+
+      // Nor is there anything to ask about metadata that were typed: no step would replace them.
+      await detail.typeTitle('typed and not saved')
+      await arrow(key)
+      detail.bar()[out].click()
+      await settled()
+
+      expect([detail.shown(), address(), reads(id), detail.question()]).toEqual([...here, [1], null])
+      expect([detail.title() === untouched, untouched.value]).toEqual([true, 'typed and not saved'])
+
+      // The other way is open, and asks as it does anywhere in the list.
+      detail.bar()[back].click()
+      await settled()
+      expect(detail.question()).not.toBeNull()
+      await detail.answer(LEAVE)
+      expect([detail.shown(), address()]).toEqual(['2 / 3 asset-2', '/assets/asset-2'])
+      expect([detail.bar().previous.disabled, detail.bar().next.disabled]).toEqual([false, false])
+    }
+  )
+
+  // The bar under the loader counts as the bar of the detail does: the first asset is at place one.
+  it.each([
+    ['first', 0],
+    ['second', 1],
+  ])('says the place of the %s asset in the list while it is being read', async (_which, index) => {
+    const list = await openList()
+    const id = `asset-${index + 1}`
+    let answer: () => void = () => undefined
+    server.assetBy(id, () => new Promise((resolve) => (answer = () => resolve(onServer(id)))))
+
+    list.tiles[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
+    await settled()
+
+    expect([shown(), document.body.querySelector('.dam-image-detail textarea')]).toEqual([`${index + 1} / 3`, null])
+
+    answer()
+    await eventually(() => expect(shown()).toBe(`${index + 1} / 3 ${id}`))
   })
 })

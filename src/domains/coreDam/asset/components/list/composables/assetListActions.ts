@@ -3,6 +3,7 @@ import {
   SortOrder,
   UploadQueueItemType,
   arrayItemToggle,
+  assetFileIsVideoFile,
   browserHistoryReplaceUrlByRouter,
   isNull,
   isUndefined,
@@ -23,6 +24,7 @@ import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/curr
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
@@ -111,6 +113,29 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
     return asset
   }
+
+  /* With the detail closed the panel beside the list holds what was typed into it, and the read of an asset replaces
+   * it: asked about first. Not when nothing is read, which is so for the asset the panel holds, read a moment ago:
+   * its tile and its pencil leave what was typed where it is. While the question is open every such step is one more
+   * ask, and is told to stay. */
+  const readReplacesUnsavedOfPanel = (assetId: DocId) =>
+    assetDetailStore.panelHoldsUnsavedMetadata &&
+    (assetDetailStore.leaveUnsavedQuestion || !checkQuickDetailReFetch(assetId))
+
+  /* Asks, and once told to leave answers where the asset is by then: the list can be read anew under the open
+   * question, and the index the click brought is then another asset's, or nobody's. `null` to stay where it is. */
+  const leaveUnsavedFor = async <T extends { assetId: DocId; index: number }>(clicked: T) => {
+    if (!(await assetDetailStore.askToLeaveUnsaved())) return null
+    // At the place it was clicked while its asset is still there: listed twice, it would be found at its first place.
+    if (assetListStore.list[clicked.index]?.asset.id === clicked.assetId) return clicked
+    const index = assetListStore.list.findIndex((item) => item.asset.id === clicked.assetId)
+
+    return index < 0 ? null : { ...clicked, index }
+  }
+
+  /** The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list. */
+  const neighbourOfActive = (step: 1 | -1): AssetListItem | undefined =>
+    assetListStore.list[(assetListStore.activeItemIndex ?? 0) + step]
 
   /* The library replaces the value of the ref it is handed before it returns, so each request gets
    * its own and only the answer that still owns the list is copied back - a stale one told the new
@@ -242,7 +267,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     filterIsTouched.value = false
   }
 
-  const showDetail = async (data: { assetId: DocId; index: number }) => {
+  const showDetail = async (clicked: { assetId: DocId; index: number; leavesList?: boolean }) => {
+    // Not asked of a click that leaves the list as well: "stay" could not keep its word.
+    const asks = !clicked.leavesList && readReplacesUnsavedOfPanel(clicked.assetId)
+    const data = asks ? await leaveUnsavedFor(clicked) : clicked
+    if (isNull(data)) return
     assetDetailStore.setView('list')
     assetListStore.keyboardNavigationEnable()
     assetListStore.setActiveByIndex(data.index)
@@ -278,14 +307,36 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
+  /* Reads again the asset the detail holds, in the dialog and in the panel beside the list alike: the address of its
+   * file has changed. The active tile can be of another asset - the detail of a queue row is not of the list. */
   const refreshActiveItem = async () => {
-    const activeAsset = assetListStore.getActiveAsset()
-    if (isNull(activeAsset)) return
+    const held = assetDetailStore.asset
+    if (isNull(held)) return
+    /* Metadata that were not saved stay as they are, in the form they were typed into: no loader goes over it, and of
+     * the answer only the route of the file is taken - the one thing the change touched. The rest stays as the form
+     * was read, the processing status of the file with it: "Save" is held back by that, and would come free over a
+     * form older than what the server has since filled in. An open question is not answered by it either. */
+    if (assetDetailStore.metadataAreTouched) {
+      try {
+        const res = await apiFetchAsset(held.id)
+        // Only into the very asset it was read for: not into another one, nor into this one read anew since.
+        if (assetDetailStore.asset !== held) return
+        const file = held.mainFile
+        const read = res.mainFile
+        if (!file || !read || assetFileIsVideoFile(file) || assetFileIsVideoFile(read)) return
+        file.mainRoute = read.mainRoute
+      } catch (error) {
+        if (assetDetailStore.asset !== held || !onPage()) return
+        showErrorsDefault(error)
+      }
+
+      return
+    }
 
     assetDetailStore.showLoader()
     const detailRequest = assetDetailStore.startDetailRequest()
     try {
-      const res = await fetchAsset(activeAsset.asset.id, detailRequest)
+      const res = await fetchAsset(held.id, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       assetDetailStore.setAsset(res)
       addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
@@ -302,7 +353,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
-  const onItemClick = async (data: { assetId: DocId; index: number }) => {
+  const onItemClick = async (clicked: { assetId: DocId; index: number }) => {
+    const data = readReplacesUnsavedOfPanel(clicked.assetId) ? await leaveUnsavedFor(clicked) : clicked
+    if (isNull(data)) return
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     const detailRequest = assetDetailStore.startDetailRequest()
@@ -394,8 +447,12 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const nextItem = async () => {
+    // Found first: at the end of the list there is nowhere to go, so nothing to ask about, to show or to read.
+    const target = neighbourOfActive(1)
+    if (isUndefined(target)) return
     // The read of the next asset replaces what the detail holds: metadata that were not saved go only when told to.
     if (assetDetailStore.showsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
+    if (readReplacesUnsavedOfPanel(target.asset.id) && !(await assetDetailStore.askToLeaveUnsaved())) return
     assetListStore.setActiveNext()
     if (isNull(assetListStore.activeItemIndex)) return
     // Before the loader goes up: the active index outlives the list, and this threw with it up.
@@ -404,7 +461,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.showLoader()
     const newAssetId = nextAsset.asset.id
     const detailRequest = assetDetailStore.startDetailRequest()
-    browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
+    // The address is of the open detail: with none open the list is walked, and its address stays.
+    if (assetDetailStore.detail) {
+      browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
+    }
     if (checkQuickDetailReFetch(newAssetId)) {
       assetDetailStore.hideLoader()
       return
@@ -431,8 +491,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const prevItem = async () => {
-    // The same as `nextItem`: asked first.
+    // The same as `nextItem`: nowhere to go from the first one, and asked first.
+    const target = neighbourOfActive(-1)
+    if (isUndefined(target)) return
     if (assetDetailStore.showsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
+    if (readReplacesUnsavedOfPanel(target.asset.id) && !(await assetDetailStore.askToLeaveUnsaved())) return
     assetListStore.setActivePrev()
     if (isNull(assetListStore.activeItemIndex)) return
     // The same as `nextItem`: the index outlives the list it points into.
@@ -441,7 +504,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetDetailStore.showLoader()
     const newAssetId = prevAsset.asset.id
     const detailRequest = assetDetailStore.startDetailRequest()
-    browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
+    if (assetDetailStore.detail) {
+      browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
+    }
     if (checkQuickDetailReFetch(newAssetId)) {
       assetDetailStore.hideLoader()
       return
@@ -479,6 +544,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.keyboardNavigationDisable()
     // The list is going; a detail it asked for must not answer onto whatever replaces it.
     assetDetailStore.abandonDetailRequests()
+    // Nor is its page there to draw a question: left open, it would wait for ever and tell the next ask to stay.
+    assetDetailStore.answerLeaveUnsaved(false)
   }
 
   /* The keys are heard on the whole window, so also with a dialog or a menu open over the detail. The read of the
@@ -487,15 +554,19 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const detailIsUnderDialogOrMenu = () =>
     assetDetailStore.detail && anotherDialogOrMenuIsOpen('.' + ASSET_DETAIL_DIALOG_CLASS)
 
+  /* A detail opened from elsewhere than the list - the edit of a queue row, an asset just created - is of no tile:
+   * the keys would read the neighbour of whatever tile is active into it. */
+  const detailIsNotOfList = () => assetDetailStore.detail && assetDetailStore.view !== 'list'
+
   const onArrowRight = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
-    if (detailIsUnderDialogOrMenu()) return
+    if (detailIsNotOfList() || detailIsUnderDialogOrMenu()) return
     await nextItem()
   }
 
   const onArrowLeft = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
-    if (detailIsUnderDialogOrMenu()) return
+    if (detailIsNotOfList() || detailIsUnderDialogOrMenu()) return
     await prevItem()
   }
 
@@ -525,6 +596,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     onItemClick,
     prevItem,
     nextItem,
+    neighbourOfActive,
     onArrowRight,
     onArrowLeft,
   }

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ADamAssetImage, ADamAssetImageRoiSelect, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { ADamAssetImage, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
-import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import ExternalProviderAssetDetailDialogSidebar from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
@@ -23,7 +21,6 @@ const { t } = useI18n()
 const { toolbarColor } = useTheme()
 
 const imageLoading = ref(true)
-const { activeTab } = useAssetDetailTab()
 
 const externalProviderAssetDetailStore = useExternalProviderAssetDetailStore()
 const externalProviderAssetListStore = useExternalProviderAssetListStore()
@@ -89,8 +86,6 @@ const totalCountText = computed(() => {
     (pagination.value.hasNextPage ? '+' : '')
   )
 })
-
-const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
@@ -194,16 +189,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
         </VToolbar>
         <div class="d-flex w-100 h-100 position-relative">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div
-              v-if="activeTab === AssetDetailTab.ROI"
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
-              <ADamAssetImageRoiSelect :ext-system="currentExtSystemId" />
-            </div>
-            <div
-              v-else
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <div
                 v-if="imageLoading && isTypeImage"
                 class="d-flex w-100 h-100 align-center justify-center"

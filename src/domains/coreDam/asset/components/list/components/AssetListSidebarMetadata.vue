@@ -17,6 +17,7 @@ import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
@@ -48,6 +49,7 @@ const {
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
+const assetListStore = useAssetListStore()
 const uploadQueueStore = useUploadQueuesStore()
 
 // Saved before the server has processed the file, the form would overwrite what it fills in from the file.
@@ -56,6 +58,12 @@ const saveBlocked = computed(() => !isNull(asset.value) && metadataMayStillChang
 const { showRecordWas, showValidationError } = useAlerts()
 
 const onEditMore = async () => {
+  /* The view stays as the detail opened last left it, so it is set here as well. Of the list only while the panel
+   * holds the asset of the active tile: it can hold one of a queue row, or one just created, and the detail would
+   * walk the list from a tile that is not its own. */
+  const held = assetDetailStore.asset
+  const ofActiveTile = !isNull(held) && assetListStore.getActiveAsset()?.asset.id === held.id
+  assetDetailStore.setView(ofActiveTile ? 'list' : 'queue')
   assetDetailStore.showDetail()
   if (!assetDetailStore.asset) return
   browserHistoryReplaceUrlByRouter(router, {

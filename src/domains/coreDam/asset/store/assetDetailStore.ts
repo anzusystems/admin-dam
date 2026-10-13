@@ -60,6 +60,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   let leaveUnsavedAnswer: ((leave: boolean) => void) | null = null
   /** Not under the loader: the form is not shown then, and the asset it was of has been left already. */
   const showsUnsavedMetadata = computed(() => detail.value && !loader.value && metadataAreTouched.value)
+  /** The same with the detail closed: the panel beside the list is the form then, whether it is in view or not. */
+  const panelHoldsUnsavedMetadata = computed(() => !detail.value && !loader.value && metadataAreTouched.value)
 
   /** Asks whether to leave the metadata that were not saved; one question at a time, another ask meanwhile stays. */
   function askToLeaveUnsaved() {
@@ -88,7 +90,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function hideDetail() {
     // Only the dialog: the requests stay, because the panel on the right reads this same store.
     detail.value = false
-    // The question is drawn in the dialog: nobody could answer it any more.
+    // The question was about a step of the dialog: it goes with it, not on to the page of the list.
     answerLeaveUnsaved(false)
   }
 
@@ -151,13 +153,15 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function setDeleting() {
     if (!asset.value) return
     asset.value.attributes.assetStatus = DamAssetStatus.Deleting
+    // What was typed into it has nowhere to be saved: it is not asked about, and no "Save" stands out for it.
+    metadataAreTouched.value = false
   }
 
   function reset() {
     abandonDetailRequests()
     /* The cache keys off these two, so leaving them behind meant a click within five seconds of a
      * reset short-circuited to a detail that is no longer loaded - a fullscreen dialog with no
-     * content and no way out but Esc. */
+     * content and no way out: the dialogs are persistent, Esc does not close one. */
     lastFetchedId.value = ''
     lastFetched.value = 0
     asset.value = null
@@ -190,6 +194,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     ttsAudio,
     leaveUnsavedQuestion,
     showsUnsavedMetadata,
+    panelHoldsUnsavedMetadata,
     askToLeaveUnsaved,
     answerLeaveUnsaved,
     startDetailRequest,

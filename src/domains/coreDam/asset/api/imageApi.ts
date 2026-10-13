@@ -155,14 +155,16 @@ export const makePublic = (imageId: DocId) => {
   })
 }
 
+/* The server answers 204 with no body, though it documents a body: either is the change gone through. Nothing reads
+ * what it answers with. */
 export const makePrivate = (imageId: DocId) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const url = END_POINT + '/' + imageId + '/make-private'
     damClient()
       .patch(url)
       .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
+        if (res.status === HTTP_STATUS_OK || res.status === HTTP_STATUS_NO_CONTENT) {
+          resolve()
         } else {
           //
           reject()

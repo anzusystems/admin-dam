@@ -146,14 +146,15 @@ export const makePublic = (documentId: DocId, slug: string) => {
   })
 }
 
+// As for an image: 204 with no body today, a body documented. Either is the change gone through.
 export const makePrivate = (documentId: DocId) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const url = END_POINT + '/' + documentId + '/make-private'
     damClient()
       .patch(url)
       .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
+        if (res.status === HTTP_STATUS_OK || res.status === HTTP_STATUS_NO_CONTENT) {
+          resolve()
         } else {
           //
           reject()

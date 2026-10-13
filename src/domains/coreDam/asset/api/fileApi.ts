@@ -332,7 +332,7 @@ export const makePublicFile = (assetType: DamAssetTypeType, assetFileId: DocId, 
 }
 
 export const makePrivateFile = (assetType: DamAssetTypeType, assetFileId: DocId) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageMakePrivate(assetFileId)

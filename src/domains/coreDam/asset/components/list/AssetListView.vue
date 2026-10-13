@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DatatableOrderingOption } from '@anzusystems/common-admin'
-import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin'
+import { ADatatableOrdering, AUnsavedConfirmDialog, DatatablePaginationKey } from '@anzusystems/common-admin'
 import { onKeyUp } from '@vueuse/core'
 import { computed, onMounted, onUnmounted, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -22,6 +22,7 @@ import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/Asset
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import MainWrapper from '@/domains/system/components/MainWrapper.vue'
 import { GridView, useGridView } from '@/domains/system/composables/gridView'
@@ -33,6 +34,7 @@ const loadOnScroll = true
 
 const { gridView } = useGridView()
 const { sidebarRight } = useMainWrapper()
+const assetDetailStore = useAssetDetailStore()
 
 const {
   loader,
@@ -141,6 +143,11 @@ onUnmounted(() => {
       >
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
+      <!-- Of the panel beside the list: with the detail open the question is the detail's, a dialog over it. -->
+      <AUnsavedConfirmDialog
+        :model-value="assetDetailStore.leaveUnsavedQuestion && !assetDetailStore.detail"
+        @resolve="assetDetailStore.answerLeaveUnsaved"
+      />
     </template>
     <template #main-bar-middle>
       <AssetToolbarSearch />

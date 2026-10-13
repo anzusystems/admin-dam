@@ -46,7 +46,7 @@ const { activeTab } = useAssetDetailTab()
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
-const { pagination } = useAssetListActions() // todo
+const { pagination, neighbourOfActive } = useAssetListActions() // todo
 const { asset } = storeToRefs(assetDetailStore)
 
 const closeDialog = () => {
@@ -164,7 +164,7 @@ const { can } = useAuth()
     :class="ASSET_DETAIL_DIALOG_CLASS"
   >
     <AUnsavedConfirmDialog
-      :model-value="assetDetailStore.leaveUnsavedQuestion"
+      :model-value="assetDetailStore.leaveUnsavedQuestion && assetDetailStore.detail"
       @resolve="assetDetailStore.answerLeaveUnsaved"
     />
     <AssetDetailDialogLoader
@@ -190,6 +190,7 @@ const { can } = useAuth()
               class="mx-1"
               :width="36"
               :height="36"
+              :disabled="!neighbourOfActive(-1)"
               @click.stop="prevItem"
             >
               <VIcon icon="mdi-chevron-left" />
@@ -206,6 +207,7 @@ const { can } = useAuth()
               class="mr-2"
               :width="36"
               :height="36"
+              :disabled="!neighbourOfActive(1)"
               @click.stop="nextItem"
             >
               <VIcon icon="mdi-chevron-right" />

@@ -31,7 +31,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'showDetail', data: { assetId: DocId; index: number }): void
+  (e: 'showDetail', data: { assetId: DocId; index: number; leavesList?: boolean }): void
   (e: 'itemClick', data: { assetId: DocId; index: number }): void
   (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
   (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
@@ -51,6 +51,14 @@ const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
+}
+
+/* The edit button is a link as well. A plain click of it goes on to the page of the detail, whatever the list does
+ * with it; a click the router leaves to the browser (a modifier key held: a new tab, a new window, a download) keeps
+ * the list. The conditions are the router's own. */
+const followDetailLink = (event: MouseEvent) => {
+  const leavesList = !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) && event.button === 0
+  emit('showDetail', { assetId: asset.value.id, index: props.index, leavesList })
 }
 
 const onItemClick = () => {
@@ -149,7 +157,7 @@ onMounted(() => {
         <ATableEditButton
           :record-id="asset.id"
           :route-name="'/(coreDam)/assets/[id]'"
-          @click.stop="showDetail"
+          @click.stop="followDetailLink"
         />
       </div>
     </td>

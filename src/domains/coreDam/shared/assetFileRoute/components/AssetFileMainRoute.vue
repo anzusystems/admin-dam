@@ -28,9 +28,10 @@ const emit = defineEmits<{
 
 const makeFilePrivateDialog = ref(false)
 const loading = ref(false)
+const menu = ref(false)
 const makeFilePrivateDialogFileId = ref<DocId>('')
 
-const { showErrorsDefault } = useAlerts()
+const { showErrorsDefault, showUnknownError } = useAlerts()
 const { can } = useAuth()
 
 const canChangeRoute = computed(() => can(assetTypeAcl(props.assetType, 'update')))
@@ -40,15 +41,28 @@ const openMakeFilePrivateDialog = (fileId: DocId) => {
   makeFilePrivateDialog.value = true
 }
 
+/* Told only once the change went through: after one that failed there is nothing new to read. The menu goes with
+ * it: the form stays mounted over a read that keeps metadata that were not saved, and the menu stayed open in it,
+ * by then offering the opposite action. */
+const routeChanged = () => {
+  menu.value = false
+  emit('mainRouteChanged')
+}
+
 const makePrivate = async () => {
+  /* One at a time: the item stays in the open menu while the request is on its way, and a second one would be
+   * refused - the route is gone by then - over a change that went through. */
+  if (loading.value) return
   try {
     loading.value = true
     await makePrivateFile(props.assetType, props.assetFile.id)
   } catch (e) {
-    showErrorsDefault(e)
-  } finally {
-    emit('mainRouteChanged')
+    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    if (!showErrorsDefault(e)) showUnknownError()
+    loading.value = false
+    return
   }
+  routeChanged()
   loading.value = false
 }
 const { t } = useI18n()
@@ -57,7 +71,10 @@ const { t } = useI18n()
 <template>
   <AssetFileRouteStatus :asset-file-route="assetFile" />
 
-  <VMenu v-if="assetFile.mainRoute || canChangeRoute">
+  <VMenu
+    v-if="assetFile.mainRoute || canChangeRoute"
+    v-model="menu"
+  >
     <template #activator="{ props: activatorProps }">
       <VBtn
         variant="text"
@@ -109,6 +126,6 @@ const { t } = useI18n()
     :asset-type="assetType"
     :file-id="assetFile.id"
     :title="title"
-    @after-update="emit('mainRouteChanged')"
+    @after-update="routeChanged"
   />
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTheme } from '@anzusystems/common-admin'
+import { isNull, useTheme } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -24,7 +24,7 @@ const assetDetailStore = useAssetDetailStore()
 const { pagination } = useAssetListActions() // todo
 
 const totalCountText = computed(() => {
-  if (!assetListStore.activeItemIndex) return ''
+  if (isNull(assetListStore.activeItemIndex)) return ''
   return (
     assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.value.hasNextPage ? '+' : '')
   )

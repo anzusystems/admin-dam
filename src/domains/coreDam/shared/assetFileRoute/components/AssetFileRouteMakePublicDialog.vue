@@ -37,7 +37,7 @@ const onCancel = () => {
   modelValue.value = false
 }
 
-const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
+const { showRecordWas, showValidationError, showErrorsDefault, showUnknownError } = useAlerts()
 
 const modelValueComputed = computed(() => {
   return modelValue.value
@@ -69,6 +69,8 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, { slug })
 
 const onConfirm = async () => {
+  // One at a time: the button only spins meanwhile, and a key pressed on it, still in focus, is a click again.
+  if (buttonLoading.value) return
   buttonLoading.value = true
   v$.value.$touch()
   if (v$.value.$invalid) {
@@ -81,12 +83,15 @@ const onConfirm = async () => {
 
     showRecordWas('updated')
   } catch (e) {
-    showErrorsDefault(e)
+    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    if (!showErrorsDefault(e)) showUnknownError()
+    return
   } finally {
     buttonLoading.value = false
     onCancel()
-    emit('afterUpdate')
   }
+  // Only once it went through: after a change that failed there is nothing new to read.
+  emit('afterUpdate')
 }
 </script>
 
