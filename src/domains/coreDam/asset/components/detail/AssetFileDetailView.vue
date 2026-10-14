@@ -11,7 +11,7 @@ import {
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import { nextTick, onMounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -84,7 +84,11 @@ const readAsset = async (read: () => ReturnType<typeof fetchAsset>) => {
     addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
     fetchCachedUsers()
   } catch (error) {
-    if (!assetDetailStore.isCurrentDetailRequest(detailRequest) || !onPage()) return
+    if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
+    /* Cleared, as the list clears its detail: read again after a change of its file, the asset the page drew is the
+     * one from before the change, and would be left there under a working "Save". The first read has none yet. */
+    assetDetailStore.reset()
+    if (!onPage()) return
     showErrorsDefault(error)
   } finally {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
@@ -114,12 +118,12 @@ const getDetail = async () => {
 /* The detail tells of a change of the file of its asset: it is read again, by its own id - the file the address of
  * the page names can be the very one that was deleted, and is not found any more. Not once the page is left, which
  * the answer of the change can outlast. */
-provideAssetFileChanged(() => {
+provideAssetFileChanged((byServer) => {
   if (!onPage()) return
   readAfterFileChange(async () => {
     const held = assetDetailStore.asset
     if (held) await readAsset(() => fetchAsset(held.id))
-  })
+  }, byServer)
 })
 
 const resetAllStores = () => {
@@ -133,11 +137,18 @@ const resetAllStores = () => {
 const { currentExtSystemId } = useCurrentExtSystem()
 const { can } = useAuth()
 
+// The first read waits a moment: called off when the page is left before it, or it would read for the page after.
+let firstRead: ReturnType<typeof setTimeout> | undefined
+
 onMounted(() => {
   resetAllStores()
-  setTimeout(() => {
+  firstRead = setTimeout(() => {
     getDetail()
   }, 100)
+})
+
+onUnmounted(() => {
+  clearTimeout(firstRead)
 })
 </script>
 

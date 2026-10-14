@@ -5,6 +5,7 @@ import {
   AssetFileProcessStatus,
   DamAssetType as AssetTypeValue,
   isNull,
+  useAlerts,
 } from '@anzusystems/common-admin'
 import type {
   AssetFileImage,
@@ -38,6 +39,7 @@ const emit = defineEmits<{
 const modelValue = defineModel<AssetFileImagePreviewNullable>({ required: true })
 
 const { t } = useI18n()
+const { showErrorsDefault, showUnknownError } = useAlerts()
 
 const loading = ref(false)
 const dialog = ref(false)
@@ -48,8 +50,14 @@ const imageFile = ref<null | AssetFileImage>(null)
 // The reads of an image, counted: the answer for an image the card holds no more is dropped.
 let latestImageRead = 0
 
+/* The read of the image the card holds has failed: nothing is known of that image then, neither its picture nor how
+ * far it is processed. The card says neither, and stays as it is for an image: with its buttons, by which the image
+ * is taken away or another one picked. */
+const readFailed = ref(false)
+
 const fetchImage = async (id: DocId) => {
   const asked = ++latestImageRead
+  readFailed.value = false
   /* Put back, the image the card has read last needs no read: with the server away that read would not end. One
    * read as processed, that is: of an image that was still being processed, a read says how far it has got. */
   if (imageFile.value?.id === id && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) {
@@ -58,10 +66,16 @@ const fetchImage = async (id: DocId) => {
     return
   }
   loading.value = true
-  const read = await fetchImageFile(id)
-  if (asked !== latestImageRead) return
-  imageFile.value = read
-  loading.value = false
+  try {
+    const read = await fetchImageFile(id)
+    if (asked === latestImageRead) imageFile.value = read
+  } catch (e) {
+    if (asked !== latestImageRead) return
+    readFailed.value = true
+    if (!showErrorsDefault(e)) showUnknownError()
+  } finally {
+    if (asked === latestImageRead) loading.value = false
+  }
 }
 
 const { currentAssetLicenceId } = useCurrentAssetLicence()
@@ -75,8 +89,9 @@ const imagePreviewModel = computed({
   },
 })
 
-// What the card shows of it: nothing while it holds no image, whoever took the image away.
-const shownFile = computed(() => (isNull(imagePreviewModel.value) ? null : imageFile.value))
+/* What the card shows of it: nothing while it holds no image, whoever took the image away, nor once the read of the
+ * image it holds has failed - the image read last is another one. */
+const shownFile = computed(() => (isNull(imagePreviewModel.value) || readFailed.value ? null : imageFile.value))
 
 const src = computed(() => {
   if (shownFile.value && shownFile.value.links?.image_detail) return shownFile.value.links.image_detail.url
@@ -99,7 +114,7 @@ const isProcessed = computed(() => {
 })
 
 const isProcessing = computed(() => {
-  if (imagePreviewModel.value === null) return false
+  if (imagePreviewModel.value === null || readFailed.value) return false
   if (isProcessed.value || isFailed.value || isDuplicate.value) return false
   return true
 })

@@ -279,6 +279,12 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
             if (assetDetailStore.asset?.id === asset.id && assetDetailStore.asset.mainFile === null && asset.mainFile) {
               assetDetailStore.asset.mainFile = asset.mainFile
             }
+            /* Every read made for a row comes here - the poll of a queue, the read a notification asks for, the
+             * refresh button: a detail or a panel that holds the asset with its main file still on its way learns
+             * here that the server has processed it. */
+            if (asset.mainFile?.fileAttributes?.status === AssetFileProcessStatus.Processed) {
+              assetDetailStore.mainFileProcessed(asset.id, asset.mainFile.id)
+            }
           },
           /* The status of a mass-edit row is its batch load's. A processed file takes the error of the row away - not
            * the missing-metadata one, which is still true and cleared where it stops being - and gives a row whose

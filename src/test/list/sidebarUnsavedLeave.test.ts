@@ -28,9 +28,6 @@ const OTHER_LICENCE = /^\/adm\/v1\/asset-licence\/2$/
 const CURRENT_USER = /^\/adm\/users\/current$/
 const PROVIDER = 'provider-1'
 const PROVIDER_LIST = /^\/adm\/v1\/asset-external-provider\/provider-1\/search$/
-const DOWNLOAD_LINK = /^\/adm\/v1\/video\/file-1\/download-link$/
-/** The address the server signs for the download of a file: answered as an attachment, on another origin. */
-const SIGNED = 'https://storage.test/file-1?signature=1'
 
 const UNSAVED = 'Unsaved changes'
 const STAY = 'Stay'
@@ -347,7 +344,6 @@ beforeEach(() => {
   // The window is one for the whole file, and so is its address. It is not to be reloaded under the cases.
   window.history.replaceState(null, '', LIST)
   reload = vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
-  server.on('GET', DOWNLOAD_LINK, () => ({ status: 200, data: { link: SIGNED } }))
 })
 
 afterEach(() => {
@@ -711,63 +707,6 @@ describe('metadata typed and not saved, when the window is reloaded or closed', 
     expect(windowAsksBeforeItGoes()).toBe(false)
   })
 
-  /* The file of an asset is downloaded by a link of the detail, followed in the tab of the page. The server answers
-   * it as an attachment and the page stays where it is, but the browser announces it as it announces any
-   * navigation - in the task of the click or in one soon after it. Asked about, "Cancel" would stop the download. */
-  describe('and a file is downloaded from the detail', () => {
-    /* The window of the test follows a link of its own tab by taking the address of the link, the file it would
-     * download in a browser: put back after each case. */
-    const home = window.location.href
-    afterEach(() => {
-      ;(window as unknown as { happyDOM: { setURL: (url: string) => void } }).happyDOM.setURL(home)
-    })
-
-    /** The detail of the second asset with metadata typed into it, and the link of its file in the open dialog. */
-    const withTheLinkOfTheFile = async () => {
-      const list = await openList()
-      list.pencil(1).click()
-      await eventually(() => expect(held()).toBe('asset-2'))
-      await typeInto(detail()!.querySelector<HTMLTextAreaElement>('textarea')!)
-      detail()!.querySelector<HTMLButtonElement>('[data-cy="button-download"]')!.click()
-
-      return eventually(() => {
-        const link = document.body.querySelector<HTMLAnchorElement>('[data-cy="button-download-file"]')
-        expect(link?.getAttribute('href')).toBe(SIGNED)
-
-        return link!
-      })
-    }
-
-    it('do not make it ask for the navigation of the download, and make it ask for the one after', async () => {
-      const link = await withTheLinkOfTheFile()
-      // With the dialog open and the link not pressed, a window that goes is asked about.
-      expect(windowAsksBeforeItGoes()).toBe(true)
-
-      link.click()
-      await vi.advanceTimersByTimeAsync(300)
-
-      expect(windowAsksBeforeItGoes()).toBe(false)
-      // The link is followed as it always was: its own address, in this tab, with nothing set on it.
-      expect([window.location.href, link.getAttribute('target'), link.hasAttribute('download')]).toEqual([
-        SIGNED,
-        null,
-        false,
-      ])
-      // That one navigation only: a reload or a closed window right after it is asked about.
-      expect(windowAsksBeforeItGoes()).toBe(true)
-    })
-
-    // A press the browser announced nothing for is not held against the window for long.
-    it('make it ask again once the moment of a download has passed with no navigation', async () => {
-      const link = await withTheLinkOfTheFile()
-
-      link.click()
-      await vi.advanceTimersByTimeAsync(1_500)
-
-      expect(windowAsksBeforeItGoes()).toBe(true)
-    })
-  })
-
   // What the browser is told goes with the page: another page has nothing of the list to lose.
   it('do not make it ask once the page of the list is left, whatever its detail is left holding', async () => {
     const list = await openList()
@@ -861,8 +800,10 @@ describe('metadata typed into the panel beside the list and not saved, when the 
 
 /* The upload queue, the create button and the dialog of the licence are drawn on every page with the bar of the
  * application, the page of the list of an external provider among them - and the question about what was not saved
- * only on the page of the list of DAM. The detail they write into is emptied as that page is left: on another page
- * there is nothing of it to ask about, and nothing to draw the question that would be waited for. */
+ * only on the page of the list of DAM. The detail of DAM is emptied as that page is left: on another page there is
+ * nothing of it to ask about, and nothing to draw the question that would be waited for. On the page of the provider
+ * the asset of a queue row and an asset just created are shown in a new tab of the browser, which is a fake here
+ * (`externalProviderNewTab.test.ts`). */
 describe('the page of the list of an external provider, come to from metadata typed and not saved', () => {
   /** The page of the provider, left for with "Leave anyway". */
   const onTheProviderPage = async () => {
@@ -878,6 +819,7 @@ describe('the page of the list of an external provider, come to from metadata ty
 
   it('creates an empty asset at once: nothing is asked, and nothing waits for an answer', async () => {
     const list = await onTheProviderPage()
+    vi.stubGlobal('open', () => null)
 
     const dialog = await list.openCreate()
     dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
@@ -886,13 +828,16 @@ describe('the page of the list of an external provider, come to from metadata ty
     expect(questions()).toEqual([])
   })
 
-  it('reads the asset of a row of the upload queue at once', async () => {
+  it('opens the asset of a row of the upload queue at once', async () => {
     const list = await onTheProviderPage()
+    const open = vi.fn<(...asked: unknown[]) => null>(() => null)
+    vi.stubGlobal('open', open)
     await list.openUploadQueue()
 
     await list.editRow()
 
-    expect([questions(), reads()]).toEqual([[], [0, 1, 0, 1]])
+    // In a new tab: nothing is read for it on this page.
+    expect([questions(), reads(), open.mock.calls.length]).toEqual([[], [0, 1, 0, 0], 1])
   })
 
   it('changes the licence at once', async () => {

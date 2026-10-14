@@ -236,8 +236,16 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                   data-cy="button-slot-download"
                   @click.stop="downloadFile"
                 />
+                <!-- Only a processed file: the server would take any, and the asset would be left with a main file
+                     that has no picture, or one it still waits for. -->
                 <VListItem
-                  v-if="totalSlotCount > 1 && item && !item.main && canUpdateAssetAndFile"
+                  v-if="
+                    totalSlotCount > 1 &&
+                    item &&
+                    !item.main &&
+                    canUpdateAssetAndFile &&
+                    statusComputed === AssetFileProcessStatus.Processed
+                  "
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
                   @click.stop="makeMainFile"
                 />

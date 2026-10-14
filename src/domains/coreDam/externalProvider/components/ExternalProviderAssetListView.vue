@@ -8,6 +8,7 @@ import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
 import ExternalProviderAssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/ExternalProviderAssetToolbarSearch.vue'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { provideAssetOpensInNewTab } from '@/domains/coreDam/asset/composables/assetInNewTab'
 import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,
@@ -54,6 +55,9 @@ const {
 
 provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
+/* The upload queue and "Create empty asset" are drawn on this page too, and the detail they open is not: only the
+ * detail of the provider is. */
+provideAssetOpensInNewTab()
 
 const autoloadOnIntersect = (isIntersecting: boolean) => {
   if (isIntersecting && pagination.value.hasNextPage === true) {

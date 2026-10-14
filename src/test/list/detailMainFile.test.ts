@@ -924,9 +924,9 @@ describe('the slots of an asset, after a change of its main file with nothing ty
     expect([reads(), server.slotReads(ASSET) - slotsRead]).toEqual([2, 1])
   })
 
-  /* A page of a detail draws the asset it had again when the whole read fails: the tab is mounted anew, and its own
-   * read is the one that brings the slots as they are after the change. */
-  it('are read once, and as they are by then, when the whole read fails on the page of an asset', async () => {
+  /* A page of a detail draws no asset once the whole read failed, as the list closes its detail: there is no tab
+   * left to read the slots for. */
+  it('are not read when the whole read fails on the page of an asset, which draws the asset no more', async () => {
     const detail = await openDetail(onThePageOfTheAsset)
     await detail.openSlots()
     const slotsRead = server.slotReads(ASSET)
@@ -936,9 +936,13 @@ describe('the slots of an asset, after a change of its main file with nothing ty
 
     await detail.makeMain('extra')
     await eventually(() => expect(detail.ui.alerts()).toEqual([SYSTEM_ERROR]))
-    await eventually(() => expect([detail.slot('default').main, detail.slot('extra').main]).toEqual([false, true]))
     await settled()
 
-    expect([reads(), server.slotReads(ASSET) - slotsRead]).toEqual([2, 1])
+    expect([reads(), server.slotReads(ASSET) - slotsRead, detail.slotsDrawn(), detail.title()]).toEqual([
+      2,
+      0,
+      false,
+      null,
+    ])
   })
 })

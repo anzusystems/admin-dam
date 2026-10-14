@@ -45,26 +45,47 @@ const showVideoFile = (file: AssetFileVideo) => {
   savedImagePreview = file.imagePreview
 }
 
-const activeSlotChange = async (slot: null | AssetSlot) => {
-  if (!slot || !slot.assetFile) return
+/* The reads of the file the card is to show, counted: two changes of the slot close after each other start two of
+ * them, and the answer of the older can come last. Only the one asked for last is shown, and the card spins until
+ * that one is answered. */
+let latestFileRead = 0
+
+/* A read that failed leaves the card with no file. The one read before it is of another slot than the select above
+ * the card says by now, and what is picked in the card is saved for the file the card shows. */
+const readVideoFile = async (fileId: DocId) => {
+  const asked = ++latestFileRead
   loading.value = true
-  showVideoFile(await fetchVideoFile(slot.assetFile.id))
-  loading.value = false
+  try {
+    const file = await fetchVideoFile(fileId)
+    if (asked === latestFileRead) showVideoFile(file)
+  } catch (e) {
+    if (asked !== latestFileRead) return
+    videoFile.value = null
+    if (!showErrorsDefault(e)) showUnknownError()
+  } finally {
+    if (asked === latestFileRead) loading.value = false
+  }
+}
+
+const activeSlotChange = (slot: null | AssetSlot) => {
+  if (!slot || !slot.assetFile) return
+  readVideoFile(slot.assetFile.id)
 }
 
 const initLoad = async () => {
-  if (
-    assetDetailStore.asset &&
-    assetDetailStore.asset.mainFile &&
-    assetFileIsVideoFile(assetDetailStore.asset.mainFile)
-  ) {
-    showVideoFile(await fetchVideoFile(assetDetailStore.asset.mainFile.id))
+  const mainFile = assetDetailStore.asset?.mainFile
+  if (mainFile && assetFileIsVideoFile(mainFile)) {
+    await readVideoFile(mainFile.id)
+
+    return
   }
   loading.value = false
 }
 
-const afterSuccessfulConfirmFromDistribution = () => {
-  initLoad()
+/* The image was set for the file the dialog was opened for, which is the one the card shows - of the slot of the
+ * select above it, not always the main file of the asset. Read again, it shows what the server has set. */
+const afterSuccessfulConfirmFromDistribution = (fileId: DocId) => {
+  if (videoFile.value?.id === fileId) readVideoFile(fileId)
 }
 
 const save = async (fileId: DocId, picked: AssetFileImagePreviewNullable, change: number) => {

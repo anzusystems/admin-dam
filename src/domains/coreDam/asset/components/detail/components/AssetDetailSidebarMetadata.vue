@@ -10,6 +10,7 @@ import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDownloadButton from '@/domains/coreDam/asset/components/detail/components/AssetDownloadButton.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
@@ -41,6 +42,7 @@ const {
   ttsAudio,
   saveHeldBack,
 } = useAssetDetailActions()
+const assetDetailStore = useAssetDetailStore()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
@@ -77,6 +79,8 @@ const onSave = async () => {
     pending: true,
   }
   latestSave = save
+  // Known to a read of the asset that nobody here started: its answer can be from before this save.
+  const saveAnswered = assetDetailStore.saveSent(opened.id)
   try {
     // Before the request, not after it: what is typed while it is on the wire is not in it.
     metadataUnTouch()
@@ -97,6 +101,7 @@ const onSave = async () => {
     showMetadataSaveError(error)
   } finally {
     save.pending = false
+    saveAnswered()
     saveButtonLoading.value = false
   }
 }

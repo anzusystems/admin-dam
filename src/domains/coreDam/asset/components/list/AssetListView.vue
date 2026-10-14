@@ -24,7 +24,6 @@ import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/Asset
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
-import { useFileDownloadUnload } from '@/domains/coreDam/asset/composables/fileDownloadUnload'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import MainWrapper from '@/domains/system/components/MainWrapper.vue'
@@ -65,8 +64,8 @@ let pageLeft = false
 onBeforeUnmount(() => {
   pageLeft = true
 })
-provideAssetFileChanged(() => {
-  if (!pageLeft) refreshActiveItem()
+provideAssetFileChanged((byServer) => {
+  if (!pageLeft) refreshActiveItem(byServer)
 })
 
 const { footerViewSelected } = useAssetFooterSelectedView()
@@ -104,11 +103,10 @@ const stopAskingOnTheWayOut = router.beforeResolve((to) => {
 })
 onUnmounted(stopAskingOnTheWayOut)
 
-/* A reload and a closed window are not ways the page could ask about: the browser asks its own question. Not for
- * the download of a file from the detail: the browser announces it the same way, though the page stays. */
-const { unloadIsOfDownload } = useFileDownloadUnload()
+/* A reload and a closed window are not ways the page could ask about: the browser asks its own question. The
+ * download of a file from the detail is none of them: its link opens in another tab. */
 useEventListener(window, 'beforeunload', (event) => {
-  if (unloadIsOfDownload() || !holdsUnsavedMetadata()) return
+  if (!holdsUnsavedMetadata()) return
   event.preventDefault()
   // Older browsers ask only when this is set.
   event.returnValue = ''

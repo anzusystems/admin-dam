@@ -14,6 +14,7 @@ import { useI18n } from 'vue-i18n'
 
 import { deleteAsset, fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import AssetLink from '@/domains/coreDam/asset/components/AssetLink.vue'
+import { useAssetInNewTab } from '@/domains/coreDam/asset/composables/assetInNewTab'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
@@ -56,6 +57,7 @@ const assetListStore = useAssetListStore()
 const { showRecordWas, showErrorsDefault } = useAlerts()
 // A failure that ends after the user went elsewhere has nothing to say there.
 const { onPage } = usePageNavigation()
+const { opensInNewTab, openAssetInNewTab } = useAssetInNewTab()
 
 // Processing too: the server may take long over a file, and the row is asked about for as long as it stays. And
 // `Failed`: delete is no answer there - a refused import never created an asset.
@@ -74,6 +76,13 @@ const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefin
 const showDetail = async () => {
   const assetId = props.item.assetId
   if (isNull(assetId)) return
+  /* On a page that draws no detail of an asset the one of the row is shown on its own page, in a new tab: nothing
+   * of this page is read, and nothing of it replaced. */
+  if (opensInNewTab()) {
+    openAssetInNewTab(assetId)
+
+    return
+  }
   /* The read below replaces what the panel beside the list holds, also when that is the asset of this row: metadata
    * typed into the panel and not saved go only when told to. Asked before anything changes; by the answer the row can
    * be of another asset. */

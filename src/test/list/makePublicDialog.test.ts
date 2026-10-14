@@ -34,9 +34,10 @@ const FILE = 'file-2'
 
 type Kind = 'image' | 'document' | 'audio'
 
-/** What the asset is, and whether the server holds its file as public. */
+/** What the asset is, whether the server holds its file as public, and its title when that is not its id. */
 let kind: Kind = 'audio'
 let published = false
+let titled: string | null = null
 
 const routeOf = (fileId: string) => ({ id: 'route-' + fileId, publicUrl: 'https://dam.test/public/' + fileId })
 
@@ -44,6 +45,7 @@ const routeOf = (fileId: string) => ({ id: 'route-' + fileId, publicUrl: 'https:
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: id === ASSET ? kind : 'video', assetStatus: 'with_file' },
+    texts: { displayTitle: id === ASSET && titled ? titled : id },
     mainFile:
       id === ASSET
         ? { ...assetFile(FILE, 'processed', { asset: id }), mainRoute: published ? routeOf(FILE) : null }
@@ -115,7 +117,16 @@ const openDialog = async (of: Kind) => {
   title.value = 'typed and not saved'
   title.dispatchEvent(new Event('input'))
   await nextTick()
-  detail()!.querySelector('.mdi-dots-vertical')!.closest('button')!.click()
+  await pressMakePublic()
+
+  return ui
+}
+
+/** "Make public" of the menu of the file card pressed - the menu opened first, unless it is still open - and the
+ * dialog open. */
+const pressMakePublic = async () => {
+  const menuIsOpen = () => !!document.body.querySelector('.v-menu.v-overlay--active')
+  if (!menuIsOpen()) detail()!.querySelector('.mdi-dots-vertical')!.closest('button')!.click()
   const item = await eventually(() => {
     const found = Array.from(
       document.body.querySelectorAll<HTMLElement>('.v-menu.v-overlay--active .v-list-item')
@@ -126,8 +137,6 @@ const openDialog = async (of: Kind) => {
   })
   item.click()
   await eventually(() => expect(dialog()).not.toBeNull())
-
-  return ui
 }
 
 const typeSlug = async (value: string) => {
@@ -148,6 +157,7 @@ beforeEach(() => {
   server = createFakeDam()
   kind = 'audio'
   published = false
+  titled = null
   const listed = ['asset-1', ASSET, 'asset-3']
   for (const id of listed) server.assetBy(id, () => onServer(id))
   const empty = (): FakeDamAnswer => ({ status: 200, data: { data: [] } })
@@ -288,5 +298,25 @@ describe('the dialog that makes the file of an asset public', () => {
     await eventually(() => expect(dialog()).toBeNull())
 
     expect([sentSlugs(), route(), ui.alerts()]).toEqual([[sent], PUBLIC, [UPDATED]])
+  })
+
+  /* The form says what is wrong with its slug only once it was confirmed. It went on as confirmed after the dialog
+   * was closed: opened again, it said so of the slug it offers, before anybody confirmed that. */
+  it('says nothing of the slug it offers as it is opened again, after a confirm it would not send', async () => {
+    // The slug of this title is too short to be sent.
+    titled = 'ab'
+    const ui = await openDialog('audio')
+    expect([slug()?.value, said()]).toEqual(['ab', []])
+    await confirm()
+    expect([sentSlugs(), said(), ui.alerts()]).toEqual([[], [TOO_SHORT], [FIX]])
+
+    dialogButton('Cancel')!.click()
+    await eventually(() => expect(dialog()).toBeNull())
+    await pressMakePublic()
+
+    expect([slug()?.value, said()]).toEqual(['ab', []])
+    // And says it as that is confirmed.
+    await confirm()
+    expect([sentSlugs(), said()]).toEqual([[], [TOO_SHORT]])
   })
 })

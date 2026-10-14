@@ -44,12 +44,6 @@ const modelValueComputed = computed(() => {
   return modelValue.value
 })
 
-watch(modelValueComputed, (newValue) => {
-  if (newValue && props.assetType !== DamAssetType.Image) {
-    slug.value = stringToSlug(props.title)
-  }
-})
-
 const { required, minLength, maxLength } = useValidate()
 
 /* What is sent is the slug made of what was typed, and that is what the server checks: three characters typed can
@@ -79,6 +73,15 @@ const rules = computed(() => {
 })
 
 const v$ = useVuelidate(rules, { slug: slugToSend })
+
+watch(modelValueComputed, (newValue) => {
+  if (!newValue) return
+  // Opened anew, the form is one nobody has confirmed yet: it says nothing of its slug until it is confirmed.
+  v$.value.$reset()
+  if (props.assetType !== DamAssetType.Image) {
+    slug.value = stringToSlug(props.title)
+  }
+})
 
 const onConfirm = async () => {
   // One at a time: the button only spins meanwhile, and a key pressed on it, still in focus, is a click again.

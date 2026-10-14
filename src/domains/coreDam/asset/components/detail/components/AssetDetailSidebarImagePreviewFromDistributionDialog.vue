@@ -29,7 +29,8 @@ const props = withDefaults(
   {}
 )
 const emit = defineEmits<{
-  (e: 'afterSuccessfulConfirm'): void
+  // With the file the image was set for.
+  (e: 'afterSuccessfulConfirm', fileId: DocId): void
 }>()
 
 const modelValue = defineModel<boolean>({ required: true })
@@ -68,13 +69,15 @@ const closeDialog = () => {
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
-  if (isNull(lastSelectedItem.value)) return
+  // One at a time: the button only spins meanwhile, and a key pressed on it, still in focus, is a click again.
+  if (isNull(lastSelectedItem.value) || saving.value) return
   saving.value = true
+  const fileId = props.fileId
   try {
-    await setVideoFileDistributionPreview(props.fileId, lastSelectedItem.value.id)
+    await setVideoFileDistributionPreview(fileId, lastSelectedItem.value.id)
     closeDialog()
     showRecordWas('updated')
-    emit('afterSuccessfulConfirm')
+    emit('afterSuccessfulConfirm', fileId)
   } catch (e) {
     showErrorsDefault(e)
   } finally {

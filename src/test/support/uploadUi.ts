@@ -84,6 +84,12 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
   // A component whose setup threw leaves Vue believing it is still inside that setup, and every store asked for
   // from then on is the store of that dead application: the cases after it would fail for no reason of their own.
   if (getCurrentInstance()) throw new Error('uploadUi: a component mounted before this start failed in its setup')
+  recordListeners()
+  pluginsBefore = devtoolsPlugins()?.length ?? 0
+  /* Vue keeps every component it mounts for its devtools until it gives up on them, three seconds after its first
+   * application is made. Made under the fake clock below, which is thrown away with the case, those three seconds
+   * never come, and every case of the file stays. So an application is made first on the real clock. */
+  createApp({})
   /* The clock of every case is a fake one, and is thrown away when the case is over: a name lookup the caches put
    * off, a poll of a queue or a closing dialog of one case cannot fire in the next, into its server. A case moves
    * the time itself (`vi.advanceTimersByTimeAsync`), or waits with `vi.waitFor`, which moves it as it waits. */
@@ -207,14 +213,97 @@ export type UploadUi = Awaited<ReturnType<typeof startUploadUi>>
 
 /** After each case: what was mounted is taken down, and the page is left empty. */
 export const stopUploadUi = () => {
-  mounted.forEach((app) => app.unmount())
-  mounted = []
-  document.body.innerHTML = ''
-  vi.useRealTimers()
-  vi.unstubAllGlobals()
-  if (windowResized) setWindowWidth(WINDOW_WIDTH)
-  windowResized = false
+  // Also when an unmount throws: the window would keep its recording methods into the next case and file.
+  try {
+    mounted.forEach((app) => app.unmount())
+  } finally {
+    mounted = []
+    document.body.innerHTML = ''
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+    removeListeners()
+    devtoolsPlugins()?.splice(pluginsBefore)
+    if (windowResized) setWindowWidth(WINDOW_WIDTH)
+    windowResized = false
+  }
 }
+
+type Listener = { target: EventTarget; type: string; listener: EventListenerOrEventListenerObject; capture: boolean }
+
+const captureOf = (options?: boolean | EventListenerOptions) =>
+  typeof options === 'boolean' ? options : !!options?.capture
+
+/** A listener is one per target, type, function and capture: added twice, it is there once. */
+const isListener =
+  (target: EventTarget, type: string, listener: EventListenerOrEventListenerObject, capture: boolean) =>
+  (one: Listener) =>
+    one.target === target && one.type === type && one.listener === listener && one.capture === capture
+
+/* The window is one for the whole file, and every start evaluates the modules anew: what the modules of a case leave
+ * listening on the window stays, with all it reaches, for as long as the file runs. The settings of the theme of the
+ * library listen to the media query of a dark scheme (in happy-dom, a listener of the window) and to the storage
+ * from the moment they are evaluated, and never stop. So what is added to the window, the document and the media
+ * queries of the window from a start on is recorded, and what of it is still there when the case is over is
+ * removed; what was there before the start is left alone. */
+let listeners: Listener[] = []
+let restoreListening: (() => void)[] = []
+
+/** From now on, the listeners added to the target are recorded, and those removed from it forgotten. */
+const recordOn = (target: EventTarget) => {
+  const own = Object.hasOwn(target, 'addEventListener')
+  const { addEventListener: add, removeEventListener: remove } = target
+  target.addEventListener = (type, listener, options) => {
+    const capture = captureOf(options)
+    if (listener && !listeners.some(isListener(target, type, listener, capture))) {
+      listeners.push({ target, type, listener, capture })
+    }
+    add.call(target, type, listener, options)
+  }
+  target.removeEventListener = (type, listener, options) => {
+    const at = listener ? listeners.findIndex(isListener(target, type, listener, captureOf(options))) : -1
+    if (at !== -1) listeners.splice(at, 1)
+    remove.call(target, type, listener, options)
+  }
+  restoreListening.push(() => {
+    if (own) {
+      // The window of vitest is the global object, whose accessors pass what is assigned on to happy-dom's window.
+      Object.assign(target, { addEventListener: add, removeEventListener: remove })
+    } else {
+      Reflect.deleteProperty(target, 'addEventListener')
+      Reflect.deleteProperty(target, 'removeEventListener')
+    }
+  })
+}
+
+const recordListeners = () => {
+  // Started again before a stop: still recording.
+  if (restoreListening.length) return
+  recordOn(window)
+  recordOn(document)
+  const { matchMedia } = window
+  window.matchMedia = (query: string) => {
+    const list = matchMedia(query)
+    recordOn(list)
+
+    return list
+  }
+  restoreListening.push(() => {
+    window.matchMedia = matchMedia
+  })
+}
+
+const removeListeners = () => {
+  restoreListening.forEach((restore) => restore())
+  restoreListening = []
+  const left = listeners
+  listeners = []
+  left.forEach(({ target, type, listener, capture }) => target.removeEventListener(type, listener, capture))
+}
+
+/* vue-i18n announces each application it is installed in to the devtools of Vue, in a list on the global object
+ * the devtools read when they come. Here they never come, and the list would keep the application of every case. */
+const devtoolsPlugins = () => (globalThis as { __VUE_DEVTOOLS_PLUGINS__?: unknown[] }).__VUE_DEVTOOLS_PLUGINS__
+let pluginsBefore = 0
 
 type HappyDomWindow = { happyDOM: { setViewport: (viewport: { width: number; height: number }) => void } }
 const WINDOW_WIDTH = 1024

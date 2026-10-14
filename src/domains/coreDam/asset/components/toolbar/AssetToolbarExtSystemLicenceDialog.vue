@@ -102,6 +102,9 @@ const allowSelect = computed(() => {
 })
 
 const onCancel = () => {
+  /* The change goes through all the same, and what holds a second confirm back goes with this dialog: one opened
+   * again would know nothing of it, and send the change once more, under the reload of the first. */
+  if (saving.value) return
   dialog.value = false
 }
 
@@ -124,6 +127,8 @@ const errorMessageLicence = computed(() => {
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
+  // A second confirm while the first is on its way would send the same change once more.
+  if (saving.value) return
   saving.value = true
   validateLicence.value.$touch()
   if (
@@ -176,7 +181,6 @@ const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) =
     return
   }
   if (isInt(value) || isNull(value)) selectedLicence.value = value
-  console.log(selectedLicence.value)
 }
 
 const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | IntegerId[]) => {
@@ -330,6 +334,7 @@ onMounted(async () => {
       <VCardActions>
         <VSpacer />
         <ABtnTertiary
+          :disabled="saving"
           data-cy="button-cancel"
           @click.stop="onCancel"
         >
@@ -338,6 +343,7 @@ onMounted(async () => {
         <ABtnPrimary
           v-if="allowSelect"
           :disabled="isNull(selectedLicence)"
+          :loading="saving"
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >

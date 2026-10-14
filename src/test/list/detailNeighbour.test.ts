@@ -324,8 +324,8 @@ describe('the arrow keys of the list while the detail of an asset is open', () =
     expect(detail.shown()).toBe('3 / 3 asset-3')
   })
 
-  // Only the detail is kept from the keys: with none open they pick the neighbour in the list, as they always did.
-  it('pick the neighbour in the list while no detail is open, also under an open menu of the page', async () => {
+  // Only the detail is kept from the keys: with none open they walk the list, here from its first tile.
+  it('walk the list while no detail is open, also under an open menu of the page', async () => {
     const list = await openList()
     list.page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
     await eventually(() => expect(document.body.querySelector('.v-menu.v-overlay--active')).not.toBeNull())
@@ -334,8 +334,8 @@ describe('the arrow keys of the list while the detail of an asset is open', () =
 
     const active = () => Array.from(list.tiles).map((tile) => tile.classList.contains('dam-image-grid__item--active'))
     expect([active(), reads('asset-1', 'asset-2', 'asset-3')]).toEqual([
-      [false, true, false],
-      [0, 1, 0],
+      [true, false, false],
+      [1, 0, 0],
     ])
   })
 })

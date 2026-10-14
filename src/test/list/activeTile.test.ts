@@ -261,19 +261,19 @@ describe('the active tile of the list, once the list is read anew', () => {
     expect([list.active(), list.held(), readAlone()]).toEqual([[false, true], 'asset-3', ['asset-2', 'asset-3']])
   })
 
-  // With no tile active the keys start where they start on a list nothing was picked in.
+  // With no tile active the keys start where they start on a list nothing was picked in: at its first tile.
   it('is no tile when its asset is in the list no more, and the keys start as in a list nothing was picked in', async () => {
     const list = await openList()
     await arrow(RIGHT)
-    expect([list.active(), readAlone()]).toEqual([[false, true, false], ['asset-2']])
+    expect([list.active(), readAlone()]).toEqual([[true, false, false], ['asset-1']])
 
-    await list.readAnew(['asset-1', 'asset-3', 'asset-4'])
+    await list.readAnew(['asset-2', 'asset-3', 'asset-4'])
     expect(list.active()).toEqual([false, false, false])
     await arrow(RIGHT)
 
     expect([list.active(), readAlone()]).toEqual([
-      [false, true, false],
-      ['asset-2', 'asset-3'],
+      [true, false, false],
+      ['asset-1', 'asset-2'],
     ])
   })
 
@@ -505,6 +505,6 @@ describe('the active tile of the list, once the page of the list is left', () =>
     expect(list.active()).toEqual([false, false, false])
     await arrow(RIGHT)
 
-    expect([list.active(), list.held()]).toEqual([[false, true, false], 'asset-2'])
+    expect([list.active(), list.held()]).toEqual([[true, false, false], 'asset-1'])
   })
 })

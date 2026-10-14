@@ -660,11 +660,12 @@ describe('the asset read again once the address of its file has changed', () => 
     expect([route(inDetail), reads(), list.alerts(), menu()]).toEqual([PUBLIC, [0, 2, 0], [UPDATED], null])
   })
 
-  /* The route is all the change touched, and all that is taken while metadata are not saved. The file of an asset
+  /* The file is all that is taken while metadata are not saved, as the server has it by now. The file of an asset
    * just uploaded can still be on its way through the server as the form is read: "Save" is held back then, since
-   * the server may yet fill in the metadata from the file, and a form read before that would overwrite them. */
+   * the server may yet fill in the metadata from the file, and a form read before that would overwrite them. The
+   * form is no newer for the file being held as processed: "Save" stays held back. */
   it.each(places)(
-    'gives %s the route alone: a file not yet processed as the form was read stays so, and "Save" held back',
+    'gives %s its file as it is by now, processed since the form was read, and keeps "Save" held back',
     async (_where, place) => {
       secondFileIs = 'stored'
       const list = await openList()
@@ -683,6 +684,8 @@ describe('the asset read again once the address of its file has changed', () => 
 
       expect([route(place), reads(), list.alerts()]).toEqual([PRIVATE, [0, 2, 0], []])
       expect(heldBack()).toEqual([true, true])
+      // Held as processed: the card of a private file has its menu, which is for making public a processed file.
+      expect(place.form()!.querySelector('.mdi-dots-vertical')).not.toBeNull()
     }
   )
 

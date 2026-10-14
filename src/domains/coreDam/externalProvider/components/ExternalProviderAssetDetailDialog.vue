@@ -24,7 +24,7 @@ const imageLoading = ref(true)
 
 const externalProviderAssetDetailStore = useExternalProviderAssetDetailStore()
 const externalProviderAssetListStore = useExternalProviderAssetListStore()
-const { pagination } = useExternalProviderAssetListActions() //todo
+const { pagination, neighbourOfActive } = useExternalProviderAssetListActions() //todo
 const { asset } = storeToRefs(externalProviderAssetDetailStore)
 
 const closeDialog = () => {
@@ -93,12 +93,12 @@ const totalCountText = computed(() => {
     v-model="externalProviderAssetDetailStore.detail"
     fullscreen
   >
-    <!-- The bar of the loaded detail below: its two buttons are there always, and never disabled. -->
+    <!-- The bar of the loaded detail below: its two buttons are there always, each disabled at its end of the list. -->
     <AssetDetailDialogLoader
       v-if="externalProviderAssetDetailStore.loader"
       walks-list
-      :prev-disabled="false"
-      :next-disabled="false"
+      :prev-disabled="!neighbourOfActive(-1)"
+      :next-disabled="!neighbourOfActive(1)"
       :total-count-text="totalCountText"
       @prev-item="prevItem"
       @next-item="nextItem"
@@ -123,6 +123,7 @@ const totalCountText = computed(() => {
               class="mx-1"
               :width="36"
               :height="36"
+              :disabled="!neighbourOfActive(-1)"
               @click.stop="prevItem"
             >
               <VIcon icon="mdi-chevron-left" />
@@ -139,6 +140,7 @@ const totalCountText = computed(() => {
               class="mr-2"
               :width="36"
               :height="36"
+              :disabled="!neighbourOfActive(1)"
               @click.stop="nextItem"
             >
               <VIcon icon="mdi-chevron-right" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ACopyText, useAlerts } from '@anzusystems/common-admin'
+import { ACopyText, AssetFileProcessStatus, useAlerts } from '@anzusystems/common-admin'
 import type { AssetFile, AssetFileMainRouteAware, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -39,6 +39,11 @@ const { showErrorsDefault, showUnknownError } = useAlerts()
 const { can } = useAuth()
 
 const canChangeRoute = computed(() => can(assetTypeAcl(props.assetType, 'update')))
+/* The server makes public only a file it has processed, and refuses any other without saying why. A file held as
+ * still on its way is held so until its asset, or the slots, are read again. */
+const canMakePublic = computed(
+  () => canChangeRoute.value && props.assetFile.fileAttributes.status === AssetFileProcessStatus.Processed
+)
 
 const fileChanged = useAssetFileChanged()
 
@@ -81,8 +86,9 @@ const { t } = useI18n()
 <template>
   <AssetFileRouteStatus :asset-file-route="assetFile" />
 
+  <!-- Not drawn with nothing to offer: a private file the user may not make public, or cannot yet. -->
   <VMenu
-    v-if="assetFile.mainRoute || canChangeRoute"
+    v-if="assetFile.mainRoute || canMakePublic"
     v-model="menu"
   >
     <template #activator="{ props: activatorProps }">
@@ -125,7 +131,7 @@ const { t } = useI18n()
         />
       </template>
       <AssetFileRouteChangeBtn
-        v-else-if="canChangeRoute"
+        v-else-if="canMakePublic"
         variant="listItem"
         @click.stop="openMakeFilePrivateDialog"
       />

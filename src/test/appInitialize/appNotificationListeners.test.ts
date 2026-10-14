@@ -21,6 +21,10 @@ vi.mock('@/domains/coreDam/asset/store/uploadQueuesStore', () => ({
     queueItemMetadataProcessed,
   }),
 }))
+const mainFileProcessed = vi.fn()
+vi.mock('@/domains/coreDam/asset/store/assetDetailStore', () => ({
+  useAssetDetailStore: () => ({ mainFileProcessed }),
+}))
 vi.mock('@/domains/coreDam/asset/store/distributionListStore', () => ({
   useDistributionListStore: () => ({}),
 }))
@@ -59,16 +63,25 @@ describe('what the listener passes on', () => {
     expect(queueItemProcessed).toHaveBeenCalledWith('asset-1', 'file-1')
   })
 
+  // The detail that holds the asset is told of its processed file too, whether a queue has a row of it or not.
+  it('tells the detail of a processed file, with its id', async () => {
+    await fire('asset_file_processed')
+
+    expect(mainFileProcessed.mock.calls).toEqual([['asset-1', 'file-1']])
+  })
+
   it('carries it for a failed file', async () => {
     await fire('asset_file_failed')
 
     expect(queueItemFailed).toHaveBeenCalledWith('asset-1', 'none', 'file-1')
+    expect(mainFileProcessed).not.toHaveBeenCalled()
   })
 
   it('carries it for a duplicate', async () => {
     await fire('asset_file_duplicate')
 
     expect(queueItemDuplicate).toHaveBeenCalledWith('asset-1', 'origin-1', 'image', 'file-1')
+    expect(mainFileProcessed).not.toHaveBeenCalled()
   })
 })
 

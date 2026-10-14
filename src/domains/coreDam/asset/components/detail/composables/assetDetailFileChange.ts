@@ -1,6 +1,6 @@
-import { assetFileIsVideoFile, isNull, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { isNull, useAlerts, useDamCachedUsers, usePageNavigation } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { inject, provide } from 'vue'
+import { inject, onBeforeUnmount, provide } from 'vue'
 import type { InjectionKey } from 'vue'
 
 import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
@@ -13,8 +13,15 @@ import { metadataMayStillChange } from '@/domains/coreDam/asset/store/uploadQueu
  * the detail closed): what an unmounted component emits Vue drops. */
 const AssetFileChangedKey: InjectionKey<() => void> = Symbol('assetFileChanged')
 
-/** For the page that draws the detail, in its setup: `fileChanged` is what the parts of the detail tell it by. */
-export const provideAssetFileChanged = (fileChanged: () => void) => provide(AssetFileChangedKey, fileChanged)
+/**
+ * For the page that draws the detail, in its setup: `fileChanged` is what the parts of the detail tell it by. And
+ * what is no part of a detail, through the store of the detail, for as long as the page is there: the upload queue
+ * and the notifications, of a file the server has processed - `byServer` then.
+ */
+export const provideAssetFileChanged = (fileChanged: (byServer?: boolean) => void) => {
+  provide(AssetFileChangedKey, fileChanged)
+  onBeforeUnmount(useAssetDetailStore().tellPageBy(() => fileChanged(true)))
+}
 
 /**
  * For a part of the detail that changes the file of the asset, in its setup. What it gives back is called once such a
@@ -38,8 +45,8 @@ export const useAssetFileChanged = () => {
   }
 }
 
-/* The reads below that take only what changed, counted: two changes close after each other start two of them, and
- * the answer of the older can come last. Only the one asked for last is taken. */
+/* The reads below with no loader, counted: two changes close after each other start two of them, and so do a change
+ * and the news of the server, and the answer of the older can come last. Only the one asked for last is taken. */
 let latestQuietRead = 0
 
 /* The asset a detail holds is read again once its file was changed there, in the dialog over the list, in the panel
@@ -48,40 +55,56 @@ export function useAssetDetailFileChange() {
   const assetDetailStore = useAssetDetailStore()
   const { onPage } = usePageNavigation()
   const { showErrorsDefault } = useAlerts()
+  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
-  /* Metadata that were not saved stay as they are, in the form they were typed into: no loader goes over it, and of the
-   * answer only what the change touched is taken. While the main file is the one the form was read with, that is its
-   * route: the rest stays as the form was read, the processing status of the file with it - "Save" is held back by
-   * that, and would come free over a form older than what the server has since filled in. When the main file is
-   * another one, or none, it is that file, and for the same reason a "Save" held back stays so. An open question is
-   * not answered by it either. */
-  const takeChangedOfFile = async () => {
+  /* A read of the asset the detail holds, by its id, with no loader over the detail: it unmounts nothing - neither the
+   * form with what was typed into it, nor a tab or a dialog open over the detail with what was typed there.
+   * Metadata that were not saved stay as they are, in the form they were typed into, and of the answer only the main
+   * file is taken - as the server has it by now, with its route and how far it is processed, or another file, or
+   * none. The form is as old as it was: a "Save" held back, since the server could still fill in the metadata from
+   * the file, would come free over a form older than what the server has filled in since, so it stays held back
+   * whatever is held of the file from now on. An open question is not answered by it either.
+   * `whole`: the form takes the whole answer in its place (`setAsset`: the form is new, a "Save" held back comes
+   * free) - when nothing is typed into it and no save of it went out, as the read is asked and as it is answered. What
+   * was typed would go, and a read sent before a save can be answered as the asset was before it: saved again, that
+   * form would write the old values back. Otherwise only the main file is taken, as above. */
+  const readQuietly = async (whole: boolean) => {
     const held = assetDetailStore.asset
     if (isNull(held)) return
     const asked = ++latestQuietRead
     // Only into the very asset it was read for: not into another one, nor into this one read anew since.
     const isTaken = () => assetDetailStore.asset === held && asked === latestQuietRead
+    const savesBefore = assetDetailStore.savesOf(held.id)
+    const formIsAsRead = () =>
+      !assetDetailStore.metadataAreTouched && savesBefore !== null && assetDetailStore.savesOf(held.id) === savesBefore
+    const takesWhole = whole && formIsAsRead()
     try {
       const res = await fetchAsset(held.id)
       if (!isTaken()) return
-      const file = held.mainFile
-      const read = res.mainFile
-      if (file?.id !== read?.id) {
-        assetDetailStore.setMainFile(res, metadataMayStillChange(held))
-
+      if (takesWhole && formIsAsRead()) {
+        assetDetailStore.setAsset(res)
+        assetDetailStore.updateLastFetched(held.id)
+        addToCachedUsers(res.createdBy, res.modifiedBy)
+        fetchCachedUsers()
         return
       }
-      if (!file || !read || assetFileIsVideoFile(file) || assetFileIsVideoFile(read)) return
-      file.mainRoute = read.mainRoute
+      assetDetailStore.setMainFile(res, metadataMayStillChange(held))
     } catch (error) {
       if (!isTaken() || !onPage()) return
       showErrorsDefault(error)
     }
   }
 
-  /** With nothing typed the asset is read whole, the way of the page that draws the detail (`readWhole`). */
-  const readAfterFileChange = (readWhole: () => Promise<void>) =>
-    assetDetailStore.metadataAreTouched ? takeChangedOfFile() : readWhole()
+  /**
+   * With nothing typed the asset is read whole, the way of the page that draws the detail (`readWhole`): after a
+   * change the user made in the detail. Told by the server (`byServer`), the read is quiet whatever is typed: it
+   * comes at any moment, under whatever the user is doing in the detail.
+   */
+  const readAfterFileChange = (readWhole: () => Promise<void>, byServer = false) => {
+    if (byServer) return readQuietly(true)
+
+    return assetDetailStore.metadataAreTouched ? readQuietly(false) : readWhole()
+  }
 
   return { readAfterFileChange }
 }

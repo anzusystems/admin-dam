@@ -1,4 +1,4 @@
-import { DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
 import type { AssetDetailItemDto, DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -56,6 +56,30 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
         read()
       },
     }
+  }
+
+  /* The saves of the form of an asset - in the detail, in the panel beside the list - by the asset: how many went out,
+   * and how many are on their way. A read of the asset sent before a save can be answered as the asset was before it,
+   * and a form taken from that answer would be saved back over it. */
+  const saves = new Map<DocId, { sent: number; onTheirWay: number }>()
+
+  /** As a save of the form of the asset goes out: answers what is called once it is answered, however it ends. */
+  function saveSent(assetId: DocId) {
+    const of = saves.get(assetId) ?? { sent: 0, onTheirWay: 0 }
+    saves.set(assetId, of)
+    of.sent++
+    of.onTheirWay++
+
+    return () => {
+      of.onTheirWay--
+    }
+  }
+
+  /** How many saves of the form of the asset went out, or null while one is on its way: the same twice, none between. */
+  function savesOf(assetId: DocId) {
+    const of = saves.get(assetId)
+
+    return of?.onTheirWay ? null : (of?.sent ?? 0)
   }
 
   /* The question asked before metadata that were not saved are thrown away by leaving the asset, and what waits for
@@ -139,15 +163,52 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     asset.value = newAsset
   }
 
-  /* The asset has another main file than the form was read with, or none any more, and what was typed into the
-   * form stays. Of what the server has (`read`) the file is taken, and its three switches with it: "Save" sends
-   * them for the main file the asset has by then, and those of the file before it would be written over this one's.
-   * A switch flipped and not saved goes with the file it was flipped for. `saveWasHeldBack`: so it stays. */
+  /* What was typed into the form stays, and of what the server has (`read`) the main file is taken: as it is by
+   * now - its route, how far it is processed - or another one than the form was read with, or none any more. With
+   * another file its three switches are taken too: "Save" sends them for the main file the asset has by then, and
+   * those of the file before it would be written over this one's. A switch flipped and not saved goes with the file
+   * it was flipped for, and stays while that file is the main one. `saveWasHeldBack`: so it stays, also once the
+   * file is held as processed - the form is still the one read before that. */
   function setMainFile(read: AssetDetailItemDto, saveWasHeldBack: boolean) {
     if (!asset.value) return
     if (saveWasHeldBack) saveHeldBack.value = true
+    const anotherFile = asset.value.mainFile?.id !== read.mainFile?.id
     asset.value.mainFile = read.mainFile
-    readMainFileSwitches(read)
+    if (anotherFile) readMainFileSwitches(read)
+  }
+
+  /* The page that draws the detail reads its asset again once the file of the asset has changed, told by the part of
+   * the detail that changed it. That the server has processed a file no part of a detail tells: its notification
+   * and the reads of the upload queue say so, outside of every page. They say it here, and the page that is there
+   * says by what it is to be told: a read nobody in the detail started, with no loader over it. */
+  let tellPage: (() => void) | null = null
+
+  /** `fileChanged` is what the page reads its asset again by. Answers what takes it back, for when the page goes. */
+  function tellPageBy(fileChanged: () => void) {
+    tellPage = fileChanged
+
+    return () => {
+      if (tellPage === fileChanged) tellPage = null
+    }
+  }
+
+  /**
+   * The server has processed a file. A detail or a panel opened before that holds the file as still on its way - by
+   * which "Save" of an asset that is not described is held back - and would go on holding it so. When the file is
+   * the main one of the asset held here, held as not processed, the page is told, and reads the asset with no loader:
+   * at once, or once a read that is on its way has landed with the file still not processed.
+   */
+  function mainFileProcessed(assetId: DocId, fileId: DocId) {
+    const heldAsNotProcessed = () => {
+      const file = asset.value?.id === assetId ? asset.value.mainFile : null
+
+      return !!file && file.id === fileId && file.fileAttributes.status !== AssetFileProcessStatus.Processed
+    }
+    // Not as it was fetched: come back to within the moment in which an asset just read is not read again, it is.
+    if (heldAsNotProcessed()) forgetLastFetched([assetId])
+    readAfterCurrentRead(() => {
+      if (heldAsNotProcessed()) tellPage?.()
+    })
   }
 
   function prefetchLazyData(assetData: AssetDetailItemDto) {
@@ -215,6 +276,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileInternal,
     ttsAudio,
     saveHeldBack,
+    saveSent,
+    savesOf,
     leaveUnsavedQuestion,
     showsUnsavedMetadata,
     panelHoldsUnsavedMetadata,
@@ -232,6 +295,8 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     hideLoader,
     setAsset,
     setMainFile,
+    tellPageBy,
+    mainFileProcessed,
     prefetchLazyData,
     setView,
     setDistributionCategory,

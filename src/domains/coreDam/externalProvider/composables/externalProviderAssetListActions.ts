@@ -27,12 +27,15 @@ import {
 import { useExternalProviderAssetListFilter } from '@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
+import type { ExternalProviderAssetListItem } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
 const { showWarning, showErrorsDefault } = useAlerts()
+const { customDialog } = useMainWrapper()
 
 const { filterData, filterConfig } = useExternalProviderAssetListFilter()
 const { pagination } = usePagination(null)
@@ -295,7 +298,16 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
   }
 
+  /**
+   * The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list.
+   * With no tile active it is counted from the first one, as the store steps.
+   */
+  const neighbourOfActive = (step: 1 | -1): ExternalProviderAssetListItem | undefined =>
+    externalProviderAssetListStore.list[(externalProviderAssetListStore.activeItemIndex ?? 0) + step]
+
   const nextItem = async () => {
+    // Found first: at the end of the list there is nowhere to go, so nothing to show or to read.
+    if (isUndefined(neighbourOfActive(1))) return
     externalProviderAssetListStore.setActiveNext()
     if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
     // Before the loader goes up: the active index outlives the list, and this threw with it up.
@@ -326,6 +338,8 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   }
 
   const prevItem = async () => {
+    // The same as `nextItem`: nowhere to go from the first one.
+    if (isUndefined(neighbourOfActive(-1))) return
     externalProviderAssetListStore.setActivePrev()
     if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
     // The same as `nextItem`: the index outlives the list it points into.
@@ -355,13 +369,20 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
   }
 
+  /* As in the asset list: a queue drawn over the whole page - the upload, the selection to import - covers the list,
+   * and the keys would walk tiles nobody sees and read their assets into the panel. The upload queue turns off the
+   * keys of the asset list, not of this one. */
+  const listIsUnderQueue = () => customDialog.value
+
   const onArrowRight = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !externalProviderAssetListStore.keyboardNavigation) return
+    if (listIsUnderQueue()) return
     await nextItem()
   }
 
   const onArrowLeft = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !externalProviderAssetListStore.keyboardNavigation) return
+    if (listIsUnderQueue()) return
     await prevItem()
   }
 
@@ -409,6 +430,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     selectMultiple,
     prevItem,
     nextItem,
+    neighbourOfActive,
     onArrowRight,
     onArrowLeft,
   }

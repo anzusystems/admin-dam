@@ -6,13 +6,14 @@ import { assetDetail, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The file of an asset is downloaded by a link of the detail, followed in the tab of the page. The server answers it
- * as an attachment and the page stays, but the browser announces it as it announces any navigation: the page of the
- * list, which makes the browser ask before metadata typed and not saved are lost, lets that one announcement be
- * (`sidebarUnsavedLeave.test.ts`). Here is what counts as a press of the link that is followed in this tab, and for
- * how many announcements and how long a press counts. The real page of the list with its real detail, the
- * application around it as it starts; the server is a fake, and so is the address the page asks about a new version
- * of the application. */
+/* The file of an asset is downloaded by a link of the detail. The server signs the address of the link for a while
+ * only, and the storage it leads to can refuse it, or be down: the link opens in another tab of the browser, one with
+ * no way back to the application, so whatever the storage answers stays there, and the application where it is. The
+ * page of the list, which makes the browser ask before metadata typed and not saved are lost, has then nothing to
+ * let be for a download: a window that goes right after a press of the link is asked about as at any other time.
+ * The real page of the list with its real detail, the application around it as it starts; the server is a fake, and
+ * so is the address the page asks about a new version of the application. What a browser does with the other tab is
+ * not seen here: the browser of the test follows the link by asking for a window to open, and is given none. */
 
 let server: FakeDam
 
@@ -20,7 +21,7 @@ vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client
 
 const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
 const DOWNLOAD_LINK = /^\/adm\/v1\/video\/file-1\/download-link$/
-/** The address the server signs for the download of a file: answered as an attachment, on another origin. */
+/** The address the server signs for the download of a file, on another origin. */
 const SIGNED = 'https://storage.test/file-1?signature=1'
 
 const LIST = '/assets'
@@ -41,6 +42,22 @@ const windowAsksBeforeItGoes = () => {
   window.dispatchEvent(going)
 
   return going.defaultPrevented
+}
+
+/** What the browser of the test opened to follow a link: for each press the address, the window and its features. */
+let followed: unknown[][] = []
+
+/* The browser of the test follows a pressed link by opening its address in the window the link names - `_self`, the
+ * tab of the application, for a link that names none. An assignment, not a stub of the global: only that reaches the
+ * window the browser of the test asks. */
+const open = window.open
+const browserFollowsLinks = () => {
+  followed = []
+  window.open = (...asked: unknown[]) => {
+    followed.push(asked)
+
+    return null
+  }
 }
 
 /** The detail of the second asset of the list with metadata typed into it, and the link of its file in the open
@@ -97,10 +114,6 @@ const withTheLinkOfTheFile = async () => {
   })
 }
 
-/* The window of the test follows a link of its own tab by taking the address of the link, the file it would download
- * in a browser: put back after each case. */
-const home = window.location.href
-
 beforeEach(() => {
   server = createFakeDam()
   const listed = ['asset-1', 'asset-2', 'asset-3']
@@ -117,74 +130,41 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  ;(window as unknown as { happyDOM: { setURL: (url: string) => void } }).happyDOM.setURL(home)
+  window.open = open
   stopUploadUi()
 })
 
-describe('metadata typed and not saved, when a file is downloaded from the detail', () => {
-  // The guard of the cases below: with the link not pressed a window that goes is asked about, and a plain press is not.
-  it('make the browser ask before the window goes, but not for the one unload a plain press of the link announces', async () => {
+describe('the link that downloads the file of an asset from its detail', () => {
+  /* Followed in the tab of the application, a signed address that has run out, or a storage that is down, put its
+   * own page in the place of the application, and what was typed there was gone. */
+  it('opens in another tab of the browser, which has no way back to the application', async () => {
+    const link = await withTheLinkOfTheFile()
+
+    browserFollowsLinks()
+
+    link.click()
+
+    // What the link says of itself, and where a press of it is followed: another tab, not the one of the application.
+    expect({
+      link: [link.getAttribute('href'), link.getAttribute('target'), link.getAttribute('rel')],
+      followed,
+    }).toEqual({
+      link: [SIGNED, '_blank', 'noopener noreferrer'],
+      followed: [[SIGNED, '_blank', 'noreferrer,noopener']],
+    })
+  })
+
+  /* While the link was followed in the tab of the application, the page let the one unload be that the browser
+   * announces for a download, for a moment after each press: a reload in that moment went unasked. */
+  it('leaves the window asking before it goes, with metadata typed and not saved, also right after a press', async () => {
     const link = await withTheLinkOfTheFile()
     expect(windowAsksBeforeItGoes()).toBe(true)
+    browserFollowsLinks()
 
     link.click()
+
+    expect([windowAsksBeforeItGoes(), windowAsksBeforeItGoes()]).toEqual([true, true])
     await vi.advanceTimersByTimeAsync(300)
-
-    expect([windowAsksBeforeItGoes(), windowAsksBeforeItGoes()]).toEqual([false, true])
-  })
-
-  /* With a modifier key held, or by another button, the browser does not follow the link in this tab: it opens it
-   * elsewhere or saves it, and announces nothing here. Such a press must not let the next unload be. */
-  it.each<[string, MouseEventInit]>([
-    ['Ctrl held', { ctrlKey: true }],
-    ['Cmd held', { metaKey: true }],
-    ['Shift held', { shiftKey: true }],
-    ['Alt held', { altKey: true }],
-    ['another button of the mouse', { button: 1 }],
-  ])('make it ask after a press of the link with %s: the page is not unloaded for that one', async (_how, held) => {
-    const link = await withTheLinkOfTheFile()
-
-    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ...held }))
-    await vi.advanceTimersByTimeAsync(300)
-
     expect(windowAsksBeforeItGoes()).toBe(true)
-  })
-
-  // Each press is one download, and the browser announces each of them.
-  it('do not make it ask for either of two downloads pressed one after the other, and do for a third unload', async () => {
-    const link = await withTheLinkOfTheFile()
-
-    link.click()
-    link.click()
-    await vi.advanceTimersByTimeAsync(300)
-
-    expect([windowAsksBeforeItGoes(), windowAsksBeforeItGoes(), windowAsksBeforeItGoes()]).toEqual([false, false, true])
-  })
-
-  // And each counts for its own second: the older of two has passed here, the newer has not.
-  it('make it ask once for two downloads of which the first was pressed more than a moment ago', async () => {
-    const link = await withTheLinkOfTheFile()
-
-    link.click()
-    await vi.advanceTimersByTimeAsync(700)
-    link.click()
-    await vi.advanceTimersByTimeAsync(500)
-
-    expect([windowAsksBeforeItGoes(), windowAsksBeforeItGoes()]).toEqual([false, true])
-  })
-
-  /* The second of a press is measured, not read off the clock of the wall, which the user and the system can set:
-   * set back, it would keep a press counting; set forward, it would end it at once. */
-  it.each<[string, number, number, boolean]>([
-    ['back', -60_000, 1_500, true],
-    ['forward', 3_600_000, 300, false],
-  ])('count the moment of a download by time passed, with the clock set %s meanwhile', async (_way, by, wait, asks) => {
-    const link = await withTheLinkOfTheFile()
-
-    link.click()
-    vi.setSystemTime(Date.now() + by)
-    await vi.advanceTimersByTimeAsync(wait)
-
-    expect(windowAsksBeforeItGoes()).toBe(asks)
   })
 })

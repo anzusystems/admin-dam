@@ -12,6 +12,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { createAsset } from '@/domains/coreDam/asset/api/assetApi'
+import { useAssetInNewTab } from '@/domains/coreDam/asset/composables/assetInNewTab'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetFactory } from '@/domains/coreDam/asset/factory/AssetFactory'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
@@ -28,6 +29,7 @@ const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const assetDetailStore = useAssetDetailStore()
 const { addToCachedUsers, fetchCachedUsers } = useDamCachedUsers()
+const { opensInNewTab, openTabForAsset } = useAssetInNewTab()
 
 const { createCreateDto } = useAssetFactory()
 const asset = ref<AssetCreateDto>(createCreateDto())
@@ -40,6 +42,9 @@ const onClick = () => {
 }
 
 const onCancel = () => {
+  /* The asset is made all the same, and what holds a second confirm back goes with this dialog: the menu it is in is
+   * drawn anew each time it is opened, and a dialog opened from it again would make a second asset. */
+  if (buttonLoading.value) return
   dialog.value = false
 }
 
@@ -60,17 +65,24 @@ const showDetail = async (asset: AssetDetailItemDto) => {
 }
 
 const onConfirm = async () => {
-  /* The asset made here is written into the detail the panel beside the list reads from: metadata typed into the
-   * panel and not saved go only when told to, asked about before anything is sent. */
-  if (assetDetailStore.panelHoldsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
+  // A second confirm while the first is on its way would make a second asset.
+  if (buttonLoading.value) return
+  /* On a page that draws no detail of an asset the new one is shown on its own page, in a tab opened here, at the
+   * press. Nothing of this page is replaced by it, so there is nothing to ask about. */
+  const tab = opensInNewTab() ? openTabForAsset() : null
+  /* Otherwise the asset made here is written into the detail the panel beside the list reads from: metadata typed
+   * into the panel and not saved go only when told to, asked about before anything is sent. */
+  if (!tab && assetDetailStore.panelHoldsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
   try {
     buttonLoading.value = true
     const res = await createAsset(currentAssetLicenceId.value, asset.value)
     showRecordWas('created')
     dialog.value = false
     emit('afterCreate', res)
-    await showDetail(res)
+    if (tab) tab.show(res.id)
+    else await showDetail(res)
   } catch (error) {
+    tab?.close()
     showErrorsDefault(error)
   } finally {
     buttonLoading.value = false
@@ -117,6 +129,7 @@ const { assetTypeOptions } = useAssetType()
       <VCardActions>
         <VSpacer />
         <ABtnTertiary
+          :disabled="buttonLoading"
           data-cy="button-cancel"
           @click.stop="onCancel"
         >

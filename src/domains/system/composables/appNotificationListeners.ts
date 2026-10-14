@@ -5,6 +5,7 @@ import {
   useDamNotifications,
 } from '@anzusystems/common-admin'
 
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useAuth } from '@/domains/system/auth/auth'
@@ -22,6 +23,7 @@ export const initAppNotificationListeners = () => {
   const { addDamNotificationListener } = useDamNotifications()
 
   const uploadQueuesStore = useUploadQueuesStore()
+  const assetDetailStore = useAssetDetailStore()
   const distributionListStore = useDistributionListStore()
 
   const off = addDamNotificationListener((event) => {
@@ -29,6 +31,8 @@ export const initAppNotificationListeners = () => {
       // `data.id` is the asset file: without it two slot uploads of one asset settle each other.
       case DamNotificationName.AssetFileProcessed:
         uploadQueuesStore.queueItemProcessed(event.data.asset, event.data.id)
+        // And a detail or a panel that holds the asset with this file still on its way, with or without a row of it.
+        assetDetailStore.mainFileProcessed(event.data.asset, event.data.id)
         break
       case DamNotificationName.AssetFileFailed:
         uploadQueuesStore.queueItemFailed(event.data.asset, event.data.failReason, event.data.id)

@@ -145,11 +145,8 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
   }
 
   function setActiveNext() {
-    let activeIndex = 0
-    if (!isNull(activeItemIndex.value)) {
-      activeIndex = activeItemIndex.value
-    }
-    const wantedIndex = activeIndex + 1
+    // With no tile active the next one is the first.
+    const wantedIndex = isNull(activeItemIndex.value) ? 0 : activeItemIndex.value + 1
     if (wantedIndex >= list.value.length) return
     setActiveByIndex(wantedIndex)
   }

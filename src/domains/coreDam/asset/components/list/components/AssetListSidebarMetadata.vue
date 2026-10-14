@@ -97,6 +97,8 @@ const onSave = async () => {
     pending: true,
   }
   latestSave = save
+  // Known to a read of the asset that nobody here started: its answer can be from before this save.
+  const saveAnswered = assetDetailStore.saveSent(opened.id)
   try {
     // Before the request, not after it: what is typed while it is on the wire is not in it.
     metadataUnTouch()
@@ -117,6 +119,7 @@ const onSave = async () => {
     showMetadataSaveError(error)
   } finally {
     save.pending = false
+    saveAnswered()
     saveButtonLoading.value = false
   }
 }

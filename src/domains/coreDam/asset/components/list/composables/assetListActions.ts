@@ -139,9 +139,12 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   /** The asset the panel beside the list shows: none while it is behind its loader, or holds none. */
   const shownInPanel = () => (assetDetailStore.loader ? null : (assetDetailStore.asset?.id ?? null))
 
-  /** The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list. */
+  /**
+   * The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list.
+   * With no tile active the next one is the first, and there is no previous one.
+   */
   const neighbourOfActive = (step: 1 | -1): AssetListItem | undefined =>
-    assetListStore.list[(assetListStore.activeItemIndex ?? 0) + step]
+    assetListStore.list[(assetListStore.activeItemIndex ?? -1) + step]
 
   /* The library replaces the value of the ref it is handed before it returns, so each request gets
    * its own and only the answer that still owns the list is copied back - a stale one told the new
@@ -336,9 +339,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   /* Reads again the asset the detail holds, in the dialog and in the panel beside the list alike: the address of its
-   * file has changed, or another of its files is the main one. The active tile can be of another asset - the detail
-   * of a queue row is not of the list. */
-  const refreshActiveItem = () => readAfterFileChange(readHeldAssetWhole)
+   * file has changed, or another of its files is the main one, or the server has processed it (`byServer`). The
+   * active tile can be of another asset - the detail of a queue row is not of the list. */
+  const refreshActiveItem = (byServer = false) => readAfterFileChange(readHeldAssetWhole, byServer)
 
   const onItemClick = async (clicked: { assetId: DocId; index: number }) => {
     const data = readReplacesUnsavedOfPanel(clicked.assetId) ? await leaveUnsavedFor(clicked) : clicked
@@ -529,8 +532,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     assetListStore.keyboardNavigationDisable()
     /* The list is going, and its detail with it: one it asked for must not answer onto whatever replaces it, and a
      * question left open has no page to draw it - it would wait for ever and tell the next ask to stay. Nor do
-     * metadata that were not saved stay behind: the queue rows, the create button and the licence dialog are drawn
-     * on other pages too, and would ask about them where nothing draws the question. */
+     * metadata that were not saved stay behind: the licence dialog is drawn on other pages too, and would ask about
+     * them where nothing draws the question. */
     assetDetailStore.reset()
   }
 
