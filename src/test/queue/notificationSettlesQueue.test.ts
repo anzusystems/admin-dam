@@ -505,17 +505,21 @@ describe('a notification that the metadata is processed', () => {
   describe('for an asset created empty and given its first file through a slot', () => {
     const emptyAsset = (id: string) => assetDetail(id, { mainFile: null }) as unknown as AssetDetailItemDto
 
-    it('gives the open detail of that asset its main file, and the slot row nothing', async () => {
+    /* The page that draws the detail reads the asset for it, as for any main file the server is done with: the file
+     * is not written into the detail here, under a form read before it. */
+    it('tells the page of the open detail of that asset, which reads it, and gives the slot row nothing', async () => {
       const { store, detailStore } = await load()
       const [slot] = seedQueue(store, SLOTS, [
         queueRow({ type: 'slotFile', status: 'uploading', fileId: 'file-1', slotName: 'default' }),
       ])
       detailStore.asset = emptyAsset('asset-1')
+      const pageTold = vi.fn()
+      detailStore.tellPageBy(pageTold)
       server.asset(assetDetail('asset-1'))
 
       await metadata()
 
-      expect(detailStore.asset?.mainFile?.id).toBe('file-1')
+      expect([pageTold.mock.calls.length, detailStore.asset?.mainFile]).toEqual([1, null])
       // A slot row has no metadata form.
       expect([slot.status, slot.canEditMetadata, slot.keywords]).toEqual(['uploading', false, []])
     })
@@ -524,11 +528,13 @@ describe('a notification that the metadata is processed', () => {
       const { store, detailStore } = await load()
       seedQueue(store, SLOTS, [queueRow({ type: 'slotFile', status: 'uploading', slotName: 'default' })])
       detailStore.asset = emptyAsset('asset-2')
+      const pageTold = vi.fn()
+      detailStore.tellPageBy(pageTold)
       server.asset(assetDetail('asset-1'))
 
       await metadata()
 
-      expect(detailStore.asset?.mainFile).toBeNull()
+      expect([pageTold.mock.calls.length, detailStore.asset?.mainFile]).toEqual([0, null])
     })
 
     it('leaves a main file the detail already has', async () => {
@@ -539,23 +545,29 @@ describe('a notification that the metadata is processed', () => {
       detailStore.asset = assetDetail('asset-1', {
         mainFile: assetFile('file-kept'),
       }) as unknown as AssetDetailItemDto
+      const pageTold = vi.fn()
+      detailStore.tellPageBy(pageTold)
       server.asset(assetDetail('asset-1'))
 
       await metadata()
 
-      expect(detailStore.asset?.mainFile?.id).toBe('file-kept')
+      // Not written into the detail. Its page is told, as of any file of an asset that is not described the server
+      // has processed: it may have filled in the metadata from it.
+      expect([pageTold.mock.calls.length, detailStore.asset?.mainFile?.id]).toEqual([1, 'file-kept'])
     })
 
-    // Whatever row of the queues the asset was read for: the detail is given what the read brought.
-    it('gives the open detail its main file when the queue holds no slot upload of the asset as well', async () => {
+    // Whatever row of the queues the asset was read for: the detail learns what the read brought.
+    it('tells the page of the open detail when the queue holds no slot upload of the asset as well', async () => {
       const { store, detailStore } = await load()
       seedQueue(store, GLOBAL, [queueRow({ status: 'uploading' })])
       detailStore.asset = emptyAsset('asset-1')
+      const pageTold = vi.fn()
+      detailStore.tellPageBy(pageTold)
       server.asset(assetDetail('asset-1'))
 
       await metadata()
 
-      expect(detailStore.asset?.mainFile?.id).toBe('file-1')
+      expect([pageTold.mock.calls.length, detailStore.asset?.mainFile]).toEqual([1, null])
     })
   })
 })

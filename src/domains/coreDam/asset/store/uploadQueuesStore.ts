@@ -265,8 +265,18 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           // core counts the queue and starts the next row after this.
           onRowFinal: (queueId, item) => {
             if (item.status === UploadQueueItemStatus.Failed) metadataFailures.delete(metadataFailureKey(queueId, item))
+            /* A file put into a slot, processed: the server may have filled in the metadata of its asset from it. The
+             * reads of the queue speak of it only here - the asset they read brings its main file alone. */
+            if (
+              item.type === UploadQueueItemType.SlotFile &&
+              item.status === UploadQueueItemStatus.Uploaded &&
+              !item.isDuplicate &&
+              item.assetId &&
+              item.fileId
+            ) {
+              useAssetDetailStore().fileStatusOnServer(item.assetId, item.fileId, AssetFileProcessStatus.Processed)
+            }
           },
-          // An asset created empty gets its first file through a slot: the open detail of it learns its main file.
           onAssetRead: (asset) => {
             // What the server has of the rows this read loaded: the bulk save sends what differs from it. Placed
             // where the read lands, when it was sent not being known here.
@@ -275,15 +285,17 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
               if (item.assetId === asset.id) setQueueRowBaseline(item, baselineOfAsset(asset), landedAt)
             })
             loadedInThisRead = []
-            const assetDetailStore = useAssetDetailStore()
-            if (assetDetailStore.asset?.id === asset.id && assetDetailStore.asset.mainFile === null && asset.mainFile) {
-              assetDetailStore.asset.mainFile = asset.mainFile
-            }
             /* Every read made for a row comes here - the poll of a queue, the read a notification asks for, the
              * refresh button: a detail or a panel that holds the asset with its main file still on its way learns
-             * here that the server has processed it. */
-            if (asset.mainFile?.fileAttributes?.status === AssetFileProcessStatus.Processed) {
-              assetDetailStore.mainFileProcessed(asset.id, asset.mainFile.id)
+             * here how far the server is with it, and one of an asset created empty that the asset has its first
+             * file, put into a slot. Nothing is written into the detail here: its page reads the asset, so the form
+             * is not left older than the file under it. */
+            if (asset.mainFile?.fileAttributes) {
+              useAssetDetailStore().fileStatusOnServer(
+                asset.id,
+                asset.mainFile.id,
+                asset.mainFile.fileAttributes.status
+              )
             }
           },
           /* The status of a mass-edit row is its batch load's. A processed file takes the error of the row away - not
@@ -554,6 +566,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     }
     failStillLoading(queueId, assetIds)
     fetchCachedAuthors()
+    // And a detail or a panel that holds one of the assets with its main file still on its way.
+    const assetDetailStore = useAssetDetailStore()
+    res.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
   }
 
   async function removeByAssetId(queueId: string, assetId: DocId) {

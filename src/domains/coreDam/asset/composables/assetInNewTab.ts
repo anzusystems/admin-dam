@@ -15,6 +15,44 @@ const EMPTY_TAB = 'about:blank'
 /** For a page that draws no detail of an asset of DAM, in its setup. */
 export const provideAssetOpensInNewTab = () => provide(AssetOpensInNewTabKey, true)
 
+/**
+ * A tab for an address that is yet to come: of an asset being made, of a file being signed. A browser opens a tab at a
+ * press and can block one opened after a request, so the tab is opened now, empty, and is sent to the address once
+ * there is one (`show`), or closed when there is none (`close`). Either only while it is still the empty tab that was
+ * opened: one the user has closed or taken elsewhere meanwhile is theirs. And until either, the tab goes with the page
+ * that opened it: that page closed or reloaded, nothing would be left to send the tab on or to close it.
+ */
+export const openTabForAddress = () => {
+  const tab = window.open('', '_blank')
+  /* No way back to the page that opened it, from the start: the tab is cut off while it is still the empty page of
+   * this origin. Taken to another site while the address is on its way, it could not be cut off any more. */
+  if (tab) tab.opener = null
+
+  const whileEmpty = () => {
+    try {
+      return tab && !tab.closed && tab.location.href === EMPTY_TAB ? tab : null
+    } catch {
+      // A tab that is on another site by now does not say where it is.
+      return null
+    }
+  }
+  const closeWithPage = () => whileEmpty()?.close()
+  window.addEventListener('pagehide', closeWithPage)
+  const stopClosingWithPage = () => window.removeEventListener('pagehide', closeWithPage)
+
+  return {
+    show: (address: string) => {
+      // First: on its way to the address the tab still says it is empty.
+      stopClosingWithPage()
+      whileEmpty()?.location.replace(address)
+    },
+    close: () => {
+      stopClosingWithPage()
+      whileEmpty()?.close()
+    },
+  }
+}
+
 /** For what opens the detail of an asset, in its setup: whether its page has said the above, and the two ways to. */
 export const useAssetInNewTab = () => {
   const router = useRouter()
@@ -27,42 +65,11 @@ export const useAssetInNewTab = () => {
     window.open(pageOf(assetId), '_blank', 'noopener')
   }
 
-  /**
-   * For an asset that is yet to be made. A browser opens a tab at a press and can block one opened after a request,
-   * so the tab is opened now, empty, and is sent to the page of the asset once there is one (`show`), or closed when
-   * there is none to show (`close`). Either only while it is still the empty tab that was opened: one the user has
-   * closed or taken elsewhere meanwhile is theirs. And until either, the tab goes with the page that opened it: that
-   * page closed or reloaded, nothing would be left to send the tab on or to close it.
-   */
+  /** For an asset that is yet to be made: a tab opened now, sent to the page of the asset once there is one. */
   const openTabForAsset = () => {
-    const tab = window.open('', '_blank')
-    /* No way back to the page that opened it, from the start: the tab is cut off while it is still the empty page of
-     * this origin. Taken to another site while the asset is made, it could not be cut off any more. */
-    if (tab) tab.opener = null
+    const tab = openTabForAddress()
 
-    const whileEmpty = () => {
-      try {
-        return tab && !tab.closed && tab.location.href === EMPTY_TAB ? tab : null
-      } catch {
-        // A tab that is on another site by now does not say where it is.
-        return null
-      }
-    }
-    const closeWithPage = () => whileEmpty()?.close()
-    window.addEventListener('pagehide', closeWithPage)
-    const stopClosingWithPage = () => window.removeEventListener('pagehide', closeWithPage)
-
-    return {
-      show: (assetId: DocId) => {
-        // First: on its way to the asset the tab still says it is empty.
-        stopClosingWithPage()
-        whileEmpty()?.location.replace(pageOf(assetId))
-      },
-      close: () => {
-        stopClosingWithPage()
-        whileEmpty()?.close()
-      },
-    }
+    return { show: (assetId: DocId) => tab.show(pageOf(assetId)), close: tab.close }
   }
 
   return { opensInNewTab: () => saidByPage, openAssetInNewTab, openTabForAsset }

@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'
+import { provideAssetDeleted } from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
 import { provideAssetFileChanged } from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
 import AssetFooterSelected from '@/domains/coreDam/asset/components/footer/AssetFooterSelected.vue'
 import AssetFooterSelectedFull from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue'
@@ -25,6 +26,7 @@ import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import MainWrapper from '@/domains/system/components/MainWrapper.vue'
 import { GridView, useGridView } from '@/domains/system/composables/gridView'
@@ -37,6 +39,7 @@ const loadOnScroll = true
 const { gridView } = useGridView()
 const { sidebarRight } = useMainWrapper()
 const assetDetailStore = useAssetDetailStore()
+const assetListStore = useAssetListStore()
 /* Before the first render, not once mounted: the detail is drawn with the page, and another page can have left one
  * open in the store - the page of the detail of an asset, left by the back button of the browser. */
 assetDetailStore.reset()
@@ -66,6 +69,12 @@ onBeforeUnmount(() => {
 })
 provideAssetFileChanged((byServer) => {
   if (!pageLeft) refreshActiveItem(byServer)
+})
+/* And of an asset deleted in the detail: its tile is marked as being deleted, and so is the asset where the detail or
+ * the panel holds it still - the one deleted, not the one the detail has gone on to meanwhile. */
+provideAssetDeleted((assetId) => {
+  assetListStore.setDeletingById(assetId)
+  if (assetDetailStore.asset?.id === assetId) assetDetailStore.setDeleting()
 })
 
 const { footerViewSelected } = useAssetFooterSelectedView()

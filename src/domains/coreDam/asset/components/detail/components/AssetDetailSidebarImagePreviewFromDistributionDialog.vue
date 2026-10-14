@@ -20,6 +20,7 @@ import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import { setVideoFileDistributionPreview } from '@/domains/coreDam/asset/api/videoApi'
 import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
 import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
+import { videoPreviewSet } from '@/domains/coreDam/asset/components/detail/composables/videoPreviewSet'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
@@ -28,10 +29,6 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  // With the file the image was set for.
-  (e: 'afterSuccessfulConfirm', fileId: DocId): void
-}>()
 
 const modelValue = defineModel<boolean>({ required: true })
 
@@ -77,7 +74,8 @@ const onConfirm = async () => {
     await setVideoFileDistributionPreview(fileId, lastSelectedItem.value.id)
     closeDialog()
     showRecordWas('updated')
-    emit('afterSuccessfulConfirm', fileId)
+    // Not by an event, nor to the card that opened the dialog: either can be gone by now.
+    videoPreviewSet(fileId)
   } catch (e) {
     showErrorsDefault(e)
   } finally {

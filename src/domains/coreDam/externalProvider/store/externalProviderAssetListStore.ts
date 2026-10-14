@@ -18,6 +18,12 @@ export interface ExternalProviderAssetListItem {
 export const useExternalProviderAssetListStore = defineStore('damExternalProviderAssetListStore', () => {
   const list = ref<ExternalProviderAssetListItem[]>([])
   const activeItemIndex = ref<null | number>(null)
+  /* The asset of the active tile, as in the list of assets: the tile is active for its asset, not for its place, which
+   * in a list read anew is another asset's or nobody's. */
+  let activeAssetId: AssetExternalProviderId | null = null
+  /* Of that asset, once a list came without it: no tile is active then, and the asset is only waited for, in a
+   * further page or in the list read next. */
+  let activeAssetIsAwaited = false
   const keyboardNavigation = ref(false)
   const loader = ref<{ soft: boolean; hard: boolean }>({
     soft: false,
@@ -32,7 +38,24 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     loader.value[type] = false
   }
 
-  function appendList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
+  /* With no tile active: the tile of the asset that was active is the active one again, at the place it has now. An
+   * asset waited for is waited for only while the panel beside the list still shows it (`shownAssetId`): the panel
+   * can lose it meanwhile, and a tile made active for it then would be one nobody picked. */
+  function restoreActive(shownAssetId: AssetExternalProviderId | null) {
+    if (!isNull(activeItemIndex.value) || isNull(activeAssetId)) return
+    if (activeAssetIsAwaited && shownAssetId !== activeAssetId) {
+      activeAssetId = null
+
+      return
+    }
+    setActiveByIndex(list.value.findIndex((item) => item.asset.id === activeAssetId))
+  }
+
+  function appendList(
+    assets: AssetExternalProviderListDto[],
+    selectedItems: UploadQueueItem[] = [],
+    shownAssetId: AssetExternalProviderId | null = null
+  ) {
     const selectedIds: Array<AssetExternalProviderId> = []
     for (let i = 0; i < selectedItems.length; i++) {
       if (
@@ -50,9 +73,15 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
       }
     })
     list.value = list.value.concat(items)
+    // The asset the first page of a list read anew did not bring can be in a further one.
+    restoreActive(shownAssetId)
   }
 
-  function setList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
+  function setList(
+    assets: AssetExternalProviderListDto[],
+    selectedItems: UploadQueueItem[] = [],
+    shownAssetId: AssetExternalProviderId | null = null
+  ) {
     const selectedIds: Array<AssetExternalProviderId> = []
     for (let i = 0; i < selectedItems.length; i++) {
       if (
@@ -69,6 +98,10 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
         selected: selectedIds.includes(asset.id),
       }
     })
+    // The place the active tile had is another asset's in these rows, or nobody's.
+    activeItemIndex.value = null
+    restoreActive(shownAssetId)
+    activeAssetIsAwaited = isNull(activeItemIndex.value) && !isNull(activeAssetId)
   }
 
   function toggleSelectedByIndex(index: number) {
@@ -98,16 +131,17 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     if (!list.value[index]) return
     list.value[index].active = true
     activeItemIndex.value = index
+    activeAssetId = list.value[index].asset.id
+    activeAssetIsAwaited = false
     if (isNull(oldActiveIndex)) return
+    // The list may be shorter than the one the place was in.
+    if (!(oldActiveIndex in list.value)) return
     list.value[oldActiveIndex].active = false
   }
 
   function setActiveNext() {
-    let activeIndex = 0
-    if (!isNull(activeItemIndex.value)) {
-      activeIndex = activeItemIndex.value
-    }
-    const wantedIndex = activeIndex + 1
+    // With no tile active the next one is the first.
+    const wantedIndex = isNull(activeItemIndex.value) ? 0 : activeItemIndex.value + 1
     if (wantedIndex >= list.value.length) return
     setActiveByIndex(wantedIndex)
   }
@@ -136,8 +170,10 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     keyboardNavigation.value = false
   }
 
+  /** The list is emptied to be read anew: no tile is left to be active, and the asset that was is remembered. */
   function resetList() {
     list.value = []
+    activeItemIndex.value = null
     loader.value.soft = false
     loader.value.hard = true
   }
@@ -145,6 +181,7 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
   function reset() {
     list.value = []
     activeItemIndex.value = null
+    activeAssetId = null
     keyboardNavigation.value = false
     loader.value.soft = false
     loader.value.hard = true

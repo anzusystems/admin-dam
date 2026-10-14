@@ -54,12 +54,10 @@ const closeDialog = () => {
   browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
 }
 
+// The list and the panel are told by the page (`provideAssetDeleted`): the dialog closes over the asset deleted, not
+// over the next one it has gone on to meanwhile.
 const postDelete = (data: DocId) => {
-  assetListStore.setDeletingById(data)
-  if (asset.value?.id === data) {
-    assetDetailStore.setDeleting()
-  }
-  if (!onPage()) return
+  if (asset.value?.id !== data || !onPage()) return
   closeDialog()
 }
 

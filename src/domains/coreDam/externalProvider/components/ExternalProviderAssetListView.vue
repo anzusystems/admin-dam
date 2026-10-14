@@ -184,7 +184,6 @@ onUnmounted(() => {
       <ExternalProviderAssetFooterSelected />
     </template>
     <template #custom-dialog>
-      {{ externalProviderFooterViewSelected }}
       <div class="asset-footer d-flex flex-column justify-space-between w-100 h-100">
         <ExternalProviderAssetFooterSelectedFull
           v-if="externalProviderFooterViewSelected === ExternalProviderFooterViewSelected.Full"

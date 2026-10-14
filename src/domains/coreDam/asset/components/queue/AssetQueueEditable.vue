@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ADamUploadQueueList, UploadQueueSuggestionsKey, useAlerts } from '@anzusystems/common-admin'
-import type { UploadQueueItem, UploadQueueListBinding } from '@anzusystems/common-admin'
+import type { UploadQueueListBinding } from '@anzusystems/common-admin'
 import { provide } from 'vue'
 
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
@@ -32,7 +32,7 @@ const queue: UploadQueueListBinding = {
   items: () => uploadQueuesStore.getQueueItems(props.queueId),
   // In the queue the row's event names, as before.
   cancel: (item, _index, queueId) => uploadQueuesStore.stopItemUpload(queueId, item),
-  // A row is taken out by its own delete: `removeItem` below.
+  // A row is taken out by its own delete, which removes it from the store.
   remove: () => undefined,
   refresh: (item) => uploadQueuesStore.refreshQueueItem(item),
   refreshMayHelp: () => false,
@@ -50,12 +50,6 @@ const queue: UploadQueueListBinding = {
 
 // The name chips mark what the queue suggested as new: the queues are those of admin-dam's store.
 provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queueKey)?.suggestions)
-
-// The row whose asset was deleted, where it is by now; not the first row of that asset.
-const removeItem = (item: UploadQueueItem) => {
-  const index = queue.items().indexOf(item)
-  if (index !== -1) uploadQueuesStore.removeByIndex(props.queueId, index)
-}
 </script>
 
 <template>
@@ -81,7 +75,6 @@ const removeItem = (item: UploadQueueItem) => {
         :disable-done-animation="disableDoneAnimation"
         @refresh-item="refresh()"
         @cancel-item="queue.cancel($event.item, $event.index, $event.queueId)"
-        @remove-item="removeItem"
       />
     </template>
     <template #sidebar>

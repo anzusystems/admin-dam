@@ -8,7 +8,6 @@ import type {
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
-import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
@@ -22,21 +21,19 @@ export const useExternalProviderAssetImport = () => {
   const canImport = (assetTypes: DamAssetTypeType[]) =>
     canForAll([...new Set(assetTypes.map((assetType) => assetTypeAcl(assetType, 'create')))])
 
+  /* The asset the panel or the dialog shows, whatever tile of the list is active: after a list read anew the tile at
+   * the place of the active one is of another asset, or there is none, and the button stood there all the same. */
   const importFromDetail = async (hideDetail = false) => {
-    const listStore = useExternalProviderAssetListStore()
-    if (isNull(listStore.activeItemIndex) || !listStore.list[listStore.activeItemIndex]) return
+    const detailStore = useExternalProviderAssetDetailStore()
+    const shown = detailStore.asset
+    if (isNull(shown) || detailStore.loader) return
     const uploadQueueStore = useUploadQueuesStore()
     if (uploadQueueStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL) >= maxUploadItems.value) {
       showWarning('Max upload limit is ' + maxUploadItems.value + ' at once. Finish your upload, then try again.', 5)
       return
     }
-    const detailStore = useExternalProviderAssetDetailStore()
     if (hideDetail) detailStore.hideDetail()
-    await uploadQueueStore.addByExternalProviderAsset(
-      QUEUE_ID_UPLOAD_GLOBAL,
-      [listStore.list[listStore.activeItemIndex].asset],
-      true
-    )
+    await uploadQueueStore.addByExternalProviderAsset(QUEUE_ID_UPLOAD_GLOBAL, [shown], true)
   }
 
   const importFromSelected = async () => {

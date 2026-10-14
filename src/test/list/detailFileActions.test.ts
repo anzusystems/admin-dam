@@ -461,9 +461,22 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
 describe('a file downloaded from the detail of its asset', () => {
   const SIGNED = 'https://storage.test/file?signature=1'
 
-  /* "Download" of the menu of a slot asks for the address of the file and opens it in a window of its own. */
+  /* "Download" of the menu of a slot asks for the address of the file and opens it in a tab of its own: opened at the
+   * press, empty, and sent to the address once it is had, or closed when it is not. */
   it('says that the address of the file of a slot could not be had, and opens the file once it can', async () => {
-    const opened = vi.spyOn(window, 'open').mockImplementation(() => null)
+    const tabs: Array<{ opener: unknown; closed: boolean; sentTo: string[] }> = []
+    const opened = vi.spyOn(window, 'open').mockImplementation(() => {
+      const tab = {
+        opener: window as unknown,
+        closed: false,
+        sentTo: [] as string[],
+        close: () => void (tab.closed = true),
+        location: { href: 'about:blank', replace: (to: string) => void tab.sentTo.push(to) },
+      }
+      tabs.push(tab)
+
+      return tab as unknown as Window
+    })
     let refuse = true
     server.on('GET', DOWNLOAD_LINK, () => {
       if (refuse) throw httpError(500)
@@ -479,13 +492,22 @@ describe('a file downloaded from the detail of its asset', () => {
     expect(server.sent('GET', DOWNLOAD_LINK).map((request) => request.url)).toEqual([
       '/adm/v1/audio/file-b/download-link',
     ])
-    expect([ui.alerts(), opened.mock.calls]).toEqual([[SYSTEM_ERROR], []])
+    expect([
+      ui.alerts(),
+      opened.mock.calls,
+      tabs.map(({ opener, closed, sentTo }) => [opener, closed, sentTo]),
+    ]).toEqual([[SYSTEM_ERROR], [['', '_blank']], [[null, true, []]]])
 
     refuse = false
     download.click()
     await settled()
 
-    expect([ui.alerts(), opened.mock.calls]).toEqual([[SYSTEM_ERROR], [[SIGNED]]])
+    expect([ui.alerts(), opened.mock.calls.length, tabs[1].closed, tabs[1].sentTo]).toEqual([
+      [SYSTEM_ERROR],
+      2,
+      false,
+      [SIGNED],
+    ])
   })
 
   /* The download button of the Info tab opens a dialog that asks for the address of the main file, and shows a link

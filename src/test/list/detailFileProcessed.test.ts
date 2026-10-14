@@ -415,11 +415,11 @@ describe('a form that has nothing to learn from a file the server has processed'
     expect(reads()).toBe(1)
   })
 
-  // The guard: the file is another one than the main file of the asset the form holds, or of another asset.
-  it('is not read again for a file in another slot of its asset, nor for the file of another asset', async () => {
+  /* The guard: the file is of another asset. (A file in another slot of its asset, the asset not described, is news:
+   * the server may have filled in the metadata from it - `detailOtherSlotProcessed.test.ts`.) */
+  it('is not read again for the file of another asset', async () => {
     const form = await openForm(inTheDetailOfTheList)
 
-    await processed(IN_SLOT)
     await processed('file-of-other', OTHER)
     await processed(FILE, OTHER)
 

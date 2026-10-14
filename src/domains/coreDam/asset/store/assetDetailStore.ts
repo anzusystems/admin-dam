@@ -1,10 +1,17 @@
 import { AssetFileProcessStatus, DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
-import type { AssetDetailItemDto, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import type { AssetDetailItemDto, AssetFileProcessStatusType, DocId, DocIdNullable } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+
+// The states the server ends the processing of a file in.
+const FILE_ENDED: AssetFileProcessStatusType[] = [
+  AssetFileProcessStatus.Processed,
+  AssetFileProcessStatus.Failed,
+  AssetFileProcessStatus.Duplicate,
+]
 
 export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const asset = ref<AssetDetailItemDto | null>(null)
@@ -150,7 +157,13 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileInternal.value = read?.mainFile?.flags.internal || false
   }
 
+  /* An asset marked as being deleted (`setDeleting`): a read of it answered after that was asked before the delete
+   * went through, and would put back the asset as it was, with a form to save into an asset that is going. */
+  const heldAsDeleting = (assetId: DocId) =>
+    asset.value?.id === assetId && asset.value.attributes.assetStatus === DamAssetStatus.Deleting
+
   function setAsset(newAsset: AssetDetailItemDto) {
+    if (heldAsDeleting(newAsset.id)) return
     const { getAuthorConflicts } = useAssetSuggestions()
     readMainFileSwitches(newAsset)
     ttsAudio.value = newAsset?.assetFileProperties?.ttsAudio || false
@@ -170,7 +183,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * it was flipped for, and stays while that file is the main one. `saveWasHeldBack`: so it stays, also once the
    * file is held as processed - the form is still the one read before that. */
   function setMainFile(read: AssetDetailItemDto, saveWasHeldBack: boolean) {
-    if (!asset.value) return
+    if (!asset.value || heldAsDeleting(asset.value.id)) return
     if (saveWasHeldBack) saveHeldBack.value = true
     const anotherFile = asset.value.mainFile?.id !== read.mainFile?.id
     asset.value.mainFile = read.mainFile
@@ -178,10 +191,15 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   }
 
   /* The page that draws the detail reads its asset again once the file of the asset has changed, told by the part of
-   * the detail that changed it. That the server has processed a file no part of a detail tells: its notification
-   * and the reads of the upload queue say so, outside of every page. They say it here, and the page that is there
-   * says by what it is to be told: a read nobody in the detail started, with no loader over it. */
+   * the detail that changed it. How far the server is with a file no part of a detail tells: its notifications and
+   * the reads of the upload queue say so, outside of every page. They say it here, and the page that is there says by
+   * what it is to be told: a read nobody in the detail started, with no loader over it. */
   let tellPage: (() => void) | null = null
+
+  /* The files of other slots of the asset held here that the page was told of: the notification of each and the read of
+   * the queue that settles its row both say it is processed, in whatever order, and one read of the asset is enough
+   * for each file. Begun anew for another asset. */
+  let toldOfOtherFiles: { assetId: DocId; fileIds: Set<DocId> } = { assetId: '', fileIds: new Set() }
 
   /** `fileChanged` is what the page reads its asset again by. Answers what takes it back, for when the page goes. */
   function tellPageBy(fileChanged: () => void) {
@@ -193,22 +211,66 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   }
 
   /**
-   * The server has processed a file. A detail or a panel opened before that holds the file as still on its way - by
-   * which "Save" of an asset that is not described is held back - and would go on holding it so. When the file is
-   * the main one of the asset held here, held as not processed, the page is told, and reads the asset with no loader:
-   * at once, or once a read that is on its way has landed with the file still not processed.
+   * The server says how far it is with a file of an asset: that it has processed it, or ended it failed or as a
+   * duplicate, or - as the upload queue reads the asset - that the file is the main one and still on its way. A
+   * detail or a panel opened before that holds the main file as it was then - "Save" of an asset that is not
+   * described held back while it is on its way - and would go on holding it so. One of an asset created empty holds
+   * no main file at all, and the first file put into a slot of it becomes the main one. The page is told, and reads
+   * the asset with no loader, when the asset held here has no main file, or has this file as its main one in another
+   * state than the one the server ended it in, or - not described - has this file processed as another one than its
+   * main one: at once, or once a read that is on its way has landed with the asset still held so.
    */
-  function mainFileProcessed(assetId: DocId, fileId: DocId) {
-    const heldAsNotProcessed = () => {
-      const file = asset.value?.id === assetId ? asset.value.mainFile : null
+  function fileStatusOnServer(assetId: DocId, fileId: DocId, status: AssetFileProcessStatusType) {
+    const ended = FILE_ENDED.includes(status)
+    /* The server fills in the metadata of an asset that is not described from whichever of its files it processes
+     * first, a file of another slot as well: the form is then older than they are, whatever is held of the main
+     * file, until the asset is read whole. */
+    const mayHaveFilledIn = () =>
+      status === AssetFileProcessStatus.Processed &&
+      asset.value?.mainFile?.id !== fileId &&
+      !asset.value?.flags?.described
+    const heldAsBefore = () => {
+      if (asset.value?.id !== assetId) return false
+      const file = asset.value.mainFile
+      if (!file) return true
+      if (file.id === fileId) return ended && file.fileAttributes.status !== status
 
-      return !!file && file.id === fileId && file.fileAttributes.status !== AssetFileProcessStatus.Processed
+      return mayHaveFilledIn()
     }
     // Not as it was fetched: come back to within the moment in which an asset just read is not read again, it is.
-    if (heldAsNotProcessed()) forgetLastFetched([assetId])
+    if (heldAsBefore()) forgetLastFetched([assetId])
     readAfterCurrentRead(() => {
-      if (heldAsNotProcessed()) tellPage?.()
+      if (!heldAsBefore() || !tellPage) return
+      if (mayHaveFilledIn()) {
+        if (toldOfOtherFiles.assetId !== assetId) toldOfOtherFiles = { assetId, fileIds: new Set() }
+        if (toldOfOtherFiles.fileIds.has(fileId)) return
+        toldOfOtherFiles.fileIds.add(fileId)
+        // Read whole when nothing is typed, which lets it free; kept with what was typed.
+        saveHeldBack.value = true
+      }
+      tellPage()
     })
+  }
+
+  /**
+   * A save of the metadata of these assets went through, and the server marks each of them described with it: it
+   * fills in nothing more of them from a file from then on. So the asset held here is marked as well, when it is one
+   * of them - only that: the form and what was typed into it since stay as they are.
+   */
+  function savedAsDescribed(assetIds: DocId[]) {
+    if (!asset.value?.flags || !assetIds.includes(asset.value.id)) return
+    asset.value.flags.described = true
+  }
+
+  /**
+   * A read of assets made for something else than the detail - the list, the batch of the mass edit - brings each
+   * with its main file as the server has it. Of a main file the server has ended that is the same news as its
+   * notification, and goes the same way: whether the detail has anything to learn from it is decided above.
+   */
+  function mainFileOfRead(read: Pick<AssetDetailItemDto, 'id' | 'mainFile'>) {
+    const file = read.mainFile
+    if (!file?.fileAttributes || !FILE_ENDED.includes(file.fileAttributes.status)) return
+    fileStatusOnServer(read.id, file.id, file.fileAttributes.status)
   }
 
   function prefetchLazyData(assetData: AssetDetailItemDto) {
@@ -296,7 +358,9 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     setAsset,
     setMainFile,
     tellPageBy,
-    mainFileProcessed,
+    fileStatusOnServer,
+    mainFileOfRead,
+    savedAsDescribed,
     prefetchLazyData,
     setView,
     setDistributionCategory,

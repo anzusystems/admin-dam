@@ -21,9 +21,9 @@ vi.mock('@/domains/coreDam/asset/store/uploadQueuesStore', () => ({
     queueItemMetadataProcessed,
   }),
 }))
-const mainFileProcessed = vi.fn()
+const fileStatusOnServer = vi.fn()
 vi.mock('@/domains/coreDam/asset/store/assetDetailStore', () => ({
-  useAssetDetailStore: () => ({ mainFileProcessed }),
+  useAssetDetailStore: () => ({ fileStatusOnServer }),
 }))
 vi.mock('@/domains/coreDam/asset/store/distributionListStore', () => ({
   useDistributionListStore: () => ({}),
@@ -67,21 +67,22 @@ describe('what the listener passes on', () => {
   it('tells the detail of a processed file, with its id', async () => {
     await fire('asset_file_processed')
 
-    expect(mainFileProcessed.mock.calls).toEqual([['asset-1', 'file-1']])
+    expect(fileStatusOnServer.mock.calls).toEqual([['asset-1', 'file-1', 'processed']])
   })
 
-  it('carries it for a failed file', async () => {
+  // And of a file whose processing ended otherwise: the detail holds it as still on its way as well.
+  it('carries it for a failed file, to the detail too', async () => {
     await fire('asset_file_failed')
 
     expect(queueItemFailed).toHaveBeenCalledWith('asset-1', 'none', 'file-1')
-    expect(mainFileProcessed).not.toHaveBeenCalled()
+    expect(fileStatusOnServer.mock.calls).toEqual([['asset-1', 'file-1', 'failed']])
   })
 
-  it('carries it for a duplicate', async () => {
+  it('carries it for a duplicate, to the detail too', async () => {
     await fire('asset_file_duplicate')
 
     expect(queueItemDuplicate).toHaveBeenCalledWith('asset-1', 'origin-1', 'image', 'file-1')
-    expect(mainFileProcessed).not.toHaveBeenCalled()
+    expect(fileStatusOnServer.mock.calls).toEqual([['asset-1', 'file-1', 'duplicate']])
   })
 })
 

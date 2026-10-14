@@ -21,6 +21,7 @@ import AssetSlotListItemRemove from '@/domains/coreDam/asset/components/detail/c
 import AssetSlotListItemSwitch from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemSwitch.vue'
 import ImageFile from '@/domains/coreDam/asset/components/ImageFile.vue'
 import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
+import { openTabForAddress } from '@/domains/coreDam/asset/composables/assetInNewTab'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
@@ -99,12 +100,16 @@ const removeAssetFile = () => {
 const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
 const { showSuccess, showErrorsDefault, showUnknownError } = useAlerts()
 
+/* The address of the file is read anew at each press, and is signed for a while. The tab is opened at the press, as a
+ * browser can drop one opened after the request without a word, and has no way back to this page. */
 const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
+  const tab = openTabForAddress()
   try {
     const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
-    window.open(res.link)
+    tab.show(res.link)
   } catch (e) {
+    tab.close()
     // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
     if (!showErrorsDefault(e)) showUnknownError()
   }

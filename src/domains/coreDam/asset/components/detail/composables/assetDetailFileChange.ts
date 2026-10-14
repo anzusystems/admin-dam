@@ -1,5 +1,11 @@
-import { isNull, useAlerts, useDamCachedUsers, usePageNavigation } from '@anzusystems/common-admin'
-import type { DocId } from '@anzusystems/common-admin'
+import {
+  AssetFileProcessStatus,
+  isNull,
+  useAlerts,
+  useDamCachedUsers,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
+import type { AssetDetailItemDto, AssetFileProcessStatusType, DocId } from '@anzusystems/common-admin'
 import { inject, onBeforeUnmount, provide } from 'vue'
 import type { InjectionKey } from 'vue'
 
@@ -49,6 +55,25 @@ export const useAssetFileChanged = () => {
  * and the news of the server, and the answer of the older can come last. Only the one asked for last is taken. */
 let latestQuietRead = 0
 
+/* The states a file is ended in after its processing ran: the server may have filled in the metadata from it. A file
+ * that failed too - the metadata are saved before the processing ends, and what fails after that fails the file. Not a
+ * duplicate: it is found before anything of the file is saved. */
+const PROCESSING_RAN: AssetFileProcessStatusType[] = [AssetFileProcessStatus.Processed, AssetFileProcessStatus.Failed]
+
+/* Whether the form of `held`, read before `read`, can be older than the metadata the server has or is yet to have: of
+ * an asset that is not described the server fills them in from a file as it processes it. So when the main file was
+ * held as still on its way - unless the server has found that very file a duplicate. And when none was held and the
+ * answer brings the first one with its processing run: one still on its way holds "Save" back by its state
+ * meanwhile, and is told of again once the server has ended it. */
+const formMayBeOlder = (held: AssetDetailItemDto, read: AssetDetailItemDto) => {
+  const before = held.mainFile
+  const now = read.mainFile
+  if (!before) return !!now && PROCESSING_RAN.includes(now.fileAttributes.status) && !held.flags.described
+  if (now?.id === before.id && now.fileAttributes.status === AssetFileProcessStatus.Duplicate) return false
+
+  return metadataMayStillChange(held)
+}
+
 /* The asset a detail holds is read again once its file was changed there, in the dialog over the list, in the panel
  * beside the list and on the pages of a detail alike. */
 export function useAssetDetailFileChange() {
@@ -63,7 +88,9 @@ export function useAssetDetailFileChange() {
    * file is taken - as the server has it by now, with its route and how far it is processed, or another file, or
    * none. The form is as old as it was: a "Save" held back, since the server could still fill in the metadata from
    * the file, would come free over a form older than what the server has filled in since, so it stays held back
-   * whatever is held of the file from now on. An open question is not answered by it either.
+   * whatever is held of the file from now on - and so does one taken with the first file of an asset that had none,
+   * processed or failed by then. Not for a file the server found a duplicate: it filled in nothing. An open question
+   * is not answered by it either.
    * `whole`: the form takes the whole answer in its place (`setAsset`: the form is new, a "Save" held back comes
    * free) - when nothing is typed into it and no save of it went out, as the read is asked and as it is answered. What
    * was typed would go, and a read sent before a save can be answered as the asset was before it: saved again, that
@@ -88,7 +115,7 @@ export function useAssetDetailFileChange() {
         fetchCachedUsers()
         return
       }
-      assetDetailStore.setMainFile(res, metadataMayStillChange(held))
+      assetDetailStore.setMainFile(res, formMayBeOlder(held, res))
     } catch (error) {
       if (!isTaken() || !onPage()) return
       showErrorsDefault(error)

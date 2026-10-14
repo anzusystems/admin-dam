@@ -279,27 +279,35 @@ describe('a slot upload whose file becomes the main file of the asset', () => {
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([1, 1])
   })
 
-  it('gives the open detail of the asset its main file', async () => {
+  /* The page that draws the detail reads the asset for it, as for any main file the server is done with: the file
+   * is not written into the detail here, under a form read before it. */
+  it('tells the page of the open detail of the asset, which reads it for its main file', async () => {
     const { row, detailStore } = await processingSlotUpload()
     detailStore.asset = assetDetail('asset-1', { mainFile: null }) as unknown as AssetDetailItemDto
+    const pageTold = vi.fn()
+    detailStore.tellPageBy(pageTold)
     server.asset(assetDetail('asset-1'))
     slotFileIs('processed')
 
     await vi.advanceTimersByTimeAsync(ONE_READ)
 
     expect(row.status).toBe('uploaded')
-    expect(detailStore.asset?.mainFile?.id).toBe('file-1')
+    expect(pageTold).toHaveBeenCalled()
+    expect(detailStore.asset?.mainFile).toBeNull()
   })
 
   it('leaves the open detail of another asset alone', async () => {
     const { row, detailStore } = await processingSlotUpload()
     detailStore.asset = assetDetail('asset-2', { mainFile: null }) as unknown as AssetDetailItemDto
+    const pageTold = vi.fn()
+    detailStore.tellPageBy(pageTold)
     server.asset(assetDetail('asset-1'))
     slotFileIs('processed')
 
     await vi.advanceTimersByTimeAsync(ONE_READ)
 
     expect(row.status).toBe('uploaded')
+    expect(pageTold).not.toHaveBeenCalled()
     expect(detailStore.asset?.mainFile).toBeNull()
   })
 
@@ -308,12 +316,17 @@ describe('a slot upload whose file becomes the main file of the asset', () => {
     detailStore.asset = assetDetail('asset-1', {
       mainFile: assetFile('file-kept'),
     }) as unknown as AssetDetailItemDto
+    const pageTold = vi.fn()
+    detailStore.tellPageBy(pageTold)
     server.asset(assetDetail('asset-1'))
     slotFileIs('processed')
 
     await vi.advanceTimersByTimeAsync(ONE_READ)
 
     expect(row.status).toBe('uploaded')
+    // Not written into the detail. Its page is told, as of any file of an asset that is not described the server has
+    // processed: it may have filled in the metadata from it.
+    expect(pageTold).toHaveBeenCalledTimes(1)
     expect(detailStore.asset?.mainFile?.id).toBe('file-kept')
   })
 })

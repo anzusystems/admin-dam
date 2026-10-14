@@ -22,8 +22,9 @@ export const useSimpleLoginActions = () => {
     try {
       await login({ body: simpleLoginForm.value })
       /* A full load, not a router push: the current user, the ACL, the configuration and the login
-       * status live in module state a navigation carries over. */
-      window.location.href = '/'
+       * status live in module state a navigation carries over. In the place of the entry of the sign-in page in the
+       * history of the browser: Back from the application does not show it to a user signed in. */
+      window.location.replace('/')
 
       // And left loading: the document is on its way out, and the button would be clickable again.
       return

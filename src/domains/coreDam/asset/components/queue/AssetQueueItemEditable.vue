@@ -18,6 +18,7 @@ import { useAssetInNewTab } from '@/domains/coreDam/asset/composables/assetInNew
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -44,7 +45,6 @@ const emit = defineEmits<{
   (e: 'update:authors', data: DocId[]): void
   (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
-  (e: 'removeItem', item: UploadQueueItem): void
   (e: 'refreshItem', data: { index: number; assetId: DocId; item: UploadQueueItem }): void
 }>()
 
@@ -53,6 +53,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
+const uploadQueuesStore = useUploadQueuesStore()
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 // A failure that ends after the user went elsewhere has nothing to say there.
@@ -113,13 +114,22 @@ const showDetail = async () => {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
   }
 }
+/* The asset is deleted, and what else holds it is told, as a delete in the detail tells it: the tile of the asset in
+ * the list and the detail or the panel beside the list are marked as deleting, and what was typed into the form of
+ * the asset is no longer unsaved. Through the stores, not by an event: the queue can be closed while the delete is on
+ * its way, and what an unmounted component emits Vue drops. */
 const remove = async () => {
-  if (!props.item.assetId) return
+  const assetId = props.item.assetId
+  if (!assetId) return
+  const queueId = props.queueId
+  const item = props.item
   try {
-    await deleteAsset(props.item.assetId)
-    // The row itself: the delete is awaited, the index can shift onto another row meanwhile, and rows can share an
-    // asset.
-    emit('removeItem', props.item)
+    await deleteAsset(assetId)
+    // The row itself: the index can shift onto another row meanwhile, and rows can share an asset.
+    const index = uploadQueuesStore.getQueueItems(queueId).indexOf(item)
+    if (index !== -1) uploadQueuesStore.removeByIndex(queueId, index)
+    assetListStore.setDeletingById(assetId)
+    if (assetDetailStore.asset?.id === assetId) assetDetailStore.setDeleting()
     showRecordWas('deleted')
   } catch (error) {
     showErrorsDefault(error)

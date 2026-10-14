@@ -72,6 +72,9 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
 
+  /** The asset the panel beside the list shows: none while it is behind its loader, or holds none. */
+  const shownInPanel = () => (assetDetailStore.loader ? null : (assetDetailStore.asset?.id ?? null))
+
   /* The library replaces the value of the ref it is handed, so each request gets its own and only
    * the answer that still owns the list is copied back. */
   const paginationForRequest = () => ref({ ...pagination.value })
@@ -96,7 +99,11 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       // Two filter changes answer in whatever order they like; the older one used to win.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
-        externalProviderAssetListStore.setList(firstPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
+        externalProviderAssetListStore.setList(
+          firstPage,
+          uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT),
+          shownInPanel()
+        )
       }
     } catch (error) {
       // And the scroll made while this was loading: its page two would land on a page one that is not there.
@@ -159,7 +166,11 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       // Only onto the list that asked for it, not the one a filter change has put in its place.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
-        externalProviderAssetListStore.appendList(nextPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
+        externalProviderAssetListStore.appendList(
+          nextPage,
+          uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT),
+          shownInPanel()
+        )
       }
     } catch (error) {
       // Or the failed page is skipped by the next scroll.
@@ -300,10 +311,10 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
   /**
    * The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list.
-   * With no tile active it is counted from the first one, as the store steps.
+   * With no tile active the next one is the first, and there is no previous one, as the store steps.
    */
   const neighbourOfActive = (step: 1 | -1): ExternalProviderAssetListItem | undefined =>
-    externalProviderAssetListStore.list[(externalProviderAssetListStore.activeItemIndex ?? 0) + step]
+    externalProviderAssetListStore.list[(externalProviderAssetListStore.activeItemIndex ?? -1) + step]
 
   const nextItem = async () => {
     // Found first: at the end of the list there is nowhere to go, so nothing to show or to read.
@@ -400,7 +411,8 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const listMounted = async () => {
     await validateRouteProvider()
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
-    externalProviderAssetListStore.resetList()
+    // A new start: the asset of a tile active on an earlier visit is not one to come back to.
+    externalProviderAssetListStore.reset()
     assetDetailStore.reset()
     await fetchAssetList()
     externalProviderAssetListStore.keyboardNavigationEnable()

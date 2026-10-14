@@ -98,11 +98,13 @@ afterEach(() => {
 })
 
 describe('the import of the provider asset open in the detail', () => {
+  // The asset the detail shows, whatever tile of the list is active.
   it('puts it into the upload queue, which imports it, and closes the detail when asked to', async () => {
     const { store, listStore, detailStore, actions } = await load()
     seedQueue(store, GLOBAL, settled(49))
     listStore.setList([provided('photo-1'), provided('photo-2')])
-    listStore.setActiveByIndex(1)
+    listStore.setActiveByIndex(0)
+    detailStore.setAsset(provided('photo-2'))
     detailStore.showDetail()
 
     await actions.importFromDetail(true)
@@ -119,7 +121,7 @@ describe('the import of the provider asset open in the detail', () => {
       { id: 'photo-2', externalProvider: 'unsplash' },
     ])
     expect([row.status, row.assetId, row.fileId]).toEqual(['processing', 'asset-1', 'file-1'])
-    // What the provider said about the asset is written into the row, as the list holds it.
+    // What the provider said about the asset is written into the row, as the detail holds it.
     expect(row.externalProviderMetadata).toEqual({ width: 800 })
     expect(detailStore.detail).toBe(false)
     expect(showWarning).not.toHaveBeenCalled()
@@ -130,6 +132,7 @@ describe('the import of the provider asset open in the detail', () => {
     seedQueue(store, GLOBAL, settled(50))
     listStore.setList([provided('photo-1')])
     listStore.setActiveByIndex(0)
+    detailStore.setAsset(provided('photo-1'))
     detailStore.showDetail()
 
     await actions.importFromDetail(true)

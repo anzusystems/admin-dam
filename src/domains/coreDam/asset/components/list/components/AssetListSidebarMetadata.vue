@@ -128,6 +128,9 @@ const assetStatus = computed(() => {
   return asset.value?.attributes.assetStatus || DamAssetStatus.Draft
 })
 
+// An asset being deleted - by the detail, by the bin of a queue row - has nothing to be saved into.
+const isDeleting = computed(() => assetStatus.value === DamAssetStatus.Deleting)
+
 const assetMainFile = computed(() => {
   return asset.value?.mainFile || undefined
 })
@@ -201,7 +204,7 @@ watch(
             size="small"
             :variant="metadataAreTouched ? 'flat' : 'text'"
             :loading="saveButtonLoading"
-            :disabled="saveBlocked"
+            :disabled="saveBlocked || isDeleting"
             @click.stop="onSave"
           >
             {{ t('common.button.save') }}

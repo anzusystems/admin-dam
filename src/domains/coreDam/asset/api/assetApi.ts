@@ -31,6 +31,7 @@ import type { AxiosError } from 'axios'
 import type { Ref } from 'vue'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
 import {
   metadataOfQueueRow,
@@ -330,6 +331,8 @@ export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
     batch.forEach(({ item, metadata, changed }) =>
       setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
     )
+    // And the detail or the panel that holds one of them.
+    useAssetDetailStore().savedAsDescribed(batch.map(({ dtoItem }) => dtoItem.id))
   }
 }
 
@@ -368,6 +371,8 @@ export const updateAssetMetadata = async (
   } catch (error) {
     throw withNamedFields(error, () => asset.attributes.assetType)
   }
+  // Described with it: so is the asset the detail or the panel holds, when it is this one.
+  useAssetDetailStore().savedAsDescribed([asset.id])
 }
 
 export const useDeleteAsset = () =>

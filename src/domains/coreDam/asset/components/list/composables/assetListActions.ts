@@ -167,6 +167,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
         assetListStore.setList(firstPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT), shownInPanel())
+        // And the detail or the panel that holds one of them with its main file still on its way.
+        firstPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
       }
     } catch (error) {
       // And the scroll made while this was loading: its page two would land on a page one that is not there.
@@ -225,6 +227,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
         assetListStore.appendList(nextPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT), shownInPanel())
+        nextPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
       }
     } catch (error) {
       // Or the failed page is skipped by the next scroll.

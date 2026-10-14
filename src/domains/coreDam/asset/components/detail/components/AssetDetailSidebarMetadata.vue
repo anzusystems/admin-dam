@@ -9,6 +9,7 @@ import { deleteAsset, showMetadataSaveError, updateAssetMetadata } from '@/domai
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDownloadButton from '@/domains/coreDam/asset/components/detail/components/AssetDownloadButton.vue'
+import { useAssetDeleted } from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
@@ -106,12 +107,19 @@ const onSave = async () => {
   }
 }
 
+const assetDeleted = useAssetDeleted()
+
+/* The asset deleted is the one the delete was sent for: by its answer the detail can hold the next one, or this part
+ * of it be gone with its tab. The page is told by its function; the event closes the dialog over the list, and only
+ * while that is still drawn. */
 const onDelete = async () => {
   if (isNull(asset.value)) return
+  const assetId = asset.value.id
   try {
-    await deleteAsset(asset.value.id)
+    await deleteAsset(assetId)
     showRecordWas('deleted')
-    emit('postDelete', asset.value.id)
+    assetDeleted(assetId)
+    emit('postDelete', assetId)
   } catch (error) {
     showErrorsDefault(error)
   }

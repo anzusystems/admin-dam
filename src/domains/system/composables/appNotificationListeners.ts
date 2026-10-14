@@ -1,4 +1,5 @@
 import {
+  AssetFileProcessStatus,
   DamDistributionStatus,
   DamNotificationName,
   initDamNotifications,
@@ -32,10 +33,12 @@ export const initAppNotificationListeners = () => {
       case DamNotificationName.AssetFileProcessed:
         uploadQueuesStore.queueItemProcessed(event.data.asset, event.data.id)
         // And a detail or a panel that holds the asset with this file still on its way, with or without a row of it.
-        assetDetailStore.mainFileProcessed(event.data.asset, event.data.id)
+        assetDetailStore.fileStatusOnServer(event.data.asset, event.data.id, AssetFileProcessStatus.Processed)
         break
       case DamNotificationName.AssetFileFailed:
         uploadQueuesStore.queueItemFailed(event.data.asset, event.data.failReason, event.data.id)
+        // The same: the processing of the file has ended too, only otherwise.
+        assetDetailStore.fileStatusOnServer(event.data.asset, event.data.id, AssetFileProcessStatus.Failed)
         break
       case DamNotificationName.AssetFileDuplicate:
         uploadQueuesStore.queueItemDuplicate(
@@ -44,6 +47,7 @@ export const initAppNotificationListeners = () => {
           event.data.assetType,
           event.data.id
         )
+        assetDetailStore.fileStatusOnServer(event.data.asset, event.data.id, AssetFileProcessStatus.Duplicate)
         break
       case DamNotificationName.AssetMetadataProcessed:
         uploadQueuesStore.queueItemMetadataProcessed(event.data.asset)

@@ -8,6 +8,7 @@ import { fetchVideoFile, updatePreviewImage } from '@/domains/coreDam/asset/api/
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDetailSidebarImagePreviewFromDistributionDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreviewFromDistributionDialog.vue'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import { onVideoPreviewSet } from '@/domains/coreDam/asset/components/detail/composables/videoPreviewSet'
 import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
@@ -49,11 +50,14 @@ const showVideoFile = (file: AssetFileVideo) => {
  * them, and the answer of the older can come last. Only the one asked for last is shown, and the card spins until
  * that one is answered. */
 let latestFileRead = 0
+// The file of that read: the one the card shows, or is to show once it is answered.
+let fileAsked: DocId | null = null
 
 /* A read that failed leaves the card with no file. The one read before it is of another slot than the select above
  * the card says by now, and what is picked in the card is saved for the file the card shows. */
 const readVideoFile = async (fileId: DocId) => {
   const asked = ++latestFileRead
+  fileAsked = fileId
   loading.value = true
   try {
     const file = await fetchVideoFile(fileId)
@@ -83,10 +87,12 @@ const initLoad = async () => {
 }
 
 /* The image was set for the file the dialog was opened for, which is the one the card shows - of the slot of the
- * select above it, not always the main file of the asset. Read again, it shows what the server has set. */
-const afterSuccessfulConfirmFromDistribution = (fileId: DocId) => {
-  if (videoFile.value?.id === fileId) readVideoFile(fileId)
-}
+ * select above it, not always the main file of the asset. Read again, it shows what the server has set; also when
+ * the dialog was closed before the save answered, and in a card drawn in the place of the one that opened it, whose
+ * read of the file can be from before the image was set, answered or still on its way. */
+onVideoPreviewSet((fileId) => {
+  if (fileAsked === fileId) readVideoFile(fileId)
+})
 
 const save = async (fileId: DocId, picked: AssetFileImagePreviewNullable, change: number) => {
   try {
@@ -154,7 +160,6 @@ onMounted(async () => {
         v-if="chooseImagePreviewFromDistributionDialog"
         v-model="chooseImagePreviewFromDistributionDialog"
         :file-id="videoFile.id"
-        @after-successful-confirm="afterSuccessfulConfirmFromDistribution"
       />
     </div>
   </div>
