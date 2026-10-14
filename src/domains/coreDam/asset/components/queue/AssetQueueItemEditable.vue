@@ -12,8 +12,9 @@ import { onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { deleteAsset, fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
+import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
 import AssetLink from '@/domains/coreDam/asset/components/AssetLink.vue'
+import { assetDeleteOnItsWay, deleteAssetOnce } from '@/domains/coreDam/asset/composables/assetDeleteOnce'
 import { useAssetInNewTab } from '@/domains/coreDam/asset/composables/assetInNewTab'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
@@ -117,14 +118,15 @@ const showDetail = async () => {
 /* The asset is deleted, and what else holds it is told, as a delete in the detail tells it: the tile of the asset in
  * the list and the detail or the panel beside the list are marked as deleting, and what was typed into the form of
  * the asset is no longer unsaved. Through the stores, not by an event: the queue can be closed while the delete is on
- * its way, and what an unmounted component emits Vue drops. */
+ * its way, and what an unmounted component emits Vue drops. One delete of the asset at a time: the bin is disabled
+ * while it is on its way, and a press that comes all the same sends nothing. */
 const remove = async () => {
   const assetId = props.item.assetId
   if (!assetId) return
   const queueId = props.queueId
   const item = props.item
   try {
-    await deleteAsset(assetId)
+    if (!(await deleteAssetOnce(assetId))) return
     // The row itself: the index can shift onto another row meanwhile, and rows can share an asset.
     const index = uploadQueuesStore.getQueueItems(queueId).indexOf(item)
     if (index !== -1) uploadQueuesStore.removeByIndex(queueId, index)
@@ -265,7 +267,7 @@ onUnmounted(() => {
       <AActionDeleteButton
         variant="icon"
         :acl="ACL.DAM_ASSET_DELETE"
-        :disabled="!item.canEditMetadata && !item.isDuplicate"
+        :disabled="(!item.canEditMetadata && !item.isDuplicate) || assetDeleteOnItsWay(item.assetId)"
         button-class=""
         @delete-record="remove"
       />

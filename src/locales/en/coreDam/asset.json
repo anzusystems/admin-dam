@@ -115,6 +115,7 @@
     },
     "noAssetSelected": "No asset selected",
     "fileStillProcessing": "The file is still being processed. You can save once it is processed; then open the asset again.",
+    "fileFailedOpenAgain": "Processing of the file failed. You can save after opening the asset again.",
     "tabs": {
       "info": "Info",
       "roi": "Focus",

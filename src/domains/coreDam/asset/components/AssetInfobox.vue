@@ -19,8 +19,17 @@ const { t } = useI18n()
 </script>
 
 <template>
+  <!-- An asset being deleted is said to be so, whatever its main file: what became of the file matters no more. -->
   <div
-    v-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Duplicate"
+    v-if="assetStatus === DamAssetStatus.Deleting"
+    class="w-100 pa-2 text-body-small"
+  >
+    <VAlert type="error">
+      {{ t('coreDam.asset.detail.info.status.deleting') }}
+    </VAlert>
+  </div>
+  <div
+    v-else-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Duplicate"
     class="w-100 pa-2 text-body-small"
   >
     <VAlert type="warning">
@@ -28,7 +37,7 @@ const { t } = useI18n()
     </VAlert>
   </div>
   <div
-    v-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Failed"
+    v-else-if="assetMainFileStatus && assetMainFileStatus === AssetFileProcessStatus.Failed"
     class="w-100 pa-2 text-body-small"
   >
     <VAlert type="error">
@@ -39,16 +48,10 @@ const { t } = useI18n()
       </div>
     </VAlert>
   </div>
+  <!-- The server holds an asset as a draft until it has processed a file of it: also while its main file is on its
+       way, or failed, or a duplicate. With a main file there is a file: what is said of it is its own state. -->
   <div
-    v-else-if="assetStatus === DamAssetStatus.Deleting"
-    class="w-100 pa-2 text-body-small"
-  >
-    <VAlert type="error">
-      {{ t('coreDam.asset.detail.info.status.deleting') }}
-    </VAlert>
-  </div>
-  <div
-    v-else-if="assetStatus === DamAssetStatus.Draft"
+    v-else-if="assetStatus === DamAssetStatus.Draft && !assetMainFileStatus"
     class="w-100 pa-2 text-body-small"
   >
     <VAlert type="warning">

@@ -17,6 +17,7 @@ import { useRoute } from 'vue-router'
 
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
+import { provideAssetDeleted } from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import {
   provideAssetFileChanged,
@@ -124,6 +125,13 @@ provideAssetFileChanged((byServer) => {
     const held = assetDetailStore.asset
     if (held) await readAsset(() => fetchAsset(held.id))
   }, byServer)
+})
+
+/* And of the asset deleted in the detail: marked as being deleted while the page holds it, so that "Uložiť" and
+ * "Odstrániť" are off for it - also when another tab was opened before the delete was answered, and the part that
+ * deleted, gone with its tab, has no event to send. */
+provideAssetDeleted((deletedId) => {
+  if (assetDetailStore.asset?.id === deletedId) assetDetailStore.setDeleting()
 })
 
 const resetAllStores = () => {

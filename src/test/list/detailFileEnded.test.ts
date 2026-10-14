@@ -37,6 +37,7 @@ const BY_FILE = /^\/adm\/v1\/asset\/asset-file\/([^/]+)$/
 const TYPED = 'typed and not saved'
 const FROM_SERVER = 'from the server'
 const STILL_PROCESSED = 'The file is still being processed.'
+const FAILED_OPEN_AGAIN = 'Processing of the file failed. You can save after opening the asset again.'
 /** What the card says of a main file that failed, and of one that is a duplicate. */
 const SAYS = { failed: 'Asset file processing failed', duplicate: 'Asset main file is duplicate' }
 
@@ -233,6 +234,8 @@ const openForm = async (place: Place) => {
 }
 
 const HELD_BACK = { heldBack: true, saysWhy: true }
+// Held back for a file that failed: what the line under "Save" says is that it failed.
+const HELD_BACK_FAILED = { heldBack: true, saysWhy: false }
 const FREE = { heldBack: false, saysWhy: false }
 
 beforeEach(() => {
@@ -301,7 +304,12 @@ describe('a form opened while the main file of its asset was being processed, on
 
     // No loader went over the form: the very field that was typed into.
     expect([form.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([true, true, TYPED])
-    expect([reads(), form.save(), form.ui.alerts()]).toEqual([2, HELD_BACK, []])
+    expect([reads(), form.save(), form.says(FAILED_OPEN_AGAIN), form.ui.alerts()]).toEqual([
+      2,
+      HELD_BACK_FAILED,
+      true,
+      [],
+    ])
   })
 
   // A duplicate is found before anything of the file is saved: the server filled in nothing, what was typed can be.

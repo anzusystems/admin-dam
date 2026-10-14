@@ -1,16 +1,24 @@
 <script lang="ts" setup>
 import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { AActionDeleteButton, cloneDeep, isNull, useAlerts } from '@anzusystems/common-admin'
+import {
+  AActionDeleteButton,
+  AssetFileProcessStatus,
+  DamAssetStatus,
+  cloneDeep,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { deleteAsset, showMetadataSaveError, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import { showMetadataSaveError, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDownloadButton from '@/domains/coreDam/asset/components/detail/components/AssetDownloadButton.vue'
 import { useAssetDeleted } from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { assetDeleteOnItsWay, deleteAssetOnce } from '@/domains/coreDam/asset/composables/assetDeleteOnce'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
@@ -50,6 +58,12 @@ const saveButtonLoading = ref(false)
 /* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
  * the asset got another main file under what was typed: the form is still the one read before that. */
 const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
+/* Held back for a main file that failed, nothing is left to be processed: the asset read whole - opened again, once
+ * what was typed is left - frees "Save". */
+const heldForFailedFile = computed(() => asset.value?.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed)
+
+// An asset being deleted - by this detail, by the bin of a queue row - has nothing to be saved into, nor to be deleted.
+const isDeleting = computed(() => asset.value?.attributes.assetStatus === DamAssetStatus.Deleting)
 
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
@@ -111,12 +125,12 @@ const assetDeleted = useAssetDeleted()
 
 /* The asset deleted is the one the delete was sent for: by its answer the detail can hold the next one, or this part
  * of it be gone with its tab. The page is told by its function; the event closes the dialog over the list, and only
- * while that is still drawn. */
+ * while that is still drawn. One delete of the asset at a time, as the bin of a queue row. */
 const onDelete = async () => {
   if (isNull(asset.value)) return
   const assetId = asset.value.id
   try {
-    await deleteAsset(assetId)
+    if (!(await deleteAssetOnce(assetId))) return
     showRecordWas('deleted')
     assetDeleted(assetId)
     emit('postDelete', assetId)
@@ -130,7 +144,10 @@ const onDelete = async () => {
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <AssetDownloadButton :asset-type="assetType" />
     <Acl :permission="ACL.DAM_ASSET_DELETE">
-      <AActionDeleteButton @delete-record="onDelete" />
+      <AActionDeleteButton
+        :disabled="isDeleting || assetDeleteOnItsWay(asset?.id)"
+        @delete-record="onDelete"
+      />
     </Acl>
     <Acl :permission="ACL.DAM_ASSET_UPDATE">
       <ABtnPrimary
@@ -138,7 +155,7 @@ const onDelete = async () => {
         class="ml-2"
         data-cy="button-save"
         :loading="saveButtonLoading"
-        :disabled="saveBlocked"
+        :disabled="saveBlocked || isDeleting"
         @click.stop="onSave"
       >
         {{ t('common.button.save') }}
@@ -146,12 +163,15 @@ const onDelete = async () => {
     </Acl>
   </AssetDetailSidebarActionsWrapper>
   <!-- In the sidebar, not in the bar of the actions above: that one has a fixed height. -->
+  <!-- Not for an asset being deleted: "Save" is off for that, and neither line would come true. -->
   <Acl :permission="ACL.DAM_ASSET_UPDATE">
     <div
-      v-if="isActive && saveBlocked"
+      v-if="isActive && saveBlocked && !isDeleting"
       class="text-body-small px-4 pt-2"
     >
-      {{ t('coreDam.asset.detail.fileStillProcessing') }}
+      {{
+        t(heldForFailedFile ? 'coreDam.asset.detail.fileFailedOpenAgain' : 'coreDam.asset.detail.fileStillProcessing')
+      }}
     </div>
   </Acl>
   <AssetMetadata />

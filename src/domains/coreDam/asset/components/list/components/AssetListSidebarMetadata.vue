@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  AssetFileProcessStatus,
   DamAssetStatus,
   browserHistoryReplaceUrlByRouter,
   cloneDeep,
@@ -52,6 +53,9 @@ const uploadQueueStore = useUploadQueuesStore()
 /* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
  * the asset got another main file under what was typed: the form is still the one read before that. */
 const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
+/* Held back for a main file that failed, nothing is left to be processed: the asset read whole - opened again, once
+ * what was typed is left - frees "Save". */
+const heldForFailedFile = computed(() => asset.value?.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed)
 
 const { showRecordWas, showValidationError } = useAlerts()
 
@@ -182,12 +186,19 @@ watch(
       v-if="!loader && asset"
       #append
     >
+      <!-- Not for an asset being deleted: "Save" is off for that, and neither line would come true. -->
       <Acl :permission="ACL.DAM_ASSET_UPDATE">
         <div
-          v-if="saveBlocked"
+          v-if="saveBlocked && !isDeleting"
           class="px-2 pt-2 text-body-small text-center"
         >
-          {{ t('coreDam.asset.detail.fileStillProcessing') }}
+          {{
+            t(
+              heldForFailedFile
+                ? 'coreDam.asset.detail.fileFailedOpenAgain'
+                : 'coreDam.asset.detail.fileStillProcessing'
+            )
+          }}
         </div>
       </Acl>
       <div class="pa-2 d-flex align-center justify-center">

@@ -36,6 +36,7 @@ const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
 const TYPED = 'typed and not saved'
 const FROM_FILE = 'filled in from the file'
 const STILL_PROCESSED = 'The file is still being processed.'
+const FAILED_OPEN_AGAIN = 'Processing of the file failed. You can save after opening the asset again.'
 const WITHOUT_FILE = 'Asset is without file'
 const FAILED = 'Asset file processing failed'
 
@@ -234,6 +235,8 @@ const openForm = async (place: Place) => {
 }
 
 const HELD_BACK = { heldBack: true, saysWhy: true }
+// Held back for a file that failed: what the line under "Save" says is that it failed.
+const HELD_BACK_FAILED = { heldBack: true, saysWhy: false }
 const FREE = { heldBack: false, saysWhy: false }
 
 beforeEach(() => {
@@ -338,12 +341,13 @@ describe('the form of an asset created empty, once the first file put into its s
     await eventually(() => expect(form.says(FAILED)).toBe(true))
     await answered()
 
-    expect([form.title() === typedInto, typedInto.value, form.save(), form.ui.alerts()]).toEqual([
-      true,
-      TYPED,
-      HELD_BACK,
-      [],
-    ])
+    expect([
+      form.title() === typedInto,
+      typedInto.value,
+      form.save(),
+      form.says(FAILED_OPEN_AGAIN),
+      form.ui.alerts(),
+    ]).toEqual([true, TYPED, HELD_BACK_FAILED, true, []])
   })
 
   // Held back by the state of the file while it is on its way; once it is processed, by the age of the form.
@@ -376,12 +380,13 @@ describe('the form of an asset created empty, once the first file put into its s
     await eventually(() => expect(form.says(FAILED)).toBe(true))
     await answered()
 
-    expect([form.title() === typedInto, typedInto.value, form.save(), form.ui.alerts()]).toEqual([
-      true,
-      TYPED,
-      HELD_BACK,
-      [],
-    ])
+    expect([
+      form.title() === typedInto,
+      typedInto.value,
+      form.save(),
+      form.says(FAILED_OPEN_AGAIN),
+      form.ui.alerts(),
+    ]).toEqual([true, TYPED, HELD_BACK_FAILED, true, []])
   })
 
   // The guard: a file of another asset is no news to it.

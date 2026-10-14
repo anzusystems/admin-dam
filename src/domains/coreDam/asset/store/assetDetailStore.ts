@@ -176,17 +176,26 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     asset.value = newAsset
   }
 
+  /* "Save" held back until the asset is read whole. The shortcut that skips a read of the asset fetched a moment ago
+   * would skip that read too: a read stamped after the news of the file, before the hold, is not one. */
+  function holdSaveBack(assetId: DocId) {
+    saveHeldBack.value = true
+    forgetLastFetched([assetId])
+  }
+
   /* What was typed into the form stays, and of what the server has (`read`) the main file is taken: as it is by
    * now - its route, how far it is processed - or another one than the form was read with, or none any more. With
    * another file its three switches are taken too: "Save" sends them for the main file the asset has by then, and
    * those of the file before it would be written over this one's. A switch flipped and not saved goes with the file
    * it was flipped for, and stays while that file is the main one. `saveWasHeldBack`: so it stays, also once the
-   * file is held as processed - the form is still the one read before that. */
+   * file is held as processed - the form is still the one read before that. And the state of the asset, which comes
+   * with its files and is no field of the form: a draft until a file of it is processed, again once it has none. */
   function setMainFile(read: AssetDetailItemDto, saveWasHeldBack: boolean) {
     if (!asset.value || heldAsDeleting(asset.value.id)) return
-    if (saveWasHeldBack) saveHeldBack.value = true
+    if (saveWasHeldBack) holdSaveBack(asset.value.id)
     const anotherFile = asset.value.mainFile?.id !== read.mainFile?.id
     asset.value.mainFile = read.mainFile
+    asset.value.attributes.assetStatus = read.attributes.assetStatus
     if (anotherFile) readMainFileSwitches(read)
   }
 
@@ -246,7 +255,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
         if (toldOfOtherFiles.fileIds.has(fileId)) return
         toldOfOtherFiles.fileIds.add(fileId)
         // Read whole when nothing is typed, which lets it free; kept with what was typed.
-        saveHeldBack.value = true
+        holdSaveBack(assetId)
       }
       tellPage()
     })

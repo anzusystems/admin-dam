@@ -115,6 +115,7 @@
     },
     "noAssetSelected": "Žiadne vybrané assety",
     "fileStillProcessing": "Súbor sa ešte spracúva. Uložiť pôjde po spracovaní; asset potom otvorte znova.",
+    "fileFailedOpenAgain": "Spracovanie súboru zlyhalo. Uložiť pôjde po novom otvorení assetu.",
     "tabs": {
       "info": "Info",
       "roi": "Fókus",

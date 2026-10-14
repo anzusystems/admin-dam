@@ -85,8 +85,8 @@ export function useAssetDetailFileChange() {
   /* A read of the asset the detail holds, by its id, with no loader over the detail: it unmounts nothing - neither the
    * form with what was typed into it, nor a tab or a dialog open over the detail with what was typed there.
    * Metadata that were not saved stay as they are, in the form they were typed into, and of the answer only the main
-   * file is taken - as the server has it by now, with its route and how far it is processed, or another file, or
-   * none. The form is as old as it was: a "Save" held back, since the server could still fill in the metadata from
+   * file is taken, with the state of the asset that goes with it - as the server has it by now, with its route and how
+   * far it is processed, or another file, or none. The form is as old as it was: a "Save" held back, since the server could still fill in the metadata from
    * the file, would come free over a form older than what the server has filled in since, so it stays held back
    * whatever is held of the file from now on - and so does one taken with the first file of an asset that had none,
    * processed or failed by then. Not for a file the server found a duplicate: it filled in nothing. An open question
