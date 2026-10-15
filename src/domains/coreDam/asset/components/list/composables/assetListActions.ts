@@ -1,4 +1,5 @@
 import {
+  DamAssetStatus,
   DamAssetType,
   SortOrder,
   UploadQueueItemType,
@@ -388,12 +389,17 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   )
 
+  /* An asset being deleted - here, or by the word of the server - is not picked for the mass edit: its row would offer a
+   * bin that deletes it again. Picked already, it can be let go. */
+  const isDeleting = (asset: AssetSearchListItemDto) => asset.attributes.assetStatus === DamAssetStatus.Deleting
+
   const toggleSelected = (data: { assetId: DocId; index: number }) => {
     if (assetListStore.list[data.index].selected) {
       uploadQueuesStore.removeByAssetId(QUEUE_ID_MASS_EDIT, data.assetId)
       assetListStore.toggleSelectedByIndex(data.index)
       return
     }
+    if (isDeleting(assetListStore.list[data.index].asset)) return
     if (uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT) >= maxSelectedItems.value) {
       showWarning('Max limit for multiselect (' + maxSelectedItems.value + ') reached.', 5)
       return
@@ -421,6 +427,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         return item.asset
       })
     }
+    // A range skips them.
+    selecting = selecting.filter((asset) => !isDeleting(asset))
     const selectedQueueTotalCount = uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
     // Reaching the limit exactly cuts nothing, so it is not worth a warning.
     if (selectedQueueTotalCount + selecting.length > maxSelectedItems.value) {

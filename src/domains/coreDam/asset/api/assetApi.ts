@@ -307,6 +307,12 @@ const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAsse
   )
 }
 
+// The assets deleted here, once their delete was answered.
+const deletedHere = new Set<DocId>()
+
+/** Whether the asset was deleted here: a read sent before its delete can still bring it as it was. */
+export const assetDeletedHere = (assetId: DocId) => deletedHere.has(assetId)
+
 /* Ten at a time, one batch after the other. The server saves a batch whole or not at all; a batch that fails stops
  * those after it, the ones before it stay saved, and saving again is safe. Only the rows there is something to write
  * of go out: with none of them no request is made, and the save is done all the same. */
@@ -317,7 +323,12 @@ export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
   const { execute } = useUpdateMetadataBulk()
   // From the filtered array: counting the input sent trailing PATCHes with an empty body.
   for (let offset = 0; offset < bulkItems.length; offset += BULK_METADATA_LIMIT) {
-    const batch = bulkItems.slice(offset, offset + BULK_METADATA_LIMIT)
+    /* Not an asset deleted while the batches before were on the wire: the queue can still be used meanwhile, and its
+     * row is gone with the delete. A batch left with nothing is not sent. */
+    const batch = bulkItems
+      .slice(offset, offset + BULK_METADATA_LIMIT)
+      .filter(({ dtoItem }) => !deletedHere.has(dtoItem.id))
+    if (batch.length === 0) continue
     try {
       await execute({ body: batch.map(({ dtoItem }) => dtoItem) })
     } catch (error) {
@@ -384,9 +395,11 @@ export const useDeleteAsset = () =>
     urlTemplate: END_POINT + '/:id',
   })
 
-export const deleteAsset = (id: DocId) => {
+export const deleteAsset = async (id: DocId) => {
   const { execute } = useDeleteAsset()
-  return execute({ urlParams: { id } })
+  await execute({ urlParams: { id } })
+  // A bulk save on its way sends nothing more of it.
+  deletedHere.add(id)
 }
 
 export const useUpdateAssetCategory = () =>

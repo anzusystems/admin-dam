@@ -123,13 +123,10 @@ const showDetail = async () => {
 const remove = async () => {
   const assetId = props.item.assetId
   if (!assetId) return
-  const queueId = props.queueId
-  const item = props.item
   try {
     if (!(await deleteAssetOnce(assetId))) return
-    // The row itself: the index can shift onto another row meanwhile, and rows can share an asset.
-    const index = uploadQueuesStore.getQueueItems(queueId).indexOf(item)
-    if (index !== -1) uploadQueuesStore.removeByIndex(queueId, index)
+    // By the asset, not by the place of the row, which can shift meanwhile: this row and every other row of the asset.
+    uploadQueuesStore.removeRowsOfDeletedAsset(assetId)
     assetListStore.setDeletingById(assetId)
     if (assetDetailStore.asset?.id === assetId) assetDetailStore.setDeleting()
     showRecordWas('deleted')

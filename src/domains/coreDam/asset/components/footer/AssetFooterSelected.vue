@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useTheme } from '@anzusystems/common-admin'
-import { computed, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueMassEditSimple from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
-import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -42,6 +42,12 @@ watch(queueTotalCount, (newValue, oldValue) => {
     hideSelected()
     return
   }
+})
+
+/* Drawn anew after the count dropped to 0 while a queue drawn over the whole page stood in its place - its row of an
+ * asset deleted - the watch was not there to see it: no strip of nothing picked. */
+onMounted(() => {
+  if (queueTotalCount.value === 0 && footerViewSelected.value !== FooterViewSelected.Hidden) hideSelected()
 })
 
 const onClearConfirm = async () => {

@@ -69,6 +69,7 @@ import {
   queueRowTakesAnswer,
   setQueueRowBaseline,
 } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { resolveUploadErrorMessage, useUpload } from '@/domains/coreDam/shared/services/upload/uploadService'
 import { i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'
@@ -588,6 +589,25 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     core.removeByIndex(queueId, index)
   }
 
+  /* Every row of the asset in the queue, each through the same teardown as one row taken out: a row whose upload still
+   * runs is stopped, its chunk on the wire aborted. From the back, so that what is taken out moves no row still to be
+   * looked at. */
+  function removeAllByAssetId(queueId: string, assetId: DocId) {
+    if (!(queueId in queues.value)) return
+    const items = queues.value[queueId].items
+    for (let index = items.length - 1; index >= 0; index--) {
+      if (items[index].assetId === assetId) core.removeByIndex(queueId, index)
+    }
+  }
+
+  /* An asset deleted - by the detail on whatever page, by the bin of a row - takes every row of it out of the mass edit
+   * and the upload queue: their bin would delete it again, their form and the bulk save would send metadata to it. Not
+   * the uploads into its slots, whose rows offer nothing of that. */
+  function removeRowsOfDeletedAsset(assetId: DocId) {
+    removeAllByAssetId(QUEUE_ID_MASS_EDIT, assetId)
+    removeAllByAssetId(QUEUE_ID_UPLOAD_GLOBAL, assetId)
+  }
+
   async function removeByExternalProviderAssetId(queueId: string, assetId: AssetExternalProviderId) {
     if (queueId in queues.value) {
       const foundIndex = queues.value[queueId].items.findIndex((item) => item.externalProviderAssetId === assetId)
@@ -722,6 +742,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     forceReloadFileInput: core.forceReloadFileInput,
     fetchLazyAdditionalMetadata,
     removeByAssetId,
+    removeRowsOfDeletedAsset,
     removeByIndex,
     removeByExternalProviderAssetId,
     createQueue: core.createQueue,

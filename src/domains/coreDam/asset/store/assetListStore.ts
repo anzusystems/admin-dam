@@ -3,6 +3,8 @@ import { DamAssetStatus, UploadQueueItemType, isNull } from '@anzusystems/common
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 
+import { assetDeletedHere } from '@/domains/coreDam/asset/api/assetApi'
+
 export type ListLoader = 'soft' | 'hard'
 
 export interface AssetListItem {
@@ -48,6 +50,14 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     setActiveByIndex(list.value.findIndex((item) => item.asset.id === activeAssetId))
   }
 
+  /* A tile of an asset deleted here is drawn as being deleted whenever the list takes it: a read sent before the delete
+   * and answered after it - a further page, or the first one of a list read anew - brings the status from before. */
+  const markedIfDeletedHere = (asset: AssetSearchListItemDto) => {
+    if (assetDeletedHere(asset.id)) asset.attributes.assetStatus = DamAssetStatus.Deleting
+
+    return asset
+  }
+
   function appendList(
     assets: AssetSearchListItemDto[],
     selectedItems: UploadQueueItem[] = [],
@@ -61,7 +71,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     }
     const items = assets.map((asset) => {
       return {
-        asset: asset,
+        asset: markedIfDeletedHere(asset),
         active: false,
         selected: selectedIds.includes(asset.id),
       }
@@ -84,7 +94,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     }
     list.value = assets.map((asset) => {
       return {
-        asset: asset,
+        asset: markedIfDeletedHere(asset),
         active: false,
         selected: selectedIds.includes(asset.id),
       }
@@ -95,11 +105,11 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     activeAssetIsAwaited = isNull(activeItemIndex.value) && !isNull(activeAssetId)
   }
 
+  // Every tile of the asset: a page read after another one can bring the same asset again.
   function setDeletingById(id: DocId) {
-    const foundIndex = list.value.findIndex((item) => item.asset.id === id)
-    if (foundIndex > -1) {
-      list.value[foundIndex].asset.attributes.assetStatus = DamAssetStatus.Deleting
-    }
+    list.value.forEach((item) => {
+      if (item.asset.id === id) item.asset.attributes.assetStatus = DamAssetStatus.Deleting
+    })
   }
 
   function toggleSelectedByIndex(index: number) {

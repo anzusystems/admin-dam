@@ -125,13 +125,15 @@ const assetDeleted = useAssetDeleted()
 
 /* The asset deleted is the one the delete was sent for: by its answer the detail can hold the next one, or this part
  * of it be gone with its tab. The page is told by its function; the event closes the dialog over the list, and only
- * while that is still drawn. One delete of the asset at a time, as the bin of a queue row. */
+ * while that is still drawn. One delete of the asset at a time, as the bin of a queue row. Its rows go from the queues
+ * on every page the detail is drawn on: the upload queue outlives the page. */
 const onDelete = async () => {
   if (isNull(asset.value)) return
   const assetId = asset.value.id
   try {
     if (!(await deleteAssetOnce(assetId))) return
     showRecordWas('deleted')
+    uploadQueueStore.removeRowsOfDeletedAsset(assetId)
     assetDeleted(assetId)
     emit('postDelete', assetId)
   } catch (error) {

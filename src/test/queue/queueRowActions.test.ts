@@ -266,12 +266,13 @@ describe('the delete button of a row', () => {
     expect(held()).toEqual(['first.jpg', 'third.jpg'])
   })
 
-  // Rows can share an asset: the one whose delete was pressed goes, not the first of that asset.
-  it('takes out its own row where two rows are of one asset', async () => {
+  // Rows can share an asset: the asset is gone, and every row of it goes with it - this one too, not merely the first.
+  it('takes out its own row and every other row of its asset, where two rows are of one asset', async () => {
     server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, () => ({ status: 204 }))
     const { press, held, cards } = await mountQueue([
       editable({ displayTitle: 'first.jpg' }),
       editable({ displayTitle: 'second.jpg' }),
+      editable({ displayTitle: 'third.jpg', assetId: 'asset-2', fileId: 'file-2' }),
     ])
 
     await press(1, DELETE)
@@ -279,7 +280,7 @@ describe('the delete button of a row', () => {
     await eventually(() => expect(cards()).toHaveLength(1))
 
     expect(sentTo(server.sent('DELETE'))).toEqual(['DELETE /adm/v1/asset/asset-1'])
-    expect(held()).toEqual(['first.jpg'])
+    expect(held()).toEqual(['third.jpg'])
   })
 
   it('leaves the row in the queue and shows the error when the server refuses', async () => {
