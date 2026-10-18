@@ -10,8 +10,10 @@ definePage({
     layout: 'AppLayoutFullscreen',
   },
 })
+
+const logoutUrl = () => envConfig.logoutCoreDamUrl
 </script>
 
 <template>
-  <ALogoutView :logout-url="() => envConfig.logoutCoreDamUrl" />
+  <ALogoutView :logout-url="logoutUrl" />
 </template>
