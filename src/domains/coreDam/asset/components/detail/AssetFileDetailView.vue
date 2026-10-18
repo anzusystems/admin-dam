@@ -11,7 +11,7 @@ import {
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -97,16 +97,6 @@ const readAsset = async (read: () => ReturnType<typeof fetchAsset>) => {
 }
 
 const getDetail = async () => {
-  if (assetDetailStore.directDetailLoad) {
-    assetDetailStore.setView('list')
-    assetDetailStore.showDetail()
-    addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
-    fetchCachedUsers()
-    nextTick(() => {
-      assetDetailStore.directDetailLoad = false
-    })
-    return
-  }
   const rawId = (route.params as { id: string }).id
   assetFileId.value = isString(rawId) && isDocId(rawId) ? rawId.toString() : ''
   if (assetFileId.value.length === 0) {
@@ -138,7 +128,6 @@ const resetAllStores = () => {
   assetDetailStore.hideDetail()
   assetDetailStore.reset()
   activeTab.value = AssetDetailTabDefault
-  assetDetailStore.directDetailLoad = false
   assetListStore.reset()
 }
 

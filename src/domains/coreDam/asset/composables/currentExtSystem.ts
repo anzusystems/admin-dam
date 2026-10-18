@@ -14,7 +14,6 @@ import { storeToRefs } from 'pinia'
 import { readonly, ref } from 'vue'
 
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
@@ -92,9 +91,6 @@ export const initCurrentExtSystemAndLicence = async (
       throw e
     }
     if (licenceRes.id && licenceRes.extSystem) {
-      const assetDetailStore = useAssetDetailStore()
-      assetDetailStore.directDetailLoad = true
-      assetDetailStore.setAsset(assetRes)
       currentAssetLicenceId.value = licenceRes.id
       currentExtSystemId.value = licenceRes.extSystem
       cachedExtSystemId.value = currentExtSystemId.value

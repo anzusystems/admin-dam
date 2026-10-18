@@ -21,7 +21,6 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   const detail = ref(false)
   const view = ref<'list' | 'queue'>('list')
   const metadataAreTouched = ref(false)
-  const directDetailLoad = ref(false)
   const lastFetched = ref(Date.now())
   const lastFetchedId = ref<DocId>('')
   const mainFileSingleUse = ref(false)
@@ -339,7 +338,6 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     detail,
     view,
     metadataAreTouched,
-    directDetailLoad,
     lastFetched,
     lastFetchedId,
     mainFileSingleUse,

@@ -15,9 +15,6 @@ vi.mock('@/domains/coreDam/asset/api/assetApi', () => ({
 vi.mock('@/domains/coreDam/assetLicence/api/assetLicenceApi', () => ({
   fetchAssetLicence: vi.fn(async () => ({ id: 50, extSystem: 5 })),
 }))
-vi.mock('@/domains/coreDam/asset/store/assetDetailStore', () => ({
-  useAssetDetailStore: () => ({ directDetailLoad: false, setAsset: vi.fn() }),
-}))
 const currentUser = { value: {} as Record<string, unknown> }
 vi.mock('@/domains/system/auth/auth', () => ({
   useAuth: () => ({ useCurrentUser: () => ({ currentUser }) }),

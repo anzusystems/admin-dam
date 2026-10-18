@@ -15,9 +15,6 @@ const fetchAssetLicence = vi.fn(async (): Promise<unknown> => ({ id: 1, extSyste
 vi.mock('@/domains/coreDam/assetLicence/api/assetLicenceApi', () => ({
   fetchAssetLicence: () => fetchAssetLicence(),
 }))
-vi.mock('@/domains/coreDam/asset/store/assetDetailStore', () => ({
-  useAssetDetailStore: () => ({ directDetailLoad: false, setAsset: vi.fn() }),
-}))
 vi.mock('@/domains/system/auth/auth', () => ({
   useAuth: () => ({ useCurrentUser: () => ({ currentUser: { value: { id: 1, assetLicencesDto: [] } } }) }),
 }))

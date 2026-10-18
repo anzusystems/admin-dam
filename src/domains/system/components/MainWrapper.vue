@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import logoFull from '@/assets/logo-adam-full.svg'
@@ -9,6 +10,11 @@ import AssetFooterUploadOverlay from '@/domains/coreDam/asset/components/footer/
 import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import AssetToolbarIntegrations from '@/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
 import AssetToolbarOptions from '@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
+import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import {
+  ExternalProviderFooterViewSelected,
+  useExternalProviderAssetFooterSelectedView,
+} from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
 import { ACL } from '@/domains/system/auth/auth'
 import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
@@ -17,6 +23,23 @@ import { envConfig } from '@/shared/EnvConfigService'
 const { t } = useI18n()
 
 const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainWrapper()
+
+const { footerViewSelected, hideSelected } = useAssetFooterSelectedView()
+const { externalProviderFooterViewSelected, hideSelected: hideExternalProviderSelected } =
+  useExternalProviderAssetFooterSelectedView()
+
+/* A selection drawn over the whole page belongs to its page. The back or forward button of the browser leaves the page
+ * from under it onto an entry of the history where ADAM was loaded or reloaded: vue-router writes that entry by
+ * `replace`, and Vuetify lets a way back or forward to such an entry through an open dialog. The next page drew the
+ * dialog over the whole of it then, empty: it draws its own selection only. The selection goes back to its strip,
+ * hidden, as the next list empties it anyway. Before the next page is drawn, not once this one is gone. The upload
+ * queue is the same on every list, and is drawn over the next one as it was. */
+onBeforeUnmount(() => {
+  if (footerViewSelected.value === FooterViewSelected.Full) hideSelected()
+  if (externalProviderFooterViewSelected.value === ExternalProviderFooterViewSelected.Full) {
+    hideExternalProviderSelected()
+  }
+})
 </script>
 
 <template>

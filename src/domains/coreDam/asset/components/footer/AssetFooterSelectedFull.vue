@@ -3,6 +3,7 @@ import { isNull, useAlerts, useTheme } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import {
   bulkUpdateAssetsMetadata,
@@ -95,6 +96,7 @@ const toggleMassOperations = async () => {
 }
 
 const { showRecordWas, showValidationError } = useAlerts()
+const router = useRouter()
 
 const v$ = useVuelidate()
 
@@ -129,11 +131,16 @@ const onSaveAndClose = async () => {
     return
   }
   const savedAssetIds = assetIdsToSave()
+  const askedOn = router.currentRoute.value
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     refreshDetailAsset(savedAssetIds)
-    await onClearConfirm()
+    /* Not when the page was left meanwhile: the lists share the mass edit, and the next list empties it as it is drawn -
+     * what it holds by then was picked there, and a dialog over the whole page is that page's. Left is a way out that
+     * went through, and the router is then on another route: one still asking whether to leave, or called off, leaves
+     * the page where it was, and the address of a detail is written past the router. */
+    if (router.currentRoute.value === askedOn) await onClearConfirm()
   } catch (error) {
     showMetadataSaveError(error)
   } finally {

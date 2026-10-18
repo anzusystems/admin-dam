@@ -30,10 +30,15 @@ export function useAssetFooterUploadView() {
     }
   }
 
+  /* The view over the whole page, and the keys of the list under it, are the upload's to give back only while it holds
+   * them: the answer of its "save and finish" can come once it was put away, and a selection may be drawn over the
+   * page by then. */
   const hideUpload = () => {
-    assetListStore.keyboardNavigationEnable()
+    if (footerViewUpload.value === FooterViewUpload.Full) {
+      assetListStore.keyboardNavigationEnable()
+      customDialog.value = false
+    }
     setFooterViewUpload(FooterViewUpload.Hidden)
-    customDialog.value = false
   }
 
   const showMinimalUpload = computed(() => {
