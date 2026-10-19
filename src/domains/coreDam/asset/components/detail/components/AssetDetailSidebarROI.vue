@@ -6,7 +6,8 @@ import {
   useDamImageRoiStore,
   usePagination,
 } from '@anzusystems/common-admin'
-import { onMounted } from 'vue'
+import type { AssetFileImage, DocId } from '@anzusystems/common-admin'
+import { onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
@@ -35,73 +36,95 @@ const assetDetailStore = useAssetDetailStore()
 const { filterConfig, filterData } = useImageRoiFilter()
 const { pagination } = usePagination(null)
 
-const loadRois = async () => {
-  if (imageRoiStore.imageFile) {
-    imageRoiStore.showLoader()
-    const res = await fetchImageRoiList(imageRoiStore.imageFile.id, pagination, filterData, filterConfig)
-    if (res.length > 0 && res[0].id) {
-      const roi = await fetchRoi(res[0].id)
-      imageRoiStore.setRoi(roi)
-      imageRoiStore.hideLoader()
-      return
-    }
-    imageRoiStore.setRoi(null)
-    imageRoiStore.hideLoader()
-    return
-  }
-  imageRoiStore.setRoi(null)
+const { showErrorsDefault, showUnknownError } = useAlerts()
+
+/* What the tab loads - the main file as it opens, the file of another slot, a rotated file read anew - and the region of
+ * each: only the latest load writes into the store, says that it failed or stops the spinner, and none does once the
+ * tab is gone. */
+let loads = 0
+let gone = false
+const isCurrent = (load: number) => load === loads && !gone
+
+const failed = (load: number, error: unknown) => {
+  if (!isCurrent(load)) return
+  if (!showErrorsDefault(error)) showUnknownError()
   imageRoiStore.hideLoader()
 }
 
-const { showErrorsDefault, showUnknownError } = useAlerts()
-
-// The reads of a rotated file on their way: only the newest is put in the store.
-let rotatedReads = 0
-
-/* The frame of the region draws the image anew only for a file read anew: the rotated one is, unless another rotation
- * read it meanwhile or another file is shown by then (another slot, another asset). */
-const afterRotate = async () => {
-  const rotated = imageRoiStore.imageFile
-  if (rotated) {
-    const read = ++rotatedReads
-    imageRoiStore.showLoader()
-    try {
-      const imageFileDetail = await fetchImageFile(rotated.id)
-      if (read === rotatedReads && imageRoiStore.imageFile?.id === rotated.id) {
-        imageRoiStore.setImageFile(cloneDeep(imageFileDetail))
-      }
-    } catch (error) {
-      if (!showErrorsDefault(error)) showUnknownError()
-    }
+const loadRois = async (load: number, file: AssetFileImage) => {
+  imageRoiStore.showLoader()
+  try {
+    const list = await fetchImageRoiList(file.id, pagination, filterData, filterConfig)
+    if (!isCurrent(load)) return
+    const roi = list.length > 0 && list[0].id ? await fetchRoi(list[0].id) : null
+    if (!isCurrent(load)) return
+    imageRoiStore.setRoi(roi)
+    imageRoiStore.hideLoader()
+  } catch (error) {
+    failed(load, error)
   }
-  await loadRois()
+}
+
+/** The file read anew for the load, put in the store; nothing when the read failed or another load came since. */
+const readFile = async (load: number, fileId: DocId) => {
+  try {
+    const file = cloneDeep(await fetchImageFile(fileId))
+    if (!isCurrent(load)) return undefined
+    imageRoiStore.setImageFile(file)
+
+    return file
+  } catch (error) {
+    failed(load, error)
+
+    return undefined
+  }
+}
+
+/* The frame of the region draws the image anew only for a file read anew. Only of the file still shown, and while the
+ * tab is there: the rotation was of the file shown when it was pressed. Read anew, the main file is the asset's too,
+ * which the tab draws when it is opened again. Another load can come between the read and what follows it. */
+const afterRotate = async (rotatedId: DocId) => {
+  if (gone || imageRoiStore.imageFile?.id !== rotatedId) return
+  const load = ++loads
+  imageRoiStore.showLoader()
+  const rotated = await readFile(load, rotatedId)
+  if (!rotated || !isCurrent(load)) return
+  assetDetailStore.setMainFileReadAgain(cloneDeep(rotated))
+  await loadRois(load, rotated)
+  if (!isCurrent(load)) return
   imageRoiStore.forceReloadRoiPreviews()
   imageRoiStore.forceReloadCropper()
 }
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
+  const load = ++loads
   imageRoiStore.setRoi(null)
-  if (!slot || !assetFileIsImageFile(slot.assetFile)) return
+  if (!slot || !assetFileIsImageFile(slot.assetFile)) {
+    // A load this one replaced can have left the spinner on.
+    imageRoiStore.hideLoader()
+    return
+  }
   imageRoiStore.showLoader()
-  const imageFileDetail = await fetchImageFile(slot.assetFile.id)
-  imageRoiStore.setImageFile(cloneDeep(imageFileDetail))
-  await loadRois()
+  const file = await readFile(load, slot.assetFile.id)
+  if (!file || !isCurrent(load)) return
+  await loadRois(load, file)
+  if (!isCurrent(load)) return
   imageRoiStore.forceReloadRoiPreviews()
   imageRoiStore.forceReloadCropper()
 }
 
 onMounted(async () => {
+  const load = ++loads
   imageRoiStore.reset()
-  imageRoiStore.showLoader()
-  if (
-    assetDetailStore.asset &&
-    assetDetailStore.asset.mainFile &&
-    assetFileIsImageFile(assetDetailStore.asset.mainFile)
-  ) {
-    imageRoiStore.setImageFile(cloneDeep(assetDetailStore.asset.mainFile))
-    await loadRois()
+  const mainFile = assetDetailStore.asset?.mainFile
+  if (mainFile && assetFileIsImageFile(mainFile)) {
+    imageRoiStore.setImageFile(cloneDeep(mainFile))
+    await loadRois(load, mainFile)
   }
-  imageRoiStore.hideLoader()
+})
+
+onUnmounted(() => {
+  gone = true
 })
 </script>
 

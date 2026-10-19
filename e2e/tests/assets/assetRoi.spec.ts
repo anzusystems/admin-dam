@@ -16,10 +16,10 @@ import {
 /**
  * The "Fókus" tab of an image detail — the crop previews and their reload.
  *
- * **There is no cropper, and no crop ratio can be chosen.** The tab shows a read-only preview per ratio the
- * ext system configures, a slot picker, the reload button and the two rotate buttons; `pointX`/`pointY` and
- * the rest of the region of interest can only be written through `PUT /roi/<id>`, which nothing in this
- * build calls.
+ * **No crop ratio can be chosen.** The tab shows a read-only preview per ratio the ext system configures, a
+ * slot picker, the reload button and the two rotate buttons. For a user who may change the region of interest
+ * the image beside it is the library's cropper, and dragging its frame writes `pointX`/`pointY` and the rest of
+ * the region through `PUT /roi/<id>`; this spec does not drag it.
  *
  * Rotation is covered by `imageAsset.spec.ts` and is not repeated here.
  */
@@ -91,7 +91,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset detail Fókus`, () => {
   })
 
   test('the asset keeps its main file through a visit to the tab', async () => {
-    // A guard for the bug above: whatever the reload button does or fails to do, it must not damage the asset.
+    // Whatever the reload button does, it must not touch the asset: its main file stays.
     await openAssetTab(page, ASSET_ID, 'button-focus')
     await refreshRoiPreviews(page)
     expect((await getAsset(page, ASSET_ID)).mainFile.id).toBe(MAIN_FILE_ID)

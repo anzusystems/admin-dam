@@ -1,5 +1,11 @@
 import { AssetFileProcessStatus, DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
-import type { AssetDetailItemDto, AssetFileProcessStatusType, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import type {
+  AssetDetailItemDto,
+  AssetFile,
+  AssetFileProcessStatusType,
+  DocId,
+  DocIdNullable,
+} from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -198,6 +204,12 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     if (anotherFile) readMainFileSwitches(read)
   }
 
+  /* The main file read anew by the detail itself (the tab of the region of interest, after a rotation): only the file,
+   * and only while it is the main file of the asset held - nothing typed or switched is touched, as `setAsset` would. */
+  function setMainFileReadAgain(file: AssetFile) {
+    if (asset.value?.mainFile?.id === file.id) asset.value.mainFile = file
+  }
+
   /* The page that draws the detail reads its asset again once the file of the asset has changed, told by the part of
    * the detail that changed it. How far the server is with a file no part of a detail tells: its notifications and
    * the reads of the upload queue say so, outside of every page. They say it here, and the page that is there says by
@@ -364,6 +376,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     hideLoader,
     setAsset,
     setMainFile,
+    setMainFileReadAgain,
     tellPageBy,
     fileStatusOnServer,
     mainFileOfRead,

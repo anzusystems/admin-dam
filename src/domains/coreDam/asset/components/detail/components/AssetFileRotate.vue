@@ -16,19 +16,21 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'afterRotate'): void
+  (e: 'afterRotate', imageId: DocId): void
 }>()
 
 const { showRecordWas, showErrorsDefault, showUnknownError } = useAlerts()
 
 const loading = ref(false)
 
+// The file pressed for: another one can be shown by the time the server answers.
 const rotate = async (angle: 90 | 270) => {
+  const imageId = props.imageId
   try {
     loading.value = true
-    await rotateImage(props.imageId, angle)
+    await rotateImage(imageId, angle)
     showRecordWas('updated')
-    emit('afterRotate')
+    emit('afterRotate', imageId)
   } catch (e) {
     // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
     if (!showErrorsDefault(e)) showUnknownError()
