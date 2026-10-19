@@ -19,6 +19,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     color="primary"
   >
     <VListItem
+      :aria-label="t('sidebar.settings.backToAssets')"
       :to="{ name: '/(coreDam)/assets' }"
       prepend-icon="mdi-home"
     >
@@ -31,6 +32,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </VListItem>
     <VDivider />
     <VListItem
+      :aria-label="t('sidebar.settings.settings')"
       to="/settings"
       prepend-icon="mdi-cog"
       data-cy="personal-settings"
@@ -44,6 +46,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </VListItem>
     <Acl :permission="ACL.DAM_PODCAST_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.podcasts')"
         :to="{ name: '/(coreDam)/podcasts' }"
         prepend-icon="mdi-podcast"
         data-cy="podcast-settings"
@@ -58,6 +61,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_VIDEO_SHOW_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.videoShows')"
         :to="{ name: '/(coreDam)/video-shows' }"
         prepend-icon="mdi-video-box"
         data-cy="video-show-settings"
@@ -72,6 +76,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.users')"
         :to="{ name: '/(coreDam)/users' }"
         prepend-icon="mdi-account-multiple"
         data-cy="user-settings"
@@ -86,6 +91,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="[ACL.DAM_EXT_SYSTEM_UI, ACL.DAM_EXT_SYSTEM_LIST]">
       <VListItem
+        :aria-label="t('sidebar.settings.extSystems')"
         :to="{ name: '/(coreDam)/ext-systems' }"
         prepend-icon="mdi-television-stop"
         data-cy="ext-system-settings"
@@ -100,6 +106,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="[ACL.DAM_ASSET_LICENCE_UI, ACL.DAM_ASSET_LICENCE_LIST]">
       <VListItem
+        :aria-label="t('sidebar.settings.assetLicences')"
         :to="{ name: '/(coreDam)/asset-licences' }"
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-settings"
@@ -114,6 +121,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="[ACL.DAM_ASSET_LICENCE_GROUP_UI, ACL.DAM_ASSET_LICENCE_GROUP_LIST]">
       <VListItem
+        :aria-label="t('sidebar.settings.assetLicenceGroups')"
         :to="{ name: '/(coreDam)/asset-licence-groups' }"
         prepend-icon="mdi-account-key"
         data-cy="asset-licence-group-settings"
@@ -128,6 +136,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.authors')"
         :to="{ name: '/(coreDam)/authors' }"
         prepend-icon="mdi-account-circle-outline"
         data-cy="author-settings"
@@ -142,6 +151,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.keywords')"
         :to="{ name: '/(coreDam)/keywords' }"
         prepend-icon="mdi-file-key-outline"
         data-cy="keyword-settings"
@@ -156,6 +166,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.distributionCategory')"
         :to="{ name: '/(coreDam)/distribution-categories' }"
         prepend-icon="mdi-folder-edit"
         data-cy="distribution-category-settings"
@@ -170,6 +181,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_DISTRIBUTION_CATEGORY_SELECT_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.distributionCategorySelect')"
         :to="{ name: '/(coreDam)/distribution-category-selects' }"
         prepend-icon="mdi-form-dropdown"
         data-cy="distribution-category-select-settings"
@@ -185,6 +197,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     <VDivider />
     <Acl :permission="ACL.DAM_PERMISSION_GROUP_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.permissionGroups')"
         :to="{ name: '/(common)/permission-groups' }"
         prepend-icon="mdi-folder-account-outline"
         data-cy="permission-group-settings"
@@ -199,6 +212,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_USER_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.anzuUser')"
         :to="{ name: '/(common)/anzu-users' }"
         prepend-icon="mdi-account-edit-outline"
         data-cy="user-permissions"
@@ -213,6 +227,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
       <VListItem
+        :aria-label="t('sidebar.settings.job')"
         :to="{ name: '/(coreDam)/jobs' }"
         prepend-icon="mdi-file-cabinet"
         data-cy="job-settings"
@@ -227,6 +242,7 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
     </Acl>
     <template v-if="isSuperAdmin">
       <VListItem
+        :aria-label="t('sidebar.settings.log')"
         :to="{ name: '/(common)/logs/dam/[type]', params: { type: LogTypeDefault } }"
         prepend-icon="mdi-math-log"
         data-cy="log-settings"

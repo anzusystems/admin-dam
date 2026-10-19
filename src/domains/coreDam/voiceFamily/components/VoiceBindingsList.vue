@@ -109,6 +109,7 @@ onMounted(() => {
         <div class="d-flex justify-end">
           <VBtn
             v-if="canEdit"
+            :aria-label="t('coreDam.voice.button.edit')"
             variant="text"
             icon
             size="small"
@@ -125,6 +126,7 @@ onMounted(() => {
           </VBtn>
           <VBtn
             v-if="canDelete"
+            :aria-label="t('common.button.moreOptions')"
             variant="text"
             icon
             size="small"

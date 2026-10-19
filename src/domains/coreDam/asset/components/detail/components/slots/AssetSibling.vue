@@ -64,6 +64,7 @@ const pickAssetType = computed(() => {
           <AssetChip :id="assetDetailStore.asset.siblingToAsset" />
           <Acl :permission="ACL.DAM_ASSET_UPDATE">
             <VBtn
+              :aria-label="t('coreDam.asset.slots.actions.remove')"
               icon
               variant="text"
               size="small"

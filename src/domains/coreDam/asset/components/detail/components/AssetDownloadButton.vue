@@ -79,6 +79,7 @@ const onCancel = () => {
 
 <template>
   <VBtn
+    :aria-label="t('common.button.download')"
     icon
     size="small"
     variant="text"

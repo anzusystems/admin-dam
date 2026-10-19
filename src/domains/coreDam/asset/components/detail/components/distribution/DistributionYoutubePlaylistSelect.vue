@@ -62,6 +62,7 @@ onMounted(() => {
   >
     <template #append>
       <VBtn
+        :aria-label="t('common.button.refresh')"
         class="ml-2"
         icon
         size="small"

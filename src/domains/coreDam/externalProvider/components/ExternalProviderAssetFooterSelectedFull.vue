@@ -83,6 +83,7 @@ const onImport = () => {
           </VBtn>
           <VBtn
             v-show="showMinimalSelected"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="36"

@@ -72,6 +72,7 @@ onMounted(async () => {
 
 <template>
   <VBtn
+    :aria-label="t('system.mainBar.options')"
     variant="text"
     icon
     size="small"

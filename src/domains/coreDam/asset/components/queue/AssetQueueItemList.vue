@@ -112,6 +112,7 @@ const { remainingTimeShort } = useRemainingTime()
           </div>
           <VBtn
             v-if="showCancel"
+            :aria-label="t('common.button.cancel')"
             icon
             variant="text"
             :width="16"

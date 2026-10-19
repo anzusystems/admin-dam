@@ -10,7 +10,8 @@ import { i18n } from '@/plugins/i18n'
  * `aria-describedby`, is rendered only on hover and is hidden on touch devices. The row, the list and the mass
  * operations of the queue are the library's, which guards them the same way (`src/test/a11y/iconButtonNames.test.ts`
  * there); what admin-dam wraps them in is read here, and has no icon-only button of its own today: the delete of a
- * row is the library's `AActionDeleteButton`. The rest of this app is not covered yet. */
+ * row is the library's `AActionDeleteButton`. That the three wrappers have no button of their own, the guard of the
+ * names of the whole app (`iconButtonTooltips.test.ts`) does not pin: it would take one they grew, named. */
 
 const sources = import.meta.glob(
   [

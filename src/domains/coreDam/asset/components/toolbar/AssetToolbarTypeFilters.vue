@@ -33,6 +33,7 @@ const isPodcastActive = computed(() => {
 
 <template>
   <VBtn
+    :aria-label="t('coreDam.asset.list.allTypes')"
     variant="text"
     icon
     size="x-small"
@@ -52,6 +53,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.image')"
+    :aria-pressed="isImageActive"
     icon
     size="x-small"
     class="mr-1"
@@ -73,6 +76,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.video')"
+    :aria-pressed="isVideoActive"
     icon
     size="x-small"
     class="mr-1"
@@ -94,6 +99,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.audio')"
+    :aria-pressed="isAudioActive"
     icon
     size="x-small"
     class="mr-1"
@@ -115,6 +122,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.document')"
+    :aria-pressed="isDocumentActive"
     icon
     size="x-small"
     data-cy="button-document-types"
@@ -135,6 +144,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.filter.inPodcast')"
+    :aria-pressed="isPodcastActive"
     icon
     size="x-small"
     data-cy="button-in-podcast-types"

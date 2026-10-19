@@ -41,6 +41,7 @@ const { t } = useI18n()
   <div class="d-inline-flex">
     <VBtn
       v-if="variant === 'small'"
+      :aria-label="t('coreDam.asset.selected.clear')"
       variant="text"
       :width="26"
       :height="26"
@@ -59,6 +60,7 @@ const { t } = useI18n()
     </VBtn>
     <VBtn
       v-else-if="variant === 'normal'"
+      :aria-label="t('coreDam.asset.selected.cancel')"
       :height="36"
       :width="36"
       variant="text"

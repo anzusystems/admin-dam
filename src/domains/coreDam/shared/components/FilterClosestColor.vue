@@ -88,6 +88,8 @@ const label = computed(() => {
       <span v-if="label">{{ label }}</span>
     </VLabel>
     <div class="color-swatches d-flex flex-wrap">
+      <!-- A button, named by its title: pressed by Enter as it goes down and by Space as it comes up, as a button is.
+           Neither key goes on to the filter form around it, which searches on Enter. -->
       <div
         v-for="(item, key) in items"
         :key="key"
@@ -95,7 +97,14 @@ const label = computed(() => {
         :class="{ 'color-swatches__item--active': item.selected }"
         :style="{ backgroundColor: item.color }"
         :title="item.name"
+        role="button"
+        tabindex="0"
+        :aria-pressed="item.selected"
         @click.stop="toggleSelected(item.color)"
+        @keydown.enter.prevent.stop="toggleSelected(item.color)"
+        @keyup.enter.prevent.stop
+        @keydown.space.prevent.stop
+        @keyup.space.prevent.stop="toggleSelected(item.color)"
       >
         <VIcon
           v-show="item.selected"
@@ -112,6 +121,7 @@ const label = computed(() => {
       </div>
       <VBtn
         v-show="showClear"
+        :aria-label="t('common.button.clear')"
         icon
         variant="text"
         :width="24"

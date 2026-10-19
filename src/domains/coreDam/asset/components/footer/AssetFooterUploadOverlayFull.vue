@@ -13,6 +13,7 @@ import {
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
+import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -177,6 +178,7 @@ const onSaveAndClose = async () => {
               {{ t('coreDam.asset.upload.saveAndClose') }}
             </ABtnPrimary>
             <VBtn
+              :aria-label="t('coreDam.asset.upload.save')"
               variant="text"
               :height="36"
               :width="36"
@@ -203,7 +205,11 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
+          <!-- Under two rows there is no panel to open. -->
           <VBtn
+            v-if="list.length >= MASS_OPERATIONS_FROM"
+            :aria-label="t('coreDam.asset.massOperations.title')"
+            :aria-expanded="massOperations"
             :height="36"
             :width="36"
             :active="massOperations"
@@ -223,6 +229,7 @@ const onSaveAndClose = async () => {
           </VBtn>
           <VBtn
             v-show="showMinimalUpload"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="36"

@@ -100,6 +100,7 @@ const clearEpilog = () => {
               <span v-else>—</span>
               <VBtn
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
+                :aria-label="t('common.button.clear')"
                 icon
                 variant="text"
                 size="small"

@@ -20,6 +20,7 @@ import { useRouter } from 'vue-router'
 
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
+import { useDetailInfoPanel } from '@/domains/coreDam/asset/components/detail/composables/detailInfoPanel'
 import {
   ASSET_DETAIL_DIALOG_CLASS,
   useAssetListActions,
@@ -62,6 +63,7 @@ const postDelete = (data: DocId) => {
 }
 
 const sidebar = ref(true)
+const { wide, panelId } = useDetailInfoPanel()
 
 const toggleSidebar = () => {
   sidebar.value = !sidebar.value
@@ -189,6 +191,7 @@ const { can } = useAuth()
         >
           <div v-if="assetDetailStore.view === 'list'">
             <VBtn
+              :aria-label="t('coreDam.asset.list.prev')"
               variant="text"
               icon
               class="mx-1"
@@ -206,6 +209,7 @@ const { can } = useAuth()
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.next')"
               variant="text"
               icon
               class="mr-2"
@@ -239,6 +243,9 @@ const { can } = useAuth()
           <VSpacer />
           <div>
             <VBtn
+              :aria-label="t('coreDam.asset.detail.toggleInfo')"
+              :aria-expanded="wide ? sidebar : undefined"
+              :aria-controls="wide ? panelId : undefined"
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
@@ -257,6 +264,7 @@ const { can } = useAuth()
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('common.button.close')"
               icon
               variant="text"
               :width="36"
@@ -299,7 +307,11 @@ const { can } = useAuth()
               />
             </div>
           </div>
-          <div class="h-100 d-flex dam-image-detail__sidebar border-s">
+          <div
+            :id="panelId"
+            class="h-100 d-flex dam-image-detail__sidebar border-s"
+            :inert="wide && !sidebar"
+          >
             <AssetDetailDialogSidebar
               v-if="asset"
               :key="asset.id"

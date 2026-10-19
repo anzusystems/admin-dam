@@ -95,6 +95,7 @@ const onClearConfirm = async () => {
           />
           <VBtn
             v-show="showMinimalSelected"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="26"
@@ -113,6 +114,7 @@ const onClearConfirm = async () => {
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
+            :aria-label="t('common.system.modal.show')"
             icon
             variant="flat"
             :height="26"

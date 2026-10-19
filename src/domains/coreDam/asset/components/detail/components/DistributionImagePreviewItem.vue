@@ -84,6 +84,8 @@ onMounted(async () => {
           </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
+              :aria-label="t('coreDam.asset.list.toggleSelect')"
+              :aria-pressed="!!item.selected"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"
@@ -110,6 +112,7 @@ onMounted(async () => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.preview')"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"

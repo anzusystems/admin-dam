@@ -79,6 +79,7 @@ watch(
       <VCol cols="auto">
         <Acl :permission="ACL.DAM_ASSET_UPDATE">
           <VBtn
+            :aria-label="t('common.button.edit')"
             variant="text"
             icon
             size="small"
@@ -121,6 +122,7 @@ watch(
       <VCol cols="auto">
         <Acl :permission="ACL.DAM_ASSET_UPDATE">
           <VBtn
+            :aria-label="t('common.button.edit')"
             variant="text"
             icon
             size="small"

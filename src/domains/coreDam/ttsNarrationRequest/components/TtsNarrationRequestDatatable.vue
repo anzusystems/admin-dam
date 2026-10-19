@@ -156,6 +156,7 @@ defineExpose({
           <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_CANCEL">
             <VBtn
               v-if="isCancellableRequest(item)"
+              :aria-label="t('coreDam.ttsNarrationRequest.button.cancelRequest')"
               class="ml-1"
               icon
               :active="false"

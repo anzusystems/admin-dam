@@ -273,7 +273,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     class="dam-upload-icon d-inline-flex"
   >
     <VBtn
-      tabindex="-1"
+      :aria-label="t('system.upload.add')"
       icon
       variant="text"
       :height="height"
@@ -291,7 +291,7 @@ watch(selectedFiles, (newValue, oldValue) => {
   </div>
   <VBtn
     v-if="variant === 'slot-upload'"
-    tabindex="-1"
+    :aria-label="t('system.upload.add')"
     icon
     variant="flat"
     :height="height"
@@ -314,7 +314,6 @@ watch(selectedFiles, (newValue, oldValue) => {
     class="dam-upload-button d-inline-flex"
   >
     <VBtn
-      tabindex="-1"
       color="primary"
       rounded="pill"
       variant="flat"

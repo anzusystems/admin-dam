@@ -105,6 +105,8 @@ onBeforeUnmount(() => {
           <div class="d-flex justify-space-between w-100 align-center">
             <div class="d-flex align-center">
               <VBtn
+                :aria-label="t('coreDam.asset.list.filterToggle')"
+                :aria-expanded="sidebarLeft"
                 :active="sidebarLeft"
                 icon
                 :width="30"
@@ -130,6 +132,8 @@ onBeforeUnmount(() => {
             <div class="d-flex align-center">
               <slot name="second-bar-right" />
               <VBtn
+                :aria-label="t('coreDam.asset.list.infoToggle')"
+                :aria-expanded="sidebarRight"
                 :active="sidebarRight"
                 icon
                 :width="30"

@@ -88,6 +88,7 @@ const isUploading = computed(() => {
           </div>
           <VBtn
             v-show="showMinimalUpload"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="26"
@@ -106,6 +107,7 @@ const isUploading = computed(() => {
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
+            :aria-label="t('common.system.modal.show')"
             icon
             variant="flat"
             :height="26"

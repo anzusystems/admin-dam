@@ -5,6 +5,7 @@ import { provide } from 'vue'
 
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
 import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
+import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
@@ -59,7 +60,7 @@ provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queu
     :mass-operations="massOperations"
     :disable-done-animation="disableDoneAnimation"
     :queue="queue"
-    :mass-operations-from="2"
+    :mass-operations-from="MASS_OPERATIONS_FROM"
     :keyboard-scroll="false"
   >
     <template #item="{ item, index, refreshDisabled, refresh }">
@@ -78,7 +79,14 @@ provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queu
       />
     </template>
     <template #sidebar>
-      <AssetQueueSelectedSidebar :queue-id="queueId" />
+      <!-- Closed, the panel is only slid out of view by the library: what it holds is left out for the keyboard and
+           the screen reader as well. -->
+      <div
+        class="d-flex w-100 h-100"
+        :inert="!massOperations"
+      >
+        <AssetQueueSelectedSidebar :queue-id="queueId" />
+      </div>
     </template>
   </ADamUploadQueueList>
 </template>

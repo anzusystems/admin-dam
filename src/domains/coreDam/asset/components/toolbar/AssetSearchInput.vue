@@ -35,6 +35,7 @@ const modelValueComputed = computed({
   >
     <template #append-inner>
       <VIcon
+        :aria-label="t('system.mainBar.search')"
         icon="mdi-magnify"
         @click="emit('submit')"
       />

@@ -80,10 +80,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset detail Fókus`, () => {
     await expect(detailSidebar(page).locator('.v-field--disabled')).toHaveCount(1)
   })
 
-  test('"Znovu načítať náhľady" refreshes the crop previews @bug', async () => {
-    test.fail() // DAM-B6: the handler throws and the previews never reload — see KNOWN-BUGS.md
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B6' })
-
+  test('"Znovu načítať náhľady" refreshes the crop previews', async () => {
     await openAssetTab(page, ASSET_ID, 'button-focus')
     await expectRoiPreviewsLoaded(page)
     const before = await roiPreviewSources(page)

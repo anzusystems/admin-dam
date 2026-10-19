@@ -37,6 +37,7 @@ const closeDialog = () => {
       >
         <div v-if="walksList">
           <VBtn
+            :aria-label="t('coreDam.asset.list.prev')"
             variant="text"
             icon
             class="mx-1"
@@ -54,6 +55,7 @@ const closeDialog = () => {
             </VTooltip>
           </VBtn>
           <VBtn
+            :aria-label="t('coreDam.asset.list.next')"
             variant="text"
             icon
             class="mr-2"
@@ -82,6 +84,7 @@ const closeDialog = () => {
         <VSpacer />
         <div>
           <VBtn
+            :aria-label="t('common.button.close')"
             icon
             variant="text"
             :width="36"

@@ -94,6 +94,7 @@ onMounted(() => {
     <td>
       <div class="d-flex a-table__row--toggle">
         <VCheckboxBtn
+          :aria-label="t('coreDam.asset.list.toggleSelect')"
           :model-value="item.selected"
           @click.stop="toggleSelected"
         />

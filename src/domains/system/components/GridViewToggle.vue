@@ -5,12 +5,14 @@ import { GridView, useGridView } from '@/domains/system/composables/gridView'
 
 const { t } = useI18n()
 
-const { setGridView } = useGridView()
+const { gridView, setGridView } = useGridView()
 </script>
 
 <template>
   <div>
     <VBtn
+      :aria-label="t('coreDam.asset.list.gridView.masonry')"
+      :aria-pressed="gridView === GridView.Masonry"
       size="x-small"
       icon
       variant="text"
@@ -25,6 +27,8 @@ const { setGridView } = useGridView()
       </VTooltip>
     </VBtn>
     <VBtn
+      :aria-label="t('coreDam.asset.list.gridView.thumbnail')"
+      :aria-pressed="gridView === GridView.Thumbnail"
       icon
       size="x-small"
       variant="text"
@@ -39,6 +43,8 @@ const { setGridView } = useGridView()
       </VTooltip>
     </VBtn>
     <VBtn
+      :aria-label="t('coreDam.asset.list.gridView.table')"
+      :aria-pressed="gridView === GridView.Table"
       size="x-small"
       icon
       variant="text"

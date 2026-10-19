@@ -11,6 +11,8 @@ export interface ToolbarItemButton {
   show: () => boolean
   active: () => boolean | undefined
   titleT: string
+  /** A mark it switches on and off: the button says whether it is on. */
+  toggle?: boolean
 }
 
 export interface ToolbarItemSeparator {
@@ -30,6 +32,7 @@ export function useAnzutapToolbar(editor: Editor | undefined) {
       command: () => editor?.chain().focus().toggleBold().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.bold),
       active: () => editor?.isActive('bold'),
+      toggle: true,
     },
     {
       id: 'textItalic',
@@ -39,6 +42,7 @@ export function useAnzutapToolbar(editor: Editor | undefined) {
       command: () => editor?.chain().focus().toggleItalic().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.italic),
       active: () => editor?.isActive('italic'),
+      toggle: true,
     },
     {
       id: 'textUnderline',
@@ -48,6 +52,7 @@ export function useAnzutapToolbar(editor: Editor | undefined) {
       command: () => editor?.chain().focus().toggleUnderline().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.underline),
       active: () => editor?.isActive('underline'),
+      toggle: true,
     },
     {
       id: 'sep1',

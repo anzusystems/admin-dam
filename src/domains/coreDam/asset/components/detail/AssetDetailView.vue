@@ -23,6 +23,7 @@ import {
   provideAssetFileChanged,
   useAssetDetailFileChange,
 } from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
+import { useDetailInfoPanel } from '@/domains/coreDam/asset/components/detail/composables/detailInfoPanel'
 import {
   AssetDetailTab,
   AssetDetailTabDefault,
@@ -59,6 +60,7 @@ const {
   assetMainFile,
   toolbarTitle,
 } = useAssetDetailActions()
+const { wide, panelId } = useDetailInfoPanel()
 
 const assetId = ref<DocId>('')
 
@@ -174,6 +176,9 @@ onUnmounted(() => {
           <VSpacer />
           <div>
             <VBtn
+              :aria-label="t('coreDam.asset.detail.toggleInfo')"
+              :aria-expanded="wide ? sidebar : undefined"
+              :aria-controls="wide ? panelId : undefined"
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
@@ -192,6 +197,7 @@ onUnmounted(() => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('common.button.close')"
               icon
               variant="text"
               :width="36"
@@ -232,7 +238,11 @@ onUnmounted(() => {
               />
             </div>
           </div>
-          <div class="h-100 d-flex dam-image-detail__sidebar border-s">
+          <div
+            :id="panelId"
+            class="h-100 d-flex dam-image-detail__sidebar border-s"
+            :inert="wide && !sidebar"
+          >
             <AssetDetailDialogSidebar
               v-if="asset"
               :asset-id="asset.id"

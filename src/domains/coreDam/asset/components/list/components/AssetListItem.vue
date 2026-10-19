@@ -89,6 +89,8 @@ const selectMultiple = () => {
           </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
+              :aria-label="t('coreDam.asset.list.toggleSelect')"
+              :aria-pressed="item.selected"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"
@@ -115,6 +117,7 @@ const selectMultiple = () => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.edit')"
               variant="flat"
               color="secondary"
               class="detail-icon"

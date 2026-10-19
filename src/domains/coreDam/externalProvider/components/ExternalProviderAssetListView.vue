@@ -150,6 +150,7 @@ onUnmounted(() => {
     </template>
     <template #second-bar-right>
       <VBtn
+        :aria-label="t('coreDam.asset.list.refresh')"
         variant="text"
         icon
         size="x-small"

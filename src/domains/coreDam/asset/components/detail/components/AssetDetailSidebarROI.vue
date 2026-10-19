@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { assetFileIsImageFile, cloneDeep, usePagination } from '@anzusystems/common-admin'
+import {
+  assetFileIsImageFile,
+  cloneDeep,
+  useAlerts,
+  useDamImageRoiStore,
+  usePagination,
+} from '@anzusystems/common-admin'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -10,7 +16,6 @@ import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/com
 import AssetFileRotate from '@/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue'
 import { useImageRoiFilter } from '@/domains/coreDam/asset/filter/ImageRoiFilter'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useImageRoiStore } from '@/domains/coreDam/asset/store/imageRoiStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -23,7 +28,8 @@ withDefaults(
 
 const { t } = useI18n()
 
-const imageRoiStore = useImageRoiStore()
+// The library's store: its frame of the region beside this panel draws what this panel puts there.
+const imageRoiStore = useDamImageRoiStore()
 const assetDetailStore = useAssetDetailStore()
 
 const { filterConfig, filterData } = useImageRoiFilter()
@@ -47,7 +53,27 @@ const loadRois = async () => {
   imageRoiStore.hideLoader()
 }
 
+const { showErrorsDefault, showUnknownError } = useAlerts()
+
+// The reads of a rotated file on their way: only the newest is put in the store.
+let rotatedReads = 0
+
+/* The frame of the region draws the image anew only for a file read anew: the rotated one is, unless another rotation
+ * read it meanwhile or another file is shown by then (another slot, another asset). */
 const afterRotate = async () => {
+  const rotated = imageRoiStore.imageFile
+  if (rotated) {
+    const read = ++rotatedReads
+    imageRoiStore.showLoader()
+    try {
+      const imageFileDetail = await fetchImageFile(rotated.id)
+      if (read === rotatedReads && imageRoiStore.imageFile?.id === rotated.id) {
+        imageRoiStore.setImageFile(cloneDeep(imageFileDetail))
+      }
+    } catch (error) {
+      if (!showErrorsDefault(error)) showUnknownError()
+    }
+  }
   await loadRois()
   imageRoiStore.forceReloadRoiPreviews()
   imageRoiStore.forceReloadCropper()

@@ -13,6 +13,7 @@ import {
 } from '@/domains/coreDam/asset/api/assetApi'
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
+import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
 import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
@@ -180,6 +181,7 @@ const onSaveAndClose = async () => {
               {{ t('coreDam.asset.selected.saveAndClose') }}
             </ABtnPrimary>
             <VBtn
+              :aria-label="t('coreDam.asset.selected.save')"
               icon
               :height="36"
               :width="36"
@@ -200,7 +202,11 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
+          <!-- Under two rows there is no panel to open. -->
           <VBtn
+            v-if="list.length >= MASS_OPERATIONS_FROM"
+            :aria-label="t('coreDam.asset.massOperations.title')"
+            :aria-expanded="massOperations"
             :height="36"
             :width="36"
             :active="massOperations"
@@ -220,6 +226,7 @@ const onSaveAndClose = async () => {
           </VBtn>
           <VBtn
             v-show="showMinimalSelected"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="36"

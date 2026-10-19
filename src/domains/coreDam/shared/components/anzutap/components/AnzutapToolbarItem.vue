@@ -25,6 +25,8 @@ const { t } = useI18n()
   </template>
   <template v-else-if="item.type === 'button'">
     <VBtn
+      :aria-label="t(item.titleT)"
+      :aria-pressed="item.toggle ? !!item.active() : undefined"
       :class="[
         'anzutap-toolbar__item',
         'anzutap-toolbar__item--button',

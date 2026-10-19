@@ -51,6 +51,7 @@ const imageSrc = computed(() => {
           <div class="w-100 d-flex justify-space-between align-center">
             <div />
             <VBtn
+              :aria-label="t('coreDam.asset.selected.remove')"
               icon
               variant="text"
               size="small"

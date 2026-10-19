@@ -218,6 +218,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         />
         <VBtn
           v-if="itemHasFile"
+          :aria-label="t('coreDam.asset.slots.actions.slotOptions')"
           variant="text"
           icon
           size="small"

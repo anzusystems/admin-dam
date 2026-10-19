@@ -93,6 +93,7 @@ const { t } = useI18n()
   >
     <template #activator="{ props: activatorProps }">
       <VBtn
+        :aria-label="t('common.button.moreOptions')"
         variant="text"
         size="x-small"
         icon

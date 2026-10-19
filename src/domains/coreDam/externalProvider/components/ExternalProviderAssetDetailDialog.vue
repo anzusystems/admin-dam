@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
+import { useDetailInfoPanel } from '@/domains/coreDam/asset/components/detail/composables/detailInfoPanel'
 import ExternalProviderAssetDetailDialogSidebar from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue'
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
@@ -34,6 +35,7 @@ const closeDialog = () => {
 }
 
 const sidebar = ref(true)
+const { wide, panelId } = useDetailInfoPanel()
 
 const toggleSidebar = () => {
   sidebar.value = !sidebar.value
@@ -118,6 +120,7 @@ const totalCountText = computed(() => {
         >
           <div>
             <VBtn
+              :aria-label="t('coreDam.asset.list.prev')"
               variant="text"
               icon
               class="mx-1"
@@ -135,6 +138,7 @@ const totalCountText = computed(() => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.next')"
               variant="text"
               icon
               class="mr-2"
@@ -161,6 +165,9 @@ const totalCountText = computed(() => {
           <VSpacer />
           <div>
             <VBtn
+              :aria-label="t('coreDam.asset.detail.toggleInfo')"
+              :aria-expanded="wide ? sidebar : undefined"
+              :aria-controls="wide ? panelId : undefined"
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
@@ -179,6 +186,7 @@ const totalCountText = computed(() => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('common.button.close')"
               icon
               variant="text"
               :width="36"
@@ -216,7 +224,11 @@ const totalCountText = computed(() => {
               />
             </div>
           </div>
-          <div class="h-100 d-flex dam-image-detail__sidebar border-s">
+          <div
+            :id="panelId"
+            class="h-100 d-flex dam-image-detail__sidebar border-s"
+            :inert="wide && !sidebar"
+          >
             <ExternalProviderAssetDetailDialogSidebar
               :is-video="isTypeVideo"
               :is-audio="isTypeAudio"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { AActionbarTarget, ASystemBar, useTheme } from '@anzusystems/common-admin'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useDisplay } from 'vuetify'
 
 import logoFull from '@/assets/logo-adam-full.svg'
@@ -12,6 +13,7 @@ import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
 import { envConfig } from '@/shared/EnvConfigService'
 
 const { mobile } = useDisplay()
+const { t } = useI18n()
 
 const drawer = ref(true)
 const rail = ref(false)
@@ -59,6 +61,8 @@ const { theme } = useTheme()
       <div class="d-flex pr-2 w-100 justify-space-between full-width align-center">
         <div class="d-flex align-center">
           <VAppBarNavIcon
+            :aria-label="t('system.mainBar.mainMenu')"
+            :aria-expanded="drawer && !rail"
             data-cy="navbar-collapse"
             size="small"
             class="mx-1"

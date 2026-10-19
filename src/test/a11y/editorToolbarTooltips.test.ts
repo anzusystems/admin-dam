@@ -56,8 +56,8 @@ const editorInLink = () => {
   return editor
 }
 
-/** What the buttons of the toolbar say of themselves when the pointer is over them, in the order of the toolbar. */
-const tooltips = async (locale: 'sk' | 'en') => {
+/** The toolbar over the editor, in the language; answers its buttons, in the order of the toolbar. */
+const mountToolbar = async (locale: 'sk' | 'en') => {
   i18n.global.locale.value = locale
   const root = document.createElement('div')
   document.body.appendChild(root)
@@ -68,8 +68,15 @@ const tooltips = async (locale: 'sk' | 'en') => {
   // The toolbar draws its buttons once it is mounted, and each tooltip takes its button a tick after that.
   await vi.advanceTimersByTimeAsync(0)
   await nextTick()
+
+  return () => Array.from(root.querySelectorAll('.anzutap-toolbar__item--button'))
+}
+
+/** What the buttons of the toolbar say of themselves when the pointer is over them, in the order of the toolbar. */
+const tooltips = async (locale: 'sk' | 'en') => {
+  const buttons = await mountToolbar(locale)
   const said: string[] = []
-  for (const button of root.querySelectorAll('.anzutap-toolbar__item--button')) {
+  for (const button of buttons()) {
     button.dispatchEvent(new MouseEvent('mouseenter'))
     await vi.advanceTimersByTimeAsync(1000)
     const open = Array.from(document.body.querySelectorAll('.v-tooltip.v-overlay--active .v-overlay__content'))
@@ -121,5 +128,25 @@ describe('the buttons of the editor toolbar', () => {
 
   it.each(['sk', 'en'] as const)('say in their tooltips the texts of the app in %s, not their keys', async (locale) => {
     expect(await tooltips(locale)).toEqual(SAID[locale])
+  })
+
+  // A tooltip is not a name. The link opens a dialog and the removal of it acts once: they are no marks to switch.
+  it('are named as their tooltips say, and the marks say whether they are on', async () => {
+    const buttons = await mountToolbar('en')
+    const named = () =>
+      buttons().map((button) => [button.getAttribute('aria-label'), button.getAttribute('aria-pressed')])
+
+    expect(named()).toEqual([
+      ['Bold', 'false'],
+      ['Italic', 'false'],
+      ['Underline', 'false'],
+      ['Link', null],
+      ['Remove link', null],
+    ])
+    editor!.chain().setTextSelection({ from: 1, to: 7 }).toggleBold().run()
+    // The editor tells the toolbar of its new state two frames later.
+    await vi.advanceTimersByTimeAsync(100)
+    await nextTick()
+    expect(named().map(([, pressed]) => pressed)).toEqual(['true', 'false', 'false', null, null])
   })
 })

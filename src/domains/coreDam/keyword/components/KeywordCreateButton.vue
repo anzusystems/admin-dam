@@ -106,6 +106,7 @@ const onConfirm = async () => {
   </ABtnPrimary>
   <VBtn
     v-else
+    :aria-label="t('coreDam.keyword.button.add')"
     :class="buttonClass"
     :data-cy="dataCy"
     icon

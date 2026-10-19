@@ -26,6 +26,7 @@ const { t } = useI18n()
 <template>
   <VBtn
     v-if="variant === 'button'"
+    :aria-label="t(buttonT)"
     size="x-small"
     icon
     variant="text"

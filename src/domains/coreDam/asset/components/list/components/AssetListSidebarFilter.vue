@@ -68,6 +68,7 @@ const resetFilter = () => {
           {{ t('common.button.submitFilter') }}
         </VBtn>
         <VBtn
+          :aria-label="t('common.button.resetFilter')"
           class="px-2"
           color="light"
           min-width="36px"
