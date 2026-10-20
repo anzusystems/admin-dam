@@ -47,6 +47,12 @@ const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
+
+/* Behind the loader while the asset is read, and while a save of the mass edit is on its way for it after "Leave
+ * anyway" let what was typed go: the read after that save replaces the form, and nothing typed meanwhile is kept. */
+const formAway = computed(
+  () => loader.value || (!isNull(asset.value) && assetDetailStore.leftForMassSave === asset.value.id)
+)
 const uploadQueueStore = useUploadQueuesStore()
 
 /* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
@@ -157,7 +163,7 @@ watch(
     :width="300"
   >
     <div
-      v-if="loader"
+      v-if="formAway"
       class="d-flex w-100 h-100 align-center justify-center"
     >
       <VProgressCircular
@@ -180,7 +186,7 @@ watch(
       <AssetMetadata />
     </div>
     <template
-      v-if="!loader && asset"
+      v-if="!formAway && asset"
       #append
     >
       <!-- Not for an asset being deleted: "Save" is off for that, and neither line would come true. -->

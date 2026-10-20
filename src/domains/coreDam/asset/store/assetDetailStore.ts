@@ -154,6 +154,9 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   /* "Leave anyway" gives what was typed up: the read the question was asked for goes on behind the loader, and replaces
    * it. Until a loader is lowered, or the form is replaced. */
   const typedLeft = ref(false)
+  /* The asset whose typed metadata "Leave anyway" let go for a save of the mass edit, while that save is on its way: its
+   * form takes no typing until the read after the save has started (`loader`), which replaces it. */
+  const leftForMassSave = ref<DocId | null>(null)
   /** Not under the loader: the form is not shown then, and the asset it was of has been left already. */
   const showsUnsavedMetadata = computed(() => detail.value && !loader.value && holdsUnsavedMetadata.value)
   /** The same with the detail closed: the panel beside the list is the form then, whether it is in view or not, and
@@ -424,6 +427,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     lastFetchedId.value = ''
     lastFetched.value = 0
     toldOfMainFile = null
+    leftForMassSave.value = null
     asset.value = null
     authorConflicts.value = []
     loader.value = false
@@ -460,6 +464,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     holdsUnsavedMetadata,
     leaveUnsavedQuestion,
     typedLeft,
+    leftForMassSave,
     showsUnsavedMetadata,
     panelHoldsUnsavedMetadata,
     askToLeaveUnsaved,

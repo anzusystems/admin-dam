@@ -96,6 +96,32 @@ const refreshDetailAsset = (savedAssetIds: string[]) => {
 // What the bulk save sends, taken before it: the queue can change while it is on the wire.
 const assetIdsToSave = () => list.value.filter(hasMetadataToSave).map((item) => item.assetId)
 
+/* The read after the save puts the asset as saved into the panel beside the list, over what was typed into it and not
+ * saved: asked about first, as every other way that throws that away. "Stay" sends nothing (`null`); "Leave anyway"
+ * saves, and the read replaces what was typed (the id of the asset). With nothing typed, or another asset in the panel,
+ * nothing is asked (`false`). Let go, the form takes no typing while the save is on its way: the mass edit can be put
+ * away meanwhile, and what was typed then would be replaced without a word. */
+const leaveTypedOfPanel = async (savedAssetIds: string[]) => {
+  const held = assetDetailStore.asset
+  if (!assetDetailStore.panelHoldsUnsavedMetadata || isNull(held) || !savedAssetIds.includes(held.id)) return false
+  if (!(await assetDetailStore.askToLeaveUnsaved())) return null
+  assetDetailStore.leftForMassSave = held.id
+
+  return held.id
+}
+
+/* Answered: the read after the save has started by now, behind the loader, or there is none to come (another asset in
+ * the panel). Failed: the form is given back as it was. */
+const panelTakesTypingAgain = (left: string | false) => {
+  if (left && assetDetailStore.leftForMassSave === left) assetDetailStore.leftForMassSave = null
+}
+
+/* A save that failed after "Leave anyway" reads nothing: what was typed stays in the panel, unsaved, and is asked
+ * about again - also behind the loader of a read that comes later. */
+const typedKeptAfterFailure = (left: string | false) => {
+  if (left) assetDetailStore.typedLeft = false
+}
+
 const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
@@ -115,13 +141,20 @@ const onSave = async () => {
     return
   }
   const savedAssetIds = assetIdsToSave()
+  const left = await leaveTypedOfPanel(savedAssetIds)
+  if (left === null) {
+    saveButtonLoading.value = false
+    return
+  }
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     refreshDetailAsset(savedAssetIds)
   } catch (error) {
+    typedKeptAfterFailure(left)
     showMetadataSaveError(error)
   } finally {
+    panelTakesTypingAgain(left)
     saveButtonLoading.value = false
   }
 }
@@ -136,6 +169,11 @@ const onSaveAndClose = async () => {
     return
   }
   const savedAssetIds = assetIdsToSave()
+  const left = await leaveTypedOfPanel(savedAssetIds)
+  if (left === null) {
+    saveAndCloseButtonLoading.value = false
+    return
+  }
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
@@ -146,8 +184,10 @@ const onSaveAndClose = async () => {
      * waits for the answer. */
     whileOnPage(() => void onClearConfirm())
   } catch (error) {
+    typedKeptAfterFailure(left)
     showMetadataSaveError(error)
   } finally {
+    panelTakesTypingAgain(left)
     saveAndCloseButtonLoading.value = false
   }
 }

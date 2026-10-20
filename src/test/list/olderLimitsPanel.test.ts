@@ -471,11 +471,11 @@ describe('the edit of a row of the upload queue under metadata typed into the pa
   })
 })
 
-/* A bulk save of the asset the panel holds reads the asset whole into the panel, behind its loader, over what was typed
- * into it: nothing gave that up, so a way to another asset meanwhile asks about it. The read replaces it all the same
- * once it lands, and the question goes with it. */
-describe('metadata typed into the panel while the mass edit has saved the same asset', () => {
-  it('are asked about by a click on another tile behind the loader of the read after the save', async () => {
+/* A bulk save of the asset the panel holds asks about what was typed into the panel first (`massEditAsksPanel.test.ts`);
+ * "Leave anyway" saves it, and the asset is read whole into the panel behind its loader. What was typed was given up
+ * then: a way to another asset behind that loader asks nothing, as behind the loader of every read so let go. */
+describe('metadata typed into the panel while the mass edit saves the same asset', () => {
+  it('are asked about by the save; after "Leave anyway" a click on another tile behind the loader of the read asks nothing', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
     await list.openMassEdit(1)
@@ -488,14 +488,16 @@ describe('metadata typed into the panel while the mass edit has saved the same a
       return button
     })
     saveAndFinish.click()
+    await settled()
+    expect([questions().length, server.sent('PATCH', BULK).length]).toEqual([1, 0])
+    await answer(LEAVE)
     await eventually(() => expect(list.alerts()).toEqual([UPDATED]))
     await eventually(() => expect(list.queue()).toBeNull())
     expect(panel().querySelector('.v-progress-circular')).not.toBeNull()
 
     await list.pick(2)
 
-    expect([questions().length, list.active(), reads()[2]]).toEqual([1, [false, true, false], 0])
-    await answer(STAY)
+    expect([questions(), list.active(), reads()[2]]).toEqual([[], [false, false, true], 1])
     answerRead()
     await settled()
     expect([questions(), list.title().value, standsOut(list.save())]).toEqual([[], FROM_SERVER, false])
