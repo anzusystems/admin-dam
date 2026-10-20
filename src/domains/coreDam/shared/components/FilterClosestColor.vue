@@ -42,9 +42,14 @@ const value = computed<string | string[]>({
 const damConfigStore = useDamConfigStore()
 const { damPrvConfig } = storeToRefs(damConfigStore)
 
+const { t, te } = useI18n()
+
+// The name of a colour by the key the configuration gives it; a key the app has no name for is shown as it is.
+const colorName = (key: string) => (te('coreDam.asset.color.' + key) ? t('coreDam.asset.color.' + key) : key)
+
 const items = computed(() => {
   return Object.keys(damPrvConfig.value.colorSet).map((key) => ({
-    name: key,
+    name: colorName(key),
     color: damPrvConfig.value.colorSet[key],
     selected: isArray(value.value)
       ? value.value.includes(damPrvConfig.value.colorSet[key])
@@ -74,8 +79,6 @@ const clear = () => {
   value.value = cloneDeep(filterConfig.fields[props.name].default) as string | string[]
 }
 
-const { t } = useI18n()
-
 const label = computed(() => {
   const titleT = filterConfig.fields[props.name].titleT
   return titleT ? t(titleT) : undefined
@@ -88,7 +91,8 @@ const label = computed(() => {
       <span v-if="label">{{ label }}</span>
     </VLabel>
     <div class="color-swatches d-flex flex-wrap">
-      <!-- A button, named by its title: pressed by Enter as it goes down and by Space as it comes up, as a button is.
+      <!-- A button, named by the name of its colour: pressed by Enter as it goes down and by Space as it comes up, as a
+           button is.
            Neither key goes on to the filter form around it, which searches on Enter. -->
       <div
         v-for="(item, key) in items"
@@ -96,7 +100,7 @@ const label = computed(() => {
         class="color-swatches__item pa-1 cursor-pointer position-relative border"
         :class="{ 'color-swatches__item--active': item.selected }"
         :style="{ backgroundColor: item.color }"
-        :title="item.name"
+        :aria-label="item.name"
         role="button"
         tabindex="0"
         :aria-pressed="item.selected"
@@ -116,7 +120,7 @@ const label = computed(() => {
           activator="parent"
           location="bottom"
         >
-          {{ item.color }}
+          {{ item.name }} ({{ item.color }})
         </VTooltip>
       </div>
       <VBtn

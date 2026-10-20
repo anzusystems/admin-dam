@@ -1,3 +1,4 @@
+import { useAlerts } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
 import { inject, provide } from 'vue'
 import type { InjectionKey } from 'vue'
@@ -15,6 +16,9 @@ const EMPTY_TAB = 'about:blank'
 /** For a page that draws no detail of an asset of DAM, in its setup. */
 export const provideAssetOpensInNewTab = () => provide(AssetOpensInNewTabKey, true)
 
+// A browser that gives no tab - its blocker of new windows - says nothing: the editor is told here.
+const sayNoTab = () => useAlerts().showWarningT('coreDam.asset.newTabBlocked')
+
 /**
  * A tab for an address that is yet to come: of an asset being made, of a file being signed. A browser opens a tab at a
  * press and can block one opened after a request, so the tab is opened now, empty, and is sent to the address once
@@ -27,6 +31,7 @@ export const openTabForAddress = () => {
   /* No way back to the page that opened it, from the start: the tab is cut off while it is still the empty page of
    * this origin. Taken to another site while the address is on its way, it could not be cut off any more. */
   if (tab) tab.opener = null
+  else sayNoTab()
 
   const whileEmpty = () => {
     try {
@@ -37,10 +42,13 @@ export const openTabForAddress = () => {
     }
   }
   const closeWithPage = () => whileEmpty()?.close()
-  window.addEventListener('pagehide', closeWithPage)
+  // With no tab there is nothing to close: nothing is left listening for the page to go.
+  if (tab) window.addEventListener('pagehide', closeWithPage)
   const stopClosingWithPage = () => window.removeEventListener('pagehide', closeWithPage)
 
   return {
+    /** Whether the browser gave the tab: with none, there is nothing to ask for an address for. */
+    opened: !!tab,
     show: (address: string) => {
       // First: on its way to the address the tab still says it is empty.
       stopClosingWithPage()
@@ -60,16 +68,19 @@ export const useAssetInNewTab = () => {
 
   const pageOf = (assetId: DocId) => router.resolve({ name: '/(coreDam)/assets/[id]', params: { id: assetId } }).href
 
-  /** The page of an asset there already is. The tab has no way back to the page that opened it. */
+  /** The page of an asset there already is. The tab has no way back to the page that opened it, from the start. Opened
+   * so that it is known whether the browser gave one (with `noopener` it says nothing either way). */
   const openAssetInNewTab = (assetId: DocId) => {
-    window.open(pageOf(assetId), '_blank', 'noopener')
+    const tab = window.open(pageOf(assetId), '_blank')
+    if (tab) tab.opener = null
+    else sayNoTab()
   }
 
   /** For an asset that is yet to be made: a tab opened now, sent to the page of the asset once there is one. */
   const openTabForAsset = () => {
     const tab = openTabForAddress()
 
-    return { show: (assetId: DocId) => tab.show(pageOf(assetId)), close: tab.close }
+    return { opened: tab.opened, show: (assetId: DocId) => tab.show(pageOf(assetId)), close: tab.close }
   }
 
   return { opensInNewTab: () => saidByPage, openAssetInNewTab, openTabForAsset }

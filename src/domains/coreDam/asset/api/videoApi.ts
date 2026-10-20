@@ -17,6 +17,7 @@ import type {
 import type { Ref } from 'vue'
 
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
@@ -37,130 +38,25 @@ export const fetchVideoFile = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
-export const unsetSlot = (videoId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + videoId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const unsetSlot = (videoId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('DELETE', END_POINT + '/' + videoId + '/asset/' + assetId + '/slot-name/' + slotName, [
+    HTTP_STATUS_NO_CONTENT,
+  ])
 
-export const deleteVideo = (videoId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + videoId
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const deleteVideo = (videoId: DocId) =>
+  fileCommand('DELETE', END_POINT + '/' + videoId, [HTTP_STATUS_NO_CONTENT])
 
-export const makeMainFile = (videoId: DocId, assetId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + videoId + '/asset/' + assetId + '/main'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makeMainFile = (videoId: DocId, assetId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + videoId + '/asset/' + assetId + '/main', [HTTP_STATUS_OK])
 
-export const existingVideoToSlot = (videoId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + videoId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const existingVideoToSlot = (videoId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('PATCH', END_POINT + '/' + videoId + '/asset/' + assetId + '/slot-name/' + slotName, [HTTP_STATUS_OK])
 
-export const downloadLink = (videoId: DocId) => {
-  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
-    const url = END_POINT + '/' + videoId + '/download-link'
-    damClient()
-      .get(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const downloadLink = (videoId: DocId) =>
+  fileRequest<AssetFileDownloadLink>('GET', END_POINT + '/' + videoId + '/download-link', [HTTP_STATUS_OK])
 
-export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePreviewNullable) => {
-  return new Promise((resolve, reject) => {
-    damClient()
-      .put(
-        END_POINT + '/' + fileId,
-        JSON.stringify({
-          id: fileId,
-          imagePreview: imagePreview,
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePreviewNullable) =>
+  fileCommand('PUT', END_POINT + '/' + fileId, [HTTP_STATUS_OK], { id: fileId, imagePreview })
 
 export const useFetchVideoFileDistributionPreviewList = () =>
   useApiFetchList<DistributionImagePreviewDto>({

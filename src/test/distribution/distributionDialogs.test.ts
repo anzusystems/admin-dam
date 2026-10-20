@@ -220,8 +220,9 @@ describe('the dialog that stops a waiting distribution', () => {
     expect(dialogButton(CONFIRM)).toBeNull()
   })
 
-  // The dialog is one for all the rows, and it can be closed while the server is still asked.
-  it('stays open for another distribution it was opened for meanwhile, when the first one is stopped', async () => {
+  /* The dialog is one for all the rows, and it can be closed while the server is still asked. "Confirm" spun for the
+   * second one as well then, and sent nothing. */
+  it('stops another distribution it was opened for meanwhile at once, while the first one is still asked about', async () => {
     const stopped = () => server.sent('DELETE', STOP).map((request) => request.url)
     let answerFirst: () => void = () => undefined
     server.on('DELETE', STOP, () => {
@@ -239,29 +240,21 @@ describe('the dialog that stops a waiting distribution', () => {
     await eventually(() => expect(dialogButton(CONFIRM)).toBeNull())
     buttonsNamed(ui.tab, STOP_DISTRIBUTION)[1].click()
     const ofTheSecond = await ui.confirm()
-    // A known limit: while the first one is asked about, "Confirm" spins for the second as well and sends nothing.
-    ofTheSecond.click()
-    await vi.advanceTimersByTimeAsync(100)
-    expect([ofTheSecond.classList.contains('v-btn--loading'), stopped().length]).toEqual([true, 1])
-
-    listed = [distribution('dist-2', 'waiting')]
-    answerFirst()
-
-    await eventually(() => expect(ui.alerts()).toEqual([REMOVED]))
-    await vi.advanceTimersByTimeAsync(100)
-    expect([dialogButton(CONFIRM), ui.shown(), server.sent('GET', LIST).length]).toEqual([
-      ofTheSecond,
-      ['remote-dist-2'],
-      2,
-    ])
     expect(ofTheSecond.classList.contains('v-btn--loading')).toBe(false)
 
-    listed = []
+    listed = [distribution('dist-1', 'waiting')]
     ofTheSecond.click()
 
-    await eventually(() => expect(ui.alerts()).toEqual([REMOVED, REMOVED]))
+    await eventually(() => expect(ui.alerts()).toEqual([REMOVED]))
     expect(stopped()).toEqual(['/adm/v1/custom-distribution/dist-1', '/adm/v1/custom-distribution/dist-2'])
     expect(dialogButton(CONFIRM)).toBeNull()
+
+    listed = []
+    answerFirst()
+
+    await eventually(() => expect(ui.alerts()).toEqual([REMOVED, REMOVED]))
+    await vi.advanceTimersByTimeAsync(100)
+    expect([ui.shown(), server.sent('GET', LIST).length]).toEqual([[], 3])
   })
 
   it('stays open with the error, and nothing is read again, when the server refuses to stop it', async () => {

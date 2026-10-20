@@ -17,6 +17,7 @@ import { showMetadataSaveError, updateAssetMetadata } from '@/domains/coreDam/as
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
@@ -34,8 +35,6 @@ const { t } = useI18n()
 const {
   asset,
   loader,
-  metadataTouch,
-  metadataUnTouch,
   metadataAreTouched,
   mainFileSingleUse,
   mainFileOverrideInternal,
@@ -53,11 +52,21 @@ const uploadQueueStore = useUploadQueuesStore()
 /* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
  * the asset got another main file under what was typed: the form is still the one read before that. */
 const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
-/* Held back for a main file that failed, nothing is left to be processed: the asset read whole - opened again, once
- * what was typed is left - frees "Save". */
-const heldForFailedFile = computed(() => asset.value?.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed)
+/* Held back for a main file that failed or is processed, nothing is left to be processed: the asset read whole - opened
+ * again, once what was typed is left - frees "Save". The line under it says which. */
+const heldBackLine = computed(() => {
+  switch (asset.value?.mainFile?.fileAttributes.status) {
+    case AssetFileProcessStatus.Failed:
+      return 'coreDam.asset.detail.fileFailedOpenAgain'
+    case AssetFileProcessStatus.Processed:
+      return 'coreDam.asset.detail.fileProcessedOpenAgain'
+    default:
+      return 'coreDam.asset.detail.fileStillProcessing'
+  }
+})
 
 const { showRecordWas, showValidationError } = useAlerts()
+const { readHeldUnlessTyped } = useAssetListActions()
 
 const onEditMore = async () => {
   /* The view stays as the detail opened last left it, so it is set here as well. Of the list only while the panel
@@ -72,16 +81,14 @@ const onEditMore = async () => {
     name: '/(coreDam)/assets/[id]',
     params: { id: assetDetailStore.asset.id },
   })
+  await readHeldUnlessTyped()
 }
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
-/* The save of this panel that started last: the button only spins meanwhile, so another can start. A save that fails
- * puts "touched" back only while it is still that one - a later save sent what the form held by then, and its end
- * is the one that counts. A save started while another of the same asset is on the wire takes over the "touched"
- * that one took off. */
-let latestSave: { opened: object; touched: boolean; pending: boolean } | undefined
-
+/* The button only spins while a save is on its way, so another can start. What a save takes of what was typed, and
+ * what it leaves unsaved when it fails - only while no save of the form, here or in the detail, has saved as much,
+ * and none on its way takes it too - the store keeps (`saveSent`). */
 const onSave = async () => {
   if (isNull(asset.value)) return
   saveButtonLoading.value = true
@@ -94,18 +101,11 @@ const onSave = async () => {
   // What this save sends, taken as it starts: another asset can be opened, or this one typed into, while it is on the
   // wire. The switch is the panel's own, not the value the asset was opened with.
   const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
-  const opened = asset.value
-  const save = {
-    opened,
-    touched: metadataAreTouched.value || (!!latestSave?.pending && latestSave.opened === opened && latestSave.touched),
-    pending: true,
-  }
-  latestSave = save
-  // Known to a read of the asset that nobody here started: its answer can be from before this save.
-  const saveAnswered = assetDetailStore.saveSent(opened.id)
+  /* Before the request, not after it: what is typed while it is on the wire is not in it. Known to a read of the asset
+   * that nobody here started too: its answer can be from before this save. */
+  const saveAnswered = assetDetailStore.saveSent(asset.value)
+  let failed = false
   try {
-    // Before the request, not after it: what is typed while it is on the wire is not in it.
-    metadataUnTouch()
     await updateAssetMetadata(
       saved,
       mainFileSingleUse.value,
@@ -117,13 +117,10 @@ const onSave = async () => {
     uploadQueueStore.updateAssetMetadata(saved)
     showRecordWas('updated')
   } catch (error) {
-    // Nothing was saved, so the form is as unsaved as it was - unless the panel holds another asset by now, or this
-    // one read again.
-    if (save.touched && asset.value === opened && latestSave === save) metadataTouch()
+    failed = true
     showMetadataSaveError(error)
   } finally {
-    save.pending = false
-    saveAnswered()
+    saveAnswered(failed)
     saveButtonLoading.value = false
   }
 }
@@ -132,8 +129,8 @@ const assetStatus = computed(() => {
   return asset.value?.attributes.assetStatus || DamAssetStatus.Draft
 })
 
-// An asset being deleted - by the detail, by the bin of a queue row - has nothing to be saved into.
-const isDeleting = computed(() => assetStatus.value === DamAssetStatus.Deleting)
+// An asset being deleted - by the detail, by the bin of a queue row, elsewhere - has nothing to be saved into.
+const isDeleting = computed(() => assetDetailStore.isDeleting)
 
 const assetMainFile = computed(() => {
   return asset.value?.mainFile || undefined
@@ -192,13 +189,7 @@ watch(
           v-if="saveBlocked && !isDeleting"
           class="px-2 pt-2 text-body-small text-center"
         >
-          {{
-            t(
-              heldForFailedFile
-                ? 'coreDam.asset.detail.fileFailedOpenAgain'
-                : 'coreDam.asset.detail.fileStillProcessing'
-            )
-          }}
+          {{ t(heldBackLine) }}
         </div>
       </Acl>
       <div class="pa-2 d-flex align-center justify-center">

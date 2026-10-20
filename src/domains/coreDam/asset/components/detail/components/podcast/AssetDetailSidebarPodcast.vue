@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import PodcastEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeListItem.vue'
 import PodcastEpisodeNewDialog from '@/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeNewDialog.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
 import { useFetchPodcastEpisodeListByAsset } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { usePodcastEpisodeRemoveActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
@@ -26,6 +27,8 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const { pagination } = usePagination('position')
 provide(DatatablePaginationKey, pagination)
 const { filterConfig, filterData } = usePodcastEpisodeListFilter()
@@ -75,6 +78,7 @@ onMounted(async () => {
     <Acl :permission="[ACL.DAM_PODCAST_EPISODE_CREATE, ACL.DAM_ASSET_UPDATE]">
       <ABtnPrimary
         data-cy="button-add-new-podcast-episode"
+        :disabled="assetDetailStore.isDeleting"
         @click.stop="addNew"
       >
         {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}

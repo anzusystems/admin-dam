@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import VideoShowEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeListItem.vue'
 import VideoShowEpisodeNewDialog from '@/domains/coreDam/asset/components/detail/components/videoShow/VideoShowEpisodeNewDialog.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useCachedVideoShows } from '@/domains/coreDam/videoShow/composables/cachedVideoShow'
 import { useFetchVideoShowEpisodeListByAsset } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
@@ -25,6 +26,8 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const { pagination } = usePagination('position')
 provide(DatatablePaginationKey, pagination)
 const { filterConfig, filterData } = useVideoShowEpisodeListFilter()
@@ -69,6 +72,7 @@ onMounted(async () => {
     <Acl :permission="[ACL.DAM_VIDEO_SHOW_EPISODE_CREATE, ACL.DAM_ASSET_UPDATE]">
       <ABtnPrimary
         data-cy="button-add-new-vs-episode"
+        :disabled="assetDetailStore.isDeleting"
         @click.stop="addNew"
       >
         {{ t('coreDam.videoShowEpisode.common.addAssetToNewVideoShowEpisode') }}

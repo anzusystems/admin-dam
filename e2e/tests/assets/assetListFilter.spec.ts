@@ -134,7 +134,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
   })
 
   test('combines the id filter with the other filters', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B2: an id filter makes the search ignore every other filter — see KNOWN-BUGS.md
+    test.fail() // DAM-B2: an id filter makes the search ignore every other filter
     test.info().annotations.push({ type: 'bug', description: 'DAM-B2' })
 
     await resetFilter(page)
@@ -173,7 +173,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
   })
 
   test('narrows the width range from the upper bound alone', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B10: an upper bound on its own keeps assets that have no width — see KNOWN-BUGS.md
+    test.fail() // DAM-B10: an upper bound on its own keeps assets that have no width
     test.info().annotations.push({ type: 'bug', description: 'DAM-B10' })
 
     const width: number = (await getAsset(page, IMAGE_ID)).mainFile.imageAttributes.width

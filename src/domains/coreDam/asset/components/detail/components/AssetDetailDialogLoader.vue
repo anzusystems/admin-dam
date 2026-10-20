@@ -3,14 +3,18 @@ import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 /* The bar of a detail while its asset is read. It knows no list: whoever draws it says what its own bar has - whether
- * it walks a list by two buttons, which of them leads nowhere, and the place of the asset in that list - and is told
- * of a press as that bar would be. */
-defineProps<{
-  walksList: boolean
-  prevDisabled: boolean
-  nextDisabled: boolean
-  totalCountText: string
-}>()
+ * it walks a list by two buttons, which of them leads nowhere, the place of the asset in that list and its name - and
+ * is told of a press as that bar would be. */
+withDefaults(
+  defineProps<{
+    walksList: boolean
+    prevDisabled: boolean
+    nextDisabled: boolean
+    totalCountText: string
+    title?: string
+  }>(),
+  { title: '' }
+)
 const emit = defineEmits<{
   (e: 'closeDialog'): void
   (e: 'prevItem'): void
@@ -74,12 +78,16 @@ const closeDialog = () => {
           </VBtn>
         </div>
         <div
-          v-if="walksList"
           class="text-label-large d-flex"
+          :class="{ 'pl-2': !walksList }"
         >
-          <div class="pr-4">
+          <div
+            v-if="walksList"
+            class="pr-4"
+          >
             {{ totalCountText }}
           </div>
+          <div v-if="title">{{ title }}</div>
         </div>
         <VSpacer />
         <div>

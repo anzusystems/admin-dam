@@ -8,7 +8,10 @@ import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
 import { useDetailInfoPanel } from '@/domains/coreDam/asset/components/detail/composables/detailInfoPanel'
 import ExternalProviderAssetDetailDialogSidebar from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue'
-import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
+import {
+  EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS,
+  useExternalProviderAssetListActions,
+} from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 
@@ -78,6 +81,13 @@ const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
 })
+// Behind the loader the name of the asset being read: every read of this detail is of the active tile.
+const loaderTitle = computed(() => {
+  const active = externalProviderAssetListStore.activeItemIndex
+  if (isNull(active)) return ''
+
+  return externalProviderAssetListStore.list[active]?.asset.texts.displayTitle ?? ''
+})
 const totalCountText = computed(() => {
   if (isNull(externalProviderAssetListStore.activeItemIndex)) return ''
   return (
@@ -94,6 +104,7 @@ const totalCountText = computed(() => {
   <VDialog
     v-model="externalProviderAssetDetailStore.detail"
     fullscreen
+    :class="EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS"
   >
     <!-- The bar of the loaded detail below: its two buttons are there always, each disabled at its end of the list. -->
     <AssetDetailDialogLoader
@@ -102,6 +113,7 @@ const totalCountText = computed(() => {
       :prev-disabled="!neighbourOfActive(-1)"
       :next-disabled="!neighbourOfActive(1)"
       :total-count-text="totalCountText"
+      :title="loaderTitle"
       @prev-item="prevItem"
       @next-item="nextItem"
       @close-dialog="closeDialog"
@@ -177,7 +189,16 @@ const totalCountText = computed(() => {
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <VIcon icon="mdi-information-outline" />
+              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
+                   icon there, as in the library's detail. -->
+              <VIcon
+                icon="mdi-information-outline"
+                class="d-none d-md-flex"
+              />
+              <VIcon
+                icon="mdi-image-outline"
+                class="d-flex d-md-none"
+              />
               <VTooltip
                 activator="parent"
                 location="bottom"
@@ -204,7 +225,7 @@ const totalCountText = computed(() => {
             </VBtn>
           </div>
         </VToolbar>
-        <div class="d-flex w-100 h-100 position-relative">
+        <div class="d-flex w-100 h-100 position-relative dam-image-detail__content">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <div

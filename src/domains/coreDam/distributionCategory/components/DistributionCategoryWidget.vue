@@ -83,6 +83,7 @@ watch(
             variant="text"
             icon
             size="small"
+            :disabled="assetDetailStore.isDeleting"
             @click.stop="dialog = true"
           >
             <VIcon icon="mdi-pencil" />
@@ -126,6 +127,7 @@ watch(
             variant="text"
             icon
             size="small"
+            :disabled="assetDetailStore.isDeleting"
             @click.stop="dialog = true"
           >
             <VIcon icon="mdi-pencil" />

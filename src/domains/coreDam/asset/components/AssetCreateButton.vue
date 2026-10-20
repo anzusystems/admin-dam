@@ -10,6 +10,7 @@ import {
 import type { AssetDetailItemDto } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 
 import { createAsset } from '@/domains/coreDam/asset/api/assetApi'
 import { useAssetInNewTab } from '@/domains/coreDam/asset/composables/assetInNewTab'
@@ -48,6 +49,12 @@ const onCancel = () => {
   dialog.value = false
 }
 
+/* Nor does the page go meanwhile, with the dialog: the back button of the browser onto an entry where ADAM was loaded
+ * or reloaded gets past Vuetify, which otherwise only closes the dialog. Nor its address: the page of another provider
+ * is the same page of the router, and the application draws each address anew; another query is drawn on. */
+onBeforeRouteLeave(() => !buttonLoading.value)
+onBeforeRouteUpdate((to, from) => to.path === from.path || !buttonLoading.value)
+
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const showDetail = async (asset: AssetDetailItemDto) => {
@@ -57,7 +64,7 @@ const showDetail = async (asset: AssetDetailItemDto) => {
   /* Nothing is fetched here - the asset has just been created - but the detail is opened all the
    * same, so it has to take its turn: a request from before this one, coming back with an error,
    * would otherwise see an open dialog and close it over the new asset. */
-  assetDetailStore.startDetailRequest()
+  assetDetailStore.startDetailRequest(asset.id)
   assetDetailStore.setAsset(asset)
   addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
   fetchCachedUsers()
@@ -70,6 +77,8 @@ const onConfirm = async () => {
   /* On a page that draws no detail of an asset the new one is shown on its own page, in a tab opened here, at the
    * press. Nothing of this page is replaced by it, so there is nothing to ask about. */
   const tab = opensInNewTab() ? openTabForAsset() : null
+  // No tab given, nothing is made: the asset would be made with nothing to show it in. The editor was told why.
+  if (tab && !tab.opened) return
   /* Otherwise the asset made here is written into the detail the panel beside the list reads from: metadata typed
    * into the panel and not saved go only when told to, asked about before anything is sent. */
   if (!tab && assetDetailStore.panelHoldsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return

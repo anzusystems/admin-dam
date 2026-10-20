@@ -5,10 +5,9 @@ import {
   UploadQueueItemStatus,
   isNull,
   useAlerts,
-  usePageNavigation,
 } from '@anzusystems/common-admin'
 import type { AssetCustomData, DocId, UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { onUnmounted, ref, watch } from 'vue'
+import { onUnmounted, ref, toRaw, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -22,6 +21,7 @@ import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
+import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 
 const props = withDefaults(
   defineProps<{
@@ -58,7 +58,7 @@ const uploadQueuesStore = useUploadQueuesStore()
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 // A failure that ends after the user went elsewhere has nothing to say there.
-const { onPage } = usePageNavigation()
+const whileOnPage = useWhileOnPage()
 const { opensInNewTab, openAssetInNewTab } = useAssetInNewTab()
 
 // Processing too: the server may take long over a file, and the row is asked about for as long as it stays. And
@@ -75,33 +75,37 @@ const SHOW_REFRESH_AFTER_SECONDS = 20
 const showRefresh = ref(false)
 const refreshTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref(undefined)
 
-const showDetail = async () => {
+const rowIsInItsQueue = () =>
+  uploadQueuesStore.getQueueItems(props.queueId).some((row) => toRaw(row) === toRaw(props.item))
+
+const showDetail = async (event?: MouseEvent) => {
   const assetId = props.item.assetId
   if (isNull(assetId)) return
   /* On a page that draws no detail of an asset the one of the row is shown on its own page, in a new tab: nothing
-   * of this page is read, and nothing of it replaced. */
+   * of this page is read, and nothing of it replaced. One tab for a double click: its second click opens none. */
   if (opensInNewTab()) {
+    if ((event?.detail ?? 0) > 1) return
     openAssetInNewTab(assetId)
 
     return
   }
   /* The read below replaces what the panel beside the list holds, also when that is the asset of this row: metadata
    * typed into the panel and not saved go only when told to. Asked before anything changes; by the answer the row can
-   * be of another asset. */
+   * be of another asset, or gone from its queue - its props are then as they were last. */
   if (assetDetailStore.panelHoldsUnsavedMetadata) {
     if (!(await assetDetailStore.askToLeaveUnsaved())) return
-    if (props.item.assetId !== assetId) return
+    if (props.item.assetId !== assetId || !rowIsInItsQueue()) return
   }
   assetDetailStore.setView('queue')
   assetListStore.keyboardNavigationDisable()
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
   // Counted in the store: this dialog and the list write to one detail.
-  const detailRequest = assetDetailStore.startDetailRequest()
+  const detailRequest = assetDetailStore.startDetailRequest(assetId)
   try {
     const asset = await fetchAsset(assetId)
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-    assetDetailStore.setAsset(asset)
+    assetDetailStore.setAsset(asset, detailRequest)
   } catch (error) {
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     const dialogWasOpen = assetDetailStore.detail
@@ -109,8 +113,8 @@ const showDetail = async () => {
     assetDetailStore.reset()
     assetListStore.keyboardNavigationEnable()
     // If it is already closed, the user has stopped waiting for this answer.
-    if (!dialogWasOpen || !onPage()) return
-    showErrorsDefault(error)
+    if (!dialogWasOpen) return
+    whileOnPage(() => showErrorsDefault(error))
   } finally {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
   }

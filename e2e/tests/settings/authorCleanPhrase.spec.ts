@@ -128,7 +128,7 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
   })
 
   test('applies the author of a rule that was switched to substitution @bug', async () => {
-    test.fail() // DAM-B5: the switch is stored but never applied — see KNOWN-BUGS.md
+    test.fail() // DAM-B5: the switch is stored but never applied
     test.info().annotations.push({ type: 'bug', description: 'DAM-B5' })
 
     await openCleanPhrases(page)
@@ -149,7 +149,7 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
   })
 
   test('reports a deleted rule as deleted @bug', async () => {
-    test.fail() // DAM-B4: the delete raises the update alert instead — see KNOWN-BUGS.md
+    test.fail() // DAM-B4: the delete raises the update alert instead
     test.info().annotations.push({ type: 'bug', description: 'DAM-B4' })
 
     // The alert is the one the test above caught; deleting again would need another fixture.

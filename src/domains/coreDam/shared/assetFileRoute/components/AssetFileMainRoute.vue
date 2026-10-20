@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ACopyText, AssetFileProcessStatus, useAlerts } from '@anzusystems/common-admin'
 import type { AssetFile, AssetFileMainRouteAware, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { makePrivateFile } from '@/domains/coreDam/asset/api/fileApi'
 import { useAssetFileChanged } from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import AssetFileRouteChangeBtn from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 import AssetFileRouteMakePublicDialog from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteMakePublicDialog.vue'
 import AssetFileRouteStatus from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteStatus.vue'
 import { assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
+import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 
 const props = withDefaults(
   defineProps<{
@@ -37,6 +39,8 @@ const makeFilePrivateDialogFileId = ref<DocId>('')
 
 const { showErrorsDefault, showUnknownError } = useAlerts()
 const { can } = useAuth()
+// Said on the page the change was asked from, as the failure of the read after it: not on the next one.
+const whileOnPage = useWhileOnPage()
 
 const canChangeRoute = computed(() => can(assetTypeAcl(props.assetType, 'update')))
 /* The server makes public only a file it has processed, and refuses any other without saying why. A file held as
@@ -47,7 +51,17 @@ const canMakePublic = computed(
 
 const fileChanged = useAssetFileChanged()
 
+/* The file a change of its route went through for. It is held as it was until it is read again - with its asset, with
+ * the slots -, and a menu opened meanwhile would offer the change again: the server refuses it, the route is gone or
+ * there by then. Off until the file is another one. */
+const changedFile = shallowRef<object | null>(null)
+const awaitsRead = computed(() => changedFile.value === props.assetFile)
+// Nor any change of the route of a file of an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
+const changeOff = computed(() => awaitsRead.value || assetDetailStore.isDeleting)
+
 const openMakeFilePrivateDialog = (fileId: DocId) => {
+  if (changeOff.value) return
   makeFilePrivateDialogFileId.value = fileId
   makeFilePrivateDialog.value = true
 }
@@ -59,6 +73,7 @@ const openMakeFilePrivateDialog = (fileId: DocId) => {
  * with it: the form stays mounted over a read that keeps metadata that were not saved, and the menu stayed open in
  * it, by then offering the opposite action. */
 const routeChanged = () => {
+  changedFile.value = props.assetFile
   menu.value = false
   if (props.isMainFile) fileChanged(props.assetFile.asset)
   emit('mainRouteChanged')
@@ -67,13 +82,14 @@ const routeChanged = () => {
 const makePrivate = async () => {
   /* One at a time: the item stays in the open menu while the request is on its way, and a second one would be
    * refused - the route is gone by then - over a change that went through. */
-  if (loading.value) return
+  if (loading.value || changeOff.value) return
   try {
     loading.value = true
     await makePrivateFile(props.assetType, props.assetFile.id)
   } catch (e) {
-    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
-    if (!showErrorsDefault(e)) showUnknownError()
+    whileOnPage(() => {
+      if (!showErrorsDefault(e)) showUnknownError()
+    })
     loading.value = false
     return
   }
@@ -128,12 +144,14 @@ const { t } = useI18n()
           button-t="coreDam.asset.assetFilePublicLink.actions.makePrivate"
           icon="mdi-lock"
           :loading="loading"
+          :disabled="changeOff"
           @click.stop="makePrivate"
         />
       </template>
       <AssetFileRouteChangeBtn
         v-else-if="canMakePublic"
         variant="listItem"
+        :disabled="changeOff"
         @click.stop="openMakeFilePrivateDialog"
       />
     </VList>

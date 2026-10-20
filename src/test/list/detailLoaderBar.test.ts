@@ -46,7 +46,7 @@ const reads = (...assetIds: string[]) => assetIds.map((assetId) => server.assetR
 /** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** What the bar of the detail says: the place of the asset in the list and its title, the place alone under the loader. */
+/** What the bar of the detail says: the place of the asset in the list and its title, under the loader as well. */
 const shown = () =>
   Array.from(detail()?.querySelectorAll('.v-toolbar .text-label-large > div') ?? [])
     .map((part) => part.textContent?.trim())
@@ -177,13 +177,13 @@ describe('the bar of the detail while its asset is being read', () => {
     const answerSecond = hold('asset-2')
     const answerThird = hold('asset-3')
     await press(bar().next)
-    expect([shown(), loaded(), address()]).toEqual(['2 / 3', false, '/assets/asset-2'])
+    expect([shown(), loaded(), address()]).toEqual(['2 / 3 asset-2', false, '/assets/asset-2'])
     expect([bar().previous.disabled, bar().next.disabled]).toEqual([false, false])
 
     await press(bar().next)
 
     expect([shown(), loaded(), address(), reads('asset-2', 'asset-3')]).toEqual([
-      '3 / 3',
+      '3 / 3 asset-3',
       false,
       '/assets/asset-3',
       [1, 1],
@@ -191,7 +191,7 @@ describe('the bar of the detail while its asset is being read', () => {
     // The last one: the button out of the list is disabled, and a press of it reads nothing.
     expect([bar().previous.disabled, bar().next.disabled]).toEqual([false, true])
     await press(bar().next)
-    expect([shown(), reads('asset-2', 'asset-3')]).toEqual(['3 / 3', [1, 1]])
+    expect([shown(), reads('asset-2', 'asset-3')]).toEqual(['3 / 3 asset-3', [1, 1]])
 
     await answerThird()
     expect([shown(), loaded()]).toEqual(['3 / 3 asset-3', true])
@@ -204,12 +204,12 @@ describe('the bar of the detail while its asset is being read', () => {
     const list = await openList()
     const answerFirst = hold('asset-1')
     await list.pencil(0)
-    expect([shown(), loaded()]).toEqual(['1 / 3', false])
+    expect([shown(), loaded()]).toEqual(['1 / 3 asset-1', false])
 
     // The first one: nothing before it.
     expect([bar().previous.disabled, bar().next.disabled]).toEqual([true, false])
     await press(bar().previous)
-    expect([shown(), address(), reads('asset-1', 'asset-2')]).toEqual(['1 / 3', '/assets/asset-1', [1, 0]])
+    expect([shown(), address(), reads('asset-1', 'asset-2')]).toEqual(['1 / 3 asset-1', '/assets/asset-1', [1, 0]])
 
     await press(bar().next)
     expect([shown(), loaded(), address()]).toEqual(['2 / 3 asset-2', true, '/assets/asset-2'])
@@ -219,7 +219,7 @@ describe('the bar of the detail while its asset is being read', () => {
     // And back from the third while it is being read: to the asset the detail still holds, read a moment ago.
     hold('asset-3')
     await press(bar().next)
-    expect([shown(), loaded()]).toEqual(['3 / 3', false])
+    expect([shown(), loaded()]).toEqual(['3 / 3 asset-3', false])
 
     await press(bar().previous)
 

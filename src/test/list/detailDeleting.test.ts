@@ -241,8 +241,9 @@ describe('the detail of an asset being deleted', () => {
     expect([asks(), shows(detail()!)]).toEqual([false, OFFERS_BOTH])
   })
 
-  // The part of the detail that deleted went with its tab: the dialog stays open over the asset being deleted.
-  it('offers neither once its own delete was answered while another tab was open, and asks nothing on the way on', async () => {
+  /* The part of the detail that deleted went with its tab: the dialog closes over the asset being deleted all the same,
+   * and the panel beside the list holds it. */
+  it('closes once its own delete was answered while another tab was open, and asks nothing on the way on', async () => {
     const list = await openList()
     await list.openDetail(0)
     await typeInto(detail()!)
@@ -251,14 +252,13 @@ describe('the detail of an asset being deleted', () => {
     await openTab('button-slots')
     await deleted()
 
-    await openTab('button-meta')
-    await eventually(() => expect(detail()?.querySelector('textarea')).toBeTruthy())
-    expect(shows(detail()!)).toEqual(OFFERS_NEITHER)
+    await eventually(() => expect(detail()).toBeNull())
+    expect([shows(panel()).beingDeleted, shows(panel()).saveDisabled]).toEqual([true, true])
 
-    await list.toNext()
+    list.tiles()[1].click()
     await eventually(() => expect(server.assetReads(ASSETS[1])).toBe(1))
     await settled()
-    expect([asks(), shows(detail()!)]).toEqual([false, OFFERS_BOTH])
+    expect([asks(), shows(panel()).beingDeleted, shows(panel()).saveDisabled]).toEqual([false, false, false])
   })
 
   it.each<[string, () => Promise<HTMLElement>]>([
@@ -297,7 +297,8 @@ describe('the detail of an asset being deleted', () => {
 })
 
 /* The two pages of a detail marked nothing of an asset deleted in the detail: with another tab opened before the delete
- * was answered, the Info tab drawn again offered "Save" and "Delete" of it, and "Delete" sent a second delete. */
+ * was answered, the Info tab drawn again offered "Save" and "Delete" of it, and "Delete" sent a second delete. Both say,
+ * too, that the asset went meanwhile. */
 describe('the page of a detail, once its delete was answered while another tab was open', () => {
   it.each<[string, string, string, () => Promise<{ default: unknown }>, string]>([
     [
@@ -328,7 +329,7 @@ describe('the page of a detail, once its delete was answered while another tab w
     page.querySelector<HTMLElement>('[data-cy="button-meta"]')!.click()
     await eventually(() => expect(page.querySelector('textarea')).toBeTruthy())
 
-    expect([shows(page), server.sent('DELETE').length, ui.alerts().length]).toEqual([OFFERS_NEITHER, 1, 1])
+    expect([shows(page), server.sent('DELETE').length, ui.alerts().length]).toEqual([OFFERS_NEITHER, 1, 2])
   })
 })
 

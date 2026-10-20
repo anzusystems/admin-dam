@@ -30,7 +30,7 @@ test.describe.serial(`${ADMIN_SUITE} - Podcast`, () => {
   test.afterAll(async () => {
     // The delete test is the intended teardown; this only catches an episode stranded by an earlier failure.
     // Podcasts can't be deleted — neither the admin nor the API allows it: DELETE /podcast/:id answers 500
-    // (DAM-B15, see KNOWN-BUGS.md).
+    // (DAM-B15).
     if (EPISODE_ID && !EPISODE_DELETED) await deleteViaApi(page, `podcast-episode/${EPISODE_ID}`)
     await page.context().close()
   })

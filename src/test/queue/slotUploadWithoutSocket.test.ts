@@ -380,7 +380,7 @@ describe('two files uploaded into two slots of one asset', () => {
 })
 
 describe('a slot upload whose file the server cannot tell about', () => {
-  it('fails with the text of an unknown error once its file was missing from three lists that were read', async () => {
+  it('fails with a text of its own once its file was missing from three lists that were read', async () => {
     const { store, row } = await processingSlotUpload()
     server.asset(assetWithAnotherMainFile())
     // The slot is there, and holds no file.
@@ -391,13 +391,13 @@ describe('a slot upload whose file the server cannot tell about', () => {
     expect(server.slotReads('asset-1')).toBe(3)
     expect(row.status).toBe('failed')
     expect(row.error.hasError).toBe(true)
-    expect(row.error.message).toBe('system.uploadErrors.unknownError')
+    expect(row.error.message).toBe('system.uploadErrors.fileMissing')
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([1, 1])
   })
 
   // Deleted while its file was being processed: the server answers 404 for the list of its slots, which is an
   // answer - the file is in no slot of an asset that is not there.
-  it('fails with the text of an unknown error once the server did not know its asset three times', async () => {
+  it('fails with a text of its own once the server did not know its asset three times', async () => {
     const { store, row } = await processingSlotUpload()
     server.assetDeleted('asset-1')
 
@@ -407,7 +407,7 @@ describe('a slot upload whose file the server cannot tell about', () => {
     expect(row.status).toBe('failed')
     expect(row.error).toEqual({
       hasError: true,
-      message: 'system.uploadErrors.unknownError',
+      message: 'system.uploadErrors.fileMissing',
       assetFileFailReason: 'none',
     })
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([1, 1])

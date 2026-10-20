@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useAlerts } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { rotateImage } from '@/domains/coreDam/asset/api/imageApi'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useImageRotationStore } from '@/domains/coreDam/asset/store/imageRotationStore'
 
 const props = withDefaults(
   defineProps<{
@@ -15,27 +15,20 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'afterRotate', imageId: DocId): void
-}>()
 
 const { showRecordWas, showErrorsDefault, showUnknownError } = useAlerts()
 
-const loading = ref(false)
+// The rotation runs in the store: also a tab opened again meanwhile waits for it, and its result reaches the tab open then.
+const rotationStore = useImageRotationStore()
+// Nor of an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
-// The file pressed for: another one can be shown by the time the server answers.
 const rotate = async (angle: 90 | 270) => {
-  const imageId = props.imageId
   try {
-    loading.value = true
-    await rotateImage(imageId, angle)
-    showRecordWas('updated')
-    emit('afterRotate', imageId)
+    if (await rotationStore.rotate(props.imageId, angle)) showRecordWas('updated')
   } catch (e) {
-    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    // Why the server refused it; anything else as an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
-  } finally {
-    loading.value = false
   }
 }
 const { t } = useI18n()
@@ -47,7 +40,7 @@ const { t } = useI18n()
       {{ t('coreDam.asset.detail.roi.rotate.rotateMainFileImage') }}
     </div>
     <div
-      v-if="loading"
+      v-if="rotationStore.isRotating(imageId)"
       class="w-100 d-flex align-center justify-center"
     >
       <VProgressCircular
@@ -60,6 +53,7 @@ const { t } = useI18n()
         prepend-icon="mdi-rotate-right"
         class="mr-2"
         data-cy="button-rotate-right"
+        :disabled="assetDetailStore.isDeleting"
         @click.stop="rotate(90)"
       >
         {{ t('coreDam.asset.detail.roi.rotate.rotateClockwise') }}
@@ -67,6 +61,7 @@ const { t } = useI18n()
       <ABtnTertiary
         prepend-icon="mdi-rotate-left"
         data-cy="button-rotate-left"
+        :disabled="assetDetailStore.isDeleting"
         @click.stop="rotate(270)"
       >
         {{ t('coreDam.asset.detail.roi.rotate.rotateCounterclockwise') }}

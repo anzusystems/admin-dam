@@ -7,7 +7,7 @@ import {
   usePagination,
 } from '@anzusystems/common-admin'
 import type { AssetFileImage, DocId } from '@anzusystems/common-admin'
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
@@ -17,6 +17,7 @@ import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/com
 import AssetFileRotate from '@/domains/coreDam/asset/components/detail/components/AssetFileRotate.vue'
 import { useImageRoiFilter } from '@/domains/coreDam/asset/filter/ImageRoiFilter'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useImageRotationStore } from '@/domains/coreDam/asset/store/imageRotationStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -38,11 +39,12 @@ const { pagination } = usePagination(null)
 
 const { showErrorsDefault, showUnknownError } = useAlerts()
 
-/* What the tab loads - the main file as it opens, the file of another slot, a rotated file read anew - and the region of
- * each: only the latest load writes into the store, says that it failed or stops the spinner, and none does once the
- * tab is gone. */
+/* What the tab loads - the main file as it opens, the file of another slot, a rotated file as the server answered its
+ * rotation - and the region of each: only the latest load writes into the store, says that it failed or stops the
+ * spinner, and none does once the tab is gone. `shown`: the file the latest load is of, also while it is read. */
 let loads = 0
 let gone = false
+let shown: DocId | null = null
 const isCurrent = (load: number) => load === loads && !gone
 
 const failed = (load: number, error: unknown) => {
@@ -80,30 +82,40 @@ const readFile = async (load: number, fileId: DocId) => {
   }
 }
 
-/* The frame of the region draws the image anew only for a file read anew. Only of the file still shown, and while the
- * tab is there: the rotation was of the file shown when it was pressed. Read anew, the main file is the asset's too,
- * which the tab draws when it is opened again. Another load can come between the read and what follows it. */
-const afterRotate = async (rotatedId: DocId) => {
-  if (gone || imageRoiStore.imageFile?.id !== rotatedId) return
-  const load = ++loads
-  imageRoiStore.showLoader()
-  const rotated = await readFile(load, rotatedId)
-  if (!rotated || !isCurrent(load)) return
-  assetDetailStore.setMainFileReadAgain(cloneDeep(rotated))
-  await loadRois(load, rotated)
-  if (!isCurrent(load)) return
-  imageRoiStore.forceReloadRoiPreviews()
-  imageRoiStore.forceReloadCropper()
-}
+/* A rotation answered while the tab is there, pressed here or in a tab of the detail open before: the frame of the
+ * region draws the image anew only for a file it is given anew, so the file the server answered with is put in, and
+ * its region read anew. Only when it is the file the tab shows, or is about to show; another one is left as it is. */
+const rotationStore = useImageRotationStore()
+watch(
+  () => rotationStore.rotated,
+  async (rotated) => {
+    if (!rotated || gone || rotated.id !== shown) return
+    const load = ++loads
+    imageRoiStore.setImageFile(cloneDeep(rotated))
+    await loadRois(load, rotated)
+    if (!isCurrent(load)) return
+    imageRoiStore.forceReloadRoiPreviews()
+    imageRoiStore.forceReloadCropper()
+  }
+)
+
+/* The slot chosen has no image: the frame draws none, and nothing can be dragged or rotated there. A guard: core-dam
+ * lists no slot without a file, and the select hands `null` only when its list changed under it. */
+const slotWithoutImage = ref(false)
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
   const load = ++loads
   imageRoiStore.setRoi(null)
   if (!slot || !assetFileIsImageFile(slot.assetFile)) {
+    shown = null
+    slotWithoutImage.value = true
+    imageRoiStore.setImageFile(null)
     // A load this one replaced can have left the spinner on.
     imageRoiStore.hideLoader()
     return
   }
+  shown = slot.assetFile.id
+  slotWithoutImage.value = false
   imageRoiStore.showLoader()
   const file = await readFile(load, slot.assetFile.id)
   if (!file || !isCurrent(load)) return
@@ -117,6 +129,7 @@ onMounted(async () => {
   const load = ++loads
   imageRoiStore.reset()
   const mainFile = assetDetailStore.asset?.mainFile
+  shown = mainFile && assetFileIsImageFile(mainFile) ? mainFile.id : null
   if (mainFile && assetFileIsImageFile(mainFile)) {
     imageRoiStore.setImageFile(cloneDeep(mainFile))
     await loadRois(load, mainFile)
@@ -126,13 +139,21 @@ onMounted(async () => {
 onUnmounted(() => {
   gone = true
 })
+
+/* The previews drawn anew. Not behind the loader of the panel, nor while the frame beside it saves a region and reads
+ * the file the DAM draws anew after it (`cropperBusy`): drawn before that, they are the old ones, and the frame draws
+ * them anew itself once its read is over (`timestampRoiPreviews`). Also a press that comes as the frame starts. */
+const refreshOffered = computed(() => !imageRoiStore.loader && !imageRoiStore.cropperBusy)
+const refresh = () => {
+  if (refreshOffered.value) imageRoiStore.forceReloadRoiPreviews()
+}
 </script>
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
     <ABtnTertiary
-      v-if="!imageRoiStore.loader"
-      @click.stop="imageRoiStore.forceReloadRoiPreviews()"
+      v-if="refreshOffered"
+      @click.stop="refresh"
     >
       {{ t('coreDam.asset.detail.roi.refresh') }}
     </ABtnTertiary>
@@ -142,6 +163,12 @@ onUnmounted(() => {
       class="mt-4"
       @active-slot-change="activeSlotChange"
     />
+    <div
+      v-if="slotWithoutImage"
+      class="text-body-small mt-2"
+    >
+      {{ t('coreDam.asset.detail.roi.slotWithoutImage') }}
+    </div>
     <div class="v-expansion-panel-title px-0">
       {{ t('coreDam.asset.detail.roi.title') }}
     </div>
@@ -183,7 +210,6 @@ onUnmounted(() => {
       v-if="imageRoiStore.imageFile"
       :image-id="imageRoiStore.imageFile.id"
       class="mx-2"
-      @after-rotate="afterRotate"
     />
   </Acl>
 </template>

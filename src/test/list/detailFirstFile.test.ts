@@ -36,6 +36,7 @@ const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
 const TYPED = 'typed and not saved'
 const FROM_FILE = 'filled in from the file'
 const STILL_PROCESSED = 'The file is still being processed.'
+const PROCESSED_OPEN_AGAIN = 'The file is processed. Saving becomes possible after the detail is opened again.'
 const FAILED_OPEN_AGAIN = 'Processing of the file failed. You can save after opening the asset again.'
 const WITHOUT_FILE = 'Asset is without file'
 const FAILED = 'Asset file processing failed'
@@ -210,10 +211,10 @@ const openForm = async (place: Place) => {
 
       return field
     },
-    /** "Save" of the form: whether it is held back, and whether the form says why. */
+    /** "Save" of the form: whether it is held back, and whether the form says why - still processed, or processed. */
     save: () => ({
       heldBack: buttonsNamed(form()!, 'Save')[0]?.disabled,
-      saysWhy: !!form()!.textContent?.includes(STILL_PROCESSED),
+      saysWhy: [STILL_PROCESSED, PROCESSED_OPEN_AGAIN].some((line) => form()!.textContent?.includes(line)),
     }),
     /** Whether the form says the text. */
     says: (text: string) => !!form()!.textContent?.includes(text),

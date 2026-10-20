@@ -29,6 +29,7 @@ const props = withDefaults(
     slotName?: string
     multiple?: boolean
     assetType?: DamAssetTypeType
+    disabled?: boolean
   }>(),
   {
     variant: 'dropzone-fullscreen',
@@ -40,6 +41,7 @@ const props = withDefaults(
     slotName: undefined,
     multiple: true,
     assetType: undefined,
+    disabled: false,
   }
 )
 
@@ -148,6 +150,7 @@ const { t } = useI18n()
     :accept="uploadAccept"
     :max-sizes="uploadSizes"
     :multiple="multiple"
+    :disabled="disabled"
     @files-input="assetUpload"
   />
   <VDialog

@@ -232,9 +232,13 @@ const saveIn = (form: HTMLElement) => ({
   failedOpenAgain: !!form.textContent?.includes(FAILED_OPEN_AGAIN),
 })
 
+/** Whether the server holds the asset as being deleted: once its delete was answered. */
+let deletedOnServer = false
+
 /** The asset as a read of it answers: as the server holds it when it is asked. */
 const assetOnServer = () => ({
   ...onServer(ASSET),
+  ...(deletedOnServer ? { attributes: { assetType: 'image', assetStatus: 'deleting' } } : {}),
   metadata: { customData: { title: FROM_SERVER }, authorSuggestions: {}, keywordSuggestions: {} },
 })
 
@@ -262,6 +266,7 @@ beforeEach(() => {
   server = createFakeDam()
   fileIs = 'stored'
   heldReads = null
+  deletedOnServer = false
   server.assetBy(ASSET, () => {
     const asRead = assetOnServer()
     if (!heldReads) return asRead
@@ -386,9 +391,10 @@ describe('the line under "Save" held back under what was typed, once the main fi
 })
 
 /* Deleted, the asset had the card say its file failed, and the line under the disabled "Save" say opening it again
- * would free it: an asset being deleted is not read again. */
+ * would free it. The detail closes over the asset deleted in it, and the panel beside the list holds it; "Edit more"
+ * opens it again, read as the server holds it by then. */
 describe('the form of an asset being deleted, whose main file failed under what was typed', () => {
-  it('says the asset is being deleted, with no line under "Save", in the detail and in the panel beside the list', async () => {
+  it('says the asset is being deleted, with no line under "Save", in the panel beside the list and in the detail', async () => {
     const form = await openTypedForm(inTheDetailOfTheList)
     await failed()
     await eventually(() => expect(form.says(FAILED)).toBe(true))
@@ -398,10 +404,17 @@ describe('the form of an asset being deleted, whose main file failed under what 
     server.on(
       'DELETE',
       /^\/adm\/v1\/asset\/([^/]+)$/,
-      () => new Promise<FakeDamAnswer>((resolve) => (answer = () => resolve({ status: 204 })))
+      () =>
+        new Promise<FakeDamAnswer>(
+          (resolve) =>
+            (answer = () => {
+              deletedOnServer = true
+              resolve({ status: 204 })
+            })
+        )
     )
 
-    // Deleted from the detail, with another tab opened before the answer: the detail stays open over it.
+    // Deleted from the detail, with another tab opened before the answer: the detail closes over it all the same.
     buttonsNamed(dialogOfList()!, DELETE)[0].click()
     await eventually(() => expect(dialogButton(DELETE)).not.toBeNull())
     dialogButton(DELETE)!.click()
@@ -409,18 +422,19 @@ describe('the form of an asset being deleted, whose main file failed under what 
     dialogOfList()!.querySelector<HTMLElement>('[data-cy="button-slots"]')!.click()
     await settled()
     answer()
-    await settled()
-    dialogOfList()!.querySelector<HTMLElement>('[data-cy="button-meta"]')!.click()
-    await eventually(() => expect(form.title()).not.toBeNull())
+    await eventually(() => expect(dialogOfList()).toBeNull())
 
     const NOTHING_UNDER = { heldBack: true, stillProcessed: false, failedOpenAgain: false }
-    expect([form.says(BEING_DELETED), form.says(FAILED), saveIn(dialogOfList()!)]).toEqual([true, false, NOTHING_UNDER])
-    dialogOfList()!.querySelector('.v-toolbar .mdi-close')!.closest('button')!.click()
-    await eventually(() => expect(dialogOfList()).toBeNull())
     expect([
       panel().textContent?.includes(BEING_DELETED),
       panel().textContent?.includes(FAILED),
       saveIn(panel()),
     ]).toEqual([true, false, NOTHING_UNDER])
+    // Opened on the tab it was left at.
+    buttonsNamed(panel(), 'Edit more')[0].click()
+    await eventually(() => expect(dialogOfList()?.querySelector('[data-cy="button-meta"]')).toBeTruthy())
+    dialogOfList()!.querySelector<HTMLElement>('[data-cy="button-meta"]')!.click()
+    await eventually(() => expect(form.title()).not.toBeNull())
+    expect([form.says(BEING_DELETED), form.says(FAILED), saveIn(dialogOfList()!)]).toEqual([true, false, NOTHING_UNDER])
   })
 })

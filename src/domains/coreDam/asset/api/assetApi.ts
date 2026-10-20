@@ -35,6 +35,7 @@ import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailSt
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
 import {
   metadataOfQueueRow,
+  metadataSaveSent,
   nextMetadataOrder,
   queueRowBaseline,
   sameMetadataValue,
@@ -313,6 +314,30 @@ const deletedHere = new Set<DocId>()
 /** Whether the asset was deleted here: a read sent before its delete can still bring it as it was. */
 export const assetDeletedHere = (assetId: DocId) => deletedHere.has(assetId)
 
+type BulkItem = ReturnType<typeof listItemsToMetadataBulkItems>[number]
+
+const saveBatch = async (rows: BulkItem[], execute: ReturnType<typeof useUpdateMetadataBulk>['execute']) => {
+  /* Not an asset deleted while the batches before were on the wire: the queue can still be used meanwhile, and its
+   * row is gone with the delete. A batch left with nothing is not sent. */
+  const batch = rows.filter(({ dtoItem }) => !deletedHere.has(dtoItem.id))
+  if (batch.length === 0) return
+  try {
+    await execute({ body: batch.map(({ dtoItem }) => dtoItem) })
+  } catch (error) {
+    throw withNamedFields(error, (index) => batch[index]?.item.assetType)
+  }
+  /* Saved: the server has what was sent, and a save after this one sends what differs from it. Only the fields that
+   * went out are written, over what is known of the row by now: a read or another save may have moved that while
+   * this one was on the wire, and the copy of the click would put it back. Placed where the save is answered: a
+   * read sent before that may have been answered from before the save. */
+  const savedAt = nextMetadataOrder()
+  batch.forEach(({ item, metadata, changed }) =>
+    setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
+  )
+  // And the detail or the panel that holds one of them.
+  useAssetDetailStore().savedAsDescribed(batch.map(({ dtoItem }) => dtoItem.id))
+}
+
 /* Ten at a time, one batch after the other. The server saves a batch whole or not at all; a batch that fails stops
  * those after it, the ones before it stay saved, and saving again is safe. Only the rows there is something to write
  * of go out: with none of them no request is made, and the save is done all the same. */
@@ -322,28 +347,20 @@ export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
   const bulkItems = listItemsToMetadataBulkItems(items)
   const { execute } = useUpdateMetadataBulk()
   // From the filtered array: counting the input sent trailing PATCHes with an empty body.
+  const batches: BulkItem[][] = []
   for (let offset = 0; offset < bulkItems.length; offset += BULK_METADATA_LIMIT) {
-    /* Not an asset deleted while the batches before were on the wire: the queue can still be used meanwhile, and its
-     * row is gone with the delete. A batch left with nothing is not sent. */
-    const batch = bulkItems
-      .slice(offset, offset + BULK_METADATA_LIMIT)
-      .filter(({ dtoItem }) => !deletedHere.has(dtoItem.id))
-    if (batch.length === 0) continue
-    try {
-      await execute({ body: batch.map(({ dtoItem }) => dtoItem) })
-    } catch (error) {
-      throw withNamedFields(error, (index) => batch[index]?.item.assetType)
+    batches.push(bulkItems.slice(offset, offset + BULK_METADATA_LIMIT))
+  }
+  // On their way from the click, each batch until it is answered: the bodies of all of them are taken now.
+  const answered = batches.map((batch) => metadataSaveSent(batch.map(({ dtoItem }) => dtoItem.id)))
+  try {
+    for (const [index, batch] of batches.entries()) {
+      await saveBatch(batch, execute)
+      answered[index]()
     }
-    /* Saved: the server has what was sent, and a save after this one sends what differs from it. Only the fields that
-     * went out are written, over what is known of the row by now: a read or another save may have moved that while
-     * this one was on the wire, and the copy of the click would put it back. Placed where the save is answered: a
-     * read sent before that may have been answered from before the save. */
-    const savedAt = nextMetadataOrder()
-    batch.forEach(({ item, metadata, changed }) =>
-      setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
-    )
-    // And the detail or the panel that holds one of them.
-    useAssetDetailStore().savedAsDescribed(batch.map(({ dtoItem }) => dtoItem.id))
+  } finally {
+    // A batch that failed, and those it stopped.
+    answered.forEach((end) => end())
   }
 }
 

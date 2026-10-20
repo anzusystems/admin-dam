@@ -819,7 +819,13 @@ describe('the page of the list of an external provider, come to from metadata ty
 
   it('creates an empty asset at once: nothing is asked, and nothing waits for an answer', async () => {
     const list = await onTheProviderPage()
-    vi.stubGlobal('open', () => null)
+    // The browser gives the tab, which stays empty.
+    vi.stubGlobal('open', () => ({
+      opener: window,
+      closed: false,
+      close: () => undefined,
+      location: { href: 'about:blank', replace: () => undefined },
+    }))
 
     const dialog = await list.openCreate()
     dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()

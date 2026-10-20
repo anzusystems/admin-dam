@@ -2,6 +2,7 @@ import type { AssetFileAudio, AssetFileDownloadLink, AssetFileRoute, DocId } fro
 import { HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK, useApiRequest } from '@anzusystems/common-admin'
 
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { ROUTE_VALIDATION_ENTITY, fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -21,148 +22,32 @@ export const fetchAudioFile = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
-export const unsetSlot = (audioId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + audioId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const unsetSlot = (audioId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('DELETE', END_POINT + '/' + audioId + '/asset/' + assetId + '/slot-name/' + slotName, [
+    HTTP_STATUS_NO_CONTENT,
+  ])
 
-export const deleteAudio = (audioId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + audioId
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const deleteAudio = (audioId: DocId) =>
+  fileCommand('DELETE', END_POINT + '/' + audioId, [HTTP_STATUS_NO_CONTENT])
 
-export const makeMainFile = (audioId: DocId, assetId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + audioId + '/asset/' + assetId + '/main'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makeMainFile = (audioId: DocId, assetId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + audioId + '/asset/' + assetId + '/main', [HTTP_STATUS_OK])
 
-export const existingAudioToSlot = (audioId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + audioId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const existingAudioToSlot = (audioId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('PATCH', END_POINT + '/' + audioId + '/asset/' + assetId + '/slot-name/' + slotName, [HTTP_STATUS_OK])
 
-export const downloadLink = (audioId: DocId) => {
-  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
-    const url = END_POINT + '/' + audioId + '/download-link'
-    damClient()
-      .get(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const downloadLink = (audioId: DocId) =>
+  fileRequest<AssetFileDownloadLink>('GET', END_POINT + '/' + audioId + '/download-link', [HTTP_STATUS_OK])
 
-export const makePublic = (audioId: DocId, slug: string) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
-    const url = END_POINT + '/' + audioId + '/make-public'
-    damClient()
-      .patch(
-        url,
-        JSON.stringify({
-          slug,
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makePublic = (audioId: DocId, slug: string) =>
+  fileRequest<AssetFileRoute>(
+    'PATCH',
+    END_POINT + '/' + audioId + '/make-public',
+    [HTTP_STATUS_OK],
+    { slug },
+    ROUTE_VALIDATION_ENTITY
+  )
 
 // The server answers 200 with the audio file, where an image and a document get 204: either is the change gone through.
-export const makePrivate = (audioId: DocId) => {
-  return new Promise<void>((resolve, reject) => {
-    const url = END_POINT + '/' + audioId + '/make-private'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK || res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve()
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makePrivate = (audioId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + audioId + '/make-private', [HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT])

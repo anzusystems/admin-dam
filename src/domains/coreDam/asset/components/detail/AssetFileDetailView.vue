@@ -35,7 +35,7 @@ import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
-const { showErrorT, showErrorsDefault } = useAlerts()
+const { showErrorT, showErrorsDefault, showWarningT } = useAlerts()
 // A failure that ends after the user went elsewhere has nothing to say there.
 const { onPage } = usePageNavigation()
 const route = useRoute()
@@ -64,7 +64,11 @@ const { wide, panelId } = useDetailInfoPanel()
 
 const assetFileId = ref<DocId>('')
 
-const afterDelete = () => {
+// The asset the part of the detail that deleted it told of by its event: the page is emptied of it.
+let emptiedOf: DocId | null = null
+
+const afterDelete = (deletedId: DocId) => {
+  emptiedOf = deletedId
   asset.value = null
 }
 
@@ -83,7 +87,7 @@ const readAsset = async (read: () => ReturnType<typeof fetchAsset>) => {
       assetDetailStore.hideLoader()
       return
     }
-    assetDetailStore.setAsset(res)
+    assetDetailStore.setAsset(res, detailRequest)
     addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
     fetchCachedUsers()
   } catch (error) {
@@ -119,11 +123,17 @@ provideAssetFileChanged((byServer) => {
   }, byServer)
 })
 
-/* And of the asset deleted in the detail: marked as being deleted while the page holds it, so that "Uložiť" and
- * "Odstrániť" are off for it - also when another tab was opened before the delete was answered, and the part that
- * deleted, gone with its tab, has no event to send. */
+/* And of the asset deleted in the detail: marked as being deleted while the page holds it, so that what changes it is
+ * off - also when another tab was opened before the delete was answered, and the part that deleted, gone with its tab,
+ * has no event to send. Its event, when it sends one, comes right after this and empties the page; without it the page
+ * stays on the asset, and says that it went meanwhile. */
 provideAssetDeleted((deletedId) => {
-  if (assetDetailStore.asset?.id === deletedId) assetDetailStore.setDeleting()
+  if (assetDetailStore.asset?.id !== deletedId) return
+  assetDetailStore.setDeleting()
+  queueMicrotask(() => {
+    if (emptiedOf === deletedId || !onPage()) return
+    showWarningT('coreDam.asset.detail.deletedMeanwhile')
+  })
 })
 
 const resetAllStores = () => {
@@ -191,7 +201,16 @@ onUnmounted(() => {
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <VIcon icon="mdi-information-outline" />
+              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
+                   icon there, as in the library's detail. -->
+              <VIcon
+                icon="mdi-information-outline"
+                class="d-none d-md-flex"
+              />
+              <VIcon
+                icon="mdi-image-outline"
+                class="d-flex d-md-none"
+              />
               <VTooltip
                 activator="parent"
                 location="bottom"
@@ -201,13 +220,16 @@ onUnmounted(() => {
             </VBtn>
           </div>
         </VToolbar>
-        <div class="d-flex w-100 h-100 position-relative">
+        <div class="d-flex w-100 h-100 position-relative dam-image-detail__content">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div
               v-if="activeTab === AssetDetailTab.ROI && can(ACL.DAM_REGION_OF_INTEREST_UPDATE)"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <ADamAssetImageRoiSelect :ext-system="currentExtSystemId" />
+              <ADamAssetImageRoiSelect
+                :ext-system="currentExtSystemId"
+                :readonly="assetDetailStore.isDeleting"
+              />
             </div>
             <div
               v-else

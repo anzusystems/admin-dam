@@ -1,17 +1,16 @@
-import {
-  AssetFileProcessStatus,
-  isNull,
-  useAlerts,
-  useDamCachedUsers,
-  usePageNavigation,
-} from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, DamAssetStatus, isNull, useAlerts, useDamCachedUsers } from '@anzusystems/common-admin'
 import type { AssetDetailItemDto, AssetFileProcessStatusType, DocId } from '@anzusystems/common-admin'
 import { inject, onBeforeUnmount, provide } from 'vue'
 import type { InjectionKey } from 'vue'
 
-import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
+import { assetDeletedHere, fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
+import {
+  assetDeleteOnItsWay,
+  deletingTakenOverWhileOnItsWay,
+} from '@/domains/coreDam/asset/composables/assetDeleteOnce'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { metadataMayStillChange } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 
 /* The page that draws a detail is told that the file of its asset has changed - the route of its main file, or which
  * of its files is the main one - by a function it provides, not by an event of the part of the detail that made the
@@ -78,8 +77,8 @@ const formMayBeOlder = (held: AssetDetailItemDto, read: AssetDetailItemDto) => {
  * beside the list and on the pages of a detail alike. */
 export function useAssetDetailFileChange() {
   const assetDetailStore = useAssetDetailStore()
-  const { onPage } = usePageNavigation()
-  const { showErrorsDefault } = useAlerts()
+  const whileOnPage = useWhileOnPage()
+  const { showErrorsDefault, showWarningT } = useAlerts()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
   /* A read of the asset the detail holds, by its id, with no loader over the detail: it unmounts nothing - neither the
@@ -105,21 +104,34 @@ export function useAssetDetailFileChange() {
     const formIsAsRead = () =>
       !assetDetailStore.metadataAreTouched && savesBefore !== null && assetDetailStore.savesOf(held.id) === savesBefore
     const takesWhole = whole && formIsAsRead()
+    let res: AssetDetailItemDto
     try {
-      const res = await fetchAsset(held.id)
-      if (!isTaken()) return
-      if (takesWhole && formIsAsRead()) {
-        assetDetailStore.setAsset(res)
-        assetDetailStore.updateLastFetched(held.id)
-        addToCachedUsers(res.createdBy, res.modifiedBy)
-        fetchCachedUsers()
-        return
-      }
-      assetDetailStore.setMainFile(res, formMayBeOlder(held, res))
+      res = await fetchAsset(held.id)
     } catch (error) {
-      if (!isTaken() || !onPage()) return
-      showErrorsDefault(error)
+      // What the server said of the file is still to be read: said again, it is.
+      assetDetailStore.readOfToldFailed()
+      if (isTaken()) whileOnPage(() => showErrorsDefault(error))
+      return
     }
+    if (!isTaken()) return
+    /* Deleted elsewhere meanwhile: the asset is taken as being deleted below, and that is said - not only shown by its
+     * buttons going off. Not deleted here: the server marks it before it answers the delete, and the answer reaches the
+     * part that sent it after the delete is known here as answered. */
+    const deletingNow = res.attributes.assetStatus === DamAssetStatus.Deleting
+    if (deletingNow && held.attributes.assetStatus !== DamAssetStatus.Deleting) {
+      const say = () => whileOnPage(() => showWarningT('coreDam.asset.detail.deletedMeanwhile'))
+      // Said once that delete fails, then - on this page still.
+      if (assetDeleteOnItsWay(held.id)) deletingTakenOverWhileOnItsWay(held.id, say)
+      else if (!assetDeletedHere(held.id)) say()
+    }
+    if (takesWhole && formIsAsRead()) {
+      assetDetailStore.setAsset(res)
+      assetDetailStore.updateLastFetched(held.id)
+      addToCachedUsers(res.createdBy, res.modifiedBy)
+      fetchCachedUsers()
+      return
+    }
+    assetDetailStore.setMainFile(res, formMayBeOlder(held, res))
   }
 
   /**
@@ -130,7 +142,7 @@ export function useAssetDetailFileChange() {
   const readAfterFileChange = (readWhole: () => Promise<void>, byServer = false) => {
     if (byServer) return readQuietly(true)
 
-    return assetDetailStore.metadataAreTouched ? readQuietly(false) : readWhole()
+    return assetDetailStore.holdsUnsavedMetadata ? readQuietly(false) : readWhole()
   }
 
   return { readAfterFileChange }

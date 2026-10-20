@@ -1,3 +1,9 @@
+<script lang="ts">
+/* The files whose address is asked for, by their id: a row drawn anew - another tab of the detail and back - is another
+ * row, and a press in it opened a second tab and asked again. */
+const downloadsOnTheirWay = new Set<string>()
+</script>
+
 <script setup lang="ts">
 import {
   ADamAssetFileFailReasonChip,
@@ -22,6 +28,7 @@ import AssetSlotListItemSwitch from '@/domains/coreDam/asset/components/detail/c
 import ImageFile from '@/domains/coreDam/asset/components/ImageFile.vue'
 import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import { openTabForAddress } from '@/domains/coreDam/asset/composables/assetInNewTab'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
@@ -53,6 +60,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const uploadQueuesStore = useUploadQueuesStore()
 const { can, canForAll } = useAuth()
 
@@ -102,16 +111,23 @@ const { showSuccess, showErrorsDefault, showUnknownError } = useAlerts()
 
 /* The address of the file is read anew at each press, and is signed for a while. The tab is opened at the press, as a
  * browser can drop one opened after the request without a word, and has no way back to this page. */
+// While the address is asked for, a second press opens no second tab and asks nothing.
 const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
+  const fileId = props.item.assetFile.id
+  if (downloadsOnTheirWay.has(fileId)) return
   const tab = openTabForAddress()
+  if (!tab.opened) return
+  downloadsOnTheirWay.add(fileId)
   try {
-    const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
+    const res = await fileDownloadLink(props.assetType, fileId)
     tab.show(res.link)
   } catch (e) {
     tab.close()
-    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    // Why the server refused it; anything else as an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
+  } finally {
+    downloadsOnTheirWay.delete(fileId)
   }
 }
 
@@ -215,6 +231,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :slot-name="slotName"
           :multiple="false"
           :asset-type="assetType"
+          :disabled="assetDetailStore.isDeleting"
         />
         <VBtn
           v-if="itemHasFile"
@@ -253,6 +270,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                     statusComputed === AssetFileProcessStatus.Processed
                   "
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
+                  :disabled="assetDetailStore.isDeleting"
                   @click.stop="makeMainFile"
                 />
                 <AssetSlotListItemDuplicate

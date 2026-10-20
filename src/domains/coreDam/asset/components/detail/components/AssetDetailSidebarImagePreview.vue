@@ -100,7 +100,7 @@ const save = async (fileId: DocId, picked: AssetFileImagePreviewNullable, change
     if (videoFile.value?.id === fileId) savedImagePreview = picked
     showRecordWas('updated')
   } catch (e) {
-    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    // Why the server refused it; anything else as an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
     // Unless the card shows another file by now, or was changed again meanwhile: that change is saved next.
     if (videoFile.value?.id === fileId && change === changes) videoFile.value.imagePreview = savedImagePreview
@@ -140,7 +140,7 @@ onMounted(async () => {
     <div v-else-if="videoFile">
       <ImagePreview
         v-model="videoFile.imagePreview"
-        :show-actions="can(ACL.DAM_VIDEO_UPDATE)"
+        :show-actions="can(ACL.DAM_VIDEO_UPDATE) && !assetDetailStore.isDeleting"
         @changed="onSave"
       >
         <template #actions-end>

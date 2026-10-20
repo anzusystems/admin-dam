@@ -56,7 +56,7 @@ const updateLink = async (fileId: DocId) => {
     if (asked === latestLinkRequest) link.value = res.link
   } catch (e) {
     if (asked !== latestLinkRequest) return
-    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
+    // Why the server refused it; anything else as an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
   } finally {
     if (asked === latestLinkRequest) loading.value = false

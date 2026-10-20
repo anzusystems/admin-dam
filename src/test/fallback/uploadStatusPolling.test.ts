@@ -349,7 +349,7 @@ describe('the poll of a queue', () => {
     expect(row.error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
   })
 
-  it('fails a row with the text of an unknown error once the server did not know its asset three times', async () => {
+  it('fails a row with a text of its own once the server did not know its asset three times', async () => {
     const store = await start()
     const [row] = await sent(store, GLOBAL, [waitingUpload()])
     server.assetBy('asset-1', () => {
@@ -362,7 +362,7 @@ describe('the poll of a queue', () => {
     expect(row.status).toBe('failed')
     expect(row.error).toEqual({
       hasError: true,
-      message: 'system.uploadErrors.unknownError',
+      message: 'system.uploadErrors.fileMissing',
       assetFileFailReason: 'none',
     })
     expect(row.canEditMetadata).toBe(false)
@@ -685,7 +685,7 @@ describe('what is written down of the reads that fail', () => {
     expect([server.slotReads('asset-9'), row.status, row.error.message]).toEqual([
       3,
       'failed',
-      'system.uploadErrors.unknownError',
+      'system.uploadErrors.fileMissing',
     ])
     expect(logged).toEqual([{ url: '/adm/v1/asset-slot/asset/asset-9', status: 404 }])
   })

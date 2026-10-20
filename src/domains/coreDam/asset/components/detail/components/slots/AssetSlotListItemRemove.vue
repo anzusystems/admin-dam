@@ -4,6 +4,7 @@ import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
@@ -25,6 +26,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
 const dialog = ref(false)
 const showUnset = ref(false)
@@ -72,6 +75,7 @@ const onRemove = () => {
     v-if="canRemove || (canUnset && usedInSeveralSlots)"
     :title="t('coreDam.asset.slots.actions.remove')"
     data-cy="button-slot-remove"
+    :disabled="assetDetailStore.isDeleting"
     @click.stop="openDialog"
   />
   <VDialog

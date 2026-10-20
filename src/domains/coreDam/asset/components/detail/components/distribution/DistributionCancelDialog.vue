@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ADialogToolbar, DamDistributionServiceType, isNull, useAlerts } from '@anzusystems/common-admin'
-import { ref } from 'vue'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { cancelCustomDistribution } from '@/domains/coreDam/asset/api/distributionCustomApi'
@@ -16,7 +17,12 @@ const distributionListStore = useDistributionListStore()
 
 const { t } = useI18n()
 
-const buttonLoading = ref(false)
+/* The distributions being stopped: the dialog is one for all of them, and opened for another one while the first is
+ * asked about, it stops that one. */
+const stopping = reactive(new Set<DocId>())
+const buttonLoading = computed(
+  () => !isNull(distributionIdToCancel.value) && stopping.has(distributionIdToCancel.value)
+)
 
 const onCancel = () => {
   dialogCancel.value = false
@@ -32,8 +38,8 @@ const onConfirm = async () => {
     distributionTypeToCancel.value !== DamDistributionServiceType.Custom
   )
     return
-  buttonLoading.value = true
   const distributionId = distributionIdToCancel.value
+  stopping.add(distributionId)
   try {
     await cancelCustomDistribution(distributionId)
     // Out of the list at once: the read asked for below can fail, and the list would keep what is stopped, with the
@@ -47,7 +53,7 @@ const onConfirm = async () => {
   } catch (e) {
     showErrorsDefault(e)
   } finally {
-    buttonLoading.value = false
+    stopping.delete(distributionId)
   }
 }
 </script>

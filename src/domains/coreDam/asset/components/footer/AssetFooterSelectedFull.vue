@@ -3,7 +3,6 @@ import { isNull, useAlerts, useTheme } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 
 import {
   bulkUpdateAssetsMetadata,
@@ -20,6 +19,7 @@ import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { ACL } from '@/domains/system/auth/auth'
+import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 
 const { t } = useI18n()
 
@@ -68,11 +68,15 @@ const readAgainIfSaved = async (savedAssetIds: string[]) => {
   assetDetailStore.forgetLastFetched(savedAssetIds)
   const shown = assetDetailStore.asset
   if (isNull(shown) || !savedAssetIds.includes(shown.id)) return
+  /* Read already, behind the loader: by what a change of a file of the asset set off, which waited for the same read as
+   * this one. Started once the save was answered, that read brings the asset as saved, and says so when it fails -
+   * read here again, it would be called off unseen. */
+  if (assetDetailStore.loader && assetDetailStore.shownOrReadAssetId() === shown.id) return
   assetDetailStore.showLoader()
-  const detailRequest = assetDetailStore.startDetailRequest()
+  const detailRequest = assetDetailStore.startDetailRequest(shown.id)
   try {
     const res = await fetchAsset(shown.id)
-    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.setAsset(res)
+    if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.setAsset(res, detailRequest)
   } catch (error) {
     // The save itself went through: the detail keeps what it had, as before.
     console.error('assetFooterSelected: the asset of the detail could not be read again', error)
@@ -97,7 +101,7 @@ const toggleMassOperations = async () => {
 }
 
 const { showRecordWas, showValidationError } = useAlerts()
-const router = useRouter()
+const whileOnPage = useWhileOnPage()
 
 const v$ = useVuelidate()
 
@@ -132,16 +136,15 @@ const onSaveAndClose = async () => {
     return
   }
   const savedAssetIds = assetIdsToSave()
-  const askedOn = router.currentRoute.value
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     refreshDetailAsset(savedAssetIds)
     /* Not when the page was left meanwhile: the lists share the mass edit, and the next list empties it as it is drawn -
-     * what it holds by then was picked there, and a dialog over the whole page is that page's. Left is a way out that
-     * went through, and the router is then on another route: one still asking whether to leave, or called off, leaves
-     * the page where it was, and the address of a detail is written past the router. */
-    if (router.currentRoute.value === askedOn) await onClearConfirm()
+     * what it holds by then was picked there, and a dialog over the whole page is that page's. Another query of the list,
+     * or the address of a detail written past the router, is the same page; a way out still asking whether to leave
+     * waits for the answer. */
+    whileOnPage(() => void onClearConfirm())
   } catch (error) {
     showMetadataSaveError(error)
   } finally {

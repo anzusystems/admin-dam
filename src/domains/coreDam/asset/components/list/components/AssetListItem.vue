@@ -19,7 +19,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
-  (e: 'itemClick', data: { assetId: DocId; index: number }): void
+  (e: 'itemClick', data: { assetId: DocId; index: number; tile: Element | null }): void
   (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
   (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
 }>()
@@ -35,8 +35,9 @@ const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
 }
 
-const onItemClick = () => {
-  emit('itemClick', { assetId: asset.value.id, index: props.index })
+// With what was clicked: a double click begun on it is told from one elsewhere.
+const onItemClick = (event: MouseEvent) => {
+  emit('itemClick', { assetId: asset.value.id, index: props.index, tile: event.currentTarget as Element | null })
 }
 
 const toggleSelected = () => {

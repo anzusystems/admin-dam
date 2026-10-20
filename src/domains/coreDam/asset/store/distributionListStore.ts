@@ -18,6 +18,12 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
   const listAssetId = ref<DocId | null>(null)
   const loader = ref(false)
   const auth = ref<Array<DistributionAuth>>([])
+  /* How many times the loader was raised - by a read of a tab, by a delete in its settings: it is lowered only by the
+   * one that raised it last. A delete answered under the read of a tab opened again took it down under that read. */
+  let loaderRaised = 0
+  /* The distributions deleted or stopped here: a read asked before that was answered brings them back, and a list
+   * never takes them again. */
+  const gone = new Set<DocId>()
 
   function getDistributionAuth(distributionService: DamDistributionServiceName) {
     const foundIndex = auth.value.findIndex((item) => item.distributionService === distributionService)
@@ -25,20 +31,27 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     return null
   }
 
+  /** Answers what lowers it again: `hideLoader` with it. */
   function showLoader() {
     loader.value = true
+
+    return ++loaderRaised
   }
 
-  function hideLoader() {
+  /** Lowered only when `raised` - what `showLoader` answered - is the last raise. */
+  function hideLoader(raised: number) {
+    if (raised !== loaderRaised) return
     loader.value = false
   }
 
   function setList(items: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>) {
-    list.value = items
+    list.value = items.filter((item) => !gone.has(item.id))
   }
 
-  /** Takes the distribution out of the list, if it is listed: the list may be another asset's by now. */
+  /** Takes the distribution out of the list, if it is listed: the list may be another asset's by now. Deleted or
+   * stopped, it is gone for good. */
   function removeListItem(distributionId: DocId) {
+    gone.add(distributionId)
     const foundIndex = list.value.findIndex((item) => item.id === distributionId)
     if (foundIndex > -1) {
       list.value.splice(foundIndex, 1)

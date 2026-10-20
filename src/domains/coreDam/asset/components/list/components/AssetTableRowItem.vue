@@ -32,7 +32,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'showDetail', data: { assetId: DocId; index: number }): void
-  (e: 'itemClick', data: { assetId: DocId; index: number }): void
+  (e: 'itemClick', data: { assetId: DocId; index: number; tile: Element | null }): void
   (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
   (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
 }>()
@@ -53,17 +53,9 @@ const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
 }
 
-/* The edit button is a link. A plain click of it is the router's: it goes to the page of the detail, and the list
- * does nothing with it. A click the router leaves to the browser (a modifier key held: a new tab, a new window, a
- * download) keeps the list, which opens its own detail over it. The conditions are the router's own. A double click
- * is two of those clicks and nothing more: it is not the double click of the row, which opens the detail. */
-const followDetailLink = (event: MouseEvent) => {
-  if (!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) && event.button === 0) return
-  showDetail()
-}
-
-const onItemClick = () => {
-  emit('itemClick', { assetId: asset.value.id, index: props.index })
+// With what was clicked: a double click begun on it is told from one elsewhere.
+const onItemClick = (event: MouseEvent) => {
+  emit('itemClick', { assetId: asset.value.id, index: props.index, tile: event.currentTarget as Element | null })
 }
 
 const toggleSelected = () => {
@@ -156,10 +148,13 @@ onMounted(() => {
     <td>
       <div class="d-flex justify-end">
         <ATableCopyIdButton :id="asset.id" />
+        <!-- A link, and its clicks are the router's or the browser's: a plain one goes to the page of the detail, one
+             with a modifier key held or of another button opens that page elsewhere. The list does nothing with
+             either, and a double click is two of those clicks, not the double click of the row. -->
         <ATableEditButton
           :record-id="asset.id"
           :route-name="'/(coreDam)/assets/[id]'"
-          @click.stop="followDetailLink"
+          @click.stop=""
           @dblclick.stop=""
         />
       </div>

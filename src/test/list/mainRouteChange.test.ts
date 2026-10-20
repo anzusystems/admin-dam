@@ -46,6 +46,7 @@ const PUBLIC = 'File is public'
 const PRIVATE = 'File is private'
 const SINGLE_USE = 'Single-use license'
 const STILL_PROCESSED = 'The file is still being processed.'
+const PROCESSED_OPEN_AGAIN = 'The file is processed. Saving becomes possible after the detail is opened again.'
 
 const RIGHT = 'ArrowRight'
 
@@ -683,7 +684,8 @@ describe('the asset read again once the address of its file has changed', () => 
       await fileMenu(place, 'Make private')
 
       expect([route(place), reads(), list.alerts()]).toEqual([PRIVATE, [0, 2, 0], []])
-      expect(heldBack()).toEqual([true, true])
+      // Held back still, and the line under it says the file is processed: "Save" comes with opening the detail again.
+      expect([save().disabled, place.form()?.textContent?.includes(PROCESSED_OPEN_AGAIN)]).toEqual([true, true])
       // Held as processed: the card of a private file has its menu, which is for making public a processed file.
       expect(place.form()!.querySelector('.mdi-dots-vertical')).not.toBeNull()
     }

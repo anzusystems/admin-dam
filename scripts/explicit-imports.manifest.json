@@ -18,8 +18,8 @@
     "types": 26
   },
   "totals": {
-    "files": 511,
-    "importDeclarations": 1238,
+    "files": 510,
+    "importDeclarations": 1236,
     "propsChanged": 31
   },
   "files": {
@@ -641,9 +641,6 @@
     "src/domains/coreDam/asset/store/distributionListStore.ts": {
       "script": ["acceptHMRUpdate", "defineStore", "isNull", "ref"],
       "types": ["DocId"]
-    },
-    "src/domains/coreDam/asset/store/imageRoiStore.ts": {
-      "script": ["acceptHMRUpdate", "defineStore", "ref"]
     },
     "src/domains/coreDam/asset/store/uploadQueuesStore.ts": {
       "script": ["acceptHMRUpdate", "defineStore", "isNull", "isUndefined", "ref", "useAlerts"],

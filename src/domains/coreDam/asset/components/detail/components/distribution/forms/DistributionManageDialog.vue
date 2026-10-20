@@ -13,6 +13,7 @@ import { useI18n } from 'vue-i18n'
 import { upsertAssetDistributions } from '@/domains/coreDam/asset/api/distributionApi'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import DistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionForm.vue'
+import { distributionListChanged } from '@/domains/coreDam/asset/components/detail/composables/distributionListChanged'
 import { useDistributionUpdateDtoValidations } from '@/domains/coreDam/asset/components/detail/composables/distributionValidations'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
@@ -75,6 +76,8 @@ const onConfirm = async () => {
     distributionManageDialog.value = false
 
     showRecordWas(props.isEdit ? 'updated' : 'created')
+    // Told even when this dialog is gone by the answer: the settings hidden, the tab closed meanwhile.
+    distributionListChanged()
     emit('onDistributionUpsert')
   } catch (error) {
     showErrorsDefault(error)

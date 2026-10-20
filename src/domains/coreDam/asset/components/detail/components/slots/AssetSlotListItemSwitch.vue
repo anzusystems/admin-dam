@@ -3,6 +3,7 @@ import { ADialogToolbar } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
@@ -21,6 +22,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
 const dialog = ref(false)
 const targetSlot = ref<string | null>(null)
@@ -56,6 +59,7 @@ const onSwitch = () => {
   <VListItem
     :title="t('coreDam.asset.slots.actions.switchSlots')"
     data-cy="button-slot-switch"
+    :disabled="assetDetailStore.isDeleting"
     @click.stop="openDialog"
   />
   <VDialog

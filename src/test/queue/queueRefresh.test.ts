@@ -80,6 +80,7 @@ const { useDamConfigStore } = await import('@anzusystems/common-admin')
 
 const QUEUE = 'global'
 const REFRESH_FAILED = 'common.damImage.queueItem.refreshFailed'
+const ASSET_GONE = 'common.damImage.queueItem.assetGone'
 
 let app: App | undefined
 
@@ -489,7 +490,20 @@ describe('the refresh of a row whose file is still being sent', () => {
 })
 
 describe('the refresh of a row whose state cannot be read', () => {
-  it.each([404, 500, 503])(
+  // The asset is not there: said as such, not as a read that failed and could be tried again.
+  it('says the asset no longer exists when the server answers the read with 404, and leaves the row as it is', async () => {
+    const { rows, button } = await mountQueue([queueRow({ status: 'processing' })])
+    server.assetBy('asset-1', () => {
+      throw httpError(404)
+    })
+
+    await refresh(button(rows[0]))
+
+    expect(showWarningT.mock.calls).toEqual([[ASSET_GONE]])
+    expect([rows[0].status, rows[0].error.hasError, rows[0].canEditMetadata]).toEqual(['processing', false, false])
+  })
+
+  it.each([500, 503])(
     'says so when the server answers the read with %s, and leaves the row as it is',
     async (status) => {
       const { rows, button } = await mountQueue([queueRow({ status: 'processing' })])
@@ -613,7 +627,7 @@ describe('the refresh of a row that has come to its end by the time it answers',
     }
   )
 
-  it('still says so after the first read of such a row to find its asset gone, which leaves it as it is', async () => {
+  it('says the asset is gone after the first read of such a row to find it so, which leaves the row as it is', async () => {
     vi.useFakeTimers()
     stubFileReader()
     const { store, rows, button } = await mountQueue([
@@ -632,6 +646,6 @@ describe('the refresh of a row that has come to its end by the time it answers',
     await refresh(button(rows[0]))
 
     expect([rows[0].status, rows[0].error.hasError]).toEqual(['processing', false])
-    expect(showWarningT.mock.calls).toEqual([[REFRESH_FAILED]])
+    expect(showWarningT.mock.calls).toEqual([[ASSET_GONE]])
   })
 })

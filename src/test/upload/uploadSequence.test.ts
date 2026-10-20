@@ -192,8 +192,9 @@ describe('the progress of an upload on its row', () => {
     expect(row.progress.speed).toBeGreaterThan(0)
   })
 
-  // The chunks of the fake server are answered in the millisecond they are sent in: a measure needs time to pass.
-  it('says nothing about speed where no time passes', async () => {
+  /* The chunks of the fake server are answered in the millisecond they are sent in: a measure needs time to pass. With
+   * none of it, the meter of the library still says the whole file is sent once the last chunk is: it said nothing. */
+  it('says the whole file is sent, with no speed, where no time passes', async () => {
     const store = await load()
     const [row] = seedQueue(store, QUEUE, [waitingUpload(bytesOf(2500))])
     server.on('PATCH', /\/uploaded$/, () => new Promise(() => undefined))
@@ -201,7 +202,7 @@ describe('the progress of an upload on its row', () => {
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(5000)
 
-    expect(row.progress).toEqual({ remainingTime: null, progressPercent: null, speed: null })
+    expect(row.progress).toEqual({ remainingTime: 0, progressPercent: 100, speed: 0 })
   })
 })
 

@@ -34,10 +34,16 @@ const modelValueComputed = computed({
     clearable
   >
     <template #append-inner>
+      <!-- A button: pressed by Enter as it goes down and by Space as it comes up. Neither key goes on to the field or its
+           form, so that it searches once. -->
       <VIcon
         :aria-label="t('system.mainBar.search')"
         icon="mdi-magnify"
         @click="emit('submit')"
+        @keydown.enter.prevent.stop="emit('submit')"
+        @keyup.enter.prevent.stop
+        @keydown.space.prevent.stop
+        @keyup.space.prevent.stop="emit('submit')"
       />
     </template>
   </VTextField>

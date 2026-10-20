@@ -35,7 +35,7 @@ test.describe.serial(`${ADMIN_SUITE} - User`, () => {
   })
 
   test.afterAll(async () => {
-    // Users cannot be deleted — DELETE /anzu-user/:id answers 500 (DAM-B16, see KNOWN-BUGS.md) —
+    // Users cannot be deleted — DELETE /anzu-user/:id answers 500 (DAM-B16) —
     // anonymise the account instead.
     if (USER_CREATED) await deleteUserDataViaApi(page, USER_ID)
     await page.context().close()

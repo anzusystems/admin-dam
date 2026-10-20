@@ -27,6 +27,7 @@ const PROVIDER = 'provider-1'
 const PROVIDER_LIST = /^\/adm\/v1\/asset-external-provider\/provider-1\/search$/
 
 const CREATED = 'Record was created'
+const NO_TAB = 'The browser did not open a new tab. Allow pop-up windows for this site and try again.'
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const EDIT = 'Edit more'
 const UNSAVED = 'Unsaved changes'
@@ -283,13 +284,14 @@ afterEach(() => {
 })
 
 describe('the edit of a row of the upload queue on the page of an external provider', () => {
+  // Without `noopener`, which gives no tab back either way: the tab is cut off as it is given.
   it('opens the page of the asset of the row in a new tab that has no way back, and reads nothing here', async () => {
     const page = await openPage(PROVIDED)
-    const tabs = browserOpensTabs(() => null)
+    const tabs = browserOpensTabs()
 
     await page.editUploaded()
 
-    expect(tabs.asked()).toEqual([['/assets/' + UPLOADED, '_blank', 'noopener']])
+    expect([tabs.asked(), tabs.given[0]!.opener]).toEqual([[['/assets/' + UPLOADED, '_blank']], null])
     // The page is as it was: its queue drawn, nothing read for a detail it does not draw, and nothing written into it.
     expect([page.at(), page.queue() !== null, server.assetReads(UPLOADED), await inDetailStore()]).toEqual([
       PROVIDED,
@@ -403,8 +405,8 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([tabs.asked().length, tabs.given[0]!.opener]).toEqual([1, null])
   })
 
-  // No tab is no failure of the asset, which was made: it is said so, and the dialog closes.
-  it('makes the asset all the same when the browser gives no tab', async () => {
+  // Made, it would have nothing to be shown in: the editor is told why, and the dialog stays for another try.
+  it('makes no asset when the browser gives no tab, and says so', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs(() => null)
     const confirm = await page.openCreate()
@@ -412,12 +414,8 @@ describe('"Create empty asset" on the page of an external provider', () => {
     confirm.click()
     await settled()
 
-    expect([tabs.asked().length, server.sent('POST', CREATE).length, page.alerts(), createDialog()]).toEqual([
-      1,
-      1,
-      [CREATED],
-      null,
-    ])
+    expect([tabs.asked().length, server.sent('POST', CREATE).length, page.alerts()]).toEqual([1, 0, [NO_TAB]])
+    expect(createDialog()).not.toBeNull()
   })
 
   /* A tab that is no more the empty one the page opened is the user's: whatever they closed it for, or took it to,

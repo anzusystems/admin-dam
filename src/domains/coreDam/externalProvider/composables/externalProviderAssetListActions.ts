@@ -32,7 +32,10 @@ import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/upl
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
-import { keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
+import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
+
+/** Marks the dialog of the detail among the open ones: every other one is open over it. */
+export const EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS = 'dam-external-provider-detail-dialog'
 
 const { showWarning, showErrorsDefault } = useAlerts()
 const { customDialog } = useMainWrapper()
@@ -385,15 +388,22 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
    * keys of the asset list, not of this one. */
   const listIsUnderQueue = () => customDialog.value
 
+  /* As in the asset list: not under a dialog or a menu open over the detail, or over the list with the detail closed -
+   * the read of the next asset would take away what is open over the detail, and the list is not what is in use. */
+  const underDialogOrMenu = () =>
+    assetDetailStore.detail
+      ? anotherDialogOrMenuIsOpen('.' + EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS)
+      : anotherDialogOrMenuIsOpen()
+
   const onArrowRight = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !externalProviderAssetListStore.keyboardNavigation) return
-    if (listIsUnderQueue()) return
+    if (listIsUnderQueue() || underDialogOrMenu()) return
     await nextItem()
   }
 
   const onArrowLeft = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !externalProviderAssetListStore.keyboardNavigation) return
-    if (listIsUnderQueue()) return
+    if (listIsUnderQueue() || underDialogOrMenu()) return
     await prevItem()
   }
 

@@ -59,3 +59,32 @@ describe('the fake server', () => {
     })
   })
 })
+
+/* As axios settles an answer: by the `validateStatus` of the request, and without one only a 2xx is an answer. The
+ * fake handed every answer back, and the cases about a request the server refused had to say so themselves. */
+describe('the answers of the fake server', () => {
+  const answering = (status: number) => {
+    const server = createFakeDam()
+    server.on('PATCH', /^\/adm\/v1\/answered$/, () => ({ status, data: { status } }))
+
+    return server.client
+  }
+  const statusOf = (answer: Promise<{ status: number }>) =>
+    answer.then(
+      (answered) => answered.status,
+      (error: { response?: { status: number } }) => 'refused ' + error.response?.status
+    )
+
+  it('are refused as axios refuses them: not a 2xx without a rule of the request, and by the rule of the request', async () => {
+    const only200 = { validateStatus: (status: number) => status === 200 }
+
+    expect(
+      await Promise.all([
+        statusOf(answering(204).patch('/adm/v1/answered')),
+        statusOf(answering(422).patch('/adm/v1/answered')),
+        statusOf(answering(204).patch('/adm/v1/answered', undefined, only200)),
+        statusOf(answering(200).patch('/adm/v1/answered', undefined, only200)),
+      ])
+    ).toEqual([204, 'refused 422', 'refused 204', 200])
+  })
+})

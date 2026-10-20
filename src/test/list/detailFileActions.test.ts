@@ -424,11 +424,16 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
   })
 
   /* Nor is every failure an answer of the status 500: a request the server did not answer at all rejects with an
-   * error that carries no answer, and a refusal of an operation comes as a 422 with a body of its own. */
-  it.each<[string, () => unknown]>([
-    ['the server did not answer at all', () => new AxiosError('Network Error', 'ERR_NETWORK')],
-    ['the server refused the operation with a 422', () => forbiddenOperationError('asset_file_not_processed')],
-  ])('says once that a change did not go through when %s, and reads the slots again', async (_how, failure) => {
+   * error that carries no answer, and a refusal of an operation comes as a 422 with a body of its own, which is said:
+   * here an operation the application has no words for. */
+  it.each<[string, () => unknown, string]>([
+    ['the server did not answer at all', () => new AxiosError('Network Error', 'ERR_NETWORK'), SYSTEM_ERROR],
+    [
+      'the server refused the operation with a 422',
+      () => forbiddenOperationError('asset_file_not_processed'),
+      'An unknown error occurred. Contact the administrator if necessary.',
+    ],
+  ])('says once that a change did not go through when %s, and reads the slots again', async (_how, failure, said) => {
     server.on('PATCH', MAIN, () => {
       throw failure()
     })
@@ -438,7 +443,7 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
     ;(await slotMenuItem('free', 'Make main file')).click()
     await settled()
 
-    expect([ui.alerts(), slotsShown(), server.slotReads(AUDIO) - slotsRead]).toEqual([[SYSTEM_ERROR], BEFORE, 1])
+    expect([ui.alerts(), slotsShown(), server.slotReads(AUDIO) - slotsRead]).toEqual([[said], BEFORE, 1])
   })
 
   /* The file of an image is deleted by a request of the library, whose errors the alerts know: a refusal is said in

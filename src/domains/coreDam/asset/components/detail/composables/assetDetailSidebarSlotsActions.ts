@@ -82,8 +82,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
    * would be sent again, and refused over the one that went through. The loader that goes up with a change takes the
    * rows away, with their menus and their dialogs, but only once the tab is drawn again; and a read of the slots
    * takes it down under the change - the tab drawn again reads them, and its rows are back. So a change is also known
-   * as on its way until it is answered, for its asset. Each says when it failed: all but the delete of an image
-   * reject with what axios threw, or with nothing at all, and neither is an error the alerts know. */
+   * as on its way until it is answered, for its asset. Each says when it failed, and why the server refused it. */
   const changeOnItsWay = () => assetSlotsStore.loader || changesOnTheirWay.has(assetId)
   const sendChange = async (request: () => Promise<unknown>) => {
     changesOnTheirWay.add(assetId)

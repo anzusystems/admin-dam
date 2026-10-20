@@ -233,22 +233,22 @@ describe('the detail of an asset of an external provider', () => {
     lists.tiles()[1].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
     await settled()
 
-    expect([shown(), asked()]).toEqual(['2 / 3', ['provided-2']])
+    expect([shown(), asked()]).toEqual(['2 / 3 provided-2', ['provided-2']])
     // As in the loaded detail of the provider: both there, neither disabled.
     expect([walk().previous.disabled, walk().next.disabled]).toEqual([false, false])
 
     walk().next.click()
     await settled()
-    expect([shown(), asked()]).toEqual(['3 / 3', ['provided-2', 'provided-3']])
+    expect([shown(), asked()]).toEqual(['3 / 3 provided-3', ['provided-2', 'provided-3']])
 
     walk().previous.click()
     await settled()
     walk().previous.click()
     await settled()
-    expect([shown(), asked()]).toEqual(['1 / 3', ['provided-2', 'provided-3', 'provided-2', 'provided-1']])
+    expect([shown(), asked()]).toEqual(['1 / 3 provided-1', ['provided-2', 'provided-3', 'provided-2', 'provided-1']])
 
     answers.get('provided-1')!()
-    await eventually(() => expect(shown()).toBe('1 / 3 provided-1'))
-    expect(drawn()).toEqual({ picture: true, frame: false })
+    await eventually(() => expect(drawn()).toEqual({ picture: true, frame: false }))
+    expect(shown()).toBe('1 / 3 provided-1')
   })
 })

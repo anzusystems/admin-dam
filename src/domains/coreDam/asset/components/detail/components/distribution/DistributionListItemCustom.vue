@@ -8,6 +8,7 @@ import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detai
 import DistributionListItemCustomDistributionDataItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
 import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
@@ -32,6 +33,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
 const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -76,7 +79,7 @@ const canCancel = computed(() => can(ACL.DAM_DISTRIBUTION_ACCESS))
           {{ t('coreDam.distribution.common.redistributeButton') }}
         </ABtnTertiary>
         <ABtnTertiary
-          v-if="item.status === DamDistributionStatus.Waiting && canCancel"
+          v-if="item.status === DamDistributionStatus.Waiting && canCancel && !assetDetailStore.isDeleting"
           class="ml-2"
           size="small"
           @click.stop="emit('openCancel')"

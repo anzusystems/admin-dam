@@ -324,15 +324,24 @@ describe('the arrow keys of the list while the detail of an asset is open', () =
     expect(detail.shown()).toBe('3 / 3 asset-3')
   })
 
-  // Only the detail is kept from the keys: with none open they walk the list, here from its first tile.
-  it('walk the list while no detail is open, also under an open menu of the page', async () => {
+  /* With no detail open the keys walk the list, here from its first tile - not under an open menu of the page, which
+   * is what is in use then. */
+  it('walk the list while no detail is open, and not under an open menu of the page', async () => {
     const list = await openList()
+    const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
+    const active = () => Array.from(list.tiles).map((tile) => tile.classList.contains('dam-image-grid__item--active'))
     list.page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
-    await eventually(() => expect(document.body.querySelector('.v-menu.v-overlay--active')).not.toBeNull())
+    await eventually(() => expect(menu()).not.toBeNull())
 
     await arrow(RIGHT)
+    expect([active(), reads('asset-1', 'asset-2', 'asset-3')]).toEqual([
+      [false, false, false],
+      [0, 0, 0],
+    ])
 
-    const active = () => Array.from(list.tiles).map((tile) => tile.classList.contains('dam-image-grid__item--active'))
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await eventually(() => expect(menu()).toBeNull())
+    await arrow(RIGHT)
     expect([active(), reads('asset-1', 'asset-2', 'asset-3')]).toEqual([
       [true, false, false],
       [1, 0, 0],
@@ -608,7 +617,7 @@ describe('metadata typed into the detail and not saved, when the detail is switc
     useAssetDetailStore().showLoader()
     await settled()
 
-    expect([detail.question(), shown(), reads('asset-3')]).toEqual([null, '2 / 3', [0]])
+    expect([detail.question(), shown(), reads('asset-3')]).toEqual([null, '2 / 3 asset-2', [0]])
   })
 
   // An asset written into the detail without its loader, as the start of the application writes one.
@@ -787,7 +796,7 @@ describe('the detail of the asset at an end of the list', () => {
   it.each([
     ['first', 0],
     ['second', 1],
-  ])('says the place of the %s asset in the list while it is being read', async (_which, index) => {
+  ])('says the place and the name of the %s asset in the list while it is being read', async (_which, index) => {
     const list = await openList()
     const id = `asset-${index + 1}`
     let answer: () => void = () => undefined
@@ -796,7 +805,10 @@ describe('the detail of the asset at an end of the list', () => {
     list.tiles[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
     await settled()
 
-    expect([shown(), document.body.querySelector('.dam-image-detail textarea')]).toEqual([`${index + 1} / 3`, null])
+    expect([shown(), document.body.querySelector('.dam-image-detail textarea')]).toEqual([
+      `${index + 1} / 3 ${id}`,
+      null,
+    ])
 
     answer()
     await eventually(() => expect(shown()).toBe(`${index + 1} / 3 ${id}`))

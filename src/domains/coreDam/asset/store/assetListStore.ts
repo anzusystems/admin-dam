@@ -20,6 +20,9 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
    * is another asset's. Not the asset the panel beside the list holds, which can be one of a queue row, or the one
    * before while a read is on its way. */
   let activeAssetId: DocId | null = null
+  /* Which of its tiles it was, counted from the first, for an asset the list holds more than once: the pages of a list
+   * can bring it twice. */
+  let activeAssetTile = 0
   /* Of that asset, once a list came without it: no tile is active then, and the asset is only waited for, in a
    * further page or in the list read next. */
   let activeAssetIsAwaited = false
@@ -47,7 +50,8 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
 
       return
     }
-    setActiveByIndex(list.value.findIndex((item) => item.asset.id === activeAssetId))
+    const tiles = list.value.flatMap((item, index) => (item.asset.id === activeAssetId ? [index] : []))
+    setActiveByIndex(tiles[activeAssetTile] ?? tiles[0] ?? -1)
   }
 
   /* A tile of an asset deleted here is drawn as being deleted whenever the list takes it: a read sent before the delete
@@ -140,6 +144,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     list.value[index].active = true
     activeItemIndex.value = index
     activeAssetId = list.value[index].asset.id
+    activeAssetTile = list.value.slice(0, index).filter((item) => item.asset.id === activeAssetId).length
     activeAssetIsAwaited = false
     if (isNull(oldActiveIndex)) return
     if (!(oldActiveIndex in list.value)) return

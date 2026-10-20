@@ -2,6 +2,7 @@ import type { AssetFileDocument, AssetFileDownloadLink, AssetFileRoute, DocId } 
 import { HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK, useApiRequest } from '@anzusystems/common-admin'
 
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { ROUTE_VALIDATION_ENTITY, fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -21,148 +22,32 @@ export const fetchDocumentFile = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
-export const unsetSlot = (documentId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + documentId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const unsetSlot = (documentId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('DELETE', END_POINT + '/' + documentId + '/asset/' + assetId + '/slot-name/' + slotName, [
+    HTTP_STATUS_NO_CONTENT,
+  ])
 
-export const deleteDocument = (documentId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + documentId
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const deleteDocument = (documentId: DocId) =>
+  fileCommand('DELETE', END_POINT + '/' + documentId, [HTTP_STATUS_NO_CONTENT])
 
-export const makeMainFile = (documentId: DocId, assetId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + documentId + '/asset/' + assetId + '/main'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makeMainFile = (documentId: DocId, assetId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + documentId + '/asset/' + assetId + '/main', [HTTP_STATUS_OK])
 
-export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + documentId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const existingDocumentToSlot = (documentId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('PATCH', END_POINT + '/' + documentId + '/asset/' + assetId + '/slot-name/' + slotName, [HTTP_STATUS_OK])
 
-export const downloadLink = (documentId: DocId) => {
-  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
-    const url = END_POINT + '/' + documentId + '/download-link'
-    damClient()
-      .get(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const downloadLink = (documentId: DocId) =>
+  fileRequest<AssetFileDownloadLink>('GET', END_POINT + '/' + documentId + '/download-link', [HTTP_STATUS_OK])
 
-export const makePublic = (documentId: DocId, slug: string) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
-    const url = END_POINT + '/' + documentId + '/make-public'
-    damClient()
-      .patch(
-        url,
-        JSON.stringify({
-          slug,
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makePublic = (documentId: DocId, slug: string) =>
+  fileRequest<AssetFileRoute>(
+    'PATCH',
+    END_POINT + '/' + documentId + '/make-public',
+    [HTTP_STATUS_OK],
+    { slug },
+    ROUTE_VALIDATION_ENTITY
+  )
 
 // As for an image: 204 with no body today, a body documented. Either is the change gone through.
-export const makePrivate = (documentId: DocId) => {
-  return new Promise<void>((resolve, reject) => {
-    const url = END_POINT + '/' + documentId + '/make-private'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK || res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve()
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makePrivate = (documentId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + documentId + '/make-private', [HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT])

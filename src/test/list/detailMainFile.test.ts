@@ -34,6 +34,7 @@ const TYPED = 'typed and not saved'
 const PUBLIC = 'File is public'
 const PRIVATE = 'File is private'
 const STILL_PROCESSED = 'The file is still being processed.'
+const PROCESSED_OPEN_AGAIN = 'The file is processed. Saving becomes possible after the detail is opened again.'
 /** The three switches of the form that are the main file's own, as they are labelled, in the order of the form. */
 const SWITCHES = ['Single-use license', 'Override internal flag', 'Internal']
 
@@ -279,10 +280,10 @@ const formSays = (form: ParentNode | null | undefined) => ({
       .find((text) => text === PUBLIC || text === PRIVATE) ?? null,
 })
 
-/** "Save" of a form: whether it is held back, and whether the form says why. */
+/** "Save" of a form: whether it is held back, and whether the form says why - still processed, or processed. */
 const saveOf = (form: HTMLElement) => ({
   heldBack: buttonsNamed(form, 'Save')[0]?.disabled,
-  saysWhy: !!form.textContent?.includes(STILL_PROCESSED),
+  saysWhy: [STILL_PROCESSED, PROCESSED_OPEN_AGAIN].some((line) => form.textContent?.includes(line)),
 })
 
 /** The detail of the asset, opened in the place and drawn: what a case reads of it, and what it does in it. */
@@ -824,8 +825,9 @@ describe('the page that draws a detail, told of a change of the main file answer
     expect([reads(), detail.title()?.value, detail.ui.alerts()]).toEqual([2, TYPED, []])
   })
 
-  // The guard: the list was left for the page of the same asset, which has read it by the answer.
-  it('reads nothing into the page of the asset the list was left for', async () => {
+  /* The list was left for the page of the same asset, which read it before the change was answered: that page is told
+   * of the change, and reads the asset once more. */
+  it('tells the page of the asset the list was left for, which reads the asset once more', async () => {
     const detail = await openDetail(inTheDialogOfTheList)
     const View = (await import('@/domains/coreDam/asset/components/detail/AssetDetailView.vue')).default
     detail.ui.router.addRoute({ path: '/assets/:id', name: '/(coreDam)/assets/[id]', component: View })
@@ -841,7 +843,7 @@ describe('the page that draws a detail, told of a change of the main file answer
     await settled()
     await answer()
 
-    expect([reads(), detail.ui.alerts()]).toEqual([2, []])
+    expect([reads(), detail.ui.alerts()]).toEqual([3, []])
   })
 
   // The guard: the whole read of a page of a detail goes by the address of the page, and the page was left.

@@ -37,6 +37,7 @@ const BY_FILE = /^\/adm\/v1\/asset\/asset-file\/([^/]+)$/
 const TYPED = 'typed and not saved'
 const FROM_SERVER = 'from the server'
 const STILL_PROCESSED = 'The file is still being processed.'
+const PROCESSED_OPEN_AGAIN = 'The file is processed. Saving becomes possible after the detail is opened again.'
 
 const LIST = '/assets'
 /** The asset whose main file the server is processing, and that file. */
@@ -254,10 +255,10 @@ const openForm = async (place: Place) => {
 
       return field
     },
-    /** "Save" of the form: whether it is held back, and whether the form says why. */
+    /** "Save" of the form: whether it is held back, and whether the form says why - still processed, or processed. */
     save: () => ({
       heldBack: buttonsNamed(form()!, 'Save')[0]?.disabled,
-      saysWhy: !!form()!.textContent?.includes(STILL_PROCESSED),
+      saysWhy: [STILL_PROCESSED, PROCESSED_OPEN_AGAIN].some((line) => form()!.textContent?.includes(line)),
     }),
     /** What the menu of the file card offers: null when the card draws no menu. */
     cardOffers: async () => {

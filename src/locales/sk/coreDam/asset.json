@@ -70,6 +70,18 @@
     "withFile": "Obsahuje súbor",
     "deleting": "Vymazávaný"
   },
+  "color": {
+    "red": "Červená",
+    "yellow": "Žltá",
+    "blue": "Modrá",
+    "orange": "Oranžová",
+    "green": "Zelená",
+    "purple": "Fialová",
+    "white": "Biela",
+    "black": "Čierna",
+    "pink": "Ružová",
+    "brown": "Hnedá"
+  },
   "imageOrientation": {
     "landscape": "šírkový",
     "portrait": "výškový",
@@ -105,6 +117,7 @@
     "next": "Nasledujúci asset",
     "refresh": "Znovu načítať zoznam"
   },
+  "newTabBlocked": "Prehliadač neotvoril novú kartu. Povoľte pre túto stránku vyskakovacie okná a skúste znova.",
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
     "licenceMismatch": "Aktívna licencia a licencia assetu sa nezhodujú",
@@ -116,6 +129,8 @@
     "noAssetSelected": "Žiadne vybrané assety",
     "fileStillProcessing": "Súbor sa ešte spracúva. Uložiť pôjde po spracovaní; asset potom otvorte znova.",
     "fileFailedOpenAgain": "Spracovanie súboru zlyhalo. Uložiť pôjde po novom otvorení assetu.",
+    "fileProcessedOpenAgain": "Súbor je spracovaný. Uložiť bude možné po novom otvorení detailu.",
+    "deletedMeanwhile": "Asset bol medzitým zmazaný.",
     "tabs": {
       "info": "Info",
       "roi": "Fókus",
@@ -168,6 +183,7 @@
       "title": "Náhľady",
       "description": "Náhľady sú určené pre hlavný obrázok v článku, zoznamy článkov, titulky a rubriky. V tele článku sa zobrazuje formát bez orezania.",
       "refresh": "Znovu načítať náhľady",
+      "slotWithoutImage": "Slot nemá obrázok.",
       "rotate": {
         "rotateMainFileImage": "Otočenie obrázka (hlavného súboru)",
         "rotateClockwise": "Otočiť doprava",

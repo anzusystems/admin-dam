@@ -18,7 +18,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licences`, () => {
     await prepareUser(page)
   })
 
-  // Asset licences cannot be deleted — DELETE /asset-licence/:id answers 500 (DAM-B13, see KNOWN-BUGS.md) —
+  // Asset licences cannot be deleted — DELETE /asset-licence/:id answers 500 (DAM-B13) —
   // so each run leaves one behind.
   test.afterAll(async () => {
     await page.context().close()

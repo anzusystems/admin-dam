@@ -93,6 +93,11 @@ const imagePreviewModel = computed({
  * image it holds has failed - the image read last is another one. */
 const shownFile = computed(() => (isNull(imagePreviewModel.value) || readFailed.value ? null : imageFile.value))
 
+// The image the card holds is read again only when it changes: a read that failed is tried again by the editor.
+const readAgain = () => {
+  if (!isNull(imagePreviewModel.value)) fetchImage(imagePreviewModel.value.imageFile)
+}
+
 const src = computed(() => {
   if (shownFile.value && shownFile.value.links?.image_detail) return shownFile.value.links.image_detail.url
   return placeholder16x9
@@ -199,6 +204,15 @@ watch(
       :max-height="300"
       :src="src"
     />
+    <VBtn
+      v-if="readFailed && !loading && imagePreviewModel !== null"
+      variant="text"
+      class="my-2 mr-2"
+      size="small"
+      @click.stop="readAgain"
+    >
+      {{ t('common.button.retry') }}
+    </VBtn>
     <div v-if="showActions">
       <slot name="actions-start" />
 

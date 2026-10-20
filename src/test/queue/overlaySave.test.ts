@@ -86,14 +86,6 @@ const refusals: Array<[string, () => FakeDamAnswer, string]> = [
 
 beforeEach(() => {
   server = createFakeDam()
-  // As axios settles an answer: one the `validateStatus` of the request does not take is thrown, the answer on it.
-  const { request } = server.client
-  server.client.request = async (config) => {
-    const answer = await request(config)
-    if (config.validateStatus && !config.validateStatus(answer.status)) throw httpError(answer.status, answer.data)
-
-    return answer
-  }
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, () => ({ status: 200, data: { data: [] } }))
   server.on('PATCH', BULK, (request) => ({ status: 200, data: JSON.parse(request.data as string) }))
   server.on('GET', LIST, () => ({ status: 200, data: { data: [], hasNextPage: false } }))

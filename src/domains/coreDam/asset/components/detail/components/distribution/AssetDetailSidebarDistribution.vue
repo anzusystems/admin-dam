@@ -20,9 +20,11 @@ import {
   useAssetDetailDistributionDialog,
   useDistributionServiceAllowed,
 } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { onDistributionListChanged } from '@/domains/coreDam/asset/components/detail/composables/distributionListChanged'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useDistributionListPoll } from '@/domains/coreDam/asset/composables/distributionListPoll'
 import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 import { damClient } from '@/shared/apiClients/damClient'
 
@@ -41,6 +43,8 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const { showErrorsDefault } = useAlerts()
 
 const distributionListStore = useDistributionListStore()
@@ -80,7 +84,7 @@ const readList = async () => {
   reading?.abort()
   const current = new AbortController()
   reading = current
-  distributionListStore.showLoader()
+  const raised = distributionListStore.showLoader()
   // The list is shared with the tabs opened before, of another asset or of this one: left there, it would show
   // under a read of the opening that failed here. What this tab has read stays, for a reload or another page that
   // fails.
@@ -99,7 +103,7 @@ const readList = async () => {
       showErrorsDefault(error)
     }
   } finally {
-    if (!current.signal.aborted) distributionListStore.hideLoader()
+    if (!current.signal.aborted) distributionListStore.hideLoader(raised)
   }
 }
 
@@ -111,6 +115,8 @@ const getList = () => duringOwnRead(readList)
 const reloadList = () => {
   getList()
 }
+// A record of a distribution saved: read anew, also when the dialog that saved it was gone by the answer.
+onDistributionListChanged(reloadList)
 
 const addNew = () => {
   openNew()
@@ -129,7 +135,7 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
     <AssetDetailSidebarActionsWrapper v-if="isActive">
       <ABtnPrimary
         v-if="hasAllowedService"
-        :disabled="assetMainFileStatus === undefined"
+        :disabled="assetMainFileStatus === undefined || assetDetailStore.isDeleting"
         data-cy="add-new-distribution"
         @click.stop="addNew"
       >
@@ -197,7 +203,6 @@ const toggleAdvancedSettings = () => (showAdvancedSettings.value = !showAdvanced
       :asset-type="assetType"
       :asset-id="assetId"
       :is-active="isActive"
-      @on-distribution-upsert="reloadList"
       @on-distribution-delete="reloadList"
     />
     <DistributionNewDialog

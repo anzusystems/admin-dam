@@ -10,7 +10,7 @@ import type { FakeDam } from '@/test/support/fakeDam'
  * server and the global `WebSocket`. Nothing of the library is replaced.
  *
  * The service is used only where a deployment asks for it. Where it does not, the upload queue asks the server
- * itself; that side, in all its cases, is in `fallback/notificationFallback.test.ts`. */
+ * itself; that side, in all its cases, is in `fallback/uploadStatusPolling.test.ts`. */
 
 let server: FakeDam
 const appSetUp = vi.fn()

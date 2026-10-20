@@ -406,8 +406,9 @@ describe('metadata typed into the panel beside the list and not saved, while no 
   })
 
   /* A double click is two clicks and then itself; the first click asks. In a browser the rest of it lands on the
-   * question, here on the tile: either way only the click is what "Leave anyway" lets go on. */
-  it('are asked about once by a double click on another tile, which then only picks it', async () => {
+   * question, here on the tile: either way the question is one, and "Leave anyway" opens the detail of the tile, as the
+   * double click would have. */
+  it('are asked about once by a double click on another tile, which then opens its detail', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
 
@@ -426,7 +427,7 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     expect([list.questions(), list.active(), list.detail(), reads()]).toEqual([
       [],
       [false, false, true],
-      null,
+      '3 / 3 asset-3',
       [0, 1, 1],
     ])
   })
@@ -785,12 +786,14 @@ describe('the question about metadata typed into the panel and not saved', () =>
   })
 
   /* Emptied as a read that failed empties it, written into as the start of the application writes an asset, put
-   * behind its loader as the read of its asset after a bulk save puts it. */
-  it.each<[string, (store: { reset: () => void; setAsset: (asset: never) => void; showLoader: () => void }) => void]>([
-    ['is emptied', (store) => store.reset()],
-    ['has an asset written into it', (store) => store.setAsset(onServer('asset-2') as never)],
-    ['goes behind its loader', (store) => store.showLoader()],
-  ])('goes when the panel %s under it: nothing moves', async (_how, change) => {
+   * behind its loader as the read of its asset after a bulk save puts it. Behind that loader what was typed is not
+   * given up, as it is by "Leave anyway": the next way to another asset asks again. */
+  type StoreChange = (store: { reset: () => void; setAsset: (asset: never) => void; showLoader: () => void }) => void
+  it.each<[string, StoreChange, boolean]>([
+    ['is emptied', (store) => store.reset(), false],
+    ['has an asset written into it', (store) => store.setAsset(onServer('asset-2') as never), false],
+    ['goes behind its loader', (store) => store.showLoader(), true],
+  ])('goes when the panel %s under it: nothing moves', async (_how, change, asksAgain) => {
     const list = await openList()
     await typedIntoTheSecond(list)
     await list.pick(2)
@@ -801,9 +804,11 @@ describe('the question about metadata typed into the panel and not saved', () =>
     await settled()
 
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, true, false], [0, 1, 0]])
-    // Nothing is left to ask about.
+    // Nothing is left to ask about, or what was typed is still there.
     await list.pick(2)
-    expect([list.questions(), list.active(), reads()]).toEqual([[], [false, false, true], [0, 1, 1]])
+    expect([list.questions().length, list.active(), reads()]).toEqual(
+      asksAgain ? [1, [false, true, false], [0, 1, 0]] : [0, [false, false, true], [0, 1, 1]]
+    )
   })
 })
 
@@ -927,14 +932,14 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     expect([list.questions(), list.router.currentRoute.value.path, reads()]).toEqual([[], '/assets/asset-3', [0, 1, 0]])
   })
 
-  // With a key held each of the two clicks opens the detail of the list, as one such click does; no more than that.
-  it('open the detail of the list for a double click on the edit button of a row with Ctrl held', async () => {
+  // With a key held the browser opens the link elsewhere, each of the two clicks: the list does nothing of its own.
+  it('do nothing of their own for a double click on the edit button of a row with Ctrl held', async () => {
     const list = await openList('table')
 
     doubleClick(list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!, { ctrlKey: true })
     await settled()
 
-    expect([list.detail(), list.router.currentRoute.value.path, reads()]).toEqual(['3 / 3 asset-3', LIST, [0, 0, 2]])
+    expect([list.detail(), list.router.currentRoute.value.path, reads()]).toEqual([null, LIST, [0, 0, 0]])
   })
 
   // The guard: a double click on the row itself is the one that opens the detail of the list.
@@ -952,14 +957,14 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
   })
 
   /* With a key held, or another button, the router leaves the link to the browser, which opens it elsewhere: the
-   * list stays, and its detail is opened over it as by the pencil of a tile. */
+   * list stays as it is, with what was typed, and opens no detail of its own beside the tab - nor asks about it. */
   it.each<[string, MouseEventInit]>([
     ['Ctrl held', { ctrlKey: true }],
     ['Cmd held', { metaKey: true }],
     ['Shift held', { shiftKey: true }],
     ['Alt held', { altKey: true }],
     ['another button', { button: 1 }],
-  ])('ask for a click on the edit button of a row with %s: the list is not left', async (_how, held) => {
+  ])('do nothing of their own for a click on the edit button of a row with %s', async (_how, held) => {
     const list = await openList('table')
     const typedInto = await typedIntoTheSecond(list)
     const edit = list.tiles[2].querySelector<HTMLElement>('[data-cy="table-edit"]')!
@@ -968,22 +973,11 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     await settled()
 
     expect([list.questions().length, list.router.currentRoute.value.path, list.detail(), reads()]).toEqual([
-      1,
+      0,
       LIST,
       null,
       [0, 1, 0],
     ])
-    await list.answer(STAY)
-    expect([list.title() === typedInto, typedInto.value, list.detail(), reads()]).toEqual([
-      true,
-      TYPED,
-      null,
-      [0, 1, 0],
-    ])
-
-    edit.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, ...held }))
-    await settled()
-    await list.answer(LEAVE)
-    expect([list.questions(), list.detail(), reads()]).toEqual([[], '3 / 3 asset-3', [0, 1, 1]])
+    expect([list.title() === typedInto, typedInto.value, list.active()]).toEqual([true, TYPED, [false, true, false]])
   })
 })

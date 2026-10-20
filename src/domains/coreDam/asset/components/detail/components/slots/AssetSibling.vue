@@ -69,6 +69,7 @@ const pickAssetType = computed(() => {
               variant="text"
               size="small"
               :loading="siblingLoader"
+              :disabled="assetDetailStore.isDeleting"
               @click.stop="removeItem"
             >
               <VIcon icon="mdi-trash-can-outline" />
@@ -105,6 +106,7 @@ const pickAssetType = computed(() => {
                 size="small"
                 v-bind="assetSelectProps"
                 :loading="siblingLoader"
+                :disabled="assetDetailStore.isDeleting"
               >
                 {{ t('coreDam.asset.sibling.select') }}
               </VBtn>

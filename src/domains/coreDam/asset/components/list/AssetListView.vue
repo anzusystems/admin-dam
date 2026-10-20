@@ -60,15 +60,17 @@ const {
 } = useAssetListActions(sidebarRight)
 
 provide(DatatablePaginationKey, pagination)
-/* The detail and the panel beside the list tell of a change of the file of their asset: it is read again. Not once
- * the page is left, which the answer of the change can outlast: the asset the detail holds by then is the next
- * page's to read. Left, not being left: while the page asks whether to leave what was typed, it is still there. */
+/* The detail and the panel beside the list tell of a change of the file of their asset: it is read again. Not here
+ * once the page is left, which the answer of the change can outlast: the asset the detail holds by then is the next
+ * page's to read, and that page is told, as the server tells it. Left, not being left: while the page asks whether to
+ * leave what was typed, it is still there. */
 let pageLeft = false
 onBeforeUnmount(() => {
   pageLeft = true
 })
 provideAssetFileChanged((byServer) => {
-  if (!pageLeft) refreshActiveItem(byServer)
+  if (pageLeft) assetDetailStore.tellPageOfFileChange()
+  else refreshActiveItem(byServer)
 })
 /* And of an asset deleted in the detail: its tile is marked as being deleted, and so is the asset where the detail or
  * the panel holds it still - the one deleted, not the one the detail has gone on to meanwhile. */

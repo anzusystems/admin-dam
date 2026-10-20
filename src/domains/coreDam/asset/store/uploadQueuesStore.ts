@@ -10,6 +10,7 @@ import {
   UploadRowRole,
   adminDamImportRun,
   adminDamQueuePreset,
+  apiErrorIsReported,
   apiErrorStatus,
   cloneDeep,
   createUploadQueueCore,
@@ -63,7 +64,9 @@ import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAut
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 import { externalProviderImport } from '@/domains/coreDam/shared/services/upload/externalProviderImportService'
 import {
+  afterMetadataSaves,
   baselineOfAsset,
+  metadataSaveOnItsWay,
   nextMetadataOrder,
   queueRowGivenSince,
   queueRowTakesAnswer,
@@ -158,6 +161,19 @@ const fetchDuplicateOriginFile = async (
   return null
 }
 
+/* How the server ended the file of a row that is settled: processed, a duplicate, or failed - by its word, which gives
+ * a reason; a failure of the client, or of a read, gives none. Null for an end the server did not say. */
+const slotFileEndedAs = (item: UploadQueueItem): AssetFileProcessStatusType | null => {
+  if (item.status === UploadQueueItemStatus.Uploaded) {
+    return item.isDuplicate ? AssetFileProcessStatus.Duplicate : AssetFileProcessStatus.Processed
+  }
+  if (item.status === UploadQueueItemStatus.Failed && item.error.assetFileFailReason !== AssetFileFailReason.None) {
+    return AssetFileProcessStatus.Failed
+  }
+
+  return null
+}
+
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   // The mass-edit rows whose batch load could not give them their metadata - not by message, which changes with the
   // language.
@@ -189,6 +205,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
    * asset: what was written down for one upload says nothing of the next one into that slot, and the memory goes
    * with the row. Forgotten with the next read of the slots that answers. */
   const goneAssetWrittenDown = new WeakSet<UploadQueueItem>()
+  /* What a read of the slots threw while it kept quiet itself, told to write a failure down: the settlement begins a
+   * streak of failures only with one that was written down, and would take these for such. */
+  const thrownQuietly = new WeakSet<object>()
 
   // Only the rows a read of the slots is made for: one that still waits or is still being sent has not been asked
   // about, and what is written down before it is has nothing to do with it.
@@ -214,7 +233,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
       return files
     } catch (error) {
-      if (apiErrorStatus(error) !== 404) throw error
+      if (apiErrorStatus(error) !== 404) {
+        if (!report && options?.report === true && error instanceof Object) thrownQuietly.add(error)
+        throw error
+      }
       if (report) rows.forEach((row) => goneAssetWrittenDown.add(row))
 
       return []
@@ -241,6 +263,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           assets: readAssets,
           slotFiles: readSlotFiles,
           duplicateOriginFile: fetchDuplicateOriginFile,
+          // Written down by the api error logger, as the three readers report through it - not one made quiet above.
+          failureReported: (error) =>
+            !(error instanceof Object && thrownQuietly.has(error)) && apiErrorIsReported(error),
         },
         caches: {
           addAuthors: addToCachedAuthors,
@@ -257,7 +282,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
                 : 'system.uploadErrors.processingTooLong'
             ),
           readFailed: () => translate('system.uploadErrors.metadataFailed'),
-          assetMissing: () => translate('system.uploadErrors.unknownError'),
+          /* Its own text: the queue tells of a failure of the client once per text, and a row failed with that one would
+           * count as the next such failure already told of. */
+          assetMissing: () => translate('system.uploadErrors.fileMissing'),
+          // An uploaded row without its form whose asset is gone: the text of the refresh that finds it so.
+          assetGone: () => translate('common.damImage.queueItem.assetGone'),
         },
         // The one failed row the metadata notification still reaches: it failed for want of this very metadata.
         metadataGate: (queueId, item) => (metadataFailures.has(metadataFailureKey(queueId, item)) ? 'load' : undefined),
@@ -266,16 +295,13 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           // core counts the queue and starts the next row after this.
           onRowFinal: (queueId, item) => {
             if (item.status === UploadQueueItemStatus.Failed) metadataFailures.delete(metadataFailureKey(queueId, item))
-            /* A file put into a slot, processed: the server may have filled in the metadata of its asset from it. The
-             * reads of the queue speak of it only here - the asset they read brings its main file alone. */
-            if (
-              item.type === UploadQueueItemType.SlotFile &&
-              item.status === UploadQueueItemStatus.Uploaded &&
-              !item.isDuplicate &&
-              item.assetId &&
-              item.fileId
-            ) {
-              useAssetDetailStore().fileStatusOnServer(item.assetId, item.fileId, AssetFileProcessStatus.Processed)
+            /* A file put into a slot, ended by the server: processed, it may have filled in the metadata of its asset
+             * from it; failed or a duplicate, the detail holds it as still on its way. The reads of the queue speak of
+             * it only here - the asset they read brings its main file alone -, as the notifications do of each end. */
+            const assetId = item.uploadedAssetId ?? item.assetId
+            const ended = slotFileEndedAs(item)
+            if (item.type === UploadQueueItemType.SlotFile && ended && assetId && item.fileId) {
+              useAssetDetailStore().fileStatusOnServer(assetId, item.fileId, ended)
             }
           },
           onAssetRead: (asset) => {
@@ -508,6 +534,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     // Its place among the reads and the saves of metadata, taken as it is sent: what a row is given from here on
     // is newer than the answer of this read.
     const sentAt = nextMetadataOrder()
+    // Sent while a save of the asset is on its way: answered from before the save or from after it, it is not known.
+    const sentDuringSave = assetIds.filter(metadataSaveOnItsWay)
     const res = await fetchAssetListByIds(assetIds, licenceId)
     for (let i = 0; i < res.length; i++) {
       const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
@@ -570,6 +598,18 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     // And a detail or a panel that holds one of the assets with its main file still on its way.
     const assetDetailStore = useAssetDetailStore()
     res.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
+    /* Taken or kept by the rules above all the same, and read once more once that save is answered: a row nobody
+     * changed takes what the server has after it, also what another editor saved since. */
+    sentDuringSave.forEach((assetId) => afterMetadataSaves(assetId, () => readAgain(queueId, licenceId, assetId)))
+  }
+
+  function readAgain(queueId: string, licenceId: number, assetId: DocId) {
+    // Not for a row taken out meanwhile.
+    if (!queues.value[queueId]?.items.some((item) => item.assetId === assetId)) return
+    fetchLazyAdditionalMetadata(queueId, licenceId, [assetId]).catch((error) => {
+      console.error('uploadQueue: additional metadata could not be read again', error)
+      failStillLoading(queueId, [assetId])
+    })
   }
 
   async function removeByAssetId(queueId: string, assetId: DocId) {
@@ -723,6 +763,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   function reset() {
     Object.keys(queues.value).forEach((queueId) => core.settlement.dropQueue(queueId))
     queues.value = {}
+    metadataFailures.clear()
   }
 
   return {

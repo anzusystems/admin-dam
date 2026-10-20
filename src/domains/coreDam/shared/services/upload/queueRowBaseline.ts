@@ -26,6 +26,42 @@ let order = 0
 /** The next place in that order: a read takes one as it is sent, whatever writes a baseline as it writes it. */
 export const nextMetadataOrder = () => ++order
 
+/* The saves of metadata on their way, by their asset: of a queue, of the detail, of the panel. A read of the asset sent
+ * meanwhile is answered from before the save or from after it, and which of the two is not known: a read sent once
+ * no save of it is on its way is answered from after them. */
+const savesOnTheirWay = new Map<DocId, number>()
+const afterSaves = new Map<DocId, Array<() => void>>()
+
+/** A save of the metadata of the assets is sent: what this gives back is called once it is answered, or failed. */
+export const metadataSaveSent = (assetIds: DocId[]) => {
+  assetIds.forEach((assetId) => savesOnTheirWay.set(assetId, (savesOnTheirWay.get(assetId) ?? 0) + 1))
+  let ended = false
+
+  return () => {
+    if (ended) return
+    ended = true
+    assetIds.forEach((assetId) => {
+      const left = (savesOnTheirWay.get(assetId) ?? 1) - 1
+      if (left > 0) {
+        savesOnTheirWay.set(assetId, left)
+        return
+      }
+      savesOnTheirWay.delete(assetId)
+      const then = afterSaves.get(assetId) ?? []
+      afterSaves.delete(assetId)
+      then.forEach((call) => call())
+    })
+  }
+}
+
+export const metadataSaveOnItsWay = (assetId: DocId) => savesOnTheirWay.has(assetId)
+
+/** `then` once no save of the metadata of the asset is on its way: at once while none is. */
+export const afterMetadataSaves = (assetId: DocId, then: () => void) => {
+  if (!savesOnTheirWay.has(assetId)) return then()
+  afterSaves.set(assetId, [...(afterSaves.get(assetId) ?? []), then])
+}
+
 const baselines = new WeakMap<UploadQueueItem, { baseline: QueueRowBaseline; at: number }>()
 
 export const baselineOfAsset = (asset: AssetDetailItemDto): QueueRowBaseline => ({

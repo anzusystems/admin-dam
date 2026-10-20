@@ -13,6 +13,7 @@ import {
   useDistributionServiceAllowed,
 } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
@@ -38,8 +39,11 @@ const distributionType = computed(() => {
 })
 
 const isDistributionServiceAllowed = useDistributionServiceAllowed()
+// Not for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const showRedistribute = computed(() => {
   return (
+    !assetDetailStore.isDeleting &&
     isDistributionServiceAllowed(props.item.distributionService) &&
     damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
       props.item.status

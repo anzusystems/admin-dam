@@ -50,7 +50,7 @@ const asked = () => server.sent('GET', PROVIDER_ASSET).map((request) => request.
 /** The open detail of the provider. */
 const detail = () => document.body.querySelector<HTMLElement>('.v-dialog.v-overlay--active .dam-image-detail')
 
-/** What the bar of the open detail says: the place of the asset in its list and, once it is read, its title. */
+/** What the bar of the open detail says: the place of the asset in its list and its title, also while it is read. */
 const shown = () =>
   Array.from(detail()?.querySelectorAll('.v-toolbar .text-label-large > div') ?? [])
     .map((part) => part.textContent?.trim())
@@ -259,16 +259,16 @@ describe('the two buttons of the detail of an asset of an external provider', ()
     const answer = holdReads()
 
     await list.pencil(0)
-    expect([shown(), disabled()]).toEqual(['1 / 3', [true, false]])
+    expect([shown(), disabled()]).toEqual(['1 / 3 provided-1', [true, false]])
     await press(walk().previous)
-    expect([shown(), asked()]).toEqual(['1 / 3', ['provided-1']])
+    expect([shown(), asked()]).toEqual(['1 / 3 provided-1', ['provided-1']])
 
     await press(walk().next)
-    expect([shown(), disabled()]).toEqual(['2 / 3', [false, false]])
+    expect([shown(), disabled()]).toEqual(['2 / 3 provided-2', [false, false]])
     await press(walk().next)
-    expect([shown(), disabled()]).toEqual(['3 / 3', [false, true]])
+    expect([shown(), disabled()]).toEqual(['3 / 3 provided-3', [false, true]])
     await press(walk().next)
-    expect([shown(), asked()]).toEqual(['3 / 3', ['provided-1', 'provided-2', 'provided-3']])
+    expect([shown(), asked()]).toEqual(['3 / 3 provided-3', ['provided-1', 'provided-2', 'provided-3']])
 
     // And the loaded detail says of them what its loader said.
     await answer('provided-3')

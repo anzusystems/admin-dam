@@ -105,7 +105,8 @@
     "metadataUnavailable": "Metadata could not be loaded. Remove the item and select it again.",
     "assetFileStillProcessing": "The asset file is still being processed. Remove the item and select it again once it is processed.",
     "processingTooLong": "Processing is taking too long. Use item refresh button or remove item and retry later.",
-    "processingTooLongSlot": "Processing is taking too long. Cancel the item and try again later."
+    "processingTooLongSlot": "Processing is taking too long. Cancel the item and try again later.",
+    "fileMissing": "The file is no longer on the server."
   },
   "closePage": {
     "title": "This page/tab can be safely closed."

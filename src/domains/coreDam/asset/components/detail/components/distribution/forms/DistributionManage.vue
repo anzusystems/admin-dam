@@ -36,7 +36,6 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'onDistributionUpsert'): void
   (e: 'onDistributionDelete'): void
 }>()
 
@@ -97,7 +96,7 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
   const distributionId = item.id ?? null
   if (!isString(distributionId)) return
 
-  distributionListStore.showLoader()
+  const raised = distributionListStore.showLoader()
   try {
     await deleteDistribution(distributionId)
     // Out of the list at once: the read asked for below can fail, or be asked of nobody, and the list would keep
@@ -108,9 +107,9 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
     emit('onDistributionDelete')
     showRecordWas('deleted')
     // Nobody heard of the delete, so nobody reads the list: the loader would stay on for good.
-    if (closed) distributionListStore.hideLoader()
+    if (closed) distributionListStore.hideLoader(raised)
   } catch (error) {
-    distributionListStore.hideLoader()
+    distributionListStore.hideLoader(raised)
     showErrorsDefault(error)
     throw error // :on-delete — re-throw so the editor keeps the row instead of dropping it while it still exists on the server
   }
@@ -119,7 +118,8 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
 const onEdit = (vi: ListViewItem<DistributionItem>) => {
   distributionContent.value = createUpdateDto(vi.raw)
   distributionDialogEdit.value = true
-  distributionDialogReadonly.value = !isDistributionServiceAllowed(vi.raw.distributionService)
+  distributionDialogReadonly.value =
+    !isDistributionServiceAllowed(vi.raw.distributionService) || assetDetailStore.isDeleting
   distributionManageDialog.value = true
 }
 
@@ -138,9 +138,9 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
   }
 }
 
+// The tab is told by the dialog itself, which reads its list anew.
 const onDistributionUpsert = () => {
   closeDialog()
-  emit('onDistributionUpsert')
 }
 </script>
 
@@ -158,7 +158,7 @@ const onDistributionUpsert = () => {
     <AListEditor
       v-model="distributionListStore.list"
       :show-add-button="false"
-      :show-delete-button="can(ACL.DAM_DISTRIBUTION_DELETE)"
+      :show-delete-button="can(ACL.DAM_DISTRIBUTION_DELETE) && !assetDetailStore.isDeleting"
       :on-delete="onDeleteDistributionItem"
       delete-mode="immediate"
       disable-unsaved
@@ -177,6 +177,7 @@ const onDistributionUpsert = () => {
       variant="text"
       prepend-icon="mdi-plus"
       data-cy="button-add-distribution"
+      :disabled="assetDetailStore.isDeleting"
       @click="onAddDistributionItem"
     >
       {{ t('coreDam.distribution.meta.create') }}

@@ -15,6 +15,8 @@ import {
   ExternalProviderFooterViewSelected,
   useExternalProviderAssetFooterSelectedView,
 } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { ACL } from '@/domains/system/auth/auth'
 import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
@@ -27,18 +29,21 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
 const { footerViewSelected, hideSelected } = useAssetFooterSelectedView()
 const { externalProviderFooterViewSelected, hideSelected: hideExternalProviderSelected } =
   useExternalProviderAssetFooterSelectedView()
+const uploadQueuesStore = useUploadQueuesStore()
 
 /* A selection drawn over the whole page belongs to its page. The back or forward button of the browser leaves the page
  * from under it onto an entry of the history where ADAM was loaded or reloaded: vue-router writes that entry by
  * `replace`, and Vuetify lets a way back or forward to such an entry through an open dialog. The next page drew the
  * dialog over the whole of it then, empty: it draws its own selection only. The selection goes back to its strip,
- * hidden, as the next list empties it anyway. Before the next page is drawn, not once this one is gone. The upload
- * queue is the same on every list, and is drawn over the next one as it was. */
+ * hidden, and the mass edit is emptied, as the next list would empty it: also when the next page is no list, which
+ * would keep it until one. Before the next page is drawn, not once this one is gone. The upload queue is the same on
+ * every list, and is drawn over the next one as it was. */
 onBeforeUnmount(() => {
   if (footerViewSelected.value === FooterViewSelected.Full) hideSelected()
   if (externalProviderFooterViewSelected.value === ExternalProviderFooterViewSelected.Full) {
     hideExternalProviderSelected()
   }
+  uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
 })
 </script>
 

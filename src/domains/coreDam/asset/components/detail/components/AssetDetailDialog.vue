@@ -20,6 +20,10 @@ import { useRouter } from 'vue-router'
 
 import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
 import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogSidebar.vue'
+import {
+  provideAssetDeleted,
+  useAssetDeleted,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
 import { useDetailInfoPanel } from '@/domains/coreDam/asset/components/detail/composables/detailInfoPanel'
 import {
   ASSET_DETAIL_DIALOG_CLASS,
@@ -55,12 +59,16 @@ const closeDialog = () => {
   browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
 }
 
-// The list and the panel are told by the page (`provideAssetDeleted`): the dialog closes over the asset deleted, not
-// over the next one it has gone on to meanwhile.
-const postDelete = (data: DocId) => {
-  if (asset.value?.id !== data || !onPage()) return
+/* The list and the panel are told by the page (`provideAssetDeleted`), and so is the dialog, by the same function: the
+ * part of the detail that deleted the asset can be gone by the answer - another tab - and what it emits then Vue
+ * drops. The dialog closes over the asset deleted, not over the next one it has gone on to meanwhile - also not while
+ * that one is being read, and the asset before it is still held. */
+const toldPage = useAssetDeleted()
+provideAssetDeleted((deletedId: DocId) => {
+  toldPage(deletedId)
+  if (assetDetailStore.shownOrReadAssetId() !== deletedId || !onPage()) return
   closeDialog()
-}
+})
 
 const sidebar = ref(true)
 const { wide, panelId } = useDetailInfoPanel()
@@ -142,6 +150,16 @@ const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
 })
+/* Behind the loader the name of the asset being read: the one held when it is read again, the one of its tile when the
+ * list is walked to it; none of another asset. */
+const loaderTitle = computed(() => {
+  const read = assetDetailStore.shownOrReadAssetId()
+  if (!read) return ''
+  if (asset.value?.id === read) return toolbarTitle.value
+  const tile = assetListStore.getActiveAsset()
+
+  return tile?.asset.id === read ? tile.asset.texts.displayTitle : ''
+})
 const totalCountText = computed(() => {
   if (isNull(assetListStore.activeItemIndex)) return ''
   return (
@@ -173,6 +191,7 @@ const { can } = useAuth()
       :prev-disabled="!neighbourOfActive(-1)"
       :next-disabled="!neighbourOfActive(1)"
       :total-count-text="totalCountText"
+      :title="loaderTitle"
       @prev-item="prevItem"
       @next-item="nextItem"
       @close-dialog="closeDialog"
@@ -255,7 +274,16 @@ const { can } = useAuth()
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <VIcon icon="mdi-information-outline" />
+              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
+                   icon there, as in the library's detail. -->
+              <VIcon
+                icon="mdi-information-outline"
+                class="d-none d-md-flex"
+              />
+              <VIcon
+                icon="mdi-image-outline"
+                class="d-flex d-md-none"
+              />
               <VTooltip
                 activator="parent"
                 location="bottom"
@@ -282,13 +310,16 @@ const { can } = useAuth()
             </VBtn>
           </div>
         </VToolbar>
-        <div class="d-flex w-100 h-100 position-relative">
+        <div class="d-flex w-100 h-100 position-relative dam-image-detail__content">
           <div class="d-flex w-100 align-center dam-image-detail__left">
             <div
               v-if="activeTab === AssetDetailTab.ROI && can(ACL.DAM_REGION_OF_INTEREST_UPDATE)"
               class="w-100 h-100 pa-2 d-flex align-center justify-center"
             >
-              <ADamAssetImageRoiSelect :ext-system="currentExtSystemId" />
+              <ADamAssetImageRoiSelect
+                :ext-system="currentExtSystemId"
+                :readonly="assetDetailStore.isDeleting"
+              />
             </div>
             <div
               v-else
@@ -324,7 +355,6 @@ const { can } = useAuth()
               :asset-type="assetType"
               :asset-main-file-status="assetMainFile ? assetMainFile.fileAttributes.status : undefined"
               :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
-              @post-delete="postDelete"
             />
           </div>
         </div>

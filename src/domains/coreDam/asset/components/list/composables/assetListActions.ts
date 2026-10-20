@@ -10,7 +10,6 @@ import {
   useAlerts,
   useDamCachedUsers,
   useFilterHelpers,
-  usePageNavigation,
   usePagination,
 } from '@anzusystems/common-admin'
 import type { AssetSearchListItemDto, DamAssetTypeType, DocId, Pagination } from '@anzusystems/common-admin'
@@ -29,6 +28,7 @@ import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
@@ -80,7 +80,8 @@ let nextPageAskedInGeneration = 0
 
 export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const router = useRouter()
-  const { onPage } = usePageNavigation()
+  // What a failed read leaves to be done is done on the page still, also once a question whether to leave it said "Stay".
+  const whileOnPage = useWhileOnPage()
   const assetListStore = useAssetListStore()
   const assetDetailStore = useAssetDetailStore()
   const uploadQueuesStore = useUploadQueuesStore()
@@ -137,8 +138,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     return index < 0 ? null : { ...clicked, index }
   }
 
-  /** The asset the panel beside the list shows: none while it is behind its loader, or holds none. */
-  const shownInPanel = () => (assetDetailStore.loader ? null : (assetDetailStore.asset?.id ?? null))
+  /** The asset the panel beside the list shows: behind its loader the one read into it, none when that is not known. */
+  const shownInPanel = () => assetDetailStore.shownOrReadAssetId()
 
   /**
    * The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list.
@@ -283,12 +284,17 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const showDetail = async (clicked: { assetId: DocId; index: number }) => {
     const data = readReplacesUnsavedOfPanel(clicked.assetId) ? await leaveUnsavedFor(clicked) : clicked
     if (isNull(data)) return
+    await openDetailOf(data)
+  }
+
+  // The detail of the tile opened, once nothing typed stands in the way.
+  const openDetailOf = async (data: { assetId: DocId; index: number }) => {
     assetDetailStore.setView('list')
     assetListStore.keyboardNavigationEnable()
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
-    const detailRequest = assetDetailStore.startDetailRequest()
+    const detailRequest = assetDetailStore.startDetailRequest(data.assetId)
     browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: data.assetId } })
     if (checkQuickDetailReFetch(data.assetId)) {
       assetDetailStore.hideLoader()
@@ -298,7 +304,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       const res = await fetchAsset(data.assetId, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      assetDetailStore.setAsset(res)
+      assetDetailStore.setAsset(res, detailRequest)
       addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
       fetchCachedUsers()
     } catch (error) {
@@ -310,9 +316,10 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetDetailStore.reset()
       // The address was changed to this asset before the request, so put it back while the user is still here.
       if (!dialogWasOpen) return
-      if (!onPage()) return
-      browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
-      showErrorsDefault(error)
+      whileOnPage(() => {
+        browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
+        showErrorsDefault(error)
+      })
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
     }
@@ -323,20 +330,21 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     const held = assetDetailStore.asset
     if (isNull(held)) return
     assetDetailStore.showLoader()
-    const detailRequest = assetDetailStore.startDetailRequest()
+    const detailRequest = assetDetailStore.startDetailRequest(held.id)
     try {
       const res = await fetchAsset(held.id, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      assetDetailStore.setAsset(res)
+      assetDetailStore.setAsset(res, detailRequest)
       addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
       fetchCachedUsers()
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       // Called from the dialog and the sidebar alike, so it has to undo both.
       assetDetailStore.reset()
-      if (!onPage()) return
-      browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
-      showErrorsDefault(error)
+      whileOnPage(() => {
+        browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
+        showErrorsDefault(error)
+      })
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
     }
@@ -347,12 +355,64 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
    * active tile can be of another asset - the detail of a queue row is not of the list. */
   const refreshActiveItem = (byServer = false) => readAfterFileChange(readHeldAssetWhole, byServer)
 
-  const onItemClick = async (clicked: { assetId: DocId; index: number }) => {
-    const data = readReplacesUnsavedOfPanel(clicked.assetId) ? await leaveUnsavedFor(clicked) : clicked
-    if (isNull(data)) return
+  /* "Edit" of the panel beside the list opens the detail over the asset the panel holds: read whole, as its pencil
+   * reads it, when nothing typed into it waits to be saved - a "Save" held back comes free, as the line under it
+   * says. Not when read a moment ago. */
+  const readHeldUnlessTyped = async () => {
+    const held = assetDetailStore.asset
+    if (isNull(held) || assetDetailStore.holdsUnsavedMetadata || checkQuickDetailReFetch(held.id)) return
+    await readHeldAssetWhole()
+  }
+
+  /* A double click on a tile is two clicks and then itself, and the first click asks: in a browser the rest of it lands
+   * on the question, drawn over the tile by then. Heard while the question is open - on the tile, or on the question at
+   * the place of the tile, not inside its card, where a double click is the user's own -, it makes the click open the
+   * detail of the tile once told to leave, as the double click would have. Not once a button was pressed inside the
+   * card since the question opened: the browser can send a double click whose second click was there to an element
+   * that holds both the tile and the card. */
+  const leaveUnsavedForClick = async (clicked: { assetId: DocId; index: number; tile?: Element | null }) => {
+    let doubled = false
+    let pressedInCard = false
+    const pressed = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest('.v-overlay__content')) pressedInCard = true
+    }
+    const heard = (event: MouseEvent) => {
+      const tile = clicked.tile
+      const target = event.target instanceof Element ? event.target : null
+      if (!tile || !target || pressedInCard) return
+      if (tile.contains(target)) {
+        doubled = true
+        return
+      }
+      if (target.closest('.v-overlay__content')) return
+      const place = tile.getBoundingClientRect()
+      const x = event.clientX
+      const y = event.clientY
+      if (x >= place.left && x <= place.right && y >= place.top && y <= place.bottom) doubled = true
+    }
+    window.addEventListener('mousedown', pressed, { capture: true })
+    window.addEventListener('dblclick', heard, { capture: true })
+    try {
+      const data = await leaveUnsavedFor(clicked)
+
+      return isNull(data) ? null : { data, doubled }
+    } finally {
+      window.removeEventListener('mousedown', pressed, { capture: true })
+      window.removeEventListener('dblclick', heard, { capture: true })
+    }
+  }
+
+  const onItemClick = async (clicked: { assetId: DocId; index: number; tile?: Element | null }) => {
+    let data = clicked
+    if (readReplacesUnsavedOfPanel(clicked.assetId)) {
+      const asked = await leaveUnsavedForClick(clicked)
+      if (isNull(asked)) return
+      if (asked.doubled) return openDetailOf(asked.data)
+      data = asked.data
+    }
     assetListStore.setActiveByIndex(data.index)
     assetDetailStore.showLoader()
-    const detailRequest = assetDetailStore.startDetailRequest()
+    const detailRequest = assetDetailStore.startDetailRequest(data.assetId)
     if (sidebarRight) sidebarRight.value = true
     if (checkQuickDetailReFetch(data.assetId)) {
       assetDetailStore.hideLoader()
@@ -361,15 +421,14 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       const res = await fetchAsset(data.assetId, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      assetDetailStore.setAsset(res)
+      assetDetailStore.setAsset(res, detailRequest)
       addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
       fetchCachedUsers()
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       // The sidebar keeps its last asset, and would show it under the newly selected one.
       assetDetailStore.reset()
-      if (!onPage()) return
-      showErrorsDefault(error)
+      whileOnPage(() => showErrorsDefault(error))
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
     }
@@ -461,7 +520,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     if (isUndefined(nextAsset)) return
     assetDetailStore.showLoader()
     const newAssetId = nextAsset.asset.id
-    const detailRequest = assetDetailStore.startDetailRequest()
+    const detailRequest = assetDetailStore.startDetailRequest(newAssetId)
     // The address is of the open detail: with none open the list is walked, and its address stays.
     if (assetDetailStore.detail) {
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
@@ -473,7 +532,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       const res = await fetchAsset(newAssetId, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      assetDetailStore.setAsset(res)
+      assetDetailStore.setAsset(res, detailRequest)
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
@@ -481,10 +540,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
        * and the panel on the right renders that same asset - the one before it would be left there
        * under a working Save button. */
       assetDetailStore.reset()
-      if (!onPage()) return
       // The address was changed to this asset only for an open detail: put back while the user is still here.
-      if (dialogWasOpen) browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
-      showErrorsDefault(error)
+      whileOnPage(() => {
+        if (dialogWasOpen) browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
+        showErrorsDefault(error)
+      })
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
     }
@@ -503,7 +563,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     if (isUndefined(prevAsset)) return
     assetDetailStore.showLoader()
     const newAssetId = prevAsset.asset.id
-    const detailRequest = assetDetailStore.startDetailRequest()
+    const detailRequest = assetDetailStore.startDetailRequest(newAssetId)
     if (assetDetailStore.detail) {
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
     }
@@ -514,7 +574,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       const res = await fetchAsset(newAssetId, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      assetDetailStore.setAsset(res)
+      assetDetailStore.setAsset(res, detailRequest)
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
@@ -522,10 +582,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
        * and the panel on the right renders that same asset - the one before it would be left there
        * under a working Save button. */
       assetDetailStore.reset()
-      if (!onPage()) return
       // The same as `nextItem`: the address was changed only for an open detail.
-      if (dialogWasOpen) browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
-      showErrorsDefault(error)
+      whileOnPage(() => {
+        if (dialogWasOpen) browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
+        showErrorsDefault(error)
+      })
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
     }
@@ -550,9 +611,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   /* The keys are heard on the whole window, so also with a dialog or a menu open over the detail. The read of the
    * next asset puts the detail behind its loader, and what is open over it is unmounted with it: a form half filled
-   * in is gone. */
-  const detailIsUnderDialogOrMenu = () =>
-    assetDetailStore.detail && anotherDialogOrMenuIsOpen('.' + ASSET_DETAIL_DIALOG_CLASS)
+   * in is gone. With the detail closed, nor under a dialog or a menu of the page: the list is not what is in use. */
+  const underDialogOrMenu = () =>
+    assetDetailStore.detail ? anotherDialogOrMenuIsOpen('.' + ASSET_DETAIL_DIALOG_CLASS) : anotherDialogOrMenuIsOpen()
 
   /* A queue drawn over the whole page - the upload, the mass edit - covers the list: the keys would walk tiles nobody
    * sees and read their assets into the panel. The queue turns them off itself, and the detail of one of its rows
@@ -565,13 +626,13 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const onArrowRight = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
-    if (listIsUnderQueue() || detailIsNotOfList() || detailIsUnderDialogOrMenu()) return
+    if (listIsUnderQueue() || detailIsNotOfList() || underDialogOrMenu()) return
     await nextItem()
   }
 
   const onArrowLeft = async (event: KeyboardEvent) => {
     if (keyboardEventTargetIsAnyFormElement(event) || !assetListStore.keyboardNavigation) return
-    if (listIsUnderQueue() || detailIsNotOfList() || detailIsUnderDialogOrMenu()) return
+    if (listIsUnderQueue() || detailIsNotOfList() || underDialogOrMenu()) return
     await prevItem()
   }
 
@@ -598,6 +659,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     listUnmounted,
     showDetail,
     refreshActiveItem,
+    readHeldUnlessTyped,
     onItemClick,
     prevItem,
     nextItem,

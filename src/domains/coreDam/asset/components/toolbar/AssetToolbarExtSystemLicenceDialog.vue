@@ -18,6 +18,7 @@ import type { ErrorObject } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
@@ -107,6 +108,12 @@ const onCancel = () => {
   if (saving.value) return
   dialog.value = false
 }
+
+/* Nor does the page go meanwhile, with the dialog: the back button of the browser onto an entry where ADAM was loaded
+ * or reloaded gets past Vuetify, which otherwise only closes the dialog. Nor its address: the page of another provider
+ * is the same page of the router, and the application draws each address anew; another query is drawn on. */
+onBeforeRouteLeave(() => !saving.value)
+onBeforeRouteUpdate((to, from) => to.path === from.path || !saving.value)
 
 const { required, minValue } = useValidate()
 

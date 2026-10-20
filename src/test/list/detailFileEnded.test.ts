@@ -357,13 +357,15 @@ describe('a form opened while the main file of its asset was being processed, on
   })
 
   // The guard: a file in another slot of the asset is not its main file.
-  it('is not read again for a file in another slot of its asset, nor for the file of another asset', async () => {
+  /* A file of another slot that failed can have had the metadata filled in from it before it failed: the asset is
+   * read again for it, as for one processed. Not for a file of another asset. */
+  it('is read again for a file in another slot of its asset that failed, not for the file of another asset', async () => {
     const form = await openForm(inTheDetailOfTheList)
 
     await ended('failed', IN_SLOT)
     await ended('duplicate', 'file-of-other', OTHER)
     await answered()
 
-    expect([reads(), form.save(), form.ui.alerts()]).toEqual([1, HELD_BACK, []])
+    expect([reads(), form.save(), form.ui.alerts()]).toEqual([2, HELD_BACK, []])
   })
 })

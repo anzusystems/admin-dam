@@ -43,11 +43,12 @@ const listWithPick = async () => {
   store.toggleSelectedByIndex(1)
 }
 
-/** The colour filter of the list over two colours, as its filter form provides it, and what it filters by; with
+/** The colour filter of the list over three colours, one of them with no name of its own in the app, as its filter
+ * form provides it, and what it filters by; with
  * `inForm`, inside that form, which searches on Enter, and how many times it did. */
 const mountColours = async (ui: UploadUi, inForm = false) => {
   const config = ui.library.useDamConfigStore()
-  config.damPrvConfig = { ...config.damPrvConfig, colorSet: { red: '#ff0000', blue: '#0000ff' } }
+  config.damPrvConfig = { ...config.damPrvConfig, colorSet: { red: '#ff0000', blue: '#0000ff', teal: '#008080' } }
   const data = reactive<{ color: string[] }>({ color: [] })
   const { default: FilterClosestColor } = await import('@/domains/coreDam/shared/components/FilterClosestColor.vue')
   const searched = ref(0)
@@ -71,6 +72,21 @@ const mountColours = async (ui: UploadUi, inForm = false) => {
 
 const key = (type: 'keydown' | 'keyup', name: string) =>
   new KeyboardEvent(type, { key: name, bubbles: true, cancelable: true })
+
+/** What the tooltip of the element says while the pointer is over it. */
+const tooltipOf = async (element: HTMLElement) => {
+  element.dispatchEvent(new MouseEvent('mouseenter'))
+  await vi.advanceTimersByTimeAsync(1000)
+  const said = Array.from(document.body.querySelectorAll('.v-tooltip.v-overlay--active .v-overlay__content'))
+    .map((tooltip) => tooltip.textContent?.trim())
+    .join(' + ')
+  element.dispatchEvent(new MouseEvent('mouseleave'))
+  await vi.advanceTimersByTimeAsync(1000)
+
+  return said
+}
+
+const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
 
 beforeEach(() => {
   server = createFakeDam()
@@ -113,14 +129,42 @@ describe('the controls of the page as a screen reader gets them', () => {
     ])
   })
 
-  it('a colour of the filter is a button, named by its title, that says whether it is chosen', async () => {
+  // A colour the app has no name for is named by its key, as the configuration names it.
+  it('a colour of the filter is a button, named by the name of its colour, that says whether it is chosen', async () => {
     const { swatches } = await mountColours(await startUploadUi({ server }))
 
     expect(
-      swatches().map((swatch) => ['role', 'tabindex', 'title', 'aria-pressed'].map((name) => swatch.getAttribute(name)))
+      swatches().map((swatch) =>
+        ['role', 'tabindex', 'title', 'aria-label', 'aria-pressed'].map((name) => swatch.getAttribute(name))
+      )
     ).toEqual([
-      ['button', '0', 'red', 'false'],
-      ['button', '0', 'blue', 'false'],
+      ['button', '0', null, 'Red', 'false'],
+      ['button', '0', null, 'Blue', 'false'],
+      ['button', '0', null, 'teal', 'false'],
+    ])
+  })
+
+  // One tooltip, no native one beside it: the name of the colour and its code.
+  it('a colour of the filter says its name and its code in one tooltip, in the language of the user', async () => {
+    const { swatches } = await mountColours(await startUploadUi({ server }))
+    const said = async () => {
+      const tooltips: string[] = []
+      for (const swatch of swatches()) tooltips.push(await tooltipOf(swatch))
+
+      return [tooltips, swatches().map((swatch) => swatch.getAttribute('aria-label'))]
+    }
+
+    expect(await said()).toEqual([
+      ['Red (#ff0000)', 'Blue (#0000ff)', 'teal (#008080)'],
+      ['Red', 'Blue', 'teal'],
+    ])
+    const { i18n } = await import('@/plugins/i18n')
+    i18n.global.setLocaleMessage('sk', (await import('@/locales/sk')).default as never)
+    i18n.global.locale.value = 'sk' as never
+    await nextTick()
+    expect(await said()).toEqual([
+      ['Červená (#ff0000)', 'Modrá (#0000ff)', 'teal (#008080)'],
+      ['Červená', 'Modrá', 'teal'],
     ])
   })
 
@@ -132,7 +176,7 @@ describe('the controls of the page as a screen reader gets them', () => {
     const enter = key('keydown', 'Enter')
     swatches()[1]!.dispatchEvent(enter)
     await nextTick()
-    expect([enter.defaultPrevented, data.color, pressed()]).toEqual([true, ['#0000ff'], ['false', 'true']])
+    expect([enter.defaultPrevented, data.color, pressed()]).toEqual([true, ['#0000ff'], ['false', 'true', 'false']])
 
     const down = key('keydown', ' ')
     swatches()[1]!.dispatchEvent(down)
@@ -140,7 +184,7 @@ describe('the controls of the page as a screen reader gets them', () => {
     expect([down.defaultPrevented, data.color]).toEqual([true, ['#0000ff']])
     swatches()[1]!.dispatchEvent(key('keyup', ' '))
     await nextTick()
-    expect([data.color, pressed()]).toEqual([[], ['false', 'false']])
+    expect([data.color, pressed()]).toEqual([[], ['false', 'false', 'false']])
 
     // Another key does nothing, and is left to the page.
     const tab = key('keydown', 'Tab')
@@ -245,6 +289,35 @@ describe('the controls of the page as a screen reader gets them', () => {
       ['Grid', 'true'],
       ['List', 'false'],
     ])
+  })
+
+  /* As a button: Enter as it goes down, Space as it comes up. The key stays with the icon: neither the field nor its
+   * form (which searches on its own submit) gets it, so each key searches once. */
+  it('the search icon of the list searches by Enter and by Space, once each', async () => {
+    server.on('GET', SEARCH, () => ({ status: 200, data: { data: [], hasNextPage: false } }))
+    const ui = await startUploadUi({ server })
+    const toolbar = await ui.mount(() => import('@/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'))
+    const icon = toolbar.querySelector<HTMLElement>('.mdi-magnify')!
+    const reached: string[] = []
+    const form = toolbar.querySelector('form')!
+    form.addEventListener('keydown', (event) => reached.push('keydown ' + event.key))
+    form.addEventListener('keyup', (event) => reached.push('keyup ' + event.key))
+    const searches = () => server.sent('GET', SEARCH).length
+
+    const enter = key('keydown', 'Enter')
+    icon.dispatchEvent(enter)
+    const enterUp = key('keyup', 'Enter')
+    icon.dispatchEvent(enterUp)
+    await vi.advanceTimersByTimeAsync(100)
+    expect([searches(), enter.defaultPrevented, enterUp.defaultPrevented]).toEqual([1, true, true])
+
+    const down = key('keydown', ' ')
+    icon.dispatchEvent(down)
+    await vi.advanceTimersByTimeAsync(100)
+    expect([searches(), down.defaultPrevented]).toEqual([1, true])
+    icon.dispatchEvent(key('keyup', ' '))
+    await vi.advanceTimersByTimeAsync(100)
+    expect([searches(), reached]).toEqual([2, []])
   })
 
   it('the search icon of the list is a named button', async () => {

@@ -7,10 +7,14 @@ import type {
   DocIdNullable,
 } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+import { metadataSaveSent } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+
+// When the server last changed the image of a file (a rotation does); none for a file of another type.
+const manipulatedAt = (file: AssetFile) => ('manipulatedAt' in file ? (file.manipulatedAt ?? '') : '')
 
 // The states the server ends the processing of a file in.
 const FILE_ENDED: AssetFileProcessStatusType[] = [
@@ -43,7 +47,13 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * It always reaches its own `finally` and lowers the loader - after `abandonDetailRequests` none
    * is newest, and the loader waits for the reset every component does on mount. */
   let detailRequests = 0
-  const startDetailRequest = () => ++detailRequests
+  // The asset the newest of them reads, when it is known.
+  let detailRequestOf: DocId | null = null
+  /** `assetId`: the asset it reads into the detail, where that is known. */
+  const startDetailRequest = (assetId: DocId | null = null) => {
+    detailRequestOf = assetId
+    return ++detailRequests
+  }
   const isCurrentDetailRequest = (token: number) => token === detailRequests
   /* Nothing on the wire is this detail's answer any more - called where the user leaves it behind
    * altogether, because a request coming back after that moved the address from wherever they went. */
@@ -75,15 +85,49 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * and a form taken from that answer would be saved back over it. */
   const saves = new Map<DocId, { sent: number; onTheirWay: number }>()
 
-  /** As a save of the form of the asset goes out: answers what is called once it is answered, however it ends. */
-  function saveSent(assetId: DocId) {
-    const of = saves.get(assetId) ?? { sent: 0, onTheirWay: 0 }
-    saves.set(assetId, of)
+  /* What was typed into a form, counted: each save that takes something typed since the save before it takes the next
+   * count, and a save that only takes over what one on its way took has that one's count. The saves of a form on their
+   * way with what they took, and the count saved last of each form: until a save of a count is answered, what was typed
+   * up to it is not saved yet, and leaving the form is asked about as it was before the save went out. */
+  let typedCounts = 0
+  const typedSaves = shallowRef<Array<{ form: object; typed: number }>>([])
+  const savedTyped = new WeakMap<object, number>()
+  /** Whether something typed into the form is not known as saved, a save of it on its way. */
+  const typedOnItsWay = (form: object) =>
+    typedSaves.value.some((save) => save.form === form && save.typed > (savedTyped.get(form) ?? 0))
+
+  /**
+   * As a save of the form of the asset goes out, from the detail or from the panel beside the list. What was typed into
+   * the form goes with it and is no longer "touched", and so does what a save of the same form still on its way took.
+   * Answers what is called once the save is answered, `failed` or not. A failure brings back as unsaved what this save
+   * took, unless another save of the form saved it, or one still on its way takes it as well - its end counts then -,
+   * while the form is still the one it was taken from and the asset is not being deleted: what was typed into it has
+   * nowhere to be saved.
+   */
+  function saveSent(form: AssetDetailItemDto) {
+    const of = saves.get(form.id) ?? { sent: 0, onTheirWay: 0 }
+    saves.set(form.id, of)
     of.sent++
     of.onTheirWay++
+    // Known to a read of a queue row of the asset too.
+    const answered = metadataSaveSent([form.id])
+    const before = typedSaves.value.filter((save) => save.form === form).map((save) => save.typed)
+    const typed = metadataAreTouched.value ? ++typedCounts : Math.max(0, ...before)
+    metadataAreTouched.value = false
+    const save = { form, typed }
+    if (typed) typedSaves.value = [...typedSaves.value, save]
 
-    return () => {
+    return (failed: boolean) => {
       of.onTheirWay--
+      answered()
+      if (!typed) return
+      if (!failed) savedTyped.set(form, Math.max(savedTyped.get(form) ?? 0, typed))
+      typedSaves.value = typedSaves.value.filter((other) => other !== save)
+      const saved = typed <= (savedTyped.get(form) ?? 0)
+      const takenFurther = typedSaves.value.some((other) => other.form === form && other.typed >= typed)
+      if (failed && !saved && !takenFurther && asset.value === form && !isDeleting.value) {
+        metadataAreTouched.value = true
+      }
     }
   }
 
@@ -94,14 +138,29 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     return of?.onTheirWay ? null : (of?.sent ?? 0)
   }
 
+  /** The asset held is being deleted - here, elsewhere, by the word of the server: nothing of it is to be changed. */
+  const isDeleting = computed(() => asset.value?.attributes?.assetStatus === DamAssetStatus.Deleting)
+
+  /* Typed into the form held and not saved: also while a save of it is on its way, which can fail and leave it unsaved.
+   * Nothing of an asset being deleted: it has nowhere to be saved. */
+  const holdsUnsavedMetadata = computed(
+    () => metadataAreTouched.value || (!!asset.value && !isDeleting.value && typedOnItsWay(asset.value))
+  )
+
   /* The question asked before metadata that were not saved are thrown away by leaving the asset, and what waits for
    * its answer. */
   const leaveUnsavedQuestion = ref(false)
   let leaveUnsavedAnswer: ((leave: boolean) => void) | null = null
+  /* "Leave anyway" gives what was typed up: the read the question was asked for goes on behind the loader, and replaces
+   * it. Until a loader is lowered, or the form is replaced. */
+  const typedLeft = ref(false)
   /** Not under the loader: the form is not shown then, and the asset it was of has been left already. */
-  const showsUnsavedMetadata = computed(() => detail.value && !loader.value && metadataAreTouched.value)
-  /** The same with the detail closed: the panel beside the list is the form then, whether it is in view or not. */
-  const panelHoldsUnsavedMetadata = computed(() => !detail.value && !loader.value && metadataAreTouched.value)
+  const showsUnsavedMetadata = computed(() => detail.value && !loader.value && holdsUnsavedMetadata.value)
+  /** The same with the detail closed: the panel beside the list is the form then, whether it is in view or not, and
+   * also behind a loader that is not over what was given up. */
+  const panelHoldsUnsavedMetadata = computed(
+    () => !detail.value && holdsUnsavedMetadata.value && !(loader.value && typedLeft.value)
+  )
 
   /** Asks whether to leave the metadata that were not saved; one question at a time, another ask meanwhile stays. */
   function askToLeaveUnsaved() {
@@ -112,6 +171,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   }
 
   function answerLeaveUnsaved(leave: boolean) {
+    if (leaveUnsavedQuestion.value) typedLeft.value = leave
     leaveUnsavedQuestion.value = false
     const answer = leaveUnsavedAnswer
     leaveUnsavedAnswer = null
@@ -142,6 +202,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
 
   function hideLoader() {
     loader.value = false
+    typedLeft.value = false
     // Every read of the detail that is current when it ends comes here.
     const pending = afterCurrentRead
     afterCurrentRead = null
@@ -162,22 +223,28 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileInternal.value = read?.mainFile?.flags.internal || false
   }
 
-  /* An asset marked as being deleted (`setDeleting`): a read of it answered after that was asked before the delete
-   * went through, and would put back the asset as it was, with a form to save into an asset that is going. */
+  /* An asset marked as being deleted (`setDeleting`): a read of it answered after that can have been asked before the
+   * delete went through, and would put back the asset as it was, with a form to save into an asset that is going. Not
+   * a read of the detail started after it was marked (`request`): the server says how the asset is now. */
   const heldAsDeleting = (assetId: DocId) =>
     asset.value?.id === assetId && asset.value.attributes.assetStatus === DamAssetStatus.Deleting
+  // The detail request that was the newest one when the asset held was marked as being deleted.
+  let markedDeletingAt = 0
 
-  function setAsset(newAsset: AssetDetailItemDto) {
-    if (heldAsDeleting(newAsset.id)) return
+  /** `request`: the detail request that read it, for one that does. */
+  function setAsset(newAsset: AssetDetailItemDto, request?: number) {
+    if (heldAsDeleting(newAsset.id) && !(request && request > markedDeletingAt)) return
     const { getAuthorConflicts } = useAssetSuggestions()
     readMainFileSwitches(newAsset)
     ttsAudio.value = newAsset?.assetFileProperties?.ttsAudio || false
     metadataAreTouched.value = false // todo check
     saveHeldBack.value = false
+    typedLeft.value = false
     // What was typed is replaced: an open question has nothing left to keep.
     answerLeaveUnsaved(false)
     authorConflicts.value = getAuthorConflicts(newAsset.metadata.authorSuggestions)
     prefetchLazyData(newAsset) // todo check
+    toldOfMainFile = null
     asset.value = newAsset
   }
 
@@ -199,15 +266,20 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     if (!asset.value || heldAsDeleting(asset.value.id)) return
     if (saveWasHeldBack) holdSaveBack(asset.value.id)
     const anotherFile = asset.value.mainFile?.id !== read.mainFile?.id
+    toldOfMainFile = null
     asset.value.mainFile = read.mainFile
     asset.value.attributes.assetStatus = read.attributes.assetStatus
     if (anotherFile) readMainFileSwitches(read)
   }
 
-  /* The main file read anew by the detail itself (the tab of the region of interest, after a rotation): only the file,
-   * and only while it is the main file of the asset held - nothing typed or switched is touched, as `setAsset` would. */
-  function setMainFileReadAgain(file: AssetFile) {
-    if (asset.value?.mainFile?.id === file.id) asset.value.mainFile = file
+  /* The main file as the server answered its rotation: only the file, and only while it is the main file of the asset
+   * held - nothing typed or switched is touched, as `setAsset` would. Not a file the server changed before the one
+   * held: a read of the asset answered after the rotation keeps a later change. */
+  function setMainFileRotated(file: AssetFile) {
+    const held = asset.value?.mainFile
+    if (!asset.value || held?.id !== file.id) return
+    if (manipulatedAt(file) < manipulatedAt(held)) return
+    asset.value.mainFile = file
   }
 
   /* The page that draws the detail reads its asset again once the file of the asset has changed, told by the part of
@@ -220,6 +292,10 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * the queue that settles its row both say it is processed, in whatever order, and one read of the asset is enough
    * for each file. Begun anew for another asset. */
   let toldOfOtherFiles: { assetId: DocId; fileIds: Set<DocId> } = { assetId: '', fileIds: new Set() }
+  /* And the main file it was told of last, with how the server ended it: the row of the queue the notification settles
+   * and the notification itself say it one after the other, before the read of the first has landed. Forgotten once a
+   * read of the asset lands, or fails. */
+  let toldOfMainFile: { assetId: DocId; fileId: DocId; status: AssetFileProcessStatusType } | null = null
 
   /** `fileChanged` is what the page reads its asset again by. Answers what takes it back, for when the page goes. */
   function tellPageBy(fileChanged: () => void) {
@@ -229,6 +305,19 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
       if (tellPage === fileChanged) tellPage = null
     }
   }
+
+  /** A read the page started for what it was told failed: told again, it reads again. */
+  function readOfToldFailed() {
+    toldOfMainFile = null
+  }
+
+  /** The page that draws the detail now is told the file of its asset has changed, as the server tells it. */
+  function tellPageOfFileChange() {
+    tellPage?.()
+  }
+
+  /** The asset the detail shows - under its loader the one being read into it, null when that is not known. */
+  const shownOrReadAssetId = () => (loader.value ? detailRequestOf : (asset.value?.id ?? null))
 
   /**
    * The server says how far it is with a file of an asset: that it has processed it, or ended it failed or as a
@@ -243,10 +332,11 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function fileStatusOnServer(assetId: DocId, fileId: DocId, status: AssetFileProcessStatusType) {
     const ended = FILE_ENDED.includes(status)
     /* The server fills in the metadata of an asset that is not described from whichever of its files it processes
-     * first, a file of another slot as well: the form is then older than they are, whatever is held of the main
-     * file, until the asset is read whole. */
+     * first, a file of another slot as well - also one that fails after that: the metadata are saved before its
+     * processing ends. The form is then older than they are, whatever is held of the main file, until the asset is
+     * read whole. */
     const mayHaveFilledIn = () =>
-      status === AssetFileProcessStatus.Processed &&
+      (status === AssetFileProcessStatus.Processed || status === AssetFileProcessStatus.Failed) &&
       asset.value?.mainFile?.id !== fileId &&
       !asset.value?.flags?.described
     const heldAsBefore = () => {
@@ -267,6 +357,10 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
         toldOfOtherFiles.fileIds.add(fileId)
         // Read whole when nothing is typed, which lets it free; kept with what was typed.
         holdSaveBack(assetId)
+      } else {
+        const told = toldOfMainFile
+        if (told?.assetId === assetId && told.fileId === fileId && told.status === status) return
+        toldOfMainFile = { assetId, fileId, status }
       }
       tellPage()
     })
@@ -317,6 +411,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function setDeleting() {
     if (!asset.value) return
     asset.value.attributes.assetStatus = DamAssetStatus.Deleting
+    markedDeletingAt = detailRequests
     // What was typed into it has nowhere to be saved: it is not asked about, and no "Save" stands out for it.
     metadataAreTouched.value = false
   }
@@ -328,6 +423,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
      * content and no way out: the dialogs are persistent, Esc does not close one. */
     lastFetchedId.value = ''
     lastFetched.value = 0
+    toldOfMainFile = null
     asset.value = null
     authorConflicts.value = []
     loader.value = false
@@ -340,6 +436,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     ttsAudio.value = false
     saveHeldBack.value = false
     answerLeaveUnsaved(false)
+    typedLeft.value = false
   }
 
   return {
@@ -357,9 +454,12 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     mainFileInternal,
     ttsAudio,
     saveHeldBack,
+    isDeleting,
     saveSent,
     savesOf,
+    holdsUnsavedMetadata,
     leaveUnsavedQuestion,
+    typedLeft,
     showsUnsavedMetadata,
     panelHoldsUnsavedMetadata,
     askToLeaveUnsaved,
@@ -376,8 +476,11 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     hideLoader,
     setAsset,
     setMainFile,
-    setMainFileReadAgain,
+    setMainFileRotated,
     tellPageBy,
+    tellPageOfFileChange,
+    readOfToldFailed,
+    shownOrReadAssetId,
     fileStatusOnServer,
     mainFileOfRead,
     savedAsDescribed,

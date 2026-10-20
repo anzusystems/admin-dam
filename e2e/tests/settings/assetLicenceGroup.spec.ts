@@ -122,7 +122,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
   })
 
   test('deletes a licence group again @bug', async () => {
-    test.fail() // DAM-B3: the API answers the delete with a 500 — see KNOWN-BUGS.md
+    test.fail() // DAM-B3: the API answers the delete with a 500
     test.info().annotations.push({ type: 'bug', description: 'DAM-B3' })
 
     const status = await deleteLicenceGroupStatus(page, GROUP_ID)

@@ -23,6 +23,8 @@ const props = withDefaults(
     multiple?: boolean
     buttonText?: string
     height?: number
+    // Of the button that adds a file to a slot.
+    disabled?: boolean
   }>(),
   {
     variant: 'dropzone-fullscreen',
@@ -33,6 +35,7 @@ const props = withDefaults(
     multiple: true,
     buttonText: '',
     height: 34,
+    disabled: false,
   }
 )
 
@@ -296,6 +299,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     variant="flat"
     :height="height"
     :width="height"
+    :disabled="disabled"
     @click.stop="clickDropzone"
   >
     <VIcon

@@ -45,6 +45,9 @@ export const httpError = (status: number, data: unknown = {}) => {
   return new AxiosError('Request failed with status code ' + status, String(status), config, {}, response)
 }
 
+/** What axios takes for an answer when the request does not say (`validateStatus`): a 2xx. */
+const settled = (status: number) => status >= 200 && status < 300
+
 /** What axios rejects a request with whose signal was aborted: an `AxiosError` of the code `ERR_CANCELED`. */
 const canceled = (config: AxiosRequestConfig) => new CanceledError('canceled', config as InternalAxiosRequestConfig)
 
@@ -119,6 +122,8 @@ export const createFakeDam = () => {
       if (!match) continue
       const answer = await unlessAborted(handler(request, match), config)
       answer.arrived?.()
+      // As axios settles an answer: by the `validateStatus` of the request, a 2xx without one; else thrown, with it.
+      if (!(config.validateStatus ?? settled)(answer.status)) throw httpError(answer.status, answer.data)
 
       return { status: answer.status, data: answer.data, statusText: '', headers: {}, config }
     }

@@ -1,3 +1,6 @@
+import { setFlagsFromString } from 'node:v8'
+import { runInNewContext } from 'node:vm'
+
 import type {
   CustomDataFormElement,
   DamAssetTypeType,
@@ -225,6 +228,28 @@ export const stopUploadUi = () => {
     devtoolsPlugins()?.splice(pluginsBefore)
     if (windowResized) setWindowWidth(WINDOW_WIDTH)
     windowResized = false
+    collectWhenBig()
+  }
+}
+
+/* Each start evaluates the modules anew, and what a case leaves is garbage once it is over: V8 lets the heap grow first
+ * and collects it late, so a file of many cases held several of them at once. Above this, all of it is collected
+ * after a case. The collector is not given to a test without a flag of node: it is asked for as the flag would. Node
+ * does not promise a flag set after its start takes: without the collector, or when it fails, nothing is collected,
+ * and the end of the case is not failed for it. */
+const COLLECTED_ABOVE = 1024 ** 3
+let collect: (() => void) | undefined
+const collectWhenBig = () => {
+  if (process.memoryUsage().heapUsed < COLLECTED_ABOVE) return
+  try {
+    if (!collect) {
+      setFlagsFromString('--expose_gc')
+      const gc: unknown = runInNewContext('typeof gc === "function" ? gc : undefined')
+      collect = typeof gc === 'function' ? (gc as () => void) : () => undefined
+    }
+    collect()
+  } catch {
+    collect = () => undefined
   }
 }
 

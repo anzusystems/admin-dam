@@ -262,11 +262,12 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
-  // An asset with no file yet, as the server makes one.
+  // An asset with no file yet, as the server makes one, and has it from then on.
   server.on('POST', CREATE, () => ({
     status: 201,
     data: onServer('asset-new', { attributes: { assetType: 'image', assetStatus: 'draft' }, mainFile: null }),
   }))
+  server.asset(onServer('asset-new', { attributes: { assetType: 'image', assetStatus: 'draft' }, mainFile: null }))
   // The window is one for the whole file, and so is its address.
   window.history.replaceState(null, '', LIST)
 })

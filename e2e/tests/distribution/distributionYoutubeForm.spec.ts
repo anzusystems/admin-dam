@@ -140,7 +140,7 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
   })
 
   test('the publish-at picker of "Naplánované" is labelled @bug', async () => {
-    test.fail() // DAM-B9: the YouTube form renders it with an empty label — see KNOWN-BUGS.md
+    test.fail() // DAM-B9: the YouTube form renders it with an empty label
     test.info().annotations.push({ type: 'bug', description: 'DAM-B9' })
 
     await openDistributionTab(page, ASSET_ID)

@@ -14,6 +14,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { makePublicFile } from '@/domains/coreDam/asset/api/fileApi'
+import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 
 const props = withDefaults(
   defineProps<{
@@ -39,6 +40,8 @@ const onCancel = () => {
 }
 
 const { showRecordWas, showValidationError, showErrorsDefault, showUnknownError } = useAlerts()
+// Said on the page the change was asked from, as the failure of the read after it: not on the next one.
+const whileOnPage = useWhileOnPage()
 
 const modelValueComputed = computed(() => {
   return modelValue.value
@@ -98,8 +101,9 @@ const onConfirm = async () => {
 
     showRecordWas('updated')
   } catch (e) {
-    // The request rejects with what axios threw, or with nothing at all: neither is an error the alerts know.
-    if (!showErrorsDefault(e)) showUnknownError()
+    whileOnPage(() => {
+      if (!showErrorsDefault(e)) showUnknownError()
+    })
     // The dialog stays, with what was typed into it, for another try.
     return
   } finally {
