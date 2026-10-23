@@ -7,7 +7,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -31,14 +31,11 @@ const breadcrumbs = defineBreadcrumbs(() => [
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/asset-licences',
   skipRouteNames: ['/(coreDam)/asset-licences/[id]/edit'],
   loading: detailLoading,
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(resetStore)

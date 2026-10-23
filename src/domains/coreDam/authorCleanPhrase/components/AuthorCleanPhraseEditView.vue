@@ -7,7 +7,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -39,14 +39,11 @@ const breadcrumbs = defineBreadcrumbs(() => [
 ])
 
 // Not the Close button's fallback: that is this record's detail, which failed to load just as well.
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/author-clean-phrases',
   skipRouteNames: ['/(coreDam)/author-clean-phrases/[id]'],
   loading: detailLoading,
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(resetStore)

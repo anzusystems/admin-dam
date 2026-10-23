@@ -6,7 +6,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -30,14 +30,11 @@ const breadcrumbs = defineBreadcrumbs(() => [
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/authors',
   skipRouteNames: ['/(coreDam)/authors/[id]/edit'],
   loading: detailLoading,
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(resetStore)

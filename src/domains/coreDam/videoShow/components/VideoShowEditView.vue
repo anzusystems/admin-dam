@@ -6,7 +6,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -20,7 +20,7 @@ const id = (route.params as { id: string }).id.toString()
 const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, videoShow } =
   useVideoShowEditActions()
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/video-shows',
   skipRouteNames: [
     '/(coreDam)/video-shows/[id]',
@@ -28,10 +28,7 @@ const { signal, leave } = useRecordPage({
     '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
   ],
   loading: detailLoading,
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(resetStore)

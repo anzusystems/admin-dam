@@ -9,7 +9,7 @@ import {
   useAnzuUserActions,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -57,14 +57,11 @@ const breadcrumbs = defineBreadcrumbs(() => [
   },
 ])
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/users-new',
   skipRouteNames: ['/(coreDam)/users-new/[id]/edit', '/(coreDam)/users-new/new'],
   loading: loadingAnzuUser,
-})
-
-onMounted(async () => {
-  if ((await fetchAnzuUser(id, { signal })) === false) await leave()
+  load: (signal) => fetchAnzuUser(id, { signal }),
 })
 
 onBeforeUnmount(() => {

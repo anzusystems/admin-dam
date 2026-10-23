@@ -8,7 +8,7 @@ import {
   useRecordPage,
   useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -59,14 +59,11 @@ const breadcrumbs = defineBreadcrumbs(() => [
   },
 ])
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/distribution-category-selects',
   skipRouteNames: ['/(coreDam)/distribution-category-selects/[id]'],
   loading: detailLoading,
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(resetStore)

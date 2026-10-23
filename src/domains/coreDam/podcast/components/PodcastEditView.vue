@@ -8,7 +8,7 @@ import {
   useRecordPage,
   useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -35,7 +35,7 @@ const onSave = () => {
   })
 }
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/podcasts',
   skipRouteNames: [
     '/(coreDam)/podcasts/[id]',
@@ -43,10 +43,7 @@ const { signal, leave } = useRecordPage({
     '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
   ],
   loading: detailLoading,
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(resetStore)

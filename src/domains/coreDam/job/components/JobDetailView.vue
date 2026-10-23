@@ -9,7 +9,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -34,9 +34,10 @@ const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/jobs',
   loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 const jobComponent = computed(() => {
@@ -57,10 +58,6 @@ const jobComponent = computed(() => {
     default:
       return AJobDetailCommon
   }
-})
-
-onMounted(async () => {
-  if ((await fetchData(id, { signal })) === false) await leave()
 })
 
 onBeforeUnmount(resetStore)
