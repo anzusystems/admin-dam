@@ -6,16 +6,12 @@ import {
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
-  DatatablePaginationKey,
-  FilterConfigKey,
-  FilterDataKey,
   createDatatableColumnsConfig,
-  useFilterHelpers,
+  useDatatableList,
   usePagination,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { useDebounceFn } from '@vueuse/core'
-import { onMounted, provide, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
@@ -40,17 +36,10 @@ const { t } = useI18n()
 const { can } = useAuth()
 
 const { filterData, filterConfig } = useTtsNarrationRequestListFilter()
-provide(FilterConfigKey, filterConfig)
-provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useTtsNarrationRequestListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
-  populateUrlParams: false,
-  storeFiltersLocalStorage: false,
-})
 
 const { pagination } = usePagination('id')
-provide(DatatablePaginationKey, pagination)
 
 const cancelDialog = ref(false)
 const cancelTargetRequestId = ref<DocId | null>(null)
@@ -81,29 +70,17 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ENTITY
 )
 
-const getList = useDebounceFn(() => {
-  fetchList(pagination, filterData, filterConfig)
-})
-
-const sortByChange = () => {
-  submitFilter(pagination, getList)
-}
-
-const submitFilterAction = () => {
-  submitFilter(pagination, getList)
-}
-
-const resetFilterAction = () => {
-  resetFilter(pagination, getList)
-}
+const { getList, sortByChange, submitFilterAction, resetFilterAction } = useDatatableList(
+  filterData,
+  filterConfig,
+  pagination,
+  fetchList,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 
 const onCancelSuccess = () => {
   getList()
 }
-
-onMounted(() => {
-  loadStoredFilters(pagination, getList)
-})
 
 defineExpose({
   refresh: getList,

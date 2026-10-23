@@ -9,15 +9,10 @@ import {
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  DatatablePaginationKey,
-  FilterConfigKey,
-  FilterDataKey,
   createDatatableColumnsConfig,
-  useFilterHelpers,
+  useDatatableList,
   usePagination,
 } from '@anzusystems/common-admin'
-import { useDebounceFn } from '@vueuse/core'
-import { onMounted, provide } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
@@ -32,17 +27,10 @@ type DatatableItem = DamKeyword
 const router = useRouter()
 
 const { filterData, filterConfig } = useKeywordListFilter()
-provide(FilterConfigKey, filterConfig)
-provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useKeywordListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
-  populateUrlParams: false,
-  storeFiltersLocalStorage: false,
-})
 
 const { pagination } = usePagination('createdAt')
-provide(DatatablePaginationKey, pagination)
 
 const { can } = useAuth()
 
@@ -59,26 +47,13 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ENTITY
 )
 
-const getList = useDebounceFn(() => {
-  fetchList(pagination, filterData, filterConfig)
-})
-
-const sortByChange = () => {
-  filterConfig.touched = false
-  submitFilter(pagination, getList)
-}
-
-const submitFilterAction = () => {
-  submitFilter(pagination, getList)
-}
-
-const resetFilterAction = () => {
-  resetFilter(pagination, getList)
-}
-
-onMounted(() => {
-  loadStoredFilters(pagination, getList)
-})
+const { getList, sortByChange, submitFilterAction, resetFilterAction } = useDatatableList(
+  filterData,
+  filterConfig,
+  pagination,
+  fetchList,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 
 defineExpose({
   refresh: getList,
