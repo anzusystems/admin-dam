@@ -1,52 +1,38 @@
 import { useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
 
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/distribution/category'
 const END_POINT_LIST = END_POINT + '/ext-system/:extSystemId'
 export const ENTITY = 'distributionCategory'
 
 export const useFetchDistributionCategoryListByIds = () =>
-  useApiFetchByIds<DistributionCategory>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT_LIST,
-  })
+  useApiFetchByIds<DistributionCategory>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT_LIST })
 
 export const useFetchDistributionCategoryList = () =>
-  useApiFetchList<DistributionCategory>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT_LIST,
-  })
+  useApiFetchList<DistributionCategory>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT_LIST })
 
 export const useCreateDistributionCategory = () =>
   useApiRequest<DistributionCategory, DistributionCategory>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT,
   })
 
 export const useUpdateDistributionCategory = () =>
   useApiRequest<DistributionCategory, DistributionCategory>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
 
 export const useFetchDistributionCategory = () =>
   useApiRequest<DistributionCategory, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })

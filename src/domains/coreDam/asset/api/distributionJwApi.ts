@@ -5,17 +5,15 @@ import type {
   DistributionJwCreateRedistributeDto,
   DistributionJwItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/jw-distribution'
 export const ENTITY = 'jwDistribution'
 
 export const useCreateJwDistribution = () =>
   useApiRequest<DistributionJwCreateRedistributeDto, DistributionJwCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/distribute',
   })
@@ -27,9 +25,8 @@ export const createJwDistribution = (assetFileId: DocId, data: DistributionJwCre
 
 export const useRedistributeJwDistribution = () =>
   useApiRequest<DistributionJwCreateRedistributeDto, DistributionJwCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionId/redistribute',
   })
@@ -41,9 +38,8 @@ export const redistributeJwDistribution = (distributionId: DocId, data: Distribu
 
 export const usePrepareFormDataJwDistribution = () =>
   useApiRequest<DistributionJwItem, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
   })

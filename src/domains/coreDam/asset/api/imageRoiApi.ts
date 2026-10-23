@@ -3,8 +3,7 @@ import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/c
 import type { Ref } from 'vue'
 
 import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -19,9 +18,8 @@ export const ENTITY = 'asset'
 
 export const useFetchRoi = () =>
   useApiRequest<RegionOfInterest, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
@@ -33,9 +31,8 @@ export const fetchRoi = (id: DocId) => {
 
 export const useUpdateRoi = () =>
   useApiRequest<RegionOfInterest, RegionOfInterest>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
@@ -46,12 +43,7 @@ export const updateRoi = (id: DocId, data: RegionOfInterest) => {
 }
 
 export const useFetchImageRoiList = () =>
-  useApiFetchList<RegionOfInterest>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT_IMAGE_ROI,
-  })
+  useApiFetchList<RegionOfInterest>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT_IMAGE_ROI })
 
 export const fetchImageRoiList = (
   imageId: DocId,

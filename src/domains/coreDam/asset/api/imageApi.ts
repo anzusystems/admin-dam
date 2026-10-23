@@ -3,19 +3,12 @@ import type { AssetFileDownloadLink, AssetFileImage, AssetFileRoute, DocId } fro
 
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import { fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/image'
 
 export const useFetchImageFile = () =>
-  useApiRequest<AssetFileImage, null>({
-    client: damClient,
-    method: 'GET',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiRequest<AssetFileImage, null>({ ...damApiBase, method: 'GET', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const fetchImageFile = (id: DocId) => {
   const { execute } = useFetchImageFile()
@@ -28,13 +21,7 @@ export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) =>
   ])
 
 export const useDeleteImage = () =>
-  useApiCommand<null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const deleteImage = (imageId: DocId) => {
   const { execute } = useDeleteImage()

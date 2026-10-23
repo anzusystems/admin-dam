@@ -2,8 +2,7 @@ import { useApiCommand, useApiFetchList, useApiRequest } from '@anzusystems/comm
 
 import type { Voice, VoiceDiscriminatorType } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { RESOURCE_VOICE, VoiceDiscriminator } from '@/domains/coreDam/voiceFamily/types/Voice'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT_FAMILY = '/adm/v1/voice/voice-family'
 const END_POINT = '/adm/v1/voice'
@@ -21,36 +20,13 @@ export const writeEndpoint = (discriminator: VoiceDiscriminatorType): string => 
 }
 
 export const useFetchVoiceListByFamily = () =>
-  useApiFetchList<Voice>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT_FAMILY + '/:voiceFamilyId',
-  })
+  useApiFetchList<Voice>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT_FAMILY + '/:voiceFamilyId' })
 
 export const useCreateVoice = () =>
-  useApiRequest<Voice, Voice>({
-    client: damClient,
-    method: 'POST',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT,
-  })
+  useApiRequest<Voice, Voice>({ ...damApiBase, method: 'POST', entity: ENTITY, urlTemplate: END_POINT })
 
 export const useUpdateVoice = () =>
-  useApiRequest<Voice, Voice>({
-    client: damClient,
-    method: 'PUT',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiRequest<Voice, Voice>({ ...damApiBase, method: 'PUT', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const useDeleteVoice = () =>
-  useApiCommand<null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:id' })

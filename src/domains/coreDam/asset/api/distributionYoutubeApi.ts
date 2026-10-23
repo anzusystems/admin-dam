@@ -16,7 +16,7 @@ import type {
   YoutubeLanguage,
   YoutubePlaylist,
 } from '@/domains/coreDam/asset/types/Distribution'
-import { damClient } from '@/shared/apiClients/damClient'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/youtube-distribution'
@@ -27,9 +27,8 @@ const emptyFilterStore = createFilterStore(emptyFilterFields)
 
 export const useCreateYoutubeDistribution = () =>
   useApiRequest<DistributionYoutubeCreateRedistributeDto, DistributionYoutubeCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/distribute',
   })
@@ -41,9 +40,8 @@ export const createYoutubeDistribution = (assetFileId: DocId, data: Distribution
 
 export const useRedistributeYoutubeDistribution = () =>
   useApiRequest<DistributionYoutubeCreateRedistributeDto, DistributionYoutubeCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionId/redistribute',
   })
@@ -58,9 +56,8 @@ export const redistributeYoutubeDistribution = (
 
 export const usePrepareFormDataYoutubeDistribution = () =>
   useApiRequest<DistributionYoutubeItem, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
   })
@@ -75,9 +72,8 @@ export const prepareFormDataYoutubeDistribution = (
 
 export const useGetYoutubeAuthUrl = () =>
   useApiRequest<DistributionAuthUrl, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/auth-url',
   })
@@ -89,8 +85,7 @@ export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServic
 
 export const useFetchYoutubeLanguages = () =>
   useApiFetchList<YoutubeLanguage>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/language',
   })
@@ -107,8 +102,7 @@ export const fetchYoutubeLanguages = (distributionServiceName: DamDistributionSe
 
 export const useFetchYoutubePlaylists = () =>
   useApiFetchList<YoutubePlaylist>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/playlist/:forceReload',
   })
@@ -127,9 +121,8 @@ export const fetchYoutubePlaylists = (distributionServiceName: DamDistributionSe
 
 export const useLogoutYoutube = () =>
   useApiCommand<null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/logout',
   })

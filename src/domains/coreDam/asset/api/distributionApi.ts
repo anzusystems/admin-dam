@@ -9,17 +9,15 @@ import type {
   DistributionUpdateDto,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/distribution'
 export const ENTITY = 'distribution'
 
 export const useFetchDistribution = () =>
   useApiRequest<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
@@ -31,13 +29,7 @@ export const fetchDistribution = (id: DocId) => {
 
 export const useFetchAssetDistributionList = <
   T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem,
->() =>
-  useApiFetchList<T>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/asset/:assetId',
-  })
+>() => useApiFetchList<T>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT + '/asset/:assetId' })
 
 export const fetchAssetDistributionList = <T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>(
   assetId: DocId,
@@ -53,13 +45,7 @@ export const fetchAssetDistributionList = <T = DistributionJwItem | Distribution
 
 export const useFetchAssetFileDistributionList = <
   T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem,
->() =>
-  useApiFetchList<T>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/asset-file/:assetFileId',
-  })
+>() => useApiFetchList<T>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT + '/asset-file/:assetFileId' })
 
 export const fetchAssetFileDistributionList = <
   T = DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem,
@@ -75,9 +61,8 @@ export const fetchAssetFileDistributionList = <
 
 export const useDistributionIsAuthorized = () =>
   useApiRequest<DistributionAuthorized, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/authorized',
   })
@@ -88,13 +73,7 @@ export const distributionIsAuthorized = (distributionServiceName: DamDistributio
 }
 
 export const useUpsertAssetDistributions = <T extends NonNullable<unknown> = DistributionUpdateDto>() =>
-  useApiRequest<T, T>({
-    client: damClient,
-    method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT,
-  })
+  useApiRequest<T, T>({ ...damApiBase, method: 'PATCH', entity: ENTITY, urlTemplate: END_POINT })
 
 export const upsertAssetDistributions = <T extends NonNullable<unknown> = DistributionUpdateDto>(
   _assetId: DocId,
@@ -105,13 +84,7 @@ export const upsertAssetDistributions = <T extends NonNullable<unknown> = Distri
 }
 
 export const useDeleteDistribution = () =>
-  useApiCommand<null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const deleteDistribution = (id: DocId) => {
   const { execute } = useDeleteDistribution()

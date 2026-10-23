@@ -19,19 +19,12 @@ import type { Ref } from 'vue'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import { fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/video'
 
 export const useFetchVideoFile = () =>
-  useApiRequest<AssetFileVideo, null>({
-    client: damClient,
-    method: 'GET',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiRequest<AssetFileVideo, null>({ ...damApiBase, method: 'GET', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const fetchVideoFile = (id: DocId) => {
   const { execute } = useFetchVideoFile()
@@ -60,8 +53,7 @@ export const updatePreviewImage = (fileId: DocId, imagePreview: AssetFileImagePr
 
 export const useFetchVideoFileDistributionPreviewList = () =>
   useApiFetchList<DistributionImagePreviewDto>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:fileId/distribution-preview',
   })
@@ -78,9 +70,8 @@ export const fetchVideoFileDistributionPreviewList = (
 
 export const useSetVideoFileDistributionPreview = () =>
   useApiCommand<null>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:fileId/distribution-preview/:distributionId',
   })

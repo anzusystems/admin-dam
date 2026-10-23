@@ -5,17 +5,15 @@ import type {
   DistributionCustomCreateRedistributeDto,
   DistributionCustomItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/custom-distribution'
 export const ENTITY = 'customDistribution'
 
 export const useCreateCustomDistribution = () =>
   useApiRequest<DistributionCustomCreateRedistributeDto, DistributionCustomCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/distribute',
   })
@@ -27,9 +25,8 @@ export const createCustomDistribution = (assetFileId: DocId, data: DistributionC
 
 export const useRedistributeCustomDistribution = () =>
   useApiRequest<DistributionCustomCreateRedistributeDto, DistributionCustomCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionId/redistribute',
   })
@@ -44,9 +41,8 @@ export const redistributeCustomDistribution = (
 
 export const usePrepareFormDataCustomDistribution = () =>
   useApiRequest<DistributionCustomItem, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
   })
@@ -60,13 +56,7 @@ export const prepareFormDataCustomDistribution = (
 }
 
 export const useCancelCustomDistribution = () =>
-  useApiCommand<null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:distributionId',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:distributionId' })
 
 export const cancelCustomDistribution = (distributionId: DocId) => {
   const { execute } = useCancelCustomDistribution()

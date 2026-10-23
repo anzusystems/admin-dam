@@ -3,19 +3,13 @@ import type { AssetFileNullable, DocId, FilterConfig, FilterData, Pagination } f
 import type { Ref } from 'vue'
 
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/asset-slot'
 export const ENTITY = 'assetSlot'
 
 export const useFetchAssetSlotList = () =>
-  useApiFetchList<AssetSlot>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/asset/:assetId',
-  })
+  useApiFetchList<AssetSlot>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT + '/asset/:assetId' })
 
 export const fetchAssetSlotList = (
   assetId: DocId,
@@ -30,9 +24,8 @@ export const fetchAssetSlotList = (
 // The answer is taken as it comes and checked by its reader below.
 const useFetchAssetSlotFiles = () =>
   useApiRequest<{ data?: unknown }, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset/:assetId',
   })
@@ -58,9 +51,8 @@ export const fetchAssetSlotFiles = async (
 
 export const useUpdateAssetSlots = () =>
   useApiCommand<Array<{ assetFile: DocId | null; slotName: string }>>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset/:assetId',
   })

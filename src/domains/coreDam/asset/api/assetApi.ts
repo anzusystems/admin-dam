@@ -43,6 +43,7 @@ import {
 } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import type { QueueRowMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { i18n } from '@/plugins/i18n'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -69,8 +70,7 @@ const FETCH_BY_IDS_MAX_LIMIT = 50
 
 export const useFetchAssetList = () =>
   useApiFetchList<AssetSearchListItemDto>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/licence/:licenceId',
   })
@@ -132,12 +132,7 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
 
 // The answer is taken as it comes and checked by its reader below.
 const useFetchWaitingAssets = () =>
-  useApiRequest<{ data?: unknown }, null>({
-    client: damClient,
-    method: 'GET',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-  })
+  useApiRequest<{ data?: unknown }, null>({ ...damApiBase, method: 'GET', entity: ENTITY })
 
 /* Several assets of a licence by their ids, for the poll of the upload queue: the requests of `fetchAssetListByIds`,
  * in the same groups of fifty.
@@ -166,9 +161,8 @@ export const fetchWaitingAssets = async (ids: DocId[], licenceId: number, option
 
 export const useFetchAsset = () =>
   useApiRequest<AssetDetailItemDto, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
@@ -182,9 +176,8 @@ export const fetchAsset = (id: DocId, options?: { report?: boolean }) => {
 
 export const useFetchAssetByFileId = () =>
   useApiRequest<AssetDetailItemDto, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:fileId',
   })
@@ -196,9 +189,8 @@ export const fetchAssetByFileId = (fileId: DocId) => {
 
 export const useFetchAssetMetadata = () =>
   useApiRequest<AssetMetadataDto, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id/metadata',
   })
@@ -251,9 +243,8 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
 // Only a 200 is a save: any other answer is a save that failed, as before. Nothing is read from the answer.
 const useUpdateMetadataBulk = () =>
   useApiCommand<AssetMetadataBulkItem[]>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/metadata-bulk-update',
     options: { validateStatus: (status) => status === HTTP_STATUS_OK },
@@ -404,13 +395,7 @@ export const updateAssetMetadata = async (
 }
 
 export const useDeleteAsset = () =>
-  useApiCommand<null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const deleteAsset = async (id: DocId) => {
   const { execute } = useDeleteAsset()
@@ -421,9 +406,8 @@ export const deleteAsset = async (id: DocId) => {
 
 export const useUpdateAssetCategory = () =>
   useApiCommand<{ id: DocId; distributionCategory: DocIdNullable }>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: '',
     urlTemplate: END_POINT + '/:assetId',
   })
@@ -438,9 +422,8 @@ export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocI
 
 export const useCreateAsset = () =>
   useApiRequest<AssetDetailItemDto, AssetCreateDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/licence/:licenceId',
   })
@@ -452,9 +435,8 @@ export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) => {
 
 export const useSetSibling = () =>
   useApiRequest<AssetDetailItemDto, object>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:assetId/sibling/:targetAssetId',
   })
@@ -466,9 +448,8 @@ export const setSibling = (assetId: DocId, targetAssetId: DocId) => {
 
 export const useRemoveSibling = () =>
   useApiRequest<AssetDetailItemDto, object>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:assetId/sibling',
   })

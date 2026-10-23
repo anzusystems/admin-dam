@@ -3,19 +3,12 @@ import { HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK, useApiRequest } from '@anzusyst
 
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import { ROUTE_VALIDATION_ENTITY, fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/audio'
 
 export const useFetchAudioFile = () =>
-  useApiRequest<AssetFileAudio, null>({
-    client: damClient,
-    method: 'GET',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiRequest<AssetFileAudio, null>({ ...damApiBase, method: 'GET', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const fetchAudioFile = (id: DocId) => {
   const { execute } = useFetchAudioFile()
