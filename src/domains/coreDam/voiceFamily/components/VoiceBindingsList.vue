@@ -84,7 +84,6 @@ onMounted(() => {
       ]"
       :items="listItems"
       :items-length="pagination.totalCount"
-      item-value="id"
       @click:row="onRowClick"
     >
       <template #item.discriminator="{ item }: { item: Voice }">

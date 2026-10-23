@@ -129,7 +129,6 @@ defineExpose({
       :headers="columnsVisible"
       :items="listItems"
       :items-length="listItems.length"
-      item-value="id"
       @click:row="onRowClick"
     >
       <template #item.status="{ item }: { item: DatatableItem }">

@@ -109,7 +109,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="permissionGroupList"
         :items-length="permissionGroupList.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.permissions="{ item }: { item: DatatableItem }">

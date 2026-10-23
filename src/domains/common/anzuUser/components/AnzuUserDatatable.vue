@@ -124,7 +124,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="anzuUserList"
         :items-length="anzuUserList.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.enabled="{ item }: { item: DatatableItem }">
