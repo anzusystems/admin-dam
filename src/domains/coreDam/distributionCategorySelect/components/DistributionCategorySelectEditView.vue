@@ -71,9 +71,7 @@ onMounted(async () => {
   if ((await fetchData(id, { signal })) === false) await leave()
 })
 
-onBeforeUnmount(() => {
-  resetStore()
-})
+onBeforeUnmount(resetStore)
 </script>
 
 <template>

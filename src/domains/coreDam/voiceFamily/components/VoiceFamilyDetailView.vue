@@ -54,9 +54,7 @@ onMounted(async () => {
   voiceFamilyLoaded.value = loaded === true
 })
 
-onBeforeUnmount(() => {
-  resetStore()
-})
+onBeforeUnmount(resetStore)
 </script>
 
 <template>

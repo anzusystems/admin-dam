@@ -60,9 +60,7 @@ onMounted(async () => {
   podcastLoaded.value = loaded === true
 })
 
-onBeforeUnmount(() => {
-  resetStore()
-})
+onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 

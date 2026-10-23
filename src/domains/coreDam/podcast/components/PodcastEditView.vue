@@ -49,9 +49,7 @@ onMounted(async () => {
   if ((await fetchData(id, { signal })) === false) await leave()
 })
 
-onBeforeUnmount(() => {
-  resetStore()
-})
+onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 

@@ -46,9 +46,7 @@ onMounted(async () => {
   if ((await fetchPermissionGroup(id, { signal })) === false) await leave()
 })
 
-onBeforeUnmount(() => {
-  resetPermissionGroupStore()
-})
+onBeforeUnmount(resetPermissionGroupStore)
 </script>
 
 <template>

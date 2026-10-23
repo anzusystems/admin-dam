@@ -44,9 +44,7 @@ onMounted(async () => {
   if ((await fetchAnzuUser(id, { signal })) === false) await leave()
 })
 
-onBeforeUnmount(() => {
-  resetAnzuUserStore()
-})
+onBeforeUnmount(resetAnzuUserStore)
 </script>
 
 <template>
