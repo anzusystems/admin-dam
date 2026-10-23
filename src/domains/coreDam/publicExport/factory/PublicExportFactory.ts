@@ -14,8 +14,8 @@ export function usePublicExportFactory() {
     type: ExportTypeDefault,
     createdAt: dateTimeNow(),
     modifiedAt: dateTimeNow(),
-    createdBy: 1,
-    modifiedBy: 1,
+    createdBy: null,
+    modifiedBy: null,
     _resourceName: ENTITY,
     _system: SYSTEM_CORE_DAM,
   })
