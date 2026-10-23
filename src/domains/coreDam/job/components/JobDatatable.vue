@@ -134,9 +134,6 @@ defineExpose({
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.modifiedAt" />
-        </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
