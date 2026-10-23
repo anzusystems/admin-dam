@@ -46,9 +46,7 @@ const onOpen = () => {
 
 const { execute: createPodcast } = useCreatePodcast()
 
-const create = async () => {
-  return await createPodcast({ body: podcast.value })
-}
+const create = async () => await createPodcast({ body: podcast.value })
 
 const { podcastModeOptions } = usePodcastMode()
 

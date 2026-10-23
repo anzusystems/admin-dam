@@ -71,12 +71,10 @@ const selectedLicenceSearchByExtId = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
   if (currentUser.value && currentUser.value.userToExtSystemsDto.length > 0) {
-    return currentUser.value.userToExtSystemsDto.map((item) => {
-      return {
-        value: item.id,
-        title: item.name,
-      }
-    })
+    return currentUser.value.userToExtSystemsDto.map((item) => ({
+      value: item.id,
+      title: item.name,
+    }))
   }
   return []
 })
@@ -85,12 +83,10 @@ const licenceItems = computed(() => {
   if (currentUser.value && currentUser.value.assetLicencesDto.length > 0 && !isUndefined(selectedExtSystem.value)) {
     return currentUser.value.assetLicencesDto
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
-      .map((item) => {
-        return {
-          value: item.id,
-          title: item.name,
-        }
-      })
+      .map((item) => ({
+        value: item.id,
+        title: item.name,
+      }))
   }
   return []
 })
@@ -98,9 +94,9 @@ const licenceItems = computed(() => {
 const damConfigStore = useDamConfigStore()
 const { damPrvConfig } = storeToRefs(damConfigStore)
 
-const allowSelect = computed(() => {
-  return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
-})
+const allowSelect = computed(
+  () => damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
+)
 
 const onCancel = () => {
   /* The change goes through all the same, and what holds a second confirm back goes with this dialog: one opened

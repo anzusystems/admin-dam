@@ -12,9 +12,7 @@ const props = withDefaults(
 )
 
 const { getDistributionStatusOption } = useDistributionStatus()
-const statusOption = computed(() => {
-  return getDistributionStatusOption(props.status)
-})
+const statusOption = computed(() => getDistributionStatusOption(props.status))
 </script>
 
 <template>

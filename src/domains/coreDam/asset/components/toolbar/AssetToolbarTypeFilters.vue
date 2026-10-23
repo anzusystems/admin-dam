@@ -10,25 +10,15 @@ const { t } = useI18n()
 
 const { setTypeAndFetch, togglePodcastAndFetch, filterData } = useAssetListActions()
 
-const isImageActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Image)
-})
+const isImageActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Image))
 
-const isAudioActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Audio)
-})
+const isAudioActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Audio))
 
-const isVideoActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Video)
-})
+const isVideoActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Video))
 
-const isDocumentActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Document)
-})
+const isDocumentActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Document))
 
-const isPodcastActive = computed(() => {
-  return filterData.inPodcast === true
-})
+const isPodcastActive = computed(() => filterData.inPodcast === true)
 </script>
 
 <template>

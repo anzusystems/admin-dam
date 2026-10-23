@@ -2,16 +2,14 @@ import { isArray, isEmpty, isEmptyObject, isUndefined } from '@anzusystems/commo
 import type { JSONContent } from '@tiptap/core'
 
 export function useDocumentFactory() {
-  const createEmptyDocument = (): JSONContent => {
-    return {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-        },
-      ],
-    }
-  }
+  const createEmptyDocument = (): JSONContent => ({
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+      },
+    ],
+  })
 
   return {
     createEmptyDocument,

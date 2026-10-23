@@ -9,9 +9,7 @@ const props = defineProps<{
 
 const { getExternalProviderAssetTypeOption } = useExternalProviderAssetType()
 
-const item = computed(() => {
-  return getExternalProviderAssetTypeOption(props.providerName)
-})
+const item = computed(() => getExternalProviderAssetTypeOption(props.providerName))
 </script>
 
 <template>

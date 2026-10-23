@@ -17,9 +17,7 @@ const props = withDefaults(
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(props.queueId)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(props.queueId))
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
   uploadQueuesStore.stopItemUpload(data.queueId, data.item)

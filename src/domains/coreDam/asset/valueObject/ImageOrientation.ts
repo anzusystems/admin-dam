@@ -29,9 +29,8 @@ export function useImageOrientation() {
     },
   ])
 
-  const getImageOrientationOption = (value: ImageOrientationType) => {
-    return imageOrientationOptions.value.find((item) => item.value === value)
-  }
+  const getImageOrientationOption = (value: ImageOrientationType) =>
+    imageOrientationOptions.value.find((item) => item.value === value)
 
   return {
     imageOrientationOptions,

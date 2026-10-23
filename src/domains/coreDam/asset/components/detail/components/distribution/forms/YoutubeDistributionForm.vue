@@ -23,23 +23,19 @@ const props = withDefaults(
 const damConfigStore = useDamConfigStore()
 const isDistributionServiceAllowed = useDistributionServiceAllowed()
 
-const distributionServices = computed(() => {
-  return (
-    Object.entries(damConfigStore.damPrvConfig.distributionServices)
-      // The current one stays listed so an edit still shows it; saving to a service off the account is refused.
-      .filter(
-        ([key, value]) =>
-          value.type === DistributionItemResourceName.Youtube &&
-          (isDistributionServiceAllowed(key) || key === distribution.value.distributionService)
-      )
-      .map(([key, value]) => {
-        return {
-          title: value.title,
-          value: key,
-        }
-      })
-  )
-})
+const distributionServices = computed(() =>
+  Object.entries(damConfigStore.damPrvConfig.distributionServices)
+    // The current one stays listed so an edit still shows it; saving to a service off the account is refused.
+    .filter(
+      ([key, value]) =>
+        value.type === DistributionItemResourceName.Youtube &&
+        (isDistributionServiceAllowed(key) || key === distribution.value.distributionService)
+    )
+    .map(([key, value]) => ({
+      title: value.title,
+      value: key,
+    }))
+)
 
 const distribution = defineModel<YoutubeDistributionUpdateDto>({ required: true })
 

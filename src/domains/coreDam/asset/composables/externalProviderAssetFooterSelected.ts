@@ -58,9 +58,9 @@ export function useExternalProviderAssetFooterSelectedView() {
     customDialog.value = false
   }
 
-  const showMinimalSelected = computed(() => {
-    return externalProviderFooterViewSelected.value !== ExternalProviderFooterViewSelected.Minimal
-  })
+  const showMinimalSelected = computed(
+    () => externalProviderFooterViewSelected.value !== ExternalProviderFooterViewSelected.Minimal
+  )
 
   const setMinimalSelected = () => {
     externalProviderAssetListStore.keyboardNavigationEnable()
@@ -68,9 +68,9 @@ export function useExternalProviderAssetFooterSelectedView() {
     customDialog.value = false
   }
 
-  const showFullSelected = computed(() => {
-    return externalProviderFooterViewSelected.value !== ExternalProviderFooterViewSelected.Full
-  })
+  const showFullSelected = computed(
+    () => externalProviderFooterViewSelected.value !== ExternalProviderFooterViewSelected.Full
+  )
 
   const setFullSelected = () => {
     externalProviderAssetListStore.keyboardNavigationDisable()
@@ -78,9 +78,9 @@ export function useExternalProviderAssetFooterSelectedView() {
     customDialog.value = true
   }
 
-  const showCompactSelected = computed(() => {
-    return externalProviderFooterViewSelected.value !== ExternalProviderFooterViewSelected.Compact
-  })
+  const showCompactSelected = computed(
+    () => externalProviderFooterViewSelected.value !== ExternalProviderFooterViewSelected.Compact
+  )
 
   const setCompactSelected = () => {
     externalProviderAssetListStore.keyboardNavigationEnable()

@@ -13,9 +13,8 @@ export function useTtsRequestMode() {
     { value: TtsRequestMode.Regenerate, title: t('coreDam.ttsNarrationRequest.mode.regenerate'), color: 'secondary' },
   ])
 
-  const getTtsRequestModeOption = (value: TtsRequestModeType) => {
-    return ttsRequestModeOptions.value.find((item) => item.value === value)
-  }
+  const getTtsRequestModeOption = (value: TtsRequestModeType) =>
+    ttsRequestModeOptions.value.find((item) => item.value === value)
 
   return {
     ttsRequestModeOptions,

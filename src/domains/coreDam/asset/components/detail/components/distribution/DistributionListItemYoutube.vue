@@ -34,9 +34,9 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
-})
+const serviceRequirements = computed(
+  () => configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
+)
 </script>
 
 <template>

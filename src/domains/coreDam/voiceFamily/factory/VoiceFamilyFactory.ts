@@ -5,24 +5,22 @@ import { LanguageDefault, RESOURCE_VOICE_FAMILY } from '@/domains/coreDam/voiceF
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useVoiceFamilyFactory() {
-  const createDefault = (extSystem = 0): VoiceFamily => {
-    return {
-      id: '',
-      extSystem,
-      slug: '',
-      displayName: '',
-      language: LanguageDefault,
-      preferredProvider: null,
-      active: true,
-      keywords: [],
-      createdAt: dateTimeNow(),
-      modifiedAt: dateTimeNow(),
-      createdBy: 0,
-      modifiedBy: 0,
-      _resourceName: RESOURCE_VOICE_FAMILY,
-      _system: SYSTEM_CORE_DAM,
-    }
-  }
+  const createDefault = (extSystem = 0): VoiceFamily => ({
+    id: '',
+    extSystem,
+    slug: '',
+    displayName: '',
+    language: LanguageDefault,
+    preferredProvider: null,
+    active: true,
+    keywords: [],
+    createdAt: dateTimeNow(),
+    modifiedAt: dateTimeNow(),
+    createdBy: 0,
+    modifiedBy: 0,
+    _resourceName: RESOURCE_VOICE_FAMILY,
+    _system: SYSTEM_CORE_DAM,
+  })
 
   return {
     createDefault,

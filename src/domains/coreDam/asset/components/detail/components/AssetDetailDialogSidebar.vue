@@ -64,9 +64,9 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const typeHasDistributions = computed(() => {
-  return (configExtSystem[props.assetType]?.distribution?.distributionServices.length ?? 0) > 0
-})
+const typeHasDistributions = computed(
+  () => (configExtSystem[props.assetType]?.distribution?.distributionServices.length ?? 0) > 0
+)
 
 // Use the live store ref (kept in sync with the metadata switch) — assetFileProperties.ttsAudio
 // is the stale server snapshot and is not updated after a metadata save without a refetch.

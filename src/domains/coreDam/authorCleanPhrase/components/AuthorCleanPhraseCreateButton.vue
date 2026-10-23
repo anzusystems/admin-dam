@@ -45,9 +45,7 @@ const onOpen = () => {
 }
 
 const { execute: createAuthorCleanPhrase } = useCreateAuthorCleanPhrase()
-const create = async () => {
-  return await createAuthorCleanPhrase({ body: authorCleanPhrase.value })
-}
+const create = async () => await createAuthorCleanPhrase({ body: authorCleanPhrase.value })
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()
 const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()

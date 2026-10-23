@@ -116,8 +116,8 @@ export const externalProviderUpload = (item: UploadQueueItem) =>
       })
   )
 
-export const unsetAssetSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
+export const unsetAssetSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) =>
+  new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageUnsetSlot(fileId, assetId, slotName)
@@ -151,10 +151,9 @@ export const unsetAssetSlot = (assetType: DamAssetTypeType, fileId: DocId, asset
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}
 
-export const deleteFile = (assetType: DamAssetTypeType, fileId: DocId) => {
-  return new Promise((resolve, reject) => {
+export const deleteFile = (assetType: DamAssetTypeType, fileId: DocId) =>
+  new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         deleteImage(fileId)
@@ -188,10 +187,9 @@ export const deleteFile = (assetType: DamAssetTypeType, fileId: DocId) => {
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}
 
-export const makeMainFile = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId) => {
-  return new Promise((resolve, reject) => {
+export const makeMainFile = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId) =>
+  new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageMakeMainFile(fileId, assetId)
@@ -225,10 +223,9 @@ export const makeMainFile = (assetType: DamAssetTypeType, fileId: DocId, assetId
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}
 
-export const existingFileToSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
+export const existingFileToSlot = (assetType: DamAssetTypeType, fileId: DocId, assetId: DocId, slotName: string) =>
+  new Promise((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         existingImageToSlot(fileId, assetId, slotName)
@@ -262,10 +259,9 @@ export const existingFileToSlot = (assetType: DamAssetTypeType, fileId: DocId, a
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}
 
-export const fileDownloadLink = (assetType: DamAssetTypeType, fileId: DocId) => {
-  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
+export const fileDownloadLink = (assetType: DamAssetTypeType, fileId: DocId) =>
+  new Promise<AssetFileDownloadLink>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageDownloadLink(fileId)
@@ -299,10 +295,9 @@ export const fileDownloadLink = (assetType: DamAssetTypeType, fileId: DocId) => 
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}
 
-export const makePublicFile = (assetType: DamAssetTypeType, assetFileId: DocId, slug: string) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
+export const makePublicFile = (assetType: DamAssetTypeType, assetFileId: DocId, slug: string) =>
+  new Promise<AssetFileRoute>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageMakePublic(assetFileId)
@@ -329,10 +324,9 @@ export const makePublicFile = (assetType: DamAssetTypeType, assetFileId: DocId, 
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}
 
-export const makePrivateFile = (assetType: DamAssetTypeType, assetFileId: DocId) => {
-  return new Promise<void>((resolve, reject) => {
+export const makePrivateFile = (assetType: DamAssetTypeType, assetFileId: DocId) =>
+  new Promise<void>((resolve, reject) => {
     switch (assetType) {
       case DamAssetType.Image:
         imageMakePrivate(assetFileId)
@@ -359,4 +353,3 @@ export const makePrivateFile = (assetType: DamAssetTypeType, assetFileId: DocId)
         reject(new Error(`fileApi: unsupported asset type '${assetType}'`))
     }
   })
-}

@@ -5,11 +5,9 @@ const customDialog = ref(false)
 const sidebarLeft = ref(false)
 const sidebarRight = ref(false)
 
-export const useMainWrapper = () => {
-  return {
-    customFooterHeight,
-    customDialog,
-    sidebarLeft,
-    sidebarRight,
-  }
-}
+export const useMainWrapper = () => ({
+  customFooterHeight,
+  customDialog,
+  sidebarLeft,
+  sidebarRight,
+})

@@ -37,31 +37,19 @@ export function useAssetDetailActions() {
     metadataAreTouched.value = false
   }
 
-  const assetType = computed(() => {
-    return asset.value?.attributes.assetType || DamAssetTypeDefault
-  })
+  const assetType = computed(() => asset.value?.attributes.assetType || DamAssetTypeDefault)
 
   const assetStatus = computed(() => {
     if (!asset.value) return DamAssetStatusDefault
     return asset.value.attributes.assetStatus
   })
 
-  const isTypeImage = computed(() => {
-    return assetType.value === DamAssetType.Image
-  })
-  const isTypeVideo = computed(() => {
-    return assetType.value === DamAssetType.Video
-  })
-  const isTypeAudio = computed(() => {
-    return assetType.value === DamAssetType.Audio
-  })
-  const isTypeDocument = computed(() => {
-    return assetType.value === DamAssetType.Document
-  })
+  const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
+  const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
+  const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
+  const isTypeDocument = computed(() => assetType.value === DamAssetType.Document)
 
-  const assetMainFile = computed(() => {
-    return asset.value?.mainFile || undefined
-  })
+  const assetMainFile = computed(() => asset.value?.mainFile || undefined)
 
   const imageProperties = computed(() => {
     if (asset.value?.mainFile && asset.value.mainFile.links) {

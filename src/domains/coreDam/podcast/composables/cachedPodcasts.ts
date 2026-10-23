@@ -10,9 +10,7 @@ const mapFullToMinimal = (podcast: Podcast): PodcastMinimal => ({
   title: podcast.texts.title,
 })
 
-const mapIdToMinimal = (id: DocId): PodcastMinimal => {
-  return { id: id, title: '' }
-}
+const mapIdToMinimal = (id: DocId): PodcastMinimal => ({ id: id, title: '' })
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId, Podcast, PodcastMinimal>(
   mapFullToMinimal,
@@ -24,14 +22,12 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId,
   }
 )
 
-export const useCachedPodcasts = () => {
-  return {
-    addManualToCachedPodcasts: addManual,
-    addToCachedPodcasts: add,
-    fetchCachedPodcasts: fetch,
-    cachedPodcasts: cache,
-    hasCachedPodcast: has,
-    getCachedPodcast: get,
-    isLoadedCachedPodcast: isLoaded,
-  }
-}
+export const useCachedPodcasts = () => ({
+  addManualToCachedPodcasts: addManual,
+  addToCachedPodcasts: add,
+  fetchCachedPodcasts: fetch,
+  cachedPodcasts: cache,
+  hasCachedPodcast: has,
+  getCachedPodcast: get,
+  isLoadedCachedPodcast: isLoaded,
+})

@@ -280,20 +280,16 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
       href: {
         default: null,
         parseHTML: (element) => element.getAttribute('href'),
-        renderHTML: (attributes) => {
-          return {
-            href: attributes.href,
-          }
-        },
+        renderHTML: (attributes) => ({
+          href: attributes.href,
+        }),
       },
       external: {
         default: true,
         parseHTML: (element) => Boolean(element.getAttribute('data-external')),
-        renderHTML: (attributes) => {
-          return {
-            'data-external': attributes.external,
-          }
-        },
+        renderHTML: (attributes) => ({
+          'data-external': attributes.external,
+        }),
       },
       internal: {
         default: null,
@@ -308,23 +304,20 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
           }
           return null
         },
-        renderHTML: (attributes) => {
-          return attributes.internal
+        renderHTML: (attributes) =>
+          attributes.internal
             ? {
                 'data-internal-type': attributes.internal.type,
                 'data-internal-id': attributes.internal.id,
               }
-            : {}
-        },
+            : {},
       },
       nofollow: {
         default: false,
         parseHTML: (element) => Boolean(element.getAttribute('data-nofollow')),
-        renderHTML: (attributes) => {
-          return {
-            'data-nofollow': attributes.nofollow,
-          }
-        },
+        renderHTML: (attributes) => ({
+          'data-nofollow': attributes.nofollow,
+        }),
       },
       variant: {
         default: 'link',
@@ -336,11 +329,9 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
           }
           return getVariantFromHref(href)
         },
-        renderHTML: (attributes) => {
-          return {
-            'data-variant': attributes.variant,
-          }
-        },
+        renderHTML: (attributes) => ({
+          'data-variant': attributes.variant,
+        }),
       },
     }
   },
@@ -476,9 +467,8 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
 
       unsetLink:
         () =>
-        ({ chain }) => {
-          return chain().unsetMark(this.name, { extendEmptyMarkRange: true }).setMeta('preventAutolink', true).run()
-        },
+        ({ chain }) =>
+          chain().unsetMark(this.name, { extendEmptyMarkRange: true }).setMeta('preventAutolink', true).run(),
       unsetOrToggleOffLink:
         () =>
         ({ chain, tr, state }) => {
@@ -530,14 +520,12 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
           return foundLinks
         },
         type: this.type,
-        getAttributes: (match) => {
-          return {
-            href: match.data?.href,
-            variant: match.data?.variant,
-            external: match.data?.external,
-            nofollow: match.data?.nofollow,
-          }
-        },
+        getAttributes: (match) => ({
+          href: match.data?.href,
+          variant: match.data?.variant,
+          external: match.data?.external,
+          nofollow: match.data?.nofollow,
+        }),
       }),
     ]
   },

@@ -32,11 +32,7 @@ const { showErrorsDefault } = useAlerts()
 const items = ref<YoutubePlaylist[]>([])
 const loading = ref(false)
 
-const itemsComputed = computed(() => {
-  return items.value.map((item) => {
-    return { title: item.title, value: item.id }
-  })
-})
+const itemsComputed = computed(() => items.value.map((item) => ({ title: item.title, value: item.id })))
 
 const fetchItems = async (forceReload = false) => {
   loading.value = true

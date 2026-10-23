@@ -27,9 +27,7 @@ const initLoad = async () => {
   loading.value = true
   await getList()
   if (assetSlotsStore.list.length > 0) {
-    const found = assetSlotsStore.list.find((item) => {
-      return item.main === true
-    })
+    const found = assetSlotsStore.list.find((item) => item.main === true)
     if (found) {
       activeSlot.value = found.slotName
       loading.value = false
@@ -42,21 +40,13 @@ const initLoad = async () => {
   loading.value = false
 }
 
-const slotItems = computed(() => {
-  return assetSlotsStore.list.map((item) => {
-    return item.slotName
-  })
-})
+const slotItems = computed(() => assetSlotsStore.list.map((item) => item.slotName))
 
-const isDisabled = computed(() => {
-  return loading.value || assetSlotsStore.list.length <= 1
-})
+const isDisabled = computed(() => loading.value || assetSlotsStore.list.length <= 1)
 
 watch(activeSlot, (newValue, oldValue) => {
   if (newValue !== oldValue && oldValue !== '') {
-    const found = assetSlotsStore.list.find((item) => {
-      return item.slotName === newValue
-    })
+    const found = assetSlotsStore.list.find((item) => item.slotName === newValue)
     emit('activeSlotChange', found ? found : null)
   }
 })

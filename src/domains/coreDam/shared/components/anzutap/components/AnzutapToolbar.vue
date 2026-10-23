@@ -20,11 +20,9 @@ const { itemsRow1 } = useAnzutapToolbar(props.editor)
 
 // Asked again whenever the state of the editor changes: an item may be shown only where the cursor stands, as the
 // removal of a link is.
-const items = computed(() => {
-  return {
-    row1Visible: itemsRow1.filter((item) => item.type === 'separator' || item.show()),
-  }
-})
+const items = computed(() => ({
+  row1Visible: itemsRow1.filter((item) => item.type === 'separator' || item.show()),
+}))
 </script>
 
 <template>

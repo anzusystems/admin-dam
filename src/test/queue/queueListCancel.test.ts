@@ -19,13 +19,13 @@ vi.mock('@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue', a
       inheritAttrs: false,
       props: { item: { type: Object, required: true }, index: { type: Number, required: true } },
       emits: ['cancelItem'],
-      setup: (props, { emit }) => {
-        return () =>
+      setup:
+        (props, { emit }) =>
+        () =>
           h('button', {
             'data-cancel': '',
             onClick: () => emit('cancelItem', { index: props.index, item: props.item, queueId: 'slots' }),
-          })
-      },
+          }),
     }),
   }
 })

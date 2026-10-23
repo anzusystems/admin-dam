@@ -33,8 +33,8 @@ const errorTitle = computed(() => {
   return props.item.error.message
 })
 
-const loading = computed(() => {
-  return (
+const loading = computed(() =>
+  (
     [
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
@@ -42,18 +42,16 @@ const loading = computed(() => {
       UploadQueueItemStatus.Processing,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
-})
+)
 
-const loadingProgress = computed(() => {
-  return props.item.progress.progressPercent
-})
+const loadingProgress = computed(() => props.item.progress.progressPercent)
 
 const cancelItem = () => {
   emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
 }
 
-const showCancel = computed(() => {
-  return (
+const showCancel = computed(() =>
+  (
     [
       UploadQueueItemStatus.Loading,
       UploadQueueItemStatus.Waiting,
@@ -63,7 +61,7 @@ const showCancel = computed(() => {
       UploadQueueItemStatus.Failed,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
-})
+)
 
 const { remainingTimeShort } = useRemainingTime()
 </script>

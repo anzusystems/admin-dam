@@ -125,9 +125,7 @@ export interface DistributionCustomItem extends DistributionItem {
 
 export const isDistributionCustomItem = (
   value: DistributionCustomItem | DistributionYoutubeItem | DistributionJwItem
-): value is DistributionCustomItem => {
-  return isDefined((value as DistributionCustomItem).distributionData)
-}
+): value is DistributionCustomItem => isDefined((value as DistributionCustomItem).distributionData)
 
 export interface DistributionUpdateDto {
   id: string
@@ -164,14 +162,11 @@ export type DistributionItemTypeMap = {
 
 export type DistributionItemTypes = DistributionItemTypeMap[keyof DistributionItemTypeMap]
 
-export const distributionItemIsJwItem = (value: DistributionItem): value is DistributionJwItem => {
-  return value._resourceName === DistributionItemResourceName.Jw
-}
+export const distributionItemIsJwItem = (value: DistributionItem): value is DistributionJwItem =>
+  value._resourceName === DistributionItemResourceName.Jw
 
-export const distributionItemIsYoutubeItem = (value: DistributionItem): value is DistributionYoutubeItem => {
-  return value._resourceName === DistributionItemResourceName.Youtube
-}
+export const distributionItemIsYoutubeItem = (value: DistributionItem): value is DistributionYoutubeItem =>
+  value._resourceName === DistributionItemResourceName.Youtube
 
-export const distributionItemIsCustomItem = (value: DistributionItem): value is DistributionCustomItem => {
-  return value._resourceName === DistributionItemResourceName.Custom
-}
+export const distributionItemIsCustomItem = (value: DistributionItem): value is DistributionCustomItem =>
+  value._resourceName === DistributionItemResourceName.Custom

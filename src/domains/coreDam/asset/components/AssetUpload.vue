@@ -75,17 +75,11 @@ const assetUpload = async (files: File[]) => {
   if (await addToQueue(files)) fileCache.value = []
 }
 
-const fileInputKey = computed(() => {
-  return uploadQueuesStore.getQueueFileInputKey(props.queueId)
-})
+const fileInputKey = computed(() => uploadQueuesStore.getQueueFileInputKey(props.queueId))
 
-const uploadQueueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(props.queueId)
-})
+const uploadQueueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(props.queueId))
 
-const alreadyAtUploadLimit = computed(() => {
-  return uploadQueueTotalCount.value === maxUploadItems.value
-})
+const alreadyAtUploadLimit = computed(() => uploadQueueTotalCount.value === maxUploadItems.value)
 
 const openDialog = () => {
   uploadDialog.value = true

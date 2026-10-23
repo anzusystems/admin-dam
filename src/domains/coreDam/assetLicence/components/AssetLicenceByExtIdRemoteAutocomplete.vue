@@ -65,9 +65,7 @@ const fetchItemsCustomized = async (
   return []
 }
 
-const selectedExtSystemId = computed(() => {
-  return props.extSystemId
-})
+const selectedExtSystemId = computed(() => props.extSystemId)
 
 watch(
   selectedExtSystemId,

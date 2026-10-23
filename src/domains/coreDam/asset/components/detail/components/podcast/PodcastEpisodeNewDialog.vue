@@ -100,9 +100,7 @@ const loadFormData = async () => {
   loadingFormData.value = false
 }
 
-const podcastEpisodePodcast = computed(() => {
-  return podcastEpisode.value.podcast
-})
+const podcastEpisodePodcast = computed(() => podcastEpisode.value.podcast)
 
 watch(podcastEpisodePodcast, (newValue, oldValue) => {
   if (newValue !== oldValue && !isNull(newValue)) {

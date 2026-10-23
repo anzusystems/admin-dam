@@ -35,9 +35,8 @@ export function useDistributionYoutubePrivacy() {
     },
   ])
 
-  const getDistributionYoutubePrivacyOption = (value: DistributionYoutubePrivacyType) => {
-    return distributionYoutubePrivacyOptions.value.find((item) => item.value === value)
-  }
+  const getDistributionYoutubePrivacyOption = (value: DistributionYoutubePrivacyType) =>
+    distributionYoutubePrivacyOptions.value.find((item) => item.value === value)
 
   return {
     distributionYoutubePrivacyOptions,

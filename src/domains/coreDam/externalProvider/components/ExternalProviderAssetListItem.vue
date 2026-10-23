@@ -28,9 +28,7 @@ const IMAGE_BG_COLOR_DEFAULT = '#ccc'
 
 const { t } = useI18n()
 
-const asset = computed<AssetExternalProviderListDto>(() => {
-  return props.item.asset
-})
+const asset = computed<AssetExternalProviderListDto>(() => props.item.asset)
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
@@ -48,17 +46,11 @@ const selectMultiple = () => {
   emit('selectMultiple', { assetId: asset.value.id, index: props.index })
 }
 
-const backgroundColor = computed(() => {
-  return IMAGE_BG_COLOR_DEFAULT
-})
+const backgroundColor = computed(() => IMAGE_BG_COLOR_DEFAULT)
 
-const imageWidth = computed(() => {
-  return 400
-})
+const imageWidth = computed(() => 400)
 
-const imageHeight = computed(() => {
-  return IMAGE_HEIGHT
-})
+const imageHeight = computed(() => IMAGE_HEIGHT)
 
 const imageSrc = computed(() => {
   if (asset.value.url) {

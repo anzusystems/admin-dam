@@ -65,13 +65,11 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
         selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
       }
     }
-    const items = assets.map((asset) => {
-      return {
-        asset: asset,
-        active: false,
-        selected: selectedIds.includes(asset.id),
-      }
-    })
+    const items = assets.map((asset) => ({
+      asset: asset,
+      active: false,
+      selected: selectedIds.includes(asset.id),
+    }))
     list.value = list.value.concat(items)
     // The asset the first page of a list read anew did not bring can be in a further one.
     restoreActive(shownAssetId)
@@ -91,13 +89,11 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
         selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
       }
     }
-    list.value = assets.map((asset) => {
-      return {
-        asset: asset,
-        active: false,
-        selected: selectedIds.includes(asset.id),
-      }
-    })
+    list.value = assets.map((asset) => ({
+      asset: asset,
+      active: false,
+      selected: selectedIds.includes(asset.id),
+    }))
     // The place the active tile had is another asset's in these rows, or nobody's.
     activeItemIndex.value = null
     restoreActive(shownAssetId)

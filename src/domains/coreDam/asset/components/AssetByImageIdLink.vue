@@ -27,9 +27,7 @@ const loadAsset = async (id: DocId) => {
   }
 }
 
-const imageIdComputed = computed(() => {
-  return props.imageId
-})
+const imageIdComputed = computed(() => props.imageId)
 
 watch(
   imageIdComputed,

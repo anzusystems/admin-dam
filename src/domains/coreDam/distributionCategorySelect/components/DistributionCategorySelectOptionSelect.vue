@@ -36,12 +36,11 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const isRequired = computed(() => {
-  return (
+const isRequired = computed(
+  () =>
     configExtSystem[props.select.type]?.distribution?.distributionRequirements[props.select.serviceSlug]?.categorySelect
       ?.required ?? false
-  )
-})
+)
 
 const { requiredIf } = useValidate()
 

@@ -4,8 +4,8 @@ import type { AnzuApiValidationResponseData, UploadQueueItem } from '@anzusystem
 import { externalProviderUpload } from '@/domains/coreDam/asset/api/fileApi'
 
 export function externalProviderImport(queueItem: UploadQueueItem) {
-  const importInit = async () => {
-    return new Promise((resolve) => {
+  const importInit = async () =>
+    new Promise((resolve) => {
       queueItem.status = UploadQueueItemStatus.Uploading
       externalProviderUpload(queueItem)
         .then((res) => {
@@ -51,7 +51,6 @@ export function externalProviderImport(queueItem: UploadQueueItem) {
           return resolve(queueItem)
         })
     })
-  }
 
   return {
     importInit,

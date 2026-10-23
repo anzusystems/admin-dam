@@ -40,9 +40,9 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
-})
+const serviceRequirements = computed(
+  () => configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
+)
 
 const { can } = useAuth()
 // TODO(BE): core-dam deletes a custom distribution (DELETE /custom-distribution/{id}) under dam_distribution_access,

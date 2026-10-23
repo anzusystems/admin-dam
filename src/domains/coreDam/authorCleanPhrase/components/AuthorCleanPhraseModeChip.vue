@@ -13,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getAuthorCleanPhraseModeOption } = useAuthorCleanPhraseModeTypes()
-const statusOption = computed(() => {
-  return getAuthorCleanPhraseModeOption(props.mode)
-})
+const statusOption = computed(() => getAuthorCleanPhraseModeOption(props.mode))
 </script>
 
 <template>

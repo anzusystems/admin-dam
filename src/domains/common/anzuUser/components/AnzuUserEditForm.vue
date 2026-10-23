@@ -19,9 +19,7 @@ defineProps<{
 
 const { anzuUser } = useAnzuUserActions()
 const { resolvePermissions } = usePermissionActions()
-const resolvedPermissions = computed(() => {
-  return resolvePermissions(anzuUser.value)
-})
+const resolvedPermissions = computed(() => resolvePermissions(anzuUser.value))
 const { v$ } = useAnzuUserEditValidation(anzuUser)
 const { t } = useI18n()
 

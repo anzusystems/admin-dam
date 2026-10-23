@@ -21,9 +21,8 @@ export function useAssetStatus() {
     },
   ])
 
-  const getAssetStatusOption = (value: DamAssetStatusType) => {
-    return assetStatusOptions.value.find((item) => item.value === value)
-  }
+  const getAssetStatusOption = (value: DamAssetStatusType) =>
+    assetStatusOptions.value.find((item) => item.value === value)
 
   return {
     assetStatusOptions,

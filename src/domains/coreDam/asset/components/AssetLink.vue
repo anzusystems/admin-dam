@@ -12,9 +12,7 @@ const props = withDefaults(
 
 const router = useRouter()
 
-const href = computed(() => {
-  return router.resolve({ name: '/(coreDam)/assets/[id]', params: { id: props.assetId } }).href
-})
+const href = computed(() => router.resolve({ name: '/(coreDam)/assets/[id]', params: { id: props.assetId } }).href)
 </script>
 
 <template>

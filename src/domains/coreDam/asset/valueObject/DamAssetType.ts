@@ -25,9 +25,7 @@ export function useAssetType() {
     },
   ])
 
-  const getAssetTypeOption = (value: DamAssetTypeType) => {
-    return assetTypeOptions.value.find((item) => item.value === value)
-  }
+  const getAssetTypeOption = (value: DamAssetTypeType) => assetTypeOptions.value.find((item) => item.value === value)
 
   return {
     assetTypeOptions,

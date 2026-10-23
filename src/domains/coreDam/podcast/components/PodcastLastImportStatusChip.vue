@@ -13,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getPodcastLastImportStatusOption } = usePodcastLastImportStatus()
-const statusOption = computed(() => {
-  return getPodcastLastImportStatusOption(props.status)
-})
+const statusOption = computed(() => getPodcastLastImportStatusOption(props.status))
 </script>
 
 <template>

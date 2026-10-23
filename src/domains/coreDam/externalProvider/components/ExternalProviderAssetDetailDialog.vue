@@ -52,22 +52,12 @@ const prevItem = () => {
   emit('prevItem')
 }
 
-const assetType = computed(() => {
-  return asset.value?.attributes.assetType
-})
+const assetType = computed(() => asset.value?.attributes.assetType)
 
-const isTypeImage = computed(() => {
-  return assetType.value === DamAssetType.Image
-})
-const isTypeVideo = computed(() => {
-  return assetType.value === DamAssetType.Video
-})
-const isTypeAudio = computed(() => {
-  return assetType.value === DamAssetType.Audio
-})
-const isTypeDocument = computed(() => {
-  return assetType.value === DamAssetType.Document
-})
+const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
+const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
+const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
+const isTypeDocument = computed(() => assetType.value === DamAssetType.Document)
 const imageSrc = computed(() => {
   if (asset.value?.url) {
     return asset.value.url

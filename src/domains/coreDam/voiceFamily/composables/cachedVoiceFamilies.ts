@@ -33,13 +33,11 @@ const {
   return execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
 })
 
-export const useCachedVoiceFamiliesById = () => {
-  return {
-    addToCachedVoiceFamilies: addCached,
-    fetchCachedVoiceFamilies: fetchCached,
-    cachedVoiceFamiliesById: voiceFamilyCache,
-    hasCachedVoiceFamily: hasCached,
-    getCachedVoiceFamily: getCached,
-    isLoadedCachedVoiceFamily: isLoadedCached,
-  }
-}
+export const useCachedVoiceFamiliesById = () => ({
+  addToCachedVoiceFamilies: addCached,
+  fetchCachedVoiceFamilies: fetchCached,
+  cachedVoiceFamiliesById: voiceFamilyCache,
+  hasCachedVoiceFamily: hasCached,
+  getCachedVoiceFamily: getCached,
+  isLoadedCachedVoiceFamily: isLoadedCached,
+})

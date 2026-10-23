@@ -14,9 +14,8 @@ export function useTtsActiveProviderMode() {
     { value: TtsActiveProviderMode.Auto, title: t('coreDam.extSystem.ttsSettings.modes.auto') },
   ])
 
-  const getTtsActiveProviderModeOption = (value: TtsActiveProviderModeType) => {
-    return valueObjectOptions.value.find((item) => item.value === value)
-  }
+  const getTtsActiveProviderModeOption = (value: TtsActiveProviderModeType) =>
+    valueObjectOptions.value.find((item) => item.value === value)
 
   return {
     valueObjectOptions,

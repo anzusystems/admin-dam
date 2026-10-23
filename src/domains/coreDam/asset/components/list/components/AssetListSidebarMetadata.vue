@@ -131,16 +131,12 @@ const onSave = async () => {
   }
 }
 
-const assetStatus = computed(() => {
-  return asset.value?.attributes.assetStatus || DamAssetStatus.Draft
-})
+const assetStatus = computed(() => asset.value?.attributes.assetStatus || DamAssetStatus.Draft)
 
 // An asset being deleted - by the detail, by the bin of a queue row, elsewhere - has nothing to be saved into.
 const isDeleting = computed(() => assetDetailStore.isDeleting)
 
-const assetMainFile = computed(() => {
-  return asset.value?.mainFile || undefined
-})
+const assetMainFile = computed(() => asset.value?.mainFile || undefined)
 
 watch(
   asset,

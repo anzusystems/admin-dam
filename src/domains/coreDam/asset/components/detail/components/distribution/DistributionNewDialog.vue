@@ -58,9 +58,9 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType]?.distribution?.distributionRequirements ?? {}
-})
+const serviceRequirements = computed(
+  () => configExtSystem[props.assetType]?.distribution?.distributionRequirements ?? {}
+)
 
 const isDistributionServiceAllowed = useDistributionServiceAllowed()
 // Only the tabs: a redistribution opens on its own service.

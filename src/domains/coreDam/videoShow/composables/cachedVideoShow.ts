@@ -10,9 +10,7 @@ const mapFullToMinimal = (videoShow: VideoShow): VideoShowMinimal => ({
   title: videoShow.texts.title,
 })
 
-const mapIdToMinimal = (id: DocId): VideoShowMinimal => {
-  return { id: id, title: '' }
-}
+const mapIdToMinimal = (id: DocId): VideoShowMinimal => ({ id: id, title: '' })
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId, VideoShow, VideoShowMinimal>(
   mapFullToMinimal,
@@ -24,14 +22,12 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId,
   }
 )
 
-export const useCachedVideoShows = () => {
-  return {
-    addManualToCachedVideoShows: addManual,
-    addToCachedVideoShows: add,
-    fetchCachedVideoShows: fetch,
-    cachedVideoShows: cache,
-    hasCachedVideoShow: has,
-    getCachedVideoShow: get,
-    isLoadedCachedVideoShow: isLoaded,
-  }
-}
+export const useCachedVideoShows = () => ({
+  addManualToCachedVideoShows: addManual,
+  addToCachedVideoShows: add,
+  fetchCachedVideoShows: fetch,
+  cachedVideoShows: cache,
+  hasCachedVideoShow: has,
+  getCachedVideoShow: get,
+  isLoadedCachedVideoShow: isLoaded,
+})

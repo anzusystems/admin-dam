@@ -16,9 +16,8 @@ export function useTtsRequestStatus() {
     { value: TtsRequestStatus.Cancelled, title: t('coreDam.ttsNarrationRequest.status.cancelled'), color: 'grey' },
   ])
 
-  const getTtsRequestStatusOption = (value: TtsRequestStatusType) => {
-    return ttsRequestStatusOptions.value.find((item) => item.value === value)
-  }
+  const getTtsRequestStatusOption = (value: TtsRequestStatusType) =>
+    ttsRequestStatusOptions.value.find((item) => item.value === value)
 
   return {
     ttsRequestStatusOptions,

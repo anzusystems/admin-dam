@@ -67,9 +67,7 @@ const { can, canForAll } = useAuth()
 
 const canUpdateAssetAndFile = computed(() => canForAll([ACL.DAM_ASSET_UPDATE, assetTypeAcl(props.assetType, 'update')]))
 
-const itemHasFile = computed(() => {
-  return props.item && props.item.assetFile
-})
+const itemHasFile = computed(() => props.item && props.item.assetFile)
 
 const fileTitle = computed(() => {
   if (!props.item || !props.item.assetFile) return ''
@@ -86,9 +84,7 @@ const uploadQueueItemInAnyProgress = computed(() => {
   return undefined
 })
 
-const statusComputed = computed(() => {
-  return props.item?.assetFile?.fileAttributes.status
-})
+const statusComputed = computed(() => props.item?.assetFile?.fileAttributes.status)
 
 const routableAssetFile = computed(() => {
   if (props.item?.assetFile && !assetFileIsVideoFile(props.item.assetFile)) return props.item.assetFile

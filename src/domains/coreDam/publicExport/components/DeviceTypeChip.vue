@@ -13,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getDeviceTypeOption } = useDeviceTypeTypes()
-const typeOption = computed(() => {
-  return getDeviceTypeOption(props.type)
-})
+const typeOption = computed(() => getDeviceTypeOption(props.type))
 </script>
 
 <template>

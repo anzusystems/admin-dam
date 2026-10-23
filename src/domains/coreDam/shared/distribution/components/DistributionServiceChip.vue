@@ -8,9 +8,7 @@ const props = defineProps<{
 
 const { getDistributionServiceTypeOption } = useDamDistributionServiceType()
 
-const item = computed(() => {
-  return getDistributionServiceTypeOption(props.serviceName)
-})
+const item = computed(() => getDistributionServiceTypeOption(props.serviceName))
 </script>
 
 <template>

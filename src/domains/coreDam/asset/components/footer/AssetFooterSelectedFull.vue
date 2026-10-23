@@ -34,9 +34,7 @@ const { footerViewSelected, showMinimalSelected, setMinimalSelected, autoShowSel
 const assetListStore = useAssetListStore()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -52,9 +50,7 @@ const onClearConfirm = async () => {
 
 const massOperations = ref(true)
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
 
 // Assets whose metadata has not loaded, or could not be: the save would send nothing and say it failed.
 const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))

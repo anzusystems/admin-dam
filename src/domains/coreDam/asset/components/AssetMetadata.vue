@@ -43,25 +43,17 @@ const {
   ttsAudio,
 } = useAssetDetailActions()
 
-const assetType = computed(() => {
-  return asset.value?.attributes.assetType || DamAssetTypeDefault
-})
+const assetType = computed(() => asset.value?.attributes.assetType || DamAssetTypeDefault)
 
-const isTypeImage = computed(() => {
-  return assetType.value === DamAssetType.Image
-})
+const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
 
-const isTypeAudio = computed(() => {
-  return assetType.value === DamAssetType.Audio
-})
+const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
 
-const isTypeVideo = computed(() => {
-  return assetType.value === DamAssetType.Video
-})
+const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
 
-const assetMainFile = computed<null | AssetFile>(() => {
-  return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
-})
+const assetMainFile = computed<null | AssetFile>(() =>
+  asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
+)
 
 const routableAssetFile = computed(() => {
   if (asset?.value?.mainFile && !assetFileIsVideoFile(asset.value.mainFile)) return asset.value.mainFile

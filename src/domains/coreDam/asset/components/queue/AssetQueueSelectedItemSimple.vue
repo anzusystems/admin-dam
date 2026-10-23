@@ -15,8 +15,8 @@ const props = withDefaults(
 
 const { t } = useI18n()
 
-const processing = computed(() => {
-  return (
+const processing = computed(() =>
+  (
     [
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
@@ -24,13 +24,9 @@ const processing = computed(() => {
       UploadQueueItemStatus.Processing,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
-})
-const imageSrc = computed(() => {
-  return props.item.imagePreview ? props.item.imagePreview.url : undefined
-})
-const assetType = computed(() => {
-  return props.item.assetType
-})
+)
+const imageSrc = computed(() => (props.item.imagePreview ? props.item.imagePreview.url : undefined))
+const assetType = computed(() => props.item.assetType)
 const status = computed(() => {
   if (!props.item) return DamAssetStatusDefault
   return props.item.assetStatus

@@ -21,9 +21,7 @@ const { externalProviderFooterViewSelected, showMinimalSelected, setMinimalSelec
 const assetListStore = useExternalProviderAssetListStore()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {

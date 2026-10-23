@@ -6,22 +6,20 @@ import type { DistributionCategory } from '@/domains/coreDam/distributionCategor
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useDistributionCategoryFactory() {
-  const createDefault = (extSystemId: number, type?: DamAssetTypeType): DistributionCategory => {
-    return {
-      id: '',
-      name: '',
-      type: type ?? DamAssetTypeDefault,
-      extSystem: extSystemId,
-      selectedOptions: [],
-      selectedOptionsDetail: [],
-      createdAt: dateTimeNow(),
-      modifiedAt: dateTimeNow(),
-      createdBy: 0,
-      modifiedBy: 0,
-      _resourceName: ENTITY,
-      _system: SYSTEM_CORE_DAM,
-    }
-  }
+  const createDefault = (extSystemId: number, type?: DamAssetTypeType): DistributionCategory => ({
+    id: '',
+    name: '',
+    type: type ?? DamAssetTypeDefault,
+    extSystem: extSystemId,
+    selectedOptions: [],
+    selectedOptionsDetail: [],
+    createdAt: dateTimeNow(),
+    modifiedAt: dateTimeNow(),
+    createdBy: 0,
+    modifiedBy: 0,
+    _resourceName: ENTITY,
+    _system: SYSTEM_CORE_DAM,
+  })
 
   return {
     createDefault,

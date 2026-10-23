@@ -18,9 +18,8 @@ export function useVoiceDiscriminator() {
     ...valueObjectOptions.value,
   ])
 
-  const getVoiceDiscriminatorOption = (value: VoiceDiscriminatorType) => {
-    return valueObjectOptions.value.find((item) => item.value === value)
-  }
+  const getVoiceDiscriminatorOption = (value: VoiceDiscriminatorType) =>
+    valueObjectOptions.value.find((item) => item.value === value)
 
   return {
     valueObjectOptions,

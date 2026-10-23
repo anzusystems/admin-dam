@@ -108,9 +108,7 @@ defineExpose({
   refresh: getList,
 })
 
-const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => {
-  return 'item.' + distributionServiceSlug
-}
+const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 'item.' + distributionServiceSlug
 </script>
 
 <template>

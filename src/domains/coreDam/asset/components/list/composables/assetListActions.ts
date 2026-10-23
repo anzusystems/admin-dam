@@ -101,14 +101,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     showMetaIcons.value = !showMetaIcons.value
   }
 
-  const checkQuickDetailReFetch = (assetId: DocId) => {
-    return (
-      // The detail has to hold that asset still: the edit of a queue row writes another without the stamp.
-      assetDetailStore.asset?.id === assetId &&
-      assetDetailStore.lastFetchedId === assetId &&
-      Date.now() - assetDetailStore.lastFetched <= DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME
-    )
-  }
+  const checkQuickDetailReFetch = (assetId: DocId) =>
+    // The detail has to hold that asset still: the edit of a queue row writes another without the stamp.
+    assetDetailStore.asset?.id === assetId &&
+    assetDetailStore.lastFetchedId === assetId &&
+    Date.now() - assetDetailStore.lastFetched <= DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME
 
   const fetchAsset = async (assetId: DocId, detailRequest: number) => {
     /* Stamped only after it succeeded, and only by the current request: a failure held the cache for
@@ -478,13 +475,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
     let selecting: AssetSearchListItemDto[] = []
     if (activeIndex > data.index) {
-      selecting = assetListStore.list.slice(data.index, activeIndex + 1).map((item) => {
-        return item.asset
-      })
+      selecting = assetListStore.list.slice(data.index, activeIndex + 1).map((item) => item.asset)
     } else if (activeIndex < data.index) {
-      selecting = assetListStore.list.slice(activeIndex, data.index + 1).map((item) => {
-        return item.asset
-      })
+      selecting = assetListStore.list.slice(activeIndex, data.index + 1).map((item) => item.asset)
     }
     // A range skips them.
     selecting = selecting.filter((asset) => !isDeleting(asset))
@@ -498,11 +491,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
     if (selecting.length > 0) {
       uploadQueuesStore.addByAssets(QUEUE_ID_MASS_EDIT, selecting)
-      assetListStore.toggleSelectedByIds(
-        selecting.map((item) => {
-          return item.id
-        })
-      )
+      assetListStore.toggleSelectedByIds(selecting.map((item) => item.id))
     }
   }
 

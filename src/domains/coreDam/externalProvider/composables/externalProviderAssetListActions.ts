@@ -286,13 +286,9 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
     let selecting: AssetExternalProviderListDto[] = []
     if (activeIndex > data.index) {
-      selecting = externalProviderAssetListStore.list.slice(data.index, activeIndex + 1).map((item) => {
-        return item.asset
-      })
+      selecting = externalProviderAssetListStore.list.slice(data.index, activeIndex + 1).map((item) => item.asset)
     } else if (activeIndex < data.index) {
-      selecting = externalProviderAssetListStore.list.slice(activeIndex, data.index + 1).map((item) => {
-        return item.asset
-      })
+      selecting = externalProviderAssetListStore.list.slice(activeIndex, data.index + 1).map((item) => item.asset)
     }
     const selectedQueueTotalCount = uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
     // Reaching the limit exactly cuts nothing, so it is not worth a warning.
@@ -304,11 +300,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
     if (selecting.length > 0) {
       uploadQueuesStore.addByExternalProviderAsset(QUEUE_ID_MASS_EDIT, selecting)
-      externalProviderAssetListStore.toggleSelectedByIds(
-        selecting.map((item) => {
-          return item.id
-        })
-      )
+      externalProviderAssetListStore.toggleSelectedByIds(selecting.map((item) => item.id))
     }
   }
 

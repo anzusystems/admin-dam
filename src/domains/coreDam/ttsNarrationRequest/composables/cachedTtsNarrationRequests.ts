@@ -30,14 +30,12 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   Promise.all(ids.map((id) => fetchTtsNarrationRequest({ urlParams: { id } })))
 )
 
-export const useCachedTtsNarrationRequests = () => {
-  return {
-    addManualToCachedTtsNarrationRequests: addManual,
-    addToCachedTtsNarrationRequests: add,
-    fetchCachedTtsNarrationRequests: fetch,
-    cachedTtsNarrationRequests: cache,
-    hasCachedTtsNarrationRequest: has,
-    getCachedTtsNarrationRequest: get,
-    isLoadedCachedTtsNarrationRequest: isLoaded,
-  }
-}
+export const useCachedTtsNarrationRequests = () => ({
+  addManualToCachedTtsNarrationRequests: addManual,
+  addToCachedTtsNarrationRequests: add,
+  fetchCachedTtsNarrationRequests: fetch,
+  cachedTtsNarrationRequests: cache,
+  hasCachedTtsNarrationRequest: has,
+  getCachedTtsNarrationRequest: get,
+  isLoadedCachedTtsNarrationRequest: isLoaded,
+})

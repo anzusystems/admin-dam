@@ -29,9 +29,7 @@ export function useDeviceTypeTypes() {
     },
   ])
 
-  const getDeviceTypeOption = (value: DeviceTypeType) => {
-    return deviceTypeOptions.value.find((item) => item.value === value)
-  }
+  const getDeviceTypeOption = (value: DeviceTypeType) => deviceTypeOptions.value.find((item) => item.value === value)
 
   return {
     deviceTypeOptions,

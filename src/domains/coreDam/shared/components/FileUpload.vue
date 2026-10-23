@@ -110,8 +110,8 @@ function flattenFileArray(array: (File | File[])[]): File[] {
 
 /* `readEntries` answers in batches - Chromium caps them at 100 - and the same reader has to be asked until it answers
  * with an empty one. */
-const readAllEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> => {
-  return new Promise((resolve, reject) => {
+const readAllEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> =>
+  new Promise((resolve, reject) => {
     const entries: FileSystemEntry[] = []
     const readBatch = () => {
       reader.readEntries((batch: FileSystemEntry[]) => {
@@ -126,7 +126,6 @@ const readAllEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEn
     }
     readBatch()
   })
-}
 
 type SettledEntry = { read: true; value: File | File[] } | { read: false; reason: unknown }
 
@@ -146,9 +145,9 @@ const collectRead = (results: SettledEntry[]): (File | File[])[] => {
   return read
 }
 
-const traverseFileTree = (item: FileSystemEntry, path = '') => {
+const traverseFileTree = (item: FileSystemEntry, path = '') =>
   // Based on https://stackoverflow.com/questions/3590058
-  return new Promise<File | File[]>((resolve, reject) => {
+  new Promise<File | File[]>((resolve, reject) => {
     if (isFileEntry(item)) {
       item.file((file: File) => {
         ;(file as File & { $path: string }).$path = path
@@ -173,7 +172,6 @@ const traverseFileTree = (item: FileSystemEntry, path = '') => {
       resolve([])
     }
   })
-}
 
 const setFiles = (files: File[] | undefined = []) => {
   if (!files) {

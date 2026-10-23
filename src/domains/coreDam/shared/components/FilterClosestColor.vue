@@ -47,8 +47,8 @@ const { t, te } = useI18n()
 // The name of a colour by the key the configuration gives it; a key the app has no name for is shown as it is.
 const colorName = (key: string) => (te('coreDam.asset.color.' + key) ? t('coreDam.asset.color.' + key) : key)
 
-const items = computed(() => {
-  return Object.keys(damPrvConfig.value.colorSet).map((key) => ({
+const items = computed(() =>
+  Object.keys(damPrvConfig.value.colorSet).map((key) => ({
     name: colorName(key),
     color: damPrvConfig.value.colorSet[key],
     selected: isArray(value.value)
@@ -56,7 +56,7 @@ const items = computed(() => {
       : value.value === damPrvConfig.value.colorSet[key],
     iconColor: pickTextColorBasedOnBgColor(damPrvConfig.value.colorSet[key], '#fff', '#000'),
   }))
-})
+)
 
 const showClear = computed(() => {
   if (isArray(value.value)) {

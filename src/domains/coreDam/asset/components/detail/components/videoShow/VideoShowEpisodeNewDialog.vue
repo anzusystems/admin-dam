@@ -94,9 +94,7 @@ const loadFormData = async () => {
   loadingFormData.value = false
 }
 
-const videoShowEpisodeVideoShow = computed(() => {
-  return videoShowEpisode.value.videoShow
-})
+const videoShowEpisodeVideoShow = computed(() => videoShowEpisode.value.videoShow)
 
 watch(videoShowEpisodeVideoShow, (newValue, oldValue) => {
   if (newValue !== oldValue && !isNull(newValue)) {

@@ -73,13 +73,11 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
         selectedIds.push(selectedItems[i].assetId as DocId)
       }
     }
-    const items = assets.map((asset) => {
-      return {
-        asset: markedIfDeletedHere(asset),
-        active: false,
-        selected: selectedIds.includes(asset.id),
-      }
-    })
+    const items = assets.map((asset) => ({
+      asset: markedIfDeletedHere(asset),
+      active: false,
+      selected: selectedIds.includes(asset.id),
+    }))
     list.value = list.value.concat(items)
     // The asset the first page of a list read anew did not bring can be in a further one.
     restoreActive(shownAssetId)
@@ -96,13 +94,11 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
         selectedIds.push(selectedItems[i].assetId as DocId)
       }
     }
-    list.value = assets.map((asset) => {
-      return {
-        asset: markedIfDeletedHere(asset),
-        active: false,
-        selected: selectedIds.includes(asset.id),
-      }
-    })
+    list.value = assets.map((asset) => ({
+      asset: markedIfDeletedHere(asset),
+      active: false,
+      selected: selectedIds.includes(asset.id),
+    }))
     // The place the active tile had is another asset's in these rows, or nobody's.
     activeItemIndex.value = null
     restoreActive(shownAssetId)

@@ -8,9 +8,7 @@ const mapFullToMinimal = (assetLicence: DamAssetLicence): DamAssetLicenceMinimal
   name: assetLicence.name,
 })
 
-const mapIdToMinimal = (id: IntegerId): DamAssetLicenceMinimal => {
-  return { id: id, name: '' }
-}
+const mapIdToMinimal = (id: IntegerId): DamAssetLicenceMinimal => ({ id: id, name: '' })
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   IntegerId,
@@ -18,14 +16,12 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   DamAssetLicenceMinimal
 >(mapFullToMinimal, mapIdToMinimal, (ids: IntegerId[]) => fetchDamAssetLicenceListByIds(damClient, ids))
 
-export const useCachedAssetLicences = () => {
-  return {
-    addManualToCachedAssetLicences: addManual,
-    addToCachedAssetLicences: add,
-    fetchCachedAssetLicences: fetch,
-    cachedAssetLicences: cache,
-    hasCachedAssetLicence: has,
-    getCachedAssetLicence: get,
-    isLoadedCachedAssetLicence: isLoaded,
-  }
-}
+export const useCachedAssetLicences = () => ({
+  addManualToCachedAssetLicences: addManual,
+  addToCachedAssetLicences: add,
+  fetchCachedAssetLicences: fetch,
+  cachedAssetLicences: cache,
+  hasCachedAssetLicence: has,
+  getCachedAssetLicence: get,
+  isLoadedCachedAssetLicence: isLoaded,
+})

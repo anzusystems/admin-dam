@@ -12,9 +12,7 @@ const props = withDefaults(
 )
 
 const { getDistributionFailReasonOption } = useDistributionFailReason()
-const statusOption = computed(() => {
-  return getDistributionFailReasonOption(props.status)
-})
+const statusOption = computed(() => getDistributionFailReasonOption(props.status))
 </script>
 
 <template>

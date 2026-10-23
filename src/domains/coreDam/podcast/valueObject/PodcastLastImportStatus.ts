@@ -29,9 +29,8 @@ export function usePodcastLastImportStatus() {
     },
   ])
 
-  const getPodcastLastImportStatusOption = (value: PodcastLastImportStatusType) => {
-    return podcastLastImportStatusOptions.value.find((item) => item.value === value)
-  }
+  const getPodcastLastImportStatusOption = (value: PodcastLastImportStatusType) =>
+    podcastLastImportStatusOptions.value.find((item) => item.value === value)
 
   return {
     podcastLastImportStatusOptions,

@@ -69,9 +69,7 @@ const loadDistributions = async (fileId: DocIdNullable) => {
   )
 }
 
-const assetFileIdComputed = computed(() => {
-  return props.assetFileId
-})
+const assetFileIdComputed = computed(() => props.assetFileId)
 
 const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -80,26 +78,22 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const itemsComputed = computed(() => {
-  return distributions.value.map((item) => {
-    return {
-      title:
-        (configExtSystem[props.assetType]?.distribution?.distributionRequirements[item.distributionService]?.title ??
-          item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
-      value: item.id,
-    }
-  })
-})
+const itemsComputed = computed(() =>
+  distributions.value.map((item) => ({
+    title:
+      (configExtSystem[props.assetType]?.distribution?.distributionRequirements[item.distributionService]?.title ??
+        item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
+    value: item.id,
+  }))
+)
 
 const { requiredIf } = useValidate()
 
-const rules = computed(() => {
-  return {
-    modelValueComputed: {
-      required: requiredIf(props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne),
-    },
-  }
-})
+const rules = computed(() => ({
+  modelValueComputed: {
+    required: requiredIf(props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne),
+  },
+}))
 
 const v$ = useVuelidate(rules, { modelValueComputed })
 

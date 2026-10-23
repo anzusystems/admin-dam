@@ -23,21 +23,19 @@ const dialog = ref(false)
 const loading = ref(false)
 const category = ref<DistributionCategory>(createDefault(currentExtSystemId.value))
 
-const assetId = computed(() => {
-  return assetDetailStore.asset && assetDetailStore.asset.id ? assetDetailStore.asset.id : null
-})
+const assetId = computed(() => (assetDetailStore.asset && assetDetailStore.asset.id ? assetDetailStore.asset.id : null))
 
-const distributionCategoryId = computed(() => {
-  return assetDetailStore.asset && assetDetailStore.asset.distributionCategory
+const distributionCategoryId = computed(() =>
+  assetDetailStore.asset && assetDetailStore.asset.distributionCategory
     ? assetDetailStore.asset.distributionCategory
     : null
-})
+)
 
-const assetType = computed(() => {
-  return assetDetailStore.asset && assetDetailStore.asset.attributes.assetType
+const assetType = computed(() =>
+  assetDetailStore.asset && assetDetailStore.asset.attributes.assetType
     ? assetDetailStore.asset.attributes.assetType
     : DamAssetTypeDefault
-})
+)
 
 const loadCategory = async (id: DocId) => {
   loading.value = true

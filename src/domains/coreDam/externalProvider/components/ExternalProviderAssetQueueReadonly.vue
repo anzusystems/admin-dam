@@ -13,9 +13,7 @@ const props = withDefaults(
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(props.queueId)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(props.queueId))
 
 const removeItem = (index: number) => {
   uploadQueuesStore.removeByIndex(props.queueId, index)

@@ -189,29 +189,25 @@ export const useAuthorSelectActions = () => {
     value: author.id,
   })
 
-  const mapToValueObjects = (authors: DamAuthor[]): ValueObjectOption<string>[] => {
-    return authors.map((author: DamAuthor) => mapToValueObject(author))
-  }
+  const mapToValueObjects = (authors: DamAuthor[]): ValueObjectOption<string>[] =>
+    authors.map((author: DamAuthor) => mapToValueObject(author))
 
-  const mapToMinimals = (authors: DamAuthor[]): DamAuthorMinimal[] => {
-    return authors.map((author: DamAuthor) => mapToMinimal(author))
-  }
+  const mapToMinimals = (authors: DamAuthor[]): DamAuthorMinimal[] =>
+    authors.map((author: DamAuthor) => mapToMinimal(author))
 
-  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjects(
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToValueObjects(
       await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
-  }
 
-  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToMinimals(
+  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToMinimals(
       await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
-  }
 
   const fetchItemsByIds = async (ids: string[]) => {
     const { execute: executeFetchByIds } = useFetchAuthorListByIds()

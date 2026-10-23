@@ -28,9 +28,8 @@ export function useTtsAudioStatus() {
     },
   ])
 
-  const getTtsAudioStatusOption = (value: TtsAudioStatusType) => {
-    return ttsAudioStatusOptions.value.find((item) => item.value === value)
-  }
+  const getTtsAudioStatusOption = (value: TtsAudioStatusType) =>
+    ttsAudioStatusOptions.value.find((item) => item.value === value)
 
   return {
     ttsAudioStatusOptions,

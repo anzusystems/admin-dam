@@ -6,12 +6,10 @@ import type { Permissions } from '@/shared/types/Permission'
 
 export const usePermissionActions = () => {
   const { getCachedPermissionGroup } = useCachedPermissionGroups()
-  const resolvePermissions = (user: AnzuUser): Permissions => {
-    return {
-      ...resolveGroupPermissions(user.permissionGroups),
-      ...user.permissions,
-    }
-  }
+  const resolvePermissions = (user: AnzuUser): Permissions => ({
+    ...resolveGroupPermissions(user.permissionGroups),
+    ...user.permissions,
+  })
 
   const resolveGroupPermissions = (permissionGroupIDs: IntegerId[]): Permissions => {
     const permissions: Permissions = {}

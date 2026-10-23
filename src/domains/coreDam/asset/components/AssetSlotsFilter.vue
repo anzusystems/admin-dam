@@ -16,8 +16,8 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const items = computed(() => {
-  return [
+const items = computed(() =>
+  [
     ...(configExtSystem.audio?.slots ?? []),
     ...(configExtSystem.image?.slots ?? []),
     ...(configExtSystem.video?.slots ?? []),
@@ -25,7 +25,7 @@ const items = computed(() => {
   ]
     .filter((value, index, array) => array.indexOf(value) === index)
     .map((item) => ({ title: item, value: item }))
-})
+)
 </script>
 
 <template>

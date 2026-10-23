@@ -14,11 +14,12 @@ const props = withDefaults(
   }
 )
 
-const style = computed(() => {
-  return `background-color: ${props.color ? props.color : 'transparent'}; width: ${props.width}px; height: ${
-    props.height
-  }px;`
-})
+const style = computed(
+  () =>
+    `background-color: ${props.color ? props.color : 'transparent'}; width: ${props.width}px; height: ${
+      props.height
+    }px;`
+)
 </script>
 
 <template>

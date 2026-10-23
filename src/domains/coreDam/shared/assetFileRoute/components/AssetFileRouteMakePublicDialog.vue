@@ -43,9 +43,7 @@ const { showRecordWas, showValidationError, showErrorsDefault, showUnknownError 
 // Said on the page the change was asked from, as the failure of the read after it: not on the next one.
 const whileOnPage = useWhileOnPage()
 
-const modelValueComputed = computed(() => {
-  return modelValue.value
-})
+const modelValueComputed = computed(() => modelValue.value)
 
 const { required, minLength, maxLength } = useValidate()
 

@@ -276,12 +276,11 @@ export const useDistributionCategoryEditActions = () => {
 }
 
 export const useDistributionCategorySelectActions = () => {
-  const mapToValueObjectOption = (categories: DistributionCategory[]): ValueObjectOption<DocId>[] => {
-    return categories.map((category: DistributionCategory) => ({
+  const mapToValueObjectOption = (categories: DistributionCategory[]): ValueObjectOption<DocId>[] =>
+    categories.map((category: DistributionCategory) => ({
       title: category.name,
       value: category.id,
     }))
-  }
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     const { execute } = useFetchDistributionCategoryList()

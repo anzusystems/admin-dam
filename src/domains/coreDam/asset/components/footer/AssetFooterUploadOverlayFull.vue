@@ -31,12 +31,8 @@ const { fetchAssetList } = useAssetListActions()
 const { footerViewUpload, showMinimalUpload, setMinimalUpload, autoShowUpload, hideUpload } = useAssetFooterUploadView()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
-const queueProcessedCount = computed(() => {
-  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL))
+const queueProcessedCount = computed(() => uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -47,17 +43,11 @@ watch(queueTotalCount, (newValue, oldValue) => {
 const { mobile } = useDisplay()
 const massOperations = ref(!mobile.value)
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL))
 
-const isUploading = computed(() => {
-  return queueTotalCount.value > queueProcessedCount.value
-})
+const isUploading = computed(() => queueTotalCount.value > queueProcessedCount.value)
 
-const isFinished = computed(() => {
-  return queueTotalCount.value === queueProcessedCount.value
-})
+const isFinished = computed(() => queueTotalCount.value === queueProcessedCount.value)
 
 const onStopConfirm = async () => {
   uploadQueuesStore.stopUpload(QUEUE_ID_UPLOAD_GLOBAL)

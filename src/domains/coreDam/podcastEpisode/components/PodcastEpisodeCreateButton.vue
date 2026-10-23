@@ -39,9 +39,7 @@ const onOpen = () => {
 
 const { execute: createPodcastEpisode } = useCreatePodcastEpisode()
 
-const create = async () => {
-  return await createPodcastEpisode({ body: podcastEpisode.value })
-}
+const create = async () => await createPodcastEpisode({ body: podcastEpisode.value })
 </script>
 
 <template>

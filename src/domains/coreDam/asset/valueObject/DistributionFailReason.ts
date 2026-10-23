@@ -39,9 +39,8 @@ export function useDistributionFailReason() {
     },
   ])
 
-  const getDistributionFailReasonOption = (value: DistributionFailReasonType) => {
-    return DistributionFailReasonOptions.value.find((item) => item.value === value)
-  }
+  const getDistributionFailReasonOption = (value: DistributionFailReasonType) =>
+    DistributionFailReasonOptions.value.find((item) => item.value === value)
 
   return {
     DistributionFailReasonOptions,

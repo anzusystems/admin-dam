@@ -24,9 +24,7 @@ export function usePodcastMode() {
     },
   ])
 
-  const getPodcastModeOption = (value: PodcastModeType) => {
-    return podcastModeOptions.value.find((item) => item.value === value)
-  }
+  const getPodcastModeOption = (value: PodcastModeType) => podcastModeOptions.value.find((item) => item.value === value)
 
   return {
     podcastModeOptions,

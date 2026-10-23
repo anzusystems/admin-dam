@@ -7,9 +7,7 @@ import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/upl
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
 </script>
 
 <template>

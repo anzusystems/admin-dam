@@ -51,19 +51,17 @@ export const useExternalProviderAssetImport = () => {
       return
     }
 
-    const assets: AssetExternalProviderListDto[] = queueItemsSelected.map((item) => {
-      return {
-        id: item.externalProviderAssetId as AssetExternalProviderId,
-        texts: {
-          displayTitle: item.displayTitle,
-        },
-        attributes: {
-          assetType: item.assetType,
-        },
-        url: item.imagePreview?.url ? item.imagePreview.url : '',
-        metadata: item.externalProviderMetadata ?? {},
-      }
-    })
+    const assets: AssetExternalProviderListDto[] = queueItemsSelected.map((item) => ({
+      id: item.externalProviderAssetId as AssetExternalProviderId,
+      texts: {
+        displayTitle: item.displayTitle,
+      },
+      attributes: {
+        assetType: item.assetType,
+      },
+      url: item.imagePreview?.url ? item.imagePreview.url : '',
+      metadata: item.externalProviderMetadata ?? {},
+    }))
     const { hideSelected } = useExternalProviderAssetFooterSelectedView()
     hideSelected()
     await uploadQueueStore.addByExternalProviderAsset(QUEUE_ID_UPLOAD_GLOBAL, assets, true)

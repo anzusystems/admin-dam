@@ -41,9 +41,7 @@ export function useAssetFooterUploadView() {
     setFooterViewUpload(FooterViewUpload.Hidden)
   }
 
-  const showMinimalUpload = computed(() => {
-    return footerViewUpload.value !== FooterViewUpload.Minimal
-  })
+  const showMinimalUpload = computed(() => footerViewUpload.value !== FooterViewUpload.Minimal)
 
   const setMinimalUpload = () => {
     assetListStore.keyboardNavigationEnable()
@@ -51,9 +49,7 @@ export function useAssetFooterUploadView() {
     customDialog.value = false
   }
 
-  const showFullUpload = computed(() => {
-    return footerViewUpload.value !== FooterViewUpload.Full
-  })
+  const showFullUpload = computed(() => footerViewUpload.value !== FooterViewUpload.Full)
 
   const setFullUpload = () => {
     assetListStore.keyboardNavigationDisable()
@@ -61,9 +57,7 @@ export function useAssetFooterUploadView() {
     customDialog.value = true
   }
 
-  const showCompactUpload = computed(() => {
-    return footerViewUpload.value !== FooterViewUpload.Compact
-  })
+  const showCompactUpload = computed(() => footerViewUpload.value !== FooterViewUpload.Compact)
 
   const setCompactUpload = () => {
     assetListStore.keyboardNavigationEnable()

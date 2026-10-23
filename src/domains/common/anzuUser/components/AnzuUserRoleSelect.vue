@@ -19,12 +19,10 @@ const roles = computed({
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { permissionConfig, translatePermission } = usePermissionConfigActions(props.client)
 const items = computed(() =>
-  permissionConfig.value.roles.map((role) => {
-    return {
-      title: translatePermission('roles', role),
-      value: role,
-    }
-  })
+  permissionConfig.value.roles.map((role) => ({
+    title: translatePermission('roles', role),
+    value: role,
+  }))
 )
 const modelValue = defineModel<string[]>({ required: true })
 const { t } = useI18n()

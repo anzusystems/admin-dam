@@ -163,20 +163,17 @@ export const useAssetLicenceEditActions = () => {
 export const useAssetLicenceByExtIdSelectActions = () => {
   const { execute } = useFetchDamAssetLicenceList(damClient)
 
-  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
-    return assetLicences.map((assetLicence: DamAssetLicence) => ({
+  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] =>
+    assetLicences.map((assetLicence: DamAssetLicence) => ({
       title: assetLicence.extId,
       value: assetLicence.id,
     }))
-  }
 
-  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjectOption(await execute(pagination, filterData, filterConfig))
-  }
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToValueObjectOption(await execute(pagination, filterData, filterConfig))
 
-  const fetchItemsByIds = async (ids: number[]) => {
-    return mapToValueObjectOption(await fetchDamAssetLicenceListByIds(damClient, ids))
-  }
+  const fetchItemsByIds = async (ids: number[]) =>
+    mapToValueObjectOption(await fetchDamAssetLicenceListByIds(damClient, ids))
 
   return {
     fetchItems,

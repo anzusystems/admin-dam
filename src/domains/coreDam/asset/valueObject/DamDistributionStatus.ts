@@ -34,9 +34,8 @@ export function useDistributionStatus() {
     },
   ])
 
-  const getDistributionStatusOption = (value: DamDistributionStatusType) => {
-    return DistributionStatusOptions.value.find((item) => item.value === value)
-  }
+  const getDistributionStatusOption = (value: DamDistributionStatusType) =>
+    DistributionStatusOptions.value.find((item) => item.value === value)
 
   return {
     DistributionStatusOptions,

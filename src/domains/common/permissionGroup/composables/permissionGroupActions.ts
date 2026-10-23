@@ -185,13 +185,11 @@ export const usePermissionGroupSelectAction = () => {
     value: permissionGroup.id,
   })
 
-  const mapToValueObjects = (permissionGroups: PermissionGroup[]): ValueObjectOption<IntegerId>[] => {
-    return permissionGroups.map((permissionGroup: PermissionGroup) => mapToValueObject(permissionGroup))
-  }
+  const mapToValueObjects = (permissionGroups: PermissionGroup[]): ValueObjectOption<IntegerId>[] =>
+    permissionGroups.map((permissionGroup: PermissionGroup) => mapToValueObject(permissionGroup))
 
-  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjects(await execute(pagination, filterData, filterConfig))
-  }
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToValueObjects(await execute(pagination, filterData, filterConfig))
 
   const fetchItemsByIds = async (ids: IntegerId[]) => {
     const { execute } = useFetchPermissionGroupListByIds()

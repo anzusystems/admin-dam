@@ -13,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getExportTypeOption } = useExportTypeTypes()
-const typeOption = computed(() => {
-  return getExportTypeOption(props.type)
-})
+const typeOption = computed(() => getExportTypeOption(props.type))
 </script>
 
 <template>

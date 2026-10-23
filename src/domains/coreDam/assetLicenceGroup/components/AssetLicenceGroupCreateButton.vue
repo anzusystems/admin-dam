@@ -42,9 +42,7 @@ const onOpen = () => {
 
 const { execute: createAssetLicenceGroup } = useCreateAssetLicenceGroup()
 
-const create = async () => {
-  return await createAssetLicenceGroup({ body: assetLicenceGroup.value })
-}
+const create = async () => await createAssetLicenceGroup({ body: assetLicenceGroup.value })
 </script>
 
 <template>

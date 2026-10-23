@@ -24,12 +24,8 @@ const {
 } = useAssetFooterUploadView()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
-const queueProcessedCount = computed(() => {
-  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL))
+const queueProcessedCount = computed(() => uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -37,9 +33,7 @@ watch(queueTotalCount, (newValue, oldValue) => {
   }
 })
 
-const isUploading = computed(() => {
-  return queueTotalCount.value > queueProcessedCount.value
-})
+const isUploading = computed(() => queueTotalCount.value > queueProcessedCount.value)
 </script>
 
 <template>

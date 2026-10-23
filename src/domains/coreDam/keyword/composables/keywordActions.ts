@@ -167,33 +167,28 @@ export const useKeywordSelectActions = () => {
     name: keyword.name,
   })
 
-  const mapToValueObjects = (keywords: DamKeyword[]): ValueObjectOption<string>[] => {
-    return keywords.map((keyword: DamKeyword) => mapToValueObject(keyword))
-  }
+  const mapToValueObjects = (keywords: DamKeyword[]): ValueObjectOption<string>[] =>
+    keywords.map((keyword: DamKeyword) => mapToValueObject(keyword))
 
-  const mapToMinimals = (keywords: DamKeyword[]): DamKeywordMinimal[] => {
-    return keywords.map((keyword: DamKeyword) => mapToMinimal(keyword))
-  }
+  const mapToMinimals = (keywords: DamKeyword[]): DamKeywordMinimal[] =>
+    keywords.map((keyword: DamKeyword) => mapToMinimal(keyword))
 
-  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjects(
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToValueObjects(
       await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
-  }
 
-  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToMinimals(
+  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToMinimals(
       await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
-  }
 
-  const fetchItemsByIds = async (ids: string[]) => {
-    return mapToValueObjects(await fetchKeywordListByIds(currentExtSystemId.value, ids))
-  }
+  const fetchItemsByIds = async (ids: string[]) =>
+    mapToValueObjects(await fetchKeywordListByIds(currentExtSystemId.value, ids))
 
   return {
     mapToValueObject,

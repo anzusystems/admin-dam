@@ -41,15 +41,14 @@ const distributionType = computed(() => {
 const isDistributionServiceAllowed = useDistributionServiceAllowed()
 // Not for an asset being deleted.
 const assetDetailStore = useAssetDetailStore()
-const showRedistribute = computed(() => {
-  return (
+const showRedistribute = computed(
+  () =>
     !assetDetailStore.isDeleting &&
     isDistributionServiceAllowed(props.item.distributionService) &&
     damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
       props.item.status
     )
-  )
-})
+)
 
 const componentComputed = computed(() => {
   switch (distributionType.value) {

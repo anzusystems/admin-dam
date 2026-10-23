@@ -43,9 +43,7 @@ const onOpen = () => {
   videoShow.value = createDefault(currentAssetLicenceId.value)
 }
 
-const create = async () => {
-  return await createVideoShow({ body: videoShow.value })
-}
+const create = async () => await createVideoShow({ body: videoShow.value })
 </script>
 
 <template>

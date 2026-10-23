@@ -5,21 +5,19 @@ import type { DistributionCategorySelect } from '@/domains/coreDam/distributionC
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export function useDistributionCategorySelectFactory() {
-  const createDefault = (extSystemId: number): DistributionCategorySelect => {
-    return {
-      id: '',
-      serviceSlug: '',
-      type: DamAssetTypeDefault,
-      extSystem: extSystemId,
-      options: [],
-      createdAt: dateTimeNow(),
-      modifiedAt: dateTimeNow(),
-      createdBy: 0,
-      modifiedBy: 0,
-      _resourceName: ENTITY,
-      _system: SYSTEM_CORE_DAM,
-    }
-  }
+  const createDefault = (extSystemId: number): DistributionCategorySelect => ({
+    id: '',
+    serviceSlug: '',
+    type: DamAssetTypeDefault,
+    extSystem: extSystemId,
+    options: [],
+    createdAt: dateTimeNow(),
+    modifiedAt: dateTimeNow(),
+    createdBy: 0,
+    modifiedBy: 0,
+    _resourceName: ENTITY,
+    _system: SYSTEM_CORE_DAM,
+  })
 
   return {
     createDefault,

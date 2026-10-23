@@ -24,9 +24,7 @@ export function useExportTypeTypes() {
     },
   ])
 
-  const getExportTypeOption = (value: ExportTypeType) => {
-    return exportTypeOptions.value.find((item) => item.value === value)
-  }
+  const getExportTypeOption = (value: ExportTypeType) => exportTypeOptions.value.find((item) => item.value === value)
 
   return {
     exportTypeOptions,

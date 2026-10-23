@@ -15,9 +15,7 @@ const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 const { t } = useI18n()
 const router = useRouter()
 
-const imageSrc = computed(() => {
-  return podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined
-})
+const imageSrc = computed(() => (podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined))
 
 const onAssetChipClick = () => {
   if (!podcastEpisode.value.asset) return

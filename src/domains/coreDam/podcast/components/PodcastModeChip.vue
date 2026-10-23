@@ -13,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getPodcastModeOption } = usePodcastMode()
-const modeOption = computed(() => {
-  return getPodcastModeOption(props.mode)
-})
+const modeOption = computed(() => getPodcastModeOption(props.mode))
 </script>
 
 <template>

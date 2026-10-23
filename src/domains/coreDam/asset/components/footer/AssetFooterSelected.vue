@@ -28,9 +28,7 @@ const {
 const uploadQueuesStore = useUploadQueuesStore()
 const assetListStore = useAssetListStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue === oldValue) return

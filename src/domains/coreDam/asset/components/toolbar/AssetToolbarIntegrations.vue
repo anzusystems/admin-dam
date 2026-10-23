@@ -30,9 +30,7 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const externalProviders = computed(() => {
-  return configExtSystem.assetExternalProviders ?? {}
-})
+const externalProviders = computed(() => configExtSystem.assetExternalProviders ?? {})
 
 const { useCurrentUser, can } = useAuth()
 const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
@@ -49,9 +47,7 @@ const offeredExternalProviders = computed(() => {
   )
 })
 
-const show = computed(() => {
-  return !isEmptyObject(offeredExternalProviders.value)
-})
+const show = computed(() => !isEmptyObject(offeredExternalProviders.value))
 
 const activeDisplayText = computed(() => {
   const providerParam = (route.params as { provider?: string }).provider as undefined | string

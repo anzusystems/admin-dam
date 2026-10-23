@@ -102,17 +102,18 @@ async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {
 export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<AssetDetailItemDto[]> = (
   ids: DocId[],
   licenceId: number
-) => {
-  return new Promise((resolve, reject) => {
+) =>
+  new Promise((resolve, reject) => {
     fetchAssetListByIdsSequence(ids, licenceId)
       .then((responses) => {
         if (responses.length === 0) {
           reject(responses)
         } else if (
-          responses.every((res) => {
-            // An answer without its list is not "none of these assets exist".
-            return res.status === HTTP_STATUS_OK && Array.isArray(res.data?.data)
-          })
+          responses.every(
+            (res) =>
+              // An answer without its list is not "none of these assets exist".
+              res.status === HTTP_STATUS_OK && Array.isArray(res.data?.data)
+          )
         ) {
           const final = []
           for (let i = 0; i < responses.length; i++) {
@@ -128,7 +129,6 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
         reject(err)
       })
   })
-}
 
 // The answer is taken as it comes and checked by its reader below.
 const useFetchWaitingAssets = () =>

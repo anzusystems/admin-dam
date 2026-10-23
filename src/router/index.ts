@@ -25,9 +25,7 @@ if (import.meta.hot) {
   })
 }
 
-vueRouter.beforeEach(async (to, from) => {
-  return await beforeEachRoute(to, from)
-})
+vueRouter.beforeEach(async (to, from) => await beforeEachRoute(to, from))
 
 // No reload for a page's code that does not load: a running upload queue would go with it, the message says enough.
 vueRouter.onError(createNavigationErrorHandler(vueRouter, { reloadOnChunkError: false }))
